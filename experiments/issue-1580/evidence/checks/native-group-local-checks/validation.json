@@ -1,0 +1,105 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "records": [
+    {
+      "name": "branch",
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "file": "branch.log.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+      "lines": 1,
+      "tapSummary": {}
+    },
+    {
+      "name": "stage-review-and-regressions",
+      "argv": [
+        "git",
+        "add",
+        "--",
+        "docs/case-studies/issue-1580/templates/README.md",
+        "docs/case-studies/issue-1580/templates/java-complete-file-comparison.json",
+        "experiments/issue-1580/evidence",
+        "experiments/issue-1580/work-plan.md",
+        "experiments/issue-1580/probe-java-project-version.mjs",
+        "experiments/issue-1580/template-java-project-version.test.mjs",
+        "experiments/issue-1580/native-regression-groups.test.mjs",
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        "rust/tests/web/issue-1580-template-observations.test.mjs",
+        "scripts/ci-native-regressions.sh",
+        ".github/workflows/native-type-check.yml",
+        "changelog.d/issue-1580-native-contract-families.md"
+      ],
+      "exitCode": 0,
+      "file": "stage-review-and-regressions.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "tapSummary": {}
+    },
+    {
+      "name": "stale-pull-request-report.test",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/stale-pull-request-report.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "stale-pull-request-report.test.log.gz",
+      "rawSha256": "a0623d64ede2f6ae7d827db96847ab7607c13a2158cd1fe88bad4c4b9c015519",
+      "archiveSha256": "d1b37460fde51ba2e87f3984a4b15f35d2fb1ffa6793f37149dd83acd632e195",
+      "lines": 46,
+      "tapSummary": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "relevant-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-ci-speed,check-runner-labels,check-readable-code"
+      ],
+      "exitCode": 0,
+      "file": "relevant-gates.log.gz",
+      "rawSha256": "da8d4c22b9fd2f70e001eb4b2b833ac6adbe9dcfdc7f3e55ad183dd730b8cf4c",
+      "archiveSha256": "4105dfa925490d3110a0350d462c528a2afea23ec7372a369f715096642d0865",
+      "lines": 12,
+      "tapSummary": {}
+    },
+    {
+      "name": "staged-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "file": "staged-whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "tapSummary": {}
+    }
+  ],
+  "rustCompiledLocally": false,
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

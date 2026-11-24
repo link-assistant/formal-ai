@@ -1,0 +1,1 @@
+Refresh the generated native constant registry after adding optional thinking-step origins. Preserve all 158 program objects and the complete governed inventory, with only the reviewed thinking source hash updated.

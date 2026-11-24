@@ -203,6 +203,20 @@ export function completeOwnedSourceReadFrame(source) {
   return fillWorkItemStep('agent-file-read-frame', [['{lines}', String(rows.length)], ['{body}', body]]);
 }
 
+/** Decode the path-bound OpenCode Read envelope, never a typed raw source value. */
+function openCodeSourceRead(raw, expectedPath) {
+  const frame = /^<path>([^\n]+)<\/path>\n<type>file<\/type>\n<content>\n([\s\S]*)\n\n\(End of file - total ([0-9]+) lines\)\n<\/content>$/u.exec(raw);
+  if (frame === null || frame[1] !== expectedPath) return null;
+  const rows = frame[2] === '' ? [] : frame[2].split('\n');
+  const numbered = rows.map(line => /^([0-9]+): (.*)$/u.exec(line));
+  if (numbered.some(row => row === null)) return null;
+  const first = numbered.length === 0 ? 1 : Number(numbered[0][1]);
+  const total = Number(frame[3]);
+  if (!Number.isSafeInteger(total) || first < 1 || numbered.some((row, index) => Number(row[1]) !== first + index)
+    || first + numbered.length - 1 > total) return null;
+  return { source: numbered.map(row => row[2]).join('\n'), complete: first === 1 && numbered.length === total };
+}
+
 export function sourceReadObservation(raw, explicitlyFailed, metadata = null, expectedPath = null) {
   // The file body never establishes its own provider status or metadata.
   const bound = isObject(metadata) && typeof expectedPath === 'string' && metadata.path === expectedPath;
@@ -212,13 +226,14 @@ export function sourceReadObservation(raw, explicitlyFailed, metadata = null, ex
     : failureMessage(receipt, false, false) ?? (exit !== null && exit !== 0 ? receipt : null);
   const status = error !== null ? SourceReadStatus.Failure
     : bound && metadata.success === true ? SourceReadStatus.Success : SourceReadStatus.Unknown;
+  const openCode = metadata === null ? openCodeSourceRead(raw, expectedPath) : null;
   const framed = metadata === null ? sourceFromAgentReadResult(raw) : null;
   const boundary = raw.lastIndexOf('\n\n(');
   const numbered = boundary < 0 ? [] : raw.slice('<file>\n'.length, boundary).split('\n');
   const count = boundary < 0 ? NaN : Number(raw.slice(boundary + 3).split(/\s+/u)[5]);
   const wholeFrame = framed !== null && count === numbered.length
     && numbered.every((line, index) => Number(line.slice(0, line.indexOf('| '))) === index + 1);
-  const complete = error === null && (wholeFrame || (bound && status === SourceReadStatus.Success
+  const complete = error === null && (wholeFrame || openCode?.complete === true || (bound && status === SourceReadStatus.Success
     && metadata.format === 'raw' && metadata.complete === true && !incompleteReceipt(receipt)));
   const absent = bound && status === SourceReadStatus.Failure && metadata.success === false
     && metadata.complete === false && metadata.format === 'raw' && metadata.error_code === 'ENOENT'
@@ -226,7 +241,7 @@ export function sourceReadObservation(raw, explicitlyFailed, metadata = null, ex
       .every(key => metadata[key] === undefined || metadata[key] === false)
     && (metadata.signal === undefined || metadata.signal === null || metadata.signal === '')
     && (metadata.stream_complete === undefined || metadata.stream_complete === true);
-  return { status, complete, absent, source: error === null ? framed ?? raw : null, error };
+  return { status, complete, absent, source: error === null ? framed ?? openCode?.source ?? raw : null, error };
 }
 
 const PROSE_FAILURE_PREFIX_CHARS = 512;

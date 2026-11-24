@@ -1,0 +1,22 @@
+{
+  "source": "114d366e89d6717f8d9990d8c0ed2d308e13832a",
+  "commandStreamPullRequest240Merged": true,
+  "calculatorIssue265Open": true,
+  "latestPublishedVersions": {
+    "command-stream": "1.13.0",
+    "link-calculator": "0.24.0"
+  },
+  "wrongRepositoryAndWrongPullRequestLookupsHaveNoCredit": true,
+  "registryPublicationOfMigrationVerified": false,
+  "codeqlAndServingIdentityIssuesRemainOpen": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 37964,
+    "sha256": "29da5e7eab64c02934a8501b482cec7a0321a0e3e1adb3dfaabddf12eb7e861a"
+  },
+  "members": 26,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:55:08.624576+00:00"
+}

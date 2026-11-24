@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "scripts/generate-staged-release.mjs",
+    "--check-deployed"
+  ],
+  "exitCode": 0,
+  "rawSha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce",
+  "rawBytes": 135,
+  "rawLines": 2
+}

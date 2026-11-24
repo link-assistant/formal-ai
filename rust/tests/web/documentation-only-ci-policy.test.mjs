@@ -1,23 +1,29 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync, readdirSync} from 'node:fs';
+import {readFileSync, readdirSync, mkdtempSync, writeFileSync, unlinkSync, mkdirSync, rmSync} from 'node:fs';
 import YAML from 'yaml';
-import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows} from '../../../scripts/documentation-only-ci-policy.mjs';
+import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows, contextReportingWorkflows} from '../../../scripts/documentation-only-ci-policy.mjs';
 import {applicableWorkflows} from '../../../scripts/lib/hive-delivery-admission.mjs';
 import {documentationOnlyPullRequest} from '../../../scripts/lib/documentation-paths.mjs';
 import {Script} from 'node:vm';
-import {posix} from 'node:path';
+import {posix, join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {documentationProblems, requirements as requiredDocumentation} from '../../../scripts/check-required-documentation.mjs';
+import {spawnSync} from 'node:child_process';
 const workflows = readdirSync('.github/workflows').filter(name => name.endsWith('.yml')).map(name => ({path: '.github/workflows/' + name, document: YAML.parse(readFileSync('.github/workflows/' + name, 'utf8'))}));
-test('all heavy push and PR triggers carry the generated documentation policy', () => {
+test('heavy triggers are filtered while required PR context reporters remain admitted', () => {
   assert.ok(checkDocumentationPolicy() > 10);
 });
 for (const event of ['push', 'pull_request']) {
   for (const files of [['docs/associative-tech-stack.md'], ['VISION.md','CONTRIBUTING.md'], ['docs/guide.md','changelog.d/pending.md'], ['rust/README.md']]) {
-    test(event + ': documentation paths select lightweight checks only: ' + files.join(','), () => {
+    test(event + ': documentation paths select lightweight checks and required context reporters: ' + files.join(','), () => {
       const selected = applicableWorkflows(workflows, {event, baseBranch: 'main', files});
       assert.ok(selected.includes('.github/workflows/documentation-policy.yml'));
-      for (const path of selected) assert.ok(lightweightWorkflows.has(path.split('/').at(-1)), path);
-      assert.ok(!selected.includes('.github/workflows/release.yml'));
+      for (const path of selected) assert.ok(lightweightWorkflows.has(path.split('/').at(-1))
+          || (event === 'pull_request' && contextReportingWorkflows.has(path.split('/').at(-1))), path);
+
+      assert.equal(selected.includes('.github/workflows/release.yml'), event === 'pull_request',
+          'the required PR contexts report without selecting heavy build jobs');
     });
   }
   for (const path of ['rust/src/lib.rs', 'js/agentic/planner.mjs', 'data/seed/runtime.md', 'data/seed/RUNTIME.MD', '.github/workflows/release.yml', 'Cargo.toml', 'unknown-input']) {
@@ -44,10 +50,13 @@ test('automatic bot checks require complete file observations and both sides of 
 test('lightweight read-only checks cancel superseded PRs and protect main', () => {
   const {concurrency} = workflows.find(workflow => workflow.path.endsWith('/documentation-policy.yml')).document;
   const expression = concurrency['cancel-in-progress'].replace(/^\$\{\{\s*|\s*\}\}$/gu,'');
-  const evaluate = ref => new Script(expression).runInNewContext({github:{ref}}, {timeout:100});
-  assert.equal(evaluate('refs/pull/1/merge'),true);
-  assert.equal(evaluate('refs/heads/fix/example'),true);
-  assert.equal(evaluate('refs/heads/main'),false);
+  const evaluate = (event,action,ref='refs/heads/main') => new Script(expression)
+    .runInNewContext({github:{event_name:event,event:{action},ref,run_attempt:1}}, {timeout:100});
+  assert.equal(evaluate('pull_request','synchronize','refs/pull/1/merge'),true);
+  for(const action of ['opened','reopened','ready_for_review'])
+    assert.equal(evaluate('pull_request',action,'refs/pull/1/merge'),false);
+  for(const event of ['workflow_dispatch','push'])
+    for(const ref of ['refs/heads/main','refs/heads/fix/example'])assert.equal(evaluate(event,undefined,ref),false);
   assert.ok(concurrency.group.includes('github.workflow') && concurrency.group.includes('github.ref'));
 });
 test('native admission unit tests run in CI before their outputs select the tiers', () => {
@@ -64,7 +73,7 @@ test('read-only documentation checkout retains no push credentials', () => {
 
 test('documentation acquisition is bounded without narrowing policy inputs or changing its checks', () => {
   const job=workflows.find(workflow=>workflow.path.endsWith('/documentation-policy.yml')).document.jobs['documentation-policy'];
-  const expectedInputs="/.github/workflows/\n/scripts/documentation-only-ci-policy.mjs\n/scripts/lib/documentation-paths.mjs\n/scripts/lib/hive-delivery-admission.mjs\n/scripts/documentation-policy-dependencies/\n/rust/tests/web/documentation-only-ci-policy.test.mjs\n/package.json\n";
+  const expectedInputs="/.github/workflows/\n/scripts/documentation-only-ci-policy.mjs\n/scripts/lib/documentation-paths.mjs\n/scripts/lib/hive-delivery-admission.mjs\n/scripts/documentation-policy-dependencies/\n/rust/tests/web/documentation-only-ci-policy.test.mjs\n/package.json\n/scripts/check-required-documentation.mjs\n/data/meta/required-documentation.json\n/README.md\n/CONTRIBUTING.md\n/CHANGELOG.md\n";
   function check(value){
     assert.equal(value['timeout-minutes'],3);
     const checkouts=value.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
@@ -78,7 +87,8 @@ test('documentation acquisition is bounded without narrowing policy inputs or ch
     assert.deepEqual(value.steps.slice(1),[
       {uses:'actions/setup-node@v7',with:{'node-version':'22'}},
       {run:'npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies'},
-      {run:'mkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\nnode --test rust/tests/web/documentation-only-ci-policy.test.mjs\n'}
+      {run:'mkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\nnode --test rust/tests/web/documentation-only-ci-policy.test.mjs\n'},
+      {run:'node scripts/check-required-documentation.mjs'}
     ]);
   }
   check(job);
@@ -124,6 +134,7 @@ test('documentation sparse inputs cover the static policy closure and locked par
   }
   assert.deepEqual([...visited].sort(),[
     'rust/tests/web/documentation-only-ci-policy.test.mjs',
+    'scripts/check-required-documentation.mjs',
     'scripts/documentation-only-ci-policy.mjs',
     'scripts/lib/documentation-paths.mjs',
     'scripts/lib/hive-delivery-admission.mjs'
@@ -132,9 +143,149 @@ test('documentation sparse inputs cover the static policy closure and locked par
   assert.ok(patterns.includes('/.github/workflows/'),'complete workflow census required');
   for(const file of ['package.json','scripts/documentation-policy-dependencies/package.json',
     'scripts/documentation-policy-dependencies/package-lock.json'])assert.ok(covered(file),file);
+  for (const file of ['data/meta/required-documentation.json', ...Object.keys(requiredDocumentation)]) assert.ok(covered(file), file);
   const dependency=JSON.parse(readFileSync('scripts/documentation-policy-dependencies/package.json','utf8'));
   const lock=JSON.parse(readFileSync('scripts/documentation-policy-dependencies/package-lock.json','utf8'));
   assert.deepEqual(Object.keys(dependency.dependencies),['yaml']);
   assert.equal(dependency.dependencies.yaml,lock.packages['node_modules/yaml'].version);
   assert.match(lock.packages['node_modules/yaml'].integrity,/^sha512-/u);
+});
+
+// Execute the retained workflow conditions for a real documentation-only
+// classification; an event-level reporting exception cannot admit a build.
+function assertDocumentationContextSafety(release, native, verifiedSha = 'a'.repeat(40)) {
+  const candidateSha = 'a'.repeat(40);
+  const outputs = new Proxy({}, {get: (_, key) => key === 'docs-changed' ? 'true' : 'false'});
+  const results = new Map();
+  const needs = new Proxy({}, {get: (_, id) => {
+    assert.ok(Object.hasOwn(release.jobs, id), 'unknown job dependency ' + id);
+    if (!results.has(id)) results.set(id, evaluate(release.jobs[id].if) ? 'success' : 'skipped');
+    return {result: results.get(id), outputs: id === 'fast-pr-lint' ? {'tested-sha': verifiedSha} : outputs};
+  }});
+  const evaluate = (expression, inputs = {}) => {
+    if (expression === undefined) return true;
+    const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
+      .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
+    return Boolean(new Script(source).runInNewContext({
+      github: {sha: candidateSha, event_name: 'pull_request', ref: 'refs/pull/1/merge', event: {inputs: {}, workflow_run: {head_branch: 'main'}}},
+      needs, inputs, vars: {}, cancelled: () => false, always: () => true,
+      fromJSON: JSON.parse, contains: (container, value) => container.includes(value),
+    }, {timeout: 100}));
+  };
+  assert.equal(release.on.pull_request['paths-ignore'], undefined);
+  const selected = Object.entries(release.jobs).filter(([, job]) => evaluate(job.if)).map(([id]) => id).sort();
+  assert.deepEqual(selected, ['base', 'detect-changes', 'fast-pr-lint', 'hive-source-provenance',
+    'native-type-check', 'pipeline-status', 'release-preflight', 'secrets-scan', 'version-check']);
+  const call = release.jobs['native-type-check'];
+  assert.equal(call.uses, './.github/workflows/native-type-check.yml');
+  const compile = evaluate(call.with['compile-inputs-changed']);
+  assert.equal(compile, false, 'a complete docs-only observation does not compile');
+  const steps = native.jobs.clippy.steps.filter(step => evaluate(step.if, {'compile-inputs-changed': compile}));
+  assert.equal(steps.length, 1);
+  assert.equal(steps[0].name, 'Report unchanged compile inputs');
+  assert.match(steps[0].run, /^echo '::notice::Rust compile inputs unchanged;/u);
+  assert.equal(steps[0].uses, undefined);
+}
+
+test('documentation PR context reporting runs no native tool, product build or publication job', () => {
+  const release = workflows.find(row => row.path.endsWith('/release.yml')).document;
+  const native = workflows.find(row => row.path.endsWith('/native-type-check.yml')).document;
+  assertDocumentationContextSafety(release, native);
+  for (const receipt of ['', 'b'.repeat(40)]) {
+    assert.throws(() => assertDocumentationContextSafety(release, native, receipt),
+      'a missing or different-source receipt cannot admit the native reporter');
+  }
+  for (const mutate of [
+    value => delete value.jobs['build-artifacts'].if,
+    value => value.jobs['native-type-check'].with['compile-inputs-changed'] = true,
+    value => value.on.pull_request['paths-ignore'] = ['docs/**'],
+  ]) {
+    const changed = structuredClone(release); mutate(changed);
+    assert.throws(() => assertDocumentationContextSafety(changed, native));
+  }
+  for (const name of ['Check out native inputs', 'Retry native input checkout once',
+    'Require a successful native checkout', 'Type-check and lint the library and binaries']) {
+    const changed = structuredClone(native);
+    delete changed.jobs.clippy.steps.find(step => step.name === name).if;
+    assert.throws(() => assertDocumentationContextSafety(release, changed), name);
+  }
+});
+
+test('context reporter exemption preserves push filtering and does not apply to other heavy workflows', () => {
+  const source = 'on:\n  push:\n  pull_request:\njobs:\n  retained:\n    steps: []\n';
+  const reporter = YAML.parse(filteredWorkflow(source, {file: 'release.yml'}));
+  assert.ok(reporter.on.push['paths-ignore'].includes('docs/**'));
+  assert.equal(reporter.on.pull_request, null);
+  const other = YAML.parse(filteredWorkflow(source, {file: 'another-heavy-workflow.yml'}));
+  assert.ok(other.on.pull_request['paths-ignore'].includes('docs/**'));
+});
+
+test('required public documentation is present with the declared level-two sections', () => {
+  assert.deepEqual(documentationProblems(), []);
+});
+
+test('missing files and headings cannot be replaced by prose, code examples or deeper headings', () => {
+  const root = mkdtempSync(join(tmpdir(), 'required-documentation-'));
+  const contract = {'README.md': ['Install', 'Quick Start'], 'CONTRIBUTING.md': ['Development Setup'], 'CHANGELOG.md': []};
+  try {
+    writeFileSync(join(root, 'README.md'), '# Guide\n## Install\n## Quick Start\n');
+    writeFileSync(join(root, 'CONTRIBUTING.md'), '## Development Setup\n');
+    writeFileSync(join(root, 'CHANGELOG.md'), '# Changelog\n');
+    assert.deepEqual(documentationProblems(root, contract), []);
+    for (const file of Object.keys(contract)) {
+      const target = join(root, file), original = readFileSync(target);
+      unlinkSync(target);
+      assert.deepEqual(documentationProblems(root, contract), [file + ': cannot read required documentation (ENOENT)']);
+      writeFileSync(target, original);
+    }
+    for (const replacement of [
+      'Quick Start is described here', '### Quick Start', '## Quick Starting',
+      '```markdown\n## Quick Start\n```', '~~~\n## Quick Start\n~~~',
+      '````markdown\n```\n## Quick Start\n```\n````',
+      '```markdown\n~~~\n## Quick Start\n~~~\n```',
+      '    ## Quick Start',
+    ]) {
+      writeFileSync(join(root, 'README.md'), '## Install\n' + replacement + '\n');
+      assert.deepEqual(documentationProblems(root, contract), ['README.md: missing required heading "## Quick Start"'], replacement);
+    }
+    writeFileSync(join(root, 'README.md'), '## Install\r\n  ## Quick Start ###\r\n');
+    assert.deepEqual(documentationProblems(root, contract), []);
+    unlinkSync(join(root, 'CHANGELOG.md'));mkdirSync(join(root, 'CHANGELOG.md'));
+    assert.match(documentationProblems(root, contract)[0], /^CHANGELOG\.md: cannot read required documentation/u);
+  } finally { rmSync(root, {recursive:true, force:true}); }
+});
+
+test('required documentation uses one contract for listing and execution', () => {
+  const run = spawnSync(process.execPath, ['scripts/check-required-documentation.mjs', '--list'], {encoding:'utf8', timeout:5000});
+  assert.equal(run.status, 0, run.stderr);
+  assert.deepEqual(JSON.parse(run.stdout), requiredDocumentation);
+  const invalid = spawnSync(process.execPath, ['scripts/check-required-documentation.mjs', '--unknown'], {encoding:'utf8', timeout:5000});
+  assert.equal(invalid.status, 2);
+});
+
+test('non-ASCII or vertical whitespace cannot close documentation fences', {timeout:5000}, () => {
+  const root = mkdtempSync(join(tmpdir(), 'documentation-fence-'));
+  try {
+    const actual = [], expected = [];
+    for (const fence of ['```', '~~~']) {
+      for (const suffix of ['\u00a0', '\u2003', '\u202f', '\ufeff', '\v', '\f']) {
+        writeFileSync(join(root, 'README.md'), fence + '\n' + fence + suffix + '\n## Quick Start\n');
+        actual.push(documentationProblems(root, {'README.md':['Quick Start']}));
+        expected.push(['README.md: missing required heading "## Quick Start"']);
+      }
+    }
+    assert.deepEqual(actual, expected);
+  } finally { rmSync(root, {recursive:true, force:true}); }
+});
+
+test('spaces and tabs close documentation fences before actual required sections', {timeout:5000}, () => {
+  const root = mkdtempSync(join(tmpdir(), 'documentation-fence-close-'));
+  try {
+    for (const fence of ['```', '~~~']) {
+      for (const suffix of ['', ' ', '\t', ' \t ']) {
+        writeFileSync(join(root, 'README.md'), fence + '\nexample\n' + fence + suffix + '\n## Quick Start\n');
+        assert.deepEqual(documentationProblems(root, {'README.md':['Quick Start']}), []);
+      }
+    }
+  } finally { rmSync(root, {recursive:true, force:true}); }
 });

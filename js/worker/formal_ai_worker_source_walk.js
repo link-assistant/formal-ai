@@ -260,7 +260,7 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
       }
       const read = extractor.read(record, capture, depth, sourceItems.length, bounds) || {};
       sourceItems.push(...(read.items || []));
-      if (read.detail) outcome.detail = read.detail;
+      if (read.detail && (!read.items?.length || !(age > bounds.maxCaptureAgeSeconds))) outcome.detail = read.detail;
       if (depth < bounds.maxDepth) {
         for (const follow of read.follow || []) queue.push({ url: follow, depth: depth + 1 });
       }

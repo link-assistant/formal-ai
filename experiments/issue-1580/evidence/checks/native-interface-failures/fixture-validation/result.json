@@ -1,0 +1,50 @@
+{
+  "commands": [
+    {
+      "name": "health",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/server-retained-dialog-silent.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.036,
+      "logSha256": "dedc2275cc0cc361fe5eabbeb3df5044e525e8fd23703bb06a2dc95597fce0c5"
+    },
+    {
+      "name": "hive",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/hive-work-item-consumer.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 48.573,
+      "logSha256": "bfb080a6b0a8ba5a1d6f245cc527c620d0c3cd354d22f0d6100ad5dca5ccce6c"
+    },
+    {
+      "name": "native-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/integration/http_server.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+        "rust/tests/fixtures/hive-mind/offline_delivery.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.116,
+      "logSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "fullIssueComplete": false,
+  "nativeExecution": "not run locally",
+  "independentAuthorshipCredit": 0
+}

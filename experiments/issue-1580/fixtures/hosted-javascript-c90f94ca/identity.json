@@ -1,0 +1,72 @@
+{
+  "sourceCommit": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "run": 45018199621,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/45018199621",
+  "runConclusion": "success",
+  "completeObservations": 916,
+  "modeledWorkers": 4,
+  "warningSeconds": 270,
+  "budgetSeconds": 360,
+  "runnerOverheadAllowanceSeconds": 30,
+  "unobservedFallbackSeconds": 0.34,
+  "schedulingFactor": 1.65,
+  "rawLogSha256": "bd6960094c03e3fac983668fc33fb7eaefd6d84fdfb57a896c7a55f9fc43bddb",
+  "durationsSha256": "ca29e9af535cafd9ec9bcd81fe8320850fd55ccff475a986de753fe5618d1c9b",
+  "warnings": [
+    {
+      "shard": 3,
+      "seconds": 296,
+      "rawLogLine": 7687
+    }
+  ],
+  "jobs": [
+    {
+      "job": "js tier (node --check over js, suite group 8)",
+      "id": 137201294847,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 3)",
+      "id": 137201294856,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 5)",
+      "id": 137201294883,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 7)",
+      "id": 137201294923,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 6)",
+      "id": 137201294941,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 1)",
+      "id": 137201294956,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 4)",
+      "id": 137201294999,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 2)",
+      "id": 137201295013,
+      "conclusion": "success"
+    }
+  ],
+  "executionProof": false,
+  "autonomousAuthorshipCredit": 0,
+  "observedSchedulingFactor": 1.4,
+  "schedulingFactorScope": "proposed scheduling weights; not the measured run configuration",
+  "reserveProbeCandidates": 13,
+  "reserveProbeAllFitCohorts": 10,
+  "proposedDefaultSeconds": 0.4,
+  "priorSchedulingFloorSha256": "e655193e895736a5314015b37d449e9989345e54c2a18e9c8d864ab0ff9912d2"
+}

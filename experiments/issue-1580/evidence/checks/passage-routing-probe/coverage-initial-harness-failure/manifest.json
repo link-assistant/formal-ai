@@ -1,0 +1,50 @@
+{
+  "pid": 1083639,
+  "workerState": "Z",
+  "exitCode": 1,
+  "stdoutLinesLiterallyRead": [
+    1,
+    27
+  ],
+  "error": "The source-code control called a finite mocked transport, violating the harness zero-mock-call assertion; no actual network I/O occurred. No complete result artifact was written.",
+  "mockCallsByCodeVariant": [
+    45,
+    19,
+    0
+  ],
+  "sharedMockBudgetMadeCallCountsIncomparable": true,
+  "productionModified": false,
+  "independentAuthorshipCredit": 0,
+  "files": [
+    {
+      "file": "probe-parent-answer-coverage.mjs.gz",
+      "rawBytes": 12380,
+      "rawSha256": "69ac7059ed18aa6321f82c8529fa82860baee7c78a80a8a65b29bda1e2f004b0",
+      "archivedSha256": "e484132fe5c192c62e11b911625861270298821d225d656405139621d0279f20"
+    },
+    {
+      "file": "process.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "13c74867fbaaf5285c6ca484e70323c4ed9a7997b85c604c1cf1ca14774ce334",
+      "archivedSha256": "a22010fb238bdecb2eedcb5352831d9cc748637f41fe99e13b08e273690495ca"
+    },
+    {
+      "file": "stderr.log.gz",
+      "rawBytes": 500,
+      "rawSha256": "88947dbe92a82a2e0bf7bce68a6ba42e8dd39aa1ab8398a12bac8bd7751fe007",
+      "archivedSha256": "a0781d5962087baf4fa4a185590721d1a58a6ab7a216579a658725ac4f0b3db4"
+    },
+    {
+      "file": "stdout.log.gz",
+      "rawBytes": 10129,
+      "rawSha256": "2507b07f42a1a3d46e4dd07b7e94605aac97cefa1b14fbfcd8ad82e684a14069",
+      "archivedSha256": "a58c87c81c81a9631b61c26fbb93f4f464223b1fbcf5472b3480fd55dbfa3a4d"
+    },
+    {
+      "file": "syntax.json.gz",
+      "rawBytes": 52,
+      "rawSha256": "6d620d1c454a90e41ee536109b1fee6ba5177ac2ee9d3aeb3a9f1e108bf3f044",
+      "archivedSha256": "5aa35498186d04f67d5176b5f1d30dcd77a4607b32fbf0cef5faed1b287f769e"
+    }
+  ]
+}

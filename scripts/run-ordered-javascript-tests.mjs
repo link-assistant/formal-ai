@@ -16,6 +16,12 @@ if (option !== '--concurrency' || !Number.isInteger(concurrency) || concurrency 
 // and inherited Node arguments/environment at the runner's standard defaults.
 const selected = new Map(files.map(file => [resolve(file), relative(process.cwd(), resolve(file))]));
 const reported = new Set();
+// Node may enqueue the initial files synchronously inside run(), before an
+// event listener can attach. Record the supplied queue itself before starting.
+for (const file of selected.values()) {
+  console.error('[test-file] queued ' + file);
+  reported.add('queued:' + file);
+}
 function reportFile(state, event) {
   if (event.nesting !== 0 || typeof event.name !== 'string') return;
   const file = selected.get(resolve(event.name));
@@ -26,22 +32,36 @@ function reportFile(state, event) {
 const tests = run({files, concurrency});
 tests.on('test:enqueue', event => reportFile('queued', event));
 tests.on('test:dequeue', event => reportFile('started', event));
-// Node22+ emits one summary per isolated file and a final cumulative summary.
-// Case names are not file identities, so case pass/fail events cannot certify completion.
+// Registered tests emit file summaries. Assertion-only files instead emit a
+// file-level pass/fail event. Defer those candidates until the stream ends so
+// a case named after its file cannot replace the authoritative file summary.
 const summarized = new Set();
+const fileResults = new Map();
+function rememberFileResult(state, event) {
+  if (event.nesting !== 0 || typeof event.name !== 'string' || typeof event.file !== 'string'
+    || resolve(event.name) !== resolve(event.file)) return;
+  const file = selected.get(resolve(event.file));
+  if (file !== undefined) fileResults.set(file, {state, duration_ms: event.details?.duration_ms});
+}
+function reportCompletion(file, state, milliseconds) {
+  if (summarized.has(file)) return;
+  summarized.add(file);
+  const duration = Number.isFinite(milliseconds) && milliseconds >= 0 ? milliseconds : null;
+  console.error('[test-file] ' + state + ' ' + file + ' ' + JSON.stringify({duration_ms: duration}));
+}
+tests.on('test:pass', event => rememberFileResult('completed', event));
 tests.on('test:summary', event => {
   if (typeof event.file !== 'string') return;
   const file = selected.get(resolve(event.file));
   if (file === undefined || summarized.has(file)) return;
-  summarized.add(file);
-  const state = event.success === true ? 'completed' : 'failed';
-  const duration = Number.isFinite(event.duration_ms) && event.duration_ms >= 0
-    ? event.duration_ms : null;
-  console.error('[test-file] ' + state + ' ' + file + ' ' + JSON.stringify({duration_ms: duration}));
+  reportCompletion(file, event.success === true ? 'completed' : 'failed', event.duration_ms);
 });
 tests.on('test:fail', event => {
+  rememberFileResult('failed', event);
   if (event.todo === undefined || event.todo === false) {
     process.exitCode = 1;
   }
 });
 await pipeline(tests.compose(spec), process.stdout);
+
+for (const [file, result] of fileResults) reportCompletion(file, result.state, result.duration_ms);

@@ -146,11 +146,9 @@ fn unseeded_question_is_formalized_from_seed_cues() {
         ),
         ("Australia's capital?", "australia"),
     ] {
-        assert_eq!(
-            live_fact_question(prompt).expect(prompt).subject_term,
-            expected,
-            "{prompt}"
-        );
+        let question = live_fact_question(prompt).expect(prompt);
+        assert_eq!(question.relation, "capital", "{prompt}");
+        assert_eq!(question.subject_term, expected, "{prompt}");
     }
 }
 
@@ -166,6 +164,12 @@ fn unseeded_capital_is_answered_live_with_its_reference() {
     )
     .expect("a live answer");
     assert_eq!(answer.intent, "fact_query");
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "search:external"
+                && event.payload == "wikidata:requested:capital:australia")
+    );
     assert_eq!(
         answer.answer,
         "Wikidata states that the capital of Australia is Canberra. Source: https://www.example.gov.au/about/capital"
@@ -181,7 +185,20 @@ fn unseeded_capital_is_answered_live_with_its_reference() {
 fn a_previous_replay_subject_requires_a_publisher_capture() {
     let mut log = EventLog::new();
     let prompt = "What is the capital of the USA?";
-    let offline = CachedSourceClient::new(cache("previous-replay"), FixtureTransport);
+    struct RecordingTransport(std::sync::Arc<AtomicUsize>);
+    impl SourceTransport for RecordingTransport {
+        fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
+            self.0.fetch_add(1, Ordering::SeqCst);
+            Err(FetchError::Transport(format!(
+                "unexpected_offline_request:{url}"
+            )))
+        }
+    }
+    let requests = std::sync::Arc::new(AtomicUsize::new(0));
+    let offline = CachedSourceClient::new(
+        cache("previous-replay"),
+        RecordingTransport(requests.clone()),
+    );
     assert!(
         try_fact_lookup_with_client(prompt, &normalize_prompt(prompt), &mut log, &offline)
             .is_none()
@@ -196,6 +213,9 @@ fn a_previous_replay_subject_requires_a_publisher_capture() {
             .iter()
             .all(|event| event.kind != "fact_lookup:hit")
     );
+    // A lookup-request event records intent, not a network response or a fact.
+    assert_eq!(requests.load(Ordering::SeqCst), 0);
+    assert!(!log.events().iter().any(|event| event.kind == "source"));
 }
 
 #[test]
@@ -244,6 +264,22 @@ fn offline_cache_miss_falls_through() {
     );
 }
 
+#[test]
+fn offline_fact_request_retains_the_external_lookup_boundary() {
+    let mut log = EventLog::new();
+    let offline = CachedSourceClient::new(cache("external-boundary"), FixtureTransport);
+    assert!(
+        try_fact_live_answer("What is the capital of Australia?", &mut log, &offline).is_none()
+    );
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "search:external"
+                && event.payload == "wikidata:requested:capital:australia")
+    );
+    assert!(!log.events().iter().any(|event| event.kind == "source"));
+}
+
 /// R8: the explanation concept is what follows the seeded explain cue.
 #[test]
 fn explanation_concept_follows_the_seeded_cue() {
@@ -251,7 +287,16 @@ fn explanation_concept_follows_the_seeded_cue() {
         explanation_concept("Explain the Kotlin compiler"),
         Some("kotlin compiler".to_owned())
     );
-    assert_eq!(explanation_concept("The Kotlin compiler is fast"), None);
+    for (prompt, expected) in [
+        ("Explain Kotlin compiler", Some("kotlin compiler")),
+        ("Explain the theory of types", Some("theory of types")),
+        ("Explain vitamin A", Some("vitamin a")),
+        ("Explain theorem", Some("theorem")),
+        ("Explain the", None),
+        ("The Kotlin compiler is fast", None),
+    ] {
+        assert_eq!(explanation_concept(prompt).as_deref(), expected, "{prompt}");
+    }
 }
 
 /// R8: an explanation is composed from the retrieved page's statements that

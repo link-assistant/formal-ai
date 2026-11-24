@@ -54,7 +54,7 @@ function howToMethodRank(label, task, language, markers) {
 
 function howToWikiHowStepLists(html, task, language, limit, allowLegacy = true) {
   const policy = handlerRulesPolicy("procedural_how_to", `scoped-method-markers-${language}`);
-  const markers = String(policy || "").split("|").filter(Boolean);
+  const markers = crateModule("crate/seed.mjs").splitPipeList(policy || "").filter(Boolean);
   const requested = task.toLowerCase();
   const tags = html.matchAll(/<h[1-6](?:\s[^>]*)?>(.*?)<\/h[1-6]>|<(\/?)(ol|ul|li)(?:\s([^>]*))?>/gisu);
   let best = [];

@@ -1,32 +1,8 @@
-use regex::Regex;
+#[path = "../../../../scripts/release-changelog.rs"]
+mod release_changelog;
 
 fn get_changelog_for_version(content: &str, version: &str) -> String {
-    let escaped_version = regex::escape(version);
-    let header_pattern = format!(r"(?m)^## \[{escaped_version}\]");
-    let header_re = Regex::new(&header_pattern).unwrap();
-
-    header_re.find(content).map_or_else(
-        || format!("Release v{version}"),
-        |m| {
-            let after_header = &content[m.end()..];
-            let body_start = after_header
-                .find('\n')
-                .map_or(after_header.len(), |i| i + 1);
-            let body = &after_header[body_start..];
-
-            let next_section_re = Regex::new(r"(?m)^## \[").unwrap();
-            let section_body = next_section_re
-                .find(body)
-                .map_or(body, |next| &body[..next.start()]);
-
-            let trimmed = section_body.trim();
-            if trimmed.is_empty() {
-                format!("Release v{version}")
-            } else {
-                trimmed.to_string()
-            }
-        },
-    )
+    release_changelog::section(content, version).unwrap_or_else(|| format!("Release v{version}"))
 }
 
 const SAMPLE_CHANGELOG: &str = r"# Changelog

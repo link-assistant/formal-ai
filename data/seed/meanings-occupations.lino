@@ -47,6 +47,13 @@ meanings
     lexeme hi इलेक्ट्रीशियन
     lexeme zh 电工
     lexeme es electricista
+  forklift-operator
+    defined-by concept
+    lexeme en "forklift operator"
+    lexeme ru "водитель погрузчика"
+    lexeme hi "फोर्कलिफ्ट चालक"
+    lexeme zh 叉车操作员
+    lexeme es "operador de montacargas"
   sales-manager
     defined-by concept
     role occupation-title
@@ -59,6 +66,13 @@ meanings
     lexeme hi "बिक्री प्रबंधक"
     lexeme zh 销售经理
     lexeme es "gerente de ventas"
+  storekeeper
+    defined-by concept
+    lexeme en storekeeper "stockroom attendant"
+    lexeme ru кладовщик
+    lexeme hi भंडारपाल
+    lexeme zh 仓库保管员
+    lexeme es almacenero
   truck-driver
     defined-by concept
     role occupation-title
@@ -71,3 +85,10 @@ meanings
     lexeme hi "ट्रक चालक"
     lexeme zh 卡车司机
     lexeme es camionero camionera
+  warehouse-supervisor
+    defined-by concept
+    lexeme en "warehouse supervisor"
+    lexeme ru "начальник склада"
+    lexeme hi "गोदाम पर्यवेक्षक"
+    lexeme zh 仓库主管
+    lexeme es "supervisor de almacén"

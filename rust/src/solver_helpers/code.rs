@@ -326,7 +326,7 @@ pub fn translate_surface_detailed(
 
 /// Extract a JavaScript program from a prompt that asks the solver to run it.
 /// Looks for triple-backtick code fences first (with optional `js`/`javascript`
-/// language tag), then single-backtick spans, then `run "...";` quoted bodies.
+/// language tag), then the complete colon-introduced body, then backtick or quote wrappers.
 /// Returns `None` when the prompt does not appear to request JS execution.
 pub fn extract_javascript_program(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
@@ -344,14 +344,24 @@ pub fn extract_javascript_program(prompt: &str) -> Option<String> {
     if let Some(body) = extract_fenced_block(prompt, &["javascript", "js"]) {
         return Some(body);
     }
-    if let Some(body) = extract_backticked(prompt) {
-        return Some(body);
-    }
-    extract_quoted_phrase(prompt).or_else(|| {
-        // The colon after the request introduces the program
-        // ("Run this JavaScript: console.log(1 + 2)").
-        let (_, body) = prompt.split_once(": ")?;
+    // A colon introduces the whole program; its string literals are not wrappers.
+    if let Some((_, body)) = prompt.split_once(": ") {
         let body = body.trim();
-        (!body.is_empty()).then(|| body.to_owned())
-    })
+        if !body.is_empty() {
+            for delimiter in ['"', '`'] {
+                if let Some(inner) = body
+                    .strip_prefix(delimiter)
+                    .and_then(|rest| rest.strip_suffix(delimiter))
+                {
+                    return Some(inner.to_owned());
+                }
+            }
+            return Some(body.to_owned());
+        }
+    }
+    extract_backticked(prompt).or_else(|| extract_quoted_phrase(prompt))
 }
+
+#[cfg(test)]
+#[path = "../../tests/unit/solver/javascript_program.rs"]
+mod javascript_program_tests;

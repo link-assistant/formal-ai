@@ -36,7 +36,7 @@ import {
 import { posix } from "node:path";
 import { pathToFileURL } from "node:url";
 
-const INITIAL_COMMIT = "6f8d4a8a05770adfd2fe33fdf3c6c586efb103af";
+export const INITIAL_COMMIT = "6f8d4a8a05770adfd2fe33fdf3c6c586efb103af";
 const CHANGELOG_PATH = "CHANGELOG.md";
 const MAP_PATH = "docs/case-studies/issue-711/fragment-release-map.tsv";
 export const ARCHIVE_DIR = "docs/changelog";

@@ -1,0 +1,12 @@
+{
+  "sourceCommit": "8ace3291f83b2f5c7a667740cdad31c485467e24",
+  "publishedHead": "bfe5ac0f3babe512f1bf0a03935bd1d220f9e40f",
+  "archive": "source-api-patches.txt.gz",
+  "rawSha256": "3bc7e0cb93b5e251860bbe6bc757f88f99f5e2039eaf82339ba68d2d7f6178d5",
+  "literalLinesReviewed": 83,
+  "allThreePublishedSourcePatchesLiterallyRead": true,
+  "earlierImmutableVerificationUnchanged": true,
+  "wholePullRequestDiffReviewed": false,
+  "wholePullRequestDiffLimitation": "GitHub returns HTTP 406 for more than 300 changed files",
+  "independentAuthorshipCredit": 0
+}

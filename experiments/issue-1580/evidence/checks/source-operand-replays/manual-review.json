@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-11-18T11:41:10.116390+00:00",
+  "localVerificationComplete": true,
+  "fullLocalPayloadHashesVerified": true,
+  "fullLocalPayloadsLiterallyRead": true,
+  "nativeExecuted": false,
+  "sourceFiles": [
+    {
+      "path": "rust/tests/unit/meta_executor_parity.rs",
+      "sha256": "f2d5ab14464360b3efd4126ed6acbbdd7ea51eea9b925af262881815dbd7af12"
+    },
+    {
+      "path": "rust/tests/web/issue-1580-production-composition.test.mjs",
+      "sha256": "af7dd470fe7acfe67c04e9d8bcd11565f4654b444f002cd20e01ba6bcdaf8fcb"
+    },
+    {
+      "path": "experiments/issue-1580/probe-source-composition.mjs",
+      "sha256": "1271906053591ffc3e84c97a8c4a28acf98168515756d782ba9185346b3b3198"
+    }
+  ],
+  "sourcePatchSha256": "263165fe631c1777ce577084f3ae5d69da865a1f46720ddbb94fd903169094be",
+  "sourcePatchLiterallyRead": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "sourceFileCount": 3,
+  "reviewedAt": "2026-11-18T11:41:56.438666+00:00"
+}

@@ -1,0 +1,7 @@
+{
+  "status": 1,
+  "stdout": "Auto-merging .cargo/audit.toml\nCONFLICT (content): Merge conflict in .cargo/audit.toml\nAuto-merging data/benchmarks/fast-pull-request-javascript-tests.json\nAuto-merging data/meta/worker-line-budget/formal_ai_worker_obligations.lino\nCONFLICT (content): Merge conflict in data/meta/worker-line-budget/formal_ai_worker_obligations.lino\nwarning: Cannot merge binary files: experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8 (HEAD vs. origin/main)\nAuto-merging experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8\nCONFLICT (content): Merge conflict in experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8\nAutomatic merge failed; fix conflicts and then commit the result.\n",
+  "stderr": "",
+  "ours": "da712fadd3f680668c063a6d7de073ef1d52573b",
+  "theirs": "512ce428029a92687628b4180309ee5ab660fe08"
+}

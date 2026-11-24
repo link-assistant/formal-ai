@@ -1,0 +1,345 @@
+{
+  "main": "19235c49abaf1e71aad89e4badbe1f9bba5d4786",
+  "mergedHead": "510c24983e5bbacb0e5ab21d2de491af56902055",
+  "timestamp": "2026-11-18T07:28:40.087979+00:00",
+  "sourceDiffLiteralReview": {
+    "firstLine": 1,
+    "lastLine": 1647,
+    "excludesDevelopmentLogAndGeneratedMirrors": true
+  },
+  "previousPublicationStoppedBeforePush": true,
+  "remoteBranchUnchanged": true,
+  "conflictsResolved": [
+    "native workflow combines conditional admission with both isolated targets and CLI replay",
+    "policy test retains unconditional required-context assertions and pins all conditional compile steps",
+    "maintained baseline writer changes exactly four Cargo manifest fixture identities"
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "archives": [
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/fetch-output.stderr",
+      "archive": "incoming-fetch-output.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/fetch-output.stdout",
+      "archive": "incoming-fetch-output.stdout.gz",
+      "rawSha256": "d265b527a72a4ad7fe6c8bfb4c35a704a4eb61604a7fe7506a4d24744009dd14",
+      "rawBytes": 151
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/governed-refresh.json",
+      "archive": "incoming-governed-refresh.json.gz",
+      "rawSha256": "923d814f1786598b0ca71b9f53480520e1b19a23e98b32ceee759f42ecb0b45c",
+      "rawBytes": 511
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/head-sha.stderr",
+      "archive": "incoming-head-sha.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/head-sha.stdout",
+      "archive": "incoming-head-sha.stdout.gz",
+      "rawSha256": "e9f76a2eabbbaf21ccce3fb307c449a43c6b317a9b3ca5983deb214a88f2ec2e",
+      "rawBytes": 41
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-commits.stderr",
+      "archive": "incoming-incoming-commits.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-commits.stdout",
+      "archive": "incoming-incoming-commits.stdout.gz",
+      "rawSha256": "3a5d768280a574d76387bd823885925de9f7f59362690136aff019c50815f7b2",
+      "rawBytes": 1313
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-diff.stderr",
+      "archive": "incoming-incoming-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-diff.stdout",
+      "archive": "incoming-incoming-diff.stdout.gz",
+      "rawSha256": "b8cdaeadd4372c995da0df83d318a424124e4d00d8b616c223a3864f7833f625",
+      "rawBytes": 853475
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-names.stderr",
+      "archive": "incoming-incoming-names.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-names.stdout",
+      "archive": "incoming-incoming-names.stdout.gz",
+      "rawSha256": "904ef6633e91872435803dd0279d6c5b246a2f6646d5a1764c9a24226cbe5771",
+      "rawBytes": 1481
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-source-diff.log",
+      "archive": "incoming-incoming-source-diff.log.gz",
+      "rawSha256": "5d19561a85d43fcbab5509bcfd41f56a843a9f6ef4b627307da7158260afaa39",
+      "rawBytes": 71982
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-stat.stderr",
+      "archive": "incoming-change-summary.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-stat.stdout",
+      "archive": "incoming-change-summary.stdout.gz",
+      "rawSha256": "ddaf41a9c912fd365a584ebf01f5da50b7b34ec32f320197e7c985d69505e178",
+      "rawBytes": 2434
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-whitespace.stderr",
+      "archive": "incoming-incoming-whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/incoming-whitespace.stdout",
+      "archive": "incoming-incoming-whitespace.stdout.gz",
+      "rawSha256": "d7176d29e5e28c73c729422420174556fe92fbd7014f3aff3b444ce13e9cacd9",
+      "rawBytes": 27576
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/main-sha.stderr",
+      "archive": "incoming-main-sha.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/main-sha.stdout",
+      "archive": "incoming-main-sha.stdout.gz",
+      "rawSha256": "791fa69c0e820c285e0be62bc0385a0272b3a20923ee69f7a73fc843694767c8",
+      "rawBytes": 41
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/merge-commit.stderr",
+      "archive": "incoming-merge-commit.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/merge-commit.stdout",
+      "archive": "incoming-merge-commit.stdout.gz",
+      "rawSha256": "47e5cc400f5424444e1823689db0712fd5a14509bd47a28322cfd716dfe1a9a8",
+      "rawBytes": 112
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/merge.stderr",
+      "archive": "incoming-merge.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/merge.stdout",
+      "archive": "incoming-merge.stdout.gz",
+      "rawSha256": "ad82365a46daa4fe78852e0ec384b450b35b9d69440137875d9d22ede253536f",
+      "rawBytes": 882
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-main-update/ours-before-governed-baseline.v8",
+      "archive": "incoming-ours-before-governed-baseline.v8.gz",
+      "rawSha256": "4812f698a6381311bbf6e75c9af0ed8bdaa5af74ed7d886b42be01c66f4f4959",
+      "rawBytes": 1836175
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/archive-commands.stderr",
+      "archive": "stopped-publication-archive-commands.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/archive-commands.stdout",
+      "archive": "stopped-publication-archive-commands.stdout.gz",
+      "rawSha256": "f7c0e57e0e65134471036da0090f7dc682b0dc8bd26a84b5594ac369d4c6bb55",
+      "rawBytes": 97
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/archive-supplied.stderr",
+      "archive": "stopped-publication-archive-supplied.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/archive-supplied.stdout",
+      "archive": "stopped-publication-archive-supplied.stdout.gz",
+      "rawSha256": "1498bb97b6b94c81b11393c2b2e8a1bae833b02cc279e6ef1b4b61fb478a43db",
+      "rawBytes": 93
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/branch.stderr",
+      "archive": "stopped-publication-branch.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/branch.stdout",
+      "archive": "stopped-publication-branch.stdout.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "rawBytes": 24
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/clean-before-push.stderr",
+      "archive": "stopped-publication-clean-before-push.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/clean-before-push.stdout",
+      "archive": "stopped-publication-clean-before-push.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/code-head.stderr",
+      "archive": "stopped-publication-code-head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/code-head.stdout",
+      "archive": "stopped-publication-code-head.stdout.gz",
+      "rawSha256": "ef85c5ce03e31be3db0c04ac05cb11843ab4e8932b9d2f547ec51f32cca100a3",
+      "rawBytes": 41
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/evidence-commit.stderr",
+      "archive": "stopped-publication-evidence-commit.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/evidence-commit.stdout",
+      "archive": "stopped-publication-evidence-commit.stdout.gz",
+      "rawSha256": "a738735fa8f2d1331fc5bc930f878bd1786657d9dbcaa05b88afa58cee1673f9",
+      "rawBytes": 69523
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/fetch-main.stderr",
+      "archive": "stopped-publication-fetch-main.stderr.gz",
+      "rawSha256": "2b1323196abac5e09917274d7b92d035eae6ca7f2678514aae0ebbfb2050b402",
+      "rawBytes": 150
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/fetch-main.stdout",
+      "archive": "stopped-publication-fetch-main.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/final-staged-gates.stderr",
+      "archive": "stopped-publication-final-staged-gates.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/final-staged-gates.stdout",
+      "archive": "stopped-publication-final-staged-gates.stdout.gz",
+      "rawSha256": "e9648d2d2b9bbef28abde37f70e54af99b29b658292ec858c23855335e6914b9",
+      "rawBytes": 127
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/head.stderr",
+      "archive": "stopped-publication-head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/head.stdout",
+      "archive": "stopped-publication-head.stdout.gz",
+      "rawSha256": "e9f76a2eabbbaf21ccce3fb307c449a43c6b317a9b3ca5983deb214a88f2ec2e",
+      "rawBytes": 41
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/main-merged.stderr",
+      "archive": "stopped-publication-main-merged.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/main-merged.stdout",
+      "archive": "stopped-publication-main-merged.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/outcome.json",
+      "archive": "stopped-publication-outcome.json.gz",
+      "rawSha256": "71718f1e622d1dabe8b1b6683491a6c32f2170bf1578a8135d3e9cc831641b78",
+      "rawBytes": 6013
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/parent.stderr",
+      "archive": "stopped-publication-parent.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/parent.stdout",
+      "archive": "stopped-publication-parent.stdout.gz",
+      "rawSha256": "ef85c5ce03e31be3db0c04ac05cb11843ab4e8932b9d2f547ec51f32cca100a3",
+      "rawBytes": 41
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/stage-evidence.stderr",
+      "archive": "stopped-publication-stage-evidence.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/stage-evidence.stdout",
+      "archive": "stopped-publication-stage-evidence.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/staged-files.stderr",
+      "archive": "stopped-publication-staged-files.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/staged-files.stdout",
+      "archive": "stopped-publication-staged-files.stdout.gz",
+      "rawSha256": "dbe3dd058db4dca4dbf06afb1015a3300c13b7d9f1e14048ceab246e5f2c7d3e",
+      "rawBytes": 58213
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/staged-whitespace.stderr",
+      "archive": "stopped-publication-staged-whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/staged-whitespace.stdout",
+      "archive": "stopped-publication-staged-whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/worker.json",
+      "archive": "stopped-publication-worker.json.gz",
+      "rawSha256": "e387899cbf8298f9cae382bf611ea78a720436bc43881673d72d1d54490d3a71",
+      "rawBytes": 17
+    },
+    {
+      "source": "/tmp/issue-1580-research/unverified-status-publication/worker.log",
+      "archive": "stopped-publication-worker.log.gz",
+      "rawSha256": "98d1eb159e2a19b1d1985ec57610cec9508b43df5debcf04879653e605824d73",
+      "rawBytes": 5201
+    }
+  ]
+}

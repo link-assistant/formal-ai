@@ -1,0 +1,37 @@
+{
+  "head": "5af5dfd773bb294216eb028efd62a220535e9f77",
+  "allPassed": true,
+  "sourceUnchangedDuringValidation": true,
+  "focusedCounts": {
+    "tests": 116,
+    "pass": 116,
+    "fail": 0,
+    "skipped": 0
+  },
+  "postMergeCnlCounts": {
+    "tests": 22,
+    "pass": 22,
+    "fail": 0,
+    "skipped": 0
+  },
+  "totalFocusedTestsPassed": 138,
+  "initialFullInventoryGateCounts": {
+    "PASS": 86,
+    "FAIL": 1,
+    "SKIP": 52
+  },
+  "gateCounts": {
+    "PASS": 87,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "gateCountBasis": "86 initial passes plus the repaired filename gate replay; 52 explicit skips. The original failed aggregate remains preserved.",
+  "filenameRepairPayloadHashVerifiedAndLiterallyRead": true,
+  "allCheckPayloadHashesVerified": 12,
+  "allDetailedGatePayloadHashesVerified": 87,
+  "allFocusedAndAggregatePayloadsLiterallyRead": true,
+  "detailedGatePayloadsLiterallyRead": false,
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -76,3 +76,31 @@ fn the_english_twin_still_routes_to_meeting_creation() {
         "the English twin must not fall to unknown either: {answer}"
     );
 }
+
+/// Issue #1580: parse clock punctuation before normalization erases it.
+#[test]
+fn scheduling_preserves_clock_minutes_from_the_request_span() {
+    let fixtures: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1580-calendar-clock.json"
+    ))
+    .unwrap();
+    for row in fixtures["events"].as_array().unwrap() {
+        let prompt = row["prompt"].as_str().unwrap();
+        let time = row["time"].as_str().unwrap();
+        let zone = row["zone"].as_str().unwrap();
+        let answer = solved(prompt);
+        assert!(answer.contains(time), "{prompt}: lost {time}: {answer}");
+        assert!(answer.contains(zone), "{prompt}: lost {zone}: {answer}");
+        let compact = time.replace(':', "");
+        assert!(
+            answer.contains(&format!("T{compact}00")),
+            "{prompt}: calendar payload lost {time}: {answer}"
+        );
+        if let Some(participant) = row["participant"].as_str() {
+            assert!(
+                answer.to_lowercase().contains(participant),
+                "{prompt}: lost participant: {answer}"
+            );
+        }
+    }
+}

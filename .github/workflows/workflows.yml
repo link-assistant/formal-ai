@@ -22,8 +22,8 @@
 # cannot quietly narrow itself. The `-ignore` flag the step used to carry now
 # lives in `.github/actionlint.yaml`, which the image reads as well.
 #
-# Both jobs are gated on `paths: ['.github/**']`: their findings can only change
-# when the workflows do.
+# Workflow checks are gated on `paths: ['.github/**']`: their findings can only change
+# when workflow sources do; the artifact fixture also selects its extractor.
 
 name: Workflows
 
@@ -46,12 +46,12 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['.github/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**', 'scripts/run-zizmor.mjs', 'experiments/issue-1580/zizmor-transport.test.mjs']
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
-    paths: ['.github/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**', 'scripts/run-zizmor.mjs', 'experiments/issue-1580/zizmor-transport.test.mjs']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
@@ -63,18 +63,77 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint
-      cancel-in-progress: true
+      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - uses: actions/checkout@v7
-        timeout-minutes: 3
+        id: actionlint-checkout
+        continue-on-error: true
+        timeout-minutes: 1
+        # Abort a stalled transfer early enough for checkout's bounded retries.
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
         with:
           persist-credentials: false
           filter: blob:none
           sparse-checkout: |
             /.github/
             /rust/tests/fixtures/actionlint/
+            /scripts/check-workflow-concurrency.mjs
+            /experiments/issue-1580/workflow-concurrency.test.mjs
+            /scripts/documentation-policy-dependencies/
+            /package.json
           sparse-checkout-cone-mode: false
+
+      - uses: actions/checkout@v7
+        id: actionlint-checkout-retry
+        continue-on-error: true
+        if: ${{ !cancelled() && steps.actionlint-checkout.outcome == 'failure' }}
+        timeout-minutes: 2
+        # Abort a stalled transfer early enough for checkout's bounded retries.
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/
+            /rust/tests/fixtures/actionlint/
+            /scripts/check-workflow-concurrency.mjs
+            /experiments/issue-1580/workflow-concurrency.test.mjs
+            /scripts/documentation-policy-dependencies/
+            /package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Require a successful workflow source checkout
+        env:
+          INITIAL_OUTCOME: ${{ steps.actionlint-checkout.outcome }}
+          RETRY_OUTCOME: ${{ steps.actionlint-checkout-retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+            echo '::error::Workflow source checkout failed after two bounded attempts.' >&2
+            exit 1
+          fi
+
+      # The upstream schema still rejects queue. Qualify its values and the
+      # forbidden cancellation combination separately, using only the locked parser.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies
+      - run: |
+          mkdir -p node_modules
+          ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
+      - run: node scripts/check-workflow-concurrency.mjs
+      - run: node --test --test-concurrency=1 experiments/issue-1580/workflow-concurrency.test.mjs
 
       # The image bundles ShellCheck and pyflakes, so this lints every `run:`
       # block as well as the workflow schema. Reproduce locally with:
@@ -134,8 +193,8 @@ jobs:
     permissions:
       contents: read
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor
-      cancel-in-progress: true
+      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 3
@@ -144,6 +203,7 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             /.github/
+            /scripts/run-zizmor.mjs
             /rust/tests/fixtures/actionlint/
           sparse-checkout-cone-mode: false
 
@@ -152,16 +212,16 @@ jobs:
       #     --min-confidence medium --persona regular \
       #     .github/workflows .github/actions
       #
-      # 1.29.0, and `version:` set rather than left at its default, because
+      # 1.29.0, with the same immutable image digest as zizmor-action v0.6.4:
       # "reproduce locally with X" is only true if CI runs X (issue #1079,
       # defect D6). This comment said 1.30.0 and CI could not run it:
       # `zizmor-action` resolves the version from a static table shipped inside
       # the action (`support/versions`), and v0.6.2's table stops at 1.29.0 --
       # its `latest` row is literally the same digest as its `1.29.0` row. So
       # `latest` here does not float, it freezes, and it freezes one minor
-      # release behind what the comment told a maintainer to install. Naming
-      # the version makes the two agree and makes the next bump a visible line
-      # in the diff rather than a side effect of bumping the action.
+      # release behind what the comment told a maintainer to install. The helper
+      # now pins that exact image and retries only advisory transport failures;
+      # findings, unknown failures and exhausted retries remain fatal.
       #
       # `inputs:` is not optional here even though it reads like it. The action
       # defaults it to `.`, i.e. the whole repository, and this repository keeps
@@ -177,14 +237,12 @@ jobs:
       # Annotations rather than SARIF: the results should be a red check on the
       # pull request that introduced them, not a Security tab entry that depends
       # on Advanced Security being enabled.
-      - uses: zizmorcore/zizmor-action@v0.6.4
-        with:
-          advanced-security: false
-          annotations: true
-          config: .github/zizmor.yml
-          inputs: .github/workflows .github/actions
-          min-confidence: medium
-          version: 1.29.0
+      - uses: actions/setup-node@v7
+        with: {node-version: '24', package-manager-cache: false}
+      - name: Audit workflows with online advisory checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/run-zizmor.mjs regular
 
       # The pass above runs `--persona regular`, which is the right default:
       # pedantic turns up 164 findings here, nearly all of them stylistic, and
@@ -211,13 +269,129 @@ jobs:
       # reverting the digest pin and dropping the stock image's explicit
       # exception marker takes it to exit 14 with both findings named.
       - name: 'Enforce the hash-pin policy on container images'
-        uses: zizmorcore/zizmor-action@v0.6.4
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/run-zizmor.mjs pedantic
+
+  artifact-roundtrip:
+    name: Artifact transport (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-artifact-${{ matrix.os }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 3
         with:
-          advanced-security: false
-          annotations: true
-          config: .github/zizmor.yml
-          inputs: .github/workflows .github/actions
-          min-confidence: high
-          min-severity: high
-          persona: pedantic
-          version: 1.29.0
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+            /experiments/issue-1580/artifact-transport-roundtrip.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Prepare a bounded artifact and cached destination
+        shell: bash
+        env:
+          ROUNDTRIP: ${{ runner.temp }}/artifact-roundtrip
+        run: python experiments/issue-1580/artifact-transport-roundtrip.py prepare "$ROUNDTRIP"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: artifact-roundtrip-${{ matrix.os }}
+          path: ${{ runner.temp }}/artifact-roundtrip/source
+          if-no-files-found: error
+          retention-days: 1
+      - uses: ./.github/actions/download-artifact
+        with:
+          name: artifact-roundtrip-${{ matrix.os }}
+          path: ${{ runner.temp }}/artifact-roundtrip/download
+      - name: Verify actual downloaded bytes and cached replacement
+        shell: bash
+        env:
+          ROUNDTRIP: ${{ runner.temp }}/artifact-roundtrip
+        run: python experiments/issue-1580/artifact-transport-roundtrip.py verify "$ROUNDTRIP"
+
+  buildkit-bootstrap:
+    name: Immutable BuildKit bootstrap and registry fallback
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-buildkit-bootstrap${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 3
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/setup-buildx-resilient/
+            /experiments/issue-1580/buildkit-bootstrap-probe.py
+            /experiments/issue-1580/buildkit-expected-outage.cjs
+          sparse-checkout-cone-mode: false
+      - name: Prepare bootstrap identity evidence
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py prepare "$PROBE_DIRECTORY"
+      - name: Initialize an actual BuildKit daemon
+        id: initial
+        timeout-minutes: 4
+        uses: ./.github/actions/setup-buildx-resilient
+        with:
+          cleanup: 'false'
+      - name: Verify the running daemon and actual image identity
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+          IMAGE: ${{ steps.initial.outputs.image }}
+          BUILDER: ${{ steps.initial.outputs.name }}
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify "$PROBE_DIRECTORY" initial "$IMAGE" "$BUILDER"
+      - name: Inject only a canonical image-pull outage
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py install-fault "$PROBE_DIRECTORY"
+      - name: Initialize an actual daemon through the mirror fallback
+        id: fallback
+        timeout-minutes: 4
+        uses: ./.github/actions/setup-buildx-resilient
+        env:
+          NODE_OPTIONS: --require=${{ github.workspace }}/experiments/issue-1580/buildkit-expected-outage.cjs
+        with:
+          cleanup: 'false'
+      - name: Check the fallback control outcome
+        if: always()
+        timeout-minutes: 1
+        shell: bash
+        env:
+          OUTCOME: ${{ steps.fallback.outcome }}
+        run: |
+          set -euo pipefail
+          if [ "$OUTCOME" != success ]; then
+            echo '::error::BuildKit fallback control failed; inspect the retained Docker observations.'
+            exit 1
+          fi
+          echo '::notice::Expected canonical pull outage recovered; actual mirror image and daemon verification follows.'
+      - name: Verify actual mirror recovery and the unchanged image digest
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+          IMAGE: ${{ steps.fallback.outputs.image }}
+          BUILDER: ${{ steps.fallback.outputs.name }}
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify "$PROBE_DIRECTORY" mirror "$IMAGE" "$BUILDER"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: buildkit-bootstrap-identity
+          path: ${{ runner.temp }}/buildkit-bootstrap/
+          if-no-files-found: error
+          retention-days: 7

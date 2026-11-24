@@ -1,0 +1,42 @@
+{
+  "issue": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/251",
+  "comment": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/251#issuecomment-7031138172",
+  "publishedAt": "2026-11-20T05:15:34.527731+00:00",
+  "evidenceCommit": "5bbbd91e39761a8e7163148b72a890b97c3d64b3",
+  "records": [
+    {
+      "file": "original-issue.json.gz",
+      "rawSha256": "b15cb491acba1dbfb1d0cc0af3790bd1c2a9d442b0b3e756ebf47b8e4811b757",
+      "archiveSha256": "d63df392460b10b157463e0b0e22990973e09e1dd5350dde3d1adf385516cbb9"
+    },
+    {
+      "file": "original-comments.json.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "file": "updated-issue.json.gz",
+      "rawSha256": "dc6b2a81a073c7dc53e56278085c299aa99ff06c9b7365a466c5ea4d14b4b3e6",
+      "archiveSha256": "60374204e8023c4dafb5dfe7535bae92a0be194bdb596f50f35340b865ad51e6"
+    },
+    {
+      "file": "updated-comments.json.gz",
+      "rawSha256": "15c6d6677a0495ad7c5bed9d4f83777cd3bc441ccf571cf8c0bf43dded9682e3",
+      "archiveSha256": "372769f3c88fa40aff18cc60c7f12493ee058cb7eb1434fbe09d1f10c7d2aab0"
+    },
+    {
+      "file": "comment.md.gz",
+      "rawSha256": "76a273df6e1504c7c43331ba485d7d73395a98325ee3a81c21488b1832b41e75",
+      "archiveSha256": "6ec47b83808b540e51219ce5f568e31ea5525202a180876ad5e7e71c57625599"
+    },
+    {
+      "file": "updated-body.md.gz",
+      "rawSha256": "fbd29476f1f2c7738cec62ccae1fd0782c08b5b1b0807e5b24b6cb2ece19454a",
+      "archiveSha256": "336b630fa678050d8b24331ba423dd9b5d2918e43f8fd050fe2adfd116816065"
+    }
+  ],
+  "upstreamRepairVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "earlierReadHarness": "Two longer-named helper commands were refused by the Formal verbatim-command guard before the successful renamed read; neither refusal receives execution or verification credit."
+}

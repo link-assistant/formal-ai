@@ -122,6 +122,7 @@ export function createBrowserContext(overrides = {},{provenance=false}={}) {
   const sandbox = {};
   const context = vm.createContext(sandbox);
   initializeParserBootstrap(context,provenance);
+  loadBrowserScript(context, "js/seed-record-readers.js");
   Object.assign(sandbox, {
     globalThis: sandbox,
     window: sandbox,
@@ -195,7 +196,7 @@ const runWorkerScript = vm.Script.prototype.runInContext;
 const parserMemoContexts = new WeakMap();
 const counterOwnDescriptor = Object.getOwnPropertyDescriptor;
 const counterFreeze = Object.freeze;
-const parserMemoSeedIdentity = "4a3b4ef0056d6b191f2b2504189f1e760c419c6ed945e3bb9f022de44d076c4d";
+const parserMemoSeedIdentity = "57de2fd46c51297f1b67efd1e998b07cf3211d098d225219c2fa549c5bba44ca";
 const counterVmScriptDescriptor = counterOwnDescriptor(vm, "Script");
 const counterVmPrototypeDescriptor = counterOwnDescriptor(WorkerScript, "prototype");
 const counterVmRunDescriptor = counterOwnDescriptor(counterVmPrototypeDescriptor.value, "runInContext");
@@ -312,6 +313,9 @@ export function loadBrowserScript(context, relativePath) {
     evaluated.set(script, parserBootstrapIdentity);
     return;
   }
+  // The constructor already completed this readonly lexical provider.
+  // Only the private evaluator receipt for these exact bytes permits reuse.
+  if (script === "js/seed-record-readers.js" && evaluated.get(script) === sourceHash) return context;
   evaluated.delete(script);
   const record = prerequisiteRecords.get(script);
   if (record) {

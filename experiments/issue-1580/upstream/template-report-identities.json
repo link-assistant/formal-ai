@@ -1,0 +1,101 @@
+[
+  {
+    "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+    "title": "CI: manual release skips lint/build/publication but terminal status passes",
+    "url": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/18",
+    "bodyFile": "go-manual-release-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/19",
+    "bodyFile": "go-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/30",
+    "bodyFile": "java-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/156",
+    "bodyFile": "python-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/26",
+    "bodyFile": "php-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+    "title": "CI: stale action pins bypass integrity verification on non-PR events",
+    "url": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/20",
+    "bodyFile": "go-stale-pin-integrity-report.md",
+    "evidenceCommit": "a4053def4bd4b921001fdf84a026ae35deebfc39"
+  },
+  {
+    "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+    "title": "CI: failed release commits still publish tags on the previous version",
+    "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/31",
+    "bodyFile": "java-release-commit-integrity-report.md",
+    "evidenceCommit": "ff5d883b15aeda06c07e509a73a0a436f10799b7"
+  },
+  {
+    "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+    "title": "Changeset merge can delete every valid input when its output filename collides",
+    "url": "https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/111",
+    "bodyFile": "csharp-changeset-output-collision-report.md",
+    "evidenceCommit": "0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "Manual changelog fragment creation silently overwrites an earlier entry in the same second",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/157",
+    "bodyFile": "python-fragment-collision-report.md",
+    "evidenceCommit": "9c018344df2e6b09a0f2496897b14a002dad62f4"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "npm audit succeeds after Git fails to enumerate lockfiles",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/158",
+    "bodyFile": "python-audit-inventory-report.md",
+    "evidenceCommit": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "Release formatter corrupts literal escapes in code examples before updating notes",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/159",
+    "bodyFile": "python-release-formatting-report.md",
+    "evidenceCommit": "da712fadd3f680668c063a6d7de073ef1d52573b",
+    "reportCommit": "d0b8b895661c6b5e809810c4da8a3db9f79138b3"
+  },
+  {
+    "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+    "title": "Security audit fails on the picomatch single-branch ReDoS advisory in both npm locks",
+    "url": "https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/307",
+    "bodyFile": "js-picomatch-security-report.md",
+    "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "Artifact-action development lock fails npm audit for picomatch single-branch ReDoS",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/160",
+    "bodyFile": "python-picomatch-security-report.md",
+    "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67"
+  },
+  {
+    "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+    "title": "Release npm audit rejects locked picomatch under GHSA-fc5q-39xc-vjpf",
+    "url": "https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/36",
+    "bodyFile": "cpp-picomatch-security-report.md",
+    "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67"
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "capturedAt": "2026-11-17T18:53:34.452450+00:00",
+  "files": [
+    {
+      "source": "cpp-all-issues.json",
+      "archive": "cpp-all-issues.json.gz",
+      "rawBytes": 473350,
+      "rawLines": 1,
+      "rawSha256": "89363e62ed8d43f159eb642c13c6ed8003bea48da31eb50124e65710bfa34a2f"
+    },
+    {
+      "source": "cpp-root-audit.json",
+      "archive": "cpp-root-audit.json.gz",
+      "rawBytes": 2092,
+      "rawLines": 96,
+      "rawSha256": "f1785183dfab6cb475d1c566a5bd2d32f3b6f0743b87a9237e5e8ca6bb2aeeb9"
+    },
+    {
+      "source": "draft-heads.json",
+      "archive": "draft-heads.json.gz",
+      "rawBytes": 164,
+      "rawLines": 5,
+      "rawSha256": "bd7929763ae27a3a0de243c77505d283b486d245e1f4ce862f799d41f0173cfb"
+    },
+    {
+      "source": "js-all-issues.json",
+      "archive": "js-all-issues.json.gz",
+      "rawBytes": 2267990,
+      "rawLines": 1,
+      "rawSha256": "659fcbd1033be9f135a7bc5efbf058ef9a035095a0aa428304d5542d55b66359"
+    },
+    {
+      "source": "js-nested-universal-app-audit.json",
+      "archive": "javascript-nested-universal-application-audit.json.gz",
+      "rawBytes": 5488,
+      "rawLines": 249,
+      "rawSha256": "af486baef9d5e6fb34cf8c7963cd4abb01491d7738f3d66ac7b1e3d918ec633f"
+    },
+    {
+      "source": "js-root-audit.json",
+      "archive": "js-root-audit.json.gz",
+      "rawBytes": 7101,
+      "rawLines": 315,
+      "rawSha256": "f94b6c3192a89f25220787a32d244a69a65c45ebbaca41b0992e571135f47a91"
+    },
+    {
+      "source": "python-all-issues.json",
+      "archive": "python-all-issues.json.gz",
+      "rawBytes": 1209561,
+      "rawLines": 1,
+      "rawSha256": "13bff1799e2e32ceb0041fcfbed2d9f6f88d2bbc54646c2db4b1cf292cfbb073"
+    },
+    {
+      "source": "python-nested-artifact-audit.json",
+      "archive": "python-nested-artifact-audit.json.gz",
+      "rawBytes": 2095,
+      "rawLines": 96,
+      "rawSha256": "5513b032b3a0b719990e612c0b88277424754d182217749af3edec2aacd39312"
+    },
+    {
+      "source": "summary.json",
+      "archive": "summary.json.gz",
+      "rawBytes": 10806,
+      "rawLines": 345,
+      "rawSha256": "0ca34cebbf0a73a4ebecc043f4d24f01e831a5021256c3597ef79aa7795f5f78"
+    }
+  ],
+  "nativeExecuted": false,
+  "autonomousAuthorshipCredit": 0
+}

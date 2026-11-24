@@ -1,0 +1,30 @@
+{
+  "updatedFiles": [
+    "docs/case-studies/issue-1580/language-source-binding-checkpoint.md",
+    "experiments/issue-1580/work-plan.md",
+    "docs/case-studies/issue-1580/README.md",
+    "changelog.d/issue-1580-unparsed-source-binding.md",
+    "experiments/issue-1580/evidence/checks/unverified-child-status/pull-request-description.md"
+  ],
+  "hostedHeadReviewed": "6a9aa1980555825f0b993fa6d2c81a37f33590bc",
+  "hostedWorkflowCount": 23,
+  "hostedSuccess": 22,
+  "localReview": {
+    "complete": true,
+    "allPassed": true,
+    "sourceUnchangedDuringValidation": true,
+    "payloadsHashVerified": 97,
+    "focusedTests": 60,
+    "gateCounts": {
+      "PASS": 86,
+      "FAIL": 0,
+      "SKIP": 52
+    },
+    "literalReadScope": "All eleven aggregate/focused logs were displayed completely in one bounded read each. Every retained detailed gate payload hash was verified; detailed passing logs were not all literally read.",
+    "nativeExecutedLocally": false,
+    "independentAuthorshipCredit": 0
+  },
+  "newNativeCasesUnexecuted": 5,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

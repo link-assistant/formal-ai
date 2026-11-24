@@ -1,0 +1,86 @@
+{
+  "observedAt": "2026-11-18T18:33:50.134341+00:00",
+  "records": [
+    {
+      "file": "issue.json",
+      "argv": [
+        "gh",
+        "issue",
+        "view",
+        "1580",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "number,title,body,updatedAt,url"
+      ],
+      "sha256": "fdc9408c4dc7805894a240269e2728abdf57d12f51d719c3ddde7907a9d56123"
+    },
+    {
+      "file": "issue-comments.json",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate"
+      ],
+      "sha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834"
+    },
+    {
+      "file": "pull-request.json",
+      "argv": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "number,title,body,updatedAt,url,headRefOid,isDraft"
+      ],
+      "sha256": "bda8013cfe071a2ad5f972fad7a71ab43281765030c8c03fd95cd94510fcc00b"
+    },
+    {
+      "file": "pull-request-comments.json",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate"
+      ],
+      "sha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302"
+    },
+    {
+      "file": "inline-comments.json",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate"
+      ],
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "file": "reviews.json",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate"
+      ],
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "file": "sub-issues.json",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues",
+        "--paginate"
+      ],
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ],
+  "allUserFeedbackBodiesUnchanged": true,
+  "pullRequestDescriptionMatchesPublishedHead": true,
+  "independentAuthorshipCredit": 0
+}

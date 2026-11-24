@@ -1,0 +1,26 @@
+{
+  "sourceHead": "e46254ac53c360e4c45652fa7abd63fb0d9ecad7",
+  "terminalConclusions": {
+    "skipped": 1,
+    "success": 32
+  },
+  "wholeCliLogStreams": 33,
+  "diagnosticCandidateRows": 3981,
+  "unclassifiedCandidates": 0,
+  "actualWarningCount": 6,
+  "nativeConsumerPasses": 441,
+  "admissionPasses": 294,
+  "registryPasses": 50,
+  "reviewBoundary": "Retained complete logs; targeted candidate/context/source review. Complete aggregate PR diff review and every original acceptance criterion remain unfinished.",
+  "warningsResolved": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2264940,
+    "sha256": "a176d2775e64d7f26d94921a261a910dcf87aadba2adbf8d21d8b41ba2bdd12a"
+  },
+  "members": 249,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T19:26:10.076537+00:00"
+}

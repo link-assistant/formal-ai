@@ -1,0 +1,68 @@
+{
+  "repository": "link-assistant/formal-ai",
+  "workflowSha256": "240392e0e3b2bda07dbdf7efaa6eed3ddd0f841c414508982439a06462d13692",
+  "commandSha256": "aa1eb549e6fa6443d38b9090986a06677be6289d875e4f80de44c9fd22498bd3",
+  "observations": [
+    {
+      "staleFragment": false,
+      "exitCode": 0,
+      "stderr": "",
+      "manifestName": "SHA256SUMS-fixture.partial",
+      "manifest": "f44ef94e813e27783a9f2a4a951a2a3ba2acf0c83b411b2046ecf2fff8397be7  formal-ai-desktop-fixture.exe\nff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e  formal-ai-desktop-fixture.zip\n23a86e6ca187fb1beebf755020bb58bb4a8b546ef679e0fb71e35a1c52309c4f  latest.yml\n",
+      "entries": [
+        {
+          "name": "formal-ai-desktop-fixture.exe",
+          "digest": "f44ef94e813e27783a9f2a4a951a2a3ba2acf0c83b411b2046ecf2fff8397be7",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "formal-ai-desktop-fixture.zip",
+          "digest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "latest.yml",
+          "digest": "23a86e6ca187fb1beebf755020bb58bb4a8b546ef679e0fb71e35a1c52309c4f",
+          "matchesCurrentBytes": true
+        }
+      ],
+      "expectedAssetDigests": {
+        "formal-ai-desktop-fixture.zip": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+        "formal-ai-desktop-fixture.exe": "f44ef94e813e27783a9f2a4a951a2a3ba2acf0c83b411b2046ecf2fff8397be7",
+        "latest.yml": "23a86e6ca187fb1beebf755020bb58bb4a8b546ef679e0fb71e35a1c52309c4f"
+      }
+    },
+    {
+      "staleFragment": true,
+      "exitCode": 0,
+      "stderr": "",
+      "manifestName": "SHA256SUMS-fixture.partial",
+      "manifest": "f44ef94e813e27783a9f2a4a951a2a3ba2acf0c83b411b2046ecf2fff8397be7  formal-ai-desktop-fixture.exe\nff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e  formal-ai-desktop-fixture.zip\n23a86e6ca187fb1beebf755020bb58bb4a8b546ef679e0fb71e35a1c52309c4f  latest.yml\n",
+      "entries": [
+        {
+          "name": "formal-ai-desktop-fixture.exe",
+          "digest": "f44ef94e813e27783a9f2a4a951a2a3ba2acf0c83b411b2046ecf2fff8397be7",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "formal-ai-desktop-fixture.zip",
+          "digest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "latest.yml",
+          "digest": "23a86e6ca187fb1beebf755020bb58bb4a8b546ef679e0fb71e35a1c52309c4f",
+          "matchesCurrentBytes": true
+        }
+      ],
+      "expectedAssetDigests": {
+        "formal-ai-desktop-fixture.zip": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+        "formal-ai-desktop-fixture.exe": "f44ef94e813e27783a9f2a4a951a2a3ba2acf0c83b411b2046ecf2fff8397be7",
+        "latest.yml": "23a86e6ca187fb1beebf755020bb58bb4a8b546ef679e0fb71e35a1c52309c4f"
+      }
+    }
+  ],
+  "rustBuildExecuted": false,
+  "hostedPublicationExecuted": false,
+  "independentAuthorshipCredit": 0
+}

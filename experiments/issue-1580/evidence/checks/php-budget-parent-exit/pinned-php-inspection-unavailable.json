@@ -1,0 +1,28 @@
+{
+  "case": "inspection-unavailable",
+  "wrapper": "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+  "argv": [
+    "bash",
+    "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+    "1",
+    "finite child fixture",
+    "bash",
+    "-c",
+    "sleep 4 & printf \"%s\\n\" \"$!\" > \"$BUDGET_FIXTURE_PID\"; printf \"fixture stdout\\n\"; printf \"fixture stderr\\n\" >&2; exit 0"
+  ],
+  "exitCode": 0,
+  "wrapperExitSeconds": 0.1255963600706309,
+  "pipeClosedSeconds": 0.1274942010641098,
+  "workerRunningWhenWrapperExited": true,
+  "workerStateWhenWrapperExited": "S",
+  "stdout": "Running finite child fixture with a 1s budget (warning at 1s).\nfixture stdout\nfinite child fixture finished in 0s of its 1s budget (exit 0).\n",
+  "stderr": "fixture stderr\n",
+  "fixtureWorkerMaximumSeconds": 4,
+  "budgetSeconds": 1,
+  "fixtureDescendantsReaped": [
+    {
+      "pid": 3501804,
+      "waitStatus": 9
+    }
+  ]
+}

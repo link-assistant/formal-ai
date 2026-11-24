@@ -1,0 +1,118 @@
+{
+  "commands": [
+    {
+      "name": "url",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/attachment-url-scope.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 3.686,
+      "logSha256": "5128c158402ac3e3fb11d365c759ba0309aab9d5ebb03433a41388ddbaa0280c"
+    },
+    {
+      "name": "health",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/server-retained-dialog-silent.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.927,
+      "logSha256": "ecd525a9f19c6480a64f00929280597dacdd5a48ff3e9428e156576210d7ec6b"
+    },
+    {
+      "name": "policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.985,
+      "logSha256": "34e7ba6c6eace6cfdb6fcf75460645df7ebbc9e4701e6fcf1bf6bfd0b02b9cd2"
+    },
+    {
+      "name": "format-before",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/solver_handlers/web_requests/url_parse.rs",
+        "rust/tests/integration/http_server.rs",
+        "rust/tests/integration/issue_819_tui_isolation.rs",
+        "rust/tests/integration/with_formal_ai.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+        "rust/tests/fixtures/hive-mind/offline_delivery.rs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.388,
+      "logSha256": "ebb514142f41dab0bd3bc4946c7a674be1e4d7f5ec2b6f5859cb16086638721d"
+    },
+    {
+      "name": "format-after",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/solver_handlers/web_requests/url_parse.rs",
+        "rust/tests/integration/http_server.rs",
+        "rust/tests/integration/issue_819_tui_isolation.rs",
+        "rust/tests/integration/with_formal_ai.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+        "rust/tests/fixtures/hive-mind/offline_delivery.rs"
+      ],
+      "exitCode": 0,
+      "logSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "shell-syntax",
+      "command": [
+        "bash",
+        "-n",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.006,
+      "logSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "shellcheck",
+      "command": [
+        "shellcheck",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.111,
+      "logSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "projection",
+      "command": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.289,
+      "logSha256": "e49d5aae5ac9baef68b9660805d75bc20ab1dfb914063e838009a00740af9463"
+    }
+  ],
+  "fullIssueComplete": false,
+  "nativeExecution": "not run locally",
+  "independentAuthorshipCredit": 0
+}

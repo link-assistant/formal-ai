@@ -1,0 +1,130 @@
+[
+  {
+    "ordinal": 478,
+    "path": "ts/agentic/capability_router.mts",
+    "diffSha256": "b6e905b73563777f626570d5786580fe906486ad42d7c69874f1d85af6a8b0f8",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/agentic/capability_router.mjs",
+    "sha256": "a3d6512f42db8a30ba043217bbdd211560a7f5fa27b141b901ca2705618b5246"
+  },
+  {
+    "ordinal": 479,
+    "path": "ts/agentic/command_reroute.mts",
+    "diffSha256": "c58835b0ffc6988c42f8c28396f7dcd910570dc26758b31cdbc5c8170f386f52",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/agentic/command_reroute.mjs",
+    "sha256": "65e4df270dd6572061a83dfe957c02fe11be03fcc30266fac816f190baef935f"
+  },
+  {
+    "ordinal": 480,
+    "path": "ts/agentic/file_read/source.mts",
+    "diffSha256": "9c49c76a858ab82dba1ccaee3064f2719b59d0afca726b45ee65279898bbce50",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/agentic/file_read/source.mjs",
+    "sha256": "211322834becb3ec5c5c1c96bab8fe99e065dd4f0561a1e6f184946ae1c55c81"
+  },
+  {
+    "ordinal": 481,
+    "path": "ts/agentic/planner.mts",
+    "diffSha256": "32c67bb0bb4e93975b4b8b587350a353cb33c4ae5f2ea1f45007f83423720f6c",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/agentic/planner.mjs",
+    "sha256": "7a75e2c93a1da33dd99b3fdb671cd55e17613a9919aa698bf9d924ed5eb367e3"
+  },
+  {
+    "ordinal": 482,
+    "path": "ts/agentic/recipe_resume.mts",
+    "diffSha256": "717cff1e916dce2caebae8744ae4eeb083bfa6faabfbc27871e40d845ac6eeb9",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/agentic/recipe_resume.mjs",
+    "sha256": "8d8acbe3e58cc5e46c90187daac6347bdcd8b3e27f60ca78e812b8fe86aa3079"
+  },
+  {
+    "ordinal": 483,
+    "path": "ts/agentic/report_issue.mts",
+    "diffSha256": "c4af8f53b377a36766b2dd23481ca850e08a73b2c71a12429a718aecff4c18c4",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/agentic/report_issue.mjs",
+    "sha256": "0c01488187c6cbc422f8d7c73a056f0c0fc114cb1f7f935c823945cae2d07e3d"
+  },
+  {
+    "ordinal": 484,
+    "path": "ts/agentic/tool_result.mts",
+    "diffSha256": "eeac9f0cda4011a2b4eef40eb1989b1639bfb066b5c09b81fd5074eaf202b5c3",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/agentic/tool_result.mjs",
+    "sha256": "4df86806b4b1e9743c3fa54719ba3557208d17f6147175fb0e6b753345de2c08"
+  },
+  {
+    "ordinal": 485,
+    "path": "ts/seed-files.ts",
+    "diffSha256": "93fc4e8dc7d3928a2d7066699035efb5621e79d2245338ec2173f5eea833b48e",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/seed-files.js",
+    "sha256": "dc800ea89a13aed571f0758f0001bf5a7685aaba5fa56909ce6a27f0aa0dfa7a"
+  },
+  {
+    "ordinal": 486,
+    "path": "ts/seed-record-readers.ts",
+    "diffSha256": "df04c94397dec2893a39fe483b8c24692c632890687c0aefbd8f17cf9bbf8357",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/seed-record-readers.js",
+    "sha256": "0e069e7512106a04e8f9b7082a96fcf0c41918bf18f8fcd61bb9b9814682fd7b"
+  },
+  {
+    "ordinal": 487,
+    "path": "ts/seed_loader.ts",
+    "diffSha256": "5ab7401be5c1fccc0fbc751cf8a343c0f664ed6dd4c35e3f083116b19c96949a",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/seed_loader.js",
+    "sha256": "57de2fd46c51297f1b67efd1e998b07cf3211d098d225219c2fa549c5bba44ca"
+  },
+  {
+    "ordinal": 488,
+    "path": "ts/server/debug-stage.mts",
+    "diffSha256": "134a73e6e0a988f5d9bb3b387d9210348d339edff5e727df062df4bd5b045266",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/server/debug-stage.mjs",
+    "sha256": "33901857728ffd84f53e43989d5dd93323a8f95bab1fe7cc3d8f6c92e2024bff"
+  },
+  {
+    "ordinal": 489,
+    "path": "ts/server/request-context.mts",
+    "diffSha256": "8352ef455d11651a48f73dbb19822935be32185900deb7f2a093386a4aedc39c",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/server/request-context.mjs",
+    "sha256": "1c08b221117151d815fa44e61b858d27abae99162ed03a631ebde07f7e6ed971"
+  },
+  {
+    "ordinal": 490,
+    "path": "ts/server/solver-trace.mts",
+    "diffSha256": "108c2c7106e76a72e0b8be5da27ada920bd97ae951c1719b0e7e7b57bdcf5ff9",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/server/solver-trace.mjs",
+    "sha256": "775312bb95dc68ff799d3043886d7a50a8542bf382425574b6dc2f185409548e"
+  },
+  {
+    "ordinal": 491,
+    "path": "ts/server/thinking.mts",
+    "diffSha256": "d49bf465ab69c7eec97473d239b3cc814a63c9f50ae47e1a47ab7b739ce3e800",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/server/thinking.mjs",
+    "sha256": "49f6bea5ed468e8b5617bdfdeb51ea7583337afd9edb2fa356442ba12d26fb99"
+  },
+  {
+    "ordinal": 492,
+    "path": "ts/server/worker-host.mts",
+    "diffSha256": "acbf977508c1ecfa9a720c01b1e0f4b57576b1f863a820f3bdc1fb5860552ad1",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/server/worker-host.mjs",
+    "sha256": "c2b203f1a793a07ca1f5c7443b284d61feacf579c52bb02b09dc3df8e35918f4"
+  },
+  {
+    "ordinal": 493,
+    "path": "ts/server/worker-script-prerequisites.mts",
+    "diffSha256": "922e0abc42d07f7eef77f99c9bb17ed0659e1dd743e9500bd7b5d2c8714c70d9",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/server/worker-script-prerequisites.mjs",
+    "sha256": "cc40911bcadd3e80abdd6fea2ef035b1eb8558192388767836a332d860ff13aa"
+  }
+]

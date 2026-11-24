@@ -19,29 +19,38 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! chrono = "0.4"
-//! ureq = "2"
+//! ureq = "3.5.2"
 //! serde = { version = "1", features = ["derive"] }
 //! serde_json = "1"
+//! semver = "1.0.28"
 //! ```
 
 use chrono::Utc;
 use regex::Regex;
-use serde::Deserialize;
 use std::env;
 use std::fs;
-use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, exit};
 
 #[path = "version-specification-witness.rs"]
 mod specification_witness;
 
+#[path = "github-output.rs"]
+mod github_output;
 #[path = "prepared-release.rs"]
 mod prepared_release;
+use github_output::set_output;
+
+#[path = "registry.rs"]
+mod registry;
 #[path = "rust-paths.rs"]
 mod rust_paths;
+#[path = "version-changelog.rs"]
+mod version_changelog;
+use version_changelog::collect_changelog_with_date;
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
 
@@ -83,20 +92,6 @@ fn get_changelog_path(rust_root: &str) -> String {
     rust_paths::get_changelog_path(rust_root)
         .to_string_lossy()
         .to_string()
-}
-
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Err(e) = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&output_file)
-            .and_then(|mut f| writeln!(f, "{}={}", key, value))
-        {
-            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
-        }
-    }
-    println!("Output: {}={}", key, value);
 }
 
 fn exec(command: &str, args: &[&str]) -> Result<String, String> {
@@ -191,8 +186,9 @@ struct Version {
 
 impl Version {
     fn parse(content: &str) -> Option<Version> {
-        let re = Regex::new(r#"(?m)^version\s*=\s*"(\d+)\.(\d+)\.(\d+)(?:-([^"]+))?""#).ok()?;
-        let caps = re.captures(content)?;
+        let info = rust_paths::package_info_from_str(content).ok()?;
+        let re = Regex::new(r"^(\d+)\.(\d+)\.(\d+)(?:-(.+))?$").ok()?;
+        let caps = re.captures(&info.version)?;
         Some(Version {
             major: caps.get(1)?.as_str().parse().ok()?,
             minor: caps.get(2)?.as_str().parse().ok()?,
@@ -215,15 +211,7 @@ impl Version {
 }
 
 fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
-
-    let re = Regex::new(r#"(?m)^(version\s*=\s*")[^"]+(")"#).unwrap();
-    let new_content = re.replace(&content, format!("${{1}}{}${{2}}", new_version).as_str());
-
-    fs::write(cargo_toml_path, new_content.as_ref())
-        .map_err(|e| format!("Failed to write {}: {}", cargo_toml_path, e))?;
-
+    rust_paths::update_package_version(Path::new(cargo_toml_path), new_version)?;
     println!("Updated {} to version {}", cargo_toml_path, new_version);
     Ok(())
 }
@@ -287,28 +275,8 @@ fn update_cargo_lock(
     Ok(true)
 }
 
-#[derive(Deserialize)]
-struct CratesIoCrate {
-    versions: Option<Vec<CratesIoVersionEntry>>,
-}
-
-#[derive(Deserialize)]
-struct CratesIoVersionEntry {
-    num: String,
-    yanked: bool,
-}
-
 fn get_crate_name(cargo_toml_path: &str) -> Result<String, String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
-
-    let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).unwrap();
-
-    if let Some(caps) = re.captures(&content) {
-        Ok(caps.get(1).unwrap().as_str().to_string())
-    } else {
-        Err(format!("Could not find name in {}", cargo_toml_path))
-    }
+    rust_paths::read_package_info(Path::new(cargo_toml_path)).map(|info| info.name)
 }
 
 fn check_tag_exists(tag_prefix: &str, version: &str) -> bool {
@@ -316,59 +284,17 @@ fn check_tag_exists(tag_prefix: &str, version: &str) -> bool {
 }
 
 fn check_version_on_crates_io(crate_name: &str, version: &str) -> bool {
-    let url = format!("https://crates.io/api/v1/crates/{}/{}", crate_name, version);
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-version-and-commit")
-        .call()
-    {
-        Ok(response) => response.status() == 200,
-        Err(_) => false,
-    }
+    registry::or_exit(
+        "crates.io candidate version",
+        registry::version_exists(crate_name, version),
+    )
 }
 
 fn get_max_published_version(crate_name: &str) -> Option<(u32, u32, u32)> {
-    let url = format!("https://crates.io/api/v1/crates/{}", crate_name);
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-version-and-commit")
-        .call()
-    {
-        Ok(response) => {
-            if response.status() == 200 {
-                if let Ok(body) = response.into_string() {
-                    if let Ok(data) = serde_json::from_str::<CratesIoCrate>(&body) {
-                        if let Some(versions) = data.versions {
-                            let mut max: Option<(u32, u32, u32)> = None;
-                            for v in &versions {
-                                if v.yanked {
-                                    continue;
-                                }
-                                let base = match v.num.split('-').next() {
-                                    Some(b) => b,
-                                    None => continue,
-                                };
-                                let parts: Vec<&str> = base.split('.').collect();
-                                if parts.len() == 3 {
-                                    if let (Ok(a), Ok(b), Ok(c)) = (
-                                        parts[0].parse::<u32>(),
-                                        parts[1].parse::<u32>(),
-                                        parts[2].parse::<u32>(),
-                                    ) {
-                                        let tuple = (a, b, c);
-                                        if max.map_or(true, |m| tuple > m) {
-                                            max = Some(tuple);
-                                        }
-                                    }
-                                }
-                            }
-                            return max;
-                        }
-                    }
-                }
-            }
-            None
-        }
-        Err(_) => None,
-    }
+    registry::or_exit(
+        "crates.io published versions",
+        registry::max_published(crate_name),
+    )
 }
 
 fn ensure_version_exceeds_published(
@@ -432,106 +358,6 @@ fn ensure_version_exceeds_published(
     }
 
     candidate
-}
-
-fn strip_frontmatter(content: &str) -> String {
-    let re = Regex::new(r"(?s)^---\s*\n.*?\n---\s*\n(.*)$").unwrap();
-    if let Some(caps) = re.captures(content) {
-        caps.get(1).unwrap().as_str().trim().to_string()
-    } else {
-        content.trim().to_string()
-    }
-}
-
-fn remove_changelog_fragments(files: &[PathBuf]) {
-    for file in files {
-        fs::remove_file(file)
-            .unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
-        println!("Removed changelog fragment {}", file.display());
-    }
-}
-
-fn collect_changelog_with_date(
-    changelog_dir: &str,
-    changelog_file: &str,
-    version: &str,
-    date_str: &str,
-) -> bool {
-    let dir_path = Path::new(changelog_dir);
-    if !dir_path.exists() {
-        return false;
-    }
-
-    let mut files: Vec<_> = match fs::read_dir(dir_path) {
-        Ok(entries) => entries
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| {
-                p.extension().map_or(false, |ext| ext == "md")
-                    && p.file_name().map_or(false, |name| name != "README.md")
-            })
-            .collect(),
-        Err(_) => return false,
-    };
-
-    if files.is_empty() {
-        return false;
-    }
-
-    files.sort();
-
-    let fragments: Vec<String> = files
-        .iter()
-        .filter_map(|f| fs::read_to_string(f).ok())
-        .map(|c| strip_frontmatter(&c))
-        .filter(|c| !c.is_empty())
-        .collect();
-
-    if fragments.is_empty() {
-        return false;
-    }
-
-    // No leading newline: `lines[..idx]` already ends with the blank line that
-    // follows the insert marker, so opening with one produced a second blank
-    // line that `issue_711_rebuild_changelog.mjs --check` rejects.
-    let new_entry = format!(
-        "## [{}] - {}\n\n{}\n",
-        version,
-        date_str,
-        fragments.join("\n\n")
-    );
-
-    if !Path::new(changelog_file).exists() {
-        return false;
-    }
-
-    let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
-    let lines: Vec<&str> = content.lines().collect();
-    let mut insert_index = None;
-
-    for (i, line) in lines.iter().enumerate() {
-        if line.starts_with("## [") {
-            insert_index = Some(i);
-            break;
-        }
-    }
-
-    if let Some(idx) = insert_index {
-        let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
-        new_lines.push(new_entry.clone());
-        new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
-        // `lines()` drops the trailing newline and `join` never restores it, so
-        // every release used to strip the file's final newline.
-        content = format!("{}\n", new_lines.join("\n"));
-    } else {
-        content.push_str(&new_entry);
-    }
-
-    fs::write(changelog_file, content).expect("Failed to write changelog");
-    remove_changelog_fragments(&files);
-
-    println!("Collected {} changelog fragment(s)", files.len());
-    true
 }
 
 fn regenerate_release_artifacts(version: &str, date: &str) -> Result<bool, String> {
@@ -814,8 +640,18 @@ fn main() {
     // fragment -> release, so it can be committed atomically with the release
     // instead of depending on that commit's not-yet-existing SHA.
     let release_date = Utc::now().format("%Y-%m-%d").to_string();
-    let collected =
-        collect_changelog_with_date(&changelog_dir, &changelog_file, &new_version, &release_date);
+    let collected = match collect_changelog_with_date(
+        &changelog_dir,
+        &changelog_file,
+        &new_version,
+        &release_date,
+    ) {
+        Ok(collected) => collected,
+        Err(error) => {
+            eprintln!("Error collecting changelog fragments: {error}");
+            exit(1);
+        }
+    };
     let reconstructed = if collected {
         match regenerate_release_artifacts(&new_version, &release_date) {
             Ok(reconstructed) => reconstructed,

@@ -1,0 +1,11 @@
+{
+  "beforeHead": "d80aedfe4a8ec2cfbce481f12d966376d59fde20",
+  "sourcePath": "scripts/check-rust-dependencies.sh",
+  "beforeSourceSha256": "d7414dca927e22e60b2f719e34b0a9bfbde1f74db14804724f79220a9b239096",
+  "afterSourceSha256": "8d101de64fefc5870ce4da7c95d6cf76bf5bde11781b3d01ec1cec4417206a5a",
+  "regressionPath": "rust/tests/web/cargo-audit-blocked-proof.test.mjs",
+  "regressionSha256": "90db64781cf10e84bb49e70ad0d3ef5b7399a62bb1b6fc5cb385e9a1528b7769",
+  "rootCause": "Git inventory status is discarded by process substitution; set -e/pipefail does not observe it. Complete a checked capture before any Cargo invocation.",
+  "nativeExecutionObserved": false,
+  "independentAuthorshipCredit": 0
+}

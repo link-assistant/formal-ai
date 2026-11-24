@@ -54,7 +54,8 @@ export function responseArgumentsForTool(tools, toolName, args, userPrompt, work
   }
   if (!isObject(source)) return args;
   if (isObject(properties.description) && !has(properties.description, 'default')
-    && !has(properties.description, 'const') && !has(source, 'description')
+    && !has(properties.description, 'const') && !has(properties.description, 'enum')
+    && !has(source, 'description')
     && classifyTool(toolName) === Capability.Run) {
     source.description = toolActionNarration(userPrompt, [{ tool: toolName, arguments: args }]);
   }

@@ -18,10 +18,12 @@ import { namesCallableArtifact } from './evidence_record/artifact_header.mjs';
 import { planRecordReadbackStep } from './evidence_record/record_observation.mjs';
 import { workspaceDiscoveryStep } from './workspace_discovery.mjs';
 import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
+import { planNumberedSourceRequirements } from './numbered_source_requirements.mjs';
 import { instructionEnd } from './positional_edit.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
 import { isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import { Progress } from './progress.mjs';
+import { VERIFIED_SEQUENCE_ORIGIN } from './request_sequence.mjs';
 import { carriesAuthoringTask } from './shell_command.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { observedFileOutcome } from './task_obligations.mjs';
@@ -124,10 +126,14 @@ function exactFieldLines(sentence, target) {
   const fields = sentence.split('`')
     .filter((_, index) => index % 2 === 1)
     .map(trim)
-    .filter((quoted) => quoted !== target && !Array.from(quoted).some(isWhitespace))
-    .filter((quoted) => {
+    .flatMap((quoted) => {
+      if (quoted === target) return [];
       const equals = quoted.indexOf('=');
-      return equals >= 0 && /^[A-Za-z][A-Za-z0-9_]*$/.test(quoted.slice(0, equals));
+      if (equals < 0 || !/^[A-Za-z][A-Za-z0-9_]*$/.test(quoted.slice(0, equals))) return [];
+      if (!Array.from(quoted).some(isWhitespace)) return [quoted];
+      // A prose description inside angle brackets declares an open field.
+      const value = quoted.slice(equals + 1);
+      return /^<[^<>\r\n]+>$/u.test(value) && trim(value.slice(1, -1)) !== '' ? [quoted.slice(0, equals + 1)] : [];
     });
   return fields.filter((field, index) => !fields.slice(index + 1).includes(field));
 }
@@ -205,7 +211,10 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
   const isWorkspaceObservation = observed !== null;
   let answer = observed;
   if (answer === null) {
-    const plan = await planChatStepResolved(residualMessages, toolNames);
+    const sourcePlan = (obligation.first_line !== null || obligation.field_lines.length > 0)
+      && parseObligation(obligation.residual) === null
+      ? await planNumberedSourceRequirements(obligation.residual, residualMessages, toolNames) : null;
+    const plan = sourcePlan ?? await planChatStepResolved(residualMessages, toolNames);
     if (plan && plan.kind === 'tool_calls') {
       traceRoute('evidence_record', 'investigating');
       return plan;
@@ -219,7 +228,9 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
         traceRoute('evidence_record', 'residual_step_failed');
         return resolvedFinalAnswer(plan.answer, FinalDisposition.Failure, 'residual_step_failed');
       }
-      answer = plan.answer;
+      answer = plan.result.origin === VERIFIED_SEQUENCE_ORIGIN
+        ? sequenceObservation(plan.answer, obligation.residual)
+        : plan.answer;
     } else {
       traceRoute('evidence_record', 'symbolic_residual');
       const symbolic = await symbolicAnswer(obligation.residual);
@@ -325,6 +336,16 @@ function combinedObservation(values, request) {
   if (values.length === 1) return values[0];
   const joined = values.join('; ');
   return renderResponse('evidence-exact-composition', detect(request), [['values', joined]]) ?? joined;
+}
+
+function sequenceObservation(answer, request) {
+  const findings = answer.split('\n\n').flatMap(step => {
+    const exact = exactFieldValues(step, 'result');
+    if (exact.length) return exact;
+    const line = substantiveResultLine(step, request);
+    return line === '' ? [] : [line];
+  });
+  return combinedObservation(findings, request) ?? answer;
 }
 
 function nonHollowResult(raw, task) {

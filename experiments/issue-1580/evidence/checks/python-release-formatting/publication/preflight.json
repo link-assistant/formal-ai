@@ -1,0 +1,99 @@
+{
+  "observedAt": "2026-11-17T17:12:35.797524+00:00",
+  "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "currentMain": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+  "sources": [
+    {
+      "path": "scripts/format_release_notes.py",
+      "gitBlob": "8e6bdb61e4da36068e2dd931135588c46c8926f0",
+      "sha256": "1d33ffb5d87a6b9a3036231d41ff79e085fd645e8c2611fac959c23c6fd75254",
+      "bytes": 7497
+    },
+    {
+      "path": "scripts/release_naming.py",
+      "gitBlob": "e5f7625d5cf497682cddd2efceb7f542f0e3f8b2",
+      "sha256": "108bc0396fbe767e97000b0005da91e0a60200790051bc599a12ae89724cff55",
+      "bytes": 3544
+    }
+  ],
+  "issueAndPullCount": 158,
+  "changedIds": [],
+  "keywordMatches": [
+    {
+      "number": 155,
+      "title": "Four networked npm installs run without a step budget, and the budget invariant counts only *_BUDGET_SECONDS env lines",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/155"
+    },
+    {
+      "number": 151,
+      "title": "Update all dependencies in all languages to their latest versions",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/151"
+    },
+    {
+      "number": 139,
+      "title": "fix(ci): attest release recovery and reject CodeQL extraction failures",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/pull/139"
+    },
+    {
+      "number": 124,
+      "title": "Release changelog extraction treats version headings inside fenced examples as release boundaries",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/124"
+    },
+    {
+      "number": 85,
+      "title": "Manual release writes changelog heading `patch`/`minor`/`major` instead of the released version",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/85"
+    },
+    {
+      "number": 84,
+      "title": "Prevent CI false negatives in cancellation, budgets, and release logs (#80-#82)",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/pull/84"
+    },
+    {
+      "number": 80,
+      "title": "`check-pipeline-status.sh` excuses every cancellation in a superseded run, including jobs whose `cancel-in-progress` is `false` and which no supersede could have reached",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/80"
+    },
+    {
+      "number": 74,
+      "title": "CI/CD: prove the release can be published before building it (preflight credentials on main)",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/74"
+    },
+    {
+      "number": 67,
+      "title": "release.yml reads the version with a table-blind grep: a `version` key in any other pyproject.toml table breaks the release step",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/67"
+    },
+    {
+      "number": 61,
+      "title": "Give long pipeline steps their own execution budget so a timeout reports `failure`, not `cancelled`",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/pull/61"
+    },
+    {
+      "number": 14,
+      "title": "CI: harden release and docs workflows",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/pull/14"
+    },
+    {
+      "number": 11,
+      "title": "CI: release.yml uses outdated action versions, lacks timeout-minutes on every job, and uses literal cancel-in-progress: true",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/11"
+    },
+    {
+      "number": 6,
+      "title": "create_github_release.py sets release title to bare \"v${version}\" and never adds a PyPI badge",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/6"
+    },
+    {
+      "number": 2,
+      "title": "feat: Create Python AI-driven development pipeline template",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/pull/2"
+    }
+  ],
+  "duplicateInventorySha256": "93d9b2458e6ffc90ef44f9d06a1e0e554209dfa0148751ad25e0f3a7014f4d7b",
+  "publishedEvidenceCommit": "da712fadd3f680668c063a6d7de073ef1d52573b",
+  "reportBodySha256": "bdd518a220ef48becb19dec2977bb279486d0118635468d5018a454cb149db99",
+  "filed": false,
+  "upstreamRepairClaimed": false,
+  "independentAuthorshipCredit": 0
+}

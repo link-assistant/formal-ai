@@ -1,0 +1,179 @@
+[
+  {
+    "name": "current-registry-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/generate-role-registry-js.test.mjs"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "current-registry-before.stdout.gz",
+      "rawSha256": "58b5a4360d97a7aad30264e3625b8f8b304287cddb711ddba9e04e389881ec7f",
+      "archiveSha256": "8ddf236649c319cf763cbb154ee7430c62a3078de07042e2fcce86ee0c7ba93c",
+      "bytes": 23086,
+      "lines": 47
+    },
+    "stderr": {
+      "file": "current-registry-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "canonical-js-generation",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/generate-role-registry.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "canonical-js-generation.stdout.gz",
+      "rawSha256": "151f9098d09572e72ee10907bb28b9382633a601e85394f9971270266183bd42",
+      "archiveSha256": "9b93848caf41b65d730abdfed3f14c32375e354748909f5c87b33aafc80cfe43",
+      "bytes": 113,
+      "lines": 2
+    },
+    "stderr": {
+      "file": "canonical-js-generation.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "canonical-python-check",
+    "argv": [
+      "python3",
+      "scripts/generate-role-registry.py",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "canonical-python-check.stdout.gz",
+      "rawSha256": "cd3fb3e57aab6f31c492d7facf1553485b266fcdddf54a2520b24ff2d60203c6",
+      "archiveSha256": "7ff888204627986a343e7f534737c7f173183e90324bed4b320b5b55e0961ec8",
+      "bytes": 115,
+      "lines": 2
+    },
+    "stderr": {
+      "file": "canonical-python-check.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "current-registry-after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/generate-role-registry-js.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "current-registry-after.stdout.gz",
+      "rawSha256": "af88d92602442857b3f5d0a513539f5c9568368a3d049ada2e2bad481e561f55",
+      "archiveSha256": "cf8c1c792b7660a412e49fd59ba5ee3f9960aa4478421d95ed4754e9bc1f69ee",
+      "bytes": 746,
+      "lines": 14
+    },
+    "stderr": {
+      "file": "current-registry-after.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "mirror-generation",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "mirror-generation.stdout.gz",
+      "rawSha256": "f39b4287828f2f48b7632c19b257658906083c6ee2d95c78ca2ad35b667426d5",
+      "archiveSha256": "23141a43d3e5fe8a2a4f7ac934590d7718a149d2b0f16ee1359f4cfe257a0dad",
+      "bytes": 83,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "mirror-generation.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "targeted-local-replay",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-role-registry"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "targeted-local-replay.stdout.gz",
+      "rawSha256": "d634fae4bfb3db92c2cb6eeaf7ce7e22a4e13c3beb4c43bcbc2dd580babbdde7",
+      "archiveSha256": "2eac6438dfe33a2e81cacbd6e8f41d8726b74ae630e73b96ddac2b78bd411edc",
+      "bytes": 67,
+      "lines": 3
+    },
+    "stderr": {
+      "file": "targeted-local-replay.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "source-diff",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "data/seed/meanings-concept-lookup.lino",
+      "data/seed/roles.lino",
+      "rust/embedded/data/seed/meanings-concept-lookup.lino",
+      "rust/embedded/data/seed/roles.lino",
+      "rust/tests/web/generate-role-registry-js.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "source-diff.stdout.gz",
+      "rawSha256": "064b27f738a01e3e506ff46f7788c7cd043de82c1410a3f091d47ffd66723376",
+      "archiveSha256": "101d0a44ced92359c632e5bab8148910251746b4de9f9fba1612d03169c5f2f9",
+      "bytes": 2180,
+      "lines": 51
+    },
+    "stderr": {
+      "file": "source-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

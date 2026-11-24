@@ -46,6 +46,15 @@ printf 'TUI_REMAINED_INTACT\n'
 
 #[test]
 fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
+    verify_temporary_server_diagnostics(false);
+}
+
+#[test]
+fn explicit_payload_custody_stays_in_private_logs_outside_the_wrapped_tui() {
+    verify_temporary_server_diagnostics(true);
+}
+
+fn verify_temporary_server_diagnostics(capture_payload: bool) {
     let dir = tmpdir();
     let home = dir.join("home");
     let bin_dir = dir.join("bin");
@@ -66,6 +75,13 @@ fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
     .env("HOME", &home)
     .env("PATH", path)
     .env("FORMAL_AI_DIALOG_LOG_DIR", &logs)
+    // Phase tracing retains metadata; raw request custody is a separate explicit opt-in.
+    .env("FORMAL_AI_TRACE_REQUESTS", "1")
+    .env(
+        "FORMAL_AI_LOG_PAYLOAD_CUSTODY",
+        if capture_payload { "1" } else { "0" },
+    )
+    .env("FORMAL_AI_LOG_LEVEL", "trace")
     .env("FORMAL_AI_LOG_DIR", logs.join("diagnostics"))
     .env_remove("FORMAL_AI_LOG_STDERR")
     .env("FORMAL_AI_TEST_PORT", port.to_string())
@@ -101,7 +117,11 @@ fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
         .expect("temporary server diagnostic log");
     let diagnostics = std::fs::read_to_string(server_log.path()).expect("read diagnostics");
     assert!(diagnostics.contains("request.terminal"));
-    assert!(!diagnostics.contains("ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"));
+    assert_eq!(
+        diagnostics.contains("ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"),
+        capture_payload,
+        "request payload custody must follow its explicit opt-in"
+    );
     let dialog = std::fs::read_to_string(logs.join("ses_issue819_tui.lino")).expect("read dialog");
     assert!(dialog.contains("ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"));
     let _ = std::fs::remove_dir_all(&dir);

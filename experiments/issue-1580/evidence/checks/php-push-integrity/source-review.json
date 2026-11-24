@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-11-18T13:10:41.333520+00:00",
+  "checksComplete": true,
+  "testSha256": "ee24b9281c34176f58b5344ea5acb1fbd59a711cb7067225592a51b9bcb733f4",
+  "unmodifiedUpstreamSourceFilesAdded": 8,
+  "sourcePaths": [
+    "experiments/issue-1580/template-php-push-integrity.test.mjs",
+    "experiments/issue-1580/fixtures/php-template/source.json",
+    "rust/tests/web/issue-1580-template-observations.test.mjs",
+    "changelog.d/issue-1580-php-push-integrity.md",
+    "experiments/issue-1580/fixtures/php-template/scripts/version-and-commit.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/VersionReleaser.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Project.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Git.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/SemVer.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/ChangelogFragments.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Changelog.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Cli.php"
+  ],
+  "nativeExecuted": false,
+  "upstreamRepaired": false,
+  "independentAuthorshipCredit": 0
+}

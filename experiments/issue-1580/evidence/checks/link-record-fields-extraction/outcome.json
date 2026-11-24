@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "beforeSha256": "16cab5db7feb51d163ae31e94883a3c3c6f2bf135fc80525383ef95274b99d94",
+  "afterParentSha256": "4b6f8f35756b7357989c091464c1e864144a8323e7b68b7886a2a5af4d8cef0c",
+  "childSha256": "e86cc0c39c2c391c8b94f2ac974eed76bc78442179ea8c7d73706d46f9e76b4c",
+  "originalLines": 977,
+  "parentLines": 895,
+  "childLines": 92,
+  "exactInverseBeforeFormatting": true,
+  "exactInverseAfterFormatting": true,
+  "initialWholeFileTokenOrderCheckPassed": false,
+  "formatterMovedOnlyNewModuleDeclaration": true,
+  "publicNamesAndFunctionBodiesUnchanged": true,
+  "remainingParentImportsAudited": true,
+  "localRustExecution": false,
+  "hostedCompilationPending": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

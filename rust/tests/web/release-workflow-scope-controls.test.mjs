@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/budget-process-lifetime.test.mjs';
 import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import {runStagedReleaseGenerator} from '../../../scripts/generate-staged-release.mjs';
 import assert from 'node:assert/strict';
@@ -91,7 +92,7 @@ test('maintained generator checks all five exact source-bound derivative outputs
   runStagedReleaseGenerator(['--write', '--deployed', '--directory', directory]);
   runStagedReleaseGenerator(['--check-deployed', '--directory', directory]);
   for (const name of ['release-staged.yml', 'candidate-release-caller.yml', 'candidate-output-bindings.json',
-   'original-release-workflow.yml', 'stage-source-coverage.json']) {
+   'original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt', 'stage-source-coverage.json']) {
    const path = join(directory, name), original = fs.readFileSync(path);
    fs.writeFileSync(path, Buffer.concat([original, Buffer.from('\nspoof')]));
    assert.throws(() => runStagedReleaseGenerator(['--check-deployed', '--directory', directory]));

@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/refresh-version-parser-canonical-retry.log",
+    "file": "071-evidence.gz",
+    "bytes": 1983,
+    "lines": 4,
+    "rawSha256": "3d5188a8c21282c8731bd33dee39b255b7baf0bdd62ac63536b8ac35764a4681",
+    "archiveSha256": "508b09324144fc755723f40b248fd0bece281ea558711f1f3b4de71db61a9348"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-version-parser-canonical.log",
+    "file": "072-evidence.gz",
+    "bytes": 902,
+    "lines": 29,
+    "rawSha256": "c98e7fee0be69e449c5b92b27b73f4a92b03c683c2f8a55e7daff8706036d752",
+    "archiveSha256": "e0eefd9de496ab7fdffdb4ab7b89747483b9b17e15c9f3368fe65f3d51772a43"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-version-parser-canonical.mjs",
+    "file": "073-evidence.gz",
+    "bytes": 3206,
+    "lines": 44,
+    "rawSha256": "b94223d790fa46449961867bb1cbccc20d32d064a064e63471b4cfc1edfc4431",
+    "archiveSha256": "ef69f89ef329c7042c3499b26f1cd321b9982f24dffeea331f687fd33814ffed"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-standard-toml-version-parser.log",
+    "file": "074-evidence.gz",
+    "bytes": 359,
+    "lines": 8,
+    "rawSha256": "b0d94cb1d08ab2c496bbb3454068f432955b57e5afe460a54b5e25b8d30f5a7a",
+    "archiveSha256": "0a591a26396fd5ecbd43f8a87445bf2b351a944dc7978652ca858308235de7f5"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-standard-toml-version-parser.py",
+    "file": "075-evidence.gz",
+    "bytes": 4199,
+    "lines": 88,
+    "rawSha256": "b7057b8890f52a85bc6fb96e3002019e9cdfc4fe9ed9f96253f629842cc6e321",
+    "archiveSha256": "860630eb38efd7c154ba893a459439c51147f00f6845c6aed6b1b3f39da233c9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-version-check-package-scope.log",
+    "file": "076-evidence.gz",
+    "bytes": 1122,
+    "lines": 4,
+    "rawSha256": "a4a2c36f4ea4ce9af9e1ab9369fe2f1dc223a15a503a232d3b06b5c60a8f6d1f",
+    "archiveSha256": "e053478ccb1d66bb89fa051aad55f816dfd49e4633b78f4a6306cdcfd5885462"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-version-check-package-scope.py",
+    "file": "077-evidence.gz",
+    "bytes": 6181,
+    "lines": 117,
+    "rawSha256": "c7391f0080d75e8733a6c0d53bb55543ba6bd7569a6db7765049087613de0e53",
+    "archiveSha256": "37d666c0855c6bb9b2fdf69348f44c7a4b50ca744fd49a084ea9ff9e499c0d99"
+  },
+  {
+    "source": "/tmp/issue-1580-research/review-version-scope-draft.log",
+    "file": "078-evidence.gz",
+    "bytes": 49328,
+    "lines": 656,
+    "rawSha256": "d3330d65fbc4cbeb20c15538d44dd5d482aa54573b8d0b2cb232808c2209eb67",
+    "archiveSha256": "9a69a1ecfb05f63d410f9ee92ada51120ca81af94cf02dddd3c6d9add392323b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/review-version-scope-draft.py",
+    "file": "079-evidence.gz",
+    "bytes": 740,
+    "lines": 14,
+    "rawSha256": "a6f5324a8677c21310a62b348e104108c63f2e8bcaa2dfb72c26af5356d316ef",
+    "archiveSha256": "36402a031dfd58e1205124caaacdb81ad698f69f55ace3e07a2721f66947235e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/scan-receipt-extraction-source-warnings.log",
+    "file": "080-evidence.gz",
+    "bytes": 239,
+    "lines": 4,
+    "rawSha256": "78fc1930835caa2a5474cf228c62e15210ee492e628b2d09aeb675a3f0b7d331",
+    "archiveSha256": "ce3f71d335f1632b23ba9515ce8c97cb0c2dffd553451a0d6c32f6deef5ce1f2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/scan-receipt-extraction-source-warnings.mjs",
+    "file": "081-evidence.gz",
+    "bytes": 1056,
+    "lines": 13,
+    "rawSha256": "7b0b9a3d12e5dd215b71407db2e6325cf1c4712cd6c1c5e71166fdb12f683c53",
+    "archiveSha256": "de5a2d48f481de76a600cdefd9964191e7b60953baf326fb5fd14ef3898caef1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-terminal-native-and-version-parser.log",
+    "file": "082-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-terminal-native-and-version-parser.py",
+    "file": "083-evidence.gz",
+    "bytes": 9773,
+    "lines": 133,
+    "rawSha256": "9f066445de24470a404bffd352092c260e7bbd20fbf294c3f48724b253058d8b",
+    "archiveSha256": "08a68fe77df401020f318dd3a14a30d3493de34e1fb52ef2a1ddb361943e2b14"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-commit/commit.stderr",
+    "file": "084-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-commit/commit.stdout",
+    "file": "085-evidence.gz",
+    "bytes": 215,
+    "lines": 3,
+    "rawSha256": "385b62978f1fd8517c1ffa7abbc6923e4c6237c8418581081f398845eaf389b1",
+    "archiveSha256": "575723df9a3bb23d5c5f737029f97c30f968216dbecf7582edd09df0a13b11bc"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-commit/outcome.json",
+    "file": "086-evidence.gz",
+    "bytes": 104,
+    "lines": 1,
+    "rawSha256": "8ebe2452bfc746de1d3454f2a02599de6779b596590ccfb1852b1eed363641b6",
+    "archiveSha256": "e98f1395b84a56cc9c04a7239374bb8c05207953fe8f4becba1f3ce52ab99adb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-commit/stage.stderr",
+    "file": "087-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-commit/stage.stdout",
+    "file": "088-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-commit/whitespace.stderr",
+    "file": "089-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-commit/whitespace.stdout",
+    "file": "090-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/ci-change-detection-checkout.log",
+    "file": "091-evidence.gz",
+    "bytes": 1213,
+    "lines": 32,
+    "rawSha256": "6d94dad92944df019655b8adb9b3dd4af76fca3f87f90102a7a650dc85af3b72",
+    "archiveSha256": "881ec65fcfd5b4ce2f0716ffa325555524f1cee93d87ec0878ba522e1c52623a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/default-branch-build-policy.log",
+    "file": "092-evidence.gz",
+    "bytes": 11773,
+    "lines": 123,
+    "rawSha256": "98fe07af2113cceb83e793a2e3278b63e53ef207702590d5d040ff706697ddc6",
+    "archiveSha256": "acecedbe31914321459762988ec8a0ff1bb1c9fc0bf78c4c5bc6a9571db83590"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/fast-pull-request-production-profile.log",
+    "file": "093-evidence.gz",
+    "bytes": 2059,
+    "lines": 26,
+    "rawSha256": "fb690a7db98329c97309f38920c7627fd122c90966fe0b096d85a506a897a749",
+    "archiveSha256": "21082fda27a9adf889ad1365da6053885eb4ce628f72266684dfd210441d0f70"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/focused-regressions.log",
+    "file": "094-evidence.gz",
+    "bytes": 395,
+    "lines": 11,
+    "rawSha256": "a2fa8cbc1a504834503cc6227081965785e0c6622751bdbbc0971224190c647a",
+    "archiveSha256": "dbe6b3b0cba968dfc2bdef232b9ba561fe64041c94029b1cf0f98354ddd7263f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/outcome.json",
+    "file": "095-evidence.gz",
+    "bytes": 1706,
+    "lines": 74,
+    "rawSha256": "a04ba9c3dd1f3c515943ecb751e2c4669ff496655ad0cb588db78deb0ff7d47e",
+    "archiveSha256": "6ffd831472bb5377219d01c8d4a6465cfe6f4cfeae1b1cceee82f103d4048108"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/pid",
+    "file": "096-evidence.gz",
+    "bytes": 8,
+    "lines": 1,
+    "rawSha256": "a911b2e2ba8e324d7b6915f850e7240eb45b0ec863dc9eaea24194c37417f1a0",
+    "archiveSha256": "a95048905afb220a51cb9afe1d16808ced855b250242224fd211c8c9a8560659"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/touched-gates.log",
+    "file": "097-evidence.gz",
+    "bytes": 169,
+    "lines": 7,
+    "rawSha256": "d300d329d25c3e3884557fe3e1c47b73343aa5a22cab38bd95024c99ae66f4c9",
+    "archiveSha256": "e1082a289a82d6128005ba1462ed2ffea1a2964902588910b1fc938a25fb04e2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/whitespace.log",
+    "file": "098-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-final-validation/worker.log",
+    "file": "099-evidence.gz",
+    "bytes": 1109,
+    "lines": 6,
+    "rawSha256": "ad7b0f4a18238fa9bf076412b64c8faaf1adcdee7278b7830aaddb5dee3cde2c",
+    "archiveSha256": "c0e0521c50af277d3f2ee616929d4735e95f29e6def1c7ba7acb337a04add4fa"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-repair/00.before",
+    "file": "100-evidence.gz",
+    "bytes": 23188,
+    "lines": 423,
+    "rawSha256": "7df35c66c4574b493fe3fed56c07f63e188b055b71eceded6510b1008ffee469",
+    "archiveSha256": "ed5a1ec9389a5f4b450cc873f67c720eed16a34a62971049656c3110aefe684f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-repair/01.before",
+    "file": "101-evidence.gz",
+    "bytes": 57812,
+    "lines": 1113,
+    "rawSha256": "241a81f0ee8b23581f4e10cbfa070d847b696121b01fa5c7c61f73b8f08e6bef",
+    "archiveSha256": "d1d75067ae4b5e191abdc2a5f55493a84e0d47aebabf1e438da955dfe64f3c2f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-repair/02.before",
+    "file": "102-evidence.gz",
+    "bytes": 79959,
+    "lines": 1208,
+    "rawSha256": "6fea373a224e2334d2db130fd406334658abc281c594fd22b8f00d0eda3ec69a",
+    "archiveSha256": "d1978ed40a54a2bb930c0ba1f8ab0bbf3594f2e853cd0e98b41aa9dbb505a708"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-repair/03.before",
+    "file": "103-evidence.gz",
+    "bytes": 38334,
+    "lines": 521,
+    "rawSha256": "578f06a2b08b35e75d50118b7d1b65b55de63d878c56935288fd130238cf89eb",
+    "archiveSha256": "5fad0e09061ad282cc49eea1208f9131720f0d0a841fc511ef652014e53e5140"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-validation/ci-change-detection-checkout.log",
+    "file": "104-evidence.gz",
+    "bytes": 1213,
+    "lines": 32,
+    "rawSha256": "aaab9cc50caa7edda2c5bad94c8e4644b07569a57eb66a81250226a419222ed7",
+    "archiveSha256": "4e6f41307d57bd0b56acadb42c8c4d9a25e2b3467bc86ec73b12ec6ec5ab679a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/standard-toml-version-parser-validation/default-branch-build-policy.log",
+    "file": "105-evidence.gz",
+    "bytes": 20049,
+    "lines": 296,
+    "rawSha256": "edae19586c3f440f4d43c57240767b9d5da9ecca935dedba9f4e97aea582ab4f",
+    "archiveSha256": "4e55f9f41903c5dd5dcd222b2b810a1a246a5371e8b9c19fe83d086a79bc4a55"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "source": "b459d0b0f66ddf285815ef20553f43e4460bd41a",
+  "comparedArtifactSourceHead": "8190c9efaa82777e576b7bae18297d2de33dcf9d",
+  "run": 45085971679,
+  "attempt": 2,
+  "nativeConsumersExecuted": 3,
+  "producerReran": false,
+  "originalArtifactReused": 14778573986,
+  "historicalSemanticFailuresRetained": true,
+  "currentHeadNativeSuccess": false,
+  "wholeCliLogUnavailable": true,
+  "availableArchiveAndIndividualConsumerLogsVerified": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 221828,
+    "sha256": "585f445712624ee79986647f67e6144df5d58b4b9432a2ff67739c520fae26ad"
+  },
+  "members": 251,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:53:22.610580+00:00"
+}

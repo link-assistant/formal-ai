@@ -970,41 +970,8 @@ mod tests {
 
 ## Self-maintained dependencies and patches
 
-When a build step, the translator, or a layer check needs a feature a
-self-maintained dependency has not released, the workaround is a
-`[patch]`-style source install — and the debt it creates is tracked where
-debt belongs:
-
-- Every `[patch]` or source-install entry in `Cargo.toml` carries a comment
-  beside it referencing, by URL, the issue that lists what is patched and
-  what blocks using the latest release. The gate
-  `rust/tests/unit/ci-cd/issue_1138_dependency_patches.rs` fails the build when
-  an entry appears without one, and when the lockfile resolves git sources
-  the manifest does not declare.
-- One issue per dependency — not one issue per patch. The issue stays open
-  until the last patch for that dependency is gone.
-- Issues filed against dependencies are written **generally**: state the
-  general case the dependency is missing, not what Formal AI happens to
-  need. The general case moves into the dependency; this repository's own
-  code shrinks. A patch is a bridge, and its issue is the plan to remove
-  it — an untracked patch is invisible debt, because nothing fails when
-  the upstream release lands and nothing ever removes it.
-
-The same rule governs *held-back releases* (issue #1169): every dependency
-must sit at its publisher's latest release, and `rust-script
-scripts/check-dependencies-latest.rs` fails when one does not. The one
-sanctioned way to hold a dependency back is a same-line annotation naming
-the issue that tracks the hold-back — `links-notation = "0.16.1" # blocked:
-https://github.com/link-foundation/lino-objects-codec/issues/60` in
-`Cargo.toml` (the URL may be bare or `<…>`-bracketed), or a `"<name>//":
-"blocked: <url> (reason)"` note key in the same `package.json`. The
-annotation must open with an issue URL, or with the GitHub security advisory
-(`https://github.com/advisories/GHSA-…`) when the hold-back waits on an
-unpatched vulnerability; a hold-back without one is not a decision, only
-drift, and the gate fails on it. The daily
-`dependencies-latest` workflow re-checks every registry and opens one pull
-request with everything that moved, so the gate being green is a fact about
-yesterday's registries, not a permanent state anyone achieves once.
+See the [dependency policy](docs/development/dependency-policy.md) for mandatory
+patch tracking, held-back release annotations and the daily registry checks.
 
 ## GitHub credentials
 
@@ -1283,73 +1250,9 @@ hardcoded prompt→answer tables.
 
 ## Merge conflicts are a layout bug (issue #991)
 
-`python3 scripts/analyze-merge-conflicts.py` replays every merge in this
-repository's history with `git merge-tree` and counts what git could not merge on
-its own. Of 1914 conflict-resolution events across 884 merges, only 37.4% were
-two people changing the same behaviour. The rest conflicted because of *where the
-content sat*: an appended list entry, a regenerated artifact, a numbered file
-name. Those are bugs in the layout, and the layout is what we fix.
-
-The measurement is in
-[`docs/case-studies/issue-991/merge-conflict-analysis.md`](docs/case-studies/issue-991/merge-conflict-analysis.md),
-the mechanisms are declared in
-[`data/meta/merge-conflict-policy.lino`](data/meta/merge-conflict-policy.lino),
-and `rust-script scripts/check-merge-conflict-policy.rs` fails the build when a
-path that has actually been conflicting is neither mechanized nor deferred with
-a written reason. **You never need to run `git config` for any of this**: every
-mechanism uses git's built-in `merge=union` driver or a committed generator, so a
-fresh clone is already conflict-proof.
-
-**What to do when you add something.**
-
-| You are adding | Do this | Do *not* |
-| --- | --- | --- |
-| a Rust module or test module | append the `mod` line anywhere in the list file; `rust-script scripts/normalize-ordered-lists.rs --write` sorts it | edit the list by hand to keep it sorted — the union driver will reorder it anyway |
-| a CI check | write one file in `data/meta/ci-gates/`, named after the check | add a `- name:`/`- run:` step to `.github/workflows/release.yml` |
-| a `data/seed/*.lino` file | add one `seed <name>` entry to `data/meta/seed-registry.lino` and run `rust-script scripts/generate-seed-registry.rs --write` | edit `rust/src/seed/embedded.rs`, `rust/src/seed/embedded_registry.rs`, `js/seed-files.js`, or the loader's file list |
-| a requirement | write `docs/requirements/issue-NNNN-*.md` and run `rust-script scripts/assemble-requirements.rs --write`; add one row per new ID to `docs/requirements-traceability.md` with the delivery date, the automated test, and an honest `not yet confirmed` while it is not | append a section to `REQUIREMENTS.md` |
-| a worker module | name the file after its subject (`formal_ai_worker_<subject>.js`) | claim the next free number |
-| generated data | commit it and register its regenerate + verify commands in the policy | leave it un-verified: a union merge of an artifact lands silently |
-
-**Documents that are pinned by tests.**
-
-Dozens of documentation assertions run in CI, and editing a document without its
-pin breaks the build. The mapping, so you know which suite to update:
-
-| Document | Pinned by |
-| --- | --- |
-| `docs/status.md` and the two generated regions in `README.md` and `docs/benchmarks.md` | `rust/tests/unit/documentation_status.rs` — regenerate with `rust-script scripts/render-status.rs --write`; never edit the generated bytes by hand |
-| benchmark statements in `docs/benchmarks.md`, `VISION.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `README.md` | `rust/tests/unit/docs_benchmarks.rs` |
-| `REQUIREMENTS.md`, `docs/requirements/*.md`, `docs/requirements-traceability.md`, and the requirement-status ledger | `rust/tests/unit/docs_requirements.rs` and the per-issue modules under `rust/tests/unit/docs_requirements/` |
-| issue citations across the narrative documents | `rust/tests/unit/documentation_issue_citations.rs` |
-| `docs/architect-notes/` | `rust/tests/unit/architect_notes.rs` |
-| `docs/meta-algorithm.md` and the per-algorithm specification pages | the modules under `rust/tests/unit/specification/` |
-| cross-cutting `README.md`, `VISION.md`, and `CONTRIBUTING.md` rules | `rust/tests/issue_885_docs.rs`, `rust/tests/issue_973_solve_flags.rs` |
-| a specific issue's requirement shard | the matching `rust/tests/unit/docs_requirements/issue_NNNN.rs` |
-
-**The two rules behind the table.**
-
-1. **A list belongs in a file of its own.** A list that shares a file with logic
-   cannot be union merged, because a union of two logic edits can compile and
-   still be wrong. Move the list to a sibling file that contains nothing else —
-   `modules.rs`, `worker-modules.js`, `seed-registry.lino` — and union merge only
-   that file. Adding an item then stops being an edit anyone else can collide
-   with.
-2. **Every union-merged file has a verifier.** A union never blocks a merge, so
-   without a checker a stale or duplicated union lands silently. Each
-   union-merged path registers a `verify` command that fails while the unioned
-   result is not canonical, or declares `union_is_terminal true` because every
-   possible union of it is already correct content (only `.gitkeep` qualifies).
-
-**Regenerating everything after a merge.** `bash
-scripts/regenerate-derived-artifacts.sh` runs every registered generator in one
-pass; run it after resolving a merge and commit whatever it changes.
-
-If you hit a conflict that none of this covers, that is data. Add the path to the
-policy — as a mechanism if it has a shape, or as a `deferred` entry with an
-honest reason if the collision is genuinely semantic. A deferral with a stated
-reason is a decision; an uncovered path is an omission, and CI treats them
-differently.
+Follow the [merge conflict layout guide](docs/development/merge-conflict-layout.md)
+when adding modules, checks, requirements or generated data. It defines list
+ownership, verification, regeneration and the documentation test mapping.
 
 ## The single push gate (issue #1191)
 
@@ -1426,37 +1329,9 @@ the fast pull-request lane.
 
 ## Changelog Management
 
-This project uses a fragment-based changelog system similar to [Scriv](https://scriv.readthedocs.io/) (Python) and [Changesets](https://github.com/changesets/changesets) (JavaScript).
-
-### Creating a Fragment
-
-```bash
-# Create a new fragment with timestamp
-touch changelog.d/$(date +%Y%m%d_%H%M%S)_description.md
-```
-
-### Fragment Categories
-
-Use these categories in your fragments:
-
-- **Added**: New features
-- **Changed**: Changes to existing functionality
-- **Deprecated**: Features that will be removed in future
-- **Removed**: Features that were removed
-- **Fixed**: Bug fixes
-- **Security**: Security-related changes
-
-### During Release
-
-Fragments are automatically collected into CHANGELOG.md during the release process. The release workflow:
-
-1. Collects all fragments
-2. Updates CHANGELOG.md with the new version entry; CHANGELOG.md keeps only
-   the newest releases, and older ones roll into `docs/changelog/releases-from-<version>.md`, each named for the oldest release it holds (R1188-U5),
-   so no changelog file exceeds the 1500-line cap
-3. Removes processed fragment files
-4. Bumps the version in Cargo.toml
-5. Creates a git tag and GitHub release
+Follow the [changelog guide](docs/development/changelog-management.md) for fragment
+creation, categories and release collection.
+<a id="creating-a-fragment"></a><a id="fragment-categories"></a><a id="during-release"></a>
 
 ## Project Structure
 

@@ -1,0 +1,59 @@
+[
+  {
+    "name": "typescript-writer",
+    "file": "typescript-writer.log.gz",
+    "rawSha256": "e7b6cce6cc20e9a8d11d72f6da7f3406e4797f14f12e5f275c621d25bd4a1fb0",
+    "archiveSha256": "18388bf0b868f4bde6e1a142300c7d9241de96293d70944f37d1786f6376ed7f",
+    "lines": 1,
+    "argv": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 2.513
+  },
+  {
+    "name": "typescript-check",
+    "file": "typescript-check.log.gz",
+    "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+    "archiveSha256": "470114e67442962d059d5b1f9ab7bd0243317a5033019e789f7d7e52c9fb1820",
+    "lines": 1,
+    "argv": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 2.356
+  },
+  {
+    "name": "repaired-local-gates",
+    "file": "repaired-local-gates.log.gz",
+    "rawSha256": "e02fd7a0f67d85812962d949f493e696fd072fbf52da7754f317205c6406682b",
+    "archiveSha256": "e59b52ef01c4d6ae877c2849afc96df98f06b122f2380dfb77f80e5fed58a703",
+    "lines": 8,
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-worker-line-budget,check-worker-line-budget-js-twin,check-debug-stage-sources,check-language-parity,check-language-parity-js-twin,check-language-change-parity"
+    ],
+    "exitCode": 0,
+    "seconds": 12.858
+  },
+  {
+    "name": "whitespace",
+    "file": "whitespace.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0,
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.205
+  }
+]

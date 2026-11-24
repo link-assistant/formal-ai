@@ -1,0 +1,68 @@
+{
+  "complete": true,
+  "nativeChangeLayoutOnly": true,
+  "formattingDelta": "Whitespace plus one optional trailing argument comma inserted by rustfmt. The first post-format audit rejected that comma because it incorrectly assumed byte differences would be whitespace only; the strict token comparison now permits exactly that recorded comma.",
+  "beforeSha256": "72496205c5d301e4234a77e49ccf6ffbcabaa7c534cf1d440486c1e73cbcb655",
+  "afterSha256": "6f2d798baff5609b04cbe9eb75882d4491bffd627e5e45abcf9f7010db75a8de",
+  "focusedTestsPassed": 25,
+  "sharedFixtures": {
+    "originalByteIdenticalCases": 25,
+    "newStatusCases": 4
+  },
+  "allLocalGates": {
+    "pass": 86,
+    "excluded": 52,
+    "fail": 0,
+    "aggregateSha256": "1e7af92c6e7a1a901efe04a075388551ddbe23426e826ee6dad176ca7404dca8"
+  },
+  "priorFailedOutcomeRetained": true,
+  "nativeExecuted": false,
+  "rustBuildsEnabled": false,
+  "independentAuthorshipCredit": 0,
+  "checks": [
+    {
+      "name": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "/tmp/gh-issue-solver-1794900398048/rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 0.09,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "/tmp/gh-issue-solver-1794900398048/rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 0.044,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "extraArchives": [
+    {
+      "file": "validation-runner-initial.py.gz",
+      "sha256": "91ca702608f047864457894ff47dab089b920c0b41aa031b380610a53dc60fa8",
+      "bytes": 2004
+    },
+    {
+      "file": "expanded-29-case-fixture.json.gz",
+      "sha256": "d8cfbf6d2645001eb696b6c25a03ce30e85e06bdf9d4f84a0c8c0b67d1b52519",
+      "bytes": 3827
+    },
+    {
+      "file": "memory-observation.json",
+      "sha256": "9539ac3f134559746ca070f3d2f3dac28d6883bd4e11780577a19835bcd95b7b",
+      "bytes": 911
+    }
+  ]
+}

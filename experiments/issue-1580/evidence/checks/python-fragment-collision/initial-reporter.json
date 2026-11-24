@@ -1,0 +1,14 @@
+{
+  "arguments": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "experiments/issue-1580/python-fragment-before-control.test.mjs"
+  ],
+  "exitCode": 1,
+  "rawBytes": 1585,
+  "rawSha256": "f7bdd4b161acabca90f28ac565d0389934810a7d9239120e8964e0cd17d28cf4",
+  "summary": []
+}

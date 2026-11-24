@@ -1,0 +1,9 @@
+{
+  "beforeExitCode": 1,
+  "expectedFailure": "original producer reports need an opt-in branch verification path",
+  "beforeRawSha256": "bd2f4850f15f3e73837e94ea73c9141dfd6b9b79b870d4f0bc625db90418229f",
+  "readOnlyDispatchExecuted": false,
+  "nativeCompilationExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

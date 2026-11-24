@@ -387,6 +387,7 @@ pub fn record_candidates(log: &mut EventLog, intent: &str) {
 
 #[derive(Debug, Clone)]
 pub struct ValidationChoice {
+    pub intent: String,
     pub answer: String,
 }
 
@@ -400,9 +401,14 @@ pub fn record_validation(log: &mut EventLog, prompt: &str) -> Option<ValidationC
     for candidate in low..=high {
         let passed = crate::solver_handlers::has_property(candidate);
         log.append("candidate", candidate.to_string());
-        log.append("validation", format!("{property}({candidate})={passed}"));
+        log.append_with_origin(
+            "validation",
+            "validation:candidate",
+            format!("{property}({candidate})={passed}"),
+        );
         if passed {
             return Some(ValidationChoice {
+                intent: property.to_owned(),
                 answer: candidate.to_string(),
             });
         }
@@ -414,8 +420,9 @@ pub fn record_validation(log: &mut EventLog, prompt: &str) -> Option<ValidationC
 /// the turn already recorded its own validation.
 pub fn record_answer_test(log: &mut EventLog, intent: &str, answer: &str) {
     if log.first_of("validation").is_none() {
-        log.append(
+        log.append_with_origin(
             "validation",
+            "validation:answer",
             crate::meta_executor::answer_validation(intent, answer),
         );
     }

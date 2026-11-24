@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+        "--refresh-reviewed-baseline",
+        "--reviewed-reader-sha=861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+        "--previous-baseline-sha=f6cb2488ea79b01df79598946f5397a89f2b107ad8c24a4393102b4e98616f97"
+      ],
+      "exitCode": 0,
+      "seconds": 9.525,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "experiments/issue-1580/evidence/checks/picomatch-governed-refresh/step-1.log.gz"
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/governed-manifest-refresh.mjs",
+        "/tmp/issue-1580-research/picomatch-previous-governed-baseline.v8",
+        "/tmp/gh-issue-solver-1794900398048/experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+        "d0b8b895661c6b5e809810c4da8a3db9f79138b3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/picomatch-governed-refresh/complete-object-delta.json"
+      ],
+      "exitCode": 0,
+      "seconds": 0.243,
+      "rawSha256": "4aba44c2aa20863d9c080ed06e52134af5a42bbbe69b0d8e7b908bdba40d7bc7",
+      "log": "experiments/issue-1580/evidence/checks/picomatch-governed-refresh/step-2.log.gz"
+    }
+  ],
+  "previousBaselineSha256": "f6cb2488ea79b01df79598946f5397a89f2b107ad8c24a4393102b4e98616f97",
+  "currentBaselineSha256": "85b90bc60200d7eb881b6f0f767e7b60f7d6cc68b079dee03729d7732bbdc6ff",
+  "independentAuthorshipCredit": 0
+}

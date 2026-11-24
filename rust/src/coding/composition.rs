@@ -11,6 +11,9 @@ use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 use crate::needs::{Need, NeedKind, NeedState};
 use verification::{derived_examples, verify};
 
+mod ir_draft;
+use ir_draft::ir_draft;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DraftAttempt {
     pub id: String,
@@ -120,6 +123,7 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
         crate::coding::composition_search::SearchBounds::default(),
         &concepts.structure_ids(),
     );
+    crate::diagnostic!("trace"; "coding_composition: language={} task={} needs={} programs={}", spec.language, spec.name, concepts.needs.len(), programs.len());
     compose_with_ir(spec, concepts, &catalog, programs)
 }
 
@@ -170,6 +174,7 @@ pub fn compose_with_ir(
         spec.examples.clone()
     };
     let mut drafts = Vec::new();
+    let mut attempts = Vec::new();
     let mut blocked_needs = Vec::new();
     for structure_id in concepts.structure_ids() {
         let available = catalog.get(&structure_id).is_some()
@@ -187,7 +192,7 @@ pub fn compose_with_ir(
         }
     }
     for (search_rank, program) in programs.into_iter().enumerate() {
-        match ir_draft(spec, catalog, program, search_rank) {
+        match ir_draft(spec, catalog, program, search_rank, &mut attempts) {
             Ok(Some(draft)) => {
                 drafts.push(draft);
             }
@@ -236,7 +241,6 @@ pub fn compose_with_ir(
     }
     blocked_needs.sort_by(|left, right| left.need_id.cmp(&right.need_id));
     blocked_needs.dedup_by(|left, right| left.need_id == right.need_id);
-    let mut attempts = Vec::new();
     let mut passing = Vec::new();
     let mut unverified = Vec::new();
     for draft in drafts {
@@ -376,76 +380,6 @@ fn constant_bounded_domain(program: &ProgramIr, catalog: &FragmentCatalog) -> us
         false
     };
     usize::from(!reads_input(domain))
-}
-
-fn ir_draft(
-    spec: &CodingTaskSpec,
-    catalog: &FragmentCatalog,
-    program: ProgramIr,
-    search_rank: usize,
-) -> Result<Option<Draft>, MissingFragment> {
-    if let Some(id) = program
-        .fragments
-        .iter()
-        .find(|fragment| catalog.get(fragment).is_none())
-    {
-        return Err(MissingFragment::new(id));
-    }
-    if program.type_check(catalog).is_err() {
-        return Ok(None);
-    }
-    let Some(lowering) = crate::coding::ir_lowering::lowering_for(&spec.language) else {
-        return Ok(None);
-    };
-    let Ok(source) = lowering.lower(&program, catalog) else {
-        return Ok(None);
-    };
-    // The prompt's declared surface travels with the derived artifact: a
-    // signature the task itself spelled out (annotations, return, imports)
-    // is echoed verbatim, never reconstructed from the unified types — the
-    // reconstruction would drop the spelling's own import (`List[float]`
-    // needs `from typing import List`) and with it the artifact's
-    // executability (issue #1085 upstream transfer, HumanEval/0).
-    let source = echo_declared_surface(spec, source);
-    let content_id = program.content_id();
-    let mut action_cost = program.action_cost();
-    // A draft whose driving iteration runs over a constant performs
-    // input-independent action: its work is bounded by the constant, not by
-    // the task's input, so agreement with the examples is coincidence. Such
-    // a draft owes the unexamined input as extra action.
-    action_cost += 4 * constant_bounded_domain(&program, catalog);
-    // A literal the search introduced is an assumption no oracle justified:
-    // each one owes extra action, so among verifying drafts the composition
-    // that reads the task's inputs outranks an equally cheap one that
-    // guesses a constant.
-    action_cost += crate::coding::composition_search::literal_leaves(&program.body);
-    let parameter_names: Vec<&str> = spec
-        .parameters
-        .iter()
-        .map(|parameter| parameter.name.as_str())
-        .collect();
-    let referenced_params =
-        crate::coding::composition_search::parameter_reads(&program.body, &parameter_names);
-    let composition = format!(
-        "typed_search({})",
-        program.composition_notation(|id| {
-            catalog
-                .get(id)
-                .is_some_and(|fragment| fragment.kind == FragmentKind::Meaning)
-        })
-    );
-    Ok(Some(Draft {
-        id: content_id,
-        source,
-        callable_name: program.name,
-        source_urls: program.source_urls,
-        source_licenses: program.source_licenses,
-        composition,
-        action_cost,
-        typed_ir: true,
-        search_rank,
-        referenced_params,
-    }))
 }
 
 #[cfg(feature = "meta-language")]

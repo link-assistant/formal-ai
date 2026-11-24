@@ -1,0 +1,250 @@
+[
+  {
+    "source": "assess-pages-queue-macro-observations.py",
+    "file": "captured-source-1.gz",
+    "rawSha256": "d027098591fd01057d85f2e0672ee8f869110e1bc2219332c4df10c61c152b67",
+    "archiveSha256": "0375a6e87a52fc94d28e21d89eaaf6f78a21e59390b835b9159f8fa4086ae082",
+    "bytes": 6519,
+    "lines": 136
+  },
+  {
+    "source": "assess-pages-queue-producer.py",
+    "file": "captured-source-2.gz",
+    "rawSha256": "2cb6bb17c660c11935b6492d86f277afc90cb5f17a8bcb7ff0e9747129d10f8a",
+    "archiveSha256": "2be255753c2d33186923832fdbdb0f99af9f134e7d6556fcec5ef958672fed29",
+    "bytes": 2557,
+    "lines": 48
+  },
+  {
+    "source": "assess-pages-queue-producer.stderr",
+    "file": "captured-source-3.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "assess-pages-queue-producer.stdout",
+    "file": "captured-source-4.gz",
+    "rawSha256": "93fcf926ce7530cc0611d2b8fc7dda286dce58fe64cf2b0d318d72fc7941cc00",
+    "archiveSha256": "19828554970cc59a3128629a2cfccefddf27d3bed8912f4726b677c132a67e54",
+    "bytes": 1075,
+    "lines": 36
+  },
+  {
+    "source": "check-macro-loading-heap.log",
+    "file": "captured-source-5.gz",
+    "rawSha256": "732f09700558b7fc902382c353de16e2c74e88cbbfbd08400cebd6694234a69a",
+    "archiveSha256": "43f7814f135c0e0f19b22a50e405aaf47fcc402e4b44cda3d09c52beafa9665b",
+    "bytes": 300,
+    "lines": 7
+  },
+  {
+    "source": "check-macro-loading-heap.py",
+    "file": "captured-source-6.gz",
+    "rawSha256": "9ce3ed8db82a7552c6f7a6f49ae89f25282986bae252f36ce5fe24208860ba81",
+    "archiveSha256": "5899d038cbb195d84f16cb4399fdfa62f9254691b4cf6d0f8bc2660cd9a914bf",
+    "bytes": 1229,
+    "lines": 20
+  },
+  {
+    "source": "draft-macro-loading-heap-control.log",
+    "file": "captured-source-7.gz",
+    "rawSha256": "a8b8045c45bc2bf6fa1aed21c03a652ebd060324fda8fdfbf3f42af295a2e1cf",
+    "archiveSha256": "28f553742aad8ff5c7a18997fe1e5726f37944aed2012a6e519e3803473f4477",
+    "bytes": 239,
+    "lines": 4
+  },
+  {
+    "source": "draft-macro-loading-heap-control.py",
+    "file": "captured-source-8.gz",
+    "rawSha256": "9bd590b1fc536b91b5fd7d1fe71d611e5d20d7af00014a5dfc6a553f977b3df5",
+    "archiveSha256": "542bc64eb0e92ed05d49e4ffcec08c8dc1336410359b29d08d09862dc38f491d",
+    "bytes": 1170,
+    "lines": 18
+  },
+  {
+    "source": "inspect-pages-queue-hosted-controls.log",
+    "file": "captured-source-9.gz",
+    "rawSha256": "29b23551750b933407eb6d9ae7cad5222abd43a39d1784df317905208ebdd858",
+    "archiveSha256": "55d89045d921384a2e492cad66b0e0784bfc1b5272428963b0f1effcb5f09049",
+    "bytes": 23605,
+    "lines": 238
+  },
+  {
+    "source": "inspect-pages-queue-hosted-controls.py",
+    "file": "captured-source-10.gz",
+    "rawSha256": "35485f5cc77d813826e795aaa436d75b07d2894a69dc7be97d029e8ed8d52752",
+    "archiveSha256": "cb0b952a8da61039d58ba7cb34ee8cb61d76c4021848fcdf0a14c9bf8bcaab98",
+    "bytes": 1592,
+    "lines": 30
+  },
+  {
+    "source": "macro-loading-heap-control/actual-profile.stderr",
+    "file": "captured-source-11.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "macro-loading-heap-control/actual-profile.stdout",
+    "file": "captured-source-12.gz",
+    "rawSha256": "e096fa525ec22a3313a2850474a5d1fda85e9df7c8481beb0a9cdc6626a03d37",
+    "archiveSha256": "ca19b6da27eeb5d7455305fdeb46d74eafa3c15d933db2a940742f76acd50b69",
+    "bytes": 2059,
+    "lines": 26
+  },
+  {
+    "source": "macro-loading-heap-control/before.json",
+    "file": "captured-source-13.gz",
+    "rawSha256": "bbd5059eafa2b40d1577b9b9f7a19f440332614bd9f6008ee9bd86f3199b4e31",
+    "archiveSha256": "4ae069c3265cdd459cfa61099485deab390e2ad5e95299c4852d720fded49326",
+    "bytes": 47,
+    "lines": 1
+  },
+  {
+    "source": "macro-loading-heap-control/before.stderr",
+    "file": "captured-source-14.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "macro-loading-heap-control/before.stdout",
+    "file": "captured-source-15.gz",
+    "rawSha256": "22975a9d3d5f8e2afd87e90e9bd3d44d002069fc636c0f4ce9809aef44314df2",
+    "archiveSha256": "f2ee484f4f26895d0eb59c9cca6e445a6ad6194c1c2b9d288bbe4b0c2831f12f",
+    "bytes": 2517,
+    "lines": 54
+  },
+  {
+    "source": "macro-loading-heap-control/corrected-records.json",
+    "file": "captured-source-16.gz",
+    "rawSha256": "e5a1a89ff198c47357f49ccc3955922380ca42456d1ce6e3c3f757cc4053794d",
+    "archiveSha256": "6e7708a7eb60fabb18d51c752724daa162e42440dc116aadf064c6a97b769b83",
+    "bytes": 570,
+    "lines": 31
+  },
+  {
+    "source": "macro-loading-heap-control/gates.stderr",
+    "file": "captured-source-17.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "macro-loading-heap-control/gates.stdout",
+    "file": "captured-source-18.gz",
+    "rawSha256": "9ef0045d7e1b7aa1f76faba912379b5cba0adc0c402d6acb30057c2bb212ea76",
+    "archiveSha256": "5343e69eae53ec128ee898061ec48315d9868e4df2614ade421d01e0daa91810",
+    "bytes": 159,
+    "lines": 6
+  },
+  {
+    "source": "macro-loading-heap-control/profile.stderr",
+    "file": "captured-source-19.gz",
+    "rawSha256": "6b434e2dcdb88373c1e9828dc764c8b492996fffc98a4f96d58eef70a45eb9ff",
+    "archiveSha256": "64ff669caa0911d9f5d8c2abadbddcf8211015b4d933806bcde3e46cb6b036f2",
+    "bytes": 67,
+    "lines": 1
+  },
+  {
+    "source": "macro-loading-heap-control/profile.stdout",
+    "file": "captured-source-20.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "macro-loading-heap-control/records.json",
+    "file": "captured-source-21.gz",
+    "rawSha256": "6637eef03e45aa06bc46cacb5bfae7299c89da237052b5da4a3de939207f9028",
+    "archiveSha256": "0b74d289f11c79899d007434b8212b4360323c4cc6c7c2f059e799f138a5cda2",
+    "bytes": 380,
+    "lines": 22
+  },
+  {
+    "source": "macro-loading-heap-control/security.stderr",
+    "file": "captured-source-22.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "macro-loading-heap-control/security.stdout",
+    "file": "captured-source-23.gz",
+    "rawSha256": "98817caf55ebfd1ddecfa8ddac90bf0fb278d155a5af0ea54df08b352c066e54",
+    "archiveSha256": "0d3f97ec2141e450f9fb3b8c8c8610789071a05519dfbabed25f48445792e218",
+    "bytes": 2124,
+    "lines": 27
+  },
+  {
+    "source": "macro-loading-heap-control/whitespace.stderr",
+    "file": "captured-source-24.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "macro-loading-heap-control/whitespace.stdout",
+    "file": "captured-source-25.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "pages-queue-hosted-controls/actionlint.stderr",
+    "file": "captured-source-26.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "pages-queue-hosted-controls/actionlint.stdout",
+    "file": "captured-source-27.gz",
+    "rawSha256": "199b3c70bdd6343d5763f622adc2d6b71c869468ec0cbd7262fd9528dbf13fd5",
+    "archiveSha256": "110eaad9c1a525bee0b9bcdb54714869572050d1d41cf796c5d3fba2da2f8592",
+    "bytes": 103053,
+    "lines": 616
+  },
+  {
+    "source": "repair-macro-loading-heap.log",
+    "file": "captured-source-28.gz",
+    "rawSha256": "89476a1cb8fcd0e76d9daddc43a4cb1f402b00330242219104f2bafd276a7857",
+    "archiveSha256": "45cee4aa5ab286a1b921924b2c108200eb1a3d85b914505cbac84d0b4f9a1644",
+    "bytes": 395,
+    "lines": 11
+  },
+  {
+    "source": "repair-macro-loading-heap.py",
+    "file": "captured-source-29.gz",
+    "rawSha256": "cbae20fa6b3c95a8bf6e45a60d7058c663e409d1133c64f9d977cb1dee0bc6ce",
+    "archiveSha256": "eaf360aa0795569c11805a24960dfe1cca11b3f6a45629e5922969aa673e8655",
+    "bytes": 3273,
+    "lines": 49
+  },
+  {
+    "source": "start-assess-pages-queue-producer.log",
+    "file": "captured-source-30.gz",
+    "rawSha256": "3f3be4086f17d65ef49c24e7e72840afbf613aa7eda37786253bc30b3ed0b88f",
+    "archiveSha256": "b6b9062867fff6530e8bca44e62e06f7dcbc0bac46e532cf7c350dc31f90315c",
+    "bytes": 1323,
+    "lines": 41
+  },
+  {
+    "source": "start-assess-pages-queue-producer.py",
+    "file": "captured-source-31.gz",
+    "rawSha256": "0a254387a483351befdcb5d4b40db88bb0e0ff953082c90fea914f80e608655e",
+    "archiveSha256": "0e3f5b15a20ebe2a399f947387bd4e6e883c33369d014dc6511e82f4783240bc",
+    "bytes": 775,
+    "lines": 16
+  }
+]

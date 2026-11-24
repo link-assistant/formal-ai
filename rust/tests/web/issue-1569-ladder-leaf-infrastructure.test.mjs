@@ -111,3 +111,13 @@ test('both ladder Bun setups use the verified composite', () => {
   }
   assert.ok(!fs.readFileSync(path.join(root, '.github/workflows/issue-1028-agent-ladder.yml'), 'utf8').includes('oven-sh/setup-bun'));
 });
+
+
+test('native transport replay uses the verified pinned Bun installer', () => {
+  const workflow = load('.github/workflows/native-type-check.yml');
+  const setup = workflow.jobs.clippy.steps.find(step => step.id === 'bun');
+  assert.equal(setup.uses, './.github/actions/setup-bun-verified');
+  assert.deepEqual(setup.with, {'bun-version-file': '.bun-version', 'no-cache': true});
+  assert.equal(setup['continue-on-error'], undefined, 'a failed final install must fail the job');
+  assert.equal(setup.if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
+});

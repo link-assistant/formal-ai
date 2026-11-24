@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "warnings": 42,
+  "workflowLines": 1394,
+  "additionalHelperBodyUnchanged": true,
+  "additionalHelperBodySha256": "3af0f1be3f251eb278a45308cb937a0b92bf8a36f65e35f972ed8e943318a546",
+  "additionalWorkflowExactInverse": true,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

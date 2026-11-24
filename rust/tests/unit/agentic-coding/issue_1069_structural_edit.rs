@@ -21,7 +21,9 @@
 //! array, a `matches!` alternation and a parenthesised tuple without a new
 //! branch per shape.
 
-use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
+use formal_ai::agentic_coding::{
+    AgenticPlan, PlannedToolCall, plan_chat_step, tool_result::complete_owned_source_read_frame,
+};
 use formal_ai::{ChatMessage, ToolCall};
 
 const TOOLS: [&str; 3] = ["read_file", "write_file", "run_shell_command"];
@@ -40,7 +42,11 @@ fn record(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str)
         call.tool.clone(),
         call.arguments.clone(),
     )]));
-    messages.push(ChatMessage::tool_result(id, &call.tool, result));
+    messages.push(ChatMessage::tool_result(
+        id,
+        &call.tool,
+        complete_owned_source_read_frame(result),
+    ));
 }
 
 fn argument(call: &PlannedToolCall, key: &str) -> String {
@@ -120,6 +126,74 @@ fn issue_1069_keeps_the_named_array_insertion() {
     assert!(
         updated.contains("\"Cargo.lock\", \"bun.lock\", \"uv.lock\""),
         "the array keeps its comma separator: {updated}"
+    );
+}
+
+#[test]
+fn structural_insertion_uses_only_the_exact_target_source() {
+    let mut messages = vec![ChatMessage::user(
+        "Edit the tracked file src/names.rs: add \"c\" to the NAMES list.",
+    )];
+    let read = next_call(&messages);
+    assert_eq!(argument(&read, "path"), "src/names.rs");
+    let other = PlannedToolCall {
+        tool: read.tool.clone(),
+        arguments: serde_json::json!({"path":"tests/names.rs"}).to_string(),
+    };
+    let decoy = "const NAMES: &[&str] = &[\"unrelated\"];\n";
+    record(&mut messages, &other, decoy);
+    let retry = next_call(&messages);
+    assert_eq!(retry.tool, read.tool);
+    assert_eq!(argument(&retry, "path"), "src/names.rs");
+
+    record(
+        &mut messages,
+        &read,
+        "const NAMES: &[&str] = &[\"a\", \"b\"];\n",
+    );
+    record(&mut messages, &other, decoy);
+    let write = next_call(&messages);
+    assert_eq!(argument(&write, "path"), "src/names.rs");
+    assert_eq!(
+        argument(&write, "content"),
+        "const NAMES: &[&str] = &[\"a\", \"b\", \"c\"];\n"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn structural_insertion_binds_absolute_reads_to_the_host_workspace() {
+    let target = "src/names.rs";
+    let mut messages = vec![ChatMessage::user(
+        "Edit the tracked file src/names.rs: add \"c\" to the NAMES list.",
+    )];
+    let root = std::env::current_dir().expect("the test workspace has a current directory");
+    let read = next_call(&messages);
+    let absolute_read = |path: &std::path::Path| PlannedToolCall {
+        tool: read.tool.clone(),
+        arguments: serde_json::json!({"filePath": path}).to_string(),
+    };
+    // The full target suffix alone cannot establish a workspace binding.
+    let decoy = absolute_read(&root.join("other-checkout").join(target));
+    record(
+        &mut messages,
+        &decoy,
+        "const NAMES: &[&str] = &[\"wrong\"];\n",
+    );
+    let retry = next_call(&messages);
+    assert_eq!(retry.tool, read.tool);
+    assert_eq!(argument(&retry, "path"), target);
+
+    record(
+        &mut messages,
+        &absolute_read(&root.join(target)),
+        "const NAMES: &[&str] = &[\"a\", \"b\"];\n",
+    );
+    let write = next_call(&messages);
+    assert_eq!(argument(&write, "path"), target);
+    assert_eq!(
+        argument(&write, "content"),
+        "const NAMES: &[&str] = &[\"a\", \"b\", \"c\"];\n"
     );
 }
 

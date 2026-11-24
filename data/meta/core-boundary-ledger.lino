@@ -1,4 +1,14 @@
 core_boundary_ledger
+  note "Issue #1580 removes an intermediate documentation block conversion. documentation_method.rs falls from 324 to 323 lines and the measured source ceiling falls by one."
+  note "Issue #1580 measures two added documentation interpreter lines selecting the existing prose-language detector before whole-prompt fallback (322 to 324). Existing file counts, dispositions and outside-core ceilings remain unchanged."
+  note "Issue #1580 closes the remaining native documentation-provider consumer after reference-list migration. The shared seed reader replaces its pipe split in documentation_method.rs (319 to 322 lines), adding exactly 3 promoted interpreter lines; outside-core ceilings, source counts and every disposition stay unchanged."
+  note "Issue #1580 retains a formalized lookup request in fact_live_answer.rs (380 to 384 lines) and the actual current-call source outcomes in refused synthesis (program_synthesis.rs 196 to 211). The exact census adds nineteen source lines and fifteen outside-core lines; every existing file count, disposition and promotion decision stays binding. No source result or executable draft is fabricated."
+  note "Issue #1580 measures nineteen source lines for preserved arithmetic emitter origins (mod.rs 743 to 751) and longest seeded explanation prefixes with leading-only function-word removal (fact_live_answer.rs 369 to 380). No handler is excluded or promoted, no rule vocabulary is embedded, and both file-count ceilings and every disposition remain unchanged; the outside-core line census adds only the eight event-origin lines."
+  note "Issue #1580 reconciles main ffd50eb4 with four conserved child modules: statistics/word_problems.rs (111 lines), text_rewrite/genre_writing.rs (302), text_manipulation/replacement.rs (119), and web_search_intent/followup.rs (115). Their parents and the retained parser, coreference and calendar guards yield exactly 95 sources and 36680 lines (28 net lines above main). The coreference ownership guard accounts for four lines in fact_live_answer.rs (365 to 369). All existing dispositions are retained; the measured migration ceiling falls from 17884 to 17669 across the same 48 debt files."
+  note "Issue #1580 conserves all three genre-writing functions and their comments in text_rewrite/genre_writing.rs. The parent falls from 941 to 643 lines and the child has 302; module imports/re-export add 4 source lines. The exact census is 95 files and 37190 lines; dispositions and outside-core ceilings are unchanged."
+  note "Issue #1580 restores typed text-operation ownership before generic prompt-data field extraction. The reusable parser guard adds four measured lines to the promoted prompt_data.rs interpreter (559 to 563); source_lines_max increases by four to 37186. Handler dispositions and outside-core ceilings are unchanged."
+  note "Issue #1580 conserves the complete statistics word-problem function in a child module: statistics.rs 976 to 865 lines and statistics/word_problems.rs 111 lines. The complete extraction retains the original aggregate line count. All prior dispositions and outside-core ceilings remain unchanged; the exact recursive source census is 93 files and 36532 lines."
+  note "Issue #1580 shares numeral spans for calendar clock parsing and removes the duplicate digit-only scanner. The reviewed calendar_create.rs baseline falls from 671 to 668 lines; source_lines_max and outside_core_lines_max each fall by three. Handler dispositions remain unchanged."
   issue 918
   note "PR1188 finite gate repair: generic seeded bare/prefix slot projections now belong to Lexicon; the proof interpreter reuses them, lowering its reviewed source from258 to239lines and both measured handler ceilings by19. Courtesy behavior remains covered by the original multilingual proof checks."
   note "Issues 1395 and 1396 add twelve source lines wiring the shared data-owned practical-goal interpreter into existing procedural entry points. Handler dispositions and semantic-debt ceilings remain binding; this census records actual integration, not implementation authorship."
@@ -6,6 +16,7 @@ core_boundary_ledger
   note "Issue #1588 records the measured sentence-local conversion gate, sentence-local scheduling requests with bound anchors and Gregorian date-offset interpreter in both runtimes. Two reusable seed-driven interpreter modules are ledgered; existing dispositions and migration debt measures are retained."
   note "Issue #1582 merge with #1588 retains both changes and remeasures the combined handler census; no disposition or semantic-debt category changes."
   note "Issue #1582 continuation measures the shared direct-request recognizer in solver_handler_how.rs; quoted permission text remains owned by its enclosing task. All dispositions are retained."
+  note "Issue #1580 retains seeded membership evidence alongside retrieved matches. Removing the obsolete conditional and its trailing blank line lowers verifiable_task.rs from 795 to 793 lines and source_lines_max by two; dispositions and migration ceilings are unchanged."
   note "Issue #1613 replaces the single-method answer with a source-configured interpreter that validates publisher captures. The measured 319 new interpreter lines add no outside-core handler debt."
   note "Issue #1613 measures the indexed publisher fallback and the publisher recurrence entry point. These dispatch changes bind the same request and source settings to the new source-backed interpreters. Existing handler dispositions and semantic-debt ceilings are retained."
   note "Issue #1613 records dated publisher quote routing and removes the fixed-rate branch in compound interest."
@@ -18,10 +29,10 @@ core_boundary_ledger
   note "Issue #1613 removes the compiled oracle fallback and delegates stdout generation and reporting to the shared coding interpreter."
   note "Issue #1613 measures caller-supplied creative evidence and registry-based topic summaries. Creative itinerary and verse parsing replace fixed tables, and the summary interpreter owns reusable subject lookup."
   note "Issue #1613 removes the canned repository fetch module and combines the duplicate project lookup entry points. The shared fetch handler and summary interpreter read publisher captures and preserve caller network policy, leaving 91 sources and 17860 outside-core lines."
-  source_file_count_max 91
-  source_lines_max 36611
+  source_file_count_max 95
+  source_lines_max 36677
   outside_core_file_count_max 48
-  outside_core_lines_max 17843
+  outside_core_lines_max 17648
   note "Issue #1632 removes the technical search plan from conversational replies. The procedural handler renders the seeded evidence gap and the synthesis handler records that outcome. The measured handlers are 836 and 183 lines."
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
   note "Issue #1138 B9, plan 09 leaf 1 corrected the four handlers outside rust/src/solver_handlers. Plan 08 promoted the generic verifiable-task interpreter; the URL parsing split adds one recursively counted source but its structural parser reads language evidence from seed roles, so it is promoted core machinery rather than migration debt. Plan 09 leaf 17 registered the M2 retrieval interpreter as a component beside the census. Plan 09 leaf 18 retired the concept-lookup orchestration into rust/src/concepts.rs and the network, refresh, learn and conflict procedures into rust/src/retrieval_procedures.rs, lowering the dispatcher module and the two line ceilings by the same 350 lines. The leaf 18 landing then rebased the census on the committed tree: the verifiable-task interpreter that plan 08 promoted landed at 834 lines, not the 750 first recorded, because its derive family (flow signs, role offsets, unit conversion) that lowers seed-declared expectations into ProgramIr candidates grew past the early estimate; the dispatcher module settled at 582 lines after the 350-line retirement, and seven lines left the reviewed core outside the census, so both ceilings track the honest counts. Re-measured 2026-09-20 after the issue #1021 routing fix (e4f0b3ac4) and plan 09 leaf 41 (12aa51b29) landed with the ledger unrefreshed: solver_handler_how.rs gained the honest-gap and mutating-request precedence arms, solver_handler_units.rs and solver_handlers/pattern_inference.rs grew their seed-driven rules, for 72 net lines; both ceilings now record the measured 20439 and 19456 rather than the stale 20367 and 19384.Re-measured 2026-09-21 for the plan 16 L1 three-source-roots move; the crate sits under rust/ and every ledger path moved with it, the calendar-create split and the previously unledgered policy_gates.rs raise source_file_count_max to 53, eleven baselines re-record the measured tree, and ledgering the two previously uncounted rows raises both line ceilings to 20787 and 19857 with outside_core_file_count_max at 51.Re-measured 2026-09-22 after the recognition and routing batches landed with the ledger unrefreshed: calendar_create.rs gained the elliptical arm and clock-hour role of the entity-grounded hours work, conversation_summary.rs gained empty-history ownership so a summarize request never falls through ownerless, and software_project.rs gained its routing retirement, for 39 net lines; both ceilings record the measured 20826 and 19896.Re-measured 2026-09-22 after the specification-red batch (bb43dbe90) landed with the ledger unrefreshed: conversation_summary.rs gained the courtesy-frame guard that strips every courtesy and directive surface before an unknown fallback (164 to 194 lines), solver_unknown_reasoning.rs gained the bare-term escape and the merge-arm-decline gate, and solver_helpers gained the shared miss_names_consulted_sources helper, for 27 net lines; outside_core_lines_max records the measured 19923. The batch J clippy sweep (5e1cc2f3d) then reflowed two ledgered rows after that measure, calendar_create.rs losing three redundant lines and verifiable_task.rs gaining one, so source_lines_max records the measured 20854.Re-measured 2026-09-22 after the G4 recall-answer batch (a5db54c57) landed with the ledger unrefreshed; conversation_memory/mod.rs gained the seeded summary-answer arm that answers a summary request from the recorded conversation instead of routing it away (813 to 829 lines), and web_search_intent.rs shed two cue lines in the personal-facts paydown (902 to 900 lines), for 14 net lines; both ceilings record the measured 20868 and 19937.Re-measured 2026-09-25 for the plan 16 L2g landing (70a18ddf4): the new translate_write.rs std half (write_one and the transactional write_tree the CLI and the agent driver share), the source_tree_request recognizer in meta_translate.rs, and the translate_source_tree solver family in solver_handlers/mod.rs (586 to 651 lines) grew the tree by 65 net lines; both ceilings record the measured 20933 and 20002.Re-measured 2026-09-30 for the bulk QA, reasoning, and coding batch (issues #1172, #1173, #1174, #1175, #1176, #1177): thirteen new promote rows register the interpreters the batch delivered native with seed vocabulary (summarization_request, text_rewrite, the nine code-task handlers, statistics with word problems, unit_conversion), raising source_file_count_max to 66; the same batch grew calendar.rs (issue #1176 day-offset and week arithmetic), mod.rs (issue #1174 free-sentence translation arm plus the re-exports), software_project.rs (issue #1175 object-head boundary detection), benchmark_prompts.rs (issue #1172 word-boundary QA), and live_search.rs (issue #1173 fallback search execution) while web_requests.rs shrank by the same move, so both line ceilings record the measured 27459 and 20579. Re-measured again the same day for the issue #1175 vocabulary extraction: the multilingual phrase tables left software_project.rs (1167 to 843 lines) for the promoted software_project_phrases.rs interpreter (366 lines) reading data/seed/software-project-phrases.lino, the dispatcher module shed its unused re-exports for 767 lines, and the fourteenth promote row raises source_file_count_max to 67, with both line ceilings recording the measured 27499 and 20253."
@@ -95,7 +106,7 @@ core_boundary_ledger
     reason "How-to cue vocabulary, source ordering and rendered prose are domain knowledge over the sources registry. Re-measured 2026-09-20: the issue #1021 routing fix (e4f0b3ac4) added the honest-gap and mutating-request precedence arms, growing the landed file from 884 to 930 lines with the ledger unrefreshed."
   source rust/src/solver_handler_how_synthesis.rs
     disposition migrate
-    baseline_lines 183
+    baseline_lines 180
     data_target "how-to synthesis bounds and outcome rules"
     reason "Which sources a synthesis consults and how its outcome reads are declared policy, not a compiled branch."
   source rust/src/solver_handler_oracle.rs
@@ -145,7 +156,7 @@ core_boundary_ledger
     reason "Date intent, recurrence policy, and calendar rendering are domain knowledge. Re-measured 2026-09-30: issue #1176 added the day-offset and week-arithmetic arms with language-neutral evidence-log derivations, growing the file from 486 to 722 lines. Re-measured 2026-10-07 for PR #1188: the R1017 date-weekday arm dispatches to calendar/date_weekday.rs (756 lines). Re-measured 2026-10-08 for the issue #918 calendar batch: the weekday names and the relation and current-day sentences moved into seed data (662 lines). Issue #1588 remeasures sentence-local admission and bound calendar anchors."
   source rust/src/solver_handlers/calendar_create.rs
     disposition migrate
-    baseline_lines 671
+    baseline_lines 668
     data_target "calendar event creation rules"
     reason "Split from calendar.rs so both stay under the 1000-line file gate; the routed create entry and event-creation recognition are domain knowledge over meanings-calendar.lino. Re-measured 2026-09-22: the entity-grounded hours batch added the elliptical arm and the clock-hour role, growing the landed file from 612 to 626 lines. Re-measured again after the batch J clippy sweep (5e1cc2f3d) removed three redundant lines. Re-measured 2026-10-07 for PR #1188: the standalone create gate accepts a seeded calendar_weekday as a date signal, so "on Friday" schedules like "tomorrow" (628 lines). Re-measured 2026-10-08 for the PR #1188 R1175 probe pass (p215): the routed create arm declines a trip plan when its own event recognizer finds no event (636 lines). Re-measured 2026-10-08 for the issue #918 calendar batch: its cue lists, default title and confirmation templates moved into seed data (591 lines). Issue #1588 remeasures sentence-local admission and bound calendar anchors."
   source rust/src/solver_handlers/calendar_ics.rs
@@ -269,7 +280,7 @@ core_boundary_ledger
     reason "Descriptions of the meta algorithm belong in inspectable seed knowledge. Re-measured 2026-10-07 for PR #1188: why-questions now claim the turn only when they address the assistant through a seeded self-reference, so 'Why does this fail: …' stays a debugging request (345 lines)."
   source rust/src/solver_handlers/mod.rs
     disposition migrate
-    baseline_lines 743
+    baseline_lines 751
     data_target "handler routing, response, and domain rules"
     reason "This mixed dispatcher embeds specialized behavior and must be split before any primitive is promoted. Re-measured 2026-09-25 for plan 16 L2g: the translate_source_tree solver family (read the named js or ts source, render the target or the named gap, write nothing) grew the landed file from 586 to 651 lines with the ledger unrefreshed. Re-measured 2026-09-30 for the bulk QA batch: issue #1174's free-sentence translation arm inside try_translation (a sentence with no lexical route composes a translation attempt instead of declining) and the fourteen new pub-use re-exports grew the landed file from 651 to 769 lines. Re-measured 2026-10-07 for PR #1188: try_algorithm reads the seeded `sort` operation in every language instead of an English `sort` substring (`Напиши алгоритм сортировки на Python`). Re-measured again for PR #1188: try_arithmetic no longer reports an evaluation error for a backtick span, which is pasted code rather than a calculator expression (`What's wrong with `def average(xs): …``), so the debugging handler answers (777 lines). Re-measured 2026-10-07 for issues #1172 R3/R8 and #1186: the re-exports of the live fact answer and the researched explanation, and of the RML export (791 lines). Re-measured 2026-10-08 for the issue #918 algorithm batch: try_algorithm left for the algorithm rules of data/seed/handler-rules.lino with its two re-exports and its execution-status import (782 to 748 lines). Re-measured 2026-10-08 for issue #1173 R1173-3 (p324): try_translation declines a quantity between two units when no target language is named, as the browser twin does. Re-measured 2026-10-08 for the issue #918 translation migration (MIGRATE4): the two gap answers and the program-translation heading of try_translation are seeded translation_* responses read through one translation_text reader, which with its slot arrays outweighs the two format strings it replaced (756 to 766 lines)."
   source rust/src/solver_handlers/natural_language_tools.rs
@@ -319,7 +330,7 @@ core_boundary_ledger
     reason "R1172-2 and R1172-6: a seeded fact answers only when the question's formalized subject resolves to the record's Wikidata item through the fact store's own label index, and a comparison aligns two subjects' seeded facts by relation. Cues, joiners and response wording are seed data; the file embeds no fact and no canned answer."
   source rust/src/solver_handlers/fact_live_answer.rs
     disposition promote
-    baseline_lines 365
+    baseline_lines 384
     core_component fact_subject_interpreter
     reason "R1172-3 and R1172-8: the fact_lookup row asks Wikidata through the capture client when no seeded record answers, reading the relation, its grounded property and the subject term from seed roles, and composes an explanation from the statements of pages the R1163-4 retrieve-and-formalize path captured. Every word it matches or renders is seed data (fact_relation, interrogative_opener, statement_function_word, capability_act_explain, and the fact_live_answer and explanation_research templates); it embeds no fact and no canned answer."
   source rust/src/solver_handlers/project_origin.rs
@@ -329,7 +340,7 @@ core_boundary_ledger
     reason "Reads the declared GitHub issue comment through the bounded source client and verifies the publisher, project, creator and optional tool before rendering the claim. The interpreter carries no project name or creator."
   source rust/src/solver_handlers/prompt_data.rs
     disposition promote
-    baseline_lines 559
+    baseline_lines 563
     core_component "prompt-data-interpreter"
     reason "Issue #1593: the interpreter binds caller-supplied categories, record relations, extraction fields and language evidence without a network source. Prompt frames, semantic facets and renderings are read from seed data."
   source rust/src/solver_handlers/prompt_text_question.rs
@@ -387,7 +398,7 @@ core_boundary_ledger
     reason "Blueprint selection is coding-domain policy interpreted by generic construction machinery."
   source rust/src/solver_handlers/program_synthesis.rs
     disposition migrate
-    baseline_lines 196
+    baseline_lines 211
     data_target "coding-task discovery, structural meanings, and localized synthesis labels"
     reason "The handler now only orchestrates specification, discovery, composition, verification, and rendering; task bodies were removed and the baseline ratcheted from 531 lines."
   source rust/src/solver_handlers/product_search.rs
@@ -422,7 +433,7 @@ core_boundary_ledger
     reason "Capability and architecture claims must remain auditable data rather than compiled assertions."
   source rust/src/solver_handlers/shell_command_compose.rs
     disposition promote
-    baseline_lines 818
+    baseline_lines 817
     core_component shell_command_compose_interpreter
     reason "Issue #1177: assembles find commands from the seed command vocabulary and the cited manual pages in manual-pages.lino; composition logic is core, the verbs and manuals are data. Re-measured 2026-10-07 for PR #1188: the composer reads its words from the seeded shell_cue map and composes counting pipelines ending in wc -l (719 lines). The clippy option_if_let_else fix spells the piped/composed choice as map_or_else (722 lines). Re-measured 2026-10-07 for PR #1188: an agent opt-in is left to the agent flow, which runs the command in the sandbox (727 lines)."
   source rust/src/solver_handlers/shell_command_transform.rs
@@ -455,9 +466,14 @@ core_boundary_ledger
     baseline_lines 660
     core_component sql_synthesis_interpreter
     reason "Issue #1177: maps request clauses to a single SELECT over seed vocabulary; the clause parser and emitter are the core interpreter."
+  source rust/src/solver_handlers/statistics/word_problems.rs
+    disposition promote
+    baseline_lines 111
+    core_component statistics_interpreter
+    reason "Issue #1580 extracts the existing complete seed-driven word-problem entry point from statistics.rs. The original body and comments are conserved; its promoted statistics disposition remains unchanged."
   source rust/src/solver_handlers/statistics.rs
     disposition promote
-    baseline_lines 976
+    baseline_lines 865
     core_component statistics_interpreter
     reason "Issue #1176: exact decimal statistics engine (mean, median, mode, variance, standard deviation, range) over an explicit dataset, plus the word-problem relation extractor over seed markers (price-times-count change and total); the operation meanings and every response template are seed data. Re-measured 2026-10-07 for PR #1188: issue #1176 percentiles and the R1017 primality arm, which dispatches to statistics/primality.rs (919 lines). The clippy if_not_else sweep spells the percentile rank as an if-else expression (920 lines). Re-measured 2026-10-08 for the PR #1188 R1175 probe pass: one-item change word problems (p350, the seeded pay/paid payment marker) and the measurement arm declining a statistic over a stated list (p273) (975 lines)."
   source rust/src/solver_handlers/summarization_request.rs
@@ -487,12 +503,17 @@ core_boundary_ledger
     reason "Edit request vocabulary and operation selection belong in seed data."
   source rust/src/solver_handlers/text_manipulation.rs
     disposition migrate
-    baseline_lines 949
+    baseline_lines 835
     data_target "text transformation rules"
     reason "Transformation names, parsing policy, and rendering are domain knowledge. Re-measured 2026-10-07 for PR #1188: counting questions, line filters by prefix, character-class counts and chain ordering by vocabulary position with counts last (898 lines). Re-measured 2026-10-07 for PR #1188: names_format_conversion — a format-conversion cue in the prose around the quoted literals reads the payload as data (`Convert this JSON to YAML: {...}`), while a cue inside a quote stays content. Re-measured 2026-10-08 for the issue #918 text_manipulation batch: the replacement, input-context and input-continuation cues moved into the text_* tables of data/seed/handler-rules.lino, read by one table reader that also says which quoted operand is the target (948 lines; fourteen literal predicates gone)."
+  source rust/src/solver_handlers/text_rewrite/genre_writing.rs
+    disposition promote
+    baseline_lines 302
+    core_component text_rewrite_interpreter
+    reason "Issue #1580 moves the complete seed-driven genre-writing entry point and its two private helpers out of text_rewrite.rs. Original bodies and comments are conserved; the promoted interpreter disposition remains unchanged."
   source rust/src/solver_handlers/text_rewrite.rs
     disposition promote
-    baseline_lines 941
+    baseline_lines 643
     core_component text_rewrite_interpreter
     reason "Issue #1174: in-place rewrite engine (register, grammar agreement, commit-message and email composition) applying seed substitution tables, agreement rules, and genre style guides; the engine is core, the tables are data. Re-measured 2026-10-08 for R1188-U20 (850 lines): the free-text payload reader takes the CJK full-width colon as a command colon and counts each CJK character as a payload word (payload_word_count), and command_head is public so the handler-rule command_head subject reads the same head the transforms do."
   source rust/src/solver_handlers/unit_conversion.rs
@@ -507,7 +528,7 @@ core_boundary_ledger
     reason "Intent classification is seed knowledge consumed by the meta algorithm."
   source rust/src/solver_handlers/verifiable_task.rs
     disposition promote
-    baseline_lines 795
+    baseline_lines 793
     core_component verifiable_task_interpreter
     reason "Generic interpreter of seed-declared expectations: composes shared IR, executes it in the bounded workspace, and records observed checks without storing domain answers. The baseline tracks the re-measured 794 lines: the derive family that lowers seed expectations into ProgramIr candidates (flow signs, role offsets, unit conversion) grew past the early 750 estimate while staying seed-driven. Re-measured 2026-09-22 after the batch J clippy sweep (5e1cc2f3d) added one line."
   source rust/src/solver_handlers/web_requests.rs
@@ -522,12 +543,12 @@ core_boundary_ledger
     reason "Search-provider selection and result policy belong in data over a network surface. Re-measured 2026-09-30: issue #1173's fallback-executes-search path (a search the handler already decided on runs live when enabled, instead of returning instructions) grew the file from 87 to 138 lines."
   source rust/src/solver_handlers/web_requests/url_parse.rs
     disposition promote
-    baseline_lines 156
+    baseline_lines 155
     core_component seed_driven_url_interpreter
     reason "The module is generic structural machinery: URL syntax is parsed once and language-specific fetch/navigation evidence comes from role word forms in seed data. The shared seeded attachment-section reader keeps filenames and extracted text outside requested URL operands."
   source rust/src/solver_handlers/web_search_intent.rs
     disposition migrate
-    baseline_lines 910
+    baseline_lines 812
     data_target "web-search intent and query rules"
     reason "Search cues, query rewriting, and provider policy are domain knowledge."
   source rust/src/solver_handlers/word_definition.rs
@@ -561,8 +582,20 @@ core_boundary_ledger
   note "The final #1582 native read-policy review removes one obsolete web-search comment line; its source baseline and both sums fall by one. Moving eight remaining read gates off the CLI surface also lowers the outward dependency ceiling to 25."
   note "Issue #1589 merge of main PR #1583 preserves both client read-policy and duration/currency interpreters, dispositions and per-source baselines. Aggregate ceilings are measured from the combined tree."
   note "Issue #1589 merge of main PR #1602 preserves summary vocabulary and duration/currency interpreters. Aggregate ceilings and every baseline are measured from the combined tree; all dispositions remain unchanged."
+  source rust/src/solver_handlers/text_manipulation/replacement.rs
+    disposition promote
+    baseline_lines 119
+    core_component word-sequence-substitution-interpreter
+    reason "Issue #1580 promotion review against docs/design/minimal-core-boundary.md: Generic byte-range and normalized-token substitution over caller operands; no request recognition, vocabulary, response prose or routing rule. The parent retains all operation selection and seed lookup."
+  source rust/src/solver_handlers/web_search_intent/followup.rs
+    disposition promote
+    baseline_lines 115
+    core_component configured-clause-boundary-interpreter
+    reason "Issue #1580 promotion review against docs/design/minimal-core-boundary.md: Generic token-boundary scanning over caller-supplied verb surfaces, continuation surfaces and punctuation predicate. Seed role selection and web-search routing stay in the parent; this child imports no marker catalogue and owns no domain vocabulary."
+  note "Issue #1580 private helper moves preserve all migration debt: text_manipulation.rs 949 to 835 plus replacement.rs 119, web_search_intent.rs 910 to 804 plus followup.rs 107. The recursive census adds two files and six structural module/import/re-export lines; no disposition changes."
+  note "Issue #1580 corrects its initial conservative child dispositions after the promotion test: substitution and caller-configured boundary scanning are generic primitives; their parents retain all domain recognition, seed selection and policy. The handler debt ceiling stays 47; no debt-ratchet value changes. Prior classifications and their failed checks remain in history and receipts."
   source rust/src/solver_handlers/documentation_method.rs
     disposition promote
-    baseline_lines 319
+    baseline_lines 323
     core_component documentation-method-interpreter
     reason "Resolves qualified identifiers and ambiguity from a registered documentation publisher. Syntax and extraction are shared across publishers; the seed owns provider declarations and response wording."

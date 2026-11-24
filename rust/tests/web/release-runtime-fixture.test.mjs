@@ -69,7 +69,7 @@ function validateGraph(parent, child) {
   const ordinaryGroups = new Set();
   for (const role of ['auto_compile-release', 'observer', 'collect']) {
     const expected = 'formal-ai-release-fixture-check-' + role + '-${{ github.workflow }}-${{ github.ref }}';
-    assert.deepEqual(parent.jobs[role].concurrency, {group: expected, 'cancel-in-progress': true});
+    assert.deepEqual(parent.jobs[role].concurrency, {group: expected+"${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}", 'cancel-in-progress': "${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}"});
     assert.notEqual(expected, privateGroup, 'ordinary checks cannot own the private caller lease');
     ordinaryGroups.add(expected);
   }

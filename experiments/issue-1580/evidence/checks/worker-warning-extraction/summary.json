@@ -1,0 +1,195 @@
+{
+  "publishedHead": "84e1ad85fc70541ae64c59a8518dbce59b883e64",
+  "suppliedImplementation": true,
+  "independentAuthorshipCredit": 0,
+  "extraWarningsRemoved": 4,
+  "remainingWarnings": 87,
+  "sizeViolations": 0,
+  "ordinaryLimit": 1500,
+  "rustLimit": 1000,
+  "ordinaryWarningThreshold": 1400,
+  "rustWarningThreshold": 900,
+  "maintainedTestsPassed": 130,
+  "focusedTestsPassed": 45,
+  "typescriptFilesCurrent": 731,
+  "allLocalGates": {
+    "passed": 88,
+    "skipped": 53,
+    "failed": 0,
+    "total": 141
+  },
+  "localRustBuildPerformed": false,
+  "fullIssueComplete": false,
+  "extractions": [
+    {
+      "beforePath": "js/worker/formal_ai_worker_meaning_lexicon.js",
+      "afterPaths": [
+        "js/worker/formal_ai_worker_meaning_lexicon.js",
+        "js/worker/formal_ai_worker_notation.js"
+      ],
+      "beforeHead": "84e1ad85fc70541ae64c59a8518dbce59b883e64",
+      "beforeSha256": "b3bf55038b2c72cd82f19733c27b0a2093fee663643467b6ae544a31f1898bf5",
+      "beforeLines": 1460,
+      "afterLines": [
+        1157,
+        302
+      ],
+      "separatorHex": "0a",
+      "exactInverse": true,
+      "combinedCeilingBefore": 1460,
+      "combinedCeilingAfter": 1459
+    },
+    {
+      "beforePath": "js/worker/formal_ai_worker_code_tasks.js",
+      "afterPaths": [
+        "js/worker/formal_ai_worker_code_tasks.js",
+        "js/worker/formal_ai_worker_code_refactoring.js"
+      ],
+      "beforeHead": "84e1ad85fc70541ae64c59a8518dbce59b883e64",
+      "beforeSha256": "18c0a24f352f8c252adeb7e05af2ad4a68a22dcc33455b4ba7c48c6bd19fbc3f",
+      "beforeLines": 1417,
+      "afterLines": [
+        1083,
+        333
+      ],
+      "separatorHex": "0a",
+      "exactInverse": true,
+      "combinedCeilingBefore": 1417,
+      "combinedCeilingAfter": 1416
+    }
+  ],
+  "warnings": [
+    "data/parity/issue-1584-cnl-infeasible.json",
+    "data/meta/self-hosting-ledger-parts/0001.lino",
+    "data/meta/rename-map.lino",
+    "data/seed/meanings-routing-vocabulary.lino",
+    "data/seed/multilingual-responses.lino",
+    "data/seed/meanings-response-intents-handlers.lino",
+    "data/seed/multilingual-responses-synthesis.lino",
+    "data/seed/meanings-response-intents.lino",
+    ".github/workflows/desktop-release.yml",
+    "js/seed_loader.js",
+    "js/wasm-worker/src/lib.rs",
+    "js/app/application.jsx",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/release-staged.yml.txt",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/original-release-workflow.yml.txt",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity/project-parity-pre-repair-observations.json",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-statistics.rs",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-web_search_intent.rs",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-web_search_intent.rs",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-statistics.rs",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+    "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/.github_workflows_release.yml.before.txt",
+    "rust/embedded/data/seed/meanings-routing-vocabulary.lino",
+    "rust/embedded/data/seed/multilingual-responses.lino",
+    "rust/embedded/data/seed/meanings-response-intents-handlers.lino",
+    "rust/embedded/data/seed/multilingual-responses-synthesis.lino",
+    "rust/embedded/data/seed/meanings-response-intents.lino",
+    "rust/src/seed/embedded_registry.rs",
+    "rust/src/agentic_coding/capability_router.rs",
+    "rust/src/agentic_coding/planner.rs",
+    "rust/src/agentic_coding/work_item_file_io.rs",
+    "rust/src/agentic_coding/positional_edit.rs",
+    "rust/src/agentic_coding/shell_command.rs",
+    "rust/src/agentic_coding/module_function.rs",
+    "rust/src/agentic_coding/task_acceptance.rs",
+    "rust/src/agentic_coding/command_reroute.rs",
+    "rust/src/agentic_coding/evidence_record.rs",
+    "rust/src/agentic_coding/web_research.rs",
+    "rust/src/agentic_coding/workspace_line_operation.rs",
+    "rust/src/agentic_coding/write_request.rs",
+    "rust/src/agentic_coding/general_planner/owned_goals.rs",
+    "rust/src/agentic_coding/general_execution.rs",
+    "rust/src/formalization/text_statements.rs",
+    "rust/src/formalization/proposition_structure.rs",
+    "rust/src/execution_box/mod.rs",
+    "rust/src/solver_handlers/statistics.rs",
+    "rust/src/engine.rs",
+    "rust/src/meta_reasoner/reasoner.rs",
+    "rust/src/meta_executor.rs",
+    "rust/examples/generate_grammar_projection_rules/rules.rs",
+    "rust/tests/integration/issue_703_orchestration.rs",
+    "rust/tests/integration/issue_703_orchestration_followup.rs",
+    "rust/tests/integration/with_formal_ai.rs",
+    "rust/tests/unit/agentic-coding/agentic_general_planner.rs",
+    "rust/tests/unit/semantic_intent_routing.rs",
+    "rust/tests/unit/ci-cd/workflow_release.rs",
+    "rust/tests/unit/ci-cd/release_publishing.rs",
+    "rust/tests/unit/ci-cd/job_budget_fit.rs",
+    "rust/tests/unit/ci-cd/pinned_tool_images.rs",
+    "rust/tests/unit/memory_maintenance.rs",
+    "rust/tests/unit/docs_requirements.rs",
+    "rust/tests/unit/issue_1066_ladder_capability.rs",
+    "rust/tests/unit/issue_918_handler_rules_batch.rs",
+    "rust/tests/unit/coding_discovery/no_memorization.rs",
+    "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+    "rust/tests/unit/capability-routing/issue_1175_claim_routing.rs",
+    "rust/tests/unit/issue_844_statement_merge.rs",
+    "rust/tests/unit/specification/self_hosting_metric.rs",
+    "rust/tests/unit/specification/benchmarks.rs",
+    "rust/tests/unit/specification/text_manipulation.rs",
+    "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+    "rust/tests/unit/specification/external_benchmarks.rs",
+    "rust/tests/unit/specification/openai_compatibility.rs",
+    "rust/tests/unit/pull_request_1188_teach_f.rs",
+    "rust/tests/unit/data_files.rs",
+    "rust/tests/source/solver_helpers.rs",
+    "rust/tests/source/solver.rs",
+    "rust/tests/source/intent_formalization.rs",
+    "rust/tests/source/seed/meanings.rs",
+    "rust/tests/source/solver_handlers/software_project.rs",
+    "rust/tests/source/solver_handlers/mod.rs",
+    "rust/tests/source/solver_handlers/behavior_rules.rs",
+    "rust/tests/source/engine.rs",
+    "rust/tests/fixtures/meta-executor-parity.json",
+    "rust/tests/fixtures/source-fetch-provenance.json",
+    "docs/requirements-traceability.md",
+    "CONTRIBUTING.md",
+    "ts/seed_loader.ts"
+  ],
+  "retainedRecords": 360,
+  "allArchiveHashesVerified": true,
+  "initialPostArchiveNamingFailure": {
+    "observed": 94,
+    "ceiling": 90,
+    "renamedArchivePaths": 4,
+    "ceilingChanged": false
+  },
+  "correctedPostArchivePreflight": {
+    "allPassed": true,
+    "commands": [
+      {
+        "name": "check-abbreviations",
+        "exitCode": 0,
+        "seconds": 3.417
+      },
+      {
+        "name": "check-file-size",
+        "exitCode": 0,
+        "seconds": 5.309
+      },
+      {
+        "name": "check-tests-as-docs",
+        "exitCode": 0,
+        "seconds": 7.067
+      },
+      {
+        "name": "secretlint",
+        "exitCode": 0,
+        "seconds": 1.757
+      },
+      {
+        "name": "staged-whitespace",
+        "exitCode": 0,
+        "seconds": 0.13
+      }
+    ],
+    "allArchiveHashesVerified": true,
+    "fullIssueComplete": false,
+    "independentAuthorshipCredit": 0
+  },
+  "correctedPostArchiveScanSelection": {
+    "files": 369,
+    "archives": 346
+  }
+}

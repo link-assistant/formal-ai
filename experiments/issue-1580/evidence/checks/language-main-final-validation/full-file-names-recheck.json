@@ -1,0 +1,36 @@
+{
+  "complete": true,
+  "exitCode": 0,
+  "changes": [
+    {
+      "before": "pr.stdout.gz",
+      "after": "pull-request.stdout.gz",
+      "archiveSha256": "2ac3df3274835a65b9e4bae5fde05498d3d4c58429224396ee4eb66a52c8359e",
+      "rawSha256": "cfb4c172f461704979ca7d4b37cb6ad55ed7ded33ebbe8dfb5b4142a5ae1c5a4"
+    },
+    {
+      "before": "pr.stderr.gz",
+      "after": "pull-request.stderr.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "before": "pr-comments.stdout.gz",
+      "after": "pull-request-comments.stdout.gz",
+      "archiveSha256": "c488e703c8e7c60b730b6d2765b05d9b57882cd2f396b63ec9e563e942fafa67",
+      "rawSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb"
+    },
+    {
+      "before": "pr-comments.stderr.gz",
+      "after": "pull-request-comments.stderr.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rawSha256": "70656fc4891662b10e08d7f1bb78321d9dfca6e9dfc12b557c0662b06d4e2697",
+  "log": "full-file-names-recheck.log.gz",
+  "lines": 3,
+  "productionChanges": false,
+  "ratchetChanges": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,104 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 237,
+    "totalPages": 254,
+    "completeFiles": 138,
+    "partialFiles": 1,
+    "literalLines": 14005,
+    "nextForwardPage": 238,
+    "remainingPages": 17,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    238,
+    239,
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247,
+    248,
+    249,
+    250,
+    251,
+    252,
+    253,
+    254
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+      "newReadLines": [
+        96,
+        254
+      ],
+      "cumulativeReadLines": [
+        1,
+        254
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/spotless-apply.log",
+      "newReadLines": [
+        1,
+        20
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/spotless-upstream-report.txt",
+      "newReadLines": [
+        1,
+        1
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/toolchains.log",
+      "newReadLines": [
+        1,
+        15
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/transitive-inventory.log",
+      "newReadLines": [
+        1,
+        4
+      ],
+      "completeSourceRead": true
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 254,
+    "totalPages": 254,
+    "completeFiles": 143,
+    "partialFiles": 0,
+    "literalLines": 14205,
+    "nextForwardPage": null,
+    "remainingPages": 0,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "completeHistoricalContentAccounting": {
+    "nonemptyFilesLiterallyRead": 143,
+    "emptyFiles": [
+      "dev/log/issues/24/pulls/25/actionlint.log",
+      "dev/log/issues/24/pulls/25/diff-whitespace.log"
+    ],
+    "totalFiles": 145
+  },
+  "observations": [
+    "All seventeen pages were literally read without truncation, including a complete reread of pages 246\u2013247 after a combined display truncated unrelated output.",
+    "This finishes the third captured Maven inventory, Spotless output and upstream report, toolchain capture and transitive-inventory findings. Every split source line is complete.",
+    "All 143 nonempty historical files and 14,205 lines have now been literally read; two empty historical files have no text to read. All 145 historical files are accounted for. The final count is recomputed directly from every original file; the first supplied expected total of 14,204 was rejected before writing review records.",
+    "Historical registry publication lists do not establish current safety, compatibility or semantic application. Full repository practice comparison remains unfinished.",
+    "Supplied work earns zero independent authorship credit."
+  ]
+}

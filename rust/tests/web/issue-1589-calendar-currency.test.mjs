@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync, mkdtempSync, rmSync} from 'node:fs';
+import {readFileSync, readdirSync, mkdtempSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
@@ -28,7 +28,8 @@ test('fresh-home API exposes the answer and an actual derivation for every requi
   let running;
   try {
     const workerHost = new WorkerHost({}, { networkFetch: currencyFetch });
-    running = await startServer({host:'127.0.0.1', port:0, env, workerHost});
+    running = await startServer({host:'127.0.0.1', port:0, env, worker:workerHost});
+    assert.ok(running.ctx.worker === workerHost, 'the API uses the captured-publisher worker');
     const currencyRows = currencyExamples.map(([prompt, text]) => ({prompt, text}));
     for (const row of [...rows.slice(0,5), rows[9], rows[10], ...currencyRows]) {
       const response = await fetch(running.url+'/v1/chat/completions', {
@@ -62,6 +63,77 @@ test('English, Russian, Hindi, Chinese and Spanish duration responses retain the
   }
 });
 
+// Replays main run 44188508650: calendar-duration-sum was defined as both
+// a handler cue and a response intent; alias strings also used in-band pipes.
+function duplicateMeaningSlugs(documents) {
+  const owners = new Map();
+  for (const [name, content] of documents) {
+    content.split('\n').forEach((line, index) => {
+      const header = /^ {2}([^\s#]+)(?:\s+#.*)?$/u.exec(line.trimEnd());
+      if (!header || header[1] === 'meanings') return;
+      const locations = owners.get(header[1]) || [];
+      locations.push(`${name}:${index + 1}`);
+      owners.set(header[1], locations);
+    });
+  }
+  return [...owners].filter(([, locations]) => locations.length > 1);
+}
+
+test('calendar meanings stay globally unique across all seed meaning documents', () => {
+  const seed = new URL('../../../data/seed/', import.meta.url);
+  const documents = readdirSync(seed, {recursive:true})
+    .filter(name => /(?:^|\/)meanings[^/]*\.lino$/u.test(name))
+    .map(name => [name, readFileSync(new URL(name, seed), 'utf8')]);
+  assert.ok(documents.length > 0, 'seed meaning documents were inspected');
+  assert.deepEqual(duplicateMeaningSlugs(documents), []);
+});
+
+test('meaning uniqueness replay detects duplicates within and across documents', () => {
+  const first = 'meanings\n  same\n    defined-by time\n  distinct\n';
+  assert.deepEqual(duplicateMeaningSlugs([['first', first]]), []);
+  assert.deepEqual(duplicateMeaningSlugs([['first', first + '  same\n']]),
+    [['same', ['first:2', 'first:5']]]);
+  assert.deepEqual(duplicateMeaningSlugs([['first', first], ['second', 'meanings\n  same # second definition\n']]),
+    [['same', ['first:2', 'second:2']]]);
+});
+
+// Calendar/currency vocabulary rows hold individual linguistic surfaces.
+// Provider configuration uses pipes for structured fields, including ISO lists.
+function packedSurfaceAliases(tables) {
+  return Object.entries(tables)
+    .filter(([name]) => /^(?:calendar-|currency-conversion-)/u.test(name))
+    .flatMap(([name, table]) => table.rows
+      .filter(([, value]) => value.includes('|')).map(row => ({name, row})));
+}
+
+test('calendar and currency vocabulary rows carry one surface each without pipe-packed aliases', () => {
+  assert.deepEqual(packedSurfaceAliases(evaluate(worker, 'handlerRulesTables()')), []);
+});
+
+test('surface replay catches packed aliases while allowing structured provider fields', () => {
+  const calendar = {rows: [['en', 'add|sum']]};
+  const currency = {rows: [['en', 'to|into']]};
+  const provider = {rows: [['iso-codes', 'EUR|USD']]};
+  assert.deepEqual(packedSurfaceAliases({'currency-quote-provider': provider}), []);
+  assert.deepEqual(packedSurfaceAliases({'calendar-duration-addition-cue': calendar}),
+    [{name: 'calendar-duration-addition-cue', row: calendar.rows[0]}]);
+  assert.deepEqual(packedSurfaceAliases({'currency-conversion-connector': currency}),
+    [{name: 'currency-conversion-connector', row: currency.rows[0]}]);
+});
+
+test('separate vocabulary rows retain alternative addition, interval and currency surfaces', {timeout:15000}, async () => {
+  for (const [prompt, intent, expected] of [
+    ['Sum 12 months + 1 year in years.', 'calendar-duration-sum', '2 years'],
+    ['Суммируй 1 год и 2 месяца. В месяцах.', 'calendar-duration-sum', '14 месяцев'],
+    ['Сложите 1 год и 2 месяца. Ответ в месяцах.', 'calendar-duration-sum', '14 месяцев'],
+    ['How many whole years are from March 2021 until June 2024?', 'calendar-full-periods', '3 years'],
+    ['How many complete months are from March 2021 to June 2024?', 'calendar-full-periods', '39 months'],
+  ]) {
+    const answer = await worker.solve(prompt, [], {}, {}, [], {});
+    assert.equal(answer.intent, intent, JSON.stringify(answer));
+    assert.ok(answer.content.includes(expected), answer.content);
+  }
+});
 test('dated publisher captures support known and held-out pairs', {timeout: 15000}, async () => {
   const sourcedWorker = createWorkerContext({}, {networkFetch: currencyFetch});
   await evaluate(sourcedWorker, 'loadSeed()');

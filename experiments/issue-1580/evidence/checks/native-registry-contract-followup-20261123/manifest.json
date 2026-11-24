@@ -1,0 +1,31 @@
+{
+  "failedHead": "2730b2c35e27010c5af16c1306bf31c3b243d659",
+  "runId": 45196552928,
+  "jobId": 137770001889,
+  "workflowContracts": {
+    "passed": 293,
+    "failed": 1
+  },
+  "actualFailureLogLines": [
+    2148,
+    2150,
+    2210
+  ],
+  "rootCause": "stale boolean API assertion after tri-state waiter migration",
+  "correctedNativeTestExecuted": false,
+  "rustFormattingPassed": true,
+  "completeJobLogPreserved": true,
+  "fullLiteralJobLogRead": false,
+  "targetedFailureReviewComplete": true,
+  "remainingHeadCohortStillRunning": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 70632,
+    "sha256": "ace95636872f1aecacebb4c69afe610289b16a8a7c77bb1b4744364a29ec0049"
+  },
+  "members": 17,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T15:01:53.744821+00:00"
+}

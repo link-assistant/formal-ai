@@ -1,0 +1,43 @@
+{
+  "head": "f8b372ad314c8052a00dbd2a3139dac0f45d0f78",
+  "runId": 44821485480,
+  "producerFilesVerified": 126,
+  "reports": {
+    "rust.sarif": {
+      "sha256": "6849d8a206e367b966c5a9ebe80487a40da94e09a9c7905f32feaa7746237136",
+      "results": 0,
+      "warningErrorNotifications": 0
+    },
+    "actions.sarif": {
+      "sha256": "7b650c7e52eb961a4bbfa2a9008f65f14969908c1cd86a2dd8dee9e319d1d2c9",
+      "results": 0,
+      "warningErrorNotifications": 0
+    }
+  },
+  "macroRows": 122542,
+  "macroSourceFiles": 2221,
+  "expansionStates": {
+    "expanded:outside-expansion": 42427,
+    "expanded:inside-expansion": 79484,
+    "unexpanded:outside-expansion": 631
+  },
+  "originalNotifications": 631,
+  "distinctOriginalPositions": 631,
+  "positionalCrosswalkCounts": {
+    "unexpanded-contexts": 631
+  },
+  "queryRuntimeWarnings": [],
+  "resolvedMemory": {
+    "totalMiB": 4096,
+    "offHeapMiB": 0,
+    "heapMiB": 2607,
+    "arguments": [
+      "-J-Xmx2607M"
+    ]
+  },
+  "queryRuntimeDiagnostics": [],
+  "queryCompiledAndExecuted": true,
+  "allMacroSemanticsQualified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

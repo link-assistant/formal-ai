@@ -1,0 +1,39 @@
+{
+  "beforeSha256": "f1af9cf348db3c46aa6569a5142a5b52f36e56fa776d328df3e7765c86297eae",
+  "afterSha256": "e08d3960fe47d0365a81a299b3bf3a59cc6afb851993fda312a4179f82cce2c8",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "addedUnsupported": [
+    {
+      "id": "rust/tests/unit/specification/event_source_origin.rs::append_origin_preserves_raw_event_and_thinking_identity",
+      "reason": "unsupported native let binding",
+      "legacyReason": "let mut plain ="
+    },
+    {
+      "id": "rust/tests/unit/specification/event_source_origin.rs::legacy_serialized_thinking_steps_keep_origin_optional",
+      "reason": "unsupported native call ThinkingStep::new",
+      "legacyReason": "let plain = ThinkingStep"
+    },
+    {
+      "id": "rust/tests/unit/specification/event_source_origin.rs::executed_validation_identifies_answer_and_candidate_appenders",
+      "reason": "unsupported native call solve",
+      "legacyReason": "for ( prompt ,"
+    },
+    {
+      "id": "rust/tests/unit/specification/event_source_origin.rs::unknown_origin_does_not_fall_back_to_a_considered_appender",
+      "reason": "unsupported native let binding",
+      "legacyReason": "let mut log ="
+    }
+  ],
+  "addedSources": [
+    {
+      "path": "rust/tests/unit/specification/event_source_origin.rs",
+      "sha256": "567329803d9ec232c811759c194ca6e45f36bc3e34050df42ed954a0b7a55321"
+    }
+  ],
+  "completeOldObjectsAndManifestDeepEqualAfterRemovingFourAddedControls": true,
+  "total": 1189,
+  "supported": 221,
+  "unsupported": 968,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0
+}

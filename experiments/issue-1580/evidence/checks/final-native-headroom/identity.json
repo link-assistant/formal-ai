@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "warnings": 13,
+  "owners": 15,
+  "maintainedIssueTestsPassed": 297,
+  "governedWitnessObjectUnchanged": true,
+  "generatedRegistryOnlyFourReviewedSourceHashesChanged": true,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

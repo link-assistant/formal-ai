@@ -94,6 +94,12 @@
       ]
     },
     {
+      "id": "codex-client-process-lifetime",
+      "reasons": [],
+      "description": "The integration client stops its plugin clone descendants before removing CODEX_HOME, preserving the client exit status.",
+      "tests": ["experiments/issue-1580/codex-process-lifetime.test.mjs"]
+    },
+    {
       "id": "workflow-policy",
       "reasons": [],
       "description": "Workflow timeouts, the default-branch build policy and the fast pull-request profile.",
@@ -108,6 +114,7 @@
     }
   ],
   "components": [
+    { "prefixes": ["experiments/issue_859_codex_e2e/", "experiments/issue-1580/codex-process-lifetime.test.mjs"], "families": ["codex-client-process-lifetime"] },
     { "prefixes": ["js/agentic/work_item_", "js/agentic/file_read/", "js/agentic/planner.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution", "work-item-evidence-gap", "work-item-cited-program", "work-item-edit-and-check"] },
     { "prefixes": ["js/agentic/general_execution.mjs", "js/agentic/command_reroute.mjs", "js/agentic/crate/coding_program_contract.mjs"], "families": ["work-item-cited-program"] },
     { "prefixes": ["js/agentic/documentation_acceptance.mjs", "js/agentic/observed_documentation.mjs", "js/agentic/source_repair.mjs"], "families": ["work-item-edit-and-check"] },

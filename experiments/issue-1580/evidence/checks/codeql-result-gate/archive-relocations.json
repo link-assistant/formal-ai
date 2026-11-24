@@ -1,0 +1,75 @@
+{
+  "reason": "Spell archive names in full while preserving captured command names, arguments and output bytes. Restore the existing abbreviation ratchet without changing its ceiling.",
+  "moves": [
+    {
+      "directory": "registry-batch-preflight",
+      "old": "source-diff-stat.stdout.gz",
+      "new": "source-difference-summary.stdout.gz",
+      "rawSha256": "604f119ec57ac87c970cc4964e67a0c42cb9a3706aefd623fbd55b7e42f7aa8b",
+      "archiveSha256": "8c50c6b5957a86d9931101d892d249c82d9c445e6114afd057129f53b124e11f"
+    },
+    {
+      "directory": "registry-batch-preflight",
+      "old": "source-diff-stat.stderr.gz",
+      "new": "source-difference-summary.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr-comments.stdout.gz",
+      "new": "pull-request-conversation-comments.stdout.gz",
+      "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr-comments.stderr.gz",
+      "new": "pull-request-conversation-comments.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr-review-comments.stdout.gz",
+      "new": "pull-request-inline-comments.stdout.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr-review-comments.stderr.gz",
+      "new": "pull-request-inline-comments.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr-reviews.stdout.gz",
+      "new": "pull-request-reviews.stdout.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr-reviews.stderr.gz",
+      "new": "pull-request-reviews.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr.stdout.gz",
+      "new": "pull-request.stdout.gz",
+      "rawSha256": "fb4cd489c8d8ad07d7d491705b8ae850c713831a7f94f3cab6ea62f37f376eec",
+      "archiveSha256": "12bbd7912153e337409b5c6011282973e806afe7afdd3384f828387ee4506790"
+    },
+    {
+      "directory": "release-io-batch-preflight",
+      "old": "pr.stderr.gz",
+      "new": "pull-request.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ]
+}

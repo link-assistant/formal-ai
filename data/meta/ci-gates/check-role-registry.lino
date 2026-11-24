@@ -1,0 +1,6 @@
+# Replay the hosted role-namespace check before publishing shared meaning data.
+ci_gate check-role-registry
+  stage rust
+  description "The reserved-role registry equals every role used by the runtime meaning sources."
+  run "node scripts/generate-role-registry.mjs --check"
+  justification "Issue #1580 added a grounded cache cue without regenerating its role declaration. This JavaScript twin catches that same stale source projection locally, while hosted governance retains the independent Python oracle."

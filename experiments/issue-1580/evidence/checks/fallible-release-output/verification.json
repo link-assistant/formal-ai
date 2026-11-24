@@ -1,0 +1,148 @@
+{
+  "records": [
+    {
+      "name": "negative-admission-before",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=shared output writer",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "negative-admission-before.log.gz",
+      "sha256": "2270187981e571487d8c9dfa2d120dc3937b6f9254659d597a2c3c568fbed8f9",
+      "compressedSha256": "83948f8fbb0d1b41fca7fb632220b1a06ae770c40ab68357517073a5f0c05941"
+    },
+    {
+      "name": "native-groups-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups-after.log.gz",
+      "sha256": "74bd4a6c7dac141ac1ebf45b056274031b85723347c2e36671d609189d8be030",
+      "compressedSha256": "da573e862d5114f61a5baa68128f1ffdc78fa109b7b19cadb2f3da0499d79d38"
+    },
+    {
+      "name": "default-branch-admission-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "default-branch-admission-after.log.gz",
+      "sha256": "d83be666407d440eea5b475c9bd198eb394de025a74a4a8f1c344d49b6191c89",
+      "compressedSha256": "3d2c5091d2bdde070067d9eec9f269bb7c412f3978258e22a0279aa096480b0d"
+    },
+    {
+      "name": "rustfmt",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "scripts/github-output.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/get-version.rs",
+        "scripts/publish-crate.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/version-and-commit.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt.log.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/github-output.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/get-version.rs",
+        "scripts/publish-crate.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/version-and-commit.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check.log.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "local-gates",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-readable-code,check-changelog-fragment-js-twin,release#1"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "local-gates.log.gz",
+      "sha256": "787340d6280ccc8b5ada498e30ad1fc01328ccc884fbbcf9cfa204fd9be5b51e",
+      "compressedSha256": "697c74e0bb1d15dbafd40618c12ca7e6d5340e1fc581d4f878db6b01721c1b1d"
+    },
+    {
+      "name": "deployed-release-source",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-staged-release.mjs",
+        "--check-deployed"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "deployed-release-source.log.gz",
+      "sha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce",
+      "compressedSha256": "3816b50a43a2d25b47022d5f33e5f75a98cf635160cdef80035a04e73df66942"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "hostedNativeTestsPending": true,
+  "authorshipCredit": 0,
+  "fullIssueComplete": false,
+  "productionSources": {
+    "scripts/check-release-needed.rs": "f5c765ceddde8e459c68ce019fd8f59c52acda841008de8df20cfa490cafc868",
+    "scripts/get-bump-type.rs": "3bff1399121cdcfa84bb472aa025ea936d759847172ef2f68135b29c7a28f34a",
+    "scripts/get-version.rs": "b5675b276eb63280e36eb125f972b0a76323f17326077113fda161176483475f",
+    "scripts/publish-crate.rs": "4962dcdea7c84e24ae9d80b24bb6dd3927de65874661b7970bcef65078e1749c",
+    "scripts/wait-for-crate.rs": "b00a072438da9615e37f0a6dae00fdde2ac64a361cb465d5e808168fd40c1a46",
+    "scripts/version-and-commit.rs": "60457326fd9f8e902bc680b06404f7266b48a690b7d3337bb9ff72a28f469cb6",
+    "scripts/github-output.rs": "a3bfbc11725621e92c78f58f0b66595690ef1846a91f0240df9e89da30c6c837",
+    "rust/tests/unit/workflow_contracts.rs": "ea61cbed2c0a4c61f0cf0e922a05babe7f2f2766bb6326a9f1f07917496e7966",
+    "scripts/ci-pull-request-admission.mjs": "a289ea3e60d7cab979605b1cd7e7235d80024bb0a3b0213ff6f35b09b43c540a",
+    "experiments/issue-1580/native-regression-groups.test.mjs": "21ef714eae264f872fe19576080651be471cbc633ea942e5413a85d3030a1a3d"
+  }
+}

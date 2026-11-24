@@ -1,0 +1,84 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "attachment-url",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/attachment-url-scope.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 3.86,
+      "file": "attachment-url.log.gz",
+      "rawSha256": "2f332d2f32eba49b2935f854e1eacfecb416f9809e30f73cfa5b55f7f7731e93",
+      "archiveSha256": "32fdfd53d8082c18730a31d605c1f615277f998653ea9465647384ade186d375",
+      "lines": 38
+    },
+    {
+      "name": "runtime-inventory",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/runtime-feature-inventory.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.619,
+      "file": "runtime-inventory.log.gz",
+      "rawSha256": "831f7fb763b92dd563184a791fa532da08432d74faa1767114d157e6b2552eef",
+      "archiveSha256": "51f9660089ba5c1418a549e239daff077e217dbafabec0a2cb746049e8a09b31",
+      "lines": 16
+    },
+    {
+      "name": "seven-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-file-size,check-minimal-core-boundary-js-twin,check-minimal-core-boundary,check-runtime-feature-inventory,check-worker-line-budget-js-twin,check-worker-line-budget"
+      ],
+      "exitCode": 1,
+      "seconds": 17.228,
+      "file": "seven-gates.log.gz",
+      "rawSha256": "422b76cbfa120528f754d9753475e4ac822311896083dc89d3e9513e45810d91",
+      "archiveSha256": "e8ce0b68b74ea81b253f16b280a2416cb5e1c346a8366056c52c552454cd2bee",
+      "lines": 9
+    },
+    {
+      "name": "translation-verify",
+      "argv": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.522,
+      "file": "translation-verify.log.gz",
+      "rawSha256": "90aed8bda8b21c7aa680e4a45bd86a1a9b72fcd87d27782ec19d86d8dfcb40c4",
+      "archiveSha256": "e49d5aae5ac9baef68b9660805d75bc20ab1dfb914063e838009a00740af9463",
+      "lines": 1
+    },
+    {
+      "name": "witness-review",
+      "argv": [
+        "node",
+        "/tmp/issue-1580-research/review-current-native-witness.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.486,
+      "file": "witness-review.log.gz",
+      "rawSha256": "efb2bf937d32120085f4737ee14e3ab0f3ef28ff661809614adba6baf35b8eb0",
+      "archiveSha256": "918e3a378f64c78581b076b90a3450332fa746a0948ec855c9edf61c81a86563",
+      "lines": 14
+    }
+  ],
+  "allChecksPassed": false,
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false
+}

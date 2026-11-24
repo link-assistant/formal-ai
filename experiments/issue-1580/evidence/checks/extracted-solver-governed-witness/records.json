@@ -1,0 +1,198 @@
+{
+  "records": [
+    {
+      "source": "repair/after-fixture-integrity.stderr",
+      "file": "record-0000.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/after-fixture-integrity.stdout",
+      "file": "record-0001.gz",
+      "rawSha256": "5ea3f7fd0e58866f38a58804f173cbd54fe84ef0b3ff5fad959e4e03f62ec817",
+      "archiveSha256": "496a22b48c27430565ee5787d0e0972f9a24f5f8a12d477b8b8d391e0ee0957e",
+      "bytes": 309,
+      "lines": 10
+    },
+    {
+      "source": "repair/after-unicode-identifiers.stderr",
+      "file": "record-0002.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/after-unicode-identifiers.stdout",
+      "file": "record-0003.gz",
+      "rawSha256": "388d9b1ac62a3de17d8e2064c715097699cec0e248dc094c0ecbf4d9ebb3e40a",
+      "archiveSha256": "8f629ad7096eafac15396ebd66d9536326bb78786065df0ac27bec8f04c81cab",
+      "bytes": 2951,
+      "lines": 42
+    },
+    {
+      "source": "repair/before-fixture-integrity.stderr",
+      "file": "record-0004.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/before-fixture-integrity.stdout",
+      "file": "record-0005.gz",
+      "rawSha256": "dc09047ec53b9d2070641c4e8e5ea884cde9067850f3037bbb360d983d234ee8",
+      "archiveSha256": "acb74473ad55fecf5a461e58aa697d01d76c00bf1652e0a30a7b5591867d9da9",
+      "bytes": 1451,
+      "lines": 33
+    },
+    {
+      "source": "repair/before-unicode-identifiers.stderr",
+      "file": "record-0006.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/before-unicode-identifiers.stdout",
+      "file": "record-0007.gz",
+      "rawSha256": "74d22bd128b09fd3b76288ae709fdc17ff4089911ca534647302248e74bd7831",
+      "archiveSha256": "669bf5340e97430f0bd015ec0a0f9e56da796851ddddb31cdfe43d51da5f87f1",
+      "bytes": 13758,
+      "lines": 286
+    },
+    {
+      "source": "repair/branch.stderr",
+      "file": "record-0008.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/branch.stdout",
+      "file": "record-0009.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+      "bytes": 24,
+      "lines": 1
+    },
+    {
+      "source": "repair/commands.json",
+      "file": "record-0010.gz",
+      "rawSha256": "3c38ee4510f78bb1d25b9b877f91aeb007cf9de1a7939531a8e605589ae67ebc",
+      "archiveSha256": "6258c08385d59fd3a7892f971526bf05f5bd1e25ad00cd9e25fe37f1b0d5af0c",
+      "bytes": 4508,
+      "lines": 174
+    },
+    {
+      "source": "repair/outcome.json",
+      "file": "record-0011.gz",
+      "rawSha256": "687ea02438651cb1b1a1c25a0692d9d00969640d821719a3d347ba662f9d45b2",
+      "archiveSha256": "51bdb03420172beefb2af57c6ccda8649649c53552c59f940831eaed6e48e014",
+      "bytes": 145,
+      "lines": 7
+    },
+    {
+      "source": "repair/review/complete-delta.json",
+      "file": "record-0012.gz",
+      "rawSha256": "79176744dae08ecb50e224f053e00a43c5962e095477223b78c0b2109e171b0e",
+      "archiveSha256": "0edd13d11bf25d847dc8588aae93353db5c1fe72327e074d4adc82799ca11625",
+      "bytes": 5988,
+      "lines": 153
+    },
+    {
+      "source": "repair/review/previous-witness.v8.gz",
+      "file": "record-0013.gz",
+      "rawSha256": "055f2e70518e3dfeae9b909740f59dd98693d8301ca061df630bf861eca7117f",
+      "archiveSha256": "4782368c8b54c8e0cc966fc3164484543184e5f0a1feb9139bd445f636c0ab3c",
+      "bytes": 321681,
+      "lines": 2162
+    },
+    {
+      "source": "repair/review/refresh.stdout.gz",
+      "file": "record-0014.gz",
+      "rawSha256": "59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2",
+      "archiveSha256": "693e03b51ac5760f6a40066bebd0d3117921786e70bece2033912dda1792597c",
+      "bytes": 20,
+      "lines": 1
+    },
+    {
+      "source": "repair/review-refresh.stderr",
+      "file": "record-0015.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/review-refresh.stdout",
+      "file": "record-0016.gz",
+      "rawSha256": "79176744dae08ecb50e224f053e00a43c5962e095477223b78c0b2109e171b0e",
+      "archiveSha256": "0edd13d11bf25d847dc8588aae93353db5c1fe72327e074d4adc82799ca11625",
+      "bytes": 5988,
+      "lines": 153
+    },
+    {
+      "source": "repair/reviewer-syntax.stderr",
+      "file": "record-0017.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/reviewer-syntax.stdout",
+      "file": "record-0018.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/whitespace.stderr",
+      "file": "record-0019.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair/whitespace.stdout",
+      "file": "record-0020.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "repair-extracted-solver-governed-witness.py",
+      "file": "record-0021.gz",
+      "rawSha256": "ec127e89296d9fb13c44fa4fc179a63aaca3b953e88d73e654cf1c94a7636982",
+      "archiveSha256": "ca0a45bcca9d094f26009383bcd11755c2d840a9b90fe3a5ea60f770c62bf85a",
+      "bytes": 6787,
+      "lines": 115
+    },
+    {
+      "source": "repair-extracted-solver-governed-witness.log",
+      "file": "record-0022.gz",
+      "rawSha256": "e8560517b0697c39bffac77dfc14d77c321371bf6046b8c448b4fc8743093254",
+      "archiveSha256": "5c4a98ba2fd3635b7382c1fb2965df64cad6cdcaf1d2f26c48abee5489d505d4",
+      "bytes": 234,
+      "lines": 4
+    },
+    {
+      "source": "commit-extracted-solver-governed-witness.py",
+      "file": "record-0023.gz",
+      "rawSha256": "ebcb226cfc06ebc09501492c6fe6798c00f82b2c89ccfe63cb2cadcc75ae88be",
+      "archiveSha256": "f5e166aeb819fa652fff54f47251084e8fd092b22331ea4bf2a05347d56bed08",
+      "bytes": 5742,
+      "lines": 77
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

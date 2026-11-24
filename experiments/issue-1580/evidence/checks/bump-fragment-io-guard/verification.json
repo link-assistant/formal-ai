@@ -1,0 +1,150 @@
+{
+  "records": [
+    {
+      "name": "before-consumer-control",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=the focused workflow target tests actual fallible",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before-consumer-control.log.gz",
+      "rawSha256": "652b19a5d5c2f64779bc769231201cc52039e350663beb5eaf19076aa5075a3e",
+      "archiveSha256": "1aa37d72c19ca163146a22d75d7626e68ac9ed8b82a8cb315a6836a2dfaa452e"
+    },
+    {
+      "name": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "scripts/get-bump-type.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "rust/tests/unit/ci-cd/mod.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/get-bump-type.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "rust/tests/unit/ci-cd/mod.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "native-groups",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups.log.gz",
+      "rawSha256": "af262df261e021438e33be5caf6a2b836c4754b444b9bb7ad600222a5c66e6a5",
+      "archiveSha256": "a8736bc958f00b3ae4ecabc0f545a7b16720cd68580bb03c7318f2bfb07bcd52"
+    },
+    {
+      "name": "default-build-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "default-build-policy.log.gz",
+      "rawSha256": "5c8e592e796f6219c5ed8226996a201128934f01b6127e523d2f9f536c371f8d",
+      "archiveSha256": "723c0916b6fd8e526e73f956e5a8079ef8532e1991c7c323baae8b50b13ce4e2"
+    },
+    {
+      "name": "documentation-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "documentation-policy.log.gz",
+      "rawSha256": "67f407355065d8146e68fad2f08a630ed9198751fdc31c4fc84333cb0e1f416a",
+      "archiveSha256": "9ecb1958a9d57f5717152391dadb5a7c6f9609fbcb7654343bd725dcd279215c"
+    },
+    {
+      "name": "gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-changelog-fragment-js-twin,check-generated-files,check-runner-labels,check_js_rust_translation,layered-ci#1,layered-ci#2,layered-ci#3,layered-ci#4"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "gates.log.gz",
+      "rawSha256": "2448ebcf604e51f214a8a52ab3e58d455f9d790cef5e487c2a54c3834daf5825",
+      "archiveSha256": "1ff94c2e41753339e6dd5c5e8bfd0ddf26c51bb5361bf789af3286032e016df9"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false,
+  "complete": true,
+  "sourceIdentities": [
+    {
+      "path": "scripts/get-bump-type.rs",
+      "sha256": "b5647c1dabbabef9c35c763b1901bf20e275f00aed6981eb60b5c6615772aa04"
+    },
+    {
+      "path": "rust/tests/unit/workflow_contracts.rs",
+      "sha256": "91bfb8a37275e3ce38b0e8a89a767589be37b1d4c2b15772559c33ecfa6ff921"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/mod.rs",
+      "sha256": "11bdbb06e72022a2bae336f41040c299be7e0f740a2e64560eba94c80e5f1810"
+    },
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "sha256": "556c51beaf574b11dd710b7e76e0dcbd8d271a996c49f42aca4d5910b2e6631d"
+    },
+    {
+      "path": "experiments/issue-1580/native-regression-groups.test.mjs",
+      "sha256": "35c82f0be5470e4f766aed86a40137dea46106a7ada13d87c30c5eef979b073b"
+    }
+  ],
+  "verificationLimits": "The before/after JavaScript consumer control verifies that the actual fallible source is admitted to the native target. Actual Rust filesystem regressions are retained in the focused hosted target and are not locally executed."
+}

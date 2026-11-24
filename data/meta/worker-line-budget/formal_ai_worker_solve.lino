@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_solve.js"
-  ceiling 1416
-  rationale "The dispatcher awaits the shared publisher lookup for a resolved reference and attaches its events to the final answer. Issue #1613. Assists project creation questions through the publisher declaration before generic assistant identity and binds inline summaries before splitting tasks. Source learning runs at the declared asynchronous precedence row."
+  ceiling 1359
+  rationale "The dispatcher awaits the shared publisher lookup for a resolved reference and attaches its events to the final answer. Issue #1613. Assists project creation questions through the publisher declaration before generic assistant identity and binds inline summaries before splitting tasks. Source learning runs at the declared asynchronous precedence row. Issue #1580 source-size repair (2026-11-23): Transfers the unchanged finalize body to the solver-events module. The four affected ceilings sum to 3979, below their previous 3982; source conservation and the unchanged line-budget gate remain required."

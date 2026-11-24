@@ -134,8 +134,10 @@ pub(super) fn steps(html: &str, task: &str, language: &str, limit: usize) -> Vec
         &format!("scoped-method-markers-{language}"),
     )
     .unwrap_or_default();
+    let scope = crate::seed::parser::split_pipe_list(&scope);
     let markers: Vec<&str> = scope
-        .split('|')
+        .iter()
+        .map(String::as_str)
         .filter(|marker| !marker.is_empty())
         .collect();
     let requested = task.to_lowercase();

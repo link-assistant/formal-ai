@@ -4,7 +4,7 @@ use crate::event_log::EventLog;
 use crate::source_fetch::{
     CachedSourceClient, CurlSourceTransport, SourceCapture, SourceTransport,
 };
-use crate::web_formalize::{PageBlock, formalize_page_with_context};
+use crate::web_formalize::{PageBlock, parse_page_blocks};
 
 fn policy(key: &str) -> String {
     crate::rule_interpreter::handler_policy("practical-help", key).unwrap_or_default()
@@ -115,8 +115,7 @@ pub(crate) fn section_excerpt(bytes: &[u8], heading: &str, terms: &[String]) -> 
     {
         return None;
     }
-    let (_, blocks) = formalize_page_with_context(bytes, Some("text/html"), None);
-    let mut blocks = blocks.into_iter().map(|(_, block)| block);
+    let mut blocks = parse_page_blocks(bytes, Some("text/html"), None).into_iter();
     let level = blocks.find_map(|block| match block {
         PageBlock::Heading { level, text } if normalize_prompt(&text) == heading => Some(level),
         _ => None,

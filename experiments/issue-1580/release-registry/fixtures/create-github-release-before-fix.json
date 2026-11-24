@@ -1,0 +1,7 @@
+{
+  "path": "scripts/create-github-release.rs",
+  "sha256": "cf33b84f693d85cf640eaf17b646dfbb7ead23da1c7d2c847bfc142980ccbbdc",
+  "observedCommit": "55ee124b7bc836942095b344b4b1119ecb53ba5f",
+  "purpose": "Immutable original production binary for bounded pipe and duplicate-error negative controls",
+  "autonomousAuthorshipCredit": 0
+}

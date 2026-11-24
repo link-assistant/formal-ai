@@ -1,0 +1,19 @@
+{
+  "source": "8682a89a84d391d987a967b5764a27c8d1d0c457",
+  "base": "ae36c8ac65962a384627f09d4d196288d6017752",
+  "selectedProductionReviewComplete": true,
+  "selectedFileCount": 513,
+  "selectedDiffLines": 56643,
+  "aggregateReviewComplete": false,
+  "laterSourceDeltasReviewed": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1213230,
+    "sha256": "d7b86ef7ca2f273f3b68f86f1caa09d73ab55a599cc03ff21a11f87317ac7663"
+  },
+  "members": 121,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T08:01:43.038939+00:00"
+}

@@ -1,0 +1,84 @@
+{
+  "complete": false,
+  "observedAt": "2026-11-18T11:59:30.156320+00:00",
+  "checks": [
+    {
+      "name": "build-policy-tests",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 7.456,
+      "rawLines": 46,
+      "rawSha256": "fb69545059faa8406fd5f6c4d79a7123677c1d65f820a1c05ba2061b33c18bb8",
+      "archiveSha256": "f5885e32cea6f8d32d47efc676dddf7dc7ddd4d3e6403dbf72fa0c471e102f16"
+    },
+    {
+      "name": "forced-http-tests",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1590-forced-functions.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 20.081,
+      "rawLines": 10,
+      "rawSha256": "debcc8153fa4cb0a4467a92986d682a3a8a783890637a6e50c00076c1422c882",
+      "archiveSha256": "a867823467f51273e7b36c00ba397f4872e04cccc07132a2959778e224f91fbe"
+    },
+    {
+      "name": "gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-runner-labels,check-ci-speed,check-generated-files"
+      ],
+      "exitCode": 0,
+      "seconds": 109.401,
+      "rawLines": 9,
+      "rawSha256": "854eb67e1585ca33f791bf2f7c1d21f5cc2043da06edc3463c581385f5eed606",
+      "archiveSha256": "5a120c3f5abf002aa43aa97f6a15ef2a78c5432f8c0eb7d22a6cb3f01efa327e"
+    },
+    {
+      "name": "synthesis-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/specification/synthesis.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.113,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.502,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeExecution": false,
+  "independentAuthorshipCredit": 0
+}

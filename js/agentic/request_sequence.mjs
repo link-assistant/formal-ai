@@ -33,6 +33,7 @@ import {
 
 /** The marks that close a clause before a sequence cue. */
 const CLAUSE_MARKS = ',;.，；。';
+export const VERIFIED_SEQUENCE_ORIGIN = 'request_sequence_verified';
 
 /**
  * Mirrors `fn request_sequence`: the request's sentences when the first is a
@@ -222,7 +223,7 @@ export async function planBoundRequestSteps(parts, messages, toolNames, planFor)
       taken += 1;
     }
   }
-  return resolvedFinalAnswer(answers.join('\n\n'), FinalDisposition.Finding, 'request_sequence_verified');
+  return resolvedFinalAnswer(answers.join('\n\n'), FinalDisposition.Finding, VERIFIED_SEQUENCE_ORIGIN);
 }
 
 /**

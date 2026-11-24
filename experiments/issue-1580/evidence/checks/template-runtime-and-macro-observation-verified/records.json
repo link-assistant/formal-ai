@@ -1,0 +1,230 @@
+[
+  {
+    "name": "budget-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "--test-name-pattern",
+      "retry waits stop|a request uses only",
+      "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580-before-pfwcxrf5/budget-before.test.mjs"
+    ],
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "stdout": {
+      "file": "budget-before.stdout.gz",
+      "rawSha256": "455442f2f9ff1619038e80fc20dc92079b0766be7f962997eeffdae688689709",
+      "archiveSha256": "50d881a3d02aa144c3cd7c1820588b295164e7bdecdb4cd27dffcf0d677c367f",
+      "bytes": 2071,
+      "lines": 65
+    },
+    "stderr": {
+      "file": "budget-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "inventory-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "--test-name-pattern",
+      "failed lock inventory stops",
+      "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580-before-pfwcxrf5/inventory-before.test.mjs"
+    ],
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "stdout": {
+      "file": "inventory-before.stdout.gz",
+      "rawSha256": "dce52176d8e8dbbe1d21861a7ed3d7160df251a54440ed1794e8c7262e640808",
+      "archiveSha256": "bda19f1731ed725d5363482b92ef709bd9c61cf8578a7473041959f35b512c6c",
+      "bytes": 1062,
+      "lines": 34
+    },
+    "stderr": {
+      "file": "inventory-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "maintenance",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/dependencies-maintenance-workflow.test.mjs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "maintenance.stdout.gz",
+      "rawSha256": "6d3e00235f541fd0e62f8d879613e8e3d500800de0aae630671e7f8559d86c90",
+      "archiveSha256": "1b2e62fdc53970d31ee77ceaf8a5de1838466564728c041c9d801182c39ee236",
+      "bytes": 964,
+      "lines": 34
+    },
+    "stderr": {
+      "file": "maintenance.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "link-recheck",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "scripts/recheck-broken-links.test.mjs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "link-recheck.stdout.gz",
+      "rawSha256": "feadc0556343fd15bae3b36818ce658687d6dd8e2d9eadcd7ff1992252ad527e",
+      "archiveSha256": "bab57b6b8803407c431550867a3cb101d21eb2258d9f77de639f35543f0e72e6",
+      "bytes": 3039,
+      "lines": 106
+    },
+    "stderr": {
+      "file": "link-recheck.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "transient-http",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "scripts/recheck-transient-http.test.mjs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "transient-http.stdout.gz",
+      "rawSha256": "6695cf3bc1fb3747552cb69b12457c09c731d39bd5c9678538b6e3c4f0959234",
+      "archiveSha256": "556d36b1038681b4a7145b5740e5cb3d7ca5881320c305b0081874ce42f17b46",
+      "bytes": 777,
+      "lines": 28
+    },
+    "stderr": {
+      "file": "transient-http.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "security",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "security.stdout.gz",
+      "rawSha256": "1cc0cf90397d9a3c8644a89ea5630d99c333bedc5a4e247391a3845947485289",
+      "archiveSha256": "b09adc5ff0e4d154879e075128385d18ff16212574b75eeb6a8475cd92c33d7a",
+      "bytes": 4777,
+      "lines": 124
+    },
+    "stderr": {
+      "file": "security.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-ci-speed,check-runner-labels,check-readable-code,check-file-size,check-abbreviations"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "gates.stdout.gz",
+      "rawSha256": "a34ca0976831da66441e42e87f3e4c76e81c1364915e02ad1bbf05f718bfb135",
+      "archiveSha256": "1d586013c4490d1f1f1c6839805c773ac4ddda89a0943c34d5e40bb4e82ece7a",
+      "bytes": 179,
+      "lines": 7
+    },
+    "stderr": {
+      "file": "gates.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

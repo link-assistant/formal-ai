@@ -1,0 +1,44 @@
+{
+  "observedAt": "2026-11-18T11:46:56.722492+00:00",
+  "pinnedTemplateHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "files": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/pom-original-main.xml",
+      "gitBlob": "04ff14909d8a7ddb644e891e3b995827fe7d317f",
+      "sha256": "ff71a2816ae02cf90307499e2a1c4cc61d33dbf374e22293e5980f3adeac4089",
+      "archiveSha256": "5871bb5cba0fdf023e4b482912931faabdff9830a32620a9fd9f5c1d051ce30c",
+      "lines": 293,
+      "wholeSourceLiterallyRead": true,
+      "decisions": [
+        "The original Java 17 POM pins plugin versions, treats compiler warnings as fatal, runs formatter validation and static analysis, attaches sources/Javadoc, instruments tests and signs release artifacts in an explicit profile.",
+        "These are historical Maven-specific configurations. Preserve the corresponding existing Rust lint/type-check, formatting, coverage and release-artifact controls rather than adding Maven configuration to Formal AI.",
+        "A pinned plugin declaration is not runtime compatibility evidence. Historical dependency/plugin migrations and their remaining execution questions retain their earlier status."
+      ]
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/runner-images-readme.md",
+      "gitBlob": "cbb0ec6433933cd83d6c749bffbb24a2513388be",
+      "sha256": "49a421dc7368312cdc183d5a7626335fa89d2110ef4bf3b29e3c637c72d10801",
+      "archiveSha256": "651a9e4ff14ebf41ea1f7d824d52684caed5c5f8ad3b6b75db535ef17a9f6a1a",
+      "lines": 230,
+      "wholeSourceLiterallyRead": true,
+      "decisions": [
+        "The retained guide explains that latest labels migrate between operating system images; explicit labels avoid that migration, while installed tools and image revisions still change.",
+        "It separates GitHub/Azure availability, beta support, architecture, larger-runner labels, deprecation schedules and job-level image identity. Preserve the actual job setup metadata instead of treating a label or archive as proof of execution.",
+        "Formal AI has no active latest label or macos-14 workflow reference. Its runner-label check executes successfully across 74 files and 207 labels: macos-15, macos-15-intel, ubuntu-24.04, ubuntu-24.04-arm, windows-11-arm and windows-2025.",
+        "This archived guide is historical comparison evidence, not a current external availability claim or a reason to change supported pinned labels without verification."
+      ]
+    }
+  ],
+  "completeFiles": 2,
+  "literalLines": 523,
+  "continuousPageCoverageUnchanged": [
+    1,
+    111
+  ],
+  "supplementarySourcesOverlapFuturePages": true,
+  "avoidDoubleCountingWhenForwardPagesReachTheseSources": true,
+  "completeRepositorySemanticReview": false,
+  "nativeExecutionClaimed": false,
+  "independentAuthorshipCredit": 0
+}

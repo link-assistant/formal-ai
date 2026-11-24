@@ -1,0 +1,18 @@
+{
+  "observedAt": "20261118T055030367716Z",
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "runCount": 23,
+  "completedSuccessful": 22,
+  "nonPassingCompleted": [
+    {
+      "id": 44245878901,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "updatedAt": "2026-11-18T05:47:31Z"
+    }
+  ],
+  "active": [],
+  "scopeGatedSuccessIsNativeAcceptance": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

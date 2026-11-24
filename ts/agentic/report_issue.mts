@@ -164,10 +164,9 @@ function askOrRender(toolNames, language, id, questionIntent, optionsIntent, mul
       }],
     }));
   }
-  let text = question;
-  options.forEach(([label, description], index) => {
-    text += `\n${index + 1}. ${label} — ${description}`;
-  });
+  // Keep every choice and its description within clients' concise output limits.
+  const text = question + '\n' + options.map(([label, description], index) =>
+    `${index + 1}. ${label} — ${description}`).join('  ');
   return finalAnswer(text);
 }
 

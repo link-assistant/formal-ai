@@ -1,0 +1,437 @@
+{
+  "head": "d3aebbdc9d7c709599e06f48d98b0d10a3984a8b",
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "reviewedProductionDiffs": [
+    {
+      "path": ".cargo/audit.toml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "e3253a944f5b64d3a86a39c068d933f20e319a55354821472a5ac9a1e6cf0fca",
+      "diffSha256": "4038afcc520d8b48e3ad56a5576ba64ae5a57dc2e162d36d6e022889231300c3",
+      "exportedDiffSha256": "06f7033d2e92971a95dbe81363dc8c36cc09516be638e411835e5adbaf1b9a0b",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actionlint.yaml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "6a7fd7f3896f9ab8eaac9b65944ebf40e4701c4f1d5042a31b0796a9a5c460ae",
+      "diffSha256": "bae1e3b33356c91915f0ab0794599c2e999cdc9ee38c850997139c7120f92ea9",
+      "exportedDiffSha256": "f0eb39fb5ff744fb6dbf0d2cd4dec18f09804baa2d50d5b7473c698aac634864",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/deploy-pages/LICENSE",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "diffSha256": "9c5270f18acf3a61d31d7d9d96436808125ffb450222ce204a27eec7a58e0154",
+      "exportedDiffSha256": "116c07c17bae4a043d5b0cbd46df0706bae7ff21255e3b13a8432b16122461a4",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/deploy-pages/action.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "06c57d01e1c04b5067ebe2c823471836609982d0fbf639875a1c041d56b9ab59",
+      "diffSha256": "4609f1f003a9d35e36af9441fd51e9ec4fef0d8da71a7bf5fa0dd965b9ff50b3",
+      "exportedDiffSha256": "a844286adb054f1de44e42a36417b6e1c06d8909aa7a17aea10470c0e8f8560e",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/deploy-pages/deploy.mjs",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "f4af67f6af7fc256b80ccabe8d8b2cbb30c8d27db3b62a63ec3fc21f2abb3a96",
+      "diffSha256": "b1e3525efac018980625313e7f9b60bea737a58741e448003401520dc047d868",
+      "exportedDiffSha256": "585fe192ba80f2dc831f6829f8e9cdc3e29a9011a203610be968c92b88c22bc5",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/deploy-pages/index.mjs",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "fdf9ae6c24b58f46768f3aacff169d376c07b625dffa182b6ff9ebb8c658d27a",
+      "diffSha256": "32f6ab631b03ac8ca64f4b2c74be4442a53f407a8559be0265636d6d3baa8022",
+      "exportedDiffSha256": "509c3e8a7aaa8a12b506644b37b45ec31ee1312cff6a470318b4f8b24ad6e2e6",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/download-artifact/action.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "84788c0a2f472ca1ff84028d363036c7b1ffe0b9f73f18d822f3379b04cb5ad6",
+      "diffSha256": "5dfe89180b490256d431c253155c82201bfd407b7252701b68365807ef636968",
+      "exportedDiffSha256": "14f1c740e8efc6c869578e0ca0eb943064cd4625b7dee10a6df04894142818c3",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/download-formal-ai-binary/action.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "dfffe517475a61defc08db5c82ee228d7f74dcb24a9d33aac80dba469cca092b",
+      "diffSha256": "d86f5c70d9f345acf9d403708fa52d4550c294ff8cea7e612d5cad13d64245d5",
+      "exportedDiffSha256": "249d392bb16ca14e0bcb69db78b22389927505cbd535e92e67117ad5dc5a17e1",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/release-web/action.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "b51f07324943bc20a4b98de1abe86199f8d7f94424dfe2496c80bda4dae62e44",
+      "diffSha256": "a143359d14139e0f065b0e59d5115e6404d6a4e600301cff3616f85f19a26380",
+      "exportedDiffSha256": "ea02f23eceffcfe699e05b93c44ef116967ccda5a5beda5eaf9af3b9b61fe40f",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/setup-buildx-resilient/action.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "77029707cceacfd8bd26d502c850ac461fa8e8b332fd88a3c0ec0aed9a4f8531",
+      "diffSha256": "d889c91d3736a74dde89525f4a48f66c8675c18193a8a678a0a387066520c592",
+      "exportedDiffSha256": "46e46766fbcbabce871993c7a2e8740b4d89f130b3a9539d4c1ec3c29da79bc7",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/actions/setup-sccache/action.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "45afd3ed5bbcc3543f40dc04952cec5ffd5023c7dfec1cdb4314c4e3fc2c4310",
+      "diffSha256": "a60d3fad37aed933aa1b85810a1b3ea5cf73dfccc576ef6feaefbe6ff16dd09e",
+      "exportedDiffSha256": "815a6620c4b973433fcdcca2fa7f62fb6b901d8ff6c65cb66e5c32031011d9cb",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/agent-cli-e2e.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "af2c32c001ca6da6f28513fbec296f2c886d09e6160442dab91fc1d704d70608",
+      "diffSha256": "cfa46413072f3c42641f9b1e3ab117111674d33229054ec26886e22961f51b46",
+      "exportedDiffSha256": "4b90fca250b11ad8fe4919ce1c8f2bd212b889eb2cd85614eac31556128d9c64",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/agentic-cli-matrix.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "e936f7108cdc6a105d18f079b2d9f5b8c251dab479beea0da71c38d71df281a0",
+      "diffSha256": "ab9b018d89a4e233affda22fd9a00873f3d23d6d32b03a2f806b6960535a7b1d",
+      "exportedDiffSha256": "27adeaf733c59573b63cf0cc90dce90556515f7d15e9eae2a528626187d19dba",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/benchmark-corpus-gate.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "7b109fecd21c3a3740f85178257036384a0d9724daba88bff306db46b0427005",
+      "diffSha256": "b94eb0e2c5e18e695f8ea76658421bdce6c63498019e29a298166358975c3df4",
+      "exportedDiffSha256": "6a9ebfc7661d31ea22cc6a5a33f0eb81d27b6ea82d85c15f2ac6fabb63ac4589",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/coding-ladder.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "762e8c861e459aa5840fde71d5470a842aa88262fa2f67df88727152c708ea0e",
+      "diffSha256": "928028d0a7007e604ab46dc2df8a6190edcbdb517d29e7f711b4c081fc107075",
+      "exportedDiffSha256": "db06522a85b075ad0e9b0f6cb26a7111e7c4ebd07d7f61cceba79f268f957b39",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/container-images.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "bfb1984192db839c2b2800d9a5f511a36bdc86cd4092b81755fa9c0c1dc57782",
+      "diffSha256": "d8dd48b487ab4cccf85f88997c01380214de1a3a267061112a378606aae0e35e",
+      "exportedDiffSha256": "190d270134754826f9b0025afd4318c855a0e2bd60f84ddf80f9f6a38e77d8e6",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/coverage.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "1c92b008f42bbf4e8e9c945f94f6afca970e78cc7075afaa197a388020b07eaf",
+      "diffSha256": "651e69f88dec0e4843b5fc59821b56c61937145f2cc178661912a83b06915acd",
+      "exportedDiffSha256": "20625e1d3bb6fb81ec46c5e34e752c265a8f391c11f655ac6cfca6c402239bc1",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/dependencies-latest.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "2fdf5c814d83624e3f242557578eb1697824088791b7705cb7e292d365266340",
+      "diffSha256": "4045be5acf1276519b9242f824bd6e0135b491bb15587966bcb843de88b72d1e",
+      "exportedDiffSha256": "8465f845c5f88c2904a5a55f5a39467b33dfbbebf82067e0de6088bfdfd46e13",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/desktop-release.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "3fb82f1940a6611f03afcb7db4c36f5d5039565d116d579e13175172150b3d7d",
+      "diffSha256": "2e59a76b863941e7008e7d9d03d2c57ec7fcf35d1dc932dde895f91f669fe194",
+      "exportedDiffSha256": "bff6983b70739c344825b1a3b248f45e935ac210c8649ba8828dc0a5819ca9a1",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/documentation-policy.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "50b5270eaf64f8e00965ca68728a1bd2b2d4d32e15b214d4bdc070d893730e12",
+      "diffSha256": "e00127f31ec3977ecb881b6f53bd088e764caa74c1b8c975dba6b762dbc421bd",
+      "exportedDiffSha256": "5e1c060fe9b6df086c8f1370172f2a58587b64abc4896e8fc50228104d3e3c77",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/evidence-check.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "f14c92ddcce4b7da98690ab4b80ed6fc01741e7f80f32baaa0910f2a23ee62ce",
+      "diffSha256": "e05ce3f442fef76a6b6909a1b70c1fc8ad6584d5b49b384c3035d3a6613b48d4",
+      "exportedDiffSha256": "0aa7274366c2ce0a94ea241d943de26fc5ca23e00738be8e098464b2b01dd7a1",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/external-benchmarks.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "598c48f06446c4fff1e4ec222081b44ebf28553a050a939313c357cce6a9e3ce",
+      "diffSha256": "a55c26e7130a181d6b75b46b0d6332fce77da4a616fd9518a2179c4f84658033",
+      "exportedDiffSha256": "b3331a434639bcc0b8db7605c026beee566819060963975586b009bd76fabef4",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/hive-mind-draft.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "f6d01e7288a36cda551bfdb8621ad48cba07b4c8be6fb439962fd118d2d42a5a",
+      "diffSha256": "78afe08c46c31bc1257eff093d659659f0a4df81f6c8b24af24a05ded46812da",
+      "exportedDiffSha256": "5f1133d887614aa20240d7d18903a0c250a59e6d05213ec1ec77269ff530e830",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/hive-original-delivery.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "badbb52f4d705a370981d3d7fba159abe7a6e20a2e79c3892551d3abe3275229",
+      "diffSha256": "19813f49c82d5004090eec36312745df4bc4365eab2857f2f14fe5b2ae771eda",
+      "exportedDiffSha256": "080b426718f52195c6a0fbf39c6a2745d81d5ea4b5b803c86b96f3d77bf9854c",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/hive-source-provenance.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "b4e1060a2820a3b784289b34080e69770d6982486bf9f4af45cc0ce1518a2b07",
+      "diffSha256": "32bbbf833c3d9e0e77ec4eec1f9db4e5ed6f56990cb0448f8a0b51eb2c8b9583",
+      "exportedDiffSha256": "886f6906744432163c2a911c1c20ea5f2baea07fe3d60411d125dc26932d3f61",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/issue-1028-agent-ladder.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "3f8293658ab525c5317bab97969af9c9509de336262e8945986a5b568b7600a5",
+      "diffSha256": "09f17e7ef17c1a8fc5b57ab2c60b2382870eb76da9953b631f54e02f5bb9f389",
+      "exportedDiffSha256": "eb02cadc800ac10a84dd494e911618f10f55d311d0fbe545df9f0bf2304518ac",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/layered-ci.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "de1e78c1b25b78b91638e3db5e7e00cb3103997afe142644dcd8d9d0e59f82ae",
+      "diffSha256": "4aeb0f66c2a587b5923feb9b1d1672ff28a7ff4f35716585ae9798896629696a",
+      "exportedDiffSha256": "d1ed8afd7608be308ff889c9901e293d9951c0c2015c79d957a7b73824f46847",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/links.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "603d5d544c9b514c697b860ceb69f8afe7d6973fd0bc2b1d53ced77da3afa8f3",
+      "diffSha256": "8ea53739e918b49624b83a6b11ca8aa5e6a69c3f4d8a83453ab508ad9c306fd2",
+      "exportedDiffSha256": "f542dc7faab19ab243d4dd49868536ce366623209349b9ddce289c3e16cb62f5",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/native-response-observations.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "8aaeb59453d0bdcb488ed73adf04b8216a71870eb8658c7fb1f25990c31fc21a",
+      "diffSha256": "5b8b4000ce1c50cb4d1835470426ed23a54367b28f1b6da5ec8098679136ce84",
+      "exportedDiffSha256": "25d58125a49db7dd47f9d03f24633ab30adc09c6c56af389b18e6ad3b8f33b9f",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/native-type-check.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "60bf10b1d0766f5a889d99304e4fee787ad889f36b4c5edc7866ee79e69bb6a1",
+      "diffSha256": "e296724b8c21939ac1654b9c5264942f85a7f4e363ae6044fd43cf43c1ef66a7",
+      "exportedDiffSha256": "c0db3cb0eb791a4d6fe88fa23a6f4edbde1f16220ed5499f81d8f4d478151304",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/pages-artifact.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "b2a53ff0db9ed0eee5c533ed835353fa9b93341b1df635d36387e819a95b5f48",
+      "diffSha256": "ff2f8cf95610bcdd0d634890fad9f4c718ad15a6ac81fd2fcfc11d95d0a52b91",
+      "exportedDiffSha256": "aec9da471a706556b1de4ebd216ae809e8c3c8c99440e7502076602d214ea71d",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/proactive-failure-report-e2e.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "d9f689d64e71c9ec29a1379e010f22410f6695670b472d545bc0543435ece4c7",
+      "diffSha256": "90de7f0aaf7930c9acade45dcd58aad452596fd7b83a67e6f31faf063e44f213",
+      "exportedDiffSha256": "2b78f88ef6f4a62e197f105bcac63f4fa7d07b2838112fae0f303f25a1ca3df0",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/provenance-native-dependencies.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "f3f80506ba9c8ee794560c38e7ea7eb7b51671e96c9be14ae16816a31b911b27",
+      "diffSha256": "d8da6b4a65a111235aab97428237c97e6b6d1201cc49ec83ad99a4747894eea1",
+      "exportedDiffSha256": "3f58ec3a0903d3aa73005f65db86c359512c635027889a82e789864790907703",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/provenance-native.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "c33259d3fcfd9b92a20de237f0ebbb9e3f6590d9d90052e42fac4a2d20f10de9",
+      "diffSha256": "aef01cf792f2f8404b68a205287a8428613147569dbf5d000a56bfd7794d0510",
+      "exportedDiffSha256": "e1eaa90c0f3323f373dd9057f5effd61598a16e8e518a179b3d6cfb249ccd9b7",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/publish-source-networks.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "f6d0539b1d9d393bcbe7825f48f082e66a3915146fb1cadbbddb376472069605",
+      "diffSha256": "65cf55968f1ccae686072499599986fd07cc134c7e06152c11b1db3984d5a5f0",
+      "exportedDiffSha256": "a6fe92de6dd7ddcc8ae8b9fd758c0fffe253e525b294afd9d745b5392c7198e4",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/pull-request-check-profile.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "c4abd48b4ac978c5209da496787edd5988e922447bde4b78afafbc9e1f542263",
+      "diffSha256": "f522aac796909770a2692bff083ef361dd0a1d8302f212763dcb810fe4275b5e",
+      "exportedDiffSha256": "4bc7d62d8ceb3a7a630b01c6bbdb167bc9473314152f22a1940c88bfef67343a",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/question-necessity-ratchet.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "fafceb9909469d25b6c52b86aee89db2607eda9ec17cb053dc9e9d70071a24d1",
+      "diffSha256": "cf1a2aaed622b215ef986620351fb11af27a9553c64ff9121f7fe9cf0a7a6481",
+      "exportedDiffSha256": "b267a74bee1a8d92b915102105dc03e8aab1e0a4fe999acb5e6f4deaec22b295",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/recover-unacquired-runners.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "c32179e08ba54a315996cf1036a46b3f8d535427fb51a0fee7d47f7a65219b04",
+      "diffSha256": "abc9eb5008190ec06d90e9e4ee758b26c4a92a9254290ddc196f52649ddf53d1",
+      "exportedDiffSha256": "2200610d7de5b197dae85bdc1d3c6d64c7de7e0049a418ca6c606154a8b03b4c",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/regenerate-native-session-projections.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "14df3a325d49944fd922a593259b1fd83e789b0f22f69d98d827d80421deabc3",
+      "diffSha256": "225df76f75efcf19dc620c02c7688372607621de166c33fe16dc5858fe4eb04c",
+      "exportedDiffSha256": "f700ff08c9701b78e866bc759fd167cdd5b3f63ffeb4b5f5d8d6cfe4ca5638df",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/regenerate-self-ast-census.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "39f7fbfee56f654e7c6cc2eb0d24a955a47947ea19984bd9059f744ba90538cc",
+      "diffSha256": "e34d8230d3466efeb25d1239d0050b7fd57493bebb8a03a48ea727e000f4cffc",
+      "exportedDiffSha256": "7f0d9c1091fc13990a2c6e5e55354abae4beefcc336c4cd1f44bd7fa41f53276",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/release-runtime-fixture.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "aa289e886f7af03f1415b1c89a073939a3c8f4c314632ee1859612e21b18e080",
+      "diffSha256": "5ba4c5852453a78ad889df31a3d60a04c9b8e3cb8466e35a3dd828ef286411bf",
+      "exportedDiffSha256": "65d79aed51690be40a4f1e76522f4902f71d63582ae7a3187d96d663513b1183",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/release-staged.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "a8fb567fa8c152001de78c73af71468789373931d0d691e3c100287a975f4d58",
+      "diffSha256": "6bb53a482ec3850b15527e43aeb99b7700977a1fc8bfaf392315fc99cb84cc69",
+      "exportedDiffSha256": "1e3153286765cdcad4f66d6b40f2fb75f792b8cb2363ae0bee76552375f1363f",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "d124b94f098812db4e9e9111e92ad4d1fe2c056067af54bb445c42869dc5a4ff",
+      "diffSha256": "eeecf5209bd4c0c8c7b9a78dcda5cd845d2a00b8d38ce58fc9620e06d557a38c",
+      "exportedDiffSha256": "f476cad92be8ab82ec6553e00a38f5718b69fcf9dd0a015aa4762dfaef26ae1e",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "d3e9284a622c70f246823cdfdbff735e3ea528a9b2a715cb050649ffc633dd57",
+      "diffSha256": "6ba6a302ee699af6360a4be7d037f52222ab11b2d8becd13883cd9fd03dd4083",
+      "exportedDiffSha256": "eecbd5c6694b1a80da45c1b6e014e84ba77c142a104bbc7f9396e0813f43a76b",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/source-scanner-qualification.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "fc5e33cf380532bc64d926870988d3292b3f82b1512e1ff6cfa8c1a4877b5e6d",
+      "diffSha256": "76600eb8803fcf6624cbc0fed2f3ea417293de033bac4f6ccc8d4d6a5d8891a1",
+      "exportedDiffSha256": "dad749b60fdf7de0946c1e976beb16ce1db9a54577663ebdb4bac004ab60f224",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/stock-rust-install.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "7541263d00fb5ed9496e606fd9d32b32418dc117a0a81a65542343f71d897347",
+      "diffSha256": "43111643215f74918ab192b39842e563fe04d26ea3fd3a4427345bb51a074783",
+      "exportedDiffSha256": "5b102e6369cee231710d29fae1b8c69ba4bcaf22fe228ffb2a09c060c3b8bd0f",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/summarization-ratchet.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "2b109771b09580756fd5518849b155a40490d1465de047a79de951b7e7e7d3d3",
+      "diffSha256": "c7682c30c003e68c7455ca916d38403860328363bcd35cdd2ec6c662653b7407",
+      "exportedDiffSha256": "9def752b4da0a41261f46a4e973635d4f5693fcc71643a1f375a1838fd9c6995",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/task-ladder.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "ad1111d53e695b99cbd9a5d4ef520e22b2ac307490129cbbb369b25b4266ccb6",
+      "diffSha256": "fc2ede48d6bb77ba5f806dea53f8feabb63ed3530ed1ba0e022ea6367172e323",
+      "exportedDiffSha256": "374ea4060e58557b7bbab80229f9ead5d9890c90b0967a04b9a8eae7fd7a04e5",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/verify-release-downloads.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "1f3ceb780faa5a0e55ac526a74a30814e5fa6387590c434772703bd88b24a8ef",
+      "diffSha256": "ce91980bfd7d229af8246c41fc4183a727832d56ec9e6a6857174858466f0719",
+      "exportedDiffSha256": "b74bec633d36e3393509218af3a581d65bf2f90a54dc8a25fc963e8f8293419d",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/web-ui-boundary.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "e2148f0c886eeba159e0d9e392026c7cdd2295b84b02ec613a9b12e68bafdc87",
+      "diffSha256": "a6de97ec83d3223fefa0b13b9486d9f5f4dee535c384502108bf2fb29469fb64",
+      "exportedDiffSha256": "d66190df8d3b576fb21ebaee6163d443892175bca6615b9551ccc64e86b84d8d",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/work-item-qualification.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "2a224a403d1ad1208c18cac73e12d2d508a03ea0d8d150c3dc4d1371ded99d9a",
+      "diffSha256": "e164932fe7cc95d6b1d38cbd8093e09ff82a625f75793c7964c77747aa9893d2",
+      "exportedDiffSha256": "03d90fdade21491a2178c5a013ae110d39f27ae07ab7f4612bba468141dc9a65",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "99d1cd02842a9fed5f98fd6d5dc90dcde979dba4b32281fc2063626f947088f4",
+      "diffSha256": "10dae994e3861b22f982c4cc56a3dbe7b725e5500b38862a17ac6cf191d3ff1a",
+      "exportedDiffSha256": "6b75dc89f316f86f2acfd84373dbb17829cd2b980ab7d7c107f2d6d588665ebd",
+      "reviewMethod": "Complete bounded reads; workflow audit source trigger delta reviewed after the exported diff."
+    },
+    {
+      "path": ".github/workflows/write-effect-ladder.yml",
+      "completeDiffLiterallyRead": true,
+      "sourceSha256": "c461c91092cec8000535fab619fc2d531fa7a8379f0b2768c555a794f4e38d47",
+      "diffSha256": "f299c47e342d31faf297121dc4f6520d6cff563238792385204e1443590f74e4",
+      "exportedDiffSha256": "b618f46543e740f3568fbf780e0094d89b786aacd025359de45495986d16c2ae",
+      "reviewMethod": "Complete bounded reads of the exported diff; exporter separator newline normalized for identity comparison."
+    }
+  ],
+  "findings": [
+    "Workflow audit helper and regression paths were absent from push and pull_request filters. Commit d3aebbdc9 adds both, with a failing-before/passing-after assertion.",
+    "Exact workflow source pinning, failed observations, immutable artifact identity, constrained runner acquisition, and existing native families remain represented in the reviewed workflow changes."
+  ],
+  "wholePrReviewed": false,
+  "allIssueRequirementsAccepted": false,
+  "independentAuthorshipCredit": 0
+}

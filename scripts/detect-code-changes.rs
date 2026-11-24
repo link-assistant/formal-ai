@@ -58,9 +58,12 @@
 use regex::Regex;
 use std::env;
 use std::fs;
-use std::io::Write;
 use std::path::Path;
 use std::process::Command;
+
+#[allow(dead_code)] // This CLI uses the fallible writer and retains its own stdout format.
+#[path = "github-output.rs"]
+mod github_output;
 
 // These paths are CI evidence or non-shipping scratch work. No output used to
 // gate a job may be set by a file below one of these prefixes.
@@ -86,43 +89,23 @@ const LAYER_CLASSIFIER: &str = "scripts/detect-code-changes.rs";
 // and merged unexecuted: issue #1017's false-negative class.
 const JS_SUITES: &str = "rust/tests/web/";
 
-fn exec(command: &str, args: &[&str]) -> String {
-    match Command::new(command).args(args).output() {
-        Ok(output) => {
-            if output.status.success() {
-                String::from_utf8_lossy(&output.stdout).into_owned()
-            } else {
-                eprintln!("Error executing {command} {args:?}");
-                eprintln!("{}", String::from_utf8_lossy(&output.stderr));
-                String::new()
-            }
-        }
-        Err(e) => {
-            eprintln!("Failed to execute {command} {args:?}: {e}");
-            String::new()
-        }
+fn exec_in(repo: &Path, args: &[&str]) -> std::io::Result<String> {
+    let output = Command::new("git").args(args).current_dir(repo).output()?;
+    if !output.status.success() {
+        return Err(std::io::Error::other(format!(
+            "git {args:?} failed ({}): {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
     }
+    String::from_utf8(output.stdout)
+        .map_err(|error| std::io::Error::new(std::io::ErrorKind::InvalidData, error))
 }
 
-fn set_output(name: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT")
-        && let Ok(mut file) = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&output_file)
-    {
-        let _ = writeln!(file, "{name}={value}");
-    }
+fn set_output(name: &str, value: &str) -> std::io::Result<()> {
+    github_output::write_output(name, value)?;
     println!("{name}={value}");
-}
-
-fn is_merge_commit() -> bool {
-    let output = exec("git", &["cat-file", "-p", "HEAD"]);
-    output
-        .lines()
-        .filter(|line| line.starts_with("parent "))
-        .count()
-        > 1
+    Ok(())
 }
 
 fn usable_before_sha(before: Option<&str>) -> Option<&str> {
@@ -161,32 +144,44 @@ fn decode_git_paths(output: &str) -> Vec<String> {
         .collect()
 }
 
-fn get_changed_files() -> Vec<String> {
-    // GitHub Actions checks out a synthetic merge commit for pull_request
-    // events: HEAD is the merge commit, HEAD^ is the base branch, HEAD^2
-    // is the actual PR head. Comparing the two parents covers every commit in
-    // the PR, so a docs-only final commit cannot hide earlier code changes.
-    let event_name = env::var("GITHUB_EVENT_NAME").unwrap_or_default();
-    let event_before = env::var("GITHUB_EVENT_BEFORE").ok();
-    let merge_commit = is_merge_commit();
-    let (base, head, description) =
-        comparison_for_event(&event_name, merge_commit, event_before.as_deref());
-    if event_name == "pull_request" && merge_commit {
-        println!("Merge commit detected (pull_request event)");
+fn get_changed_files() -> std::io::Result<Vec<String>> {
+    get_changed_files_in_repo(
+        Path::new("."),
+        &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
+        env::var("GITHUB_EVENT_BEFORE").ok().as_deref(),
+    )
+}
+
+fn get_changed_files_in_repo(
+    repo: &Path,
+    event: &str,
+    before: Option<&str>,
+) -> std::io::Result<Vec<String>> {
+    // Even shallow commits retain their parent headers. Only a genuinely initial
+    // commit permits the tree fallback; unknown history must not become an empty diff.
+    let commit = exec_in(repo, &["cat-file", "-p", "HEAD"])?;
+    let parents = commit
+        .lines()
+        .take_while(|line| !line.is_empty())
+        .filter(|line| line.starts_with("parent "))
+        .count();
+    if event == "pull_request" && parents != 2 {
+        return Err(std::io::Error::other(
+            "pull_request requires the complete synthetic merge comparison",
+        ));
     }
+    let (base, head, description) = comparison_for_event(event, parents > 1, before);
     println!("Comparing {base} to {head} ({description})");
-    // A source-to-doc rename must retain the removed source path for admission.
-    let mut output = exec(
-        "git",
-        &["diff", "--no-renames", "--name-only", "-z", &base, &head],
-    );
-
-    if output.is_empty() && exec("git", &["rev-parse", "--verify", &base]).is_empty() {
-        println!("{base} is not available, listing all files in HEAD");
-        output = exec("git", &["ls-tree", "--name-only", "-z", "-r", "HEAD"]);
-    }
-
-    decode_git_paths(&output)
+    // Preserve removed source paths and literal path bytes (including newlines).
+    let output = if parents == 0 && base == "HEAD^" {
+        exec_in(repo, &["ls-tree", "--name-only", "-z", "-r", "HEAD"])?
+    } else {
+        exec_in(
+            repo,
+            &["diff", "--no-renames", "--name-only", "-z", &base, &head],
+        )?
+    };
+    Ok(decode_git_paths(&output))
 }
 
 fn is_ignored_by_ci(file_path: &str) -> bool {
@@ -278,16 +273,43 @@ fn release_pending(event_name: &str, git_ref: &str, fragments: &[String]) -> boo
         })
 }
 
-/// The file names in `changelog.d/` (empty when the folder is absent).
-fn changelog_fragments() -> Vec<String> {
-    fs::read_dir("changelog.d")
-        .map(|entries| {
-            entries
-                .filter_map(Result::ok)
-                .map(|entry| entry.file_name().to_string_lossy().into_owned())
-                .collect()
-        })
-        .unwrap_or_default()
+/// Only an absent directory is an empty inventory. Unreadable entries and
+/// non-UTF-8 names cannot establish a complete release observation.
+fn changelog_fragments(directory: &Path) -> std::io::Result<Vec<String>> {
+    let entries = match fs::read_dir(directory) {
+        Ok(entries) => entries,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => {
+            return Err(std::io::Error::new(
+                error.kind(),
+                format!(
+                    "Could not read fragment inventory '{}': {error}",
+                    directory.display()
+                ),
+            ));
+        }
+    };
+    let mut names = Vec::new();
+    for entry in entries {
+        let entry = entry.map_err(|error| {
+            std::io::Error::new(
+                error.kind(),
+                format!(
+                    "Could not read fragment entry in '{}': {error}",
+                    directory.display()
+                ),
+            )
+        })?;
+        let name = entry.file_name().into_string().map_err(|_| {
+            std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!("Non-UTF-8 fragment name in '{}'", directory.display()),
+            )
+        })?;
+        names.push(name);
+    }
+    names.sort();
+    Ok(names)
 }
 
 fn classify_changes(changed_files: &[String]) -> ChangeFlags {
@@ -380,10 +402,10 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
     }
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     println!("Detecting file changes for CI/CD...\n");
 
-    let changed_files = get_changed_files();
+    let changed_files = get_changed_files()?;
 
     println!("Changed files:");
     if changed_files.is_empty() {
@@ -395,19 +417,37 @@ fn main() {
     }
     println!();
 
+    // Establish the release inventory before emitting any job decision. Other
+    // workflows do not consume it and must not acquire a new filesystem input.
+    let event = env::var("GITHUB_EVENT_NAME").unwrap_or_default();
+    let git_ref = env::var("GITHUB_REF").unwrap_or_default();
+    let pending = if env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
+        && event == "push"
+        && git_ref == "refs/heads/main"
+    {
+        automatic_release_pending(
+            &event,
+            &git_ref,
+            &changelog_fragments(Path::new("changelog.d"))?,
+            &changed_files,
+        )
+    } else {
+        false
+    };
+
     let flags = classify_changes(&changed_files);
     set_output(
         "rs-changed",
         if flags.rs_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "toml-changed",
         if flags.toml_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "docs-changed",
         if flags.docs_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "workflow-changed",
         if flags.workflow_changed {
@@ -415,7 +455,7 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
     set_output(
         "pipeline-changed",
         if flags.pipeline_changed {
@@ -423,7 +463,7 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
     set_output(
         "agentic-routing-changed",
         if flags.agentic_routing_changed {
@@ -431,19 +471,19 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
     set_output(
         "js-changed",
         if flags.js_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "ts-changed",
         if flags.ts_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "rust-changed",
         if flags.rust_changed { "true" } else { "false" },
-    );
+    )?;
 
     // Show code changes after both the CI-wide ignored paths and the broader
     // any-code documentation/example exclusions have been applied.
@@ -462,19 +502,12 @@ fn main() {
     }
     println!();
 
-    let pending = env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
-        && automatic_release_pending(
-            &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
-            &env::var("GITHUB_REF").unwrap_or_default(),
-            &changelog_fragments(),
-            &changed_files,
-        );
     if pending && !flags.any_code_changed {
         println!(
             "A changelog fragment is waiting on main: the release needs lint, test and the build."
         );
     }
-    set_output("release-pending", if pending { "true" } else { "false" });
+    set_output("release-pending", if pending { "true" } else { "false" })?;
     // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .lino, .yml,
     // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code
     // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still
@@ -488,336 +521,12 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
 
     println!("\nChange detection completed.");
+    Ok(())
 }
 
 #[cfg(test)]
-mod tests {
-    use super::{
-        ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, automatic_release_pending,
-        classify_changes, comparison_for_event, decode_git_paths, is_documentation_path,
-        release_pending,
-    };
-
-    #[test]
-    fn git_path_records_preserve_literal_unicode_and_linebreaks() {
-        let paths = decode_git_paths("docs/中文.md\0docs/line\nbreak.md\0");
-        assert_eq!(paths, vec!["docs/中文.md", "docs/line\nbreak.md"]);
-        assert!(!classify_changes(&paths).any_code_changed);
-        assert!(!automatic_release_pending(
-            "push",
-            "refs/heads/main",
-            &["pending.md".to_string()],
-            &paths,
-        ));
-        assert_eq!(
-            decode_git_paths(" docs/space.md \0"),
-            vec![" docs/space.md "]
-        );
-    }
-
-    #[test]
-    fn documentation_only_push_never_releases_a_waiting_fragment() {
-        let waiting = vec!["pending.md".to_string()];
-        let docs = vec![
-            "docs/guide.md".to_string(),
-            "changelog.d/pending.md".to_string(),
-        ];
-        assert!(!automatic_release_pending(
-            "push",
-            "refs/heads/main",
-            &waiting,
-            &docs
-        ));
-        let mixed = vec!["docs/guide.md".to_string(), "rust/src/lib.rs".to_string()];
-        assert!(automatic_release_pending(
-            "push",
-            "refs/heads/main",
-            &waiting,
-            &mixed
-        ));
-        assert!(is_documentation_path("README.md"));
-        assert!(is_documentation_path(".md"));
-        assert!(!is_documentation_path("README.MD"));
-        assert!(is_documentation_path("rust/README.md"));
-        assert!(!is_documentation_path("data/seed/runtime.md"));
-        assert!(classify_changes(&["data/seed/runtime.md".to_string()]).any_code_changed);
-        assert!(classify_changes(&["data/seed/RUNTIME.MD".to_string()]).any_code_changed);
-    }
-
-    #[test]
-    fn a_waiting_fragment_on_main_makes_the_release_pending() {
-        let fragments = |names: &[&str]| {
-            names
-                .iter()
-                .map(|name| (*name).to_string())
-                .collect::<Vec<_>>()
-        };
-        let waiting = fragments(&["README.md", "20260926_215107_issue-1149-coverage-budget.md"]);
-        assert!(release_pending("push", "refs/heads/main", &waiting));
-        assert!(!release_pending(
-            "push",
-            "refs/heads/main",
-            &fragments(&["README.md"])
-        ));
-        assert!(!release_pending(
-            "pull_request",
-            "refs/heads/main",
-            &waiting
-        ));
-        assert!(!release_pending("push", "refs/heads/feature", &waiting));
-    }
-
-    #[test]
-    fn pull_requests_compare_the_complete_base_to_head_range() {
-        assert_eq!(
-            comparison_for_event("pull_request", true, None),
-            (
-                "HEAD^".to_string(),
-                "HEAD^2".to_string(),
-                "complete pull request diff"
-            )
-        );
-    }
-
-    #[test]
-    fn pushes_compare_every_commit_in_the_event() {
-        assert_eq!(
-            comparison_for_event("push", true, Some("before-sha")),
-            (
-                "before-sha".to_string(),
-                "HEAD".to_string(),
-                "complete push diff"
-            ),
-            "a pushed merge commit must not be mistaken for GitHub's synthetic PR merge"
-        );
-    }
-
-    #[test]
-    fn missing_push_before_sha_falls_back_to_the_previous_commit() {
-        assert_eq!(
-            comparison_for_event("push", false, Some("000000")),
-            (
-                "HEAD^".to_string(),
-                "HEAD".to_string(),
-                "previous commit diff"
-            )
-        );
-    }
-
-    #[test]
-    fn ignored_only_changes_set_no_flags_for_pushes_or_pull_requests() {
-        for event_name in ["push", "pull_request"] {
-            for path in [
-                "experiments/repro.rs",
-                "experiments/README.md",
-                "experiments/repro.mjs",
-                "dev/log/run.rs",
-                "docs/case-studies/issue-846/repro.rs",
-            ] {
-                assert_eq!(
-                    classify_changes(&[path.to_string()]),
-                    ChangeFlags::default(),
-                    "{path} must be ignored on {event_name}"
-                );
-            }
-        }
-    }
-
-    #[test]
-    fn shipping_changes_still_set_their_flags() {
-        assert_eq!(
-            classify_changes(&[
-                "src/lib.rs".to_string(),
-                "guide.md".to_string(),
-                ".github/workflows/release.yml".to_string(),
-            ]),
-            ChangeFlags {
-                rs_changed: true,
-                docs_changed: true,
-                workflow_changed: true,
-                pipeline_changed: true,
-                any_code_changed: true,
-                ..ChangeFlags::default()
-            }
-        );
-    }
-
-    /// The flag that decides whether a push pays for the heavy jobs.
-    ///
-    /// Issue #1107: `workflow_changed` is true for every file under
-    /// `.github/workflows/`, so editing a scheduled benchmark unlocked the
-    /// macOS archive, the Docker check, six box images and a 25-minute agent
-    /// end-to-end run. `pipeline_changed` is true only for the files those
-    /// jobs actually execute.
-    #[test]
-    fn an_unrelated_workflow_does_not_unlock_the_pipeline_heavy_jobs() {
-        let unrelated =
-            classify_changes(&[".github/workflows/external-benchmarks.yml".to_string()]);
-        assert!(
-            unrelated.workflow_changed,
-            "the workflow gates still have to run for it"
-        );
-        assert!(
-            !unrelated.pipeline_changed,
-            "a scheduled benchmark's workflow does not change what the pipeline jobs do"
-        );
-        assert!(
-            !unrelated.any_code_changed,
-            "a workflow is not the compiled code the heavy jobs test; counting it here is what \
-             made every workflow edit pay for the macOS archive, the Docker check, six box \
-             images and a 25-minute agent end-to-end run"
-        );
-
-        for path in [
-            ".github/workflows/release.yml",
-            ".github/actions/author-with-formal-ai/action.yml",
-            "scripts/author-change-with-formal-ai.sh",
-        ] {
-            assert!(
-                classify_changes(&[path.to_string()]).pipeline_changed,
-                "{path} changes what a pipeline job runs"
-            );
-        }
-    }
-
-    #[test]
-    fn agentic_source_changes_request_the_four_client_replay() {
-        for path in [
-            "rust/src/agentic_coding/capability_router.rs",
-            "rust/src/agentic_coding/planner.rs",
-            "rust/src/agentic_coding/new_router.rs",
-        ] {
-            assert!(
-                classify_changes(&[path.to_string()]).agentic_routing_changed,
-                "{path} can change client-specific routing"
-            );
-        }
-
-        for path in [
-            "rust/src/coding/composition.rs",
-            "docs/agentic_coding/README.md",
-        ] {
-            assert!(
-                !classify_changes(&[path.to_string()]).agentic_routing_changed,
-                "{path} is outside the agentic routing source boundary"
-            );
-        }
-    }
-
-    /// The js -> ts -> rust cycle's tier matrix (issue #1138, plan 16 L4).
-    ///
-    /// Cumulative downward, never upward: the committed ts tree is a
-    /// function of the js tree and the dogfood gate binds all three, so a
-    /// change wakes every tier below its folder and none above it. That
-    /// asymmetry is the instruction's saving -- a rust iteration lets the
-    /// js and ts tiers stand on their last green runs.
-    #[test]
-    fn tier_gates_are_cumulative_downward_and_never_upward() {
-        let rust_only = classify_changes(&["rust/src/lib.rs".to_string()]);
-        assert!(rust_only.rust_changed, "a rust change wakes the rust tier");
-        assert!(
-            !rust_only.js_changed && !rust_only.ts_changed,
-            "a rust change lets the js and ts tiers carry their last green runs forward"
-        );
-
-        for path in [
-            "data/meta/server-routes.lino",
-            "scripts/check-server-parity.mjs",
-            "rust/tests/fixtures/server-parity/requests.lino",
-        ] {
-            let flags = classify_changes(&[path.to_string()]);
-            assert!(
-                flags.js_changed && flags.ts_changed && flags.rust_changed,
-                "{path} is a server-parity input, so every tier re-runs"
-            );
-        }
-
-        let js_only = classify_changes(&["js/app.js".to_string()]);
-        assert!(
-            js_only.js_changed && js_only.ts_changed && js_only.rust_changed,
-            "a js change wakes every tier below it: the ts tree is a function of \
-             the js tree, so a sleeping ts tier would carry a stale-green tier \
-             past the plan 16 L3 regeneration contract"
-        );
-
-        let ts_only = classify_changes(&["ts/app.ts".to_string()]);
-        assert!(
-            ts_only.ts_changed && ts_only.rust_changed,
-            "a ts change still reaches the tier that regenerates it"
-        );
-        assert!(
-            !ts_only.js_changed,
-            "the cycle never ascends: a ts change does not reexecute the js tier"
-        );
-
-        let seed = classify_changes(&["data/seed/tools.lino".to_string()]);
-        assert!(
-            seed.js_changed && seed.ts_changed && seed.rust_changed,
-            "a seed consumed by all three roots wakes every tier (plan 16 risk 3)"
-        );
-
-        let docs = classify_changes(&["README.md".to_string()]);
-        assert!(
-            !docs.js_changed && !docs.ts_changed && !docs.rust_changed,
-            "a docs-only change wakes no tier"
-        );
-    }
-
-    /// The gating files re-run the tiers they gate, so the cycle's own
-    /// rules can never go stale on a green branch.
-    #[test]
-    fn the_gating_files_rerun_the_tiers_they_gate() {
-        for path in [
-            LAYERED_WORKFLOW,
-            LAYER_CLASSIFIER,
-            "scripts/check-js-rust-translation.mjs",
-        ] {
-            let flags = classify_changes(&[path.to_string()]);
-            assert!(
-                flags.js_changed && flags.ts_changed && flags.rust_changed,
-                "{path} edits the tier rules, so every tier must re-run"
-            );
-        }
-
-        let binary_action =
-            classify_changes(&[".github/actions/formal-ai-binary/action.yml".to_string()]);
-        assert!(
-            binary_action.rust_changed,
-            "the binary action changes what the rust tier executes"
-        );
-        assert!(
-            !binary_action.js_changed && !binary_action.ts_changed,
-            "the binary action feeds only the rust tier"
-        );
-    }
-
-    /// A JavaScript suite is the js tier's own test, so editing one re-runs
-    /// that tier (issue #1017: a pinning test that never ran is a false
-    /// negative) without regenerating the ts tree, which does not consume it.
-    #[test]
-    fn a_javascript_suite_change_reruns_the_tier_that_executes_it() {
-        let suite = classify_changes(&["rust/tests/web/translate-es.test.mjs".to_string()]);
-        assert!(suite.js_changed, "the js tier runs the suite that changed");
-        assert!(
-            !suite.ts_changed,
-            "the ts tree is a function of js/, not of its tests"
-        );
-    }
-
-    #[test]
-    fn presentation_source_dependencies_rerun_all_translation_tiers() {
-        for path in [
-            "scripts/lib/rust-projection-presentation.mjs",
-            "scripts/self-translation/lexer.mjs",
-            "scripts/check-readable-code.mjs",
-        ] {
-            let flags = classify_changes(&[path.to_string()]);
-            assert!(flags.js_changed && flags.ts_changed && flags.rust_changed);
-        }
-        let unrelated = classify_changes(&["docs/presentation.md".to_string()]);
-        assert!(!unrelated.js_changed && !unrelated.ts_changed && !unrelated.rust_changed);
-    }
-}
+#[path = "detect-code-changes-tests.rs"]
+mod tests;

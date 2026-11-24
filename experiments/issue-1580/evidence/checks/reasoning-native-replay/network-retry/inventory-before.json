@@ -1,0 +1,34 @@
+{
+  "known": {
+    "experiments/agentic_cli_matrix/install_client.sh": 3,
+    "experiments/issue-1021-laravel/run.sh": 1,
+    "experiments/issue-1571/osv-cargo-lock.sh": 1,
+    "scripts/install.sh": 2
+  },
+  "ownRetry": [
+    "scripts/wait-for-pages-deployment.sh",
+    "scripts/verify-ghcr-visibility.sh",
+    "scripts/preflight-credentials.sh",
+    "experiments/issue-892/fetch-query.sh",
+    "experiments/issue-1076/repro-curl-truncated-download.sh",
+    "experiments/issue-1076/repro-npm-tarball-truncation.sh"
+  ],
+  "shellFiles": 382,
+  "remoteInvocations": 17,
+  "unlisted": [
+    {
+      "path": "experiments/issue_1582/continuation-local-tools.sh",
+      "invocations": [
+        "curl --fail --location --silent --show-error https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz -o /tmp/issue-1582-review/shellcheck.tar.xz"
+      ],
+      "remoteInvocations": [
+        "curl --fail --location --silent --show-error https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz -o /tmp/issue-1582-review/shellcheck.tar.xz"
+      ],
+      "listed": false,
+      "expectedCount": null,
+      "allRequiredFlags": false
+    }
+  ],
+  "listedMissingFlags": [],
+  "listedCountMismatches": []
+}

@@ -11,13 +11,13 @@
 //!   trailer), and the floor and ratcheted target the self-hosting ledger
 //!   records. It states that the measurement itself is not run here.
 //! - "what does `evaluate_calculation` do?" — a seeded `definition_cue` and an
-//!   identifier-shaped token the self-AST census records. The answer locates
+//!   identifier-shaped token the current owned source records. The answer locates
 //!   the symbol (kind, file, line span), quotes its documentation comment from
 //!   the source, and names the commit and issue that first wrote its name in
 //!   a file of its language (`git log -S`).
 //!
 //! A cue alone never claims (issue #1175): the status needs the seeded status
-//! phrase, and the definition needs a census symbol. Every sentence is a seed
+//! phrase, and the definition needs a current source symbol. Every sentence is a seed
 //! response.
 
 use std::path::Path;
@@ -32,13 +32,13 @@ use crate::seed::parser::{LinoNode, parse_lino};
 const STATUS_INTENT: &str = "repository_status_explanation";
 /// The intent of a symbol definition.
 const DEFINITION_INTENT: &str = "repository_definition";
-/// The most census symbols one definition answer describes.
+/// The most source symbols one definition answer describes.
 const MAX_DEFINITIONS: usize = 3;
 
-/// One symbol the self-AST census records.
+/// One navigation symbol derived from the current source.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CensusSymbol {
-    /// The census target, relative to the seed's `source_root`.
+    /// The current source path, relative to the seed's `source_root`.
     pub target: String,
     pub kind: String,
     pub name: String,
@@ -101,8 +101,9 @@ pub fn definition_subjects(prompt: &str, rules: &HistoryRules) -> Vec<String> {
     names
 }
 
-/// The symbols one census document records under its target.
-fn census_document_symbols(text: &str) -> Vec<CensusSymbol> {
+/// Decode a historical census for diagnostics, never live definition lookup.
+#[must_use]
+pub fn census_document_symbols(text: &str) -> Vec<CensusSymbol> {
     let mut target = String::new();
     let mut symbols = Vec::new();
     let mut in_symbols = false;
@@ -135,36 +136,31 @@ fn census_document_symbols(text: &str) -> Vec<CensusSymbol> {
     symbols
 }
 
-/// Every symbol the self-AST census under `root` records.
+/// Current source symbols below the configured Rust crate's `src` directory.
+///
+/// The historical public name remains compatible, but committed line-number
+/// inventories confer no authority. Read the current source on each lookup so
+/// edits, extractions and moves cannot attach another item's documentation.
 #[must_use]
 pub fn census_symbols(root: &Path, rules: &HistoryRules) -> Vec<CensusSymbol> {
-    let census = &rules.repository_qa.census_dir;
-    if census.is_empty() {
+    let source_root = root.join(&rules.repository_qa.source_root).join("src");
+    let Ok(workspace) = crate::self_ast_census::WorkspaceCensus::of_directory(&source_root) else {
         return Vec::new();
-    }
-    let mut pending = vec![root.join(census)];
-    let mut symbols = Vec::new();
-    while let Some(directory) = pending.pop() {
-        let Ok(entries) = std::fs::read_dir(&directory) else {
-            continue;
-        };
-        let mut paths: Vec<std::path::PathBuf> = entries
-            .filter_map(|entry| entry.ok().map(|found| found.path()))
-            .collect();
-        paths.sort();
-        for path in paths {
-            if path.is_dir() {
-                pending.push(path);
-            } else if path
-                .extension()
-                .is_some_and(|extension| extension == "lino")
-                && let Ok(text) = std::fs::read_to_string(&path)
-            {
-                symbols.extend(census_document_symbols(&text));
-            }
-        }
-    }
-    symbols
+    };
+    workspace
+        .modules
+        .into_iter()
+        .flat_map(|module| {
+            let target = format!("src/{}", module.path);
+            module.symbols.into_iter().map(move |symbol| CensusSymbol {
+                target: target.clone(),
+                kind: symbol.kind,
+                name: symbol.name,
+                start: symbol.start_line,
+                end: symbol.end_line,
+            })
+        })
+        .collect()
 }
 
 /// The documentation comment directly above line `start` (1-based) of
@@ -238,7 +234,7 @@ fn capitalized(text: &str) -> String {
     })
 }
 
-/// Describe one census symbol from its source, documentation and lineage.
+/// Describe one current source symbol from its documentation and lineage.
 #[must_use]
 pub fn definition_answer(
     root: &Path,

@@ -1,0 +1,163 @@
+[
+  {
+    "name": "native-groups",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "experiments/issue-1580/native-regression-groups.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "native-groups.stdout.gz",
+      "rawSha256": "466a237b144e02659fd9da9a24cad12224ec2536c9db57849d2eecfc8b23a176",
+      "archiveSha256": "4d74651b0d874c50a53639e66ac4f627c7deb750d6c9231e2cc92fdc8ccadcf9",
+      "bytes": 8640,
+      "lines": 232
+    },
+    "stderr": {
+      "file": "native-groups.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "default-branch-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "default-branch-policy.stdout.gz",
+      "rawSha256": "ffc471f63b2a474dc319cb3f982d7b6b255b9e70bc995ce27cabe263234befd5",
+      "archiveSha256": "546ca39af4a3e98529effbe157e044a60b635516aa7e710de867c9e8979e8fb1",
+      "bytes": 22826,
+      "lines": 604
+    },
+    "stderr": {
+      "file": "default-branch-policy.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "script-selection",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/script-suite-selection.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "script-selection.stdout.gz",
+      "rawSha256": "c97a3edb1aea42c7fafe0830b56fa2177900d74a44958a951fb29294b4798922",
+      "archiveSha256": "aa65a2ca72c62dd46bc5e7571a3712170431dccd39de5337e099860ddf6bd7b9",
+      "bytes": 402,
+      "lines": 16
+    },
+    "stderr": {
+      "file": "script-selection.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "locked-script-metadata",
+    "argv": [
+      "cargo",
+      "metadata",
+      "--manifest-path",
+      "experiments/issue-1580/release-registry/Cargo.toml",
+      "--locked",
+      "--offline",
+      "--no-deps",
+      "--format-version",
+      "1"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "locked-script-metadata.stdout.gz",
+      "rawSha256": "8221a84eeb094928a9d40baeb1f0263566d4a5aca3e956e06fd6f19f21d6e264",
+      "archiveSha256": "e34cb4f274dc399842fe4f8977518e1ba75fc12db1e575e6b1c86012b499e0d6",
+      "bytes": 4352,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "locked-script-metadata.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-ci-speed,check-runner-labels,check-readable-code,check-file-size,check-abbreviations"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "gates.stdout.gz",
+      "rawSha256": "4f212c1b295dbd4eec5db567d5d76d3c41a4d9ca071b3af6c33c0f0e75cc5f59",
+      "archiveSha256": "903781c3a26262a4a28e0697a2f56cacdab7249a33bbc6a78959ed98e134a9d5",
+      "bytes": 178,
+      "lines": 7
+    },
+    "stderr": {
+      "file": "gates.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

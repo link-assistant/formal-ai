@@ -1,0 +1,29 @@
+{
+  "schema": "issue-1580-passage-routing-controls/v1",
+  "scope": "Mocked worker transport. Only the negative control disables the existing metaSubTask guard. Actual provider calls are zero in every mode. This is supplied evidence, with zero independent authorship credit.",
+  "cases": [
+    {
+      "label": "candidate-research-negative",
+      "observedTransportCalls": 26,
+      "intent": "prompt_text_answer",
+      "archiveSha256": "0281dc0ad1f026880ece0a2073c2e24b000cf121cbf616fa0f552cc01407fd4f"
+    },
+    {
+      "label": "candidate-research-guarded",
+      "observedTransportCalls": 0,
+      "intent": "prompt_text_answer",
+      "archiveSha256": "838640fcbdaef77e433ebac9a07a574d26fdf8095c6daf40dd546a981ec3cb20"
+    },
+    {
+      "label": "direct-research-positive",
+      "observedTransportCalls": 16,
+      "intent": "unknown",
+      "archiveSha256": "be58b770391c6ce4aa631ebcfda53f615f3774c077d2d82fae851b7da3347588"
+    }
+  ],
+  "sameSources": true,
+  "samePassageAnswer": true,
+  "guardedRequests": 0,
+  "directResearchRemainsEnabled": true,
+  "metaExecutionStatus": "unresolved"
+}

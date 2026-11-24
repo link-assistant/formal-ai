@@ -78,9 +78,10 @@ function hydrateLinoSeedText(raw) {
   }
   cachedKnownEntityNames = null;
   cachedTimezonePlaces = null;
+  const meaningSeedFiles = new Set((self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((stem) => stem + ".lino"));
   MEANINGS_LINO = seedRawTexts(
     raw,
-    (fileName) => fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),
+    (fileName) => meaningSeedFiles.has(fileName) || fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),
   ).join("\n");
 
   cachedNumericListOntology = null;
@@ -90,6 +91,7 @@ function hydrateLinoSeedText(raw) {
   cachedOperationVocabulary = null;
   cachedProgramPlanRules = null;
   cachedMeaningLexicon = null;
+  if (typeof WEB_SEARCH_MARKERS_CACHE !== "undefined") WEB_SEARCH_MARKERS_CACHE = null;
   cachedMarketPriceReferences = null;
   if (typeof installSeedProgramTasks === "function") installSeedProgramTasks(raw); // R1021-6, formal_ai_worker_program_requests.js
 }
@@ -229,6 +231,8 @@ function unknownOpenersFor(language) {
 }
 
 function selectUnknownOpener(prompt, language) {
+  // Keep the localized seed intact when only a different language's pool exists.
+  if (!unknownOpenerRegistry().pools.some((pool) => pool.language === language)) return "";
   const fromWasm = wasmSelectUnknownOpener(prompt, language);
   if (fromWasm) return fromWasm;
   const pool = unknownOpenersFor(language);

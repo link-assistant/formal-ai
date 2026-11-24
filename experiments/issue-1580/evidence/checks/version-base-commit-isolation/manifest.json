@@ -1,0 +1,115 @@
+{
+  "at": "2026-11-22T16:00:17.265583+00:00",
+  "files": [
+    {
+      "source": "version-base-commit-isolation/git-probe.log",
+      "file": "record-0001.gz",
+      "bytes": 275,
+      "newlines": 10,
+      "sha256": "607f17dcc69ce7d6f930aaf465c4bc2b67efac9f83f6b9df72e396f7c395a7fc",
+      "compressedSha256": "446bc92d64c63256e25df629e50a4d6073cfdeb26896371151fed124f81f4af0"
+    },
+    {
+      "source": "version-base-commit-isolation/review.diff",
+      "file": "record-0002.gz",
+      "bytes": 9060,
+      "newlines": 180,
+      "sha256": "ee3a9654725fcc35dde55e87af3526852387a84a1e3261eee6712cb41aa92f76",
+      "compressedSha256": "047f08d5a2cd92ae55db0bdd906bb5a1fe5cebfd5edef7f5fca8c1a53cc6e3b0"
+    },
+    {
+      "source": "draft-version-base-commit-isolation.log",
+      "file": "record-0003.gz",
+      "bytes": 400,
+      "newlines": 7,
+      "sha256": "575e1e06596bebea78760c08e19888e4da3e581824f5e3d738d6276e470f4cb0",
+      "compressedSha256": "1e2f762bf01a8505e182fbb4958bcd023e22378f56ac68e26cf6e0283be63d1f"
+    },
+    {
+      "source": "version-base-commit-isolation/focused-gates.json",
+      "file": "record-0004.gz",
+      "bytes": 1621,
+      "newlines": 88,
+      "sha256": "84d89c7baf3149307c2a5bf44c3e5293896d1273afcc933962f2ca280504016c",
+      "compressedSha256": "21d1b5eb8c98000db9ce609d6ea1d2c806f08ea58b378fa40f822e62ce4b6e7d"
+    },
+    {
+      "source": "version-base-commit-isolation/check-abbreviations-gate.log",
+      "file": "record-0005.gz",
+      "bytes": 67,
+      "newlines": 3,
+      "sha256": "7ec7fb5d73202c44f358ca7a3b8d135e28657ece84ee22c1ca1f677bc151053d",
+      "compressedSha256": "d39b7922bfe7781ff01aeab07bf14370881607360dd785512caf1a1a1e781304"
+    },
+    {
+      "source": "version-base-commit-isolation/check-ci-speed-gate.log",
+      "file": "record-0006.gz",
+      "bytes": 62,
+      "newlines": 3,
+      "sha256": "01ff06c65392e8081088db91e78e8388361038905d9d7f565c08bb2fee01170b",
+      "compressedSha256": "d458dabdb2a601c2c7f8c0b6b854aa18e69bda6033e28ba7a766bbdfe9026c12"
+    },
+    {
+      "source": "version-base-commit-isolation/check-file-size-gate.log",
+      "file": "record-0007.gz",
+      "bytes": 63,
+      "newlines": 3,
+      "sha256": "e8779baf81a98f3253306d9ad56c126c9e65f7ea84baa90cce7400b76228ea5b",
+      "compressedSha256": "21007927268c1b95876ec287e1a1e93accb17469eb3be1ed2efad84e4f0c1878"
+    },
+    {
+      "source": "version-base-commit-isolation/check-file-size-js-twin-gate.log",
+      "file": "record-0008.gz",
+      "bytes": 71,
+      "newlines": 3,
+      "sha256": "43e9f18e90da64ce5f02fb42f92209cd0e5832562a4f0b1bd43faa4b68c2dfa0",
+      "compressedSha256": "491e13bba78210769bb3edbfd4d1576f941bcf4c34b7f999e0f98ccc88e33205"
+    },
+    {
+      "source": "version-base-commit-isolation/check-runner-labels-gate.log",
+      "file": "record-0009.gz",
+      "bytes": 67,
+      "newlines": 3,
+      "sha256": "5509ee6e840fddfdcc8a9ac13f467a07a28a61fb842d396128e9d573825b0dfc",
+      "compressedSha256": "1192281079351fecb2e249e3b080e37c1cb19c22d7819933dc485d7ca56ff4d4"
+    },
+    {
+      "source": "version-base-commit-isolation/diff-gate.log",
+      "file": "record-0010.gz",
+      "bytes": 0,
+      "newlines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "version-base-commit-isolation/format-gate.log",
+      "file": "record-0011.gz",
+      "bytes": 0,
+      "newlines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "version-base-commit-isolation/workflows-gate.log",
+      "file": "record-0012.gz",
+      "bytes": 57,
+      "newlines": 3,
+      "sha256": "6332fbbc0d39f4f2facab0423c6b5072c1676d9cb12041c1e1f32022d7e60808",
+      "compressedSha256": "8a133925c4136d37ad2f926ef6de84cbeb0fe46594f5a55d1998d05072e230f8"
+    }
+  ],
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0,
+  "nativeExecution": false,
+  "hostedVerificationPending": true,
+  "focusedGatesPassed": [
+    "format",
+    "diff",
+    "check-file-size",
+    "check-file-size-js-twin",
+    "check-abbreviations",
+    "check-ci-speed",
+    "check-runner-labels",
+    "workflows"
+  ]
+}

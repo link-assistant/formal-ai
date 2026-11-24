@@ -1,0 +1,20 @@
+{
+  "head": "035cb62b99a0d5f1336114dbcc593d9e361c2906",
+  "sourceFiles": [
+    "experiments/issue-1580/template-php-push-integrity.test.mjs",
+    "experiments/issue-1580/fixtures/php-template/source.json",
+    "rust/tests/web/issue-1580-template-observations.test.mjs",
+    "changelog.d/issue-1580-php-push-integrity.md",
+    "experiments/issue-1580/fixtures/php-template/scripts/version-and-commit.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/VersionReleaser.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Project.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Git.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/SemVer.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/ChangelogFragments.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Changelog.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/Cli.php"
+  ],
+  "localChecksComplete": true,
+  "testAndLogsLiterallyRead": true,
+  "hostedVerificationPending": true
+}

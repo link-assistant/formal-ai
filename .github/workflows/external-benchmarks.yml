@@ -66,8 +66,8 @@ jobs:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Verify monotonic ledger
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-ratchet
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-ratchet${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -152,6 +152,11 @@ jobs:
           # runs now, each failure is named, and the step still fails.
           failed=''
           run_suite() {
+            if [[ "$1" == 'swebench_lite' ]] && ! bash scripts/install-swebench-parquet-reader.sh; then
+              echo '::error title=External benchmark swebench_lite failed::Unable to install the locked dataset reader'
+              failed="${failed} $1"
+              return
+            fi
             ./rust/target/release/formal-ai benchmark run \
               --suite "$1" \
               --slice "$2" \
@@ -259,8 +264,8 @@ jobs:
   shard-plan:
     name: Plan upstream shards
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name == 'workflow_dispatch' && inputs.shard_size) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -301,8 +306,8 @@ jobs:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Upstream shard ${{ matrix.window.offset }}
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: shard-plan
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -335,12 +340,17 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ci-logs
-          ./rust/target/release/formal-ai benchmark run \
-            --suite "${SUITE}" \
-            --offset "${OFFSET}" \
-            --slice "${WINDOW}" \
-            --online \
-            --allow-install 2>&1 | tee "ci-logs/shard-${OFFSET}.log"
+          {
+            if [[ "${SUITE}" == 'swebench_lite' ]]; then
+              bash scripts/install-swebench-parquet-reader.sh || exit 1
+            fi
+            ./rust/target/release/formal-ai benchmark run \
+              --suite "${SUITE}" \
+              --offset "${OFFSET}" \
+              --slice "${WINDOW}" \
+              --online \
+              --allow-install
+          } 2>&1 | tee "ci-logs/shard-${OFFSET}.log"
           grep -E '^(shard )?suite=' "ci-logs/shard-${OFFSET}.log" >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Upload shard log
@@ -354,19 +364,25 @@ jobs:
   shard-total:
     name: Total of upstream shards
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-total
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-total${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [shard-plan, upstream-shard]
     if: ${{ !cancelled() && needs.shard-plan.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - name: Check out workflow-owned artifact extraction
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+          sparse-checkout-cone-mode: false
+      - uses: ./.github/actions/download-artifact
         with:
           pattern: external-benchmarks-shard-*
           merge-multiple: true

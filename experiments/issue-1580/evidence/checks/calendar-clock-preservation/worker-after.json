@@ -1,0 +1,16 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/calendar-clock-preservation.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 6.861,
+  "nodeHeapMiB": 256,
+  "rawSha256": "ed3ee78cbf62204810f81abe9156980b07bb76fca85df7632dd657f8f37e80ca",
+  "autonomousAuthorshipCredit": 0,
+  "nativeExecuted": false
+}

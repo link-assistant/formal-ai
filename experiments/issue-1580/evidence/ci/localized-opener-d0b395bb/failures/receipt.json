@@ -1,0 +1,31 @@
+{
+  "run": "44226415780",
+  "head": "d0b395bb2310e285c89d93818571e4d54ed59c02",
+  "aggregate": {
+    "path": "layered-44226415780.log.gz",
+    "bytes": 1648440,
+    "lines": 9271,
+    "sha256": "cd0b7dd6bae76eb4f0a31cd7a932e8c5174bcab947efbdfd9c9b09865b053639"
+  },
+  "inventory": {
+    "path": "jobs.json.gz",
+    "bytes": 21110,
+    "lines": 1,
+    "sha256": "1bdd891a7d1224429b9a700e2f67f4196d8085da420a77d0fa2ea1f5db6f5cb6"
+  },
+  "failures": [
+    {
+      "id": 134540701574,
+      "name": "js tier (node --check over js, suite group 1)",
+      "conclusion": "failure",
+      "started_at": "2026-11-18T02:53:05Z",
+      "completed_at": "2026-11-18T02:59:50Z",
+      "log": {
+        "path": "job-134540701574.log.gz",
+        "bytes": 423078,
+        "lines": 4949,
+        "sha256": "aad64ffdc492553abc40212c5680b398cd6d9bf3b2f98149d512dec7b4bdf948"
+      }
+    }
+  ]
+}

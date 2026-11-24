@@ -1,0 +1,58 @@
+[
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/release-staged.yml.txt",
+    "archivePath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/release-staged.yml.txt.gz",
+    "rawBytes": 73874,
+    "rawSha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d",
+    "lines": 1408
+  },
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/original-release-workflow.yml.txt",
+    "archivePath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/original-release-workflow.yml.txt.gz",
+    "rawBytes": 66375,
+    "rawSha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253",
+    "lines": 1475
+  },
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity/project-parity-pre-repair-observations.json",
+    "archivePath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity/project-parity-pre-repair-observations.json.gz",
+    "rawBytes": 77930,
+    "rawSha256": "b1c1105b1742179c3f1dfd335802b34ca746b97aa1bc1c73a249fce561f1330a",
+    "lines": 1482
+  },
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-statistics.rs",
+    "archivePath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-statistics.rs.gz",
+    "rawBytes": 36722,
+    "rawSha256": "e2089e1291694e33a45d905e4570a3a886aa65d6d6b3eb72c24a65b0d3340a1c",
+    "lines": 970
+  },
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-web_search_intent.rs",
+    "archivePath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-web_search_intent.rs.gz",
+    "rawBytes": 37007,
+    "rawSha256": "66fb13dc037f4917af70abf6adca5aedee7a6eded34a23d9709f2d95c2ad90c5",
+    "lines": 910
+  },
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-web_search_intent.rs",
+    "archivePath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-web_search_intent.rs.gz",
+    "rawBytes": 36982,
+    "rawSha256": "a92f8f08937b04e43152151340979224369ce016395a64ce9b24880e0a040b93",
+    "lines": 905
+  },
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-statistics.rs",
+    "archivePath": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-statistics.rs.gz",
+    "rawBytes": 36808,
+    "rawSha256": "c814f89b738590aa82a0009a0078ed47de3dd4572d65a01fbe41b2331c865a0b",
+    "lines": 975
+  },
+  {
+    "originalPath": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/.github_workflows_release.yml.before.txt",
+    "archivePath": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/.github_workflows_release.yml.before.txt.gz",
+    "rawBytes": 66375,
+    "rawSha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253",
+    "lines": 1475
+  }
+]

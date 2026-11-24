@@ -236,6 +236,45 @@ test("an unregistered Russian how-to uses the localized CORS API and quotes its 
   assert.ok(!requested.includes(WAYBACK_INDEX));
 });
 
+test("a contributing stale procedure retains its capture-age warning", async () => {
+  const context = await bootWorker(new Map([[RUSSIAN_API, { body: RUSSIAN_CAPTURE }]]));
+  const initial = plain(await answerRussian(context));
+  assert.equal(initial.guide.steps.length, 2, initial.content);
+  const retained = await evaluate(context, `
+    for (const [url, capture] of sourceWalkCaptureCache) {
+      sourceWalkCaptureCache.set(url, { ...capture, fetchedAt: "1" });
+    }
+    sourceWalkCaptureCache.size
+  `);
+  assert.ok(retained > 0);
+  const stale = plain(await answerRussian(context, { offline: true }));
+  assert.equal(stale.guide.steps.length, 2, stale.content);
+  assert.ok(stale.guide.steps.every(step => step.fetchedAt === "1"));
+  const outcome = stale.guide.outcomes.find(row => row.sourceId === "wikihow");
+  assert.equal(outcome.status, "contributed");
+  assert.match(outcome.detail, /stale_capture age_seconds=/u);
+  assert.ok(outcome.detail.includes(RUSSIAN_API), outcome.detail);
+});
+
+test("a recovered procedure reports the accepted article after rejecting an unrelated capture", async () => {
+  const unrelated = JSON.parse(RUSSIAN_CAPTURE);
+  unrelated.parse.title = "Домашние растения";
+  const title = "хорошо покакать";
+  const matching = wikiParse(title);
+  const captures = new Map([
+    [RUSSIAN_API, { body: JSON.stringify(unrelated) }],
+    [wikiSearch(title), searchCapture(title)],
+    [matching, { body: RUSSIAN_CAPTURE }],
+  ]);
+  const answer = await answerRussian(await bootWorker(captures));
+  assert.equal(answer.guide.steps.length, 2, answer.content);
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === matching));
+  assert.ok(!answer.content.includes(RUSSIAN_API), answer.content);
+  const outcome = answer.guide.outcomes.find(row => row.sourceId === "wikihow");
+  assert.equal(outcome.status, "contributed");
+  assert.ok(outcome.detail.includes(matching), outcome.detail);
+});
+
 test("the browser uses a matching archival capture for the short Russian question after a live request fails", async () => {
   const requested = [];
   const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}"><ul><li>This unrelated navigation entry is long enough to look like a step.</li></ul>${WIKIHOW_STEPS}`;

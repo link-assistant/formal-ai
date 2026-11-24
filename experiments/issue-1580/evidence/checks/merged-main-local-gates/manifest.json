@@ -1,0 +1,146 @@
+{
+  "source": "e3046ab36b85284eab52e9ed59fd1b9afa2b679c",
+  "mergedMain": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "capturedAt": "2026-11-23T06:24:37.073514+00:00",
+  "fullGateInventory": {
+    "entries": 143,
+    "pass": 88,
+    "fail": 1,
+    "skip": 54,
+    "failure": "check-status-render",
+    "complete": true,
+    "cleanBeforeAndAfter": true
+  },
+  "focusedChecks": [
+    {
+      "file": "rust/tests/web/default-branch-build-policy.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "file": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "file": "rust/tests/web/issue-1580-source-warning-headroom.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "file": "experiments/issue-1580/source-warning-headroom.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "check": "rustfmt",
+      "exitCode": 0,
+      "files": [
+        "scripts/check-dependencies-latest.rs",
+        "scripts/check-dependencies-snapshot.rs",
+        "rust/src/coding/list_program.rs",
+        "rust/src/coding/list_program/literals.rs",
+        "rust/tests/unit/reasoning_contracts.rs",
+        "rust/tests/unit/specification/chat_surface.rs",
+        "rust/tests/unit/specification/chat_surface/rule_details.rs",
+        "rust/tests/unit/specification/debug_session.rs",
+        "rust/tests/unit/specification/debug_session/calculator_origins.rs",
+        "scripts/detect-code-changes.rs",
+        "scripts/detect-code-changes-tests.rs"
+      ]
+    }
+  ],
+  "statusRepair": {
+    "sourceBefore": "e3046ab36b85284eab52e9ed59fd1b9afa2b679c",
+    "completedAt": "2026-11-23T06:21:12.460050+00:00",
+    "checks": [
+      {
+        "name": "before",
+        "command": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/render-status.mjs",
+          "--check"
+        ],
+        "exitCode": 1
+      },
+      {
+        "name": "write",
+        "command": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/render-status.mjs",
+          "--write"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "after",
+        "command": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/render-status.mjs",
+          "--check"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "check-status-render",
+        "command": [
+          "node",
+          "--max-old-space-size=256",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-status-render"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "check-render-status-js-twin",
+        "command": [
+          "node",
+          "--max-old-space-size=256",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-render-status-js-twin"
+        ],
+        "exitCode": 0
+      }
+    ],
+    "regressionFailsBefore": true,
+    "regressionPassesAfter": true,
+    "changedProductionFiles": [
+      "docs/status.md"
+    ],
+    "generatorChanged": false,
+    "beforeSha256": "73804655e1c7756faab80b4ea754df380db673530db68c2d26e6296e09246c4a",
+    "afterSha256": "a23575aa82e875dfb1d15e688ed28a86623d6921b89ecb7dfcf0980ba8d8e993",
+    "nativeExecuted": false,
+    "independentAuthorshipCredit": 0,
+    "fullIssueComplete": false
+  },
+  "currentQualification": "All executed gates passed either in the preserved complete pass or in the focused status regeneration check; this is not a second complete clean-source all-pass receipt.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 404427,
+    "sha256": "d18438974c01e4d54b9b9db83bd5f1038ca86d9445d9ea326d39a07c8a9fab0f"
+  },
+  "members": 121,
+  "roundTripVerified": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "finalFocusedGates": {
+    "allPassed": true,
+    "gates": [
+      "check-status-render",
+      "check-render-status-js-twin",
+      "check-file-size-js-twin",
+      "check-file-size",
+      "check-readable-code",
+      "check-abbreviations",
+      "check-required-documentation",
+      "check-changelog-fragment-js-twin"
+    ],
+    "log": "final-local-gates.log.gz",
+    "compressedSha256": "4381557a3b8082d46f104c8ff3c0ac8867c2bb8ff5c69b4aff619cd1a44e7615",
+    "uncompressedSha256": "0ed3ab1bf067cdb4620061ec2152c8dba579cff024f1a1c336732f43cd362ca9",
+    "scope": "After the generated status repair and addition of the local evidence; no Rust compilation."
+  }
+}

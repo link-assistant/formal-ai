@@ -217,22 +217,18 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
         runs.push(run);
     }
 
-    if append {
-        append_runs(&runs, ledger_path, date, slice, online, allow_install)?;
-        println!("ledger updated: {}", ledger_path.display());
-    }
-    if let Some(relative_path) = learning_report {
-        if let Some(report) = external_benchmarks::learning::render_failure_report(&runs) {
-            let path = repository_root.join(relative_path);
-            if let Some(parent) = path.parent() {
-                fs::create_dir_all(parent)?;
-            }
-            fs::write(&path, report)?;
-            println!("review-gated benchmark learning report: {}", path.display());
-        } else {
-            println!("no failed benchmark outcomes; no learning report written");
-        }
-    }
+    let ledger_result = if append {
+        append_runs(&runs, ledger_path, date, slice, online, allow_install)
+            .map(|()| println!("ledger updated: {}", ledger_path.display()))
+    } else {
+        Ok(())
+    };
+    // Rejected scores still provide observations for a review-gated proposal.
+    let report_result = learning_report.map_or(Ok(()), |relative_path| {
+        write_learning_report(&runs, &repository_root.join(relative_path))
+    });
+    ledger_result?;
+    report_result?;
     if let Some(relative_path) = frontier_record {
         let path = repository_root.join(relative_path);
         // Continuation pages from an earlier write are part of the recorded
@@ -292,6 +288,19 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
                 &[("path", &path.display().to_string())],
             )
         );
+    }
+    Ok(())
+}
+
+fn write_learning_report(runs: &[SuiteRun], path: &Path) -> std::io::Result<()> {
+    if let Some(report) = external_benchmarks::learning::render_failure_report(runs) {
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::write(path, report)?;
+        println!("review-gated benchmark learning report: {}", path.display());
+    } else {
+        println!("no failed benchmark outcomes; no learning report written");
     }
     Ok(())
 }

@@ -1,0 +1,715 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/.github/workflows/docs.yml",
+      "archiveMember": "sources/.github/workflows/docs.yml",
+      "bytes": 3566,
+      "sha256": "7c40327fca36ae407565bb3e4e9fccd600bf418d2405c7f3d46015e0a7bb368d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/.github/workflows/release.yml",
+      "archiveMember": "sources/.github/workflows/release.yml",
+      "bytes": 18908,
+      "sha256": "1aecacfb8da4a1e7ded16bc8806f551be08dd5eb336fdae2687f2c31f9ddac4d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/.github/workflows/security.yml",
+      "archiveMember": "sources/.github/workflows/security.yml",
+      "bytes": 3865,
+      "sha256": "adfac917b8dc0b20a7e236d284432570df4ac654deee0f957982937b06869b00"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/.github/workflows/templates.yml",
+      "archiveMember": "sources/.github/workflows/templates.yml",
+      "bytes": 5655,
+      "sha256": "76b72738d9163ef4940a161f81bc8a67afa3d75d184ccf28499f9263d851c014"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/CHANGELOG.md",
+      "archiveMember": "sources/CHANGELOG.md",
+      "bytes": 5385,
+      "sha256": "0917cb27224a51b17531b1cb7fa9e80d3f0ced88e3888b3bc1217239b7e2a564"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/CONTRIBUTING.md",
+      "archiveMember": "sources/CONTRIBUTING.md",
+      "bytes": 4611,
+      "sha256": "8e2daf21e87cbf6e10d2de9abd59ab877391ca255b28285085b952a588c69586"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/README.md",
+      "archiveMember": "sources/README.md",
+      "bytes": 8792,
+      "sha256": "8d740ec945b2df33fa03e50dfd6d93f6847b9beaaf7948ab4ae48281793a159e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/composer.json",
+      "archiveMember": "sources/composer.json",
+      "bytes": 1697,
+      "sha256": "198b19ff26ba0ff48e8ca950fb152756aaf090f03720a3a2b4541fdbcaee62b4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/composer.lock",
+      "archiveMember": "sources/composer.lock",
+      "bytes": 174606,
+      "sha256": "dc105d2038ed2dac27f327e4c890263e61a217db120189cde8720416a3ddfa5e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/docs/BEST-PRACTICES.md",
+      "archiveMember": "sources/docs/BEST-PRACTICES.md",
+      "bytes": 6792,
+      "sha256": "9d5bfe1a9aa1c3ae411b931d512d9091f9beee5f240c1906d83e12848626f320"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/docs/index.md",
+      "archiveMember": "sources/docs/index.md",
+      "bytes": 2302,
+      "sha256": "2f4a8a1f35f589fde26380a827b73eac4311b23e33ed3dc01fba7c404996a30a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/scripts/detect-code-changes.php",
+      "archiveMember": "sources/scripts/detect-code-changes.php",
+      "bytes": 868,
+      "sha256": "71696c12cf430d97f15ed1bf78eb1323073f408c403877d7fe68e3070e287568"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/scripts/src/ChangeDetector.php",
+      "archiveMember": "sources/scripts/src/ChangeDetector.php",
+      "bytes": 5017,
+      "sha256": "c77a2ed8e12fb22c35d92cf693fcb55757467a39396ca30f2efa8b2803b2abe2"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/scripts/src/Git.php",
+      "archiveMember": "sources/scripts/src/Git.php",
+      "bytes": 1751,
+      "sha256": "c84d5fb225a25796351806546e575c7c79deda114763b0b09bc153be2655ea1b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/scripts/src/VersionReleaser.php",
+      "archiveMember": "sources/scripts/src/VersionReleaser.php",
+      "bytes": 3621,
+      "sha256": "e7464203a74edb0a38c556807908ebfce1c355bdd9961aebf5b5f73458c5e776"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/scripts/version-and-commit.php",
+      "archiveMember": "sources/scripts/version-and-commit.php",
+      "bytes": 2533,
+      "sha256": "06a76db74f8e2a1fb7fb33acf056ef277e207e19f78d121fd8b31199d69a261c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/tests/Pipeline/ChangeDetectorTest.php",
+      "archiveMember": "sources/tests/Pipeline/ChangeDetectorTest.php",
+      "bytes": 5765,
+      "sha256": "7eace8ba3ccfb10f609ae19b3326fbbe189a1849f6d7c1e70a5dfea8d81c1abb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/tests/Pipeline/VersionReleaserTest.php",
+      "archiveMember": "sources/tests/Pipeline/VersionReleaserTest.php",
+      "bytes": 8632,
+      "sha256": "4f6bc4f5085b5f3619026473f6f029a7f15a5cefa00c5bc60645a882d76aabf5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/php/tests/Pipeline/WorkflowPolicyTest.php",
+      "archiveMember": "sources/tests/Pipeline/WorkflowPolicyTest.php",
+      "bytes": 26428,
+      "sha256": "b05ee02a1ed13141df83dea268c8c8a80f7e0ab37277440c918f123679392d62"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/worker.log",
+      "archiveMember": "checks/worker.log",
+      "bytes": 1259,
+      "sha256": "8d4d2eaf1fb902df60a0db10de218e08a818db2514b4766f758ccea880bdbd88"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/WorkflowPolicyTest.php.log",
+      "archiveMember": "checks/WorkflowPolicyTest.php.log",
+      "bytes": 230,
+      "sha256": "a65e08d96b2036ef15fec68ba0d51ae00bcd02e02de0039db51a46fa0724d2ec"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-21-conversation.json",
+      "archiveMember": "checks/pr-21-conversation.json",
+      "bytes": 9000,
+      "sha256": "1ab9df633d82449a6db0322ccaab3987ef9d178a23dda244812a51c686c75a8f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/VersionReleaserTest.php.log",
+      "archiveMember": "checks/VersionReleaserTest.php.log",
+      "bytes": 229,
+      "sha256": "bcd390865cbe22329bc3a7b07d721f3a9dd620c871654fe511f42b94b97a517c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-30-conversation.json",
+      "archiveMember": "checks/pr-30-conversation.json",
+      "bytes": 8166,
+      "sha256": "931f0f78fa78fc4d2fbd60f39eef38d30022771320246df13be365bbf18efff0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-19-conversation.json",
+      "archiveMember": "checks/pr-19-conversation.json",
+      "bytes": 6816,
+      "sha256": "f95c6d83cfe266187d290c220238e6d200478d6550ff64ecf0441c85ef0327cf"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-22-reviews.json",
+      "archiveMember": "checks/pr-22-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-19-reviews.json",
+      "archiveMember": "checks/pr-19-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pid.json",
+      "archiveMember": "checks/pid.json",
+      "bytes": 17,
+      "sha256": "45e7ac39a7eb856c71a535b0dd9050c0e67166b69b7db8cb389409f19702e9f4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/composer-checksum-curl.stdout",
+      "archiveMember": "checks/composer-checksum-curl.stdout",
+      "bytes": 80,
+      "sha256": "573acf18e0e8bbfd41bfbf04f7351869273669a426c85597b297e22adb36c04a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-22-conversation.json",
+      "archiveMember": "checks/pr-22-conversation.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-21-inline.json",
+      "archiveMember": "checks/pr-21-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-30-inline.json",
+      "archiveMember": "checks/pr-30-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-24-conversation.json",
+      "archiveMember": "checks/pr-24-conversation.json",
+      "bytes": 7250,
+      "sha256": "a8842f9e31e30851e0547355f03df7781b0d80f9c11a124b29338bba698ff894"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/retry-pid.json",
+      "archiveMember": "checks/retry-pid.json",
+      "bytes": 17,
+      "sha256": "eea69e5cbbfdeb418c279f85cc1aef09c369bed0c951372866ad3cca3852315c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/related-merged-prs.json",
+      "archiveMember": "checks/related-merged-prs.json",
+      "bytes": 35421,
+      "sha256": "a53504f82c904c0cfe8f8395f219d4f8cdc0506659906a86aec6980e90d09f04"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-19-inline.json",
+      "archiveMember": "checks/pr-19-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/phpunit-checksum-curl.stderr",
+      "archiveMember": "checks/phpunit-checksum-curl.stderr",
+      "bytes": 49,
+      "sha256": "0fb219efe96c7b0a4962325763ebbe3324456de8ca7b7d1e71142d92a6d8eab2"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/outcome.json",
+      "archiveMember": "checks/outcome.json",
+      "bytes": 1262,
+      "sha256": "cca13f6154663c11a02ab851ae95305d1b0c9db763096744858c7d57326a8261"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-22-inline.json",
+      "archiveMember": "checks/pr-22-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-21-reviews.json",
+      "archiveMember": "checks/pr-21-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/composer-release.json",
+      "archiveMember": "checks/composer-release.json",
+      "bytes": 8656,
+      "sha256": "5b0f955e3023a856eb9a4f0cd000d8d6ae5e4efa804ea3a5f6e53e79a6414814"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-24-reviews.json",
+      "archiveMember": "checks/pr-24-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/fixture-manifest.json",
+      "archiveMember": "checks/fixture-manifest.json",
+      "bytes": 13162,
+      "sha256": "f437b005d5a6eebe0db44c3b7addfa02f495fb175bea7ecdfa68f00ea707e337"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/composer-checksum-curl.stderr",
+      "archiveMember": "checks/composer-checksum-curl.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-24-inline.json",
+      "archiveMember": "checks/pr-24-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/current-manifest-validation.stderr",
+      "archiveMember": "checks/current-manifest-validation.stderr",
+      "bytes": 248,
+      "sha256": "5f7c773483b7a68dc28f9e350231e9f0c8fb478d15280680683de4988e7d60b3"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/phpunit-release.json",
+      "archiveMember": "checks/phpunit-release.json",
+      "bytes": 4426,
+      "sha256": "9a8e3a5fcd4a9118cde84d4b7f0e6ac0f3a72429e3d75aee05b371773dc2c000"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/ChangeDetectorTest.php.log",
+      "archiveMember": "checks/ChangeDetectorTest.php.log",
+      "bytes": 228,
+      "sha256": "1d71562bd6bba7ea44a87ab7b9ff762cc21bd291783570b1709792e8266fd9ed"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/current-tree.json",
+      "archiveMember": "checks/current-tree.json",
+      "bytes": 207913,
+      "sha256": "075aaf91ecfafa8dd4316fe0daf79ca5edcf124ce1baeb99d100f346de82ff43"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/related-work-review.txt",
+      "archiveMember": "checks/related-work-review.txt",
+      "bytes": 48391,
+      "sha256": "985c64c413b60ead2f7bdff615bee7ace968eee38b32089b30a919dc58962d31"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/pr-30-reviews.json",
+      "archiveMember": "checks/pr-30-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/retry-worker.log",
+      "archiveMember": "checks/retry-worker.log",
+      "bytes": 940,
+      "sha256": "37f0fef3a8fef236e197f67fc9ff7a1f1f68c91cc33d3f6e56b6d0ad0a6137af"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/current-manifest-validation.stdout",
+      "archiveMember": "checks/current-manifest-validation.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/phpunit-install.log",
+      "archiveMember": "checks/phpunit-install.log",
+      "bytes": 4727,
+      "sha256": "17fe37243a5d223c40525536bad47e128c154d07380d9e300325ae16876b35ac"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/phpunit-checksum-curl.stdout",
+      "archiveMember": "checks/phpunit-checksum-curl.stdout",
+      "bytes": 236,
+      "sha256": "9448f8a1159c9b14e3e1b9d8eab1a6ddf88d26e1f888a34cef430c756e4e6e1e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/composer-download.log",
+      "archiveMember": "checks/composer-download.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/composer.json",
+      "archiveMember": "fixture/composer.json",
+      "bytes": 1697,
+      "sha256": "198b19ff26ba0ff48e8ca950fb152756aaf090f03720a3a2b4541fdbcaee62b4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/composer.lock",
+      "archiveMember": "fixture/composer.lock",
+      "bytes": 174606,
+      "sha256": "dc105d2038ed2dac27f327e4c890263e61a217db120189cde8720416a3ddfa5e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/check-pipeline-status.sh",
+      "archiveMember": "fixture/scripts/check-pipeline-status.sh",
+      "bytes": 6576,
+      "sha256": "94983719ac1e39e51136e9fa419d4bf6eaa078a68506b6011dbe8edafecab44d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/check-release-needed.php",
+      "archiveMember": "fixture/scripts/check-release-needed.php",
+      "bytes": 1684,
+      "sha256": "21810a71fadc083e02efbf61064b1a217bd90cb25edc4bf54abfa17507572f3a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/recheck-broken-links.php",
+      "archiveMember": "fixture/scripts/recheck-broken-links.php",
+      "bytes": 4111,
+      "sha256": "9841683632a68c28e3035586fa0ac2eab409e2965a9efe7b191e4ddd7c2d8362"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/create-changeset.php",
+      "archiveMember": "fixture/scripts/create-changeset.php",
+      "bytes": 2509,
+      "sha256": "345200767f57c82c23427fc4b3d91ce304c858d7375c57724daa30b81b1f4942"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/validate-changeset.php",
+      "archiveMember": "fixture/scripts/validate-changeset.php",
+      "bytes": 1128,
+      "sha256": "39cae959ccba0328d0cea0b079aa6c6a0705409cbfc1a0e6fb8af53e079fd6f1"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/check-file-size.php",
+      "archiveMember": "fixture/scripts/check-file-size.php",
+      "bytes": 904,
+      "sha256": "1c2961926043153f4954e5ac4eeedf7e8e9b7a70853336aab10512bced260c4c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/check-version-modification.php",
+      "archiveMember": "fixture/scripts/check-version-modification.php",
+      "bytes": 2836,
+      "sha256": "21a2f84d4058cea06d3644fa5840b30a885957000458d85e9d26bfa056cbdabb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/create-github-release.php",
+      "archiveMember": "fixture/scripts/create-github-release.php",
+      "bytes": 1975,
+      "sha256": "6040691ea283a4f45088672b2d933b53be28978d3beab1d66cf2ea684ef65eeb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/detect-code-changes.php",
+      "archiveMember": "fixture/scripts/detect-code-changes.php",
+      "bytes": 868,
+      "sha256": "71696c12cf430d97f15ed1bf78eb1323073f408c403877d7fe68e3070e287568"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/bootstrap.php",
+      "archiveMember": "fixture/scripts/bootstrap.php",
+      "bytes": 1508,
+      "sha256": "39969a7ebce086784466a314923a658704e7e4dd9f362c239f080e49f06c5595"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/preflight-credentials.php",
+      "archiveMember": "fixture/scripts/preflight-credentials.php",
+      "bytes": 3643,
+      "sha256": "415277dad0007b62d6bd4a7011922ca423f0fcd51d91bc038d2f5d80493d4a78"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/check-web-archive.php",
+      "archiveMember": "fixture/scripts/check-web-archive.php",
+      "bytes": 2485,
+      "sha256": "019eee1ba6024d64200acd1c0550b912753cdfd23abce63f412ab5bce4018371"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/run-with-budget-warning.sh",
+      "archiveMember": "fixture/scripts/run-with-budget-warning.sh",
+      "bytes": 8199,
+      "sha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/wait-for-packagist.php",
+      "archiveMember": "fixture/scripts/wait-for-packagist.php",
+      "bytes": 2071,
+      "sha256": "30823aea25aa27e9c93447c5d696695d660c1e45ee084cb1e8f4d6a76fe2c710"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/check-workflow-dependencies.php",
+      "archiveMember": "fixture/scripts/check-workflow-dependencies.php",
+      "bytes": 1353,
+      "sha256": "30e98bc2c318b388a85a62fd4c4b1b2c7bc41d7731e69b0bb8b11d3edbc4165e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/version-and-commit.php",
+      "archiveMember": "fixture/scripts/version-and-commit.php",
+      "bytes": 2533,
+      "sha256": "06a76db74f8e2a1fb7fb33acf056ef277e207e19f78d121fd8b31199d69a261c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/read-job-cancel-in-progress.php",
+      "archiveMember": "fixture/scripts/read-job-cancel-in-progress.php",
+      "bytes": 871,
+      "sha256": "d6b93f01b6c8547402f8e77cc5cea1a2e957cb0f5e9094b72f1a6212d241f315"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/zizmor.yml",
+      "archiveMember": "fixture/.github/zizmor.yml",
+      "bytes": 551,
+      "sha256": "6f60aaf79d009b39ded02b8847c0bd08fb29f501aa98b3f99af31d766f233e51"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/actionlint.yaml",
+      "archiveMember": "fixture/.github/actionlint.yaml",
+      "bytes": 170,
+      "sha256": "0271bd009895562ca81c4976833517b4e71b463624a6b5abb83429a3c93c1a32"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/dependabot.yml",
+      "archiveMember": "fixture/.github/dependabot.yml",
+      "bytes": 2462,
+      "sha256": "56fa33aed4a39d51e50ba3533921fb8f624ba87650090fcbc79eb404f02eb90e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/tests/Pipeline/VersionReleaserTest.php",
+      "archiveMember": "fixture/tests/Pipeline/VersionReleaserTest.php",
+      "bytes": 8632,
+      "sha256": "4f6bc4f5085b5f3619026473f6f029a7f15a5cefa00c5bc60645a882d76aabf5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/tests/Pipeline/WorkflowPolicyTest.php",
+      "archiveMember": "fixture/tests/Pipeline/WorkflowPolicyTest.php",
+      "bytes": 26428,
+      "sha256": "b05ee02a1ed13141df83dea268c8c8a80f7e0ab37277440c918f123679392d62"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/tests/Pipeline/ChangeDetectorTest.php",
+      "archiveMember": "fixture/tests/Pipeline/ChangeDetectorTest.php",
+      "bytes": 5765,
+      "sha256": "7eace8ba3ccfb10f609ae19b3326fbbe189a1849f6d7c1e70a5dfea8d81c1abb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/workflows/security.yml",
+      "archiveMember": "fixture/.github/workflows/security.yml",
+      "bytes": 3865,
+      "sha256": "adfac917b8dc0b20a7e236d284432570df4ac654deee0f957982937b06869b00"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/workflows/release.yml",
+      "archiveMember": "fixture/.github/workflows/release.yml",
+      "bytes": 18908,
+      "sha256": "1aecacfb8da4a1e7ded16bc8806f551be08dd5eb336fdae2687f2c31f9ddac4d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/workflows/links.yml",
+      "archiveMember": "fixture/.github/workflows/links.yml",
+      "bytes": 4973,
+      "sha256": "542249c339c75edae8f8a02bdc4d5bc417e745d5356024d4b0d703ea51497cb0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/workflows/docs.yml",
+      "archiveMember": "fixture/.github/workflows/docs.yml",
+      "bytes": 3566,
+      "sha256": "7c40327fca36ae407565bb3e4e9fccd600bf418d2405c7f3d46015e0a7bb368d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/workflows/templates.yml",
+      "archiveMember": "fixture/.github/workflows/templates.yml",
+      "bytes": 5655,
+      "sha256": "76b72738d9163ef4940a161f81bc8a67afa3d75d184ccf28499f9263d851c014"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/.github/workflows/workflows.yml",
+      "archiveMember": "fixture/.github/workflows/workflows.yml",
+      "bytes": 6475,
+      "sha256": "6512f75a158a5981ed5e5188b4d3ce44c1c995b6cf5df8238d13f896d66ae998"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/LinkRecheck.php",
+      "archiveMember": "fixture/scripts/src/LinkRecheck.php",
+      "bytes": 10653,
+      "sha256": "062da69873dc29495c1dc3f50923d600805663737ae2acfc8a9dc37589f5458b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ReleaseDecision.php",
+      "archiveMember": "fixture/scripts/src/ReleaseDecision.php",
+      "bytes": 337,
+      "sha256": "645d73b6ffc1cf7c0a67f05e445441db863cabb998a09ddb193cad8308e1f740"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ChangelogFragments.php",
+      "archiveMember": "fixture/scripts/src/ChangelogFragments.php",
+      "bytes": 5655,
+      "sha256": "88c156fcaa052e8f359e8dd23ecb5a37e7d3b52a18309080cd0a09b779d864b3"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Changelog.php",
+      "archiveMember": "fixture/scripts/src/Changelog.php",
+      "bytes": 3059,
+      "sha256": "b2bdfb66ec179c8d9f013b54d339a46b7e11b56d2a3db561d0ff3d159e87be07"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Packagist.php",
+      "archiveMember": "fixture/scripts/src/Packagist.php",
+      "bytes": 1986,
+      "sha256": "a071bbf8a1304de8f8f1e2282f7e16e514cdcb9a53e6a0ecab5b1afad0c2b232"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Process.php",
+      "archiveMember": "fixture/scripts/src/Process.php",
+      "bytes": 1670,
+      "sha256": "97a1b126035a71434739ecc962d73c74b44ea8ea802263b74031e04332b43bbf"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Cli.php",
+      "archiveMember": "fixture/scripts/src/Cli.php",
+      "bytes": 1209,
+      "sha256": "54aeb58748c06c88d2b829f5719783f578d36aceca698ae15989e728350076e9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ReleasePreflight.php",
+      "archiveMember": "fixture/scripts/src/ReleasePreflight.php",
+      "bytes": 5532,
+      "sha256": "935d6af58d4aed190395e3cdfd9f43e82dc79cb164b6be53fc1f93f6bf7414db"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Actions.php",
+      "archiveMember": "fixture/scripts/src/Actions.php",
+      "bytes": 1942,
+      "sha256": "c138ee2bbdd43ac59b164a2ec5e261623a93c8e264fdf4d5e9b0aabcc36c1984"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/SemVer.php",
+      "archiveMember": "fixture/scripts/src/SemVer.php",
+      "bytes": 2169,
+      "sha256": "4ff127e182aa545f201edac764dc79adb30045307941305d9dc77ba9b20323c5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/VersionReleaser.php",
+      "archiveMember": "fixture/scripts/src/VersionReleaser.php",
+      "bytes": 3621,
+      "sha256": "e7464203a74edb0a38c556807908ebfce1c355bdd9961aebf5b5f73458c5e776"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/WorkflowDependencies.php",
+      "archiveMember": "fixture/scripts/src/WorkflowDependencies.php",
+      "bytes": 8723,
+      "sha256": "97f9d19b5ec5bfc14e309035cd61e555395972a5c211e06d80f77edbda589c87"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ProcessResult.php",
+      "archiveMember": "fixture/scripts/src/ProcessResult.php",
+      "bytes": 501,
+      "sha256": "b16970ed6e98e100c00dc3716c0084c1186f0e1a41cfafc96de2696657147d1c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/PreflightCheck.php",
+      "archiveMember": "fixture/scripts/src/PreflightCheck.php",
+      "bytes": 693,
+      "sha256": "1aa7e0f16fb8e1e38806611af15750c29351a782ba7639863cbe02a2f9a5d6ec"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/GitHub.php",
+      "archiveMember": "fixture/scripts/src/GitHub.php",
+      "bytes": 1776,
+      "sha256": "e4e33753b1f0b656f3df976147498fc0965a985b51b0a92cd6b9ee92f73bea80"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/WorkflowConcurrency.php",
+      "archiveMember": "fixture/scripts/src/WorkflowConcurrency.php",
+      "bytes": 4477,
+      "sha256": "54e7ea5941f5cd047e7ebe12b35cbfae5a17710c7599d7ae321576a14caee49a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ChangesetValidator.php",
+      "archiveMember": "fixture/scripts/src/ChangesetValidator.php",
+      "bytes": 3441,
+      "sha256": "5ab7d395078962fdaacadbb58d3660e9d685fdbac8629ffcb84ba4fdcb16d04e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ReleaseDecider.php",
+      "archiveMember": "fixture/scripts/src/ReleaseDecider.php",
+      "bytes": 2641,
+      "sha256": "c6fb3f601e520079b653f594c020e624086987202c36d49a97025d009d1520b4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/FileSizeChecker.php",
+      "archiveMember": "fixture/scripts/src/FileSizeChecker.php",
+      "bytes": 2415,
+      "sha256": "9e11f962550ea966446251b6d7761fc5149d7f4686f7d36d779f528a247e608b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Http.php",
+      "archiveMember": "fixture/scripts/src/Http.php",
+      "bytes": 2738,
+      "sha256": "d491663410a0172a62049daebc006a9de4a3009ae3674072f6134e6477dea821"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Project.php",
+      "archiveMember": "fixture/scripts/src/Project.php",
+      "bytes": 3847,
+      "sha256": "6c665acc039b4a2fd75687d95a745dc7a71d2025c3de6c903b4702300c22018d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/WebArchive.php",
+      "archiveMember": "fixture/scripts/src/WebArchive.php",
+      "bytes": 5003,
+      "sha256": "59d27f6bebc2ffad2df05cd4a7fc36e2bb1154e846bea5d1568d0b881da1ef3b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ReleaseNotes.php",
+      "archiveMember": "fixture/scripts/src/ReleaseNotes.php",
+      "bytes": 2374,
+      "sha256": "176181c4ebec0068128d476141e88bedb70429362c23e13beaeed1e4a5df2ec8"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/LycheeFailure.php",
+      "archiveMember": "fixture/scripts/src/LycheeFailure.php",
+      "bytes": 977,
+      "sha256": "1deb90a978ecc6ec27e296efe6ecc0c372d092eb0ad75abeae3ad780cbd58e85"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/Git.php",
+      "archiveMember": "fixture/scripts/src/Git.php",
+      "bytes": 1751,
+      "sha256": "c84d5fb225a25796351806546e575c7c79deda114763b0b09bc153be2655ea1b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/source/scripts/src/ChangeDetector.php",
+      "archiveMember": "fixture/scripts/src/ChangeDetector.php",
+      "bytes": 5017,
+      "sha256": "c77a2ed8e12fb22c35d92cf693fcb55757467a39396ca30f2efa8b2803b2abe2"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-php-focused-checks/tools/runtime/composer.lock",
+      "archiveMember": "tools/phpunit-runtime.lock",
+      "bytes": 71043,
+      "sha256": "839826c9b53948186bb87ea4977804acbfb693a6a322bc1b85decf6d535b5a4d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/prepare-current-php-focused-checks.py",
+      "archiveMember": "helpers/prepare-current-php-focused-checks.py",
+      "bytes": 4071,
+      "sha256": "d6c4e9ccc02c8729fcc4ac8f964b69db3dcbf99b4b5313566239af3e909912bf"
+    },
+    {
+      "source": "/tmp/issue-1580-research/retry-current-php-focused-checks.py",
+      "archiveMember": "helpers/retry-current-php-focused-checks.py",
+      "bytes": 3203,
+      "sha256": "9a572ab85038d61334541282a657e21ccf122fe1a87fad8bc59bc0c2dcd1fdb9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fetch-current-php-related-work.py",
+      "archiveMember": "helpers/fetch-current-php-related-work.py",
+      "bytes": 1994,
+      "sha256": "2d7c7f338c7c29574fb798e8aa4f845e266131b26f72aa7efd8f99a7f40d3b2a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/seal-current-php-delta-review.py",
+      "archiveMember": "helpers/seal-current-php-delta-review.py",
+      "bytes": 11292,
+      "sha256": "27ed73b6d273ce397f08204eec8783b584ca63370cbe818356fafd14cd1fb2e9"
+    }
+  ],
+  "literalCurrentChangedFilesRead": 19,
+  "fullCurrentTemplateRead": false,
+  "independentAuthorshipCredit": 0
+}

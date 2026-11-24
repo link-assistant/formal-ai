@@ -78,6 +78,7 @@ fn synthesize(
     online: bool,
     recurrence_only: bool,
 ) -> Option<SymbolicAnswer> {
+    let first_event = log.events().len();
     MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
     log.append("synthesis:spec", spec.to_links_notation());
     let procedure_ledger = procedure_ledger();
@@ -119,7 +120,21 @@ fn synthesize(
             return None;
         }
         log.append("synthesis:verification", "tests_failed".to_owned());
-        log.append("synthesis:research_trail", outcome.research_trail.clone());
+        // Discovery records source outcomes independently of executable drafts.
+        // Keep every observed source in a refusal, including a discovery walk
+        // which found no parts and therefore could not construct any draft.
+        let consulted = log.events()[first_event..]
+            .iter()
+            .filter(|event| event.kind == "concept_lookup:source")
+            .map(|event| event.payload.as_str())
+            .collect::<Vec<_>>()
+            .join(" | ");
+        let research_trail = if consulted.is_empty() {
+            outcome.research_trail
+        } else {
+            format!("{};consulted_sources={consulted}", outcome.research_trail)
+        };
+        log.append("synthesis:research_trail", research_trail.clone());
         log.append(
             "skill_gap",
             crate::program_skill_gap::gap_name(Some(&spec.name), Some(&spec.language)),
@@ -130,7 +145,7 @@ fn synthesize(
             Some(&spec.language),
             response_language,
         );
-        let trail = research_trail_line(response_language, &outcome.research_trail);
+        let trail = research_trail_line(response_language, &research_trail);
         return Some(finalize_simple(
             prompt,
             log,

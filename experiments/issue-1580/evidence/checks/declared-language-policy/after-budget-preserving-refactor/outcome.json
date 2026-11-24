@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-11-18T03:39:37.948317+00:00",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/worker-unknown-language.test.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 5.183496891986579,
+  "rawBytes": 885,
+  "sha256": "c60ff6f4c6b8c1702c2ec37684c016675f738aff55f8f3373eede40fa9ea28cd",
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

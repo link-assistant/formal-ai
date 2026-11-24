@@ -6,6 +6,11 @@
 //! docs-method-explanation handler (issue #223) and the source-backed how-to
 //! procedure handler.
 
+#[path = "reasoning_paths_procedures/fixtures.rs"]
+mod fixtures;
+
+use fixtures::unverified_procedure;
+
 use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 #[path = "../../fixtures/documentation-method-fixture.rs"]
@@ -20,22 +25,6 @@ fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
         .evidence_links
         .iter()
         .any(|link| link.starts_with(expected))
-}
-
-fn unverified_procedure(language: &str, task: &str) -> String {
-    match language {
-        "en" => format!(
-            "I couldn’t verify steps for “{task}”. If you have a guide, share its link and I can help you work through it."
-        ),
-        "ru" => format!(
-            "Не удалось найти проверенные инструкции по запросу «{task}». Если у вас есть ссылка на руководство, пришлите её."
-        ),
-        "hi" => format!(
-            "मुझे “{task}” के लिए सत्यापित निर्देश नहीं मिले। अगर आपके पास किसी मार्गदर्शिका का लिंक है, तो उसे भेजें।"
-        ),
-        "zh" => format!("我没能核实「{task}」的操作步骤。如果你有相关指南，请发给我链接。"),
-        other => panic!("missing unverified procedure language {other}"),
-    }
 }
 
 // ---------------------------------------------------------------------------
@@ -219,39 +208,7 @@ fn telegraphic_how_order_prompt_routes_to_procedural_plan() {
 
 #[test]
 fn telegraphic_install_prompts_use_official_docs_procedure_plan() {
-    struct Case {
-        language: &'static str,
-        prompt: &'static str,
-        task_fragment: &'static str,
-        object_fragment: &'static str,
-    }
-
-    for case in [
-        Case {
-            language: "en",
-            prompt: "how install cursor",
-            task_fragment: "install cursor",
-            object_fragment: "cursor",
-        },
-        Case {
-            language: "ru",
-            prompt: "как установить cursor",
-            task_fragment: "установить cursor",
-            object_fragment: "cursor",
-        },
-        Case {
-            language: "hi",
-            prompt: "कैसे इंस्टॉल करें cursor",
-            task_fragment: "इंस्टॉल करें cursor",
-            object_fragment: "cursor",
-        },
-        Case {
-            language: "zh",
-            prompt: "如何安装 cursor",
-            task_fragment: "安装 cursor",
-            object_fragment: "cursor",
-        },
-    ] {
+    for case in fixtures::INSTALL_CASES {
         let response = answer(case.prompt);
         assert_eq!(
             response.answer,
@@ -297,29 +254,7 @@ fn telegraphic_how_requires_a_known_procedural_action() {
 
 #[test]
 fn procedural_request_surfaces_stay_multilingual_after_elided_gate() {
-    struct Case {
-        language: &'static str,
-        prompt: &'static str,
-    }
-
-    for case in [
-        Case {
-            language: "en",
-            prompt: "how to do 3d print ordering",
-        },
-        Case {
-            language: "ru",
-            prompt: "как сделать 3d print ordering",
-        },
-        Case {
-            language: "hi",
-            prompt: "कैसे करें 3d print ordering",
-        },
-        Case {
-            language: "zh",
-            prompt: "如何做 3d print ordering",
-        },
-    ] {
+    for case in fixtures::SURFACE_CASES {
         let response = answer(case.prompt);
         if case.language == "en" {
             assert_eq!(
@@ -508,29 +443,7 @@ fn how_to_procedure_is_general_not_memoized_to_examples() {
 
 #[test]
 fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
-    struct Case {
-        language: &'static str,
-        prompt: &'static str,
-    }
-
-    for case in [
-        Case {
-            language: "en",
-            prompt: "How to do SPEC dirven development step by step?",
-        },
-        Case {
-            language: "ru",
-            prompt: "как сделать SPEC dirven development? напиши по шагам",
-        },
-        Case {
-            language: "hi",
-            prompt: "कैसे करें SPEC dirven development? चरणों में बताओ",
-        },
-        Case {
-            language: "zh",
-            prompt: "如何做 SPEC dirven development？按步骤写",
-        },
-    ] {
+    for case in fixtures::TYPO_CASES {
         let response = answer(case.prompt);
         if case.language == "en" {
             assert_eq!(

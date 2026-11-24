@@ -1,0 +1,79 @@
+[
+  {
+    "name": "policy-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 6.119,
+    "stdout": {
+      "file": "policy-before.stdout.gz",
+      "rawSha256": "3b613e9033cf0001583a904f55b3d3444c2e6eaac2cd791c57cee35370db8136",
+      "archiveSha256": "5280b7235b16c10f0a633e702e6c29a45958d3bbd6011892d57dc58ed45d3f2b",
+      "lines": 86
+    },
+    "stderr": {
+      "file": "policy-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "policy-after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 4.426,
+    "stdout": {
+      "file": "policy-after.stdout.gz",
+      "rawSha256": "e0fb5e333e72b537a2ebdbd6d6db22ee22fdc248ba4b2fbd344519942800a526",
+      "archiveSha256": "5314fc8be97600735977522a7e8aff6fbb802edc3975e82cb6b2e3a0266ed4e5",
+      "lines": 33
+    },
+    "stderr": {
+      "file": "policy-after.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "unchanged-native-formatting",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/unit/data_files.rs",
+      "rust/tests/unit/data_files/technical_scalar.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.309,
+    "stdout": {
+      "file": "unchanged-native-formatting.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unchanged-native-formatting.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  }
+]

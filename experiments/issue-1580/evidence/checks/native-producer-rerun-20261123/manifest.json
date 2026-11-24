@@ -1,0 +1,27 @@
+{
+  "subject": "Whole native producer rerun, ten new-artifact consumers, and failed original-retention criterion",
+  "source": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "run": 45162493977,
+  "attempt": 2,
+  "producerPassed": true,
+  "consumersPassed": 10,
+  "selectedNativePasses": 441,
+  "newArtifactId": 14822114800,
+  "newArtifactDigest": "sha256:c658669845f1f12f1cbc9c45e453c86cfae046f1314b14fca75f207f92745727",
+  "originalArtifactId": 14812694215,
+  "originalArtifactStillPreserved": false,
+  "originalDirectMetadataHTTP": 404,
+  "targetedCustodyAndSummaryReviewComplete": true,
+  "fullLiteralLogRead": false,
+  "newLocalRepairsQualified": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1147232,
+    "sha256": "1a1e44fffda9ed0d5d7cbcf5a305f381f1b8705bd0bc15542e37402c4a447231"
+  },
+  "members": 327,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T14:32:05.132823+00:00"
+}

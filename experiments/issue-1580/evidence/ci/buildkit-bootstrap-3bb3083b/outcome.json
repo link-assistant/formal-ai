@@ -1,0 +1,566 @@
+{
+  "complete": true,
+  "head": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2",
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157",
+  "workflowConclusion": "success",
+  "jobs": [
+    {
+      "completedAt": "2026-11-20T15:36:32Z",
+      "conclusion": "success",
+      "databaseId": 136386752657,
+      "name": "Immutable BuildKit bootstrap and registry fallback",
+      "startedAt": "2026-11-20T15:36:02Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T15:36:05Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T15:36:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:10Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T15:36:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:10Z",
+          "conclusion": "success",
+          "name": "Prepare bootstrap identity evidence",
+          "number": 3,
+          "startedAt": "2026-11-20T15:36:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:23Z",
+          "conclusion": "success",
+          "name": "Initialize an actual BuildKit daemon",
+          "number": 4,
+          "startedAt": "2026-11-20T15:36:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:23Z",
+          "conclusion": "success",
+          "name": "Verify the running daemon and actual image identity",
+          "number": 5,
+          "startedAt": "2026-11-20T15:36:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:23Z",
+          "conclusion": "success",
+          "name": "Inject only a canonical image-pull outage",
+          "number": 6,
+          "startedAt": "2026-11-20T15:36:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:28Z",
+          "conclusion": "success",
+          "name": "Initialize an actual daemon through the mirror fallback",
+          "number": 7,
+          "startedAt": "2026-11-20T15:36:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:29Z",
+          "conclusion": "success",
+          "name": "Verify actual mirror recovery and the unchanged image digest",
+          "number": 8,
+          "startedAt": "2026-11-20T15:36:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v7",
+          "number": 9,
+          "startedAt": "2026-11-20T15:36:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Post Initialize an actual daemon through the mirror fallback",
+          "number": 16,
+          "startedAt": "2026-11-20T15:36:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Post Initialize an actual BuildKit daemon",
+          "number": 17,
+          "startedAt": "2026-11-20T15:36:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 18,
+          "startedAt": "2026-11-20T15:36:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-11-20T15:36:30Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157/job/136386752657"
+    },
+    {
+      "completedAt": "2026-11-20T15:36:43Z",
+      "conclusion": "success",
+      "databaseId": 136386752887,
+      "name": "Zizmor",
+      "startedAt": "2026-11-20T15:36:20Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T15:36:24Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T15:36:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T15:36:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:37Z",
+          "conclusion": "success",
+          "name": "Run zizmorcore/zizmor-action@v0.6.4",
+          "number": 3,
+          "startedAt": "2026-11-20T15:36:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:41Z",
+          "conclusion": "success",
+          "name": "Enforce the hash-pin policy on container images",
+          "number": 4,
+          "startedAt": "2026-11-20T15:36:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:41Z",
+          "conclusion": "success",
+          "name": "Post Enforce the hash-pin policy on container images",
+          "number": 6,
+          "startedAt": "2026-11-20T15:36:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:41Z",
+          "conclusion": "success",
+          "name": "Post Run zizmorcore/zizmor-action@v0.6.4",
+          "number": 7,
+          "startedAt": "2026-11-20T15:36:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:41Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 8,
+          "startedAt": "2026-11-20T15:36:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:41Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-11-20T15:36:41Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157/job/136386752887"
+    },
+    {
+      "completedAt": "2026-11-20T15:36:41Z",
+      "conclusion": "success",
+      "databaseId": 136386753088,
+      "name": "Artifact transport (macos-15)",
+      "startedAt": "2026-11-20T15:36:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T15:36:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:33Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T15:36:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:33Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-python@v6",
+          "number": 3,
+          "startedAt": "2026-11-20T15:36:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:34Z",
+          "conclusion": "success",
+          "name": "Prepare a bounded artifact and cached destination",
+          "number": 4,
+          "startedAt": "2026-11-20T15:36:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:35Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v7",
+          "number": 5,
+          "startedAt": "2026-11-20T15:36:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:38Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/download-artifact",
+          "number": 6,
+          "startedAt": "2026-11-20T15:36:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:38Z",
+          "conclusion": "success",
+          "name": "Verify actual downloaded bytes and cached replacement",
+          "number": 7,
+          "startedAt": "2026-11-20T15:36:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:38Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/download-artifact",
+          "number": 12,
+          "startedAt": "2026-11-20T15:36:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:38Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-python@v6",
+          "number": 13,
+          "startedAt": "2026-11-20T15:36:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:39Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 14,
+          "startedAt": "2026-11-20T15:36:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:39Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-11-20T15:36:39Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157/job/136386753088"
+    },
+    {
+      "completedAt": "2026-11-20T15:36:58Z",
+      "conclusion": "success",
+      "databaseId": 136386753214,
+      "name": "Actionlint",
+      "startedAt": "2026-11-20T15:36:38Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T15:36:42Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T15:36:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:46Z",
+          "conclusion": "success",
+          "name": "Pull rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667",
+          "number": 2,
+          "startedAt": "2026-11-20T15:36:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:52Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 3,
+          "startedAt": "2026-11-20T15:36:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:54Z",
+          "conclusion": "success",
+          "name": "Run rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667",
+          "number": 4,
+          "startedAt": "2026-11-20T15:36:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:55Z",
+          "conclusion": "success",
+          "name": "Prove the linter can still see inside a run block",
+          "number": 5,
+          "startedAt": "2026-11-20T15:36:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:55Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 10,
+          "startedAt": "2026-11-20T15:36:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:55Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-11-20T15:36:55Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157/job/136386753214"
+    },
+    {
+      "completedAt": "2026-11-20T15:36:55Z",
+      "conclusion": "success",
+      "databaseId": 136386753254,
+      "name": "Artifact transport (ubuntu-24.04)",
+      "startedAt": "2026-11-20T15:36:40Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T15:36:43Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T15:36:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:48Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T15:36:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:49Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-python@v6",
+          "number": 3,
+          "startedAt": "2026-11-20T15:36:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:50Z",
+          "conclusion": "success",
+          "name": "Prepare a bounded artifact and cached destination",
+          "number": 4,
+          "startedAt": "2026-11-20T15:36:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:51Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v7",
+          "number": 5,
+          "startedAt": "2026-11-20T15:36:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:53Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/download-artifact",
+          "number": 6,
+          "startedAt": "2026-11-20T15:36:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:53Z",
+          "conclusion": "success",
+          "name": "Verify actual downloaded bytes and cached replacement",
+          "number": 7,
+          "startedAt": "2026-11-20T15:36:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:53Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/download-artifact",
+          "number": 12,
+          "startedAt": "2026-11-20T15:36:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:53Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-python@v6",
+          "number": 13,
+          "startedAt": "2026-11-20T15:36:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:53Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 14,
+          "startedAt": "2026-11-20T15:36:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:53Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-11-20T15:36:53Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157/job/136386753254"
+    },
+    {
+      "completedAt": "2026-11-20T15:36:39Z",
+      "conclusion": "success",
+      "databaseId": 136386753565,
+      "name": "Artifact transport (windows-2025)",
+      "startedAt": "2026-11-20T15:36:18Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T15:36:20Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T15:36:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:28Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T15:36:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:29Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-python@v6",
+          "number": 3,
+          "startedAt": "2026-11-20T15:36:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:30Z",
+          "conclusion": "success",
+          "name": "Prepare a bounded artifact and cached destination",
+          "number": 4,
+          "startedAt": "2026-11-20T15:36:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:32Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v7",
+          "number": 5,
+          "startedAt": "2026-11-20T15:36:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:34Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/download-artifact",
+          "number": 6,
+          "startedAt": "2026-11-20T15:36:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:34Z",
+          "conclusion": "success",
+          "name": "Verify actual downloaded bytes and cached replacement",
+          "number": 7,
+          "startedAt": "2026-11-20T15:36:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:34Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/download-artifact",
+          "number": 12,
+          "startedAt": "2026-11-20T15:36:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:35Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-python@v6",
+          "number": 13,
+          "startedAt": "2026-11-20T15:36:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:36Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 14,
+          "startedAt": "2026-11-20T15:36:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T15:36:36Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-11-20T15:36:36Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157/job/136386753565"
+    }
+  ],
+  "artifactCount": 1,
+  "producerFiles": 25,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

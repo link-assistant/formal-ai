@@ -1,0 +1,20 @@
+[
+  {
+    "directory": "current-validation",
+    "oldFile": "gate-check-tests-as-docs.log.gz",
+    "newFile": "gate-check-tests-as-documentation.log.gz",
+    "payloadSha256Unchanged": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4",
+    "manifestBeforeSha256": "530c7eb4dd81237cd42b7f2f65955c4c6dbf661ce54945707b0fb7a6c4915f67",
+    "manifestAfterSha256": "18d622f7e79325bd366371d49ba38640ccbf301fe8ccdf8b96442ad2e1860cea",
+    "onlyArchiveFileFieldChanged": true
+  },
+  {
+    "directory": "all-gates-final",
+    "oldFile": "gate-check-tests-as-docs.log.gz",
+    "newFile": "gate-check-tests-as-documentation.log.gz",
+    "payloadSha256Unchanged": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4",
+    "manifestBeforeSha256": "17bbc157c2fb9cd495520b98cb63b09ddf61df73ed2c34934e680131785f4c2f",
+    "manifestAfterSha256": "ce4ba2b275cfdafe598cf8d31574ff0bf88655d0b172a1d42ff8cb0435476ea9",
+    "onlyArchiveFileFieldChanged": true
+  }
+]

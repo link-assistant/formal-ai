@@ -750,8 +750,17 @@ let EXPLANATION_PAGE_MEMORY = null;
 function explanationConcept(prompt) {
   const normalized = normalizePrompt(prompt);
   if (!normalized || containsCjk(normalized)) return null;
-  const cue = factualQaSurfaces(EXPLANATION_ROLE_CUE).find((surface) => factualQaLocate(normalized, surface) === 0);
-  return cue ? factBoundedSubject(normalized.slice(cue.length).trim()) : null;
+  const longestPrefix = (text, surfaces) => surfaces
+    .filter((surface) => factualQaLocate(text, surface) === 0)
+    .sort((left, right) => right.length - left.length)[0];
+  const cue = longestPrefix(normalized, factualQaSurfaces(EXPLANATION_ROLE_CUE));
+  if (!cue) return null;
+  let rest = normalized.slice(cue.length).trim();
+  const functionWords = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD);
+  let prefix;
+  // Preserve internal grammar and meaningful suffixes such as "vitamin A".
+  while ((prefix = longestPrefix(rest, functionWords))) rest = rest.slice(prefix.length).trim();
+  return factBoundedSubject(rest);
 }
 
 /**

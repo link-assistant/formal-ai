@@ -1,0 +1,23 @@
+{
+  "head": "3c52b7f528b5f477ba04de297eb02bb41c298c78",
+  "checkout": "2427bb899f61d872805299f02d5828f39a9db70e",
+  "tree": "eadbc642e33b2b701beb1a04bd03ef3787fdbde1",
+  "sourceIdentityVerified": true,
+  "actualNativeReceiptVerified": true,
+  "adopted": [
+    {
+      "path": "data/meta/google-trends-catalog.lino",
+      "beforeSha256": "9b62806d8adaa41e1ec98d62369f2c124130eab2dbbb45c8184cc05d7cbae6d7",
+      "afterSha256": "a13dd57872f088e0eb34eff712e8dad743cd8901f856c8e1ecf41ee736df3f0e",
+      "bytes": 59751
+    },
+    {
+      "path": "docs/case-studies/issue-498/agent-cli-session-google-trends.json",
+      "beforeSha256": "64e17ae671a186f62d82a9cfebab9a6d04e108a6455ed634828bae83c0b83416",
+      "afterSha256": "4e2b48c6f29e12b4191a9d409806b5838802f932db3a46a3f32fa82f424f4a9d",
+      "bytes": 126812
+    }
+  ],
+  "freshNativeReplayPending": true,
+  "independentAuthorshipCredit": 0
+}

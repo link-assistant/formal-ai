@@ -1,5 +1,5 @@
 personas
-  trigger ("pretend you are" "pretend to be" "act as" "roleplay as" "roleplay" "explain like you are" "actúa como" "asume el papel de" "притворись что ты" "представь что ты" "играй роль" "कल्पना करो कि तुम" "भूमिका निभाओ" "假装你是" "扮演" "角色扮演")
+  trigger ("let's roleplay" "let us roleplay" "pretend you are" "pretend to be" "act as" "roleplay as" "roleplay" "explain like you are" "actúa como" "asume el papel de" "притворись что ты" "представь что ты" "играй роль" "कल्पना करो कि तुम" "भूमिका निभाओ" "假装你是" "扮演" "角色扮演")
   persona "Albert Einstein"
     aliases ("einstein" "альберт эйнштейн" "эйнштейн" "आइंस्टीन" "爱因斯坦")
     wikidata Q937

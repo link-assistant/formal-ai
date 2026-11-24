@@ -1,0 +1,25 @@
+{
+  "publishedHead": "e6943875bb39f1d7edee84fa716d7fbcffee96c4",
+  "localRepairsHead": "399b60253b709b237a542972976459ecafad59fa",
+  "publishedCohort": {
+    "terminal": 33,
+    "success": 30,
+    "failure": 2,
+    "explicitSkip": 1
+  },
+  "initialCompleteLocalGates": {
+    "pass": 83,
+    "failure": 6,
+    "hostedOnlySkip": 54,
+    "sourceMutatedDuringRun": true
+  },
+  "focusedJavascriptCasesPassed": 184,
+  "canonicalDataFilesParsed": 4329,
+  "nativeLocalExecution": false,
+  "nextHeadHostedQualification": "pending",
+  "independentAuthorshipCredit": 0,
+  "broaderIssueAcceptance": "unfinished",
+  "payloadCount": 281,
+  "archiveSha256": "7d0b02065371ba15d2e8a3b25d815ebd767b75b7ce0a91ae7a1d8439c923dbb5",
+  "roundTripVerified": true
+}

@@ -536,6 +536,10 @@ pub(crate) fn try_prompt_data(prompt: &str, log: &mut EventLog) -> Option<Symbol
     } else if identity(&key) && payload.lines().any(question) {
         record_answer(prompt, locale)
     } else if starts(&key, "extraction") {
+        // Typed text operations bind their own input; URL colons are not fields.
+        if super::text_manipulation::parses_text_operation(prompt, &normalize_prompt(prompt), &[]) {
+            return None;
+        }
         extraction(&key, payload, locale)?
     } else if starts(&key, "rewrite") && cues("omit").any(|cue| surface_present(&key, cue)) {
         gap("rewrite", locale)

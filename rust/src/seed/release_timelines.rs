@@ -26,7 +26,7 @@ pub struct ReleaseTimelinePhrasing {
 /// One work in a timeline: its grounding id, localized titles, and release date.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ReleaseTimelineEntry {
-    /// Wikidata entity id of the work, e.g. `Q484442`.
+    /// Wikidata entity identifier of the work.
     pub qid: String,
     /// Earliest publication date as `YYYY-MM-DD`, empty when none is announced.
     pub release_date: String,

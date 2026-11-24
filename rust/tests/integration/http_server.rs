@@ -494,19 +494,65 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
                 .unwrap()
                 .map(|entry| entry.unwrap().path())
                 .collect::<Vec<_>>();
-            assert_eq!(files.len(), 2);
-            assert!(
-                files
-                    .iter()
-                    .any(|file| file.to_string_lossy().ends_with(".conversation.lino"))
-            );
+            // The explicit health probe has a transport trace but no user turns.
+            // Keep the two dialog records separate and verify all three files.
+            assert_eq!(files.len(), 3);
+            let mut health_traces = 0;
+            let mut dialog_files = Vec::new();
             for file in files {
-                assert!(
-                    std::fs::read_to_string(file)
-                        .unwrap()
-                        .contains(REQUEST_MARKER)
-                );
+                let content = std::fs::read_to_string(&file).unwrap();
+                let records = content
+                    .lines()
+                    .map(|line| {
+                        formal_ai::dialog_log::structured_log::decode_dialog(line)
+                            .expect("typed dialog record")
+                    })
+                    .collect::<Vec<_>>();
+                assert!(!records.is_empty(), "capture file must contain records");
+                if file.to_string_lossy().ends_with(".conversation.lino") {
+                    for record in records {
+                        let conversation: formal_ai::dialog_conversation::DialogConversationLog =
+                            serde_json::from_value(record).expect("conversation record");
+                        assert!(!conversation.messages.is_empty());
+                    }
+                    assert!(content.contains(REQUEST_MARKER));
+                    dialog_files.push(file);
+                } else {
+                    let exchanges = records
+                        .into_iter()
+                        .map(|record| {
+                            serde_json::from_value::<formal_ai::dialog_log::DialogExchangeLog>(
+                                record,
+                            )
+                            .expect("transport record")
+                        })
+                        .collect::<Vec<_>>();
+                    if exchanges[0].exchange.path == "/health" {
+                        health_traces += 1;
+                        // Startup and explicit health probes append to the same file.
+                        assert!(exchanges.len() >= 2);
+                        assert!(exchanges.iter().all(|row| row.exchange.path == "/health"));
+                        assert!(!content.contains(REQUEST_MARKER));
+                    } else {
+                        assert!(
+                            exchanges
+                                .iter()
+                                .all(|row| row.exchange.path == "/v1/chat/completions")
+                        );
+                        assert!(content.contains(REQUEST_MARKER));
+                        dialog_files.push(file);
+                    }
+                }
             }
+            assert_eq!(health_traces, 1);
+            assert_eq!(dialog_files.len(), 2);
+            assert_eq!(
+                dialog_files
+                    .iter()
+                    .filter(|file| file.to_string_lossy().ends_with(".conversation.lino"))
+                    .count(),
+                1
+            );
         } else {
             assert!(!dialogs.exists());
             assert!(!scratch.join("dialog-logs").exists());

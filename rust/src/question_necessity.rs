@@ -682,10 +682,13 @@ fn looks_like_url(text: &str) -> bool {
     let token = text
         .rsplit_once(char::is_whitespace)
         .map_or(text, |(_, token)| token);
-    text_predicate_matches("url", token)
-        || token
-            .split_once('：')
-            .is_some_and(|(_, value)| text_predicate_matches("url", value))
+    // A source URL can be a structured value (`detail=https://...`) or a
+    // Markdown link target, not only a bare token. Its query delimiter is
+    // evidence punctuation; a later question outside that token is still
+    // classified and subject to the same necessity budget.
+    token
+        .split(['=', '：', '(', '[', '<'])
+        .any(|value| text_predicate_matches("url", value))
 }
 
 fn is_replayed_question(text: &str) -> bool {

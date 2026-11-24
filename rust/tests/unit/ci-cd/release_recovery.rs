@@ -69,24 +69,34 @@ fn prepares_one_version_verifies_its_archive_and_can_resume_it() {
                 .split_once("export async function mirrorPreparedFullImage")
                 .expect("prepared full image mirror should follow the publisher");
             assert!(
-                publisher.contains("'--tag',image+':'+version,'--tag',image+':latest'"),
-                "the direct registry build must publish both version and latest tags"
+                publisher.contains("const tags=[image+':'+version,image+':latest']"),
+                "promotion must publish both version and latest tags"
             );
             let publish = publisher
                 .find("invoke(['buildx','build','--progress','plain','--push','--provenance=false'")
                 .expect("prepared image publication should directly push its Buildx result");
             let pull = publisher
-                .find("invoke(['pull',image+':'+version])")
-                .expect("the published version should be pulled for actual observations");
+                .find("invoke(['pull',candidate])")
+                .expect("the candidate should be pulled for actual observations");
             let immutable = publisher
-                .find("immutableReference(image+':'+version,invoke)")
-                .expect("the pulled version should resolve to one immutable repository digest");
+                .find("immutableReference(candidate,invoke)")
+                .expect("the pulled candidate should resolve to one immutable repository digest");
             let observe = publisher
                 .find("await observePublished(reference,expected,invoke,fetcher)")
                 .expect("the immutable published image should pass runtime and anonymous checks");
+            let promote = publisher
+                .find("invoke(['buildx','imagetools','create','--prefer-index=false',...tags.flatMap(tag=>['--tag',tag]),reference])")
+                .expect("both release tags must promote the already verified immutable candidate");
+            let verify_tags = publisher
+                .find("assert.equal(digest,observation.anonymous.manifest_sha256")
+                .expect("each release tag must resolve to the observed manifest digest");
             assert!(
-                publish < pull && pull < immutable && immutable < observe,
-                "direct publication must precede version pull, immutable selection and published observations"
+                publish < pull
+                    && pull < immutable
+                    && immutable < observe
+                    && observe < promote
+                    && promote < verify_tags,
+                "candidate publication, immutable observations, promotion and tag verification must retain their order"
             );
             assert!(mirror.contains("for(const suffix of [version,'latest'])"));
             let tag = mirror

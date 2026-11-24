@@ -80,6 +80,10 @@ fn answer_live_fact_question<T: SourceTransport>(
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
     record_fact_question(log, prompt, &question.relation, &question.subject_term);
+    log.append_search_request(
+        "wikidata",
+        format!("{}:{}", question.relation, question.subject_term),
+    );
     log.append("fact_live:relation", question.relation.as_str());
     log.append("fact_live:subject", question.subject_term.as_str());
     let statement =
@@ -149,9 +153,20 @@ pub fn explanation_concept(prompt: &str) -> Option<String> {
     }
     let cue = role_surfaces(seed::ROLE_CAPABILITY_ACT_EXPLAIN)
         .into_iter()
-        .find(|cue| locate(&normalized, cue) == Some(0))?;
-    let rest = normalized.strip_prefix(cue.as_str())?;
-    bounded_subject(rest.trim())
+        .filter(|cue| locate(&normalized, cue) == Some(0))
+        .max_by_key(|cue| cue.len())?;
+    let mut rest = normalized.strip_prefix(cue.as_str())?.trim();
+    let function_words = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
+    // Only leading grammar is outside the concept. Internal words and a
+    // trailing "a" in a concept such as "vitamin A" remain meaningful.
+    while let Some(word) = function_words
+        .iter()
+        .filter(|word| locate(rest, word) == Some(0))
+        .max_by_key(|word| word.len())
+    {
+        rest = rest.strip_prefix(word.as_str())?.trim();
+    }
+    bounded_subject(rest)
 }
 
 /// Answer an explanation request from retrieved pages (issue #1172 R8).
@@ -221,6 +236,10 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
+    // Conversation references belong to the coreference row.
+    if super::resolves_coreference_request(prompt, log) {
+        return None;
+    }
     if let Some(answer) = super::try_fact_lookup(prompt, normalized, log) {
         return Some(answer);
     }

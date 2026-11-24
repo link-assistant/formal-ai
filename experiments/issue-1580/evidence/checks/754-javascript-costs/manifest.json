@@ -1,0 +1,43 @@
+{
+  "run": 44992280972,
+  "head": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+  "files": [
+    {
+      "source": "table.before.lino",
+      "bytes": 43928,
+      "sha256": "348e686ec36f998ef4784f6ef4285993a0fe12169397894dcaa7e1d41f05ed62"
+    },
+    {
+      "source": "identity.json",
+      "bytes": 1165,
+      "sha256": "8cfa809a13ee8e8acc4dac7463f2982b5473a6c98c691d05b1a7374ceb8494ba"
+    },
+    {
+      "source": "result.json",
+      "bytes": 62026,
+      "sha256": "d5d0e940c32d6eb55e92cb3b7adc5cddd83f62a08e64a5e23183e1e6f78e666c"
+    },
+    {
+      "source": "scheduling-after.log",
+      "bytes": 770,
+      "sha256": "409e6e3b765c34d72360f50aa26827bd52b413e39bec5ee10a3c1cb88ee9749d"
+    },
+    {
+      "source": "ci-speed-after.log",
+      "bytes": 2575,
+      "sha256": "ea63d3b76cc2fd6a5e342455c4021071c90a7dcc7efd4b48141ba0445e25170a"
+    },
+    {
+      "source": "update.mjs",
+      "bytes": 2298,
+      "sha256": "80a89d5292e7cc02754d1737c2b681333f589b18edba4c753235ee30bae88621"
+    },
+    {
+      "source": "update.log",
+      "bytes": 250,
+      "sha256": "60a7e3c8634c128988914278c9f0e83ab37847472fecd885cee6287c47988d86"
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "executionProof": false
+}

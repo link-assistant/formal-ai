@@ -1,0 +1,50 @@
+{
+  "observedAt": "2026-11-19T19:22:57.202239+00:00",
+  "records": [
+    {
+      "endpoint": "repos/jacoco/jacoco/issues/2347",
+      "file": "jacoco-jacoco-2347-issue.json.gz",
+      "rawSha256": "92fcf1ba9a9d993ef13e147b01ccab9db62ab2b61ccc58f4b3dbff977664ebd1",
+      "archiveSha256": "b42f9db2bc9e5989680c307669614f00e5a495277b00418c26d4ba60146849de",
+      "bytes": 4425
+    },
+    {
+      "endpoint": "repos/jacoco/jacoco/issues/2347/comments",
+      "file": "jacoco-jacoco-2347-comments.json.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7",
+      "bytes": 2
+    },
+    {
+      "endpoint": "repos/codehaus-plexus/plexus-build-api/issues/127",
+      "file": "codehaus-plexus-plexus-build-api-127-issue.json.gz",
+      "rawSha256": "9a285b8dac7e6c97a9d5704c59a8342b8d4b8f896e6cc09cce1d844f0e5f2ad4",
+      "archiveSha256": "cdf7c92f1e3c077454e53d7df89590492d5cf83acaf41c5389c4cc8233f15501",
+      "bytes": 12832
+    },
+    {
+      "endpoint": "repos/codehaus-plexus/plexus-build-api/issues/127/comments",
+      "file": "codehaus-plexus-plexus-build-api-127-comments.json.gz",
+      "rawSha256": "893699a52ee87e62f1c20b4e986b72ae33d8f2ab228da62692d9a3d3c9e5a3bb",
+      "archiveSha256": "c72c47b7af3309b1c3ea6c5237a916aeacba8a9ebb0a61d779bd3872c932ff23",
+      "bytes": 12762
+    },
+    {
+      "endpoint": "repos/diffplug/spotless/issues/2808",
+      "file": "diffplug-spotless-2808-issue.json.gz",
+      "rawSha256": "5564c00a3d187701f7c3e26fc5cba2d51e37f571487c389b61445b42d9f74e5d",
+      "archiveSha256": "8b654ae5552ebd3996cab918933e99de446467252c060555b7e44cf4fb13a0fc",
+      "bytes": 3042
+    },
+    {
+      "endpoint": "repos/diffplug/spotless/issues/2808/comments",
+      "file": "diffplug-spotless-2808-comments.json.gz",
+      "rawSha256": "e90bb449cc5f5596615978f4677c496fd4a9be17b06f15ef223a0f634529b132",
+      "archiveSha256": "cdf84a8fdb3be7d625337ba69295b013c8213c72650446d51c9f08cd7927e50f",
+      "bytes": 8165
+    }
+  ],
+  "nativeMavenExecuted": false,
+  "dependencySafetyVerified": false,
+  "independentAuthorshipCredit": 0
+}

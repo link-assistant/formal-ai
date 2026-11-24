@@ -1,0 +1,13 @@
+# Generated-file inventory memory regression
+
+The complete merged-head gate run failed only its generated-file checker under a 256 MiB Node heap cap. The checker loaded every eligible file in full and retained the whole array, although generator detection uses only the first twelve lines. Compressed evidence is eligible under the existing filter, so full-file retention includes large binary captures decoded as text.
+
+The existing repository-wide generated-file test now runs the actual CLI with a 96 MiB Node heap and a 30-second child deadline. With the original checker it fails after 3.407 seconds: three unit cases pass and the full inventory aborts with heap exhaustion. Header-only reads without lazy consumption still fail: six cases pass and the CLI exhausts its 96 MiB cap after 16.273 seconds. Both negative logs are retained.
+
+The final checker reads complete UTF-8 headers in chunks and consumes one file at a time. It retains the original twelve-line detection rule, exclusions, unreadable-file handling, CI registration checks and stale-exception failures. The complete eight-case suite passes with zero skips in 8.594 seconds; recorded child peak RSS is 113,332 KiB. Cases cover a UTF-8 character split across chunks, line twelve versus thirteen, CRLF, EOF, empty/missing files, unchecked generators and stale exceptions through a lazy inventory.
+
+This is a supplied Codex implementation and command result, with zero independent Formal AI authorship credit. No Rust compilation or hosted result is claimed here. Full negative and positive logs and raw SHA-256 identities accompany this document.
+
+A final gate attempt refused to start when measured container headroom was only 299,167,744 bytes; no test command was launched by that attempt. Best-effort POSIX_FADV_DONTNEED advice released clean cached pages for this task's evidence and Git objects, without changing file contents or invoking a global cache purge. The recorded Git-object pass increases measured headroom to 1,341,624,320 bytes. The final run retains its 512 MiB minimum-headroom check rather than bypassing it. This resource observation is not a passing gate result.
+
+The final complete local gate invocation on 12aff82c189eab0d2f920b0f233f2d1a868d2815 passes all 86 applicable gates with 52 explicit native/context exclusions, zero failures, a 256 MiB Node heap cap, and no Rust build or offline audit substitute. Complete logs and per-gate captures are retained in final-gates/. The earlier generated-file heap failure remains preserved. This is local gate verification, not main-only native or final-head hosted acceptance.

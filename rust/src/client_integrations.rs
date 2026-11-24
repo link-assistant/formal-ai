@@ -14,6 +14,7 @@ use crate::seed::{
 };
 
 mod caller_args;
+mod codex_model_catalog;
 mod command;
 mod completion;
 mod completion_learning;
@@ -25,6 +26,7 @@ mod session_files;
 mod tool_args;
 mod url;
 use caller_args::CallerArgs;
+use codex_model_catalog::codex_model_catalog;
 use command::{contains_model_arg, resolve_integration_command};
 use completion::{AuthoringRun, CompletionInvocation, require_completed, run_to_completion};
 use global_config::{
@@ -39,7 +41,6 @@ pub use tool_args::delimit_tool_args;
 use url::{base_url_with_port, join_url_path};
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
-const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
 const RENDERED_PLACEHOLDER: &str = concat!("{", "rendered", "}");
 const ERROR_PLACEHOLDER: &str = concat!("{", "error", "}");
 
@@ -814,45 +815,6 @@ fn render_template(template: &str, context: &RenderContext) -> String {
 const CONTEXT_WINDOW_SLOT: &str = concat!("{", "context_window_tokens", "}");
 const MAX_OUTPUT_SLOT: &str = concat!("{", "max_output_tokens", "}");
 
-fn codex_model_catalog(render: &RenderContext) -> Result<String, Box<dyn Error>> {
-    let context = ContextCapacity::current()?;
-    let (window, _) = render.model_limits();
-    let window: u64 = window.parse()?;
-    let model = &render.model;
-    let catalog = serde_json::json!({
-        "models": [{
-            "slug": model,
-            "display_name": model,
-            "description": "Formal AI symbolic model",
-            "default_reasoning_level": "none",
-            "supported_reasoning_levels": [],
-            "shell_type": "shell_command",
-            "visibility": "list",
-            "supported_in_api": true,
-            "priority": 0,
-            "availability_nux": null,
-            "upgrade": null,
-            "base_instructions": "",
-            "supports_reasoning_summaries": false,
-            "supports_reasoning_summary_parameter": false,
-            "default_reasoning_summary": "none",
-            "support_verbosity": false,
-            "default_verbosity": null,
-            "apply_patch_tool_type": "freeform",
-            "web_search_tool_type": "text",
-            "truncation_policy": {"mode": "tokens", "limit": 8192},
-            "supports_parallel_tool_calls": true,
-            "context_window": window,
-            "max_context_window": window,
-            "context": context,
-            "effective_context_window_percent": 100,
-            "experimental_supported_tools": [],
-            "input_modalities": ["text"]
-        }]
-    });
-    Ok(format!("{}\n", serde_json::to_string_pretty(&catalog)?))
-}
-
 fn global_config_path(relative: &str) -> Result<PathBuf, Box<dyn Error>> {
     let path = Path::new(relative);
     if path.is_absolute() {
@@ -870,6 +832,41 @@ fn backup_path(path: &Path, suffix: &str) -> PathBuf {
     PathBuf::from(backup)
 }
 
+const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
+
+fn restore_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
+    if !backup_path.exists() {
+        return Ok(());
+    }
+    let backup = fs::read_to_string(backup_path)?;
+    if backup == EMPTY_BACKUP_SENTINEL {
+        match fs::remove_file(path) {
+            Ok(()) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(error.into()),
+        }
+    } else {
+        write_file(path, &backup)?;
+    }
+    fs::remove_file(backup_path)?;
+    Ok(())
+}
+
+fn ensure_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
+    if backup_path.exists() {
+        return Ok(());
+    }
+    if let Some(parent) = backup_path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    if path.exists() {
+        fs::copy(path, backup_path)?;
+    } else {
+        fs::write(backup_path, EMPTY_BACKUP_SENTINEL)?;
+    }
+    Ok(())
+}
+
 fn write_file(path: &Path, contents: &str) -> Result<(), Box<dyn Error>> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
@@ -877,3 +874,7 @@ fn write_file(path: &Path, contents: &str) -> Result<(), Box<dyn Error>> {
     fs::write(path, contents)?;
     Ok(())
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/client_integrations/production_tests.rs"]
+mod tests;

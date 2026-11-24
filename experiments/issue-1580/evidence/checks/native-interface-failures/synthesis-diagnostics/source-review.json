@@ -1,0 +1,19 @@
+{
+  "commit": "e583b507e6ccd40967e5ea720cfc4e555b365247",
+  "level": "trace; existing default is debug, so these records are off by default",
+  "observations": [
+    "ranked fragment identities, declared shape, structure count, parameter count, atom count",
+    "surviving actual program count",
+    "composition program count",
+    "actual rejected IR content id and type-check/backend/lowering stage"
+  ],
+  "newCandidateProgramsAdded": false,
+  "nativeFailureFixed": false,
+  "nativeExecutionObserved": false,
+  "hypothesis": "Under the isolated offline seed the linked-list request may generate no typed, closed candidate IR; this is not established by native tracing yet",
+  "files": {
+    "rust/src/coding/composition.rs": "169af618a189c666bb99a2880c98f98ce056d9d64470cb4ae67d77df557e6d4b",
+    "rust/src/coding/composition_search.rs": "e52c2eeb8cf2bdbed0b62fa397ff4180f5f0ccdd403d3a8a7256016e24d15037"
+  },
+  "fullIssueComplete": false
+}

@@ -21,22 +21,8 @@ handler_promotions
   promotion calendar_create_event
     rank 30
     when
-      all
-        any
-          role calendar_day_reference of padded
-          shape digit of trimmed
-        any
-          role calendar_schedule_action of padded
-          role calendar_event of padded
-          all
-            role calendar_hour_reference of padded
-            shape digit of trimmed
-          all
-            role calendar-date-marker of padded
-            any
-              role temporal-preposition of padded
-              shape time-separator of trimmed
-    because "issue 869 and issue 595 — a date signal conjoined with a scheduling act, or an elliptical clock hour that only the calendar handler's entity context can ground"
+      evidence calendar_date_signal
+    because "The calendar promotion consumes the same sentence-local scheduling act evidence as admission; clock or scheduling words in source text cannot promote an event."
   promotion program_synthesis
     rank 40
     when

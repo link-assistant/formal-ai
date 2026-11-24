@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { host, installHost } from '../../../js/agentic/host.mjs';
 import { sha256Hex } from '../../../js/agentic/crate/source_fetch.mjs';
 let verify, plan, chat, observedBytesMatch;
 before(async () => {
@@ -96,17 +97,27 @@ test('Unicode, BOM, CRLF and large expected sources are hashed as full UTF8 byte
   }
 });
 const originals = JSON.parse(readFileSync(new URL('../../../experiments/formal_ai_subagent/evidence/formal-ai-only-1188/whole-write-digest/original-agent-cli-fixtures.json', import.meta.url)));
+const originalWorkspaces = {
+  '1.1.1.1.1': '/tmp/tmp.onAeTqs6u4/work',
+  '1.1.2.1.2': '/tmp/tmp.humQFjjSv7/work',
+};
 for (const fixture of originals) {
   test('unchanged actual Agent CLI source task advances via a genuine fresh digest: ' + fixture.node, async () => {
     const messages = structuredClone(fixture.original.messages), names = fixture.original.tools.map(tool => tool.function.name);
-    const next = await chat(messages, names); assert.equal(next.kind, 'tool_calls');
-    const call = next.calls[0], argumentsValue = JSON.parse(call.arguments);
-    assert.equal(call.tool, 'bash'); assert.match(argumentsValue.command, /^sha256sum -- /u);
-    const target = argumentsValue.command.slice('sha256sum -- '.length);
-    const writes = messages.flatMap(message => message.tool_calls ?? []).filter(item => item.function.name === 'write');
-    const expected = JSON.parse(writes.at(-1).function.arguments).content;
+    const originalHost = host(), workspace = originalWorkspaces[fixture.node];
+    assert.ok(workspace);
+    const unbound = await chat(messages, names);
+    assert.equal(unbound.kind, 'tool_calls');
+    assert.equal(unbound.calls[0].tool, 'read');
     const directory = mkdtempSync(join(tmpdir(), 'formal-ai-whole-digest-'));
+    installHost({ ...originalHost, currentDirectory: () => workspace });
     try {
+      const next = await chat(messages, names); assert.equal(next.kind, 'tool_calls');
+      const call = next.calls[0], argumentsValue = JSON.parse(call.arguments);
+      assert.equal(call.tool, 'bash'); assert.match(argumentsValue.command, /^sha256sum -- /u);
+      const target = argumentsValue.command.slice('sha256sum -- '.length);
+      const writes = messages.flatMap(message => message.tool_calls ?? []).filter(item => item.function.name === 'write');
+      const expected = JSON.parse(writes.at(-1).function.arguments).content;
       mkdirSync(dirname(join(directory, target)), { recursive: true }); writeFileSync(join(directory, target), expected);
       const raw = execFileSync('sha256sum', ['--', target], { cwd: directory, encoding: 'utf8' });
       assert.equal(raw.split(/\s/u)[0], sha256Hex(expected));
@@ -117,6 +128,9 @@ for (const fixture of originals) {
       const delivery = JSON.parse(after.calls[0].arguments);
       assert.match(delivery.path ?? delivery.filePath ?? delivery.file_path, /\.agent-ladder\/.+-proof\.md$/u);
       assert.equal(readFileSync(join(directory, target), 'utf8'), expected);
-    } finally { rmSync(directory, { recursive: true, force: true }); }
+    } finally {
+      installHost(originalHost);
+      rmSync(directory, { recursive: true, force: true });
+    }
   });
 }

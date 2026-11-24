@@ -1,0 +1,40 @@
+{
+  "head": "0f8c178ca9c4a2c6fd9bf07e67a2babd450436bb",
+  "failedWorkflowId": 44371961425,
+  "allActionableFailuresReviewed": true,
+  "actionableFailures": [
+    {
+      "failure": "client-integrations.lino:440 invalid embedded JSON quoting",
+      "repairCommit": "a785a99b5b3291eadedc072e9effda51de0b3b75",
+      "repair": "Canonical single-quoted Links Notation scalar retains valid embedded JSON. Original native data tests remain unchanged."
+    },
+    {
+      "failure": "cnl-language-ru.lino:13 pipe-packed alternatives",
+      "repairCommit": "a785a99b5b3291eadedc072e9effda51de0b3b75",
+      "repair": "Canonical reference sequences and keyed child forms preserve full decoded output policy and all five grammars. Original native data tests remain unchanged."
+    }
+  ],
+  "regressionBefore": {
+    "tests": 16,
+    "pass": 13,
+    "fail": 3
+  },
+  "initialAfter": {
+    "tests": 47,
+    "pass": 47,
+    "fail": 0,
+    "skipped": 0
+  },
+  "postMergeCnl": {
+    "tests": 22,
+    "pass": 22,
+    "fail": 0,
+    "skipped": 0
+  },
+  "nextNativeExecution": "pending hosted CI",
+  "originalNativeContractsVerified": 10,
+  "originalNativeContractsOpen": 43,
+  "originalBudgetFailuresOpen": 3,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

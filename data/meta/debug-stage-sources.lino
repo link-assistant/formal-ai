@@ -7,11 +7,12 @@
 # debug session (js/server/debug-stage-sources.mjs, Rust twin
 # rust/src/server/debug_stage_sources.rs) picks one per stage: the only one,
 # else the one fewest calls from the turn's routed handler, else from the entry.
+# Recorded origin identities resolve their actual append site directly.
 debug_stage_sources
   runtime rust
     keyword fn
     tree "rust/src" ".rs"
-    entry "rust/src/solver.rs" "solve_inner"
+    entry "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
   runtime js
     keyword function
     tree "js/worker" ".js"
@@ -37,6 +38,18 @@ debug_stage_sources
     rust "rust/src/solver_handlers/compound_interest.rs" "answer_final_amount_conversion"
     rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
     js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:arithmetic:engine"
+    step compute_engine
+    rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:arithmetic:lino"
+    step compute_expression
+    rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:arithmetic:steps"
+    step compute_steps
+    rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
   event "calculation:engine"
     step compute_engine
     rust "rust/src/quantity_constraint.rs" "record_calculation"
@@ -48,6 +61,18 @@ debug_stage_sources
     step compute_expression
     rust "rust/src/quantity_constraint.rs" "record_calculation"
     rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:quantity:engine"
+    step compute_engine
+    rust "rust/src/quantity_constraint.rs" "record_calculation"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:quantity:lino"
+    step compute_expression
+    rust "rust/src/quantity_constraint.rs" "record_calculation"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:quantity:steps"
+    step compute_steps
+    rust "rust/src/quantity_constraint.rs" "record_calculation"
     js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
   event "calculation:steps"
     step compute_steps
@@ -100,8 +125,8 @@ debug_stage_sources
   event "intent"
     step dispatch_handler
     rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
-    rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
-    rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_diagnostic"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
     rust "rust/src/solver.rs" "solve_inner"
     rust "rust/src/solver_handlers/mod.rs" "finalize_simple"
@@ -161,8 +186,8 @@ debug_stage_sources
   event "response"
     step deformalize
     rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
-    rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
-    rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_diagnostic"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
     rust "rust/src/solver.rs" "solve_inner"
     rust "rust/src/solver_handlers/mod.rs" "finalize_simple"
@@ -196,6 +221,14 @@ debug_stage_sources
     rust "rust/src/solver_synthesis.rs" "try_synthesize_from_sub_results"
     js "js/worker/formal_ai_worker_candidate_validation.js" "solverPrimeIntervalValidation"
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
+  event "validation:answer"
+    step rule_verification
+    rust "rust/src/solver_helpers/mod.rs" "record_answer_test"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
+  event "validation:candidate"
+    step rule_verification
+    rust "rust/src/solver_helpers/mod.rs" "record_validation"
+    js "js/worker/formal_ai_worker_candidate_validation.js" "solverPrimeIntervalValidation"
   event "web_search:request"
     step http_chat
     rust "rust/src/how_to_guide/indexed.rs" "discover_indexed_procedure"

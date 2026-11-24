@@ -1,0 +1,10 @@
+{
+  "changedFixtureOccurrences": 4,
+  "beforeSha256": "0769cfbba045a6ae2b01fbd5e58c94dfd798d5191eb4ed237466e62fecc7c61f",
+  "afterSha256": "75aa7066055539c243ae62accbf50a30f166ecf079036fff10c5fe361f8e8495",
+  "oldCargoSha256": "c6ae70c7c5c79a40add2d8578896abdf29b177502b75396430f3491f7ea9da75",
+  "newCargoSha256": "a912c4c3df70ecc9304bc892c29845c6f4919d5020dff63f4f21f90eca9fb5eb",
+  "completeInventoryUnchangedExceptCargoFixtureIdentity": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

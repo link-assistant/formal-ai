@@ -89,7 +89,7 @@ routing_probes
   probe p027
     lane brainstorming
     language en
-    intent brainstorming
+    intent brainstorm_project_ideas
     prompt "Brainstorm ideas for a birthday party"
   probe p028
     lane brainstorming

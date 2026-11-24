@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "rust/tests/web/issue-1580-template-observations.test.mjs"
+  ],
+  "exitCode": 0,
+  "testSha256": "249c44a51ece5ca447704f31d3bab2ad155c5fbfe81c91958e68ae2e012b2534",
+  "logSha256": "06eca423c7c34181272499ae13626eb051c0c054ec0b4f1669ffba0ff75642b6",
+  "expectedTests": 25,
+  "network": false,
+  "nativeBuild": false,
+  "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/maintained.tap.gz",
+  "compression": "gzip; hashes refer to original uncompressed bytes"
+}

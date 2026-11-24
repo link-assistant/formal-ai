@@ -1,0 +1,76 @@
+[
+  {
+    "name": "rust-format-check",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "--config",
+      "skip_children=true",
+      "scripts/release-changelog.rs",
+      "scripts/release-changelog/tests.rs",
+      "scripts/create-github-release.rs",
+      "rust/tests/unit/ci-cd/changelog_parsing.rs",
+      "rust/tests/unit/workflow_contracts.rs"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "focused-js",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/native-test-artifact.test.mjs"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "script-selection",
+    "argv": [
+      "bash",
+      "scripts/test-scripts.sh",
+      "--list"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "current-pipeline",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44988162955",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--json",
+      "status,conclusion,jobs,headSha"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "current-layered",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44988162770",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--json",
+      "status,conclusion,jobs,headSha"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0
+  }
+]

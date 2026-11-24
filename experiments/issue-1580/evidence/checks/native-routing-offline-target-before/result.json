@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=the focused PR native check limits execution",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 1,
+  "payloads": {
+    "stdout": {
+      "file": "stdout.log.gz",
+      "rawSha256": "0c885c9a3f0609e66b19c08c9a7a9e94aeab873e941a77ff9496b9b477105545",
+      "archiveSha256": "e318a047e3a67d3078804711f2050684dc27d44695cecf2305dac78989409713",
+      "lines": 35
+    },
+    "stderr": {
+      "file": "stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

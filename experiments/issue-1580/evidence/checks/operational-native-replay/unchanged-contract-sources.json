@@ -1,0 +1,9 @@
+{
+  "sha256": {
+    "rust/tests/unit/docs_requirements/agent_cli_shell.rs": "b8c092e4ed1edbee890579d3386c5480831a24e47f2ecc144c6e376e24e898ed",
+    "rust/tests/unit/ci-cd/network_download_retry.rs": "4ca096605d76598f7ef6c9210824a0d078482a26ced21d24e08cea6d95ba20bc"
+  },
+  "sourceBytesUnchanged": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

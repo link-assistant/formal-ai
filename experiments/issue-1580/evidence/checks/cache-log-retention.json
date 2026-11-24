@@ -1,0 +1,50 @@
+{
+  "scope": "Actual shell health script and budget wrapper with mock cache/command processes; no Rust build, hosted cache access or causal backend claim.",
+  "before": {
+    "testExit": 1,
+    "passed": 9,
+    "failed": 2,
+    "skipped": 0
+  },
+  "after": {
+    "testExit": 0,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0
+  },
+  "shellcheck": {
+    "version": "0.11.0",
+    "exit": 0
+  },
+  "touchedGates": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "logs": [
+    {
+      "file": "experiments/issue-1580/evidence/checks/cache-log-before.log.gz",
+      "sha256": "2cac99e8201f90cd193dd482025dc45830a8b612f4d86ea65161032dc7a7d763",
+      "originalSha256": "5e4f73fe0006f2f865b38a56825b3ef7777253860ba41e766aaa06e70344be11",
+      "originalBytes": 4148
+    },
+    {
+      "file": "experiments/issue-1580/evidence/checks/cache-log-after.log.gz",
+      "sha256": "64c6a3e897298757908b713a6fb6ccfaa52b3c31814fb095358e249b9ccbb2ad",
+      "originalSha256": "950affd7186395ddcdeadc3574cea113af705e805c923a8e4dea838fae8fcbaf",
+      "originalBytes": 1172
+    },
+    {
+      "file": "experiments/issue-1580/evidence/checks/cache-log-shellcheck.log.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalBytes": 0
+    },
+    {
+      "file": "experiments/issue-1580/evidence/checks/cache-log-gates.log.gz",
+      "sha256": "2a17db9ef62fad478e4e66dc4c5480f0c336b244ea66ba16b610f2432c55a283",
+      "originalSha256": "1ec38c27f6473dd4ee451feffed359464bb1899149588df4b021970e75168b66",
+      "originalBytes": 195
+    }
+  ]
+}

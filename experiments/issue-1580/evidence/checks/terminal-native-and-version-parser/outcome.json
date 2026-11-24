@@ -1,0 +1,167 @@
+{
+  "observedAt": "2026-11-21T04:41:28.539895+00:00",
+  "publishedHead": "27e895c1103926b4f73862c0eb15fa77fb505089",
+  "terminalWorkflows": 27,
+  "successfulWorkflows": 25,
+  "skippedWorkflows": 1,
+  "failedWorkflows": [
+    {
+      "id": 44860043349,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44860043349"
+    }
+  ],
+  "verifiedStreams": 354,
+  "retainedFullRunLogs": 27,
+  "nativeFamilies": [
+    {
+      "job": "Native type and lint check / Native contracts (interfaces)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-3)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (coding)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (reasoning-1)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (reasoning-2)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-2)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (benchmarks)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-1)",
+      "conclusion": "success"
+    }
+  ],
+  "originalNativeFamilySelectorMatchedNothing": true,
+  "correctedNativeFamilyCount": 8,
+  "validation": {
+    "results": [
+      {
+        "name": "focused-regressions",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "--test-name-pattern=package version parser",
+          "rust/tests/web/default-branch-build-policy.test.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 3.173
+      },
+      {
+        "name": "default-branch-build-policy",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/default-branch-build-policy.test.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 24.426
+      },
+      {
+        "name": "fast-pull-request-production-profile",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 6.124
+      },
+      {
+        "name": "ci-change-detection-checkout",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/ci-change-detection-checkout.test.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 1.42
+      },
+      {
+        "name": "touched-gates",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-file-size,check-readable-code,check-abbreviations,workflows,check-ci-speed"
+        ],
+        "exitCode": 0,
+        "seconds": 19.08
+      },
+      {
+        "name": "whitespace",
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 0.254
+      }
+    ],
+    "allPassed": true,
+    "childrenPeakRssKiB": 298256,
+    "nativeExecutionVerified": false,
+    "independentAuthorshipCredit": 0
+  },
+  "projectionChecks": {
+    "results": [
+      {
+        "name": "deployed-release",
+        "command": [
+          "node",
+          "scripts/generate-staged-release.mjs",
+          "--check-deployed"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "source-projection",
+        "command": [
+          "node",
+          "scripts/translate-js-rust.mjs",
+          "--verify"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "source-witness",
+        "command": [
+          "node",
+          "scripts/lib/generate-native-specification-programs.mjs",
+          "--check"
+        ],
+        "exitCode": 0
+      }
+    ],
+    "allPassed": true,
+    "childrenPeakRssKiB": 204412,
+    "independentAuthorshipCredit": 0
+  },
+  "warnings": 91,
+  "warningThresholdsChanged": false,
+  "nativeExecutionVerifiedForNewEdits": false,
+  "literalFullLogReviewComplete": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

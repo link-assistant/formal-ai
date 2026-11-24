@@ -1,0 +1,32 @@
+{
+  "command": [
+    "node",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-javascript-dependencies"
+  ],
+  "exitCode": 0,
+  "log": "gates-dependency.log.gz",
+  "rawSha256": "8f69a543a1f2b6c7582a61bbadef9120fc91c3f38ca9093ffc212a9e7b3499a4",
+  "offlineAuditStandIns": true,
+  "expectedLockfiles": [
+    "bun.lock",
+    "desktop/package-lock.json",
+    "experiments/agent_cli_e2e/issue_819_tui/bun.lock",
+    "packages/minimatch-compat/package-lock.json",
+    "packages/source-cst-runtime/package-lock.json",
+    "rust/tests/e2e/package-lock.json",
+    "scripts/documentation-policy-dependencies/package-lock.json",
+    "vscode/package-lock.json"
+  ],
+  "toolCalls": [
+    "/tmp/gh-issue-solver-1794900398048\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/bun\taudit --audit-level=moderate",
+    "/tmp/gh-issue-solver-1794900398048/vscode\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/npm\taudit --package-lock-only --audit-level=moderate --fetch-timeout=30000 --fetch-retries=0",
+    "/tmp/gh-issue-solver-1794900398048/desktop\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/npm\taudit --package-lock-only --audit-level=moderate --fetch-timeout=30000 --fetch-retries=0",
+    "/tmp/gh-issue-solver-1794900398048/experiments/agent_cli_e2e/issue_819_tui\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/bun\taudit --audit-level=moderate",
+    "/tmp/gh-issue-solver-1794900398048/packages/minimatch-compat\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/npm\taudit --package-lock-only --audit-level=moderate --fetch-timeout=30000 --fetch-retries=0",
+    "/tmp/gh-issue-solver-1794900398048/rust/tests/e2e\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/npm\taudit --package-lock-only --audit-level=moderate --fetch-timeout=30000 --fetch-retries=0",
+    "/tmp/gh-issue-solver-1794900398048/packages/source-cst-runtime\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/npm\taudit --package-lock-only --audit-level=moderate --fetch-timeout=30000 --fetch-retries=0",
+    "/tmp/gh-issue-solver-1794900398048/scripts/documentation-policy-dependencies\t/tmp/issue-1580-offline-audit-gate-4kcw_f41/npm\taudit --package-lock-only --audit-level=moderate --fetch-timeout=30000 --fetch-retries=0"
+  ]
+}

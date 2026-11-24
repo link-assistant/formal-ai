@@ -16,9 +16,9 @@ use std::error::Error;
 use std::fmt::{self, Write as _};
 use std::sync::OnceLock;
 
-use crate::engine::FormalAiEngine;
 use crate::seed::parser::parse_lino;
 use crate::seed::supported_languages;
+use crate::solver::{SolverConfig, UniversalSolver};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
 
 /// How many Google Trends topics issue #498 requires the system to answer.
@@ -341,14 +341,25 @@ pub fn answer_google_trends_catalog(mut catalog: GoogleTrendsCatalog) -> GoogleT
     catalog.topics.sort_by_key(|topic| topic.rank);
     catalog.topics.truncate(GOOGLE_TRENDS_TOP_LIMIT);
 
-    let engine = FormalAiEngine;
+    // A committed snapshot must not depend on the process-wide live-retrieval
+    // default. Keep the normal solver/standing-requirement path, with network
+    // access explicitly disabled for this deterministic catalog projection.
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
     for topic in &mut catalog.topics {
         topic.prompts = prompt_variants_for_topic(&topic.query);
         topic.answered = topic
             .prompts
             .iter()
             .map(|prompt| {
-                let answer = engine.answer(&prompt.prompt);
+                let answer = crate::dreaming_application::solve_with_standing_requirements(
+                    &solver,
+                    &prompt.prompt,
+                    &[],
+                    &[],
+                );
                 GoogleTrendPromptAnswer {
                     language: prompt.language.clone(),
                     variation_key: prompt.variation_key.clone(),

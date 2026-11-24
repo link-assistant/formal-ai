@@ -1,0 +1,1 @@
+Keep capability routing below the existing source warning threshold by extracting advertised-tool classification into an explicitly located module, preserving all original function bodies and parent entry points with scanner and module-path regression coverage.

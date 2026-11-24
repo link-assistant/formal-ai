@@ -1,0 +1,65 @@
+{
+  "sourceCommit": "a558f83430dd1b114839ca979a02a71730abfac9",
+  "run": 44999045010,
+  "job": 137136426355,
+  "failureLine": 2427,
+  "failure": "Bun 1.4.2 release download returned HTTP 403 after successful native compilation.",
+  "repair": "Reuse the existing verified Bun installer, with exactly two setup attempts and final exact-pin execution verification. Final install failure remains fatal.",
+  "tests": {
+    "installer": 7,
+    "nativeAdmission": 162
+  },
+  "priorLocalFailureRetained": "The first full admission attempt hit the existing 100ms node:vm deadline while local wrappers overlapped. A sequential full-file retry passes all 162 tests without changing deadlines.",
+  "hostedRetryVerified": false,
+  "autonomousAuthorshipCredit": 0,
+  "files": [
+    {
+      "file": "before.log.gz",
+      "bytes": 1144,
+      "sha256": "7ed394ae0c42046af669c6e7c0a36ea89c78fda43ed5565c8a2f7a33048264dc",
+      "gzipSHA256": "9188e35c97bf266e44ca9ff791bf3e9bfe62726c18f29eca35a3ef52552062ca"
+    },
+    {
+      "file": "before-exit.json.gz",
+      "bytes": 49,
+      "sha256": "e97bb2d65ca9b769472b69e7069db7f74cbf536ca856c372071123f1fc497362",
+      "gzipSHA256": "25963d6b4a68f470dcc428516e73d9ae5612464a7717161ce5b010359ede3ac4"
+    },
+    {
+      "file": "installer-after.log.gz",
+      "bytes": 717,
+      "sha256": "f5e3f5556e9a3c53b97767c7e013eb9e204fc21e184706bd6b4efbc9217a8f16",
+      "gzipSHA256": "92b2f8c729725b56dc4a1f50885554aaf4846b7daa51d503a5f177f77d370b0f"
+    },
+    {
+      "file": "native-admission-after.log.gz",
+      "bytes": 17037,
+      "sha256": "e41b5ccb8a9f19def3fb0d7891b102a7bcbf3a70112fa3e672ab02ede87aab81",
+      "gzipSHA256": "db18eee555483841f15de9e68742a33fabea54377e8a59350ce3ede9ffaef409"
+    },
+    {
+      "file": "native-admission-sequential-after.log.gz",
+      "bytes": 16010,
+      "sha256": "1ab00ae16cb68b446f802ad60f1770d3e39f8b9c2bad792c56843e9e518d3b92",
+      "gzipSHA256": "5436a5bcf405c626828eed1a7d68ffba0e474df6e51c7dc412b39b97f8ce1289"
+    },
+    {
+      "file": "native-admission-sequential-result.json.gz",
+      "bytes": 209,
+      "sha256": "190a19b94dc2433428474b1a7781e83a76eb108adec466935dc09d9fceddbc21",
+      "gzipSHA256": "c829a051badd024d4e6de7654df98da8c03c3cfd2b33c70c048c5595108d4900"
+    },
+    {
+      "file": "results.json.gz",
+      "bytes": 522,
+      "sha256": "da3e342333ccf4597103ae496d73ce056b580b55c425b0cce94b21bedb4cd9b0",
+      "gzipSHA256": "eeeeca7493f3e1e9086f63ba8635b3c3fc2bf1289def3b0c6195616488f60db7"
+    },
+    {
+      "file": "native-lint-early.log.gz",
+      "bytes": 234322,
+      "sha256": "bceed43e2a62603cc6a24f577331a83e9156a6a386c66bd222bc87a2ce6efd21",
+      "gzipSHA256": "689ac9ecb32696d0780f44fb565c1e4fa46b0525adbbc461ee80e798b5834919"
+    }
+  ]
+}

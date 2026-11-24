@@ -1,0 +1,53 @@
+{
+  "head": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+  "allRunsTerminal": true,
+  "collectionComplete": true,
+  "checkCount": 163,
+  "annotationCount": 25,
+  "diagnosticCount": 43,
+  "literalCompleteWorkflowReviewClaim": false,
+  "runCount": 33,
+  "conclusions": {
+    "success": 30,
+    "skipped": 1,
+    "failure": 2
+  },
+  "archiveIndexParts": [
+    {
+      "file": "runs-00.json",
+      "sha256": "cc7d0681abeba6406c68e287e6ecca18d06e90dca745fb08985e3f8a7152b9c8",
+      "records": 8
+    },
+    {
+      "file": "runs-01.json",
+      "sha256": "0d6993442e77f575b4475a2747ea6b5e2be3cb8c5a8439b7feb50c6a58d0f726",
+      "records": 8
+    },
+    {
+      "file": "runs-02.json",
+      "sha256": "8c27e94fbbca35eff5328c4f7c0ef31478e2f28f9ebff6caabcfe9b2d69b07a8",
+      "records": 8
+    },
+    {
+      "file": "runs-03.json",
+      "sha256": "f0cc613a43436bd3eaabc46ab8ccec16e97ef1dc950b566f013a32c07b050226",
+      "records": 8
+    },
+    {
+      "file": "runs-04.json",
+      "sha256": "c22b3c768c58ef28f5123f515572807aa637f84fd986a404b3bbed3d960aa142",
+      "records": 1
+    }
+  ],
+  "annotationLevels": {
+    "warning": 3,
+    "failure": 1,
+    "notice": 21
+  },
+  "allDiagnosticsClassified": true,
+  "allAnnotationsClassified": true,
+  "allNewRepairsHostedVerified": false,
+  "scopeNoticesAreExecutionCredit": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

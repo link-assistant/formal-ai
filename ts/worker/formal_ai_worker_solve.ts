@@ -1,4 +1,3 @@
-// Solve dispatch, handler registry, seed loading and worker initialization.
 // @worker-prerequisite js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
 function projectControlledAnswer(answer, config, options) { // Issue #1584: Rust `render_output` after `controlled_solve`.
   if (!answer || typeof answer.content !== "string" || answer.outputProjection?.content === answer.content) return answer;
@@ -35,14 +34,14 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
     // Issue #1584: a paraphrase directive re-renders the previous answer; otherwise the crate hook
     // (Rust `controlled_solve`) answers, clarifies or re-solves. Every draft goes through the procedure.
-    const draft = (text) => solveImpl(text, history, prefs, userContext, memory, options);
+    const draft = (text, draftOptions = options) => solveImpl(text, history, prefs, userContext, memory, draftOptions);
     const solved = turn.rewrite === null
       ? await cnl.controlledSolve(turn, history || [], draft)
       : {prompt, answer: {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, detectLanguage(turn.rewrite)),
         confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []}};
     prompt = solved.prompt;
     const answer = solved.answer;
-    const subTask = async (text) => metaResolveImpasse(text, await draft(text), prefs);
+    const subTask = async (text) => metaResolveImpasse(text, await draft(text, { ...options, metaSubTask: true }), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {
     setForcedResponseLanguage(previousForced);
@@ -842,7 +841,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }
   }
   steps.push({ step: "invoke_tool", detail: "unknown_intent_research" });
-  const researchedUnknown = await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
+  // Issue #1580: a #1550 sub-task is a speculative candidate; it never researches the web or learns from it.
+  const researchedUnknown = options.metaSubTask ? null : await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
   const researchedSources = researchedUnknown?.diagnostics?.fused;
   if (Array.isArray(researchedSources) && researchedSources.length > 0) {
     const associationId = associativeResearchId(prompt);
@@ -864,69 +864,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
-    intent: "unknown",
+    intent: validation?.answer ? NUMBER_PROPERTY_PRIME_SLUG : "unknown",
     content: validation?.answer ?? unresolved?.content ?? unknownAnswerWithVariation(prompt, language),
     confidence: validation?.answer ? 1 : unresolved ? 0 : 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
     solverEvents: [{ kind: "search:external", payload: prompt }, ...(validation?.events || []), ...(unresolved?.events || [])], // observed research and candidate checks
   }, formalizationContext);
-}
-function finalize(events, steps, toolCalls, answer, formalizationContext) {
-  // Issue #1173 R5: no answer may be the canned search-machinery description.
-  answer = guardCannedWebSearchAnswer(
-    answer,
-    (formalizationContext && formalizationContext.language) || "en",
-  );
-  const interpretations = collectInterpretations(formalizationContext, answer);
-  answer = applyVisibleInterpretations(answer, interpretations);
-  applyResolvedFormalization(events, steps, formalizationContext, answer);
-  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
-  const projection = deformalizeProjection(formalizationContext, answer);
-  events.push(`deformalize:${projection.tuple}:${projection.intent}`);
-  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
-  // diagnostics panel; `answer` carries the clean composed answer so the
-  // human-readable thinking preview can show "Compose the answer: …" (issue
-  // #488) without leaking the tuple.
-  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
-  steps.push({
-    step: "deformalize",
-    detail: projection.summary,
-    projection,
-    answer: answerFirstLine,
-  });
-  const trace = events.map((event) => `trace:${event}`);
-  const result = {
-    intent: answer.intent,
-    content: answer.content,
-    confidence: answer.confidence,
-    evidence: [...evidence, ...trace],
-    steps: withThinkingLevels(steps),
-    toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
-  };
-  if (formalizationContext?.initial) {
-    const preceding = formalizationContext.solverEvents;
-    const traced = preceding ? { ...answer, solverEvents: [...preceding, ...(answer.solverEvents || [])] } : answer;
-    recordSolverEventLog(result, formalizationContext.initial.raw, traced); // R1013
-  }
-  if (formalizationContext && formalizationContext.meta) {
-    result.derivation = formalizationContext.meta.derivationLino;
-  }
-  if (answer.iframeUrl) {
-    result.iframeUrl = answer.iframeUrl;
-  }
-  if (answer.diagnostics) {
-    result.diagnostics = answer.diagnostics;
-  }
-  if (answer.programExecution) {
-    result.programExecution = answer.programExecution; // R1013
-  }
-  if (answer.synthesizedProgram) result.synthesizedProgram = answer.synthesizedProgram;
-  // Issue #529: carry a natural-language memory write (append/substitution) out
-  // to the app so it can apply the read+write transform to persistent storage.
-  if (answer.memoryOperation) {
-    result.memoryOperation = answer.memoryOperation;
-  }
-  return result;
 }
 // Issue #1138 B9, plan 09 leaves 13-15: the browser worker resolves its
 // specialized handlers under the same name-keyed vocabulary the seed owns.

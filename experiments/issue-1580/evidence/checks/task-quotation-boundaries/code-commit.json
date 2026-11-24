@@ -1,0 +1,36 @@
+{
+  "commit": "13c2763ce9f7c31d9c36d9efd3e0f023899566e5",
+  "files": [
+    "changelog.d/20261117_120000_issue-1580-ci-regressions.md",
+    "data/meta/translation-blockers.lino",
+    "data/seed/text-formalization.lino",
+    "js/agentic/crate/meta_executor.mjs",
+    "js/worker/formal_ai_worker_crate_meta_executor.js",
+    "rust/embedded/data/seed/text-formalization.lino",
+    "rust/src/meta_executor.rs",
+    "rust/tests/fixtures/js-rust-translation/crate/meta_executor.rs",
+    "rust/tests/fixtures/meta-executor-parity.json",
+    "rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs",
+    "rust/tests/web/issue-1550-meta-executor.test.mjs",
+    "ts/agentic/crate/meta_executor.mts",
+    "ts/worker/formal_ai_worker_crate_meta_executor.ts"
+  ],
+  "sourceHashes": {
+    "changelog.d/20261117_120000_issue-1580-ci-regressions.md": "d14a8258fefd057572a53d01f6c35a72e5ba71deb497e6439d24b34e3f083cf2",
+    "data/meta/translation-blockers.lino": "28b1d7435337f255c1017535f1d5e4596bf556266ffb76c126312788aafdf520",
+    "data/seed/text-formalization.lino": "3e255ff0e1b4a086a801febde771e289fb4fb0044e0af422ad51ffc413c6b0b4",
+    "js/agentic/crate/meta_executor.mjs": "783972598de9f153c1efa1dd08a28fb3bcc2457164d2eafd79308e9599be67bd",
+    "js/worker/formal_ai_worker_crate_meta_executor.js": "75d9007f5a9504cabcbbc48c4df33755b9c073ca2253de69730a2e343e8f3075",
+    "rust/embedded/data/seed/text-formalization.lino": "3e255ff0e1b4a086a801febde771e289fb4fb0044e0af422ad51ffc413c6b0b4",
+    "rust/src/meta_executor.rs": "27511580c6fcf85250a2ff06d384335eb27ca7da8c86d5d7a8285bb47b16dec5",
+    "rust/tests/fixtures/js-rust-translation/crate/meta_executor.rs": "d7152a9e360165ffb93cf1e9784ce85489ecb6c4cefa8ccac76937cecb09bad8",
+    "rust/tests/fixtures/meta-executor-parity.json": "0657136c9c6a0b378192d6742dc4dbffe9c5bd520bfeedaa2b5c9b9b43384d7e",
+    "rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs": "01429da4d3805ac69070aa9de83472fda9303b6fc2c324701ec49d0648e58bd2",
+    "rust/tests/web/issue-1550-meta-executor.test.mjs": "c8a2d9a656b22293f45451dc5c03f81a442b451b25e2bd53e71fe9e4c11ec67d",
+    "ts/agentic/crate/meta_executor.mts": "783972598de9f153c1efa1dd08a28fb3bcc2457164d2eafd79308e9599be67bd",
+    "ts/worker/formal_ai_worker_crate_meta_executor.ts": "75d9007f5a9504cabcbbc48c4df33755b9c073ca2253de69730a2e343e8f3075"
+  },
+  "localValidationComplete": true,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0
+}

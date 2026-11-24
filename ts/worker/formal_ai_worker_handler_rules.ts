@@ -12,7 +12,7 @@
 // formal_ai_worker_handler_rule_values.js.
 
 /**
- * Tokens of one rule line: whitespace-separated, quotes keep spaces.
+ * Tokens of one rule line: quotes keep spaces; a reference group stays one operand.
  * @param {string} line
  * @returns {string[]}
  */
@@ -20,14 +20,25 @@ function handlerRulesTokenize(line) {
   const tokens = [];
   let current = "";
   let quote = "";
+  let depth = 0;
   for (const character of Array.from(line)) {
     if (quote !== "" && character === quote) {
       quote = "";
-      tokens.push(current);
-      current = "";
+      if (depth > 0) current += character;
+      else {
+        tokens.push(current);
+        current = "";
+      }
     } else if (quote === "" && (character === '"' || character === "'")) {
       quote = character;
-    } else if (quote === "" && /\s/u.test(character)) {
+      if (depth > 0) current += character;
+    } else if (quote === "" && character === "(") {
+      depth += 1;
+      current += character;
+    } else if (quote === "" && character === ")" && depth > 0) {
+      depth -= 1;
+      current += character;
+    } else if (quote === "" && depth === 0 && /\s/u.test(character)) {
       if (current !== "") {
         tokens.push(current);
         current = "";

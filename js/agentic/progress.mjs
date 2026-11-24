@@ -4,6 +4,7 @@ import {
   creationReadbackFor as creationReadback,
   ownedCreationDeclarations as creationDeclarations,
   postMutationReadStateFor as mutationReadState,
+  projectedCreationPath,
   freshSourceReadAttemptFor as freshReadAttempt,
   sourceReadBeforeLatestMutationFor as mutationPreimage,
   readOnlyAttempt,
@@ -399,16 +400,25 @@ export class Progress {
     return observed?.error === null && observed.complete && typeof observed.source === 'string' ? observed : null;
   }
 
+  projectedSourcePath(path) {
+    return projectedCreationPath(path, creationProgressContexts.get(this)?.hostRoot ?? null);
+  }
+
+  matchesWorkspaceSourcePath(argumentsText, path) {
+    const observed = sourceReadPath(argumentsText);
+    return observed !== null && (observed === path || observed === this.projectedSourcePath(path));
+  }
+
   attemptedMutationFor(path, capability) {
     return (qualifiedProgressFrames.get(this) ?? []).some(frame => frame.capability === capability
-      && sourceReadPath(frame.arguments) === path);
+      && this.matchesWorkspaceSourcePath(frame.arguments, path));
   }
 
   sourceReadBeforeLatestMutationFor(path, capability) {
     const attempt = mutationPreimage(this, path, capability, qualifiedCommandAttempt, sourceReadPath);
     if (attempt === null) return null;
     const mutation = this.attempts.findLast(item => item.capability === capability
-      && item.arguments !== null && sourceReadPath(item.arguments) === path);
+      && item.arguments !== null && this.matchesWorkspaceSourcePath(item.arguments, path));
     const frames = qualifiedProgressFrames.get(this) ?? [];
     const matches = (frame, item) => frame.capability === item.capability && frame.declaredTool === item.tool
       && frame.detail === (item.raw_receipt ?? item.detail) && argumentValuesEqual(frame.argumentsValue, JSON.parse(item.arguments));

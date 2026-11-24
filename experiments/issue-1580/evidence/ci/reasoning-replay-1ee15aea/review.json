@@ -1,0 +1,51 @@
+{
+  "head": "1ee15aea8e4d25fd80fc0cb323bd6edd99e62c10",
+  "observedAt": "2026-11-19T14:45:30.284186+00:00",
+  "allWorkflowsComplete": true,
+  "workflows": 23,
+  "successfulWorkflows": 22,
+  "failedWorkflow": 44428448019,
+  "failedJob": 135239424756,
+  "nativeRun": 44428448154,
+  "nativeJob": 135239553435,
+  "nativePassed": 128,
+  "nativeFailed": 0,
+  "nativeHttpPassed": 4,
+  "reasoningCasesPassed": 28,
+  "operationalCasesPassed": 4,
+  "payloadsVerified": 22,
+  "nativeLogRawSha256": "0d6fdf23c4273087ada061c91d97af8a098b9acd726dfff2df1bf9d33cd48487",
+  "failedLogRawSha256": "a9623689ddbe27b8d82b28b46904d452f7e581b49b73f550ee4d45c72716c227",
+  "literalReview": {
+    "nativeSpans": [
+      [
+        1620,
+        2111
+      ]
+    ],
+    "failedJavaScriptSpans": [
+      [
+        4470,
+        4645
+      ]
+    ],
+    "fullNativeLog": false,
+    "fullFailedWorkflowLog": false
+  },
+  "actionableFailures": [
+    {
+      "file": "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+      "line": 4509,
+      "source": "stale governed Cargo source fixture hash"
+    },
+    {
+      "file": "rust/tests/web/rust-specification-fixture-integrity.test.mjs",
+      "line": 4616,
+      "source": "same stale governed Cargo source fixture hash"
+    }
+  ],
+  "sourceFailureCount": 2,
+  "localRepair": "Maintained explicit reviewed-baseline writer; complete deep comparison permits only four references to the current Cargo fixture SHA, preserving every case and native source manifest. Before/after regressions and full local gates are collected separately.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

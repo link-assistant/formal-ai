@@ -1,4 +1,12 @@
 meanings
+  cache-request-prefix
+    defined-by concept
+    role request-prefix
+    precondition "The complete request starts with an authored public-cache instruction cue."
+    effect "Removes only that leading cue and binds the entire remaining subject to an exact cached concept surface."
+    unit "not applicable"
+    example "Use cached public knowledge about WebAssembly binds WebAssembly; an operative request containing about grants no cache instruction."
+    grounding "src/solver_unknown_reasoning.rs::cached_public_request_subject"
   concept_lookup_unresolved
     defined-by output
     role output_display_request

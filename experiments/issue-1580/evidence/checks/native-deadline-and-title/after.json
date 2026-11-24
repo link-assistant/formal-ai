@@ -1,0 +1,126 @@
+{
+  "complete": true,
+  "sourceHead": "37bcbb2a1b2ea635a0f935f6da69241bcbbfd0c8",
+  "nativeExecutedLocally": false,
+  "results": [
+    {
+      "name": "default-branch-build-policy.test",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.073,
+      "log": "default-branch-build-policy.test.log.gz",
+      "archiveSha256": "cb214e9c44107850f1e72800051db202c6a0156694a0e239c7333bef66643cba",
+      "rawSha256": "6634be62e4ac161b1f47bdb16c7e52725ed3cfb445dbf8c134ee0c1bf0da3fa6"
+    },
+    {
+      "name": "source-walk-offline-policy.test",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/source-walk-offline-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 17.991,
+      "log": "source-walk-offline-policy.test.log.gz",
+      "archiveSha256": "eed49fd122b915606334cb376ee03eadab30eea2ab87e91abf2868392412e097",
+      "rawSha256": "a7885fe827538290a209541e1c3721c5694c87b7c357d86268c2fab280bbc6ad"
+    },
+    {
+      "name": "issue-991-how-to-synthesis.test",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 18.352,
+      "log": "issue-991-how-to-synthesis.test.log.gz",
+      "archiveSha256": "8d41bc91e200623d4ae491387f975e98e44549f01ea55de8d008f45e2fb27f36",
+      "rawSha256": "13ba7ce6e5f6f6806f1fbafddf297b410016264e7325cde7e305aeed98941124"
+    },
+    {
+      "name": "focused-test-map.test",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.837,
+      "log": "focused-test-map.test.log.gz",
+      "archiveSha256": "245fc65fe9738384368d41d70c0fcdf0ba04e48eaaeeef8ba72e0afb0c535fb8",
+      "rawSha256": "09e002663828b9495b627fcf5f92169180b0a159d59ed9867ca8d61f3ef64dfe"
+    },
+    {
+      "name": "rust-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/source_walk.rs",
+        "rust/tests/unit/reasoning_contracts.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.229,
+      "log": "rust-format.log.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "affected-gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-runner-labels,check-ci-speed,check-hardcoded-language-js-twin,check-worker-line-budget-js-twin,check-worker-line-budget,check-worker-crate-modules,check-worker-prerequisites,check-worker-handler-registry"
+      ],
+      "exitCode": 1,
+      "seconds": 48.247,
+      "log": "affected-gates.log.gz",
+      "archiveSha256": "0abeb2e4b0e37d677b4ae01f800e71f822afeb54a56ec9d8e803de04f5a67d9f",
+      "rawSha256": "fe3b4eefba52a1cdbb12fe581cd9d701f7bcb47d51f332f7a2615fd03810f45c"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.21,
+      "log": "whitespace.log.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "fullIssueComplete": false,
+  "allPassed": false,
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "0af06839dda1b638eb4a990d92199981aa518946a0e7dba2dbdb6091362b2270",
+    "rust/src/source_walk.rs": "c540a67f63609cb231e7b3b56beadd4cfa584b7643d0857a3ece04a3631c5a30",
+    "js/worker/formal_ai_worker_source_endpoints.js": "ca93a82cffb60044671ea4d058da28aafa6169edeb98cabb7af2a63cb7a6c301",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "b3616477a84e3a1d88bda17e95310f83d6591fecb3a721a5c99a75cc30d0f1af",
+    "rust/tests/web/source-walk-offline-policy.test.mjs": "81101a3a9c89cf1c6c0aa84689f589c08a8106fb90df505af6ad91cebb9d0775",
+    "rust/tests/web/issue-991-how-to-synthesis.test.mjs": "cfc361b867b7abd46e9dc14d66c89c6ff59a1774cb7ceb711c37443586c24e86",
+    "rust/tests/web/focused-test-map.test.mjs": "57d66671336b580ea4052c8d3dce09b2cc4dcda4a9f0b2e242c6aa4a61f6a83a",
+    "changelog.d/issue-1580-native-deadline-and-title.md": "370337473fe6a31ff5d26ff94cf045d9c1afa901a210b142206ccaa614d59fc7"
+  }
+}

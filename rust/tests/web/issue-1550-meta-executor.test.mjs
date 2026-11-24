@@ -11,19 +11,31 @@ import { before, test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { TASK_CUE_CASES } from './helpers/issue-1580-task-cue-cases.mjs';
 
 let CASES;
+let quotationCases;
 let replayCase;
 let executor;
 const fixture = JSON.parse(
   readFileSync(new URL('../fixtures/meta-executor-parity.json', import.meta.url), 'utf8'),
 );
+const statusFixture = JSON.parse(
+  readFileSync(new URL('../fixtures/meta-executor-status-parity.json', import.meta.url), 'utf8'),
+);
+assert.equal(statusFixture.schema, fixture.schema);
+fixture.cases.push(...statusFixture.cases);
+const cueFixture = JSON.parse(
+  readFileSync(new URL('../fixtures/meta-executor-cue-parity.json', import.meta.url), 'utf8'),
+);
+assert.equal(cueFixture.schema, fixture.schema);
+fixture.cases.push(...cueFixture.cases);
 const named = (name) => fixture.cases.find((entry) => entry.name === name);
 const kinds = (events) => events.map((event) => event.split(' ')[0]);
 
 before(async () => {
   await installNodeHost(new WorkerHost());
-  ({ CASES, replayCase } = await import('./helpers/issue-1550-meta-executor-cases.mjs'));
+  ({ CASES, QUOTATION_CASES: quotationCases, replayCase } = await import('./helpers/issue-1550-meta-executor-cases.mjs'));
   executor = await import('../../../js/agentic/crate/meta_executor.mjs');
 });
 
@@ -117,3 +129,93 @@ test('the split reads its connectives from the grammar, not from code', () => {
   assert.deepEqual(executor.decompositionRelations(), ['sequence', 'alternative', 'aggregation']);
   assert.deepEqual(executor.splitRequest('A and then B', 'en'), { relation: 'sequence', parts: ['A', 'B'] });
 });
+
+test('ASCII quoted connectives stay in their task while apostrophes and escaped quotes keep their boundaries', () => {
+  for (const [name, text, relation, parts, language = 'en'] of quotationCases) {
+    assert.deepEqual(executor.splitRequest(text, language), { relation, parts }, name);
+    const expected = named(name).expected;
+    assert.equal(expected.shape, `${relation}(leaf,leaf)`, name);
+    assert.deepEqual(expected.leaves, parts, name);
+    assert.equal(expected.status, 'resolved', name);
+  }
+});
+
+test('unverified drafts cannot satisfy a leaf test or complete an all-required parent', async () => {
+  for (const name of ['unverified-program-leaf', 'unverified-program-child', 'unverified-program-cache']) {
+    assert.equal(named(name).expected.status, 'unresolved', name);
+    assert.equal(named(name).expected.content, null, name);
+  }
+  assert.equal(named('verified-program-child').expected.status, 'resolved');
+  for (const intent of [
+    'meta_reasoned_program_unverified',
+    'coding_workspace_written_unverified',
+    'general_plan_unverified',
+  ]) {
+    assert.equal(executor.answerValidation(intent, 'A nonempty draft'), `answered(${intent})=false`, intent);
+  }
+  for (const intent of ['meta_reasoned_program_unverified', 'meta_reasoned_program']) {
+    const run = await executor.executeProcedure({ text: 'First task and second task', language: 'en' }, {
+      cached: async () => null,
+      draft: async (text) => text === 'First task'
+        ? { intent, content: 'A nonempty program', confidence: 1 }
+        : text === 'second task'
+          ? { intent: 'answered', content: 'Second result', confidence: 1 }
+          : null,
+    });
+    assert.equal(run.outcome.status, intent.endsWith('_unverified') ? 'unresolved' : 'resolved', intent);
+  }
+});
+
+test('selected children retain their evidence through composition, caching and answer adoption', async () => {
+  const shared = 'source:shared';
+  const first = { intent: 'answered', content: 'First result', confidence: 0.9,
+    evidence: ['source:first', shared] };
+  const second = { intent: 'answered', content: 'Second result', confidence: 0.8,
+    evidence: ['source:second', shared] };
+  const root = { intent: 'unknown', content: '', confidence: 0,
+    evidence: ['source:unselected-root'] };
+  const before = JSON.stringify([root, first, second]);
+  const solve = async (text) => text === 'First task' ? first : second;
+  const result = await executor.solveAnswer({ text: 'First task and second task', language: 'en' }, root, solve);
+  assert.equal(result.run.outcome.candidate.method, 'composition');
+  assert.deepEqual(result.run.outcome.candidate.evidence, ['source:first', shared, 'source:second']);
+  assert.deepEqual(result.answer.evidence, ['source:first', shared, 'source:second']);
+  const remembered = await executor.executeProcedure({ text: 'First task and second task', language: 'en' }, {
+    draft: async () => null,
+    cached: async (text) => text.includes(' and ') ? result.run.outcome.candidate : null,
+  }, { bounds: { depth: 0 } });
+  assert.equal(remembered.outcome.candidate.method, 'cache');
+  assert.deepEqual(remembered.outcome.candidate.evidence, result.answer.evidence);
+  assert.deepEqual(remembered.outcome.candidate.source.evidence, result.answer.evidence);
+  assert.equal(JSON.stringify([root, first, second]), before, 'never mutate host evidence');
+});
+
+test('alternative composition keeps only the selected child evidence', async () => {
+  const result = await executor.solveAnswer({ text: 'First task or second task', language: 'en' },
+    { intent: 'unknown', content: '', confidence: 0, evidence: ['source:root'] },
+    async (text) => ({ intent: 'answered', content: text, confidence: 1, evidence: ['source:' + text] }));
+  assert.equal(result.run.outcome.candidate.method, 'composition');
+  assert.equal(result.answer.content, 'First task');
+  assert.deepEqual(result.answer.evidence, ['source:First task']);
+});
+
+test('a direct answer retains its evidence and rejected children cannot supply adopted provenance', async () => {
+  const direct = { intent: 'answered', content: 'Complete root', confidence: 1, evidence: ['source:root'] };
+  const result = await executor.solveAnswer({ text: 'First task and second task', language: 'en' }, direct,
+    async () => ({ intent: 'unknown', content: '', confidence: 0, evidence: ['source:rejected'] }));
+  assert.equal(result.run.outcome.status, 'unresolved');
+  assert.deepEqual(result.answer.evidence, direct.evidence);
+  const atomic = await executor.solveAnswer({ text: 'Atomic request', language: 'en' }, direct, async () => null);
+  assert.equal(atomic.run.outcome.candidate.method, 'derivation');
+  assert.deepEqual(atomic.run.outcome.candidate.source.evidence, direct.evidence);
+  assert.deepEqual(atomic.answer.evidence, direct.evidence);
+});
+
+for (const [name, text, language, parts] of TASK_CUE_CASES) {
+  test(`quoted-passage cue boundaries: ${name}`, () => {
+    assert.deepEqual(executor.splitRequest(text, language),
+      parts ? { relation: 'aggregation', parts } : null);
+    const root = executor.planTasks(text, language, executor.decompositionBounds());
+    assert.deepEqual(executor.taskLeaves(root), parts ?? [text]);
+  });
+}

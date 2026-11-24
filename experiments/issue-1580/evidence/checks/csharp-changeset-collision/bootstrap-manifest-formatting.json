@@ -1,0 +1,24 @@
+{
+  "reason": "Formatting only: one bootstrap file record per line preserves all manifest entries and hashes without changing the maintained file limit.",
+  "beforeLines": 1576,
+  "afterLines": 320,
+  "beforeSha256": "793e07f2ce56214c6919b3c3777c12e5ff602e1dbd634bb9194c94d30aabe451",
+  "afterSha256": "e3939f20153738554d52e2252e8ac01cb0ba484ca171f1416e052b632a9af4b0",
+  "preservedFiles": 314,
+  "structurallyIdentical": true,
+  "logs": [
+    {
+      "file": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/bootstrap-manifest-size-failure.log.gz",
+      "source": "experiments/formal_ai_subagent/sandboxes/gates/check-file-size.log",
+      "sourceBytes": 48761,
+      "sourceSha256": "7bfc79f36a8e0270c6703e4459735cc3d13724d48be549a3758800ed85ddcb8c"
+    },
+    {
+      "file": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/archive-check-file-size-failed.log.gz",
+      "source": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/archive-check-file-size.log.gz",
+      "sourceBytes": 132,
+      "sourceSha256": "e4974b3fcca20d36d780e06bcfba3df445fdb4295eae17e1a580ebd25334d2bb"
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

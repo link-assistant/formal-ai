@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "sourceUnchangedDuringValidation": true,
+  "payloadsHashVerified": 97,
+  "focusedTests": 60,
+  "gateCounts": {
+    "PASS": 86,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "literalReadScope": "All eleven aggregate/focused logs were displayed completely in one bounded read each. Every retained detailed gate payload hash was verified; detailed passing logs were not all literally read.",
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

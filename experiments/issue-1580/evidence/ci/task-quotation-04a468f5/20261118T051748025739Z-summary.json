@@ -1,0 +1,256 @@
+{
+  "observedAt": "20261118T051748025739Z",
+  "head": "04a468f53549f0825999c1dd9e53210476723106",
+  "runCount": 23,
+  "completedSuccessful": 21,
+  "nonPassingCompleted": [
+    {
+      "id": 44242408037,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "updatedAt": "2026-11-18T05:14:34Z"
+    },
+    {
+      "id": 44242407754,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "updatedAt": "2026-11-18T05:17:33Z"
+    }
+  ],
+  "active": [],
+  "allRuns": [
+    {
+      "id": 44242407886,
+      "name": "Desktop Release",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:10:58Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407918,
+      "name": "Self-hosting evidence",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:10:56Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407839,
+      "name": "Benchmark Corpus Gate",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:10:57Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407825,
+      "name": "Regenerate native session projections",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:10:57Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407765,
+      "name": "Proactive failure report Agent CLI E2E",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:10:56Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407907,
+      "name": "External Benchmarks",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:10:58Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407879,
+      "name": "Documentation policy",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:00Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407996,
+      "name": "Self-development status",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:01Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242408107,
+      "name": "Verify full readable source content",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:02Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407849,
+      "name": "Coverage",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:02Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407726,
+      "name": "Broken Link Checker",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:03Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407997,
+      "name": "container-images",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:03Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407717,
+      "name": "Agentic CLI Matrix",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:01Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407607,
+      "name": "Publish browser engine",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:03Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407878,
+      "name": "Stock Rust Install",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:00Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407908,
+      "name": "Guarded staged release authority refusal",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:06Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407692,
+      "name": "Publish source networks",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:07Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407702,
+      "name": "Publish VS Code extension",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:11Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407656,
+      "name": "Workflows",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:25Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407645,
+      "name": "Security",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:23Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242407618,
+      "name": "Source scanner qualification and debt inventory",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:11:41Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44242408037,
+      "name": "CI/CD Pipeline",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:14:34Z",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 44242407754,
+      "name": "Layered CI",
+      "createdAt": "2026-11-18T05:10:50Z",
+      "updatedAt": "2026-11-18T05:17:33Z",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "records": [
+    {
+      "label": "recent-runs",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,conclusion,createdAt,headSha"
+      ],
+      "rawBytes": 692,
+      "rawSha256": "55039b95adb07bcc5e92bb848ac3d9fea274f3f5f6065849e13e80ca3f60de71"
+    },
+    {
+      "label": "all-runs",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs?branch=issue-1580-8d61a32a61e1&per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "rawBytes": 7886719,
+      "rawSha256": "75bb756a8450212547978fb21aee1874fc6082e8fb75a2892f2b4a1060f7805f"
+    },
+    {
+      "label": "checks",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "headRefOid,statusCheckRollup,isDraft"
+      ],
+      "rawBytes": 36402,
+      "rawSha256": "4fc3829c9ca724c1b0a1d4a6b061368e42761fdc252556355775c1121748df64"
+    }
+  ],
+  "scopeGatedSuccessIsNativeAcceptance": false,
+  "independentAuthorshipCredit": 0
+}

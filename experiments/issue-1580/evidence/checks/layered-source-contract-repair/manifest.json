@@ -1,0 +1,98 @@
+{
+  "at": "2026-11-22T16:00:17.263351+00:00",
+  "files": [
+    {
+      "source": "layered-source-contract-repair/actual-fragment-call.log",
+      "file": "record-0001.gz",
+      "bytes": 0,
+      "newlines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "layered-source-contract-repair/counterpart-locations.log",
+      "file": "record-0002.gz",
+      "bytes": 772,
+      "newlines": 6,
+      "sha256": "d1dc00359ed228f3dcca428cabcc0d5529d53fa51c48c5812fb698f46b88e665",
+      "compressedSha256": "d4e593b1c327eaa5324873473ded6a364b3e88e1e6d3f5a5b9a132db7ab1aafe"
+    },
+    {
+      "source": "layered-source-contract-repair/full-default-javascript-profile.test-before.log",
+      "file": "record-0003.gz",
+      "bytes": 1353,
+      "newlines": 47,
+      "sha256": "b0f7588f8adbb308f0e5162dccc9451c2c82be0a1e640ab5494be7020c8f7f7e",
+      "compressedSha256": "901ed866e259c519d8738a808b2ff826a703287c8af4c17e5b628d23c1a8206e"
+    },
+    {
+      "source": "layered-source-contract-repair/full-default-javascript-profile.test-corrected.log",
+      "file": "record-0004.gz",
+      "bytes": 327,
+      "newlines": 10,
+      "sha256": "f84b33eec058861137c29d252e8225e1c4a67627c32cd750901525ee6e834746",
+      "compressedSha256": "77349a72f99698e4e5c1534371afcbe0c009f734e37b13fecb98c2a7b0cada3b"
+    },
+    {
+      "source": "layered-source-contract-repair/release-pending-pipeline.test-after.log",
+      "file": "record-0005.gz",
+      "bytes": 24203,
+      "newlines": 294,
+      "sha256": "0b8d25c7c0684a6353009cfef68742dc876c09c158a849f04efecc784e1190b0",
+      "compressedSha256": "692d865ed93ea67ba01b92906496ec5b7872fcbf906c466a4b0b12d8202e18a2"
+    },
+    {
+      "source": "layered-source-contract-repair/release-pending-pipeline.test-before.log",
+      "file": "record-0006.gz",
+      "bytes": 24204,
+      "newlines": 294,
+      "sha256": "c34f885faffa189b0e5e2b025c99bf258c4cf988f9952539040bc2848f1a5117",
+      "compressedSha256": "d40f0bc2ea7fd5aa6ffd6adbea0b93f0c9b015b98b056282d069f52c41ec9eb1"
+    },
+    {
+      "source": "layered-source-contract-repair/release-pending-pipeline.test-corrected.log",
+      "file": "record-0007.gz",
+      "bytes": 377,
+      "newlines": 11,
+      "sha256": "1bc76e1dee2ed3083eb71223205922c5b4e9112c87518ddfc1236573d5dbb7be",
+      "compressedSha256": "5feb0f8d7d4c2d8388f26398657e7a9702a49f3951f3e90eff8a4051184bf14b"
+    },
+    {
+      "source": "layered-source-contract-repair/outcome.json",
+      "file": "record-0008.gz",
+      "bytes": 451,
+      "newlines": 17,
+      "sha256": "2eb59e1cd1d4abed5dc695a433490cfb50cbc25baaef1b9d8a661074abffb0b8",
+      "compressedSha256": "b85c833a7be83be12ac8ebd87d76eca9a266e0a23b7da10091981a034e85c03e"
+    },
+    {
+      "source": "terminal-candidate-hosted/45039178952.log",
+      "file": "record-0009.gz",
+      "bytes": 5047050,
+      "newlines": 26980,
+      "sha256": "00f4a630bf5ec5e6f939ab39a6daa9a5cb667db4640be69352cf9dc49887ef02",
+      "compressedSha256": "eb3a814493041c064107e27d86b0a0dcc93f4d8d6fd715369b73adc6b31bef16"
+    },
+    {
+      "source": "terminal-candidate-hosted/45039178952-run.json",
+      "file": "record-0010.gz",
+      "bytes": 13116,
+      "newlines": 0,
+      "sha256": "79feb4c665bc9450fbbca763dbd5931601483efc66a67823c1494a62c8f1e19e",
+      "compressedSha256": "86c59bdb73a89c00b7845b21996a72a37a4b2959f5d7ab5654b44aa0ff7c21a1"
+    },
+    {
+      "source": "terminal-candidate-hosted/45039178952-jobs.json",
+      "file": "record-0011.gz",
+      "bytes": 64837,
+      "newlines": 0,
+      "sha256": "0d0a4a85c4285a2cb6c6bca9ef28e202837cd4fbd7f143035cb7df0a6edd7296",
+      "compressedSha256": "6b1a30bbc8d75614519758614004843fc9680c5a1f47cd9ceb2c81ce0773adeb"
+    }
+  ],
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0,
+  "hostedSource": "b8383d52b10fb8be79f8fe7e42944b88343a07dc",
+  "nativeBuild": false,
+  "hostedVerificationPending": true
+}

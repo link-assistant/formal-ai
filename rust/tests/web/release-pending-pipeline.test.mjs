@@ -35,11 +35,14 @@ test("the detector counts a waiting fragment on main as a pipeline change", () =
   assert.match(pending, /event_name == "push"/);
   assert.match(pending, /git_ref == "refs\/heads\/main"/);
   assert.match(pending, /name != "README\.md"/);
-  assert.match(detector, /fs::read_dir\("changelog\.d"\)/);
+  // The checked inventory helper receives the maintained fragment directory.
+  // Its fallible call preserves read errors instead of reporting no fragments.
+  assert.match(detector, /fs::read_dir\(directory\)/);
+  assert.match(detector, /changelog_fragments\(Path::new\("changelog\.d"\)\)\?/);
   assert.match(detector, /env::var\("RELEASE_PIPELINE"\)/);
   assert.match(detector, /if flags\.any_code_changed \|\| pending \{/);
   assert.match(detector, /set_output\("release-pending"/);
-  assert.match(detector, /&& automatic_release_pending\(/);
+  assert.match(detector, /automatic_release_pending\(\s*&event,\s*&git_ref,\s*&changelog_fragments\(Path::new\("changelog\.d"\)\)\?,\s*&changed_files,\s*\)/);
   assert.match(detector, /any\(\|path\| !is_documentation_path\(path\)\)/);
 });
 

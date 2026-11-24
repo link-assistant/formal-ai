@@ -2,10 +2,11 @@
 
 Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
 
-- PRs and checks dispatched on feature branches run essential Linux JavaScript
-  unit, coding, question-answering, reporting, policy and security checks. They
-  never compile Cargo packages, Docker images, WASM or applications, and never
-  deploy Pages. The old FORMAL_AI_FULL_PR_CI variable cannot override this rule.
+- PRs and checks dispatched on feature branches run the complete default Linux
+  JavaScript unit suite, including coding, question-answering, reporting, policy
+  and security checks. They
+  never compile production Cargo packages, Docker images, WASM or applications,
+  and never deploy Pages, except for the explicit focused maintenance exceptions below. The old FORMAL_AI_FULL_PR_CI variable cannot override this rule.
 - One focused exception (#1191): `native-type-check` in release.yml calls
   native-type-check.yml, which runs
   `bash scripts/ci-clippy-profile.sh --library-and-binaries`, main's clippy deny
@@ -13,23 +14,49 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   (rust/src, build.rs, manifests, embedded data, toolchain, either workflow or any
   unknown path). PR #1497 passed every PR check, then main failed with E0308
   and later with clippy::manual_contains, because JavaScript cannot see Rust
-  types or lints. Issue #1589 additionally runs the isolated calendar_currency
-  regression target against the shared worker/native acceptance fixtures in this
-  existing job, with two compiler jobs. Issue #1584 adds the isolated cnl_output
-  and cnl_parity targets to the same step, so
-  the native controlled-language engine runs against the JavaScript parity
-  fixtures before merge. Issue #1604 reuses the native binary from that step to
-  verify dynamic meta authorization and transaction receipts through the native
-  gateway. Its JavaScript host uses the frozen Bun lockfile with lifecycle
-  scripts disabled. Issue #1613 gives both Cargo test steps
-  the same optimized profile so they share a build, then runs the container
-  smoke script against that native executable and isolated application state.
-  The focused job does not produce release evidence. Full
-  suites and product builds remain on main. The job uploads and attests nothing,
-  saves no cache and publishes no outputs.
-  Docs-only, JS-only, test-only and script-only PRs skip it. Its selector is
+  types or lints. The same job runs six isolated regression targets:
+  `calendar_currency` (#1589), `openai_forced_functions` (#1590),
+  `meta_executor_parity` and `synthesis_contracts` (#1580), and `cnl_output`
+  and `cnl_parity` (#1584). The CNL targets retain the shared controlled-language
+  output and parity contracts. The executor target
+  compares the shared execution, status and cue fixtures, including complete event
+  sequences and unverified-draft controls. The synthesis target reuses the twelve
+  existing specification tests directly from their maintained source file. The
+  same job also exercises explicit computer-use plans and HTTP receipts, the
+  cold-runtime smoke, contradiction worksheets and operand-bound programs. The
+  same job also runs four captured-source language tests and the unchanged
+  unsupported-language sibling contract (#1580). The forced-function HTTP suite also replays
+  against the native CLI. Issue #1604 also reuses that binary to verify dynamic
+  meta authorization and transaction receipts through the native gateway. Its
+  JavaScript host installs the frozen Bun lockfile with lifecycle scripts disabled.
+  All compile-dependent steps retain the same input
+  condition, with two compiler jobs and the maintained optimized test profile. Successful
+  execution verifies these regressions; it does not produce release evidence. Full
+  suites and product builds remain on main. The job retains deterministic Google
+  Trends fixture projections for replay, with their generation identity. It grants
+  no release authorization, saves no cache and publishes no workflow outputs.
+  The three expensive contract targets are compiled once by `contract-build` and
+  transported only within the same workflow run to the existing ten family jobs.
+  Their consumers verify source, compiler, profile, sparse materialized inputs and
+  executable bytes before using the unchanged listing and case-selection runner.
+  This focused test artifact has one-day retention and grants no release authority.
+  Every PR reports the required job context. Changes to isolated native test
+  sources, embedded fixtures, HTTP replay inputs or the admission policy select
+  native execution. Documentation and unrelated JavaScript, test or script changes
+  skip its compiler and native test steps. Its selector is
   `nativeCompileInput()` in scripts/ci-pull-request-admission.mjs;
   default-branch-build-policy.test.mjs pins the job and replays PR #1497.
+- An explicit `workflow_dispatch` on Layered CI with
+  `mode=regenerate-translations` and `regeneration-target=worker-receipt` may
+  regenerate the selected browser worker and its actual compiler/input receipts
+  on a feature branch (#1580). This maintenance exception implements
+  CONTRIBUTING.md's hosted WASM regeneration requirement. It verifies the exact
+  dispatched commit, repository, run and attempt, retains the generated worker,
+  selected-source receipt and input manifest for one day, and grants no release
+  authority. It has read-only contents, no persisted checkout credentials, no
+  cache writes and no publication or deployment. Ordinary pushes, PRs and check
+  dispatches never select this job. The source-only regeneration job excludes
+  this target so it cannot substitute a source projection for compiled output.
 - Production builds run on the current default branch, main. Release-tag and
   workflow-completion consumers must independently authorize their source against
   main; a release event is not permission to compile arbitrary feature code.
@@ -57,11 +84,14 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   release response loss, job-observer errors, package boundaries and test-issue
   cleanup. Retain the corresponding real suites for explicit qualification;
   fixtures do not prove real transport or deployment success.
-- Small PR unit suites share one JavaScript runner. The broad main inventory
-  retains its measured eight-shard plan. Do not shard merely to add runners.
-  The focused PR native check and main use Cargo's optimized test profile.
-  Prior measurements found expensive tests slower without optimization. No
-  Rust compilation or tests run locally in these JavaScript checks.
+- PRs, feature-branch check dispatches and main select the same complete default
+  JavaScript inventory through the same ordered runner. All use twelve measured
+  longest-first shards, the unchanged 360-second execution budget and the 75%
+  warning threshold. A failed file does not hide later failures or passing files.
+  The explicit fast inventory remains an optional local feedback loop only;
+  hosted checks do not set FAST_PR_PROFILE, which skips individual test cases.
+  Native test optimization remains on main: prior measurements found expensive
+  tests slower without optimization. No Rust compilation or tests run locally.
 - Full live-link crawling is retained as a main-only opt-in through
   FORMAL_AI_FULL_LINK_CHECKS=run or an explicit live-audit=true dispatch on main.
   Its original parser, retry, archive and failure checks remain intact. Parser

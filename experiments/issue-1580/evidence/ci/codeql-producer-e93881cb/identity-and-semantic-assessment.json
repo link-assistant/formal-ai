@@ -1,0 +1,117 @@
+{
+  "head": "e93881cb64a78a19253088c19f09a1f1b816229c",
+  "runId": 44982847617,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982847617",
+  "verifiedOriginalFiles": 33,
+  "verifiedOriginalBytes": 91420395,
+  "sarifReports": [
+    {
+      "path": "actions.sarif",
+      "sha256": "a2f0de1cb1e25c91fb993cb1140daa970639f458b841fc043b897e3fecad5251",
+      "tool": "CodeQL",
+      "results": 0,
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "notificationLevels": {
+            "none": 5898
+          },
+          "warningOrErrorNotifications": []
+        }
+      ]
+    },
+    {
+      "path": "rust.sarif",
+      "sha256": "8d298013784d38f06c568be6a1c561124d5cd0d0dc9267767f7e70aad9640c8c",
+      "tool": "CodeQL",
+      "results": 0,
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "notificationLevels": {
+            "note": 56,
+            "none": 9137
+          },
+          "warningOrErrorNotifications": []
+        }
+      ]
+    }
+  ],
+  "profiles": {
+    "macro-contexts": {
+      "rows": 123054,
+      "files": 2296,
+      "resultSha256": "1445e0339a89eebf03490cd59f21aaea787ffd948665eba21b3b522609698159",
+      "querySha256": "762d3bd84356e257aa0828d95baf9aa34db594f59f7a8cc6537857210e47f1b5",
+      "stateCounts": [
+        {
+          "expansion": "expanded",
+          "context": "inside-expansion",
+          "count": 79855
+        },
+        {
+          "expansion": "expanded",
+          "context": "outside-expansion",
+          "count": 42558
+        },
+        {
+          "expansion": "unexpanded",
+          "context": "outside-expansion",
+          "count": 641
+        }
+      ],
+      "unexpandedRows": 641,
+      "queryRuntimeDiagnostics": [],
+      "allSemanticsQualified": false
+    },
+    "included-string-payloads": {
+      "rows": 2230,
+      "files": 260,
+      "resultSha256": "7861a801c95c516722488bb7ca3af1e990dbf81a127c3060ce159c5716a755a6",
+      "querySha256": "eeb84162315440b60e8aa2f647d99d42a69fbdaaa3ca2f8fb523e7f7f39f4167",
+      "stateCounts": [
+        {
+          "expansion": "literal-expansion",
+          "context": "expansion-has-cfg-node",
+          "count": 267
+        },
+        {
+          "expansion": "literal-expansion",
+          "context": "no-expansion-cfg-node",
+          "count": 1705
+        },
+        {
+          "expansion": "other-expansion",
+          "context": "expansion-has-cfg-node",
+          "count": 1
+        },
+        {
+          "expansion": "unexpanded",
+          "context": "no-expansion-cfg-node",
+          "count": 257
+        }
+      ],
+      "unexpandedRows": 257,
+      "queryRuntimeDiagnostics": [],
+      "allSemanticsQualified": false,
+      "literalExpansionEmptyQuotedTokenRows": 791,
+      "literalExpansionEmptyTextRows": 0,
+      "literalTokensAreNotIndependentSourcePayloadOrSecurityQualification": true
+    }
+  },
+  "semanticCoverageProven": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "noteReview": {
+    "count": 56,
+    "consistencyLabels": 55,
+    "extractorTelemetry": 1,
+    "warningOrErrorNotifications": 0,
+    "countsNotInferredFromLabels": true,
+    "semanticCoverageProven": false,
+    "retainedFiles": [
+      "rust-non-none-notifications.json.gz",
+      "rust-diagnostic-counts.json.gz"
+    ]
+  }
+}

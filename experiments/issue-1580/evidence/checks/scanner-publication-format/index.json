@@ -1,0 +1,181 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/e06-publication-format-repair/check-abbreviations.log",
+      "file": "001.gz",
+      "bytes": 67,
+      "rawSha256": "5802e687926493221d1bf51c5b89c99094d481a1e28a4177031710714eca71f2",
+      "archiveSha256": "85935dc31050f922c01876d88ada4fbf722635bf63981713dec67dba447ab2a4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-publication-format-repair/check-file-size.log",
+      "file": "002.gz",
+      "bytes": 64,
+      "rawSha256": "fe4c259b2ebdd0be9ccb7e8d73968fa606e10f007f8119d9f37185a153a0c025",
+      "archiveSha256": "e8c29439dc54946bf7013197874d8c5c5881577cfab87326aa28dd6ffc62e2a2"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-publication-format-repair/outcome.json",
+      "file": "003.gz",
+      "bytes": 1766,
+      "rawSha256": "2817d7749e8160d6ee33e1bf636e98dd7379efb161790740630bde5ce430de7a",
+      "archiveSha256": "068e2ec745ab00f4c852f8c966124651888176c189b745cbf6061bfebc0e1021"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-publication-format-repair/pid.json",
+      "file": "004.gz",
+      "bytes": 17,
+      "rawSha256": "afe0b4e685d7c2c7a898e801e078ba84c29feb2cbab78f7316ddd95c4b33b29b",
+      "archiveSha256": "1dc7d26679285c067bbe809099c2c6d14799238736d1b7c2746f6b66d58225db"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-publication-format-repair/renames.json",
+      "file": "005.gz",
+      "bytes": 23228,
+      "rawSha256": "5edf446b3c6c79a0f8d8b0938dcd751fe2a8431b044b838e989947212fd83d02",
+      "archiveSha256": "dd5b2e9f16b8d81785896f24b95befb64f0dca2e5aa08af89f7f44f8cff94b3f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-publication-format-repair/verify.py",
+      "file": "006.gz",
+      "bytes": 1032,
+      "rawSha256": "3ecf366c74265b999712df595ba4de72281dc97ec7874632b0d647d240c5cbc3",
+      "archiveSha256": "c2fff0481c63024a279cbf9d36d1920d9b392f61c67abff8cda5b075a4ef9e1b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-publication-format-repair/worker.log",
+      "file": "007.gz",
+      "bytes": 127,
+      "rawSha256": "02b51eba768c4624f6b7ef03425af3a6851e745cb340054b74a19d43b40b5a3d",
+      "archiveSha256": "528d131ec420ce3cdd7b63f10b730fecca2af1da97fa4af2527849a44f7860d6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/gate-01.log",
+      "file": "008.gz",
+      "bytes": 156,
+      "rawSha256": "34f58b8e9a10a80196db8ead24aec38626d76700a7c7eea85ff203c6f0e91607",
+      "archiveSha256": "04b78bf5b6a525587c17969e27b0c81d080a02b40d256d1306373c89114fb7b8"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/gate-02.log",
+      "file": "009.gz",
+      "bytes": 145,
+      "rawSha256": "9493031f75f97e7e11be33a229fbe22626e8417a0a00540c218c8db18a21efa9",
+      "archiveSha256": "78f5c073bebe73e55be0f1a50551f164ffcf36c829583747cb2e80d536e1e12c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/gate-03.log",
+      "file": "010.gz",
+      "bytes": 68,
+      "rawSha256": "19daf8de6bf751d57df4cdcdac04e752e8eb8c4b9de617e5a05c2e3e9bc2afd0",
+      "archiveSha256": "88ec1b5be5630fc2bd507f78e06f7f44b20e81a9a77de1dfdcc5cd5bb05389b9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/gate-04.log",
+      "file": "011.gz",
+      "bytes": 62,
+      "rawSha256": "caed59473765efe1d431e060943db919e91008f5f80bde47de1db2639227507a",
+      "archiveSha256": "a7b50531af61e7f6e107c17e73851593fe7b6d9cb2ad7f4b92b7cd9edf332327"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/gate-05.log",
+      "file": "012.gz",
+      "bytes": 67,
+      "rawSha256": "83282c3fe7b82eb8af7275f2b16cb1b620dcd16a587ddab0abab5f51a61734e7",
+      "archiveSha256": "a0239a1cb92c35236d8244325bdf36b1212de7af9565c8afd6a800622fbbc255"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/gate-06.log",
+      "file": "013.gz",
+      "bytes": 68,
+      "rawSha256": "de2c6431a5d423fd9e1c38ee4623b6961cca9bbd595d047757884f05b47a557f",
+      "archiveSha256": "3d1c7c9588808c29b5dac2779f03ad26751e70bea6a85a6d90501c8b33df6903"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/gate-07.log",
+      "file": "014.gz",
+      "bytes": 80,
+      "rawSha256": "49745cf7b6aca05e1465769133984b3d8053f78d877d3329d67881223d06f99f",
+      "archiveSha256": "82bca035348a7be28f246385ecb0f61b59531b06237b0a4694487e0569192020"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/outcome.json",
+      "file": "015.gz",
+      "bytes": 1942,
+      "rawSha256": "766e7615f06f2d61b84a001d71a6769ce0c7b3822f968a0eb3c7253483411c6a",
+      "archiveSha256": "1c4c32292491d46b66e997fd61706af1c4691907149e03d4cc07815ed558981a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/pid.json",
+      "file": "016.gz",
+      "bytes": 17,
+      "rawSha256": "c45956db9ce14848089593ca2636b488a51051b54682355593f23daed388e134",
+      "archiveSha256": "2b1f7bda1292a803ac5cd09969459661fe287efdac9bd06f1f261fdb42bcda9d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/secrets.stderr",
+      "file": "017.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/secrets.stdout",
+      "file": "018.gz",
+      "bytes": 181,
+      "rawSha256": "381337a1ecb5819863eafaf0151ad45ad0015344b4d7eee931e093181f211719",
+      "archiveSha256": "7f51db419f7d4fe0f54480a802fc220034e30533b64bc92aa6fbcaf55207434b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/selection.json",
+      "file": "019.gz",
+      "bytes": 58483,
+      "rawSha256": "1820f5a4e27917d5faab667768ba0784bbbdc54e39ce864d0f366d0c7365e26a",
+      "archiveSha256": "a31c65afa4e17bbbc110565ad25cbcdcbad5fb4efb73e99ee1335dd2d1b9c0fa"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/verify.py",
+      "file": "020.gz",
+      "bytes": 1952,
+      "rawSha256": "3b380f26dd359f67ff1daf72a1457613312e3e43fadf01765c9468ed762353f2",
+      "archiveSha256": "f140d2ecc96d625889f7585888b2e427fc09162488cf7ebc95373858a5f96d71"
+    },
+    {
+      "source": "/tmp/issue-1580-research/e06-scanner-publication-gate/worker.log",
+      "file": "021.gz",
+      "bytes": 1252,
+      "rawSha256": "9c65ce2d70f246b7331f3e0541f3d6f81cea67aabbd3f1885646cb82d40dc25c",
+      "archiveSha256": "0656e1868625ddc4c868e5bb40b608f750c74abe8a2c6e4e70b86ea3de890384"
+    },
+    {
+      "source": "/tmp/issue-1580-research/publish-e06-scanner-batch.py",
+      "file": "022.gz",
+      "bytes": 4886,
+      "rawSha256": "9d4ac8ecbce485ec851355f10ff471e888741519c6fe2e2393f0817616a6c6a2",
+      "archiveSha256": "8814219cb5229e3b806797eb3ca6a51eae75cb4bbc4fffabac9b288a318d4c54"
+    },
+    {
+      "source": "/tmp/issue-1580-research/repair-e06-publication-format.log",
+      "file": "023.gz",
+      "bytes": 221,
+      "rawSha256": "f70c87a90e468e0689b8558cdde8c92ed264b132bc6de50b098f310f921d2fc5",
+      "archiveSha256": "5a10c7cf45c58365182b0084a106f361517ff776834137ed39b123f7092d5214"
+    },
+    {
+      "source": "/tmp/issue-1580-research/repair-e06-publication-format.py",
+      "file": "024.gz",
+      "bytes": 2492,
+      "rawSha256": "11bc9184ed2c305d6dcf5b99b190266fbbefb5decd19c717e927c0e59ff42e6c",
+      "archiveSha256": "32a24407cdcc304d101b17f54362bad8482dec9e4fbd7a9a5d436cd9c879bee4"
+    }
+  ],
+  "initialFailures": [
+    "abbreviated archive filenames",
+    "4146-line manifest"
+  ],
+  "formatRepairs": "113 temporary-component names expanded; manifest records compacted to 150 lines; all 148 archive/raw hashes unchanged",
+  "allSevenTouchedGatesPassed": true,
+  "priorActualSecretlintFiles": 568,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

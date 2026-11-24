@@ -247,8 +247,13 @@ fn ask_or_render(
     }
 
     let mut text = question;
+    // Preserve every choice and description within clients' concise output limits.
+    text.push('\n');
     for (index, (label, description)) in options.iter().enumerate() {
-        let _ = write!(text, "\n{}. {label} — {description}", index + 1);
+        if index > 0 {
+            text.push_str("  ");
+        }
+        let _ = write!(text, "{}. {label} — {description}", index + 1);
     }
     AgenticPlan::Final(text)
 }

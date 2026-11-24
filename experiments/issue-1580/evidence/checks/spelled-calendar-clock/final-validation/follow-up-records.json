@@ -1,0 +1,48 @@
+[
+  {
+    "name": "refresh-status",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/render-status.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 0.912,
+    "file": "refresh-status.log.gz",
+    "rawSha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436",
+    "archiveSha256": "850bfb24000723ccc55317848ae384514875ad715f5c019406514232cea51a5f",
+    "lines": 1
+  },
+  {
+    "name": "lower-abbreviation-ceilings",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/measure-abbreviations.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 2.404,
+    "file": "lower-abbreviation-ceilings.log.gz",
+    "rawSha256": "d3355dec9b8624972c0b78772432ea1b3d65b506e7fcf5510dba8eb8d6c74ac0",
+    "archiveSha256": "5696c7f8c2b0c4c2852ad4e51786cd19d69406d06724a3f546505667ca91a049",
+    "lines": 4
+  },
+  {
+    "name": "repaired-metadata-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations,check-status-render"
+    ],
+    "exitCode": 0,
+    "seconds": 5.885,
+    "file": "repaired-metadata-gates.log.gz",
+    "rawSha256": "fcf098299c20d378226fb76849790ed72328a8d9d8be8e16028a5bf9f0d94c3f",
+    "archiveSha256": "3bb0c4fa89dd46d8cfb0ff4b1d6509f09a1b3928426281e17b65468ce6be9e99",
+    "lines": 4
+  }
+]

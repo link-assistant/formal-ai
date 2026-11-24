@@ -1,0 +1,19 @@
+{
+  "head": "c8fb9ad1df655abe89289e229189f3fc41451ec0",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/issue-1550-meta-executor.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 4.248,
+  "rawLines": 219,
+  "rawSha256": "68ff9f926e325873dcab595b48c621d059ec2feda7315d03db9f9b9767633b84",
+  "archiveSha256": "cfe7a51dc0638227753141c536cd553a974141668cf6c7cca6f66048379f6ca0",
+  "observedAt": "2026-11-18T09:51:12.244878+00:00",
+  "independentAuthorshipCredit": 0
+}

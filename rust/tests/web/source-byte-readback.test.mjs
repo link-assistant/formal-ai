@@ -75,8 +75,14 @@ function run(item, receipt) {
       assert.equal(plan.calls.length, 1);
       const call = plan.calls[0], args = JSON.parse(call.arguments);
       calls.push(call);
-      let result;
-      if (call.tool === 'read') result = existsSync(join(root, args.path)) ? readFileSync(join(root, args.path), 'utf8') : 'Error: ENOENT: no such file or directory';
+      let result, readEvidence;
+      if (call.tool === 'read') {
+        const sourcePath = join(root, args.path);
+        if (existsSync(sourcePath)) {
+          result = readFileSync(sourcePath, 'utf8');
+          readEvidence = { source_read: { path: args.path, success: true, complete: true, format: 'raw' } };
+        } else result = 'Error: ENOENT: no such file or directory';
+      }
       else if (call.tool === 'write') { mkdirSync(dirname(join(root, args.path)), { recursive: true }); writeFileSync(join(root, args.path), args.content); result = ''; }
       else {
         assert.equal(args.command, verificationCommand(item));
@@ -87,7 +93,7 @@ function run(item, receipt) {
       }
       const id = 'tool-' + step;
       messages.push({ role: 'assistant', tool_calls: [{ id, function: { name: call.tool, arguments: call.arguments } }] },
-        { role: 'tool', tool_call_id: id, content: result });
+        { role: 'tool', tool_call_id: id, content: result, ...readEvidence });
     }
     assert.equal(readFileSync(target, 'utf8'), item.expected);
     assert.ok(answer);

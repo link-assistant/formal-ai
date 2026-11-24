@@ -1,0 +1,37 @@
+{
+  "cumulativeSummary": {
+    "literalPages": 139,
+    "totalPages": 254,
+    "completeFiles": 123,
+    "partialFiles": 1,
+    "literalLines": 8766,
+    "nextForwardPage": 140,
+    "remainingPages": 115,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pages": [
+    {
+      "page": 137,
+      "file": "page-137.log.gz",
+      "fullLiteralRead": true,
+      "rawSha256": "3175b245b7071486860e4d069d659d77e31143b6e10dbc6c2441f23a1e657822",
+      "archiveSha256": "1914431810c75c7cd1789e53be2e3d8fc63bf0a2394a60c2ed8c6e8c5efa5673"
+    },
+    {
+      "page": 138,
+      "file": "page-138.log.gz",
+      "fullLiteralRead": true,
+      "rawSha256": "b1355997054db959d600aa4a214209f84645061e6bd3e2a2fdcc26d771ec3901",
+      "archiveSha256": "4f7af56cb8222a3c904629c163e0ab583a3d83beec27a1e733be6836906cca3e"
+    },
+    {
+      "page": 139,
+      "file": "page-139.log.gz",
+      "fullLiteralRead": true,
+      "rawSha256": "184ef4dbbcbc14003fd1fef93bd0aaf42a2d3a2c4060b6723db404a25f08e384",
+      "archiveSha256": "636295dd8e1890c3f268fb43b7eeae1052196f73b00cc5aa7eab4cc2003bf90e"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

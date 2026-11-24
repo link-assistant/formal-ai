@@ -1,0 +1,61 @@
+[
+  {
+    "name": "embedded-seed-write",
+    "command": [
+      "node",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.348,
+    "rawBytes": 83,
+    "rawLines": 1,
+    "rawSha256": "db3f4dac5bc5ad6c71e7859dc7b6e3201229583c6820344f00bbc94cc78553b0",
+    "log": "embedded-seed-write.log"
+  },
+  {
+    "name": "javascript-rust-projection-write",
+    "command": [
+      "node",
+      "scripts/translate-js-rust.mjs",
+      "--write",
+      "--fetch",
+      "--jobs",
+      "1",
+      "js/agentic/crate/meta_executor.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 63.312,
+    "rawBytes": 503,
+    "rawLines": 7,
+    "rawSha256": "0e98642f1be715b3c86d1cbaa3bc0eb04bed2aaf1419b498d4d20f1d6c93f8e8",
+    "log": "javascript-rust-projection-write.log"
+  },
+  {
+    "name": "javascript-rust-projection-verify",
+    "command": [
+      "node",
+      "scripts/translate-js-rust.mjs",
+      "--verify"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 2.407,
+    "rawBytes": 188,
+    "rawLines": 1,
+    "rawSha256": "fc3f033428548a4500f1df0ec78e77db7050b95e954089f214ea64b8cb6ed814",
+    "log": "javascript-rust-projection-verify.log"
+  },
+  {
+    "name": "all-local-gates-final",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 620.949,
+    "rawBytes": 6780,
+    "rawLines": 140,
+    "rawSha256": "b150c2758aa950b147a8a9d70371a209e12e1904993d853aa0146b72eac05d90",
+    "log": "all-local-gates-final.log"
+  }
+]

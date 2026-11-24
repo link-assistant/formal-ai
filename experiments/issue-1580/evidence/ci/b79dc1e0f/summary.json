@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-11-17T14:05:21.820783+00:00",
+  "head": "b79dc1e0f147ed57d8e317c1b93bfa6ffc79078d",
+  "runs": 24,
+  "passing": 24,
+  "failed": [],
+  "active": [],
+  "logs": [
+    {
+      "run": 44098347020,
+      "head": "b79dc1e0f147ed57d8e317c1b93bfa6ffc79078d",
+      "conclusion": "success",
+      "rawLogSha256": "84bfed3018b9fdb422d207bc6809ee0dbe60bf25530d7b987defe3460953fbbd",
+      "rawLogBytes": 1467821,
+      "rawLogLines": 8329,
+      "log": "experiments/issue-1580/evidence/ci/b79dc1e0f/44098347020.log.gz"
+    }
+  ],
+  "claim": "All listed workflows ran on this exact published SHA. Successful scoped PR workflows do not execute main-only native behavior, benchmark floors, live identity, upstream publication or work-item qualification."
+}

@@ -1,0 +1,18 @@
+{
+  "scope": "complete literal review of the four nested case-study Markdown reports",
+  "files": 4,
+  "sourceLines": 305,
+  "relativeLinkTargetsExist": 20,
+  "anchorValidation": false,
+  "fullAggregateReviewComplete": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 30233,
+    "sha256": "9e066d824f154c868d7c59e05dc94e4e3022aa8160cb72c5d43a0ecd3b9f27c5"
+  },
+  "members": 12,
+  "roundTripVerified": true,
+  "capturedAt": "2026-11-23T18:22:30.722035+00:00"
+}

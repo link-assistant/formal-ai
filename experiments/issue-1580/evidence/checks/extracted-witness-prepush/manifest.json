@@ -1,0 +1,16 @@
+{
+  "source": "6ca491b2905aafafcdfabc2096ac8e0f4d0feb54",
+  "documentationGatesPassed": 5,
+  "freshFeedbackComplete": true,
+  "mainAncestor": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 24163,
+    "sha256": "fcd75541ec74c6bd589042198df0aa466e5cbaa7207e08789d99c20acecc7468"
+  },
+  "members": 38,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T08:06:00.539135+00:00"
+}

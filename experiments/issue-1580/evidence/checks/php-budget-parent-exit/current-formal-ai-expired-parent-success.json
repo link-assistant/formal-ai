@@ -1,0 +1,28 @@
+{
+  "case": "expired-parent-success",
+  "wrapper": "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+  "argv": [
+    "bash",
+    "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+    "1",
+    "finite child fixture",
+    "bash",
+    "-c",
+    "sleep 4 & printf \"%s\\n\" \"$!\" > \"$BUDGET_FIXTURE_PID\"; printf \"fixture stdout\\n\"; printf \"fixture stderr\\n\" >&2; exit 0"
+  ],
+  "exitCode": 124,
+  "wrapperExitSeconds": 1.4407561849802732,
+  "pipeClosedSeconds": 1.4417798949871212,
+  "workerRunningWhenWrapperExited": false,
+  "workerStateWhenWrapperExited": "Z",
+  "stdout": "fixture stdout\nfinite child fixture was terminated after 2s, its full 1s execution budget.\n",
+  "stderr": "fixture stderr\n::warning title=finite child fixture is approaching its timeout::The command is still running after 1s (70% of its 1s execution budget). Speed up or repartition it before the budget terminates the step.\n::error title=finite child fixture exceeded its execution budget::The command was terminated after 2s, its full 1s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout.\n",
+  "fixtureWorkerMaximumSeconds": 4,
+  "budgetSeconds": 1,
+  "fixtureDescendantsReaped": [
+    {
+      "pid": 3501829,
+      "waitStatus": 15
+    }
+  ]
+}

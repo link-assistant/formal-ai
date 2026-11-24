@@ -1,0 +1,24 @@
+{
+  "priorCheckExitCode": 2,
+  "priorCheckRawSha256": "23f8185413d5cf067999894cf0252d33974ad0eca896e54e2e2e472fd5557204",
+  "inheritedEvidence": [
+    {
+      "path": "dev/log/issues/1584/pulls/1585/sessions/ses_e16b594bfffe2Ti4pgK7BCr00X/solve.log",
+      "sha256": "599187a3052ce2b157d0c786a52171c1826f9fa41bc37506923e39fdd712955d",
+      "exactMainBytes": true,
+      "bytes": 1021040
+    }
+  ],
+  "recheckArgv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)dev/log/issues/1584/pulls/1585/sessions/ses_e16b594bfffe2Ti4pgK7BCr00X/solve.log"
+  ],
+  "recheckExitCode": 0,
+  "immutableEvidenceEdited": false,
+  "independentAuthorshipCredit": 0
+}

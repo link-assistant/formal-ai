@@ -1,0 +1,146 @@
+[
+  {
+    "file": "procedure--final-warning-validation.py.gz",
+    "bytes": 1390,
+    "lines": 16,
+    "sha256": "60e73fd516daf0c4f9da8d5c6a6617227ddee695861e48f3eb7e7e69e7a25623",
+    "compressedBytes": 775,
+    "compressedSha256": "be682453dd980f685630a44317fdba6554c15f00aebf7f95d9b960ccc9d151a5"
+  },
+  {
+    "file": "procedure--final-warning-validation-driver.log.gz",
+    "bytes": 218,
+    "lines": 4,
+    "sha256": "d81cb514ab29efe279b6054550eae87363883677df166a419ac3b126a4c3f114",
+    "compressedBytes": 172,
+    "compressedSha256": "40d26a3456e8b5f8008795f184e45023c7bbdee79b3c16352358a4da5918ca8d"
+  },
+  {
+    "file": "procedure--warning-review.patch.gz",
+    "bytes": 30159,
+    "lines": 543,
+    "sha256": "2637fa7b6ebd3603959c1b6af62d0475f2b04661fd8815fb2b7f234875c04f7d",
+    "compressedBytes": 8245,
+    "compressedSha256": "dc7180bcd5cac0337baa3670db898767e76dce4ffab249be2dbcfa23e87fde82"
+  },
+  {
+    "file": "procedure--prepare-warning-review.py.gz",
+    "bytes": 1105,
+    "lines": 11,
+    "sha256": "ccf56b06e24b7459f46b9f52d7491fb874364571d9607584c6df153618b55c57",
+    "compressedBytes": 571,
+    "compressedSha256": "3be42f698266f6e0da752ac47b6ed3a84f3678f2a5db8f8027ec66f21dad26e3"
+  },
+  {
+    "file": "procedure--prepare-warning-review-driver.log.gz",
+    "bytes": 17916,
+    "lines": 191,
+    "sha256": "3f6effc208c1782a20a4f12adc84b4cfe37e942f444f6f2c7a05aac485afd381",
+    "compressedBytes": 6896,
+    "compressedSha256": "e413a7db9bb852c779de4bcaefd083c6a0013ac93d30f042f0ae33917a5c9b34"
+  },
+  {
+    "file": "procedure--collect-bootstrap-all-terminal-logs.py.gz",
+    "bytes": 2256,
+    "lines": 26,
+    "sha256": "45c475935965dc7677506d412ce3fc66e54cf66d41df67db6ed5b405c0cee4a6",
+    "compressedBytes": 1063,
+    "compressedSha256": "98877a94268046ebc8ae05235148bdf98dc2282ca7455495959ca9532c1f4818"
+  },
+  {
+    "file": "procedure--collect-bootstrap-check-annotations.py.gz",
+    "bytes": 1455,
+    "lines": 15,
+    "sha256": "2b2887e23719cf36a89b4490710d86d15bfb448013061ff1d71ff8c3f0445226",
+    "compressedBytes": 707,
+    "compressedSha256": "acba4144a7fde28dcb3f2b1cdadfccd8e17968285c64d9b7f1317c1b14867661"
+  },
+  {
+    "file": "procedure--collect-bootstrap-check-annotations-final-driver.log.gz",
+    "bytes": 10579,
+    "lines": 33,
+    "sha256": "0a6dd8a80905c2c4bc10f31a011747e70162e5ee72a2b6f2c33e47daa9b93c34",
+    "compressedBytes": 1553,
+    "compressedSha256": "286021a0b0334dee8b612360fde5137378247727384dc9f84352b67a52bd9e15"
+  },
+  {
+    "file": "procedure--commit-bootstrap-source-batch.py.gz",
+    "bytes": 1836,
+    "lines": 13,
+    "sha256": "c2afe82190ab1244e0bfa2638cc9f4529716bf16a0436dc7c8482fa8d69d60a2",
+    "compressedBytes": 916,
+    "compressedSha256": "b433a58bf9b3007e4b44fdcde61808045e18db87ab51dbd2b36114ec81ff4781"
+  },
+  {
+    "file": "procedure--commit-bootstrap-source-batch-driver.log.gz",
+    "bytes": 1355,
+    "lines": 10,
+    "sha256": "35dcb9a6753f6500fe149cdd068d22c99a7cfec9aa27d61efadc3bdaa46d3ad0",
+    "compressedBytes": 663,
+    "compressedSha256": "deda5ee30fde278219529b11ea611ddcfe96c9a3949e4d6f59b451be26f145cc"
+  },
+  {
+    "file": "procedure--fix-bootstrap-evidence-names.py.gz",
+    "bytes": 1667,
+    "lines": 16,
+    "sha256": "7c354d17d9eca94009801b5706f99b5d9312714d686bb84de8c9ec082be792dc",
+    "compressedBytes": 809,
+    "compressedSha256": "36309a0f1871e7ae188f2209c3ad92c3e1f7e3014f3f01cb77e30bc550f0afad"
+  },
+  {
+    "file": "procedure--fix-bootstrap-evidence-names-driver.log.gz",
+    "bytes": 696,
+    "lines": 4,
+    "sha256": "2c7d3e9f6bd4772fc5344abee753b92bf076dd68cb5950da516e3f3571ab693f",
+    "compressedBytes": 309,
+    "compressedSha256": "774dac59f4fa879074d30240a78c0abcf16bfb9961dad519f2ed8a30832827d9"
+  },
+  {
+    "file": "procedure--check-final-bootstrap-gates.py.gz",
+    "bytes": 846,
+    "lines": 11,
+    "sha256": "5bba11dd78a6abaf39b0acf3bf8607fe7b6a5fee9b5fb247afc595b64d2a20d8",
+    "compressedBytes": 536,
+    "compressedSha256": "61a1c81aca61860a4c00fb37eade05fec48ab58ec375554942aa63b8e90efe6d"
+  },
+  {
+    "file": "procedure--archive-terminal-warning-repairs.py.gz",
+    "bytes": 12058,
+    "lines": 148,
+    "sha256": "dfd0c28433a12f6d02412ba50274228f7d3c2dde532e5f85a7475836500d53aa",
+    "compressedBytes": 4766,
+    "compressedSha256": "aca973ad097a3eca1063daf2b0013df8a87323e500788e2bd21361b6c9e8a8b8"
+  },
+  {
+    "file": "procedure--commit-terminal-warning-source.py.gz",
+    "bytes": 2076,
+    "lines": 24,
+    "sha256": "8e910255fd824b3e476d6339c8300e983a2af58b2f5b7306f853d4489f224aa3",
+    "compressedBytes": 998,
+    "compressedSha256": "19e9f3476ab40110f833cc24878e0721572e35259b9b8d406880fe5a4efe6a85"
+  },
+  {
+    "file": "procedure--commit-terminal-warning-source-driver.log.gz",
+    "bytes": 1300,
+    "lines": 6,
+    "sha256": "4451e67aad1c03280790e25e2a0a1fbe633ef37aeccba1ef031b89c6e88ec455",
+    "compressedBytes": 631,
+    "compressedSha256": "00f9510b45ec701153acf19a08263cc6b4729a2fe4e9c6865cdd60ca1e9e625e"
+  },
+  {
+    "file": "official-node-v24.22.3-sqlite.js.gz",
+    "bytes": 59,
+    "lines": 3,
+    "sha256": "1b3616bc43b20a5ebf0b55e8eef1706b2c56f346941c65347ee7c69c83c51aa7",
+    "compressedBytes": 79,
+    "compressedSha256": "7ee1ebc3f1af6774b3ebc4abae1ae91f8b2f955406570a19a992bd4c9a8ef6c7"
+  },
+  {
+    "file": "official-node-v22.23.5-sqlite.js.gz",
+    "bytes": 403,
+    "lines": 19,
+    "sha256": "eac619cc3cf634b21acda2f920cfce3fd0b42be23e7aeff65813a2613e5d7589",
+    "compressedBytes": 280,
+    "compressedSha256": "2d89cdb4169c6987672eb355db279ba7d49bf2f647761d16e151ae0f0ca4ca34"
+  }
+]

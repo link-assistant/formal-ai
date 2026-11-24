@@ -18,14 +18,14 @@
 //! which would split a stated "26.2" into two numbers and drops the question
 //! mark these gates read.
 
+use super::calendar::contains_term;
+use super::numeric_list::parse_numbers;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{lexicon, localized_response};
 use crate::solver_handlers::finalize_simple;
 use std::cmp::Ordering;
-use super::calendar::contains_term;
-use super::numeric_list::parse_numbers;
 
 mod primality;
 pub(crate) use primality::{has_property, property_interval};
@@ -151,8 +151,12 @@ impl Decimal {
             return None;
         }
         // a/b = (am·10^bs) / (bm·10^as) as a plain integer fraction.
-        let numerator = self.mantissa.checked_mul(10_i128.checked_pow(other.scale)?)?;
-        let denominator = other.mantissa.checked_mul(10_i128.checked_pow(self.scale)?)?;
+        let numerator = self
+            .mantissa
+            .checked_mul(10_i128.checked_pow(other.scale)?)?;
+        let denominator = other
+            .mantissa
+            .checked_mul(10_i128.checked_pow(self.scale)?)?;
         Self::from_quotient(numerator, denominator, precision)
     }
 
@@ -169,9 +173,7 @@ impl Decimal {
             return None;
         }
         let scaled_numerator = self.mantissa.checked_mul(numerator)?;
-        let scaled_denominator = 10_i128
-            .checked_pow(self.scale)?
-            .checked_mul(denominator)?;
+        let scaled_denominator = 10_i128.checked_pow(self.scale)?.checked_mul(denominator)?;
         let scale = self.scale + precision;
         Self::from_quotient(scaled_numerator, scaled_denominator, scale)
     }
@@ -195,10 +197,13 @@ impl Decimal {
         if !exact && (magnitude % divisor) * 2 >= divisor {
             mantissa += 1;
         }
-        Some((Self {
-            mantissa: sign * mantissa,
-            scale,
-        }, exact))
+        Some((
+            Self {
+                mantissa: sign * mantissa,
+                scale,
+            },
+            exact,
+        ))
     }
 
     /// Order by value. Scales align first; within the parse bounds above the
@@ -326,11 +331,9 @@ struct OpResult {
 /// marker vocabulary (each, pays with, change, total, and every translation)
 /// lives in `data/seed/meanings-statistics.lino` (issue #1176).
 fn mentions_marker(normalized: &str, slug: &str) -> bool {
-    lexicon().meaning(slug).is_some_and(|meaning| {
-        meaning
-            .words()
-            .any(|word| contains_term(normalized, word))
-    })
+    lexicon()
+        .meaning(slug)
+        .is_some_and(|meaning| meaning.words().any(|word| contains_term(normalized, word)))
 }
 
 /// The statistics operations the prompt names, in canonical order. Operation
@@ -338,11 +341,8 @@ fn mentions_marker(normalized: &str, slug: &str) -> bool {
 fn detect_ops(normalized: &str) -> Vec<Op> {
     let lex = lexicon();
     let asked = |op: Op| {
-        lex.meaning(op.meaning_slug()).is_some_and(|meaning| {
-            meaning
-                .words()
-                .any(|word| contains_term(normalized, word))
-        })
+        lex.meaning(op.meaning_slug())
+            .is_some_and(|meaning| meaning.words().any(|word| contains_term(normalized, word)))
     };
     OP_ORDER.into_iter().filter(|op| asked(*op)).collect()
 }
@@ -490,18 +490,17 @@ fn variance_of(values: &[Decimal]) -> Option<OpResult> {
     // The variance is `numerator / denominator` (n², not n): the fraction is
     // already (n·Σx² − (Σx)²) / n², so dividing by n again would square the
     // count away and report Σ(x − mean)² instead of its average (issue #1176).
-    let (variance, exact) =
+    let (variance, exact) = Decimal {
+        mantissa: numerator,
+        scale,
+    }
+    .div(
         Decimal {
-            mantissa: numerator,
-            scale,
-        }
-        .div(
-            Decimal {
-                mantissa: denominator,
-                scale: 0,
-            },
-            7,
-        )?;
+            mantissa: denominator,
+            scale: 0,
+        },
+        7,
+    )?;
     let mut sum = values[0];
     for value in &values[1..] {
         sum = sum.add(*value)?;
@@ -550,10 +549,10 @@ fn std_dev_of(values: &[Decimal]) -> Option<OpResult> {
     // cast performs, without a lossy-cast lint.
     let numerator: f64 = numerator.to_string().parse().ok()?;
     let denominator: f64 = denominator.to_string().parse().ok()?;
-    let variance =
-        numerator / denominator / 10_f64.powi(i32::try_from(scale).expect(
-            "the scale bound keeps every list scale within i32",
-        ));
+    let variance = numerator
+        / denominator
+        / 10_f64
+            .powi(i32::try_from(scale).expect("the scale bound keeps every list scale within i32"));
     if !(0.0..=1_000_000_000.0).contains(&variance) {
         return None;
     }
@@ -570,11 +569,7 @@ fn std_dev_of(values: &[Decimal]) -> Option<OpResult> {
         }
     }
     Some(OpResult {
-        value: if exact {
-            text
-        } else {
-            format!("≈{text}")
-        },
+        value: if exact { text } else { format!("≈{text}") },
         derivation: None,
     })
 }
@@ -865,112 +860,6 @@ fn one_item_change(prompt: &str, normalized: &str, log: &mut EventLog) -> Option
     ))
 }
 
-/// Word-problem entry point for the price×count pattern of issue #1176.
-///
-/// "buys 4 pens at 3 dollars each and pays with 20; what is the change?" → 20 −
-/// 4 × 3 = 8 — and its total sibling ("what is the total?" → 4 × 3 = 12). The
-/// markers are seed vocabulary; the arithmetic is shown in the answer.
-pub fn handle_word_problem(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !mentions_marker(normalized, MARKER_UNIT_PRICE) {
-        if let Some(answer) = one_item_change(prompt, normalized, log) {
-            return Some(answer);
-        }
-        return word_relations::relation_word_problem(prompt, normalized, log);
-    }
-    let lowered = prompt.to_lowercase();
-    let (values, positions) = stated_numbers(&lowered)?;
-    let language = detect_language(prompt).slug();
-
-    // Change: a unit price, a count, and a payment. The price is stated
-    // nearest before the unit-price marker ("at 3 dollars each"), the payment
-    // is the last stated number, and the count is the remaining one.
-    if mentions_marker(normalized, MARKER_PAYMENT)
-        && mentions_marker(normalized, MARKER_CHANGE)
-        && values.len() == 3
-    {
-        let each_at = marker_position(&lowered, MARKER_UNIT_PRICE).unwrap_or(0);
-        let price_index = nearest_before(&positions, each_at).unwrap_or(0);
-        let payment_index = values.len() - 1;
-        let count_index =
-            (0..values.len()).find(|index| *index != price_index && *index != payment_index)?;
-        let price = values[price_index];
-        let count = values[count_index];
-        let payment = values[payment_index];
-        let cost = count.mul(price)?;
-        let change = payment.sub(cost)?;
-        if change.is_negative() {
-            // A payment below the cost is not a change question this small
-            // pattern can answer; decline instead of guessing.
-            return None;
-        }
-        log.append("word_problem:unit_price", price.render());
-        log.append("word_problem:count", count.render());
-        log.append("word_problem:payment", payment.render());
-        log.append("word_problem:change", change.render());
-        let derivation = format!(
-            "{} - {} × {} = {}",
-            payment.render(),
-            count.render(),
-            price.render(),
-            change.render()
-        );
-        log.append("word_problem:derivation", derivation.clone());
-        let body = localized_response("word_problem_change", language)
-            .map(|template| {
-                template
-                    .replace(concat!("{", "change}"), &change.render())
-                    .replace(concat!("{", "derivation}"), &derivation)
-            })
-            .unwrap_or(derivation);
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "word_problem_change",
-            "response:word_problem_change",
-            &body,
-            1.0,
-        ));
-    }
-
-    // Total: a unit price and a count ("4 pens at 3 dollars each; what is
-    // the total?" → 4 × 3 = 12).
-    if mentions_marker(normalized, MARKER_TOTAL) && values.len() == 2 {
-        let each_at = marker_position(&lowered, MARKER_UNIT_PRICE).unwrap_or(0);
-        let price_index = nearest_before(&positions, each_at).unwrap_or(0);
-        let count_index = (0..values.len()).find(|index| *index != price_index)?;
-        let price = values[price_index];
-        let count = values[count_index];
-        let total = count.mul(price)?;
-        log.append("word_problem:unit_price", price.render());
-        log.append("word_problem:count", count.render());
-        log.append("word_problem:total", total.render());
-        let derivation = format!(
-            "{} × {} = {}",
-            count.render(),
-            price.render(),
-            total.render()
-        );
-        log.append("word_problem:derivation", derivation.clone());
-        let body = localized_response("word_problem_total", language)
-            .map(|template| {
-                template
-                    .replace(concat!("{", "total}"), &total.render())
-                    .replace(concat!("{", "derivation}"), &derivation)
-            })
-            .unwrap_or(derivation);
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "word_problem_total",
-            "response:word_problem_total",
-            &body,
-            1.0,
-        ));
-    }
-
-    word_relations::relation_word_problem(prompt, normalized, log)
-}
+#[path = "statistics/word_problems.rs"]
+mod word_problems;
+pub use word_problems::handle_word_problem;

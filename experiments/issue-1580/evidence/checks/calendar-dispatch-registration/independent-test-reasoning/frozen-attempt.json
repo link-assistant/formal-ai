@@ -1,0 +1,16 @@
+{
+  "frozenUnit": "negative regression controls",
+  "request": "Compare two strategies for a full-worker calendar regression: directly calling the calendar helper or solving through the normal browser dispatcher. Explain which can detect a scheduling request accidentally becoming a memory write, and describe a negative control that checks ordinary memory writes.",
+  "sourceHead": "21dcb086857edbfc0859dc4135574ea6bc4f52c2",
+  "maxSteps": 4,
+  "maxAttempts": 1,
+  "nodeHeapMiB": 256,
+  "acceptance": [
+    "Correctly explains the distinct routing coverage",
+    "Proposes an ordinary memory write control with its expected result",
+    "Complete actual response and route/tool trace retained"
+  ],
+  "accepted": false,
+  "authorshipCredit": 0,
+  "status": "unreviewed"
+}

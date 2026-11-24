@@ -1,0 +1,34 @@
+{
+  "source": "bdbac26520862f995f39913b2ce42a91239344bc",
+  "command": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/formal_ai_subagent/local-gates.mjs"
+  ],
+  "exitCode": 0,
+  "complete": true,
+  "startedAt": "2026-11-23T04:35:37.134903+00:00",
+  "completedAt": "2026-11-23T04:44:19.618561+00:00",
+  "cleanBefore": true,
+  "cleanAfter": true,
+  "afterStatus": "",
+  "sameSourceAfter": true,
+  "counts": {
+    "PASS": 89,
+    "FAIL": 0,
+    "SKIP": 54
+  },
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1223886,
+    "sha256": "462225f89b1e8b9d953dd46b294736063a7a0f22b56080c51ad35ff6c35d8c50"
+  },
+  "members": 105,
+  "roundTripVerified": true,
+  "originalForegroundAttemptComplete": false,
+  "originalForegroundAttemptReason": "Formal AI tool execution deadline killed the foreground command; partial inventory receives no complete verification credit",
+  "aggregateReviewComplete": false,
+  "fullIssueComplete": false
+}

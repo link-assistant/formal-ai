@@ -129,50 +129,10 @@ pub fn parse_cargo_lock(text: &str) -> BTreeMap<String, String> {
 
 /// Dependency-object members of a package.json, with `"name//"` blocked notes.
 pub fn parse_package_json(text: &str) -> Vec<(String, String, usize, Option<String>)> {
-    let mut blocked: BTreeMap<String, String> = BTreeMap::new();
-    for line in text.lines() {
-        let Some((key, value)) = json_member(line) else {
-            continue;
-        };
-        // The note must open with `blocked:` and name its tracking reference;
-        // a note without one is prose, not a hold-back decision (R1169-3).
-        if let Some(name) = key.strip_suffix("//")
-            && let Some(note) = json_string(value)
-            && let Some(reason) = note.trim().strip_prefix("blocked:")
-            && let Some(url) = tracking_reference(reason)
-        {
-            blocked.insert(name.to_string(), url);
-        }
-    }
-    let mut out = Vec::new();
-    let mut in_dependencies = false;
-    for (index, line) in text.lines().enumerate() {
-        let trimmed = line.trim();
-        // A section header opens an object on the same line: `"key": {`.
-        if trimmed.starts_with('"') && trimmed.ends_with('{') {
-            if let Some((key, _)) = json_member(trimmed.trim_end_matches('{').trim_end()) {
-                in_dependencies = matches!(
-                    key.as_str(),
-                    "dependencies" | "devDependencies" | "optionalDependencies"
-                );
-            }
-            continue;
-        }
-        if !in_dependencies {
-            continue;
-        }
-        let Some((key, value)) = json_member(line) else {
-            continue;
-        };
-        if key.ends_with("//") {
-            continue;
-        }
-        let Some(range) = json_string(value) else {
-            continue;
-        };
-        out.push((key.clone(), range, index + 1, blocked.get(&key).cloned()));
-    }
-    out
+    npm_manifest::dependency_members(text)
+        .into_iter()
+        .map(|member| (member.name, member.declared, member.line, member.blocked))
+        .collect()
 }
 
 /// Registry identity differs from the installed key for npm aliases. Local
@@ -191,20 +151,6 @@ pub fn npm_registry_identity<'a>(name: &'a str, declared: &'a str) -> Option<(&'
         });
     }
     Some((name, declared))
-}
-
-/// A `"key": value` member on one line, when present.
-pub fn json_member(line: &str) -> Option<(String, &str)> {
-    let trimmed = line.trim_start();
-    let rest = trimmed.strip_prefix('"')?;
-    let end = rest.find('"')?;
-    let value = &rest[end + 1..];
-    let colon = value.find(':')?;
-    Some((rest[..end].to_string(), value[colon + 1..].trim()))
-}
-
-pub fn json_string(value: &str) -> Option<String> {
-    quoted_value(value.trim_end_matches(',').trim())
 }
 
 /// The hoisted resolutions of a package-lock v3 `packages` map.

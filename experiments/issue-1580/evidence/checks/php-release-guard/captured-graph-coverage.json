@@ -1,0 +1,38 @@
+{
+  "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "commit": "3a034b27a56067971ca74dd4c74c7707056b215d",
+  "graphFileCount": 311,
+  "jobs": [
+    {
+      "language": "js",
+      "workingDirectory": "docs/case-studies/issue-1/data/templates/js",
+      "fileCount": 92,
+      "missingCount": 0,
+      "missingFiles": []
+    },
+    {
+      "language": "python",
+      "workingDirectory": "docs/case-studies/issue-1/data/templates/python",
+      "fileCount": 41,
+      "missingCount": 0,
+      "missingFiles": []
+    },
+    {
+      "language": "csharp",
+      "workingDirectory": "docs/case-studies/issue-1/data/templates/csharp",
+      "fileCount": 43,
+      "missingCount": 0,
+      "missingFiles": []
+    },
+    {
+      "language": "rust",
+      "workingDirectory": "docs/case-studies/issue-1/data/templates/rust",
+      "fileCount": 45,
+      "missingCount": 0,
+      "missingFiles": []
+    }
+  ],
+  "explicitCommandContextUnknowns": 4,
+  "wholeRepositorySemanticReview": false,
+  "independentAuthorshipCredit": 0
+}

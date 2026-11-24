@@ -1,0 +1,18 @@
+{
+  "originalAggregateResult": "all-gates/results.json",
+  "originalFailureRetained": true,
+  "inventoryEntries": 138,
+  "originalPassed": 85,
+  "originalFailed": [
+    "lint-shell-scripts"
+  ],
+  "excluded": 52,
+  "correctedFailureResult": "shellcheck-resumed.json",
+  "allExecutableEntriesPassingAfterEnvironmentRepair": true,
+  "allIndividualLogsHashVerified": 86,
+  "fullAggregateLiterallyPrinted": true,
+  "allIndividualLogsLiterallyRead": false,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 152257\noom 0\noom_kill 0\noom_group_kill 0\n"
+}

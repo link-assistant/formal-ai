@@ -9,6 +9,7 @@ import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStepResolved} from '../../../js/agentic/planner.mjs';
 import {issueViewCommand} from '../../../js/agentic/general_execution.mjs';
+import {recipeSourceCommand} from '../../../js/agentic/recipe_resume.mjs';
 import {Progress} from '../../../js/agentic/progress.mjs';
 import {appendDefinition,projectAppendContracts} from '../../../js/agentic/append_contract.mjs';
 before(async()=>{await installNodeHost(new WorkerHost());});
@@ -28,7 +29,15 @@ function messages(body=envelope,{url=ISSUE,tool=MCP,is_error=false,missingCall=f
 }
 function explicit(){const data=JSON.parse(envelope),record=JSON.parse(data.structuredContent.content);record.body+='\nThe program should print exactly: `Hello, World!`';data.structuredContent.content=JSON.stringify(record);return data;}
 async function expectWrite(data){
- const plan=await planChatStepResolved(messages(JSON.stringify(data)),tools);
+ const input=messages(JSON.stringify(data));
+ const probe=await planChatStepResolved(input,tools);
+ assert.equal(probe.kind,'tool_calls');assert.equal(probe.calls.length,1);
+ assert.equal(probe.calls[0].tool,'bash');
+ assert.equal(JSON.parse(probe.calls[0].arguments).command,recipeSourceCommand('main.rs'));
+ const call=probe.calls[0],id='source-probe';
+ input.push({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name:call.tool,arguments:call.arguments}}]},
+  {role:'tool',tool_call_id:id,name:call.tool,content:JSON.stringify({schema:'workspace-source-v1',path:'main.rs',success:true,complete:true,absent:true,error_code:'ENOENT'})});
+ const plan=await planChatStepResolved(input,tools);
  assert.equal(plan.kind,'tool_calls',JSON.stringify(plan));
  assert.equal(plan.calls[0].tool,'write',JSON.stringify(plan));
  const args=JSON.parse(plan.calls[0].arguments);
@@ -92,3 +101,15 @@ test('exact native fetch-only Kotlin page and declared append frame terminate af
  assert.ok(final.answer.includes('Kotlin'));assert.ok(!final.answer.includes('You are an AI issue solver'));
  assert.doesNotMatch(final.answer,/Created and verified|Recorded and verified|only file this run wrote/u);
 });
+
+for(const [reason,patch] of [['incomplete',{complete:false}],['wrong path',{path:'foreign.rs'}],
+ ['unsuccessful',{success:false}],['wrong absence reason',{error_code:'EACCES'}]]){
+ test('a prepared delivery cannot write after a '+reason+' source probe',async()=>{
+  const input=messages(JSON.stringify(explicit()));
+  const probe=await planChatStepResolved(input,tools),call=probe.calls[0],id='invalid-probe';
+  input.push({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name:call.tool,arguments:call.arguments}}]},
+   {role:'tool',tool_call_id:id,name:call.tool,content:JSON.stringify({schema:'workspace-source-v1',path:'main.rs',success:true,complete:true,absent:true,error_code:'ENOENT',...patch})});
+  const next=await planChatStepResolved(input,tools);
+  assert.equal(next.kind,'final');assert.doesNotMatch(next.answer,/Created and verified|Committed and pushed/u);
+ });
+}

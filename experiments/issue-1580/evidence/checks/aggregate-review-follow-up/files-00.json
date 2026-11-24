@@ -1,0 +1,162 @@
+[
+  {
+    "path": ".github/workflows/agent-cli-e2e.yml",
+    "diff": "0011.diff",
+    "sha256": "cfa46413072f3c42641f9b1e3ab117111674d33229054ec26886e22961f51b46",
+    "bytes": 695,
+    "lines": 15,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/agentic-cli-matrix.yml",
+    "diff": "0012.diff",
+    "sha256": "ab9b018d89a4e233affda22fd9a00873f3d23d6d32b03a2f806b6960535a7b1d",
+    "bytes": 2671,
+    "lines": 65,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/benchmark-corpus-gate.yml",
+    "diff": "0013.diff",
+    "sha256": "b94eb0e2c5e18e695f8ea76658421bdce6c63498019e29a298166358975c3df4",
+    "bytes": 1272,
+    "lines": 29,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/coding-ladder.yml",
+    "diff": "0014.diff",
+    "sha256": "928028d0a7007e604ab46dc2df8a6190edcbdb517d29e7f711b4c081fc107075",
+    "bytes": 1291,
+    "lines": 29,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/container-images.yml",
+    "diff": "0015.diff",
+    "sha256": "d8dd48b487ab4cccf85f88997c01380214de1a3a267061112a378606aae0e35e",
+    "bytes": 8464,
+    "lines": 212,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/coverage.yml",
+    "diff": "0016.diff",
+    "sha256": "651e69f88dec0e4843b5fc59821b56c61937145f2cc178661912a83b06915acd",
+    "bytes": 2353,
+    "lines": 60,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/dependencies-latest.yml",
+    "diff": "0017.diff",
+    "sha256": "4045be5acf1276519b9242f824bd6e0135b491bb15587966bcb843de88b72d1e",
+    "bytes": 1107,
+    "lines": 23,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/desktop-release.yml",
+    "diff": "0018.diff",
+    "sha256": "2e59a76b863941e7008e7d9d03d2c57ec7fcf35d1dc932dde895f91f669fe194",
+    "bytes": 22281,
+    "lines": 376,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/evidence-check.yml",
+    "diff": "0020.diff",
+    "sha256": "e05ce3f442fef76a6b6909a1b70c1fc8ad6584d5b49b384c3035d3a6613b48d4",
+    "bytes": 700,
+    "lines": 15,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/external-benchmarks.yml",
+    "diff": "0021.diff",
+    "sha256": "a55c26e7130a181d6b75b46b0d6332fce77da4a616fd9518a2179c4f84658033",
+    "bytes": 4614,
+    "lines": 71,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/hive-mind-draft.yml",
+    "diff": "0022.diff",
+    "sha256": "78afe08c46c31bc1257eff093d659659f0a4df81f6c8b24af24a05ded46812da",
+    "bytes": 11048,
+    "lines": 187,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/hive-original-delivery.yml",
+    "diff": "0023.diff",
+    "sha256": "19813f49c82d5004090eec36312745df4bc4365eab2857f2f14fe5b2ae771eda",
+    "bytes": 8118,
+    "lines": 179,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/hive-source-provenance.yml",
+    "diff": "0024.diff",
+    "sha256": "32bbbf833c3d9e0e77ec4eec1f9db4e5ed6f56990cb0448f8a0b51eb2c8b9583",
+    "bytes": 820,
+    "lines": 15,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/issue-1028-agent-ladder.yml",
+    "diff": "0025.diff",
+    "sha256": "09f17e7ef17c1a8fc5b57ab2c60b2382870eb76da9953b631f54e02f5bb9f389",
+    "bytes": 2269,
+    "lines": 51,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/layered-ci.yml",
+    "diff": "0026.diff",
+    "sha256": "4aeb0f66c2a587b5923feb9b1d1672ff28a7ff4f35716585ae9798896629696a",
+    "bytes": 18739,
+    "lines": 319,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/links.yml",
+    "diff": "0027.diff",
+    "sha256": "8ea53739e918b49624b83a6b11ca8aa5e6a69c3f4d8a83453ab508ad9c306fd2",
+    "bytes": 1420,
+    "lines": 26,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/native-response-observations.yml",
+    "diff": "0028.diff",
+    "sha256": "5b8b4000ce1c50cb4d1835470426ed23a54367b28f1b6da5ec8098679136ce84",
+    "bytes": 865,
+    "lines": 22,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/native-type-check.yml",
+    "diff": "0029.diff",
+    "sha256": "e296724b8c21939ac1654b9c5264942f85a7f4e363ae6044fd43cf43c1ef66a7",
+    "bytes": 25727,
+    "lines": 472,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/pages-artifact.yml",
+    "diff": "0030.diff",
+    "sha256": "ff2f8cf95610bcdd0d634890fad9f4c718ad15a6ac81fd2fcfc11d95d0a52b91",
+    "bytes": 1988,
+    "lines": 50,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": ".github/workflows/proactive-failure-report-e2e.yml",
+    "diff": "0031.diff",
+    "sha256": "90de7f0aaf7930c9acade45dcd58aad452596fd7b83a67e6f31faf063e44f213",
+    "bytes": 997,
+    "lines": 15,
+    "carriedExactDiffReview": false
+  }
+]

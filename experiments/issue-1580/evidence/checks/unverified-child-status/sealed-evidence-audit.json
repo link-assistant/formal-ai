@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "102a5808c85f5b72b89177519b9cc7bfc32fc3e1",
+  "archivedCommands": 2920,
+  "priorImmutableCommandRows": 2776,
+  "newCommandHashesVerified": 144,
+  "validationArchivesVerified": 199,
+  "javaLiteralPages": 92,
+  "newJavaPageArchivesVerified": 14,
+  "suppliedScripts": 1237,
+  "allLocalGates": {
+    "pass": 86,
+    "excluded": 52,
+    "fail": 0
+  },
+  "focusedTestsPassed": 25,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

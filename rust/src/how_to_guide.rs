@@ -442,7 +442,10 @@ fn nominal_search(
         "procedure-nominal-title-namespaces",
         &record.id,
     )?;
-    let (namespace, prefix) = declaration.split_once('|')?;
+    let values = crate::seed::parser::split_pipe_list(&declaration);
+    let [namespace, prefix] = values.as_slice() else {
+        return None;
+    };
     Some((
         subject.to_owned(),
         format!("{prefix}:"),
@@ -723,6 +726,11 @@ impl CaptureExtractor for StepExtractor<'_> {
                 }
             }
             Payload::OpenSearch { .. } | Payload::Search { .. } => {}
+        }
+        // A later relevant capture replaces the rejected page's outcome detail.
+        // The accepted steps retain their own capture URL and digest.
+        if !read.items.is_empty() {
+            read.detail = Some(capture.source_url().to_owned());
         }
         read
     }

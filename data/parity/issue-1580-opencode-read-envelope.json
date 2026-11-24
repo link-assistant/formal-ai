@@ -1,0 +1,119 @@
+[
+  {
+    "id": "whole",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "first\n  café <content>",
+    "complete": true
+  },
+  {
+    "id": "empty",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n\n\n(End of file - total 0 lines)\n</content>",
+    "source": "",
+    "complete": true
+  },
+  {
+    "id": "blank-last-row",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2: \n\n(End of file - total 2 lines)\n</content>",
+    "source": "first\n",
+    "complete": true
+  },
+  {
+    "id": "slice-offset",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n2: second\n3: third\n\n(End of file - total 3 lines)\n</content>",
+    "source": "second\nthird",
+    "complete": false
+  },
+  {
+    "id": "partial-count",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2: second\n\n(End of file - total 3 lines)\n</content>",
+    "source": "first\nsecond",
+    "complete": false
+  },
+  {
+    "id": "wrong-path",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/other/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "<path>/tmp/other/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "complete": false
+  },
+  {
+    "id": "skipped-line",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n3:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n3:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "complete": false
+  },
+  {
+    "id": "zero-line",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n0: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n0: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "complete": false
+  },
+  {
+    "id": "nonnumeric",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\nx: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\nx: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "complete": false
+  },
+  {
+    "id": "unframed",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "<path>/tmp/work/source.txt</path>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "complete": false
+  },
+  {
+    "id": "truncated",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(Output truncated)\n</content>",
+    "source": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(Output truncated)\n</content>",
+    "complete": false
+  },
+  {
+    "id": "extra-suffix",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>extra",
+    "source": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>extra",
+    "complete": false
+  },
+  {
+    "id": "typed-raw-wrapper-is-source",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "complete": true,
+    "metadata": {
+      "path": "/tmp/work/source.txt",
+      "success": true,
+      "complete": true,
+      "format": "raw"
+    }
+  },
+  {
+    "id": "typed-opaque-wrapper-is-source",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "complete": false,
+    "metadata": {
+      "path": "/tmp/work/source.txt",
+      "complete": false,
+      "format": "opaque"
+    }
+  },
+  {
+    "id": "outer-failure",
+    "path": "/tmp/work/source.txt",
+    "raw": "<path>/tmp/work/source.txt</path>\n<type>file</type>\n<content>\n1: first\n2:   café <content>\n\n(End of file - total 2 lines)\n</content>",
+    "source": null,
+    "complete": false,
+    "failed": true
+  }
+]

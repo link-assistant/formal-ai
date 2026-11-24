@@ -1,0 +1,197 @@
+{
+  "mainCommit": "b5f83c1bf52171f53269cb3b899a0a6a6f4c0b23",
+  "preMergeCommit": "82c6922562396f9d72ee23a1fc3e9c2cad82d60b",
+  "files": [
+    {
+      "path": "outcome.json.gz",
+      "bytes": 1630,
+      "sha256": "49e2159c9e01a76728f173ee64e4678585d6907834eb4d3c70271a793cab05c7"
+    },
+    {
+      "path": "all-local-gates.log.gz",
+      "bytes": 6979,
+      "sha256": "fc00242c9baf8a3faf7497071966bd44f6ef2aba9fd19ca24918edc85cb236da"
+    },
+    {
+      "path": "notation.log.gz",
+      "bytes": 2049,
+      "sha256": "d4a639e14af56a89dbbda29a1bb140fd21f868faec3e2793ba0c51eac84d5ab5"
+    },
+    {
+      "path": "notation-staged.log.gz",
+      "bytes": 1858,
+      "sha256": "2ea857d780cfdb4e553a56a61aee95213391e4f171190d1c3ed317ae7fd79863"
+    },
+    {
+      "path": "default-branch-build-policy.log.gz",
+      "bytes": 17701,
+      "sha256": "f861651c76c3eae19641109704d09dbaf387f67e1d97dcc88111e888936f7ef6"
+    },
+    {
+      "path": "default-branch-build-policy-repaired.log.gz",
+      "bytes": 15802,
+      "sha256": "b3b34e7f3af6db61c9463b589f903fdefaf31f78474b893a300aaabd12d2085e"
+    },
+    {
+      "path": "repair-policy-outcome.json.gz",
+      "bytes": 439,
+      "sha256": "5cc418d18dd7af17e56ac2f0122e46dcf63afd69064891426c82096e9c373169"
+    },
+    {
+      "path": "core-boundary.log.gz",
+      "bytes": 68,
+      "sha256": "05f9da90123e694119f50ce8a87f1da22ba069f9db908f65f7f72c889faf54ea"
+    },
+    {
+      "path": "issue-1593-prompt-data.log.gz",
+      "bytes": 6017,
+      "sha256": "2d29af4dc222e2fa7090f76ec459cb5a5651466ca1fcde025c30cea905cdfc36"
+    },
+    {
+      "path": "seed-and-workflow-headroom.log.gz",
+      "bytes": 428,
+      "sha256": "a062164f4bb669f1f82bad5acb226d8cd06c1d7c579029c9b1586c17ffd72d72"
+    },
+    {
+      "path": "selected-source-wasm.log.gz",
+      "bytes": 3737,
+      "sha256": "f22b0df7dfab452c30e6390870f91d22c478ff8a6dfea70feb695a33d2254bf2"
+    },
+    {
+      "path": "rust-specification-unicode-identifiers.log.gz",
+      "bytes": 2952,
+      "sha256": "fa456b870bbdab60e7f5b90673cc41a4113c3fd1d97b442456e074629bcd8318"
+    },
+    {
+      "path": "worker-currency.log.gz",
+      "bytes": 117,
+      "sha256": "0b79857a90289b1a9e9116c9bfa1cbfdd9698da7cc844c95cd25d2f0352d3dc3"
+    },
+    {
+      "path": "final-worker-currency.log.gz",
+      "bytes": 117,
+      "sha256": "0b79857a90289b1a9e9116c9bfa1cbfdd9698da7cc844c95cd25d2f0352d3dc3"
+    },
+    {
+      "path": "translation-currency.log.gz",
+      "bytes": 188,
+      "sha256": "67c2783d2c3a6574a524941021485beede5a73c8da52f76588e115d2ed9165a5"
+    },
+    {
+      "path": "final-translation-currency.log.gz",
+      "bytes": 188,
+      "sha256": "67c2783d2c3a6574a524941021485beede5a73c8da52f76588e115d2ed9165a5"
+    },
+    {
+      "path": "baseline-difference-review.json.gz",
+      "bytes": 5201,
+      "sha256": "367157206c1c944fc5eea57d7818197cb3728f52d09d14e2d6019ce5ff9ab759"
+    },
+    {
+      "path": "baseline-difference-review.log.gz",
+      "bytes": 4300,
+      "sha256": "79160d5c000741ccccbd1375e7e24004fc14cc5ddeb10fe4f758c0968de5ba22"
+    },
+    {
+      "path": "canonical-generator-outcome.json.gz",
+      "bytes": 850,
+      "sha256": "b463203d2f2a5e4f3b839841049d4355077f83fa9bb18cf563115e888f6cceac"
+    },
+    {
+      "path": "rustfmt-merged-sources.log.gz",
+      "bytes": 37507,
+      "sha256": "f2749d2e6ac760f8baf5f6c2396930e33f5c0b6eac495c89e0242222bdedb812"
+    },
+    {
+      "path": "rustfmt-merged-sources-retry.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rustfmt-handwritten-merged-sources.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "seed-registry-after-format.log.gz",
+      "bytes": 277,
+      "sha256": "7b894bc79317b92f93e2361b5f2f9d4191af069c344e49cc426e462e85619ffc"
+    },
+    {
+      "path": "restore-canonical-seed-registry.log.gz",
+      "bytes": 231,
+      "sha256": "b4ccb241de8fc22c3f9c1671615740ca4a2adc3d9eda5925f870287713ba0cde"
+    },
+    {
+      "path": "verify-canonical-seed-registry.log.gz",
+      "bytes": 196,
+      "sha256": "eeecd0310ef8a48b76fbbb1f46a0b18f223fca157911e6a738bfbdc3f8e53e74"
+    },
+    {
+      "path": "authored-source-whitespace.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pull-request-current-diff.log.gz",
+      "bytes": 287,
+      "sha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5"
+    },
+    {
+      "path": "check-notation-retry.log.gz",
+      "bytes": 63,
+      "sha256": "aef399089a4c685156ca59fed14c29e29d1854a1db310fc71b349d13bbd33724"
+    },
+    {
+      "path": "final-outcome.json.gz",
+      "bytes": 619,
+      "sha256": "c016fdb36f04922f073c9c364aa72007f6d06a2de6c32c68eccb6062549697ed"
+    },
+    {
+      "path": "prompt-data-main-conflicts-driver.log.gz",
+      "bytes": 945,
+      "sha256": "2a9cf4d099ebdfdc704f4e55ee047314273adb123e2a1eb40279e3ca90f19437"
+    },
+    {
+      "path": "prompt-data-main-prerequisite-bootstrap.log.gz",
+      "bytes": 29397,
+      "sha256": "50e6862ffc37b64701ca59c9358e72fa84a6ecbdfbe74dece3f62651a845d6a3"
+    },
+    {
+      "path": "prompt-data-main-conflicts-retry-driver.log.gz",
+      "bytes": 510,
+      "sha256": "0c5684ce72719cf77d9c08fe5e54b4e843725e994f4e6c73ab43bbd1ffb9c053"
+    },
+    {
+      "path": "prompt-data-main-merge-inspection-driver.log.gz",
+      "bytes": 633,
+      "sha256": "078ed9f39e9deb013c7bad27a80a7de8e18802d9babe1ff98d6cb2acbfe6dc07"
+    },
+    {
+      "path": "initial-archive-abbreviation-failure.log.gz",
+      "bytes": 423,
+      "sha256": "31b61bc28852e9ced75b9034dd2b908250d9b47d37289413d9f5f18d93d9b007"
+    }
+  ],
+  "localGates": {
+    "attempted": 141,
+    "initialPasses": 87,
+    "hostedOnlySkips": 53,
+    "initialFailures": [
+      "check-notation"
+    ],
+    "unchangedFailedGateRetryPassed": true
+  },
+  "preservedSpecificationCases": 221,
+  "preservedUnsupportedItems": 968,
+  "independentAuthorshipCredit": 0,
+  "nativeBuildExecutedLocally": false,
+  "issueComplete": false,
+  "limits": [
+    "Full hosted final-source validation remains pending.",
+    "Raw imported session logs retain their original whitespace; authored source diff passes.",
+    "The seed generator owns exact included Rust bytes outside rustfmt reach.",
+    "Initial FormAI startup failed on generated conflict markers; the official JavaScript generator restored startup externally, and the unchanged request then succeeded.",
+    "The first archive filename introduced an abbreviation; renaming it in full repairs the unchanged 90-file ceiling."
+  ]
+}

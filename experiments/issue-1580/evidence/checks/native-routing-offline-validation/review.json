@@ -1,0 +1,19 @@
+{
+  "verifiedPayloads": 13,
+  "focusedJavaScriptPassed": 42,
+  "gateCounts": {
+    "PASS": 9,
+    "FAIL": 0
+  },
+  "initialFullPolicyResult": {
+    "pass": 32,
+    "fail": 2,
+    "expectedFailure": "The behavior step lacked FORMAL_AI_OFFLINE=1.",
+    "additionalFailure": "A separate existing VM expression probe exceeded its unchanged 100ms execution clock. The single focused before-repair replay reproduces only the missing offline setting, and all 34 policy cases pass after repair."
+  },
+  "fullDetailedGateLiteralReviewClaim": false,
+  "behaviorStepOnly": true,
+  "hostedVerificationPending": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

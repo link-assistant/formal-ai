@@ -10,10 +10,9 @@
 //! ([`plan_document_recipe`]) and one description of a recipe
 //! ([`DocumentRecipe`]).
 //!
-//! These live beside [`super::planner`] rather than inside it: the planner is the
-//! router that decides *which* recipe a request is, and this module is *what each
-//! recipe does*. Keeping the two apart means adding a recipe never lengthens the
-//! router.
+//! The planner offers its request to this family as one step. Within the
+//! family, the first matching recipe runs, in the same order as the
+//! JavaScript planner and the declared planner precedence.
 
 use serde_json::json;
 
@@ -36,6 +35,63 @@ use super::self_ast;
 use super::self_heal;
 use super::source_links;
 use crate::protocol::ChatMessage;
+
+type RecipePredicate = fn(&str) -> bool;
+type RecipeStep = fn(&str, &[ChatMessage], &[&str]) -> AgenticPlan;
+
+const SELF_REFERENTIAL_RECIPES: &[(RecipePredicate, RecipeStep)] = &[
+    (self_heal::is_self_heal_task, plan_self_heal_step),
+    (
+        dreaming_audit::is_dreaming_audit_task,
+        |_, messages, tools| plan_dreaming_audit_step(messages, tools),
+    ),
+    (self_ast::is_self_ast_task, |_, messages, tools| {
+        plan_self_ast_step(messages, tools)
+    }),
+    (source_links::is_source_links_task, |_, messages, tools| {
+        plan_source_links_step(messages, tools)
+    }),
+    // Self-healing claims its requests before the learning ledger.
+    (ledger::is_ledger_task, |_, messages, tools| {
+        plan_ledger_step(messages, tools)
+    }),
+    (explain::is_explain_task, |_, messages, tools| {
+        plan_explain_step(messages, tools)
+    }),
+    (
+        change_request::is_change_request_task,
+        plan_change_request_step,
+    ),
+    (
+        repair_strategy::is_repair_strategy_task,
+        plan_repair_strategy_step,
+    ),
+    (rebuild_plan::is_rebuild_task, plan_rebuild_step),
+    // Keep the more specific learning frontier ahead of the catalog.
+    (
+        google_trends_learning::is_google_trends_learning_task,
+        plan_google_trends_learning_step,
+    ),
+    (
+        google_trends_catalog::is_google_trends_catalog_task,
+        plan_google_trends_catalog_step,
+    ),
+    (
+        question_catalog::is_question_catalog_task,
+        |_, messages, tools| plan_question_catalog_step(messages, tools),
+    ),
+];
+
+pub(super) fn plan_self_referential_recipe(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let (_, step) = SELF_REFERENTIAL_RECIPES
+        .iter()
+        .find(|(predicate, _)| predicate(task))?;
+    Some(step(task, messages, tool_names))
+}
 
 /// A self-referential *generate → verify → final* recipe expressed as data.
 ///

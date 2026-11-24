@@ -1,0 +1,30 @@
+{
+  "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/32",
+  "reportedAt": "2026-11-20T01:20:41.427493+00:00",
+  "currentSourceHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "publishedEvidenceHead": "7fce5c19a7297a121d92eb09e7fefa99ca649eaf",
+  "records": [
+    {
+      "name": "head",
+      "file": "head.json.gz",
+      "rawSha256": "bdb794cd4bcff04fc6762bb58e28f89cf9786b41656de1ba70e1c23f8f5d003d",
+      "archiveSha256": "e73da3343ee5ee3b1c531abc0f4be5702c08b6a08c06252221087ace442f75c5"
+    },
+    {
+      "name": "issues",
+      "file": "issues.json.gz",
+      "rawSha256": "67dfb1acbece5c3c2d7e7ce7f7fb6ab5be82ea6809d70fae040caf3e62edf286",
+      "archiveSha256": "1867afc71591d05defa56b330e14bd3b8f636eee64957f7994916cbac3fec51f"
+    },
+    {
+      "name": "pull-requests",
+      "file": "pull-requests.json.gz",
+      "rawSha256": "7f4d5ffa955e708750f184e4d0beb4eb4cab17dc6ce27f0b5a19e935de8d2920",
+      "archiveSha256": "b85aea2d0a6e2b1fbe8b6003ae5a73cc94d3c96d5f018c0baafc5140644c5192"
+    }
+  ],
+  "duplicateCheck": "All current issue/PR titles and relevant release reports reviewed; source remains unchanged. #31 has a different failed-commit trigger.",
+  "upstreamRepairApplied": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

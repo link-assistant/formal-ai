@@ -32,8 +32,8 @@ const SOLVER_ENGINE_LINK_CALCULATOR = "link-calculator";
 const SOLVER_PROMOTIONS_FILE = "handler-promotions.lino";
 const SOLVER_CACHE_POLICY_FILE = "program-cache-policy.lino";
 
-function solverEvent(kind, payload) {
-  return { kind, payload: String(payload === undefined || payload === null ? "" : payload) };
+function solverEvent(kind, payload, sourceOrigin) {
+  return { kind, payload: String(payload === undefined || payload === null ? "" : payload), ...(sourceOrigin === undefined ? {} : { source_origin: sourceOrigin }) };
 }
 
 // ---------------------------------------------------------------- calculator
@@ -131,13 +131,20 @@ function linkCalculatorTrace(expression) {
 }
 
 // `try_arithmetic`: the calculator trace for one evaluated expression.
-function solverCalculationEvents(expression, content, backend) {
+function solverCalculationEvents(expression, content, backend, quantity = false) {
   const events = [solverEvent("calculation:request", expression)];
   const trace = /^js$|^wasm$/.test(String(backend)) ? linkCalculatorTrace(expression) : null;
   if (trace) {
-    events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR));
-    events.push(solverEvent("calculation:lino", trace.lino));
-    events.push(solverEvent("calculation:steps", trace.steps));
+    // A routed arithmetic method can reach either emitter; record the branch.
+    if (quantity) {
+      events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR, "calculation:quantity:engine"));
+      events.push(solverEvent("calculation:lino", trace.lino, "calculation:quantity:lino"));
+      events.push(solverEvent("calculation:steps", trace.steps, "calculation:quantity:steps"));
+    } else {
+      events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR, "calculation:arithmetic:engine"));
+      events.push(solverEvent("calculation:lino", trace.lino, "calculation:arithmetic:lino"));
+      events.push(solverEvent("calculation:steps", trace.steps, "calculation:arithmetic:steps"));
+    }
   }
   events.push(solverEvent("calculation", content));
   return events;
@@ -321,7 +328,7 @@ function solverEventLog(prompt, answer) {
   // Issue #1550: `record_answer_test` and `record_selection` of the turn.
   const procedure = crateModule(SOLVER_META_EXECUTOR_MODULE);
   if (!events.some((event) => event.kind === SOLVER_EVENT_VALIDATION)) {
-    events.push(solverEvent(SOLVER_EVENT_VALIDATION, procedure.answerValidation(answer.intent, answer.content)));
+    events.push(solverEvent(SOLVER_EVENT_VALIDATION, procedure.answerValidation(answer.intent, answer.content), "validation:answer"));
   }
   events.push(solverEvent("response", answer.responseLink || `${SOLVER_RESPONSE_PREFIX}${answer.intent}`));
   // The `finalize_simple` tail; the `trace` link is the Telegram `/trace` footer.
@@ -345,4 +352,62 @@ function recordSolverEventLog(result, prompt, answer) {
   if (!links) return;
   const present = new Set(result.evidence);
   result.evidence = [...result.evidence, ...links.filter((link) => !present.has(link))];
+}
+
+function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  // Issue #1173 R5: no answer may be the canned search-machinery description.
+  answer = guardCannedWebSearchAnswer(
+    answer,
+    (formalizationContext && formalizationContext.language) || "en",
+  );
+  const interpretations = collectInterpretations(formalizationContext, answer);
+  answer = applyVisibleInterpretations(answer, interpretations);
+  applyResolvedFormalization(events, steps, formalizationContext, answer);
+  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const projection = deformalizeProjection(formalizationContext, answer);
+  events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
+  // diagnostics panel; `answer` carries the clean composed answer so the
+  // human-readable thinking preview can show "Compose the answer: …" (issue
+  // #488) without leaking the tuple.
+  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
+  steps.push({
+    step: "deformalize",
+    detail: projection.summary,
+    projection,
+    answer: answerFirstLine,
+  });
+  const trace = events.map((event) => `trace:${event}`);
+  const result = {
+    intent: answer.intent,
+    content: answer.content,
+    confidence: answer.confidence,
+    evidence: [...evidence, ...trace],
+    steps: withThinkingLevels(steps),
+    toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
+  };
+  if (formalizationContext?.initial) {
+    const preceding = formalizationContext.solverEvents;
+    const traced = preceding ? { ...answer, solverEvents: [...preceding, ...(answer.solverEvents || [])] } : answer;
+    recordSolverEventLog(result, formalizationContext.initial.raw, traced); // R1013
+  }
+  if (formalizationContext && formalizationContext.meta) {
+    result.derivation = formalizationContext.meta.derivationLino;
+  }
+  if (answer.iframeUrl) {
+    result.iframeUrl = answer.iframeUrl;
+  }
+  if (answer.diagnostics) {
+    result.diagnostics = answer.diagnostics;
+  }
+  if (answer.programExecution) {
+    result.programExecution = answer.programExecution; // R1013
+  }
+  if (answer.synthesizedProgram) result.synthesizedProgram = answer.synthesizedProgram;
+  // Issue #529: carry a natural-language memory write (append/substitution) out
+  // to the app so it can apply the read+write transform to persistent storage.
+  if (answer.memoryOperation) {
+    result.memoryOperation = answer.memoryOperation;
+  }
+  return result;
 }

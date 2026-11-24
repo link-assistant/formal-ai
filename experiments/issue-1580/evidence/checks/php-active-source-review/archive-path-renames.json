@@ -1,0 +1,21 @@
+{
+  "payloadBytesPreserved": true,
+  "abbreviationRatchetChanged": false,
+  "renames": [
+    {
+      "old": "upstream-scripts_src_ReleaseNotes.php.gz",
+      "new": "upstream-scripts_source_ReleaseNotes.php.gz",
+      "archiveSha256": "572733e8d0364196c6d807af3bf19592c88d3c500816640c17cf2f3fdb7dd4f1"
+    },
+    {
+      "old": "upstream-source-scripts_src_ReleaseNotes.php.stderr.gz.gz",
+      "new": "upstream-source-scripts_source_ReleaseNotes.php.stderr.gz.gz",
+      "archiveSha256": "cefdc18e2b2d99c47233ca21c06366c55af5fa7672cc99c29f9b5892ea5a0d2a"
+    },
+    {
+      "old": "upstream-source-scripts_src_ReleaseNotes.php.stdout.gz.gz",
+      "new": "upstream-source-scripts_source_ReleaseNotes.php.stdout.gz.gz",
+      "archiveSha256": "ce828fe0eecda3b4ab5f4e4c1c9c8dc6839274ea70910785dbaef201a060ce27"
+    }
+  ]
+}

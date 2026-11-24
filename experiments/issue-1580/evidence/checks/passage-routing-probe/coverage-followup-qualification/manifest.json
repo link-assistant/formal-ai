@@ -1,0 +1,284 @@
+{
+  "schema": "issue-1580-coverage-followup/v1",
+  "createdAt": "2026-11-18T06:19:18.500327+00:00",
+  "studies": [
+    {
+      "label": "parent-answer-coverage-rerun",
+      "artifact": "experiments/issue-1580/evidence/checks/passage-routing-probe/parent-answer-coverage.json.gz",
+      "rawBytes": 478072,
+      "rawSha256": "78336fb19fbbff8329b45ab42256ff5c865e89f316639c23073c8292d9ca724a",
+      "archiveSha256": "268e24b1eb2ba54670628c8d1657865db09895b43774c10d4c291466aaaf3923",
+      "qualification": [
+        [
+          "original",
+          false
+        ],
+        [
+          "held-out-facts",
+          false
+        ],
+        [
+          "withheld-child",
+          true
+        ],
+        [
+          "quoted-connective",
+          true
+        ],
+        [
+          "independent-arithmetic",
+          false
+        ],
+        [
+          "two-independent-passages",
+          false
+        ],
+        [
+          "uncovered-subject",
+          true
+        ],
+        [
+          "standalone-arithmetic",
+          true
+        ],
+        [
+          "concrete-output-contract",
+          true
+        ]
+      ],
+      "qualificationPassed": 5,
+      "qualificationTotal": 9,
+      "fixtureCompatibilityPassed": 0,
+      "fixtureCompatibilityTotal": 0,
+      "structuralControlsPassed": 0,
+      "structuralControlsTotal": 0,
+      "workerFinished": true,
+      "workerExitCode": 0
+    },
+    {
+      "label": "passage-cue-coverage-probe",
+      "artifact": "experiments/issue-1580/evidence/checks/passage-routing-probe/passage-cue-coverage.json.gz",
+      "rawBytes": 548968,
+      "rawSha256": "089bffa02924e72d2cf0b1b32d7fc8b7e0b9aa010dc50f0c71e4c75e3c591c0e",
+      "archiveSha256": "6658f729763ab99943abe923e28722d50c786b0d794219f9a5713fa2fd765cce",
+      "qualification": [
+        [
+          "original",
+          false
+        ],
+        [
+          "held-out-facts",
+          false
+        ],
+        [
+          "withheld-child",
+          true
+        ],
+        [
+          "quoted-connective",
+          true
+        ],
+        [
+          "independent-arithmetic",
+          false
+        ],
+        [
+          "two-independent-passages",
+          true
+        ],
+        [
+          "uncovered-subject",
+          true
+        ],
+        [
+          "standalone-arithmetic",
+          true
+        ],
+        [
+          "operation-before-passage-cue",
+          false
+        ],
+        [
+          "concrete-output-contract",
+          true
+        ]
+      ],
+      "qualificationPassed": 6,
+      "qualificationTotal": 10,
+      "fixtureCompatibilityPassed": 25,
+      "fixtureCompatibilityTotal": 25,
+      "structuralControlsPassed": 2,
+      "structuralControlsTotal": 2,
+      "workerFinished": true,
+      "workerExitCode": 0
+    },
+    {
+      "label": "passage-cue-coverage-normalized",
+      "artifact": "experiments/issue-1580/evidence/checks/passage-routing-probe/passage-cue-coverage-normalized.json.gz",
+      "rawBytes": 542559,
+      "rawSha256": "b4fea9415b463c0978c02cfab0d253cfded31760265614f2798f308c1af118c9",
+      "archiveSha256": "78f5a797ca92dbb39c1e7b7d71605967d70a1b58892541e7f5e7f2e1dc0765be",
+      "qualification": [
+        [
+          "original",
+          true
+        ],
+        [
+          "held-out-facts",
+          true
+        ],
+        [
+          "withheld-child",
+          true
+        ],
+        [
+          "quoted-connective",
+          true
+        ],
+        [
+          "independent-arithmetic",
+          true
+        ],
+        [
+          "two-independent-passages",
+          true
+        ],
+        [
+          "uncovered-subject",
+          true
+        ],
+        [
+          "standalone-arithmetic",
+          true
+        ],
+        [
+          "operation-before-passage-cue",
+          true
+        ],
+        [
+          "concrete-output-contract",
+          true
+        ]
+      ],
+      "qualificationPassed": 10,
+      "qualificationTotal": 10,
+      "fixtureCompatibilityPassed": 25,
+      "fixtureCompatibilityTotal": 25,
+      "structuralControlsPassed": 2,
+      "structuralControlsTotal": 2,
+      "workerFinished": true,
+      "workerExitCode": 0
+    }
+  ],
+  "files": [
+    {
+      "source": "experiments/issue-1580/probe-parent-answer-coverage.mjs",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/probe-parent-answer-coverage.mjs.gz",
+      "rawBytes": 13138,
+      "rawSha256": "104c5be4b97c4e800ce26e80712028071646ea47057ca4b8b59027a4c429ec92",
+      "archiveSha256": "d10723e9a705feea00faf67ad983d88281a42c2e57425db985d5ea4b9571f67e"
+    },
+    {
+      "source": "experiments/issue-1580/probe-passage-cue-coverage.mjs",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/probe-passage-cue-coverage.mjs.gz",
+      "rawBytes": 18257,
+      "rawSha256": "812e4159f7bef5b78e7978aea55f0beda74f4b74abe1de14d9d73bba89ed42c3",
+      "archiveSha256": "362c88347de24ad4018513ddede28cb9d2bc686bde2d035c821b987b27f4a028"
+    },
+    {
+      "source": "/tmp/issue-1580-research/parent-answer-coverage-rerun/syntax.json",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/parent-answer-coverage-rerun-syntax.json.gz",
+      "rawBytes": 52,
+      "rawSha256": "6d620d1c454a90e41ee536109b1fee6ba5177ac2ee9d3aeb3a9f1e108bf3f044",
+      "archiveSha256": "5aa35498186d04f67d5176b5f1d30dcd77a4607b32fbf0cef5faed1b287f769e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/parent-answer-coverage-rerun/process.json",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/parent-answer-coverage-rerun-process.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "3aeaf20db2903fb6d284b0e8550b74629fb37dbc066f8ea70c297e58ca5d719c",
+      "archiveSha256": "559afe808eb0d7e580c4c3733d7794f4b8981b274019f58383e4f804dadef0d8"
+    },
+    {
+      "source": "/tmp/issue-1580-research/parent-answer-coverage-rerun/stdout.log",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/parent-answer-coverage-rerun-stdout.log.gz",
+      "rawBytes": 9016,
+      "rawSha256": "283f34bca1f144f26d23124288088dc28dea195896a1537abc2e485988fa1a35",
+      "archiveSha256": "a51e19694b9548007bfff69165ca748a47ec77e2fe982d9202bc009f7af790fb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/parent-answer-coverage-rerun/stderr.log",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/parent-answer-coverage-rerun-stderr.log.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-probe/syntax.json",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-probe-syntax.json.gz",
+      "rawBytes": 52,
+      "rawSha256": "6d620d1c454a90e41ee536109b1fee6ba5177ac2ee9d3aeb3a9f1e108bf3f044",
+      "archiveSha256": "5aa35498186d04f67d5176b5f1d30dcd77a4607b32fbf0cef5faed1b287f769e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-probe/process.json",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-probe-process.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "924c46ca3d10e64d7ded67247064b5f216ebdbcb28412a366729b66f854c0cad",
+      "archiveSha256": "8e3f7c9af16a841aef70ebfb0bcb345592afe083dbf084bf6b5703c365853ffd"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-probe/stdout.log",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-probe-stdout.log.gz",
+      "rawBytes": 12506,
+      "rawSha256": "bf04912ee308549ba195085ad5c6786a04a0b15d5c7a372412a90fd2dd7c535a",
+      "archiveSha256": "65f1d74282a25905c0d0da371e75c59b97acc72e2acb3932716dba01c703e1c5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-probe/stderr.log",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-probe-stderr.log.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-normalized/syntax.json",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-normalized-syntax.json.gz",
+      "rawBytes": 52,
+      "rawSha256": "6d620d1c454a90e41ee536109b1fee6ba5177ac2ee9d3aeb3a9f1e108bf3f044",
+      "archiveSha256": "5aa35498186d04f67d5176b5f1d30dcd77a4607b32fbf0cef5faed1b287f769e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-normalized/process.json",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-normalized-process.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "be4767647702d6bcbd1f842a7722dca5cb13158b84d738a3273d74e7c408f77c",
+      "archiveSha256": "e33ba8a98eef8146420519d4e7a2487e15bad4126f16c5f5af6f356abef1bb51"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-normalized/stdout.log",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-normalized-stdout.log.gz",
+      "rawBytes": 12779,
+      "rawSha256": "b652f3758f8f65202173c0af282d9fc86c88993c1dbe275aa4088dac748b734e",
+      "archiveSha256": "669a7cb6b9ddb8f3890a865599350148a119a3c6f74cafba473ef292499aff21"
+    },
+    {
+      "source": "/tmp/issue-1580-research/passage-cue-coverage-normalized/stderr.log",
+      "archive": "experiments/issue-1580/evidence/checks/passage-routing-probe/coverage-followup-qualification/passage-cue-coverage-normalized-stderr.log.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "allQualificationStdoutLiterallyRead": true,
+  "completeNestedTracesLiterallyRead": false,
+  "productionAdopted": false,
+  "statementMetadataIsGeneralProof": false,
+  "openCriteria": [
+    "Aggregated provenance on adopted composition",
+    "Native execution and parity",
+    "Broader language and formatting obligations",
+    "General proof of parent-answer coverage"
+  ],
+  "independentAuthorshipCredit": 0
+}

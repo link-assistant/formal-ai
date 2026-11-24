@@ -9,8 +9,9 @@
 //
 // An append site is a call that names its kind as a string literal, or as a
 // string constant of the same file:
-//   - Rust: `<log>.append("<kind>", …)`;
+//   - Rust: `<log>.append("<kind>", …)` or `append_with_origin(kind, origin, …)`;
 //   - JavaScript: `solverEvent("<kind>", …)` and `<log>.push({ kind: "<kind>", … })`.
+// The optional third JavaScript argument records an exact append-site identity.
 // Its function is the nearest enclosing definition (`fn` / `function`) that is
 // less indented than the call. Sites are listed once per function, sorted.
 //
@@ -21,6 +22,9 @@
 
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { parse } from '@babel/parser';
+import traversal from '@babel/traverse';
+const traverse = traversal.default ?? traversal;
 
 import { STAGE_SOURCES, definedName, readText, treeFiles } from '../js/server/debug-stage-sources.mjs';
 import { REPO_ROOT } from '../js/server/lino.mjs';
@@ -33,8 +37,11 @@ const RUNTIMES = [
     keyword: 'fn',
     trees: [{ path: 'rust/src', extension: '.rs' }],
     // Every protocol turn is solved here (`solve_with_history`).
-    entries: [{ path: 'rust/src/solver.rs', symbol: 'solve_inner' }],
-    sites: [/\.append\(\s*("[^"\\]*"|[A-Z][A-Z0-9_]*)\s*,/g],
+    entries: [{ path: 'rust/src/solver.rs', symbol: 'solve_with_history_probability_store_and_intent_cache' }],
+    sites: [
+      /\.append\(\s*("[^"\\]*"|[A-Z][A-Z0-9_]*)\s*,/g,
+      /\.append_with_origin\(\s*("[^"\\]*"|[A-Z][A-Z0-9_]*)\s*,\s*("[^"\\]*"|[A-Z][A-Z0-9_]*)\s*,/g,
+    ],
     constant: /^\s*(?:pub(?:\([a-z]+\))?\s+)?const ([A-Z][A-Z0-9_]*): &str = ("[^"\\]*");/,
   },
   {
@@ -67,6 +74,7 @@ const HEADER = `# Which functions emit each stage of a debugged turn (issue #667
 # debug session (js/server/debug-stage-sources.mjs, Rust twin
 # rust/src/server/debug_stage_sources.rs) picks one per stage: the only one,
 # else the one fewest calls from the turn's routed handler, else from the entry.
+# Recorded origin identities resolve their actual append site directly.
 `;
 
 const unquote = (token) => token.replace(/^["'](.*)["']$/, '$1');
@@ -84,6 +92,21 @@ function enclosing(lines, index, keyword) {
   return null;
 }
 
+/** Actual literal/constant origin arguments, with nested payload calls parsed. */
+function javascriptOrigins(text, constants) {
+  const origins = new Map();
+  if (!/solverEvent\s*\(/u.test(text)) return origins;
+  traverse(parse(text, { sourceType: 'unambiguous' }), {
+    CallExpression({ node }) {
+      if (node.callee.type !== 'Identifier' || node.callee.name !== 'solverEvent') return;
+      const argument = node.arguments[2];
+      if (argument?.type === 'StringLiteral') origins.set(node.start, argument.value);
+      else if (argument?.type === 'Identifier') origins.set(node.start, constants.get(argument.name));
+    },
+  });
+  return origins;
+}
+
 /** Every `(kind, path, symbol)` append site of one runtime. */
 function appendSites(runtime) {
   const sites = [];
@@ -96,11 +119,13 @@ function appendSites(runtime) {
         const match = runtime.constant.exec(line);
         if (match) constants.set(match[1], unquote(match[2]));
       }
+      const origins = runtime.name === 'js' ? javascriptOrigins(text, constants) : new Map();
       for (const pattern of runtime.sites) {
         for (const match of text.matchAll(pattern)) {
           const kind = /^["']/.test(match[1]) ? unquote(match[1]) : constants.get(match[1]);
           const symbol = kind ? enclosing(lines, lineAt(text, match.index), runtime.keyword) : null;
-          if (symbol) sites.push({ kind, path: file, symbol });
+          const origin = origins.get(match.index) ?? (match[2] ? (/^["']/.test(match[2]) ? unquote(match[2]) : constants.get(match[2])) : null);
+          if (symbol) sites.push({ kind, origin, path: file, symbol });
         }
       }
     }
@@ -117,19 +142,24 @@ function stepFor(kind) {
 export function renderStageSources() {
   const out = [HEADER.trimEnd(), 'debug_stage_sources'];
   const events = new Map();
+  const kinds = new Map();
   for (const runtime of RUNTIMES) {
     out.push(`  runtime ${runtime.name}`, `    keyword ${runtime.keyword}`);
     for (const tree of runtime.trees) out.push(`    tree "${tree.path}" "${tree.extension}"`);
     for (const entry of runtime.entries) out.push(`    entry "${entry.path}" "${entry.symbol}"`);
     for (const site of appendSites(runtime)) {
-      if (!events.has(site.kind)) events.set(site.kind, new Map());
-      const rows = events.get(site.kind);
-      if (!rows.has(runtime.name)) rows.set(runtime.name, new Set());
-      rows.get(runtime.name).add(`"${site.path}" "${site.symbol}"`);
+      for (const key of new Set([site.kind, site.origin].filter(Boolean))) {
+        if (kinds.has(key) && kinds.get(key) !== site.kind) throw new Error(`Conflicting event origin: ${key}`);
+        kinds.set(key, site.kind);
+        if (!events.has(key)) events.set(key, new Map());
+        const rows = events.get(key);
+        if (!rows.has(runtime.name)) rows.set(runtime.name, new Set());
+        rows.get(runtime.name).add(`"${site.path}" "${site.symbol}"`);
+      }
     }
   }
   for (const kind of [...events.keys()].sort()) {
-    const step = stepFor(kind);
+    const step = stepFor(kinds.get(kind));
     if (!step) continue;
     out.push(`  event "${kind}"`, `    step ${step}`);
     for (const runtime of RUNTIMES) {

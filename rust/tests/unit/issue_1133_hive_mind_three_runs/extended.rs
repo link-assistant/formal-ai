@@ -1,65 +1,9 @@
 use super::*;
 
-// Canonical template keys are literal placeholders, not Rust format captures.
-const FILES_PLACEHOLDER: &str = "{files}";
-const SUBJECT_PLACEHOLDER: &str = "{subject}";
-const BODY_PLACEHOLDER: &str = "{body}";
-
-// Reuse the production reader and canonical templates without exporting a planner helper.
-use crate::canonical_work_item_steps;
-
-fn expected_owned_recipe_commit(planned: &[PlannedToolCall]) -> String {
-    let paths = planned
-        .iter()
-        .filter(|call| call.tool == "write")
-        .filter(|call| {
-            let arguments: serde_json::Value =
-                serde_json::from_str(&call.arguments).expect("write arguments");
-            arguments["append_mode"] != "atomic_record_append"
-        })
-        .map(path_of)
-        .collect::<Vec<_>>();
-    assert_eq!(paths.first().map(String::as_str), Some("Main.scala"));
-    assert_eq!(
-        paths
-            .iter()
-            .collect::<std::collections::BTreeSet<_>>()
-            .len(),
-        paths.len(),
-        "one ordered write per recipe path"
-    );
-    let quote = |value: &str| {
-        assert!(
-            !value.contains('\''),
-            "these fixture operands contain no shell quote"
-        );
-        format!("'{value}'")
-    };
-    let files = paths
-        .iter()
-        .map(|value| quote(value))
-        .collect::<Vec<_>>()
-        .join(" ");
-    let subject = canonical_work_item_steps::fill("subject_added", &[("{path}", &paths[0])]);
-    let body = canonical_work_item_steps::fill("body_resolves", &[("{reference}", ISSUE)]);
-    let inner = canonical_work_item_steps::fill(
-        "recipe_commit_command",
-        &[
-            (FILES_PLACEHOLDER, "\"$@\""),
-            (SUBJECT_PLACEHOLDER, &quote(&subject)),
-            (BODY_PLACEHOLDER, &quote(&body)),
-            ("{branch}", &quote(BRANCH)),
-        ],
-    );
-    canonical_work_item_steps::fill(
-        "task-scaffold-commit-command",
-        &[
-            (FILES_PLACEHOLDER, &files),
-            ("{reference}", &quote(ISSUE)),
-            ("{commit}", &inner),
-        ],
-    )
-}
+mod commit_expectations;
+use commit_expectations::{
+    assert_named_branch_push, commit_phase_prompt, expected_owned_recipe_commit,
+};
 
 #[test]
 fn the_claude_code_tool_set_reads_the_issue_with_gh_not_a_nested_model() {
@@ -159,23 +103,32 @@ fn a_fetch_only_client_progresses_past_the_read_without_refetching() {
 
 #[test]
 fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
+    let delivery = crate::offline_delivery::Workspace::for_work_item(
+        "Kotlin",
+        "issue-1133-full-claude",
+        BRANCH,
+        PR,
+    );
     let mut messages = vec![ChatMessage::user(prompt())];
     let kotlin = page("Kotlin");
-    let (planned, answer) = drive(
+    let (planned, answer) = drive_with_delivery_workspace(
         CLAUDE_TOOLS.as_slice(),
         &mut messages,
         |tool, arguments| {
             if is_work_item_read(tool, arguments) {
                 kotlin.clone()
-            } else if tool == "Bash" && arguments.contains("git push") {
-                "feed1234\n".to_owned()
-            } else if tool == "Bash" {
-                "Hello, World!\n".to_owned()
+            } else if tool == "Bash"
+                && serde_json::from_str::<serde_json::Value>(arguments).unwrap()["command"]
+                    == "sh tests/verify-output.sh"
+            {
+                // Compiler results are mocked; Git delivery is observed in this workspace.
+                "Output: Hello, World!\n\nExit Code: 0".to_owned()
             } else {
                 String::new()
             }
         },
         24,
+        Some(&delivery),
     );
     assert_eq!(
         planned
@@ -203,7 +156,24 @@ fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
         "{planned:?}"
     );
     let answer = answer.expect("full Claude drive terminates");
-    assert!(answer.contains("Committed and pushed"), "{answer}");
+    let outcome = delivery.outcome();
+    assert_eq!(outcome.commits, 2, "one work-item commit is created");
+    assert_eq!(outcome.head, outcome.pushed_head);
+    assert_eq!(outcome.status, "", "delivery leaves a clean workspace");
+    for path in [
+        "Main.kt",
+        "tests/verify-output.sh",
+        ".github/workflows/Main.yml",
+    ] {
+        assert!(outcome.pushed.iter().any(|file| file == path), "{path}");
+    }
+    assert_eq!(outcome.pr["isDraft"], false);
+    assert!(outcome.pr["body"].as_str().unwrap().contains(ISSUE));
+    assert!(answer.contains(&outcome.head), "{answer}");
+    assert!(
+        answer.contains("Owned source, local execution, and the requested workflow were verified"),
+        "{answer}"
+    );
 }
 
 #[test]
@@ -336,6 +306,7 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
             "bash" => "/bin/sh: 1: scalac: not found\n".to_owned(),
             _ => String::new(),
         },
+        // Source probes, all owned writes, issue read, verifier and final answer.
         8,
     );
     let answer = answer.expect("the run must end in a final answer");
@@ -346,20 +317,33 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
         "{planned:?}"
     );
     assert!(!answer.contains("Created and verified"), "{answer}");
+    let failed = messages
+        .iter()
+        .find(|message| {
+            message.role == "tool"
+                && message.content.plain_text() == "/bin/sh: 1: scalac: not found\n"
+        })
+        .expect("the compiler failure result");
+    let failed_call = messages
+        .iter()
+        .flat_map(|message| &message.tool_calls)
+        .find(|call| failed.tool_call_id.as_deref() == Some(call.id.as_str()))
+        .expect("the call correlated with the compiler failure");
+    let failed_arguments: serde_json::Value =
+        serde_json::from_str(&failed_call.function.arguments).unwrap();
+    let failed_command = failed_arguments["command"]
+        .as_str()
+        .expect("failed command");
+    assert!(!failed_command.is_empty());
     assert!(
-        answer.contains(&command_of(
-            planned
-                .iter()
-                .find(|call| call.tool == "bash" && !is_work_item_read(&call.tool, &call.arguments))
-                .expect("the actual failed verifier call")
-        )) && answer.contains("/bin/sh: 1: scalac: not found"),
+        answer.contains(failed_command) && answer.contains("/bin/sh: 1: scalac: not found"),
         "{answer}"
     );
 }
 
 #[test]
 fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
-    let mut messages = vec![ChatMessage::user(prompt())];
+    let mut messages = vec![ChatMessage::user(commit_phase_prompt())];
     let scala = page("Scala");
     let (planned, answer) = drive(
         AGENT_TOOLS.as_slice(),
@@ -519,7 +503,9 @@ fn codex_reads_the_issue_through_gh_when_the_only_fetch_tool_is_a_remote_connect
 fn codex_plans_the_work_item_and_never_narrates_the_connector_placeholder() {
     let mut messages = vec![ChatMessage::user(prompt().replace("Scala", "Rust"))];
     let rust = page("Rust");
-    let (planned, answer) = drive(
+    let workspace =
+        crate::offline_delivery::Workspace::for_work_item("Rust", "issue-1133-codex", BRANCH, PR);
+    let (planned, answer) = drive_with_delivery_workspace(
         CODEX_TOOLS.as_slice(),
         &mut messages,
         |tool, arguments| match tool {
@@ -528,7 +514,9 @@ fn codex_plans_the_work_item_and_never_narrates_the_connector_placeholder() {
             "shell" => "Hello, World!\n".to_owned(),
             _ => String::new(),
         },
-        10,
+        // The observed physical delivery takes 17 calls plus its final answer.
+        18,
+        Some(&workspace),
     );
     assert!(
         planned.iter().any(|call| call.tool == "apply_patch"),
@@ -536,7 +524,27 @@ fn codex_plans_the_work_item_and_never_narrates_the_connector_placeholder() {
     );
     let answer = answer.expect("final answer");
     assert!(!answer.contains("command completed. Output"), "{answer}");
-    assert!(answer.contains("Committed and pushed"), "{answer}");
+    let outcome = workspace.outcome();
+    assert_eq!(outcome.commits, 2, "the created work item is committed");
+    assert_eq!(
+        outcome.head, outcome.pushed_head,
+        "the named branch is pushed"
+    );
+    assert_eq!(outcome.status, "", "delivery leaves a clean working tree");
+    for path in [
+        "main.rs",
+        "tests/verify-output.sh",
+        ".github/workflows/main.yml",
+    ] {
+        assert!(outcome.pushed.iter().any(|file| file == path), "{path}");
+    }
+    assert_eq!(outcome.pr["isDraft"], false);
+    assert!(outcome.pr["body"].as_str().unwrap().contains(ISSUE));
+    assert!(answer.contains(&outcome.head), "{answer}");
+    assert!(
+        answer.contains("Owned source, local execution, and the requested workflow were verified"),
+        "{answer}"
+    );
 }
 
 #[test]
@@ -551,6 +559,22 @@ fn a_connector_result_keeps_its_structured_content() {
     let envelope = "{\"content\":[{\"type\":\"text\",\"text\":\"Action completed.\"}],\"structuredContent\":{\"content\":\"{\\\"number\\\":1,\\\"title\\\":\\\"Implement Hello World in Rust\\\",\\\"body\\\":\\\"## Task\\\\nPlease implement a Hello World program in Rust.\\\"}\"}}";
     record(&mut messages, "c0", &fetch, &fetch.arguments, envelope);
     let tools = ["write", "bash", "mcp__codex_apps__github_fetch"];
+    let source_calls = calls(plan_chat_step(&messages, tools.as_slice()));
+    let source_call = &source_calls[0];
+    assert_eq!(source_call.tool, "bash", "{source_calls:?}");
+    let source_command = command_of(source_call);
+    assert!(
+        source_command.contains("workspace-source-v1"),
+        "{source_command}"
+    );
+    assert!(source_command.contains("main.rs"), "{source_command}");
+    // Observe the real workspace before the planner decides whether to create
+    // or edit the entry point; the connector envelope above stays unchanged.
+    let mut workspace =
+        crate::observed_plan_tools::ToolWorkspace::new("issue-1133-connector-source-observation");
+    let observed = workspace.execute("c1", source_call);
+    record(&mut messages, "c1", source_call, &source_call.arguments, "");
+    *messages.last_mut().expect("recorded source observation") = observed;
     let calls = calls(plan_chat_step(&messages, tools.as_slice()));
     assert_eq!(calls[0].tool, "write", "{calls:?}");
     assert!(calls[0].arguments.contains("fn main()"), "{calls:?}");
@@ -644,40 +668,6 @@ fn a_commit_request_is_a_git_step_in_every_language() {
 }
 
 /// Every original language case retains the same planner drive and push assertion.
-fn assert_named_branch_push(language: &str, request: String) {
-    let scala = page("Scala");
-    let mut messages = vec![ChatMessage::user(request)];
-    let (planned, _) = drive(
-        AGENT_TOOLS.as_slice(),
-        &mut messages,
-        |tool, arguments| {
-            if is_work_item_read(tool, arguments) {
-                scala.clone()
-            } else {
-                "Hello, World!\n".to_owned()
-            }
-        },
-        10,
-    );
-    let commit = planned
-        .iter()
-        .map(command_of)
-        .find(|command| command == &expected_owned_recipe_commit(&planned))
-        .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
-    assert!(
-        commit.contains(&format!("__formal_ai_push_ref='{BRANCH}'")),
-        "{language}: named branch binding: {commit}"
-    );
-    assert!(
-        commit.contains("git push -q origin \"$__formal_ai_push_ref\""),
-        "{language}: the bound branch must be the actual push operand: {commit}"
-    );
-    assert!(
-        commit.contains("git symbolic-ref --quiet --short HEAD"),
-        "{language}: detached HEAD must be refused: {commit}"
-    );
-}
-
 #[test]
 fn the_named_branch_is_pushed_to_in_every_language() {
     assert_named_branch_push(

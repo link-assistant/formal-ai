@@ -1,3 +1,4 @@
+import {readCanonicalSource} from './canonical-release-source.mjs';
 // A successful source-registered publication job is not a green pipeline or effect authority.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -16,13 +17,13 @@ const gitBlob = bytes => createHash('sha1').update(Buffer.concat([
 
 /** Derive the registered route from the existing lossless release compiler. */
 export function publicationContract(cwd) {
-  const canonical = readFileSync(join(cwd, evidence, 'original-release-workflow.yml'), 'utf8');
+  const canonicalSource=readCanonicalSource(cwd),canonical=canonicalSource.text;
   const packetSource = readFileSync(join(cwd, evidence, 'stage-source-coverage.json'), 'utf8');
   return compileContract({
     canonical, packet: JSON.parse(packetSource), YAML,
     callerDraft: readFileSync(join(cwd, '.github/workflows/release.yml'), 'utf8'),
     staged: readFileSync(join(cwd, '.github/workflows/release-staged.yml'), 'utf8'),
-    retainedSourceProof: {originalSource: canonical, packetSource},
+    retainedSourceProof: {originalSource: canonical, physicalSourceFiles:canonicalSource.files, packetSource},
   });
 }
 

@@ -1,0 +1,169 @@
+{
+  "head": "5f64ad16450a84ae1384d6fba753ab0efbd47866",
+  "completeWorkflowCollection": true,
+  "workflows": 23,
+  "success": 21,
+  "failed": [
+    {
+      "id": 44560229853,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44560229853"
+    },
+    {
+      "id": 44560230055,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44560230055"
+    }
+  ],
+  "verifiedCollectionPayloads": 96,
+  "nativeRun": 44560230055,
+  "nativeJob": 135687590817,
+  "nativeResultRows": [
+    {
+      "line": 1632,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1647,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "line": 1655,
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "line": 1683,
+      "passed": 22,
+      "failed": 0
+    },
+    {
+      "line": 1697,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "line": 1704,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1714,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "line": 1782,
+      "passed": 47,
+      "failed": 1
+    },
+    {
+      "line": 1807,
+      "passed": 18,
+      "failed": 0
+    },
+    {
+      "line": 1825,
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "line": 1840,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "line": 1887,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "line": 1896,
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "nativePassed": 147,
+  "nativeFailed": 1,
+  "nativeHttpPassed": 4,
+  "nativeHttpResultRows": [
+    {
+      "line": 1960,
+      "passed": 2
+    },
+    {
+      "line": 1995,
+      "passed": 1
+    },
+    {
+      "line": 2030,
+      "passed": 1
+    }
+  ],
+  "newValidationOriginControlsPassed": 4,
+  "existingDebugSessionCasesPassed": 9,
+  "existingPronounCasesPassed": 6,
+  "existingPronounCasesFailed": 1,
+  "strictOriginalPassingReplayUnion": 17,
+  "originalPanicsWithoutQualifyingReplay": 36,
+  "originalBudgetFailuresStillOpen": 3,
+  "failureInventory": [
+    {
+      "run": 44560229853,
+      "job": 135687319050,
+      "workflowLogLines": [
+        9549,
+        9578
+      ],
+      "error": "generated native registry is stale",
+      "repair": "Official native program generator refreshes only the complete thinking.rs source witness. All 158 registry objects are equal after that one hash normalization; the governed baseline is byte-identical."
+    },
+    {
+      "run": 44560230055,
+      "job": 135687590817,
+      "jobLogLines": [
+        1772,
+        1775
+      ],
+      "error": "Explain the program? returns explanation_research instead of coreference_program_artifact",
+      "repair": "The native fact client yields to a seeded reference with an actual user antecedent, preserving the existing coreference test unchanged. Hosted repair verification remains pending."
+    },
+    {
+      "run": 44560230055,
+      "job": 135699916597,
+      "error": "Pipeline Status reports the actual failed native dependency",
+      "repair": "No status bypass; repair and replay the native regression."
+    }
+  ],
+  "literalReviewSpans": [
+    {
+      "record": "job-135687590817",
+      "lines": [
+        1718,
+        1784
+      ]
+    },
+    {
+      "record": "job-135687590817",
+      "lines": [
+        1938,
+        2035
+      ]
+    },
+    {
+      "record": "failed-run-44560229853",
+      "lines": [
+        9549,
+        9578
+      ]
+    }
+  ],
+  "fullWorkflowLogLiteralReviewClaim": false,
+  "nativeRepairVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

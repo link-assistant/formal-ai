@@ -17,6 +17,11 @@ use crate::solver_handlers::{WebSearchQueryKind, answer_web_search_query, finali
 use crate::solver_helpers::{humanize_url, miss_names_consulted_sources};
 use crate::unknown_opener::language_aware_unknown_answer;
 
+#[path = "solver_unknown_reasoning_text.rs"]
+mod text;
+
+use text::{clean_focus, extract_memory_fact, normalize_fact_subject, normalize_search_surface};
+
 const FOCUS_PLACEHOLDER: &str = concat!("{", "focus", "}");
 
 #[derive(Debug, Clone, Copy)]
@@ -69,9 +74,7 @@ pub fn answer_unknown_prompt(
             |value| format!("public_knowledge_cache:{value}"),
         ),
     );
-    if let Some(focus) = focus.as_deref()
-        && let Some(answer) = answer_from_public_knowledge_cache(prompt, focus, language, log)
-    {
+    if let Some(answer) = answer_from_public_knowledge_cache(prompt, language, log) {
         return answer;
     }
     log.append(
@@ -109,9 +112,12 @@ pub fn answer_unknown_prompt(
         let bare_term_lookup = is_unresolved_bare_term_prompt(prompt, focus);
         (!consult_walk_ran || bare_term_lookup || !question_shape)
             && language_supported
-            && (!config.offline || (bare_term_lookup && focus_is_specific(prompt, focus)))
+            && (!config.offline
+                || (bare_term_lookup && focus_is_specific(prompt, focus))
+                || (!question_shape && is_instruction_shape(prompt)))
     }) {
-        let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
+        let kind = if is_unresolved_bare_term_prompt(prompt, focus) && !is_instruction_shape(prompt)
+        {
             WebSearchQueryKind::UnresolvedBareTerm
         } else {
             WebSearchQueryKind::UnknownReasoningFallback
@@ -159,11 +165,55 @@ fn answer_from_retrieved_senses(
     log: &mut EventLog,
     senses: &[ConceptSense],
 ) -> Option<SymbolicAnswer> {
-    let sense = senses
+    // A word definition cannot answer a sentence whose grammar is unsupported.
+    // Keep the consult evidence, but preserve the whole unresolved request.
+    // A bare term is itself a lookup, so it still accepts attributed senses.
+    let language_supported = seed::supported_languages()
+        .iter()
+        .any(|supported| supported == language.slug());
+    if !language_supported && !is_unresolved_bare_term_prompt(prompt, prompt) {
+        if !senses.is_empty() {
+            log.append(
+                "reasoning:gather_result",
+                "external_source:no_verified_answer".to_owned(),
+            );
+        }
+        return None;
+    }
+    // A retrieved definition answers only its named term. Rank source quality
+    // after binding the sense to the request, so an unrelated high-tier source
+    // cannot replace the question or a matching lower-tier definition. A
+    // context-qualified query needs more evidence than a context-free gloss.
+    let requested = crate::concepts::extract_concept_query(prompt).map_or_else(
+        || normalize_fact_subject(prompt),
+        |query| {
+            if query.context.is_some() {
+                String::new()
+            } else {
+                normalize_fact_subject(&query.term)
+            }
+        },
+    );
+    let selected = senses
         .iter()
         .enumerate()
-        .max_by_key(|(index, sense)| (sense.tier.weight_percent(), usize::MAX - index))?
-        .1;
+        .filter(|(_, sense)| {
+            !requested.is_empty()
+                && [sense.surface.as_str(), sense.lemma.as_str()]
+                    .into_iter()
+                    .chain(sense.synonyms.iter().map(String::as_str))
+                    .any(|term| normalize_fact_subject(term) == requested)
+        })
+        .max_by_key(|(index, sense)| (sense.tier.weight_percent(), usize::MAX - index));
+    let Some((_, sense)) = selected else {
+        if !senses.is_empty() {
+            log.append(
+                "reasoning:gather_result",
+                "external_source:no_verified_answer".to_owned(),
+            );
+        }
+        return None;
+    };
     let digest = sense.sha256.get(..16).unwrap_or(&sense.sha256);
     let mut body = seed::render_response(
         "concept_lookup_resolved",
@@ -482,13 +532,35 @@ fn answer_from_link_memory(prompt: &str, focus: &str, log: &mut EventLog) -> Opt
     None
 }
 
+fn cached_public_request_subject(prompt: &str) -> Option<String> {
+    static PREFIXES: OnceLock<Vec<String>> = OnceLock::new();
+    let lower = clean_focus(prompt).to_lowercase();
+    PREFIXES
+        .get_or_init(|| {
+            crate::solver_handlers::code_task_cue_phrases("concept_lookup", "cache-request-prefix")
+        })
+        .iter()
+        .find_map(|prefix| lower.strip_prefix(prefix.as_str()).map(str::to_owned))
+        .filter(|subject| !subject.trim().is_empty())
+}
+
 fn answer_from_public_knowledge_cache(
     prompt: &str,
-    focus: &str,
     language: Language,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    for term in public_concept_candidate_terms(focus) {
+    // A research focus can name only part of an operative request. Bind a
+    // definition to the complete parsed query or explicit cache instruction;
+    // an unparsed request can match only as a whole cached concept surface.
+    let requested = if let Some(query) = crate::concepts::extract_concept_query(prompt) {
+        if query.context.is_some() {
+            return None;
+        }
+        query.term
+    } else {
+        cached_public_request_subject(prompt).unwrap_or_else(|| prompt.to_owned())
+    };
+    for term in public_concept_candidate_terms(&requested) {
         log.append(
             "reasoning:gather_attempt",
             format!("public_knowledge_cache:concept:{term}"),
@@ -534,23 +606,18 @@ fn public_concepts() -> &'static [ConceptRecord] {
 }
 
 fn public_concept_candidate_terms(focus: &str) -> Vec<String> {
-    let focus_normalized = normalize_search_surface(focus);
-    let padded_focus = format!(" {focus_normalized} ");
+    let focus_normalized = normalize_fact_subject(focus);
     let mut scored = Vec::new();
     for record in public_concepts() {
         for candidate in concept_candidate_surfaces(record) {
-            let normalized = normalize_search_surface(&candidate);
+            let normalized = normalize_fact_subject(&candidate);
             if normalized.len() < 3 {
                 continue;
             }
-            // A surface names the focus as whole words: "colour" inside
-            // "colourless" is no mention of colour (issue #1175 p329). A
-            // script written without spaces keeps the substring reading.
-            let matches = normalized == focus_normalized
-                || padded_focus.contains(&format!(" {normalized} "))
-                || (normalized.chars().any(is_unspaced_script)
-                    && focus_normalized.contains(&normalized));
-            if matches {
+            // A cached definition must cover the complete extracted focus.
+            // Mentioning a concept inside an operative question does not make
+            // its encyclopedia summary an answer to that question.
+            if normalized == focus_normalized {
                 scored.push((normalized.len(), candidate));
             }
         }
@@ -640,8 +707,8 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
     if trimmed.is_empty() {
         return None;
     }
-    if let Some(about) = tail_after_marker(trimmed, " about ") {
-        return Some(clean_focus(about).to_owned());
+    if let Some(subject) = cached_public_request_subject(trimmed) {
+        return Some(subject);
     }
     if let Some(subject) = tail_after_marker(trimmed, " definitions of ") {
         return Some(clean_focus(subject).to_owned());
@@ -673,6 +740,33 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
 fn is_question_shape(prompt: &str) -> bool {
     crate::intent_formalization::contains_question_mark(prompt)
         || crate::intent_formalization::starts_with_question_word(&normalize_prompt(prompt))
+}
+
+/// A seeded action at either clause edge requests work; an unparsed nominal
+/// phrase still keeps the teaching guide. Offline execution checks only cached
+/// captures through the shared source client and cannot authorize network reads.
+fn is_instruction_shape(prompt: &str) -> bool {
+    let normalized = normalize_prompt(clean_focus(prompt));
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_PROCEDURAL_ACTION_VERB)
+        .into_iter()
+        .any(|form| {
+            let action = normalize_prompt(&form.text);
+            if action.is_empty() {
+                return false;
+            }
+            let cjk = crate::coding::contains_cjk(&action);
+            normalized
+                .strip_prefix(action.as_str())
+                .is_some_and(|rest| {
+                    !rest.trim().is_empty() && (cjk || rest.starts_with(char::is_whitespace))
+                })
+                || normalized
+                    .strip_suffix(action.as_str())
+                    .is_some_and(|rest| {
+                        !rest.trim().is_empty() && (cjk || rest.ends_with(char::is_whitespace))
+                    })
+        })
 }
 
 /// Whether the missing focus names a researchable term rather than restating
@@ -778,70 +872,6 @@ fn tail_after_marker<'a>(value: &'a str, marker: &str) -> Option<&'a str> {
     Some(&value[index + marker.len()..])
 }
 
-fn extract_memory_fact(text: &str) -> Option<(String, String)> {
-    for sentence in text.split(['.', '!', '?', '\n']) {
-        let statement = sentence
-            .trim()
-            .strip_prefix("Remember that ")
-            .or_else(|| sentence.trim().strip_prefix("remember that "))
-            .unwrap_or_else(|| sentence.trim())
-            .trim();
-        if statement.is_empty() {
-            continue;
-        }
-        if let Some((subject, value)) = split_fact_statement(statement) {
-            return Some((subject, value));
-        }
-    }
-    None
-}
-
-fn split_fact_statement(statement: &str) -> Option<(String, String)> {
-    for separator in [" is ", " = ", ": "] {
-        if let Some(index) = statement.find(separator) {
-            let subject = statement[..index].trim();
-            let value = statement[index + separator.len()..].trim();
-            if !subject.is_empty() && !value.is_empty() {
-                return Some((subject.to_owned(), value.to_owned()));
-            }
-        }
-    }
-    None
-}
-
-fn clean_focus(value: &str) -> &str {
-    value
-        .trim()
-        .trim_matches(['"', '\'', '`', '“', '”', '‘', '’', '«', '»'])
-        .trim_end_matches(['?', '？', '。', '.', '!', '！', ',', ';', ':'])
-        .trim()
-}
-
-fn normalize_fact_subject(value: &str) -> String {
-    let cleaned = clean_focus(value).to_lowercase();
-    let stripped = cleaned
-        .strip_prefix("the ")
-        .or_else(|| cleaned.strip_prefix("a "))
-        .or_else(|| cleaned.strip_prefix("an "))
-        .unwrap_or(cleaned.as_str());
-    normalize_search_surface(stripped)
-}
-
-/// Whether `ch` belongs to a script written without spaces (kana, CJK, hangul).
-const fn is_unspaced_script(ch: char) -> bool {
-    matches!(
-        ch,
-        '\u{3040}'..='\u{30ff}' | '\u{3400}'..='\u{9fff}' | '\u{ac00}'..='\u{d7af}'
-    )
-}
-
-fn normalize_search_surface(value: &str) -> String {
-    clean_focus(value)
-        .chars()
-        .flat_map(char::to_lowercase)
-        .filter(|character| character.is_alphanumeric() || character.is_whitespace())
-        .collect::<String>()
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ")
-}
+#[cfg(test)]
+#[path = "../tests/unit/solver_unknown_reasoning_captured_sources.rs"]
+mod tests;

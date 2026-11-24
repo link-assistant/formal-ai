@@ -1,0 +1,160 @@
+{
+  "at": "2026-11-22T10:35:52.479962+00:00",
+  "base": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "head": "79a024bffdcee2dd94149d929e81b4b65496ed2d",
+  "files": [
+    {
+      "path": "rust/src/main.rs",
+      "file": "0001-review.patch.gz",
+      "rawSha256": "91fd953aca14188a90feb1b52acad1089eed86a4a088e662423a437efb706e14",
+      "compressedSha256": "e001186f2d96f6ef877a28c015ee55f7085cd0551d69b7cc18a75438ed0eb145",
+      "lines": 200,
+      "literalDiffFullyRead": true,
+      "assessment": "Wrapper-level --verbose parsing remains before the client delimiter; helper extraction preserves CLI/chat behavior and reexports.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor.rs",
+      "file": "0002-review.patch.gz",
+      "rawSha256": "8c576fa95908c8a56910e1539f85799a9af9b9a9a39179b3691ec9c16c9e9566",
+      "compressedSha256": "f32ba4d7c3b58899a547fdd2ce7bba3eeaaabfda90549da35110a24674e9f7d1",
+      "lines": 239,
+      "literalDiffFullyRead": true,
+      "assessment": "Quote-aware cue masking, selected-child evidence propagation and selected-evidence deduplication preserve concrete intent while permitting untyped composition. Source controls were read; broader runtime qualification remains separate.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor/decomposition.rs",
+      "file": "0003-review.patch.gz",
+      "rawSha256": "79c7905ee144e7e3aca7086730dd44caae76f84dc7ba084aad9f04a9d4425bd9",
+      "compressedSha256": "db747e90442df32f86fd9077e2d7523238f8bf6760e58cbb2e0f0d14ec4a1e1b",
+      "lines": 52,
+      "literalDiffFullyRead": true,
+      "assessment": "Lexicon-defined composition cues are considered before quoted prose is masked; no literal prompt branch is introduced.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor/production.rs",
+      "file": "0004-review.patch.gz",
+      "rawSha256": "583fd98bda248fc43fefba0cca822bfd8594960577dbaad3341192396d24d788",
+      "compressedSha256": "40f57234de06a627f626d8ae0a0e391469e70ce984377e4b7ec24bdb1b122291",
+      "lines": 87,
+      "literalDiffFullyRead": true,
+      "assessment": "A concrete typed root prevents prose-only composition. Untyped roots retain selected-child composition and source evidence.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor/selection.rs",
+      "file": "0005-review.patch.gz",
+      "rawSha256": "387c8ab5a4114758f6b3eb3045c7d330a899b6fa1a215e923d94b5e968e10014",
+      "compressedSha256": "e308b2da943d3393afbade9e238067eeb0fe3c8e4ff35062c11ad6dc443fa217",
+      "lines": 112,
+      "literalDiffFullyRead": true,
+      "assessment": "Selection helpers move into a child module with the same algorithm and explicit restricted visibility.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/protocol.rs",
+      "file": "0006-review.patch.gz",
+      "rawSha256": "eecbdddb9572c1ecd1d3514eac61d2cd1d081686bf1cea3a472ec2b38daf232f",
+      "compressedSha256": "89af1030c37a4e1d6788bf068739167c48b59a2922cffb01c21163a6f8a88a91",
+      "lines": 250,
+      "literalDiffFullyRead": true,
+      "assessment": "Protocol data types and helpers retain public reexports after extraction; apply_patch input is available to the command owner.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/protocol/chat_message.rs",
+      "file": "0007-review.patch.gz",
+      "rawSha256": "4235955be4bbe9450ad27129032938b71f764e9d8775edd449bde77c0984f704",
+      "compressedSha256": "92c1e11e4cef97f6669cd1cfc640738738ea87a3670fb8edcf85ef3de0c18916",
+      "lines": 227,
+      "literalDiffFullyRead": true,
+      "assessment": "Chat-message extraction preserves fields and tool-result handling; the shared apply_patch input helper binds the actual input representation.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/protocol/request_context.rs",
+      "file": "0008-review.patch.gz",
+      "rawSha256": "b7ef612c054efa836a0ea396ab782064574cc285c598bc6a218e3766af3a6ed2",
+      "compressedSha256": "5e97e6baef5de17a22375056bd3f472c1ef67d59547bb35aae2935e01e962588",
+      "lines": 145,
+      "literalDiffFullyRead": true,
+      "assessment": "Missing regex captures remain optional. Brief/detail, line-count, code and language constraints are retained; the JavaScript twin uses the same empty/trailing-newline convention.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/repository_workspace/command_allowlist.rs",
+      "file": "0009-review.patch.gz",
+      "rawSha256": "5580285877b37ac037e5997f0002a4a22d151eea1fe722f9994f6cf321adeb04",
+      "compressedSha256": "c9b6e6ab13db98ea4a092eb087fbe7c9834fc57b0ea165c152cd5fbb5cad3c0e",
+      "lines": 145,
+      "literalDiffFullyRead": true,
+      "assessment": "Command allowlist extraction retains the default-deny checks and existing command vocabulary.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/repository_workspace/mod.rs",
+      "file": "0010-review.patch.gz",
+      "rawSha256": "e442b8dbfedb641eb6bae657a389cfedc598fd766701e02a077172a63f91ae6d",
+      "compressedSha256": "35444edd917a2f5732be89dac72e9e463a7ee1924d3322f6c202b79511c87ae0",
+      "lines": 167,
+      "literalDiffFullyRead": true,
+      "assessment": "Repository-workspace helpers import the extracted allowlist without granting additional commands.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/solver_handlers/web_requests/live_search.rs",
+      "file": "0011-review.patch.gz",
+      "rawSha256": "e029bf08df239173b48a26ee52f4feec1d004548f373d6d22625f05920714602",
+      "compressedSha256": "9f6c7a025e2c62fab7b507daf0a4587ffc1e3d7b48d603c1cc25567a49dbe827",
+      "lines": 22,
+      "literalDiffFullyRead": true,
+      "assessment": "The live-search event records an attempted request before transport; it does not claim a completed source response.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/solver_handlers/web_requests/url_parse.rs",
+      "file": "0012-review.patch.gz",
+      "rawSha256": "b55005485c84bae910f21e998067050cf337417d2c400699cba5787dfb0ac710",
+      "compressedSha256": "b56822a98b9bf16cb2ec38ed29be2faa1b7f5c481d15052a3b9ec3882ba27630",
+      "lines": 47,
+      "literalDiffFullyRead": true,
+      "assessment": "Numeric dotted targets must parse as IPv4; domain targets still require valid labels and a sufficiently long final label.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/solver_handlers/web_search_intent.rs",
+      "file": "0013-review.patch.gz",
+      "rawSha256": "83590d09bc8c46a26af0432877c1fa9b0ba493c63bbd70d63ede16f7f080b3ad",
+      "compressedSha256": "7a26bcfa73ae66d0b2a692d5b611066a152bfc0a1d762ebbf39aef4d17367030",
+      "lines": 156,
+      "literalDiffFullyRead": true,
+      "assessment": "Follow-up extraction moves into a child. The query helper gains crate visibility; the removed explicit-intent helper had no retained caller.",
+      "wholeFileRuntimeQualification": false
+    },
+    {
+      "path": "rust/src/solver_handlers/web_search_intent/followup.rs",
+      "file": "0014-review.patch.gz",
+      "rawSha256": "fa7a8559abb13ff05f558d6d0d320db833769149b31bda2699e4a053173f8931",
+      "compressedSha256": "65905a43f80676089f1edb8c3d2d99fd369251483938c0c64a180979fab06161",
+      "lines": 121,
+      "literalDiffFullyRead": true,
+      "assessment": "The extracted follow-up algorithm retains the previous request/query boundary logic.",
+      "wholeFileRuntimeQualification": false
+    }
+  ],
+  "fileCount": 14,
+  "diffLines": 1970,
+  "finding": "No new defect found in these reviewed diffs. Semantic changes are described separately from function moves.",
+  "reviewedContext": [
+    "rust/tests/integration/with_formal_ai/verbosity.rs",
+    "rust/tests/web/issue-1550-meta-executor.test.mjs:150-230",
+    "rust/tests/unit/meta_executor_parity.rs:180-290",
+    "js/server/request-context.mjs"
+  ],
+  "wholePullRequestReviewed": false,
+  "nativeRuntimeQualification": false,
+  "localRustCompilation": false,
+  "independentAuthorshipCredit": 0
+}

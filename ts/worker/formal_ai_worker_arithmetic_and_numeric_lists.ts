@@ -269,7 +269,7 @@ function extractRequestedAlgebraExpression(prompt) {
       .trim();
     if (cleaned && /[A-Za-z_]/.test(cleaned)) return cleaned;
   }
-  return null;
+  return extractArithmeticExpression(text)?.expression ?? null;
 }
 
 function lastNonWhitespace(value) {
@@ -779,4 +779,36 @@ function numericListBuildProgram(slug, items, canonical, isFloat) {
 function numericListDirection(canonical) {
   const entry = numericListOntology()[canonical];
   return entry ? entry.direction : "";
+}
+
+function numericListProgramLinks(program) {
+  const lines = [
+    "program_syntax_tree",
+    `  language ${program.languageSlug}`,
+    `  value_type ${program.valueType.label}`,
+    `  operation ${program.canonical}`,
+    `  literal_values ${(program.displayValues || program.literals).join("|")}`,
+  ];
+  for (const statement of program.statements) {
+    if (statement.kind === "literal_list") {
+      lines.push(
+        `  semantic_node literal_list name=${statement.name} mutable=${statement.mutable}`,
+      );
+    } else if (statement.kind === "sort_list" || statement.kind === "reverse_list") {
+      lines.push(
+        `  semantic_node ${statement.kind} source=${statement.source} target=${statement.target} direction=${statement.direction}`,
+      );
+    } else if (statement.kind === "reduce_list") {
+      lines.push(
+        `  semantic_node reduce_list source=${statement.source} target=${statement.target} reducer=${statement.reducer}`,
+      );
+    } else if (statement.kind === "print_joined") {
+      lines.push(
+        `  semantic_node print_joined source=${statement.source} separator="${statement.separator}"`,
+      );
+    } else if (statement.kind === "print_scalar") {
+      lines.push(`  semantic_node print_scalar source=${statement.source}`);
+    }
+  }
+  return lines.join("\n");
 }

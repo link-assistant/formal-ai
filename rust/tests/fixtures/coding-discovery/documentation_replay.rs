@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use formal_ai::seed::parser::parse_lino;
+use formal_ai::seed::parse_lino;
 use formal_ai::{CachedSourceClient, FetchError, SourceTransport, sha256_hex};
 
 pub struct DocumentationReplay;

@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-11-17T23:27:14.994006+00:00",
+  "reason": "Both failed jobs stopped in actions/checkout, before checks, with curl 28 after a 20-second low-speed limit and the same promisor blob; retry failed jobs on the unchanged head only.",
+  "actions": [
+    {
+      "runId": 44197052235,
+      "command": [
+        "gh",
+        "run",
+        "rerun",
+        "44197052235",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--failed"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "runId": 44197053206,
+      "command": [
+        "gh",
+        "run",
+        "rerun",
+        "44197053206",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--failed"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

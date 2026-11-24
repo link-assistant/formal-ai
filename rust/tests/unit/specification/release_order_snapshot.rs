@@ -307,10 +307,9 @@ fn every_registered_language_gets_its_own_release_timeline_wording() {
     }
 }
 
-/// The seed must be a faithful transcription of the checked-in snapshot, not a
-/// hand-typed list that happens to look like one: every date is re-read from the
-/// SPARQL answer, every title from the entity cache, and the recorded digest is
-/// recomputed from the snapshot bytes.
+/// The replay checks each date against the recorded SPARQL answer and each
+/// title against its recorded entity labels. It also recomputes the answer's
+/// digest from the captured bytes.
 #[test]
 fn the_historical_fixture_preserves_the_recorded_publisher_data() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -373,8 +372,11 @@ fn the_historical_fixture_preserves_the_recorded_publisher_data() {
         "the fixture entries should be exactly the films and dates the snapshot returned"
     );
 
+    let entity_dir = root
+        .join(&timeline.cache_file)
+        .with_file_name("wikidata-entities");
     for entry in &timeline.entries {
-        let path = root.join(format!("data/cache/wikidata/entity/{}.json", entry.qid));
+        let path = entity_dir.join(format!("{}.json", entry.qid));
         let cached: serde_json::Value = serde_json::from_slice(
             &std::fs::read(&path)
                 .unwrap_or_else(|error| panic!("{} should be cached: {error}", entry.qid)),

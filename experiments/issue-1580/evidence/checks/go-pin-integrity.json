@@ -1,0 +1,29 @@
+{
+  "scope": "Offline source-fixture regression; registry/tag verification boundaries injected, not hosted execution.",
+  "goTests": 5,
+  "maintainedEntrypointTests": 11,
+  "failures": 0,
+  "runtimeSkips": 0,
+  "logs": [
+    {
+      "file": "experiments/issue-1580/evidence/checks/go-pin-integrity.log.gz",
+      "sha256": "ce1f67f37f52b291f4f71547f36483e7a8234cdc988d4e9669e6b2b18566f0ab",
+      "originalSha256": "2cc9c329174ad92985cccf352c0fc2796c97b9d28045254268057358b02bbfd2",
+      "originalBytes": 671
+    },
+    {
+      "file": "experiments/issue-1580/evidence/checks/template-observations-seventh.log.gz",
+      "sha256": "9ffdfe9914246ff1d6cf1c0c0f8179f837c81a35b486dee9fa21a4f7da232126",
+      "originalSha256": "d4ad5d68ef8ea7a6dcb0ef912639a06df8455687f45bb8364dbb98459d376857",
+      "originalBytes": 1199
+    }
+  ],
+  "touchedGates": {
+    "passed": 4,
+    "skipped": 0,
+    "failed": 0,
+    "file": "experiments/issue-1580/evidence/checks/go-review-gates.log.gz",
+    "sha256": "a04dbff1377372b820891008651926dbd9cc265e5268e3dea02e5148cb06ce8b",
+    "originalSha256": "6abbae2560f2f0b548f2299cfa34943b73a76f07944ca0a26345895f227c3bfd"
+  }
+}

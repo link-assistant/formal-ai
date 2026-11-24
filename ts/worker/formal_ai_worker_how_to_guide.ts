@@ -93,7 +93,7 @@ function howToNominalSearch(record, task, language) {
   const [action, ...words] = task.split(" ");
   const actions = String(handlerRulesPolicy("procedural_how_to", `nominal-title-actions-${language}`) || "").split(/\s+/u);
   if (!words.length || !actions.includes(action)) return null;
-  const [namespace, prefix] = String(handlerRulesTableValue("procedure-nominal-title-namespaces", record.id) || "").split("|");
+  const [namespace, prefix] = crateModule("crate/seed.mjs").splitPipeList(handlerRulesTableValue("procedure-nominal-title-namespaces", record.id) || "");
   return /^\d+$/u.test(namespace) && prefix ? { namespace, prefix: prefix + ":", subject: words.join(" ") } : null;
 }
 
@@ -543,7 +543,7 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
   if (payload.kind === "parse") {
     if (produced > 0) return { items, follow, detail };
     const relevant = isWiki && titleMatches(payload.title);
-    const labels = String(handlerRulesPolicy("procedural_how_to", "ordered-section-labels") || "").split("|");
+    const labels = crateModule("crate/seed.mjs").splitPipeList(handlerRulesPolicy("procedural_how_to", "ordered-section-labels") || "");
     const found = !relevant ? [] : isWikiHow ? howToWikiHowStepLists(payload.html, task, language, bounds.maxItems)
       : howToOrderedProcedureSteps(payload.html, labels, nominalMatch(payload.title), bounds.maxItems);
     if (!relevant) detail = `no_relevant_result url=${capture.url}`;
@@ -593,7 +593,7 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
     }
   }
   items.forEach((item, index) => { item.position = produced + index + 1; });
-  return { items, follow, detail };
+  return { items, follow, detail: items.length > 0 ? capture.url : detail };
 }
 
 /** Synthesise a guide for `task` from the enabled registry services. */

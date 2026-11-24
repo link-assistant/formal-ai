@@ -1,0 +1,50 @@
+{
+  "complete": true,
+  "observedAt": "2026-11-18T11:22:11.832492+00:00",
+  "sourceFileCount": 8,
+  "sources": [
+    {
+      "path": "changelog.d/20261117_120000_issue-1580-ci-regressions.md",
+      "sha256": "e11cad322180af8fd7a3bcf10ed672f092ac3b05d5cd84726ee8e98ac4e05908"
+    },
+    {
+      "path": "data/benchmarks/fast-pull-request-javascript-tests.json",
+      "sha256": "454b757463da14e8018b5f9b5d397c90821bcbc785e6b1aea3a9581acac3f0bf"
+    },
+    {
+      "path": "data/meta/main-only-regressions.lino",
+      "sha256": "7d68fa937265690ad5af3a0dc6feec81c394a76ba5fca8b120d27e7cf0514261"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js",
+      "sha256": "098865c48e91125eb8e1a4d8dc43b5bfb217bfabcdff08c08aee0fae7bda3b8a"
+    },
+    {
+      "path": "rust/src/solver_synthesis.rs",
+      "sha256": "6a760aced69aab589b10733ec96551d8f49879bd03d6a8b54c13962818079569"
+    },
+    {
+      "path": "rust/tests/unit/meta_executor_parity.rs",
+      "sha256": "d1eed8a25747976469334d09b25717317e92e35e8c4753179adc3876ab7be988"
+    },
+    {
+      "path": "rust/tests/web/issue-1580-algebra-substitution.test.mjs",
+      "sha256": "4737813f29cab86611ada912a5196f437ca824fd7655a9d14513fc2a4d471d9b"
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_arithmetic_and_numeric_lists.ts",
+      "sha256": "098865c48e91125eb8e1a4d8dc43b5bfb217bfabcdff08c08aee0fae7bda3b8a"
+    }
+  ],
+  "handwrittenIncrementalSourceDiffLiterallyRead": true,
+  "beforePayloadLiterallyRead": true,
+  "focusedAfterPayloadsLiterallyRead": true,
+  "fullGateAggregateLiterallyRead": true,
+  "individualGatePayloadsArchivedAndDigestVerified": 86,
+  "everyIndividualGatePayloadLiterallyRead": false,
+  "nativeAlgebraExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "reviewedAt": "2026-11-18T11:22:38.690640+00:00",
+  "wholePullRequestDiffLiterallyRead": false
+}

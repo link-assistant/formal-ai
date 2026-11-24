@@ -1,0 +1,7 @@
+{
+  "baselineAccepted": false,
+  "reason": "Five source controls referenced an undefined diagnostic variable introduced in the test draft. The complete raw baseline is preserved; these harness failures receive no regression credit.",
+  "completeRawPayloadPreserved": true,
+  "literalReviewComplete": true,
+  "independentAuthorshipCredit": 0
+}

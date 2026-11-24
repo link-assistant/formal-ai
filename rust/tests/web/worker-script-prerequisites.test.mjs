@@ -46,7 +46,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT } from '../../../js/server/worker-host.mjs';
 
-function freshBrowserEntry(failBootstrap = false) {
+function freshBrowserEntry(failBootstrap = false, failRecords = false) {
   const imports = [];
   const browser = vm.createContext({
     console, setTimeout, clearTimeout, URL, URLSearchParams,
@@ -62,6 +62,7 @@ function freshBrowserEntry(failBootstrap = false) {
       if (failBootstrap && owner === 'js/parser-cache-primordials.js') {
         throw Error('ActualBootstrapImportFailed');
       }
+      if (failRecords && owner === 'js/seed-record-readers.js') throw Error('ActualRecordReaderImportFailed');
       vm.runInContext(readFileSync(path.join(REPO_ROOT, owner), 'utf8'), browser, { filename: owner });
     }
   };
@@ -100,4 +101,19 @@ test('genuine constructor bootstrap can be loaded again without lexical redeclar
   loadBrowserScript(genuine, 'js/parser-cache-primordials.js');
   loadBrowserScript(genuine, 'js/seed_loader.js');
   assert.equal(vm.runInContext('typeof self.FormalAiSeed', genuine), 'object');
+});
+
+test('constructor record reader can be reused by the actual worker importer', () => {
+  const context = createBrowserContext();
+  loadBrowserScript(context, 'js/seed-record-readers.js');
+  loadBrowserScript(context, 'js/seed-record-readers.js');
+  loadBrowserScript(context, 'js/seed_loader.js');
+  assert.equal(vm.runInContext('typeof self.FormalAiSeed.extractFacts', context), 'function');
+});
+test('failed record reader import stops browser seed evaluation', () => {
+  const {browser, imports, bootstrapError} = freshBrowserEntry(false, true);
+  assert.match(bootstrapError?.message ?? '', /ActualRecordReaderImportFailed/);
+  assert(imports.includes('js/seed-record-readers.js'));
+  assert(!imports.includes('js/seed_loader.js'));
+  assert.equal(vm.runInContext('typeof self.FormalAiSeed', browser), 'undefined');
 });

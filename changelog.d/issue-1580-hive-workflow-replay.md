@@ -1,0 +1,1 @@
+Replay the intact Hive workflow and tool-workspace contracts in focused native CI, including multilingual workflow requests, remote connector reads, failed verification and file-bound commit behavior. Track every consumed fixture in pull request admission.

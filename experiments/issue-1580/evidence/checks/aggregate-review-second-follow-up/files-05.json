@@ -1,0 +1,130 @@
+[
+  {
+    "path": "ts/agentic/planner.mts",
+    "diff": "0481.diff",
+    "sha256": "32c67bb0bb4e93975b4b8b587350a353cb33c4ae5f2ea1f45007f83423720f6c",
+    "bytes": 564,
+    "lines": 13,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/agentic/report_issue.mts",
+    "diff": "0483.diff",
+    "sha256": "c4af8f53b377a36766b2dd23481ca850e08a73b2c71a12429a718aecff4c18c4",
+    "bytes": 704,
+    "lines": 18,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/agentic/tool_result.mts",
+    "diff": "0484.diff",
+    "sha256": "eeac9f0cda4011a2b4eef40eb1989b1639bfb066b5c09b81fd5074eaf202b5c3",
+    "bytes": 3623,
+    "lines": 50,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/seed-files.ts",
+    "diff": "0485.diff",
+    "sha256": "93fc4e8dc7d3928a2d7066699035efb5621e79d2245338ec2173f5eea833b48e",
+    "bytes": 1950,
+    "lines": 41,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/server/debug-stage.mts",
+    "diff": "0488.diff",
+    "sha256": "134a73e6e0a988f5d9bb3b387d9210348d339edff5e727df062df4bd5b045266",
+    "bytes": 573,
+    "lines": 13,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/server/solver-trace.mts",
+    "diff": "0490.diff",
+    "sha256": "108c2c7106e76a72e0b8be5da27ada920bd97ae951c1719b0e7e7b57bdcf5ff9",
+    "bytes": 1146,
+    "lines": 24,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/server/thinking.mts",
+    "diff": "0491.diff",
+    "sha256": "d49bf465ab69c7eec97473d239b3cc814a63c9f50ae47e1a47ab7b739ce3e800",
+    "bytes": 503,
+    "lines": 12,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/server/worker-host.mts",
+    "diff": "0492.diff",
+    "sha256": "acbf977508c1ecfa9a720c01b1e0f4b57576b1f863a820f3bdc1fb5860552ad1",
+    "bytes": 1703,
+    "lines": 31,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/server/worker-script-prerequisites.mts",
+    "diff": "0493.diff",
+    "sha256": "922e0abc42d07f7eef77f99c9bb17ed0659e1dd743e9500bd7b5d2c8714c70d9",
+    "bytes": 2043,
+    "lines": 45,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/worker-bootstrap-responses.ts",
+    "diff": "0494.diff",
+    "sha256": "d65e546b28aed4fde9eb942e86d7cc170ae41b8927ed92fd83d04fde9fa5e5b4",
+    "bytes": 614,
+    "lines": 10,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/worker-modules.ts",
+    "diff": "0495.diff",
+    "sha256": "78201b5350a2e770661d1f9ee389ce4590b73a5d7fc0b8545ab8ffd0d23eeb64",
+    "bytes": 1456,
+    "lines": 28,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/worker-script-prerequisites.ts",
+    "diff": "0496.diff",
+    "sha256": "dcbf255319f5fa32e58f4da1380b429633d0bf42b9c436961b1f1a03fb1191e6",
+    "bytes": 2015,
+    "lines": 45,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/worker/formal_ai_worker.ts",
+    "diff": "0497.diff",
+    "sha256": "99c07f2978f50c16727cb08d12783b520bb6822c67afbb61f76bfca8a021a6cb",
+    "bytes": 534,
+    "lines": 12,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/worker/formal_ai_worker_arithmetic_and_numeric_lists.ts",
+    "diff": "0498.diff",
+    "sha256": "f45117d115ef5a2933dae36ed0ea9449bd0edb98b5be9c9029838ecd102d5ca9",
+    "bytes": 577,
+    "lines": 13,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/worker/formal_ai_worker_calendar_offset.ts",
+    "diff": "0500.diff",
+    "sha256": "7b1e15941a9b0d6c95131337be0114011b43b404ec4a5dd3dbb7214f648f23c1",
+    "bytes": 3146,
+    "lines": 53,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/worker/formal_ai_worker_candidate_validation.ts",
+    "diff": "0501.diff",
+    "sha256": "09b6d476acfe29fdb98d0299af6780b4368d80470acfbbb4a64defbf2edb171c",
+    "bytes": 800,
+    "lines": 13,
+    "carriedExactDiffReview": false
+  }
+]

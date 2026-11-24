@@ -1,0 +1,52 @@
+[
+  {
+    "file": "branch.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "file": "branch.stdout.gz",
+    "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+    "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+  },
+  {
+    "file": "gates.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "file": "gates.stdout.gz",
+    "rawSha256": "61184b9eeab26899a909daf21827ee020be81994aaf1002a24d66202c8e68ae3",
+    "archiveSha256": "04d6ca93f3787ff73aac591b18280f3f4fa4255b667c13181e0221a74c1b2c12"
+  },
+  {
+    "file": "records.json.gz",
+    "rawSha256": "2eea33bf42078da36db7a60a14d7154c076d56ae1e57ce0208fdfa84fd8d56a6",
+    "archiveSha256": "dd713fc211678ef1bb929fcd7c3bf205982a2569ffb286c0400801be8ecbf051"
+  },
+  {
+    "file": "secrets.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "file": "secrets.stdout.gz",
+    "rawSha256": "e6f7359f1134540642cbbfa222a95c95da05e60b71ca991b5ab0729c6816deba",
+    "archiveSha256": "c79fe15931b0bd386f558ab251c5f832d30c66d8b48e710dafc83f7ee8646f7a"
+  },
+  {
+    "file": "selection.json.gz",
+    "rawSha256": "f5b743d275191785776fe7d459a7da5c59baeb9c93aea211b7eda7af33519e1e",
+    "archiveSha256": "346ec025cb4b8e28dc48ea0cf981f905be8aaa4051b5c4ff9ec4d378606e214e"
+  },
+  {
+    "file": "whitespace.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "file": "whitespace.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

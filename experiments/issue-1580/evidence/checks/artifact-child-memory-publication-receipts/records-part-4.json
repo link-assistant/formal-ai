@@ -1,0 +1,42 @@
+[
+  {
+    "file": "retained-gate-summary-partition--whitespace.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/whitespace.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--worker.log.gz",
+    "capturedPath": "retained-gate-summary-partition/worker.log",
+    "rawSha256": "047047a23c279e7401b78e4781e5e31325dbe1c1c94f4a99f66dcce186bcd2f2",
+    "archiveSha256": "e45629b209d74d9192b7f13c60d7a73376c80fd81fa89c522be9c17841228ec8",
+    "bytes": 91,
+    "lines": 8
+  },
+  {
+    "file": "seal-hosted-child-memory-evidence.py.gz",
+    "capturedPath": "seal-hosted-child-memory-evidence.py",
+    "rawSha256": "5e96cf65a7a3b60a1a7d634c12719d4c7c66319cb4fdcf03bfd020871e0d2310",
+    "archiveSha256": "b02d00171727ff08355907dbe45e9dca8e939b40bb260022996bf26bf08102f3",
+    "bytes": 6741,
+    "lines": 72
+  },
+  {
+    "file": "verify-unchanged-prepush-feedback.log.gz",
+    "capturedPath": "verify-unchanged-prepush-feedback.log",
+    "rawSha256": "d0b2688e10a932989fdfe148d0a056989db411c59b846e36d51e0947c646bf06",
+    "archiveSha256": "f4c200aad448b500cac8e5bdbb2939acba6e19a01239c37c449c50b8e897b68b",
+    "bytes": 286,
+    "lines": 8
+  },
+  {
+    "file": "verify-unchanged-prepush-feedback.py.gz",
+    "capturedPath": "verify-unchanged-prepush-feedback.py",
+    "rawSha256": "ebc190e4d5ad589243b9babb4c69996d0022fa016f92ec691826a93fbb3a74b2",
+    "archiveSha256": "9784622fad41a5aedadc6fb014e571348eee687058253ca3aa10f9ef43444834",
+    "bytes": 1357,
+    "lines": 17
+  }
+]

@@ -24,12 +24,17 @@ pub struct Event {
 #[derive(Debug, Default, Clone)]
 pub struct EventLog {
     events: Vec<Event>,
+    // Optional append-site identity, parallel to events; raw evidence stays stable.
+    origins: Vec<Option<&'static str>>,
 }
 
 impl EventLog {
     #[must_use]
     pub const fn new() -> Self {
-        Self { events: Vec::new() }
+        Self {
+            events: Vec::new(),
+            origins: Vec::new(),
+        }
     }
 
     /// Append a new event with content-addressed id.
@@ -45,7 +50,30 @@ impl EventLog {
             kind,
             payload,
         });
+        self.origins.push(None);
         id
+    }
+
+    /// Record an external lookup request before consulting transport or captures.
+    /// This event records intent; only a captured response establishes evidence.
+    pub fn append_search_request(&mut self, provider: &str, query: impl AsRef<str>) -> String {
+        self.append(
+            "search:external",
+            format!("{provider}:requested:{}", query.as_ref()),
+        )
+    }
+
+    /// Record the emitter's identity without changing raw event or evidence ids.
+    /// The debug source catalog resolves this identity in each runtime.
+    pub fn append_with_origin(
+        &mut self,
+        kind: &'static str,
+        origin: &'static str,
+        payload: impl Into<String>,
+    ) -> String {
+        let identifier = self.append(kind, payload);
+        self.origins[self.events.len() - 1] = Some(origin);
+        identifier
     }
 
     /// Append a machine-addressable payload without hand-building a textual
@@ -127,15 +155,16 @@ impl EventLog {
         // calculator's reduction trace into one composite parent + children.
         let mut plan: Vec<PlannedThinkingStep> = Vec::new();
         let mut calculation = CalculationCluster::default();
-        for event in &self.events {
+        for (index, event) in self.events.iter().enumerate() {
             if event.kind == "calculation" || event.kind.starts_with("calculation:") {
-                calculation.absorb(event.kind, &event.payload);
+                calculation.absorb(event.kind, &event.payload, self.origins[index]);
                 continue;
             }
             if calculation.has_data() {
                 calculation.drain_into(&mut plan);
             }
-            if let Some(step) = curate_thinking_event(event.kind, &event.payload, &answer) {
+            if let Some(mut step) = curate_thinking_event(event.kind, &event.payload, &answer) {
+                step.origin = self.origins[index];
                 plan.push(step);
             }
         }
@@ -163,6 +192,7 @@ impl EventLog {
                 planned.level,
                 planned.source,
             );
+            step.source_origin = planned.origin.map(str::to_owned);
             match planned.role {
                 StepRole::Parent => current_parent = Some(step.id.clone()),
                 StepRole::Child => {
@@ -233,6 +263,7 @@ struct PlannedThinkingStep {
     detail: String,
     level: &'static str,
     source: &'static str,
+    origin: Option<&'static str>,
     role: StepRole,
 }
 
@@ -248,6 +279,7 @@ impl PlannedThinkingStep {
             detail: detail.into(),
             level,
             source,
+            origin: None,
             role: StepRole::Normal,
         }
     }
@@ -282,6 +314,7 @@ impl PlannedThinkingStep {
 /// requirement R11 — recursively composite / fractal steps).
 #[derive(Default)]
 struct CalculationCluster {
+    origins: std::collections::BTreeMap<&'static str, &'static str>,
     request: Option<String>,
     engine: Option<String>,
     expression: Option<String>,
@@ -290,7 +323,12 @@ struct CalculationCluster {
 }
 
 impl CalculationCluster {
-    fn absorb(&mut self, kind: &str, payload: &str) {
+    fn absorb(&mut self, kind: &'static str, payload: &str, origin: Option<&'static str>) {
+        if let Some(origin) = origin {
+            self.origins.insert(kind, origin);
+        } else {
+            self.origins.remove(kind);
+        }
         let value = payload.trim().to_owned();
         match kind {
             "calculation" => self.result = Some(value),
@@ -313,6 +351,12 @@ impl CalculationCluster {
     }
 
     fn drain_into(&mut self, plan: &mut Vec<PlannedThinkingStep>) {
+        let start = plan.len();
+        let parent_kind = if self.result.is_some() {
+            "calculation"
+        } else {
+            "calculation:request"
+        };
         let parent_detail = self
             .result
             .clone()
@@ -347,6 +391,10 @@ impl CalculationCluster {
                 "detailed",
                 "calculation:steps",
             ));
+        }
+        for (index, step) in plan[start..].iter_mut().enumerate() {
+            let kind = if index == 0 { parent_kind } else { step.source };
+            step.origin = self.origins.get(kind).copied();
         }
         *self = Self::default();
     }

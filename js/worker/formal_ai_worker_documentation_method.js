@@ -1,6 +1,6 @@
 // Resolve a documentation reference through the publisher's own Sphinx pages.
 function documentationMethodProvider(project) {
-  const [root, path] = (handlerRulesTableValue("documentation-method-providers", project) || "").split("|");
+  const [root, path] = crateModule("crate/seed.mjs").splitPipeList(handlerRulesTableValue("documentation-method-providers", project) || "");
   return root && path ? { root, path } : null;
 }
 
@@ -67,6 +67,7 @@ function documentationMethodDetails(text, symbol) {
 async function tryDocumentationMethodExplanation(prompt, language, preferences = {}) {
   const hit = runHandlerRuleSet("docs_method_explanation", prompt, prompt.toLowerCase(), []);
   if (!hit) return null;
+  language = FORCED_RESPONSE_LANGUAGE || crateModule("crate/language.mjs").detectProse(prompt) || language;
   const [selector, project] = claimOperandDocumentedMethod(prompt);
   const provider = documentationMethodProvider(project);
   const online = preferences.offline !== true;

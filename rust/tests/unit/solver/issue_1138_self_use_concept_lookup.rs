@@ -365,9 +365,37 @@ fn an_honest_refusal_names_every_source_it_consulted() {
                 "the exact stable answer opener documents the named gap"
             );
         }
-        let Some(trail) = answer.split("attempts=").nth(1) else {
-            continue;
+        // WordNet's declared English endpoint is bindable. An empty offline
+        // cache reports the actual attempted lookup; other locales remain unbound.
+        let wordnet_status = if case.language == "en" {
+            "offline_cache_miss"
+        } else {
+            "unbound_template"
         };
+        for (source, status) in [
+            ("github", "unbound_template"),
+            ("wikidata", "unbound_template"),
+            ("wiktionary", "offline_cache_miss"),
+            ("wordnet", wordnet_status),
+            ("wikipedia", "offline_cache_miss"),
+            ("stackexchange", "offline_cache_miss"),
+        ] {
+            assert!(
+                answer.contains(&format!("source={source};status={status}")),
+                "{} must retain the actual {source} outcome: {answer}",
+                case.language
+            );
+        }
+        if case.language == "en" {
+            assert!(
+                answer.contains("https://en-word.net/api/lemma/isogram"),
+                "the English refusal must retain the actual bound WordNet endpoint: {answer}"
+            );
+        }
+        let trail = answer
+            .split("attempts=")
+            .nth(1)
+            .expect("a refusal must retain its research trail");
         if trail.trim().is_empty() {
             offenders.push(format!(
                 "{}: refusal carries a research trail whose `attempts=` names nothing",

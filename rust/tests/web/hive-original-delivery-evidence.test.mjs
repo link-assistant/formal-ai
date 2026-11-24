@@ -167,7 +167,7 @@ test('genuine image, solve and independent verification phases use same-run hand
   const imageUpload = jobs.image.steps.find(step => step.with?.name === 'hive-same-source-task-image');
   const imageDownload = jobs.delivery.steps.find(step => step.with?.name === 'hive-same-source-task-image');
   assert.ok(imageUpload.uses.startsWith('actions/upload-artifact@'));
-  assert.ok(imageDownload.uses.startsWith('actions/download-artifact@'));
+  assert.ok(imageDownload.uses.endsWith('/.github/actions/download-artifact'));
   assert.equal(imageUpload.with.path, imageDownload.with.path);
   assert.equal(imageUpload.with['compression-level'], 0, 'the streamed gzip archive is not recompressed');
   assert.equal(jobs.image.permissions, undefined, 'image construction has only workflow read permissions');

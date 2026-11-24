@@ -1,0 +1,11 @@
+{
+  "upstreamIssue": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/257",
+  "pinnedCommit": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+  "candidateCasesPassed": 6,
+  "negativeControlPassed": 1,
+  "negativeControlFailed": 5,
+  "maintainedCasesPassed": 151,
+  "productionFixed": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

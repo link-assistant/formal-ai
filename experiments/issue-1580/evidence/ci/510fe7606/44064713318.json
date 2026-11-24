@@ -1,0 +1,132 @@
+{
+  "jobs": [
+    {
+      "completedAt": "2026-11-17T10:25:51Z",
+      "conclusion": "success",
+      "databaseId": 133975284292,
+      "name": "Dependency Review",
+      "startedAt": "2026-11-17T10:25:36Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-17T10:25:40Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-17T10:25:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:25:47Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-17T10:25:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:25:48Z",
+          "conclusion": "success",
+          "name": "Run actions/dependency-review-action@v5",
+          "number": 3,
+          "startedAt": "2026-11-17T10:25:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:25:49Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 6,
+          "startedAt": "2026-11-17T10:25:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:25:49Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 7,
+          "startedAt": "2026-11-17T10:25:49Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44064713318/job/133975284292"
+    },
+    {
+      "completedAt": "2026-11-17T10:26:12Z",
+      "conclusion": "failure",
+      "databaseId": 133975284913,
+      "name": "Cargo audit",
+      "startedAt": "2026-11-17T10:25:36Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-17T10:25:40Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-17T10:25:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:25:50Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-17T10:25:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:26:02Z",
+          "conclusion": "success",
+          "name": "Setup Rust",
+          "number": 3,
+          "startedAt": "2026-11-17T10:25:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:26:02Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/install-action@v2",
+          "number": 4,
+          "startedAt": "2026-11-17T10:26:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:26:09Z",
+          "conclusion": "failure",
+          "name": "Audit committed Cargo.lock",
+          "number": 5,
+          "startedAt": "2026-11-17T10:26:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:26:09Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 10,
+          "startedAt": "2026-11-17T10:26:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-17T10:26:09Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-11-17T10:26:09Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44064713318/job/133975284913"
+    },
+    {
+      "completedAt": "2026-11-17T10:25:33Z",
+      "conclusion": "skipped",
+      "databaseId": 133975286107,
+      "name": "CodeQL (${{ matrix.language }})",
+      "startedAt": "2026-11-17T10:25:34Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44064713318/job/133975286107"
+    }
+  ]
+}

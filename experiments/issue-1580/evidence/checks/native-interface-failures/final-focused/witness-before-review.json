@@ -1,0 +1,35 @@
+{
+  "witness": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+  "beforeSha256": "0400d5b28de6935a20287deb569468c5abd40faed5bc998e584e4756cc7cdb09",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "totalNativeCases": 1189,
+  "carriedCases": 221,
+  "unsupportedCases": 968,
+  "nativeSourceManifestCount": 133,
+  "completeObjectComparison": true,
+  "identical": false,
+  "changes": [
+    {
+      "path": "$.inventory.cases.79.program.fixtures.7.sha256",
+      "before": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce",
+      "after": "63a2fc6d041fe47b1a0f27f27bcfdac1ee2f8907e6b30f94722ee7c7e59ee532"
+    },
+    {
+      "path": "$.inventory.cases.81.program.fixtures.3.sha256",
+      "before": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce",
+      "after": "63a2fc6d041fe47b1a0f27f27bcfdac1ee2f8907e6b30f94722ee7c7e59ee532"
+    },
+    {
+      "path": "$.inventory.cases.190.program.fixtures.7.sha256",
+      "before": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce",
+      "after": "63a2fc6d041fe47b1a0f27f27bcfdac1ee2f8907e6b30f94722ee7c7e59ee532"
+    },
+    {
+      "path": "$.inventory.cases.193.program.fixtures.8.sha256",
+      "before": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce",
+      "after": "63a2fc6d041fe47b1a0f27f27bcfdac1ee2f8907e6b30f94722ee7c7e59ee532"
+    }
+  ],
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false
+}

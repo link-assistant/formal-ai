@@ -217,6 +217,15 @@ fn integer_operands<'a>(text: &'a str, language: &str) -> Option<Vec<(i64, regex
                 && text[..token.start()].trim_end().len() - alias.len() <= previous_end
         });
         previous_end = token.end();
+        // A count of requested artifacts ("one function", "एक फ़ंक्शन")
+        // does not bind the algorithm's input. Use the canonical artifact role.
+        let next = text[token.end()..].split_whitespace().next().unwrap_or("");
+        if crate::seed::lexicon().mentions_role(
+            crate::seed::ROLE_PROGRAM_KIND,
+            &crate::engine::normalize_prompt(next),
+        ) {
+            continue;
+        }
         let number = word.trim_start_matches(['-', '+']);
         if number.as_bytes().first().is_some_and(u8::is_ascii_digit) {
             if after_language

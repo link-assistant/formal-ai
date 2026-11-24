@@ -1,0 +1,92 @@
+[
+  {
+    "name": "check-changelog-fragment-js-twin",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-changelog-fragment-js-twin"
+    ],
+    "exitCode": 0,
+    "seconds": 1.05,
+    "file": "gate-check-changelog-fragment-js-twin.log.gz",
+    "rawSha256": "557b0ba7f857d07b1f56787ac36d9b8689c3b16cc6a931f5db3def76e97ccc45",
+    "archiveSha256": "01e2953d60bad9831e12ccdd6add4dfe113e09c3fc77b59017358199e7d9f8e2"
+  },
+  {
+    "name": "check-runner-labels",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-runner-labels"
+    ],
+    "exitCode": 0,
+    "seconds": 1.13,
+    "file": "gate-check-runner-labels.log.gz",
+    "rawSha256": "af99d3477516df342c25f4c78d7143aba4559baec481c1d7925641dd7201fdf8",
+    "archiveSha256": "55991b1d3ab22f166cca46a83fbc50396186f00607b635fb23b0f8fdc4fe24b0"
+  },
+  {
+    "name": "check-ci-speed",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-ci-speed"
+    ],
+    "exitCode": 0,
+    "seconds": 0.38,
+    "file": "gate-check-ci-speed.log.gz",
+    "rawSha256": "cba0a1228ced1c5dd5a7b9b444d1c25b7946725dd41d1cbe2f120fb89549bdde",
+    "archiveSha256": "6b3cbd2207bf9462a0e65d09b345d96b1b9f6cb906cc94bba051783a57da3e6c"
+  },
+  {
+    "name": "check-abbreviations",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0,
+    "seconds": 4.36,
+    "file": "gate-check-abbreviations.log.gz",
+    "rawSha256": "40bc8776477dfee8e00c5861f343f3d35a6c09e3c96c13d2c4cbe1617135d2a5",
+    "archiveSha256": "6f4a5c4a5a87320c32dc50e94f151e65bd894c4628e42c30dcc438a8bc59b757"
+  },
+  {
+    "name": "check-file-size-js-twin",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "exitCode": 1,
+    "seconds": 4.37,
+    "file": "gate-check-file-size-js-twin.log.gz",
+    "rawSha256": "c8e272f184eac3f06ffae0a24b4faf0f95d2a3b7161e1875812be2da0de86ba0",
+    "archiveSha256": "cd02165b054f094be55329fbeda2a21f248cbcd8b50ee312f88589e907394011"
+  },
+  {
+    "name": "check-file-size",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 1,
+    "seconds": 3.81,
+    "file": "gate-check-file-size.log.gz",
+    "rawSha256": "16481cbd293f447aba38464fe6fe5488ed1b0161b07a2a016a94c2b1a8fa966a",
+    "archiveSha256": "d0582d91da03892942f3cb559df87ba4bd61bd936c36db0406ad520a363c513d"
+  }
+]

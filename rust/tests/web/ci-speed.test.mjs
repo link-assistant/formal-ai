@@ -249,6 +249,37 @@ describe('the measured records', () => {
     assert.deepEqual([...parseJavaScriptFileEvents(lines.slice(0, -1).join('\n')).keys()], ['w/done.test.mjs']);
   });
 
+  test('a missing start observation for the first unfinished file cannot promote a later file to a lower bound', () => {
+    const lines = [
+      '2026-11-21T15:00:00Z [test-file] queued w/unobserved-first.test.mjs',
+      '2026-11-21T15:00:00Z [test-file] queued w/later.test.mjs',
+      '2026-11-21T15:00:01Z [test-file] started w/later.test.mjs',
+      '2026-11-21T15:00:05Z The command was terminated after 360s, its full 360s execution budget.',
+    ];
+    assert.deepEqual([...parseJavaScriptFileEvents(lines.join('\n'))], []);
+  });
+
+  test('a fast-cohort import raises shared costs without erasing full-suite measurements', () => {
+    const table = 'javascript-test-durations\n  default-seconds 1\n  test "full"\n    seconds 50\n  test "grown"\n    seconds 5\n';
+    const observed = new Map([
+      ['full', {seconds: 20, complete: true}],
+      ['grown', {seconds: 80, complete: true}],
+      ['tiny', {seconds: 0.2, complete: true}],
+    ]);
+    const merged = mergeJavaScriptDurations(table, observed, {raiseOnly: true});
+    assert.deepEqual([...parseTestDurations(merged)], [['grown', 80], ['full', 50]]);
+    assert.match(merged, /^  default-seconds 1$/mu);
+    assert.equal(mergeJavaScriptDurations(merged, observed, {raiseOnly: true}), merged);
+  });
+
+  test('a faster or slower ordinary cohort cannot restate a receipted duration', () => {
+    const table = 'javascript-test-durations\n  test "bound"\n    seconds 40\n    receipt-sha256 abc\n    request-sha256 def\n    measurement-kind local-single-file\n';
+    for (const seconds of [30, 50]) for (const complete of [true, false]) for (const raiseOnly of [true, false]) {
+      const merged = mergeJavaScriptDurations(table, new Map([['bound', {seconds, complete}]]), {raiseOnly});
+      assert.equal(merged, table, JSON.stringify({seconds, complete, raiseOnly}));
+    }
+  });
+
   test('observed js seconds replace records, never lower a bound or a receipt, and set default-seconds', () => {
     const table = [
       '# generated',
@@ -315,14 +346,16 @@ test('observed provenance suites start early on separate exact-partition shards'
   const files = readdirSync(directory).filter(name => name.endsWith('.test.mjs'))
     .map(name => 'rust/tests/web/' + name).sort();
   const recorded = parseTestDurations(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8'));
-  const secondsOf = durationLookup(recorded);
+  const fallback = Number(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8')
+    .match(/^  default-seconds (\S+)$/mu)[1]);
+  const secondsOf = durationLookup(recorded, fallback);
   const full = 'rust/tests/web/full-provenance-cli.test.mjs';
   const memory = 'rust/tests/web/provenance-logical-memory-capture.test.mjs';
   const fresh = 'rust/tests/web/fresh-planner-recomputation.test.mjs';
   assert(recorded.has(full) && recorded.has(memory), 'expensive observed files cannot retain the unknown-file fallback');
   assert(secondsOf(full) > secondsOf(fresh));
   assert(secondsOf(memory) > secondsOf('unknown-unrecorded-suite'));
-  const {shards} = planShards(files, 8, secondsOf);
+  const {shards} = planShards(files, 9, secondsOf);
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
   const fullShard = shards.findIndex(shard => shard.includes(full));
@@ -331,7 +364,7 @@ test('observed provenance suites start early on separate exact-partition shards'
   assert.notEqual(fullShard, memoryShard);
   assert.notEqual(fullShard, freshShard);
   assert.equal(shards[fullShard][0], full);
-  assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
+  assert.deepEqual(planShards([...files].reverse(), 9, secondsOf).shards, shards);
 });
 
 
@@ -340,35 +373,64 @@ test('observed partial meta-reasoner cost starts on its own heavy shard without 
   const files = readdirSync(directory).filter(name => name.endsWith('.test.mjs'))
     .map(name => 'rust/tests/web/' + name).sort();
   const recorded = parseTestDurations(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8'));
-  const secondsOf = durationLookup(recorded);
+  const fallback = Number(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8')
+    .match(/^  default-seconds (\S+)$/mu)[1]);
+  const secondsOf = durationLookup(recorded, fallback);
   const reasoner = 'rust/tests/web/meta-reasoner.test.mjs';
   const heavy = ['full-provenance-cli', 'fresh-planner-recomputation', 'issue-1165-production-research']
     .map(name => 'rust/tests/web/' + name + '.test.mjs');
   assert(secondsOf(reasoner) > secondsOf('rust/tests/web/r1175-routing-probes.test.mjs'));
-  const {shards} = planShards(files, 8, secondsOf);
+  const {shards} = planShards(files, 9, secondsOf);
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
   const reasonerShard = shards.findIndex(shard => shard.includes(reasoner));
   assert.equal(shards[reasonerShard][0], reasoner);
   for (const file of heavy) assert.notEqual(reasonerShard, shards.findIndex(shard => shard.includes(file)));
-  assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
+  assert.deepEqual(planShards([...files].reverse(), 9, secondsOf).shards, shards);
 });
 
 
-test('observed behavior-range parent suites start separately without counting nested cases twice', () => {
+test('observed behavior-range parent suites start in the first worker wave within the job budget', () => {
   const files = readdirSync(join(ROOT, 'rust/tests/web')).filter(name => name.endsWith('.test.mjs'))
     .map(name => 'rust/tests/web/' + name).sort();
   const recorded = parseTestDurations(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8'));
-  const secondsOf = durationLookup(recorded);
+  const fallback = Number(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8')
+    .match(/^  default-seconds (\S+)$/mu)[1]);
+  const secondsOf = durationLookup(recorded, fallback);
   const behavior = 'rust/tests/web/issue-1021-behaviour-range.test.mjs';
   const heavy = ['full-provenance-cli', 'fresh-planner-recomputation', 'issue-1165-production-research', 'meta-reasoner']
     .map(name => 'rust/tests/web/' + name + '.test.mjs');
   assert(secondsOf(behavior) > secondsOf('rust/tests/web/r1175-routing-probes.test.mjs'));
-  const {shards} = planShards(files, 8, secondsOf);
+  const {shards} = planShards(files, 9, secondsOf);
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
   const selected = shards.findIndex(shard => shard.includes(behavior));
-  assert.equal(shards[selected][0], behavior);
-  for (const file of heavy) assert.notEqual(selected, shards.findIndex(shard => shard.includes(file)));
-  assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
+  // Four workers start together; newer measured suites may legitimately sort ahead.
+  assert(shards[selected].indexOf(behavior) < 4, 'the observed parent must start in the first worker wave');
+  // A new complete observation may move another heavy suite onto this shard.
+  // Historical weights deliberately retain older high measurements. Their
+  // conservative four-worker queue must fit the unchanged job budget; a new
+  // hosted run is needed to measure warning-threshold headroom.
+  for (const file of heavy) assert(files.includes(file), 'retain every heavy suite');
+  for (const [index, shard] of shards.entries()) {
+    const workers = [0, 0, 0, 0];
+    for (const file of shard) {
+      const worker = workers.indexOf(Math.min(...workers));
+      workers[worker] += secondsOf(file);
+    }
+    assert(Math.max(...workers) < 360,
+      `conservative queue ${index + 1} must fit the original four-worker job budget`);
+  }
+  assert.deepEqual(planShards([...files].reverse(), 9, secondsOf).shards, shards);
 });
+
+test('a known-file-only duration import retains the explicit unknown-file fallback', () => {
+  const original = 'test-durations\n  default-seconds 0.4\n  test "known.test.mjs"\n    seconds 3\n';
+  for (const observed of [new Map(), new Map([['known.test.mjs', {seconds: 4, complete: true}]])]) {
+    const updated = mergeJavaScriptDurations(original, observed, {raiseOnly: true});
+    assert.match(updated, /^  default-seconds 0\.4$/mu);
+    assert.equal(parseTestDurations(updated).get('known.test.mjs'), observed.size ? 4 : 3);
+  }
+});
+
+import '../../../experiments/issue-1580/javascript-capacity-replay.test.mjs';

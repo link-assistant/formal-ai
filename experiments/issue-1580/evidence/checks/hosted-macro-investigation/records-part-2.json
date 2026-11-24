@@ -1,0 +1,100 @@
+[
+  {
+    "file": "helpers/assess-partitioned-hosted-macro-observations.py.gz",
+    "rawSha256": "7ab7e53586183312c6a310708c6ff47b3ac224a436ec63bac7cdb8ae4751e15a",
+    "archiveSha256": "c80691ffa15318e754cc878ed5fa571c0cfae9d1339208c2b2e911dc8e19c0e4",
+    "bytes": 6519,
+    "lines": 136
+  },
+  {
+    "file": "helpers/document-hosted-macro-results.py.gz",
+    "rawSha256": "e2b60f51120dfbe92180b2e20ace15fa9440ff4c0491354b643b76c976fd2073",
+    "archiveSha256": "4b4364cc10d97e2a525d84e4ffebefa026ebea13986cd0cc9abfb9083c4950eb",
+    "bytes": 8392,
+    "lines": 46
+  },
+  {
+    "file": "helpers/document-hosted-macro-results.log.gz",
+    "rawSha256": "4be9704acb0a4b8c3f54caf09fc1ff4fdfa7df1d09c3d9550f0f38fa45bd5fc3",
+    "archiveSha256": "d3c820df979ffb781026c8d347bb81e1d3343c031aee46e604f0fc13b8bdcecf",
+    "bytes": 233,
+    "lines": 4
+  },
+  {
+    "file": "helpers/download-actionlint-template-image.py.gz",
+    "rawSha256": "6e21b3dbc3187c4d1cd403c51737ca2a53bde0b548b88c23fed4aa1963a3b119",
+    "archiveSha256": "a06f514007cc2b099666500b8a641931b8b13e49ae5d9fb61dc1d31041672750",
+    "bytes": 1082,
+    "lines": 19
+  },
+  {
+    "file": "helpers/download-actionlint-template-image.log.gz",
+    "rawSha256": "0e24e5b01090aec27c3849cbfc8752fe5854c4ca5deeb6b40ade20654e0f7e3c",
+    "archiveSha256": "a30bb72e338a36d493c3587e9a9285f03ac2774f0764c86541a2a72ef0046af9",
+    "bytes": 197,
+    "lines": 4
+  },
+  {
+    "file": "helpers/record-rust-upstream-controls-review.py.gz",
+    "rawSha256": "fdcb91da50fe224012fd37d3af919c2d2c172a56b6c463ec08f217107757cda8",
+    "archiveSha256": "15f4c65a4e17ffc26b2d983664d75294023e04d2cd3bb46280a7bade79400a9f",
+    "bytes": 6711,
+    "lines": 60
+  },
+  {
+    "file": "helpers/record-rust-upstream-controls-review.log.gz",
+    "rawSha256": "10224b888cdd0df677298f7df44bdc54cc87329a2f7115fe3d2c9a950cc02c8d",
+    "archiveSha256": "a89c3ec664de3a4033a3454aeea85c889860b1440f40610491ceda495b944e77",
+    "bytes": 230,
+    "lines": 4
+  },
+  {
+    "file": "helpers/download-macro-template-image.py.gz",
+    "rawSha256": "26d0bfe92db68946a124ff8a9f70692e44ac59bdfe4604571aaf779fa320e526",
+    "archiveSha256": "bda72c27159b78bf87179a705a7ec5010de0ce6da0e0812e2610571e2a76e048",
+    "bytes": 822,
+    "lines": 14
+  },
+  {
+    "file": "helpers/download-macro-template-image.log.gz",
+    "rawSha256": "31852284ecae5c338b19fb3f2ff559fe728029961334a94db6dcae3571173f8f",
+    "archiveSha256": "f159c15efff93917f4e6c4bcca600a7c41e90b60424be2a51571152e66bedf4f",
+    "bytes": 195,
+    "lines": 5
+  },
+  {
+    "file": "helpers/download-macro-template-image.stdout.gz",
+    "rawSha256": "501911a5d7d1a9503aa40c63d927196c76a484d8cdd789a3c1a738aa28e83308",
+    "archiveSha256": "a3c8dbd996dbf7c68f2a0fca6e23f57cfb0eef0b613942eab982a31783855b16",
+    "bytes": 60,
+    "lines": 1
+  },
+  {
+    "file": "helpers/download-macro-template-image.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "helpers/download-macro-template-image-worker.py.gz",
+    "rawSha256": "67e4c76761b46f0234affa0213b0fe2edc51fea3b5b9d83b2bbec008fc107223",
+    "archiveSha256": "c158775367883d8f617ea47e43f3234ef9f8e0ce22b987eb6c165ea2d4583519",
+    "bytes": 1077,
+    "lines": 19
+  },
+  {
+    "file": "helpers/record-rust-macro-report-review.py.gz",
+    "rawSha256": "502953aa67e5e0df21d4d4d43d398411fa457a4ee6db3a5540876162242c85cf",
+    "archiveSha256": "91bd85f125c99175b9e0a547c8d55f550de509659bc7484c9a55eb6394d5bf0b",
+    "bytes": 4213,
+    "lines": 42
+  },
+  {
+    "file": "helpers/record-rust-macro-report-review.log.gz",
+    "rawSha256": "439801407effdefebef2a4952579272fc4361575fc3f98ce874fde515a033fe8",
+    "archiveSha256": "a6676938b660acac97b8fb1243a998cb4c04021d519c109f4653ab313eaf199e",
+    "bytes": 181,
+    "lines": 4
+  }
+]

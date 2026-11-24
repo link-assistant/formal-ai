@@ -1,0 +1,24 @@
+{
+  "sourceHead": "53816c9eb4bd11729a8be347ccd9497d07042660",
+  "testedMerge": "7655c52f107242efef5307daa905f651110cbbd5",
+  "terminalRuns": 33,
+  "successful": 31,
+  "failed": 1,
+  "skipped": 1,
+  "platformWarnings": 6,
+  "platformErrors": 2,
+  "wholeAvailableCliLogs": 33,
+  "nativeContractsPassed": 441,
+  "semanticReviewBoundary": "All complete available logs inventoried and targeted warning/error/source contexts reviewed; full literal review and full issue acceptance remain unfinished.",
+  "independentReasoningCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1972285,
+    "sha256": "2dbc21d414cb0a438e988a3efb49c534bf4259ad7a8bf6635eec825fff9f46ed"
+  },
+  "members": 225,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T20:24:03.085920+00:00"
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "experiments/issue-1580/native-regression-groups.test.mjs"
+  ],
+  "exitCode": 1,
+  "file": "before.log.gz",
+  "rawSha256": "8c2472ad7a58c3966c8820d40287bb9eb2d6e13a2b0a4d2d5c407575caf2ea1e",
+  "archiveSha256": "361f00c035d222a43dc561bb2f9a61f6efc629a9174911a22272e06507719955"
+}

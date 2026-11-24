@@ -90,18 +90,17 @@ tokio = { version = "1.53.3", features = ["process", "io-util", "signal"] }
 blake3 = { version = "1.8.7", features = ["rayon"] }
 ring = "0.17"
 tracing = "0.1.44"
-wgpu = { version = "30.0.1", optional = true }
-pollster = { version = "0.4.0", optional = true }
 async-trait = "0.1"
 bytes = "1"
 link-cli = { version = "1.0.0", optional = true }
 tungstenite = "0.30"
-web-capture = { version = "0.3.37", default-features = false, features = ["search"] }
+web-capture = { version = "0.5.3", default-features = false, features = ["search"] }
 web-search = { version = "0.6.0", default-features = false, features = ["merge"] }
 webrtc = "0.21"
 
 [features]
-provenance-gpu = ["dep:wgpu", "dep:pollster"]
+# Compatibility flag: the GPU backend is unavailable; do not install unused drivers.
+provenance-gpu = []
 default = ["doublets-native", "equality-saturation", "meta-language"]
 doublets-native = ["dep:link-cli"]
 equality-saturation = ["dep:egg"]
@@ -133,19 +132,70 @@ path = "tests/unit/mod.rs"
 
 [[test]]
 name = "calendar_currency"
-path = "tests/unit/calendar-currency.rs"
+path = "tests/standalone/calendar-currency.rs"
 
 [[test]]
 name = "openai_forced_functions"
-path = "tests/unit/openai_forced_functions.rs"
+path = "tests/standalone/openai_forced_functions.rs"
+
+[[test]]
+name = "meta_executor_parity"
+path = "tests/unit/meta_executor_parity.rs"
+
+# Replay the existing synthesis contracts without compiling the whole unit suite.
+[[test]]
+name = "synthesis_contracts"
+path = "tests/unit/specification/synthesis.rs"
+
+# Replay typed synthesis search and failed-attempt contracts without the unit monolith.
+[[test]]
+name = "coding_contracts"
+path = "tests/unit/coding_contracts.rs"
+
+# Execute the unchanged unsupported-language sibling contract in the focused PR lane.
+[[test]]
+name = "any_language"
+path = "tests/unit/issue_706_any_language.rs"
 
 [[test]]
 name = "cnl_output"
-path = "tests/unit/cnl_output.rs"
+path = "tests/standalone/cnl_output.rs"
 
 [[test]]
 name = "cnl_parity"
-path = "tests/unit/cnl_parity.rs"
+path = "tests/standalone/cnl_parity.rs"
+
+# Replay the existing unknown-source contracts without compiling the whole unit suite.
+[[test]]
+name = "unknown_reasoning"
+path = "tests/unit/specification/unknown_reasoning.rs"
+
+# Replay the unchanged data contracts, including their technical-scalar controls.
+[[test]]
+name = "data_files"
+path = "tests/unit/data_files.rs"
+
+[[test]]
+name = "scheduling_contracts"
+path = "tests/unit/scheduling_contracts.rs"
+
+[[test]]
+name = "operational_contracts"
+path = "tests/unit/operational_contracts.rs"
+
+[[test]]
+name = "reasoning_contracts"
+path = "tests/unit/reasoning_contracts.rs"
+
+# Reuse the complete native workflow and release assertions in the focused lane.
+[[test]]
+name = "workflow_contracts"
+path = "tests/unit/workflow_contracts.rs"
+
+# The focused lane replays CLI/PTY fixtures without the monolithic integration target.
+[[test]]
+name = "interface_contracts"
+path = "tests/integration/interface_contracts.rs"
 
 [[test]]
 name = "integration"

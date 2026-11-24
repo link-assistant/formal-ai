@@ -1,0 +1,51 @@
+{
+  "head": "a0798663bcffd11a46cd2cb202bb76ef42002071",
+  "base": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86",
+  "paths": [
+    ".github/workflows/security.yml",
+    "data/benchmarks/fast-pull-request-retained-jobs.json",
+    "experiments/issue-1580/codeql-included-string-observation.test.mjs",
+    "experiments/issue-1580/codeql-macro-contexts/IncludedStringPayloads.ql",
+    "experiments/issue-1580/codeql-macro-contexts/observe.py",
+    "experiments/issue-1580/template-php-input-integrity.test.mjs",
+    "experiments/issue-1580/fixtures/php-template/source.json",
+    "experiments/issue-1580/fixtures/php-template/scripts/check-version-modification.php",
+    "experiments/issue-1580/fixtures/php-template/scripts/src/ReleaseNotes.php",
+    "rust/src/seed.rs",
+    "rust/src/protocol.rs",
+    "rust/tests/web/issue-1580-template-observations.test.mjs"
+  ],
+  "lines": 606,
+  "rawSha256": "8e3b8782f335c40de39605fd7e6892c9a54b1c82414afbb3c770d0f24c8c82c3",
+  "parts": [
+    {
+      "file": "part-1.diff",
+      "startLine": 1,
+      "endLine": 180,
+      "sha256": "d9935bf317a6ca0cc78845f78c574e4632ad0de143b9e4fe22b8a1da3cbc4c82"
+    },
+    {
+      "file": "part-2.diff",
+      "startLine": 181,
+      "endLine": 360,
+      "sha256": "8096008fa586a8a8e418f9ccb6a1d1705ea58c09e9f06b47f2ee0728ace80611"
+    },
+    {
+      "file": "part-3.diff",
+      "startLine": 361,
+      "endLine": 540,
+      "sha256": "b1a48f0c89fabc7497fc58a009d7ded29ec4a4cc3e534a0fb5208e6da1cb5cd6"
+    },
+    {
+      "file": "part-4.diff",
+      "startLine": 541,
+      "endLine": 606,
+      "sha256": "29e54d123303a6908c285e3b4bd1a942b91abf236fad90e1555156e12c183438"
+    }
+  ],
+  "literalReviewComplete": true,
+  "wholePrReviewComplete": false,
+  "independentAuthorshipCredit": 0,
+  "reviewedAt": "2026-11-21T01:07:12.154369+00:00",
+  "reviewResult": "All 606 lines across twelve source paths read. No additional repair identified. Hosted native compilation, query performance/equivalence and whole PR review remain unverified."
+}

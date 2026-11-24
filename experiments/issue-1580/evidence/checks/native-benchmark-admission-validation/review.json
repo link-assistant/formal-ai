@@ -1,0 +1,45 @@
+{
+  "complete": true,
+  "verifiedPayloads": 14,
+  "focusedJavaScriptPassed": 46,
+  "policyCases": 38,
+  "focusedMapCases": 8,
+  "gateCounts": {
+    "PASS": 9,
+    "FAIL": 0
+  },
+  "sourceHashes": {
+    "scripts/ci-pull-request-admission.mjs": "6f5b30b5488af4c90a688518e99d671bc9b9146cd2d78b2fb5e45eaa19bf2ca5",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "ae12428dd15d811fac1a8dfcf0b8b2375b84145d2846843f0477f7d78f8de95b",
+    "rust/tests/unit/reasoning_contracts.rs": "1ee96425d7c0f4d64f124abe2e3d73f4d18b4047bf7bf91ef5a3ddba293a9625",
+    "changelog.d/issue-1580-native-benchmark-replay.md": "41febf5c90122a6f08b9d9ccbe8aeef5d23981778a6d3534ec284e13882c1841"
+  },
+  "admissionBefore": {
+    "pass": 0,
+    "fail": 1,
+    "error": "Benchmark source changes did not select the native lane."
+  },
+  "rustBuildPerformed": false,
+  "nativeHostedVerification": "pending",
+  "fullDetailedGateLiteralReviewClaim": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "unchangedBenchmarkModule": {
+    "path": "rust/tests/unit/specification/benchmarks.rs",
+    "sha256": "0082fc741991ca113ae3ca594f07ae4fb3863e1cee7349224c523d205d7a905a",
+    "testNames": [
+      "issue_304_benchmark_suite_reports_pass_fail_counts",
+      "issue_317_benchmark_suite_grows_with_held_out_ratchet",
+      "issue_317_held_out_benchmark_variants_pass_by_derivation",
+      "issue_704_portfolio_rescues_the_industry_search_case",
+      "issue_314_numeric_benchmark_cases_compute_with_trace",
+      "issue_315_programming_benchmark_cases_synthesize_and_verify",
+      "issue_315_unseen_python_function_synthesizes_without_seed_hit",
+      "issue_315_program_synthesis_accepts_supported_language_wrappers",
+      "issue_326_program_synthesis_accepts_native_operation_verbs",
+      "issue_304_benchmark_research_note_records_provenance",
+      "issue_304_benchmark_fixture_parses_with_windows_line_endings"
+    ],
+    "comparisonHead": "1388db5502f71d0f2bcf522da01ef8fdb8a6ef89"
+  }
+}

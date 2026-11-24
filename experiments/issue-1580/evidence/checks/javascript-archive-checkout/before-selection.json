@@ -1,0 +1,21 @@
+{
+  "createdAt": "2026-11-18T08:22:19.731719+00:00",
+  "phase": "before",
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 5.621,
+  "log": "before-selection.log.gz",
+  "rawSha256": "cd78ce4837faede791f9c27787569999c079c7ae236a44586551399a5770dc8a",
+  "archiveSha256": "4e337287ef6be0dea56b729d8f93fe03c4c5fb02de125ddb49647fa73d86598c",
+  "logBytes": 5443,
+  "logLines": 67,
+  "independentAuthorshipCredit": 0
+}

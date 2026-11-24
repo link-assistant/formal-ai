@@ -11,6 +11,9 @@ import {
   taskLeaves,
 } from '../../../../js/agentic/crate/meta_executor.mjs';
 
+import { CUE_CASES } from './issue-1580-task-cue-cases.mjs';
+export { CUE_CASES };
+
 const answered = (content) => ({ intent: 'answered', content, confidence: 1 });
 const unknown = { intent: 'unknown', content: '', confidence: 0 };
 
@@ -46,6 +49,66 @@ function twoLevel(language, overrides = {}) {
     ...overrides,
   };
 }
+
+/** Literal quotation controls shared with the native fixture reader. */
+export const QUOTATION_CASES = [
+  ['ascii-double-aggregation', 'Count "salt and pepper" and report the size', 'aggregation', ['Count "salt and pepper"', 'report the size']],
+  ['ascii-double-sequence', 'Read "first then second" then report the length', 'sequence', ['Read "first then second"', 'report the length']],
+  ['ascii-single-aggregation', "Count 'salt and pepper' and report the size", 'aggregation', ["Count 'salt and pepper'", 'report the size']],
+  ['unquoted-contraction', "Don't count and report the size", 'aggregation', ["Don't count", 'report the size']],
+  ['quoted-contraction', "Read 'Don't split and join' and report the length", 'aggregation', ["Read 'Don't split and join'", 'report the length']],
+  ['plural-possessive', "Count the dogs' coats and report the size", 'aggregation', ["Count the dogs' coats", 'report the size']],
+  ['escaped-double-quote', 'Read "a \\"quote and join\\" stays" and report the length', 'aggregation', ['Read "a \\"quote and join\\" stays"', 'report the length']],
+  ['adjacent-cjk-single-quote', "统计'盐并且胡椒'并且报告大小", 'aggregation', ["统计'盐并且胡椒'", '报告大小'], 'zh'],
+  ['adjacent-cjk-double-quote', '统计"盐并且胡椒"并且报告大小', 'aggregation', ['统计"盐并且胡椒"', '报告大小'], 'zh'],
+  ['russian-double-quote', 'Посчитай "соль и перец" и назови размер', 'aggregation', ['Посчитай "соль и перец"', 'назови размер'], 'ru'],
+];
+
+/** Status controls use a second shared fixture to keep both files bounded. */
+export const STATUS_CASES = [
+  {
+    name: 'unverified-program-leaf',
+    text: 'Produce source',
+    language: 'en',
+    answers: { 'Produce source': { intent: 'meta_reasoned_program_unverified', content: 'A nonempty program', confidence: 1 } },
+    cached: {},
+    withheld: [],
+    bounds: {},
+  },
+  {
+    name: 'unverified-program-child',
+    text: 'First task and second task',
+    language: 'en',
+    answers: {
+      'First task': { intent: 'meta_reasoned_program_unverified', content: 'A nonempty program', confidence: 1 },
+      'second task': answered('Second result'),
+    },
+    cached: {},
+    withheld: [],
+    bounds: {},
+  },
+  {
+    name: 'unverified-program-cache',
+    text: 'Produce source',
+    language: 'en',
+    answers: {},
+    cached: { 'Produce source': { intent: 'meta_reasoned_program_unverified', content: 'A nonempty program', confidence: 1 } },
+    withheld: [],
+    bounds: {},
+  },
+  {
+    name: 'verified-program-child',
+    text: 'First task and second task',
+    language: 'en',
+    answers: {
+      'First task': { intent: 'meta_reasoned_program', content: 'A nonempty program', confidence: 1 },
+      'second task': answered('Second result'),
+    },
+    cached: {},
+    withheld: [],
+    bounds: {},
+  },
+];
 
 /** Every case of the fixture, in order. */
 export const CASES = [
@@ -96,6 +159,17 @@ export const CASES = [
     withheld: [],
     bounds: {},
   },
+  ...QUOTATION_CASES.map(([name, text, , parts, language = 'en']) => ({
+    name,
+    text,
+    language,
+    answers: Object.fromEntries(parts.map((part, index) => [part, answered(String(index + 1))])),
+    cached: {},
+    withheld: [],
+    bounds: {},
+  })),
+  ...STATUS_CASES,
+  ...CUE_CASES,
 ];
 
 /** The table host of one case. */

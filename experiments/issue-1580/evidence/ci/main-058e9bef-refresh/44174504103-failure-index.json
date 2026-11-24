@@ -1,0 +1,27 @@
+{
+  "run": 44174504103,
+  "totalLines": 3352,
+  "scope": "Failure-marker index only; unselected raw lines have not been reviewed.",
+  "markers": [
+    {
+      "line": 2829,
+      "kind": "fatal",
+      "payload": "##[error]The command was terminated after 900s, its full 900s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 2831,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 124."
+    },
+    {
+      "line": 3335,
+      "kind": "fatal",
+      "payload": "##[error]not every shard succeeded (corpus-shard=failure). A failed, timed-out (cancelled) or skipped shard is a missing measurement, never a pass."
+    },
+    {
+      "line": 3336,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    }
+  ]
+}

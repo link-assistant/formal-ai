@@ -1,0 +1,29 @@
+{
+  "reason": "Merge conflict in generated source hashes prevents Formal AI boot; retain normal source-identity verification and use the actual merged worker bytes.",
+  "workerSource": "js/worker/formal_ai_worker_solve.js",
+  "workerSha256": "e21aa14dc833bc6af9f0cdecee18ef514a31144a7008a7bf024fc5a955a86106",
+  "changed": [
+    {
+      "path": "js/server/worker-script-prerequisites.mjs",
+      "sha256": "bd438e6ab75a66d85ae08fbda6d5a2683f615b1397a09dd6fdfb93f17d34a3b8"
+    },
+    {
+      "path": "js/worker-script-prerequisites.js",
+      "sha256": "dbab5abaed73514c1c738cfc3c97136b53474a83d16bbd216e05ab22aaf56789"
+    },
+    {
+      "path": "ts/server/worker-script-prerequisites.mts",
+      "sha256": "bd438e6ab75a66d85ae08fbda6d5a2683f615b1397a09dd6fdfb93f17d34a3b8"
+    },
+    {
+      "path": "ts/worker-script-prerequisites.ts",
+      "sha256": "dbab5abaed73514c1c738cfc3c97136b53474a83d16bbd216e05ab22aaf56789"
+    },
+    {
+      "path": "data/meta/runtime-feature-coverage.json",
+      "sha256": "43ae78d0566f4a67326d8c89850870901d9218ea11a9e7b0681b4a6965b675ad"
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "formalAiExecutionCredit": false
+}

@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "scripts/render-status.mjs",
+    "--write"
+  ],
+  "exitCode": 0,
+  "rawSha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436",
+  "scope": "Regenerate maintained status surface after lowering the core source-size ceiling; no acceptance claim."
+}

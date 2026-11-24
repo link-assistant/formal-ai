@@ -13,6 +13,7 @@ import path from "node:path";
 import { test } from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+import { routingFactExpectations, routingFactReplay } from "./support/routing-fact-replay.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const FIXTURE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/routing-probes");
@@ -113,6 +114,9 @@ const worker = createWorkerContext({
   },
 });
 
+const publisherRequests = [];
+worker.fetch = routingFactReplay(worker.fetch, publisherRequests);
+const observedAnswers = new Map();
 let answered = null;
 /** Run every probe once, in order, on the single worker. */
 function answers() {
@@ -123,6 +127,7 @@ function answers() {
       const options = { agentMode: probe["javascript-agent-mode"] === "true" };
       const answer = plain(await worker.solve(probe.prompt, [], {}, {}, [], options));
       intents.set(probe.id, String(answer.intent));
+      observedAnswers.set(probe.id, answer);
     }
     return intents;
   })();
@@ -192,4 +197,28 @@ test("R1175-4: the browser worker routes every probe; misroutes only ratchet dow
   assert.deepEqual({ newMisroutes, fixed, changed }, { newMisroutes: [], fixed: [], changed: [] });
   const listed = probes.filter((probe) => probe.js_misroute).length;
   assert.equal(listed, budget.js_misroute_ceiling, "js_misroute_ceiling must equal the listed misroutes (it may only fall)");
+});
+
+test("factual routing probes consume publisher claims and retain observed source evidence", async () => {
+  await answers();
+  for (const [id, [subject, value, label]] of routingFactExpectations) {
+    const answer = observedAnswers.get(id);
+    assert.equal(answer.intent, "fact_query", id);
+    assert.ok(answer.content.includes(label), id);
+    for (const qid of [subject, value]) {
+      assert.ok(answer.evidence.includes("wikidata:" + qid), id + " retains " + qid);
+      assert.ok(publisherRequests.some(url => new URL(url).searchParams.get("ids") === qid), id + " fetched " + qid);
+      assert.ok(answer.evidence.some(link => link.includes("ids=" + qid + "&") && /sha256=[0-9a-f]{64}/u.test(link)), id + " hashes the captured entity");
+    }
+  }
+});
+
+test("the Rust creator answer is unavailable without its publisher capture", async () => {
+  const cold = createWorkerContext();
+  const requests = [];
+  cold.fetch = routingFactReplay(cold.fetch, requests);
+  const answer = plain(await cold.solve("谁创建了 Rust?", [], { offline: true }));
+  assert.notEqual(answer.intent, "fact_query");
+  assert.doesNotMatch(answer.content, /Graydon Hoare/u);
+  assert.deepEqual(requests, []);
 });

@@ -1,0 +1,113 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "rust/src/unknown_opener.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.094,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "fixture-integrity",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.307,
+      "rawBytes": 307,
+      "rawLines": 10,
+      "rawSha256": "74df2ccf64ed494892847401bd1197c9820387880bb77082feb5c6bc6529899e"
+    },
+    {
+      "name": "unicode-identifiers",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.364,
+      "rawBytes": 2949,
+      "rawLines": 42,
+      "rawSha256": "74bb28d8d03e6e3bc1e3ee4ee80e9ec9fc53cca36917f9c917e0f1ddce14bf22"
+    },
+    {
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-hardcoded-language-js-twin,check-hardcoded-language,check-prompt-specialization,check-status-render,check-minimal-core-boundary-js-twin,check-minimal-core-boundary"
+      ],
+      "exitCode": 0,
+      "seconds": 18.112,
+      "rawBytes": 267,
+      "rawLines": 8,
+      "rawSha256": "57447f83a4eb9b3d610c1266cf6a166afadebb983aa91a987cdb3688d19a0150"
+    },
+    {
+      "name": "format-check",
+      "argv": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "rust/src/unknown_opener.rs",
+        "rust/src/web_engine_core.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.053,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "translation",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.45,
+      "rawBytes": 188,
+      "rawLines": 1,
+      "rawSha256": "fc3f033428548a4500f1df0ec78e77db7050b95e954089f214ea64b8cb6ed814"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.587,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

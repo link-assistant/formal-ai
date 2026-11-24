@@ -91,10 +91,12 @@ fn claims_procedural_request(prompt: &str, history: &[crate::solver::Conversatio
     use crate::solver_handler_how::{
         is_procedural_elaboration_request, practical_help, procedural_how_to_task,
     };
-    use crate::solver_handlers::web_search_intent::explicit_web_search_requested;
+    use crate::solver_handlers::web_search_intent::extract_explicit_web_search_query;
 
     let normalized = normalize_prompt(prompt);
-    if explicit_web_search_requested(prompt, &normalized) {
+    if extract_explicit_web_search_query(&prompt.to_lowercase()).is_some()
+        || extract_explicit_web_search_query(&normalized).is_some()
+    {
         return false;
     }
     if practical_help::goal(prompt, &normalized).is_some()

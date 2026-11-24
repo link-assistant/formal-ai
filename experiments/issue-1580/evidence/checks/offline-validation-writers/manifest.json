@@ -1,0 +1,26 @@
+{
+  "records": [
+    {
+      "file": "format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "file": "metadata.log.gz",
+      "rawSha256": "4bc22f828ccefdd0fb4cf752d3b8c56d80586c3f66a3284fbcad456fd5756208",
+      "archiveSha256": "eaa081919bbe0c4c4e9cb59b69d51524fd8e90a91897ab3c57cb37a0b7ddf83c",
+      "lines": 1
+    },
+    {
+      "file": "mirror.log.gz",
+      "rawSha256": "0de454a00a5129622def312a47e63bd49aac3db4a041b84805fc270ab884a443",
+      "archiveSha256": "55596ff5bb7f00ad6a07a9772e15318bed5945f43d579e8f3c88f1baeb251f52",
+      "lines": 1
+    }
+  ],
+  "priorEvidencePayloadsVerified": 15,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

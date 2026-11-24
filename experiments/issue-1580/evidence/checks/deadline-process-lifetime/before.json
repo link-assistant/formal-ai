@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "experiments/issue-1580/deadline-process-lifetime.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 17.51556213083677,
+  "sourceSha256": "21c5af76ebd761f0fc4c55be4637425cabb0acbed47129dcd6aa7e9fa5f3b2ca",
+  "testSha256": "bd3b30c5a30c296b2faefd79f8e2944553796e4a5bdc808ee15dc2f97bb32418",
+  "expectedPass": 0,
+  "expectedFail": 6,
+  "fixtureMaximumSeconds": 4,
+  "memoryLimitMiB": 192,
+  "stackLimitMiB": 8,
+  "stdout": {
+    "file": "before.stdout.gz",
+    "rawSha256": "14b665cb5e292cfcec7cff06a4ea81bfd5ba9039448957bda0393ef67f8c2889",
+    "archiveSha256": "7db786d610b7355fcbbeda7fd4d3e3d03686e0e5cbfbce34e0b9fb8e6723f5ff"
+  },
+  "stderr": {
+    "file": "before.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+}

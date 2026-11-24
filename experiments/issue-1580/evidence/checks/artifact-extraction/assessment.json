@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-11-20T11:40:59.960171+00:00",
+  "oldExtractorDependency": {
+    "name": "unzip-stream",
+    "version": "0.3.4",
+    "actualDeprecationCode": "DEP0005",
+    "runtime": "Node.js v26.13.0",
+    "probe": "experiments/issue-1580/reproduce-artifact-extractor.cjs",
+    "subprocessHeapMegabytes": 64,
+    "subprocessMilliseconds": 5000,
+    "hostedNode24Executed": false
+  },
+  "localTests": {
+    "nativeArtifactGroups": 14,
+    "actualPythonZipCases": 7,
+    "rendererGroups": 9,
+    "maintainedBuildPolicyGroups": 97,
+    "documentationPolicyGroups": 32,
+    "productionProfileGroups": 18,
+    "allPassed": true
+  },
+  "negativeControls": [
+    "missing extractor and unchanged consumers",
+    "absent hosted transport qualification",
+    "empty ZIP accepted before explicit refusal"
+  ],
+  "helperFailuresPreserved": [
+    "wrong documentation-policy test filename",
+    "workflow paths match counted a comment before correction"
+  ],
+  "transportPin": "9000827ccba6bdab643e8b6fd33ac0654aef8333",
+  "originalConsumerDestinationsPreserved": true,
+  "hostedTransportExecuted": false,
+  "otherDirectDownloadConsumersMigrated": false,
+  "pagesDeprecationFixed": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -1,0 +1,41 @@
+{
+  "observedAt": "2026-11-21T02:10:57.167361+00:00",
+  "head": "e1b7582f22df95ea5c0079b25f7db14ff047e8a3",
+  "warningCount": 92,
+  "violations": 0,
+  "embeddedDataViolations": 0,
+  "allFiveSelectedParentWarningsResolved": true,
+  "limitsChanged": false,
+  "sourceInventorySha256": "b4de12274649ab66cbb538a50a31df345a9b00532f6195e8d3207b106a80c3a0",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "verifiedParentPaths": [
+    {
+      "file": "rust/src/link_store.rs",
+      "lines": 895,
+      "sha256": "4b6f8f35756b7357989c091464c1e864144a8323e7b68b7886a2a5af4d8cef0c"
+    },
+    {
+      "file": "rust/src/es_meta.rs",
+      "lines": 848,
+      "sha256": "6b4585010e17970b7979dec09ae375dcf6be5d2b77bea9e50b06b75363f98745"
+    },
+    {
+      "file": "rust/src/calculation.rs",
+      "lines": 693,
+      "sha256": "0952e0648c32309dec5b5ca082abd399fecc725a1281fba1133f01286e5b91fd"
+    },
+    {
+      "file": "rust/src/world_model.rs",
+      "lines": 815,
+      "sha256": "6fddd0c84ddcdeff8bffa7db438e66a289bb383fc49cf15ab9e81a999e94d1ad"
+    },
+    {
+      "file": "rust/src/algorithm_discovery.rs",
+      "lines": 811,
+      "sha256": "bcc9ccb2cd8d2f0e8ee3ddcbfb06314faf323f96ce9decc8b41a1fc588dee789"
+    }
+  ],
+  "selectedParentVerificationHead": "d2f7275a8981c9f6ae79f37889a7b47c94366c74",
+  "initialAssertionCoverageCorrected": true
+}

@@ -1,0 +1,78 @@
+{
+  "comparisonSource": "cec9207c3e139e2212f6d4ea478ff1b88e17be7c",
+  "templateBlobs": 3028,
+  "templates": [
+    {
+      "language": "javascript",
+      "head": "8e72538d579d904aff818c2447fb3c2413d3a989",
+      "completePathAndBlobUnion": true,
+      "blobs": 566
+    },
+    {
+      "language": "rust",
+      "head": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+      "completePathAndBlobUnion": true,
+      "blobs": 374
+    },
+    {
+      "language": "python",
+      "head": "7a05d0515fac2966885b272302c1055985bc948b",
+      "completePathAndBlobUnion": true,
+      "blobs": 340
+    },
+    {
+      "language": "php",
+      "head": "e12a25d7ce9d8bfd37f238b1b238c0006bf52031",
+      "completePathAndBlobUnion": true,
+      "blobs": 611
+    },
+    {
+      "language": "csharp",
+      "head": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+      "completePathAndBlobUnion": true,
+      "blobs": 339
+    },
+    {
+      "language": "java",
+      "head": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+      "completePathAndBlobUnion": true,
+      "blobs": 207
+    },
+    {
+      "language": "cpp",
+      "head": "e4a3bac7dc38ede3def41943f826b2d052a98a12",
+      "completePathAndBlobUnion": true,
+      "blobs": 552
+    },
+    {
+      "language": "go",
+      "head": "785292ebe92fadbb5a3fcef3c6835ccfb076b203",
+      "completePathAndBlobUnion": true,
+      "blobs": 39
+    }
+  ],
+  "registryObservations": [
+    {
+      "crate": "command-stream",
+      "at": "2026-11-23T01:23:47.787691+00:00",
+      "latest": "1.13.0",
+      "gitBlob": "a823862714ef1fb262bc3a668ce643b0ecf21d65",
+      "sha256": "14dccc7484afb911481cccc6ff790d63a073276e7262e9456c642fac7028d30d",
+      "checksum": "766abe4f6374a853886db3e2647b5251d66317f3387b056fab370fe99ae7f591"
+    },
+    {
+      "crate": "link-calculator",
+      "at": "2026-11-23T01:23:48.277595+00:00",
+      "latest": "0.24.0",
+      "gitBlob": "9d634b39b19c7989558e78cff6272a364a35fc54",
+      "sha256": "06a7165f08d66b76ed13c9871469ee7aa7867d57fe06f612deb227075b0e9fb0",
+      "checksum": "48ed59168c3475a4d33206eba467c218e54102aaa3d7a961cc72e393f3d5a681"
+    }
+  ],
+  "payloadCount": 40,
+  "roundTripVerified": true,
+  "archiveSha256": "cc914bd9fe9ef5eda1f5be1c59ab19c8f2db6bc2ee75cb04f161e6c55a603aa8",
+  "completePracticeImplementationAndVerification": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Re-check the links lychee failed without ever getting a status code.
+ * Re-check transient HTTP and transport failures within a fixed budget.
  *
  * Issue #1081: run 34134986294 reddened this branch on one link,
  *
@@ -31,13 +31,11 @@
  * is listed as retryable. `--max-retries` is inert for this entire class of
  * failure, which is the class #1045 raised it for.
  *
- * So the retry has to live outside lychee. This script reads lychee's report,
- * takes only the failures that carry no status code -- the ones no host ever
- * pronounced on -- and asks each URL again, itself, spread over time. A URL
- * that answers is not a broken link and does not fail the build. A URL that
- * still says nothing stays broken, and a URL the host rejected is never
- * re-checked at all: a 404 is an answer, and this script exists to act on the
- * absence of one.
+ * So the retry has to live outside lychee. This script reads lychee's report
+ * and retries transport failures and transient HTTP 408, 429 and 5xx responses,
+ * spread over time within a fixed budget. Only a later successful response
+ * recovers the URL. Permanent HTTP failures such as 404 remain broken without
+ * retries; an exhausted transient failure also remains broken.
  *
  * Usage:
  *   node scripts/recheck-broken-links.mjs
@@ -71,18 +69,21 @@ import {
 import { dirname } from 'path';
 import { pathToFileURL } from 'url';
 
-import { extractFailures } from './check-web-archive.mjs';
+import { extractFailures, extractNonHttpFailures, validateLycheeReport } from './check-web-archive.mjs';
 
 /**
  * The status codes this re-check treats as "the link resolves".
  *
  * Identical to `--accept` in `.github/workflows/links.yml`, and pinned to it by
  * a test: two components deciding what "broken" means, by different rules, is
- * how a link starts passing one gate and failing the next. 429 and 5xx describe
- * the host rather than the link, exactly as they do there; 404 is not here,
- * because a missing page is missing.
+ * how a link starts passing one gate and failing the next. Transient errors
+ * qualify for bounded retries, but cannot establish that the page resolves.
  */
-export const ACCEPTED_STATUS = '200..=204,429,500..=599';
+export const ACCEPTED_STATUS = '200..=204';
+
+function isTransientStatus(status) {
+  return status === 408 || status === 429 || (status >= 500 && status <= 599);
+}
 
 /**
  * Sent by the workflow's lychee invocation, and sent again here so a host that
@@ -128,16 +129,13 @@ export function isAccepted(status, ranges) {
 }
 
 /**
- * Split lychee's failures by whether a host actually answered.
+ * Separate final HTTP verdicts from failures eligible for bounded retries.
  *
- * `[404]`, `[502]` -- a number in the marker, or a "Rejected status code" note
- * -- means the request completed and the server gave a verdict. Re-asking would
- * only get the same verdict, so those are left exactly as lychee found them.
- *
- * `[ERROR]`, `[TIMEOUT]`, `[UNKNOWN]` and anything unmarked never reached that
- * point: the connection was reset, the handshake failed, the name did not
- * resolve, nothing came back in time. Those are statements about one moment on
- * one runner, and they are the only ones worth asking again.
+ * Keep the existing `answered` / `unanswered` result keys for callers. Permanent
+ * HTTP failures such as 404 go into `answered`; transient 408, 429 and 5xx join
+ * transport errors in `unanswered`. A numeric marker takes precedence over a
+ * contradictory detail. Retrying never converts a failure into success unless
+ * a later probe actually receives a status in ACCEPTED_STATUS.
  *
  * @param {{url: string, marker: string|null, detail: string}[]} failures
  * @returns {{answered: object[], unanswered: object[]}}
@@ -149,11 +147,10 @@ export function classifyFailures(failures) {
   for (const failure of failures) {
     const numericMarker = /^\d{3}$/.test(failure.marker ?? '');
     const statusInDetail = /rejected status code/i.test(failure.detail ?? '');
-    // RFC 9110 section 15.5.9 permits repeating HTTP 408. It is not accepted:
-    // only a later response in ACCEPTED_STATUS can recover the URL.
+    // Retrying a transient response requires a later successful observation.
     const status = numericMarker ? Number(failure.marker) :
       Number(/rejected status code:\s*(\d{3})/iu.exec(failure.detail ?? '')?.[1]);
-    if ((numericMarker || statusInDetail) && status !== 408) {
+    if ((numericMarker || statusInDetail) && !isTransientStatus(status)) {
       answered.push(failure);
     } else {
       unanswered.push(failure);
@@ -166,12 +163,9 @@ export function classifyFailures(failures) {
 /**
  * Ask one URL once.
  *
- * Three outcomes, kept apart because they are three different claims:
- *   - 'alive'       the host answered with an accepted status
- *   - 'rejected'    the host answered, and the answer is a failure (404, ...)
- *   - 'unreachable' nothing answered: reset, refused, DNS, timeout
- * Only 'alive' clears a link. 'rejected' is final and ends the retries -- a
- * host that says 404 will say it again. 'unreachable' is worth another try.
+ * Only 'alive' clears a link. 'rejected' is a permanent HTTP failure and ends
+ * retries. 'retryable' is a transient HTTP failure; 'unreachable' is a transport
+ * failure. Both may be retried within the unchanged attempt and time budgets.
  *
  * @param {string} url
  * @param {{fetchImpl?: typeof fetch, timeoutMs?: number, accept?: {from: number, to: number}[]}} [options]
@@ -198,8 +192,8 @@ export async function probe(url, options = {}) {
     // being held open for the rest of the run.
     await response.body?.cancel?.().catch(() => {});
 
-    if (response.status === 408) {
-      return { outcome: 'retryable', detail: 'HTTP 408' };
+    if (isTransientStatus(response.status)) {
+      return { outcome: 'retryable', detail: `HTTP ${response.status}` };
     }
     return isAccepted(response.status, accept)
       ? { outcome: 'alive', detail: `HTTP ${response.status}` }
@@ -258,20 +252,29 @@ export async function recheckAll(urls, options = {}) {
   let pending = [...urls];
 
   for (let round = 1; round <= attempts && pending.length > 0; round += 1) {
+    const remaining = budgetMs - (now() - started);
+    if (remaining <= 0) break;
     if (round > 1) {
-      // Doubling, so three rounds span a minute rather than ten seconds: the
-      // failure this exists for is a burst, and a burst is outlasted by time.
-      await sleep(waitMs * 2 ** (round - 2));
+      // A retry wait spends the same budget as a request. Stop when the next
+      // wait leaves no time to ask, rather than sleeping past the deadline.
+      const delay = waitMs * 2 ** (round - 2);
+      if (delay >= remaining) break;
+      await sleep(delay);
     }
 
     const stillPending = [];
     for (const url of pending) {
-      if (now() - started >= budgetMs) {
+      const requestBudget = budgetMs - (now() - started);
+      if (requestBudget <= 0) {
         stillPending.push(url);
         continue;
       }
 
-      const result = await probe(url, { fetchImpl, timeoutMs, accept });
+      const result = await probe(url, {
+        fetchImpl,
+        timeoutMs: Math.min(timeoutMs, requestBudget),
+        accept,
+      });
       const record = results.get(url);
       record.outcome = result.outcome;
       record.detail = result.detail;
@@ -327,7 +330,10 @@ export async function main() {
     process.env.RECOVERED_OUTPUT || 'lychee/recovered.txt';
   const verbose = process.env.RECHECK_VERBOSE === '1';
 
-  console.log('=== Re-check of links that never got an answer ===\n');
+  mkdirSync(dirname(recoveredOutput), { recursive: true });
+  writeFileSync(recoveredOutput, '');
+
+  console.log('=== Re-check of transient link failures ===\n');
   console.log(`Reading lychee output from: ${lycheeOutput}\n`);
 
   // Nothing is recovered until it is proven recovered, so every early return
@@ -340,13 +346,25 @@ export async function main() {
     return;
   }
 
-  const failures = extractFailures(readFileSync(lycheeOutput, 'utf-8'));
+  let content;
+  try {
+    content = readFileSync(lycheeOutput, 'utf-8');
+    validateLycheeReport(content);
+  } catch (error) {
+    console.error(`Lychee report is unverified: ${error.message}`);
+    setOutput('all_recovered', 'false');
+    setOutput('recovered', '0');
+    setOutput('remaining', '0');
+    return;
+  }
+  const unsupported = extractNonHttpFailures(content);
+  const failures = extractFailures(content);
   const { answered, unanswered } = classifyFailures(failures);
 
   console.log(
-    `lychee reported ${failures.length} failing link(s): ` +
-      `${answered.length} the host answered, ` +
-      `${unanswered.length} with no answer at all.\n`
+    `lychee reported ${failures.length + unsupported.length} failing link(s): ` +
+      `${answered.length} permanent HTTP failures, ` +
+      `${unanswered.length} transient or transport failures, ${unsupported.length} non-HTTP failures.\n`
   );
 
   for (const failure of answered) {
@@ -358,7 +376,7 @@ export async function main() {
   if (unanswered.length === 0) {
     setOutput('all_recovered', 'false');
     setOutput('recovered', '0');
-    setOutput('remaining', String(answered.length));
+    setOutput('remaining', String(answered.length + unsupported.length));
     return;
   }
 
@@ -394,9 +412,7 @@ export async function main() {
       `::notice title=Link answered on re-check::` +
         `${url} answered ${result.detail} when asked directly, ` +
         `after lychee reported it as "${detail || 'failed with no status code'}".\n` +
-        `A failure below HTTP carries no status code, so lychee cannot accept it ` +
-        `and -- for a reset during connect -- does not retry it either. ` +
-        `This link is not treated as broken.`
+        `The later successful response recovers this link within the retry budget.`
     );
   }
 
@@ -414,15 +430,14 @@ export async function main() {
   );
   console.log(`\nRecovered URLs written to ${recoveredOutput}`);
 
-  const remaining = answered.length + stillFailing.length;
+  const remaining = answered.length + stillFailing.length + unsupported.length;
   setOutput('all_recovered', remaining === 0 ? 'true' : 'false');
   setOutput('recovered', String(recovered.length));
   setOutput('remaining', String(remaining));
 
   if (remaining === 0) {
     console.log(
-      '\nEvery link lychee reported answered a direct request. ' +
-        'This run is a transport failure, not a broken link.'
+      '\nEvery reported transient or transport failure recovered with a successful response.'
     );
   }
 }

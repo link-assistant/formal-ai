@@ -1,0 +1,33 @@
+{
+  "cause": "Five retained source filenames exposed the src abbreviation in their archive basename.",
+  "repair": "Expand only the archive basename to source; retain exact original source fields and stream hashes.",
+  "ratchetRaised": false,
+  "files": [
+    {
+      "before": "021-original-eight-step-boundary-rust--src--agentic_coding--progress.rs.gz",
+      "after": "021-original-eight-step-boundary-rust--source--agentic_coding--progress.rs.gz",
+      "compressedSha256": "0287da1f8b351a6a7c2b1fda0aca319edb2c9898a5cfe934b23cb7b6f418bdc3"
+    },
+    {
+      "before": "023-original-eight-step-boundary-rust--src--agentic_coding--work_item_steps.rs.gz",
+      "after": "023-original-eight-step-boundary-rust--source--agentic_coding--work_item_steps.rs.gz",
+      "compressedSha256": "2bd3b5d2657c3a88dcddda62efb0ba4b555c5f4e1c45c1aa8c23a57d28676ffc"
+    },
+    {
+      "before": "022-original-eight-step-boundary-rust--src--agentic_coding--qualified_tool_observation.rs.gz",
+      "after": "022-original-eight-step-boundary-rust--source--agentic_coding--qualified_tool_observation.rs.gz",
+      "compressedSha256": "45925c5906c45516b9094ab587ae5048777d64c97170633b2f4eb5e62fc46777"
+    },
+    {
+      "before": "020-original-eight-step-boundary-rust--src--agentic_coding--command_reroute.rs.gz",
+      "after": "020-original-eight-step-boundary-rust--source--agentic_coding--command_reroute.rs.gz",
+      "compressedSha256": "73bd5f81827a2807b9bd4c749b2708a95a809a38710388c6f754230f622b3293"
+    },
+    {
+      "before": "019-original-eight-step-boundary-rust--src--agentic_coding--command_reroute--recipe_execution.rs.gz",
+      "after": "019-original-eight-step-boundary-rust--source--agentic_coding--command_reroute--recipe_execution.rs.gz",
+      "compressedSha256": "9b16ff42de70829c74cec9bc965b15e0adb163799d2f2fd09a8a00c8d809da7b"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

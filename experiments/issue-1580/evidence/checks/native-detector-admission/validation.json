@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-11-20T10:55:08.750406+00:00",
+  "baseHead": "1fd0c4fd131e318593299cfe05d0167f6efd35fc",
+  "purpose": "Execute existing native failed-Git and initial-commit regressions on pull requests instead of relying on main-only detector execution.",
+  "negativeControl": "The changed admission assertion fails against the previous implementation before adding the detector to the native input set and compiled workflow test target (96 passed, 1 failed).",
+  "localResults": {
+    "admissionTests": "97 passed",
+    "rustfmt": "pass, edition 2024; changed file only",
+    "diffCheck": "pass",
+    "release#1": "pass",
+    "check-changelog-fragment-js-twin": "pass"
+  },
+  "nativeExecution": "pending hosted execution of this new module inclusion",
+  "nativeCompilationPerformedLocally": false,
+  "fullIssueComplete": false,
+  "independentFormalAiReasoningCredit": 0,
+  "sources": {
+    "scripts/ci-pull-request-admission.mjs": "712db094b0580666ae3f04eee647dd57b37c620178a79a638471ce6f3965dc2d",
+    "rust/tests/unit/workflow_contracts.rs": "b63eb564a65265945890a168321b7649bd287588439e895c81a161636a72043c",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "c1269c2bc61ad0f0e876cc5dacfa1a960421e63819add37f8e42b7f745dd680f",
+    "scripts/detect-code-changes.rs": "adcd930886c840f188fc18ec15928f0fd6c941b63d7cad82c6490d08e5a04ecf",
+    "changelog.d/1580-native-detector-admission.md": "9ec1c2945fe0881400d91f03b4ec5fe31c40ecefaa504edc63f0a4c4dace3f95"
+  }
+}

@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/cpp-input-extension-checks/commit-outcome.json",
+    "file": "176-evidence.gz",
+    "bytes": 1164,
+    "lines": 51,
+    "rawSha256": "67e1587a76ff88fdf7e78f93f6cfe15f840a6834315592bae13accf69d298a5e",
+    "archiveSha256": "b5ce9c3d97152729737f2aedb32a80227234cfe882ea0086d3693665c93c2dbe"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-input-extension-checks/commit.log",
+    "file": "177-evidence.gz",
+    "bytes": 138,
+    "lines": 2,
+    "rawSha256": "866389d9e6834447a9cbd97ae37b480d487a6064e520d89b5ca17eff71989deb",
+    "archiveSha256": "de47bee702a291eface915536dff855e62e972cace4854c413944a2020a31a87"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-input-extension-checks/gates.log",
+    "file": "178-evidence.gz",
+    "bytes": 123,
+    "lines": 5,
+    "rawSha256": "1338aa9a6624e487c3172f03f49e22d4e8fe12d7b1418f91c676117061cd5208",
+    "archiveSha256": "c69da5c7dd6a6a7f08389ed42a7bb563394d0b8128a3f625aac2cfe05c2002d9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-input-extension-checks/outcome.json",
+    "file": "179-evidence.gz",
+    "bytes": 281,
+    "lines": 13,
+    "rawSha256": "dedd04cb2a5fa2f05cd2f75cd8308dfdb801abbaf2ad1f4bfcffd3da1209058a",
+    "archiveSha256": "0b3ade35ea55178c213a11d299ac4ee7fc4077a8a94949f48dc8fea996116bcf"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-input-extension-checks/policy-suite.log",
+    "file": "180-evidence.gz",
+    "bytes": 14026,
+    "lines": 152,
+    "rawSha256": "f2d1d5eb0c934c8860d83c0e57edcafeffecdd1089d0a6f0c036173136c2a1f7",
+    "archiveSha256": "eedcf78d6bce96780a19b13d31d7aa50d17868726e5a919a057f0d687ad39903"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-input-extension-checks/stage.log",
+    "file": "181-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-input-extension-checks/whitespace.log",
+    "file": "182-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-pipeline-status-read.log",
+    "file": "183-evidence.gz",
+    "bytes": 6011,
+    "lines": 188,
+    "rawSha256": "6d50c3f3daa5ff883dce7e12df38f7e1ccf7289c16dadc546d5611ae7e6d884b",
+    "archiveSha256": "22e188e1ed779a52bd1575914db56c049a8ef5b5ee23164c700a90d2ea30ac63"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-input-regressions/after.log",
+    "file": "184-evidence.gz",
+    "bytes": 1492,
+    "lines": 26,
+    "rawSha256": "0e7ab045dc716ccb0472935568d16de05e97606db861df07a052e4c7423ef77d",
+    "archiveSha256": "c1930e68fb9dcbd1adcdad289da7fa23e3909d2d2244f08a94a846fc30013362"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-input-regressions/before.log",
+    "file": "185-evidence.gz",
+    "bytes": 3453,
+    "lines": 73,
+    "rawSha256": "ed36098a4ecd164a9fa977e98ba39e192d5e390fb705aca4faa93ede4ce1cc9d",
+    "archiveSha256": "ff4c794bc0fdf2def99541265592ca834812ce9cd4427b25de40fdb18f82e122"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-input-regressions/source.before.json",
+    "file": "186-evidence.gz",
+    "bytes": 396,
+    "lines": 12,
+    "rawSha256": "c4a0adc634d32558b1a2e16784f47734ca0534e4bbe26f2c901a71f78ac0fc3f",
+    "archiveSha256": "7bdfb415e9b09ec4b19a1b0d05909c210fb46744d06357e0e71fd09bad24d134"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-input-regressions/test.before.mjs",
+    "file": "187-evidence.gz",
+    "bytes": 3623,
+    "lines": 71,
+    "rawSha256": "f47ad61405b05c656ab81304f2670fcac6b98881b9fceecf98858d0b822e832f",
+    "archiveSha256": "d9aef971fa3ed1965035e2221d546bc575f36be19fddf72708e47d327f556c23"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/current-check-pipeline-status.sh",
+    "file": "188-evidence.gz",
+    "bytes": 4646,
+    "lines": 144,
+    "rawSha256": "636eb4ffe7c301210f6217dafb88b85365fc0f33dc6e62d132ea2acf259d66ce",
+    "archiveSha256": "07253acefb37a0f7e6fa5ffac49c7ca8e53cc1f6339d2562569d4303229ef230"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/current-pipeline-script.json",
+    "file": "189-evidence.gz",
+    "bytes": 7792,
+    "lines": 1,
+    "rawSha256": "5d2d3bb4f7c9bc4e5376caa35e709005de22ae6c0fe80215c828e2701f694931",
+    "archiveSha256": "51d2100c8813d80d864f31f9ee06e0a4f8101ae0ca0e66a13901ff50836f058d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/current-pipeline-script.stderr",
+    "file": "190-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/head.json",
+    "file": "191-evidence.gz",
+    "bytes": 8076,
+    "lines": 1,
+    "rawSha256": "bd76d94f1af5acea46a8d261a2b5621f2108794ffff9bb2311206d90d37a229b",
+    "archiveSha256": "28d906cd2f934793a58f382b38b901dd6fdaab820480d62956d33087606bc9f8"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/head.stderr",
+    "file": "192-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/issues.json",
+    "file": "193-evidence.gz",
+    "bytes": 46378,
+    "lines": 1,
+    "rawSha256": "997db28b781e3c1965f830579a8a0fe7ed6af105aa76ceca6c9e90661f3c8916",
+    "archiveSha256": "b995bea9399938e0f8b03e14d92d04c18c10cd8235dbcb0244882f23d07e40cb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/issues.stderr",
+    "file": "194-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/merged-pulls.json",
+    "file": "195-evidence.gz",
+    "bytes": 15665,
+    "lines": 1,
+    "rawSha256": "80056ea0e9b15a3c52523d8d50010f2c3450124fce78d8aaf78fc6abc17e9cfb",
+    "archiveSha256": "7807df04777a7e0ccc96963f3eaf01ce2a0b65f6964a35a31a87c5ab061eb817"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/merged-pulls.stderr",
+    "file": "196-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-20-conversation.json",
+    "file": "197-evidence.gz",
+    "bytes": 9250,
+    "lines": 1,
+    "rawSha256": "4f61e7445ebabc42da4cc69ba006922a036ddd29f19fd0b67add547223f3c04c",
+    "archiveSha256": "8d388b11ffa6d5fdf6eac897ca7eeb96307871872b8a209724ee0f1d74506892"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-20-conversation.stderr",
+    "file": "198-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-20-inline.json",
+    "file": "199-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-20-inline.stderr",
+    "file": "200-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-20-reviews.json",
+    "file": "201-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-20-reviews.stderr",
+    "file": "202-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-25-conversation.json",
+    "file": "203-evidence.gz",
+    "bytes": 7226,
+    "lines": 1,
+    "rawSha256": "ae9b9452be7b577206aa7fed1730f4cab8fc0f17b81f9ed4f136de5a07d7fc59",
+    "archiveSha256": "2dbc3ebde8dfc44759ce3ec46e2e7048d29fc675c95233f4e1aee336c6e35f63"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-25-conversation.stderr",
+    "file": "204-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-25-inline.json",
+    "file": "205-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-25-inline.stderr",
+    "file": "206-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-25-reviews.json",
+    "file": "207-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-25-reviews.stderr",
+    "file": "208-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-29-conversation.json",
+    "file": "209-evidence.gz",
+    "bytes": 6982,
+    "lines": 1,
+    "rawSha256": "d1f4b23ae12c4d5fbb7fbd2ef6de99920e04335ec187f22aa9f90ce613e2012c",
+    "archiveSha256": "2c1bbdc8474067d440ac406f8294ff093756eb300ffc7a4b630a3b81fdec79cc"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-policy-reader-upstream/pull-29-conversation.stderr",
+    "file": "210-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

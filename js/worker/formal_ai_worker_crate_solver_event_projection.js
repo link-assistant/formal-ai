@@ -75,7 +75,11 @@ function dispatchedMethod(result) {
  */
 function nativeSolverLog(result, recordCore = null) {
   const raw = result?.rawSolverEvents ?? result?.solverEvents;
-  const events = Array.isArray(raw) ? raw.map((event) => ({ kind: String(event.kind), payload: String(event.payload ?? '') })) : [];
+  const events = Array.isArray(raw) ? raw.map((event) => ({
+    kind: String(event.kind),
+    payload: String(event.payload ?? ''),
+    ...(typeof event.source_origin === 'string' ? { source_origin: event.source_origin } : {}),
+  })) : [];
   if (events.length < 2 || events[0].kind !== IMPULSE || events[1].kind !== LANGUAGE) return events;
   const prompt = events[0].payload;
   const language = events[1].payload;

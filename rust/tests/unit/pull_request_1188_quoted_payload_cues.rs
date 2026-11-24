@@ -34,10 +34,19 @@ fn an_edit_whose_payload_names_orders_and_a_list_is_not_a_computer_use_plan() {
 }
 
 #[test]
-fn an_unquoted_computer_use_request_still_plans() {
-    let prompt = "Count the sub-tasks of the customer import rewrite and save the result in \
-                  `counts.md`.";
-    assert!(plan_request(prompt).is_some());
+fn an_explicit_computer_use_count_retains_its_supplied_operands() {
+    // Main's 66169b8f requires explicit inputs rather than guessed resources.
+    let prompt = "Count the lines in customers.csv and save counts.md.\n```computer-use\n\
+                  [{\"primitive\":\"shell.run\",\"arguments\":{\"operation\":\"count_lines\",\
+                  \"input\":\"customers.csv\",\"output\":\"counts.md\",\"confirmed\":true}}]\n```";
+    let plan = plan_request(prompt).expect("explicit count request");
+    assert_eq!(plan.steps.len(), 1);
+    assert_eq!(
+        plan.steps[0].arguments,
+        serde_json::json!({
+            "operation": "count_lines", "input": "customers.csv", "output": "counts.md", "confirmed": true,
+        })
+    );
 }
 
 /// G105 (TRANSLATE, T773): a «…» payload that runs over a blank line was read

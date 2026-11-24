@@ -99,7 +99,7 @@ export function generateWorkerPrerequisites({
 }) {
   const parser = createRequire(path.join(root, 'package.json'))('@babel/parser');
   const profile = sourceManifestPath ? JSON.parse(fs.readFileSync(sourceManifestPath)) : null;
-  const names = ['js/parser-cache-primordials.js', 'js/seed_loader.js', ...fs.readdirSync(path.join(root, 'js/worker')).filter(name => name.endsWith('.js')).map(name => 'js/worker/' + name)];
+  const names = ['js/parser-cache-primordials.js', 'js/seed-record-readers.js', 'js/seed_loader.js', ...fs.readdirSync(path.join(root, 'js/worker')).filter(name => name.endsWith('.js')).map(name => 'js/worker/' + name)];
   const sources = names.map(owner => {
     const row = profile?.files.find(row => row.owner === owner);
     const filename = row?.afterPath ?? path.join(root, owner),

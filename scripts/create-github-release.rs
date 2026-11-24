@@ -11,6 +11,7 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! serde = { version = "1", features = ["derive"] }
 //! serde_json = "1"
@@ -23,12 +24,17 @@ use serde::Serialize;
 #[cfg(not(test))]
 use std::env;
 #[cfg(not(test))]
-use std::fs;
-#[cfg(not(test))]
 use std::io::Write;
 use std::path::Path;
 #[cfg(not(test))]
 use std::process::{Command, Stdio, exit};
+
+#[cfg(not(test))]
+#[path = "cargo-package.rs"]
+mod cargo_package;
+
+#[path = "release-changelog.rs"]
+mod release_changelog;
 
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
@@ -66,10 +72,8 @@ fn get_cargo_toml_path(rust_root: &str) -> String {
 
 #[cfg(not(test))]
 fn get_crate_name_from_toml(cargo_toml_path: &str) -> Option<String> {
-    let content = fs::read_to_string(cargo_toml_path).ok()?;
-    let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).ok()?;
-    re.captures(&content)
-        .map(|captures| captures.get(1).unwrap().as_str().to_string())
+    let manifest = cargo_package::get_package_manifest_path(Path::new(cargo_toml_path)).ok()?;
+    cargo_package::read_package_name(&manifest).ok()
 }
 
 #[cfg(not(test))]
@@ -317,123 +321,45 @@ fn first_json_object(input: &str) -> Option<&str> {
 
 fn validation_error_is_duplicate_release(error: &GitHubApiError) -> bool {
     error.errors.as_ref().is_some_and(|errors| {
-        errors.iter().any(|entry| {
-            entry
-                .resource
-                .as_deref()
-                .is_some_and(|value| value.eq_ignore_ascii_case("Release"))
-                && entry
-                    .code
+        !errors.is_empty()
+            && errors.iter().all(|entry| {
+                entry
+                    .resource
                     .as_deref()
-                    .is_some_and(|value| value.eq_ignore_ascii_case("already_exists"))
-                && entry
-                    .field
-                    .as_deref()
-                    .is_some_and(|value| value.eq_ignore_ascii_case("tag_name"))
-        })
+                    .is_some_and(|value| value.eq_ignore_ascii_case("Release"))
+                    && entry
+                        .code
+                        .as_deref()
+                        .is_some_and(|value| value.eq_ignore_ascii_case("already_exists"))
+                    && entry
+                        .field
+                        .as_deref()
+                        .is_some_and(|value| value.eq_ignore_ascii_case("tag_name"))
+            })
     })
 }
 
 fn line_reports_duplicate_release(line: &str) -> bool {
     let lowered = line.trim().to_ascii_lowercase();
-    lowered == "already_exists"
-        || lowered.contains("release already exists")
-        || lowered.contains("github release already exists")
-        || lowered.contains("release with this tag already exists")
-        || lowered.contains("release with the same tag_name already exists")
+    matches!(
+        lowered.as_str(),
+        "already_exists"
+            | "release already exists"
+            | "github release already exists"
+            | "release with this tag already exists"
+            | "release with the same tag_name already exists"
+    )
 }
 
 fn is_duplicate_release_error(output: &str) -> bool {
-    if output.lines().any(line_reports_duplicate_release) {
-        return true;
+    // Structured diagnostics take precedence over a preceding human summary.
+    // An incomplete document or an unrelated validation error is not success.
+    if output.contains('{') {
+        return first_json_object(output)
+            .and_then(|json| serde_json::from_str::<GitHubApiError>(json).ok())
+            .is_some_and(|error| validation_error_is_duplicate_release(&error));
     }
-
-    let lowered = output.to_ascii_lowercase();
-
-    if let Some(json) = first_json_object(output)
-        && let Ok(error) = serde_json::from_str::<GitHubApiError>(json)
-    {
-        return validation_error_is_duplicate_release(&error);
-    }
-
-    lowered.contains("\"resource\":\"release\"")
-        && lowered.contains("\"code\":\"already_exists\"")
-        && lowered.contains("\"field\":\"tag_name\"")
-}
-
-/// Where `experiments/issue_711_rebuild_changelog.mjs` rolls the releases
-/// CHANGELOG.md no longer keeps (every file stays under the 1500-line cap).
-#[cfg(not(test))]
-const CHANGELOG_ARCHIVE_DIR: &str = "docs/changelog";
-
-/// CHANGELOG.md, then its archive files: the newest release is always in
-/// CHANGELOG.md, and a rerun for an older release finds it in the archive.
-#[cfg(not(test))]
-fn changelog_sources() -> Vec<String> {
-    let mut sources = vec!["CHANGELOG.md".to_string()];
-    if let Ok(entries) = fs::read_dir(CHANGELOG_ARCHIVE_DIR) {
-        // Each archive is named for the oldest release it holds
-        // (`releases-from-<version>.md`); newest first, by version.
-        let mut archives: Vec<(Vec<u64>, String)> = entries
-            .filter_map(Result::ok)
-            .filter_map(|entry| entry.file_name().into_string().ok())
-            .filter_map(|name| {
-                let version = name
-                    .strip_prefix("releases-from-")?
-                    .strip_suffix(".md")?
-                    .split(['.', '-'])
-                    .map(|part| part.parse().unwrap_or(0))
-                    .collect();
-                Some((version, format!("{CHANGELOG_ARCHIVE_DIR}/{name}")))
-            })
-            .collect();
-        archives.sort();
-        archives.reverse();
-        sources.extend(archives.into_iter().map(|(_, path)| path));
-    }
-    sources
-}
-
-#[cfg(not(test))]
-fn get_changelog_for_version(version: &str) -> String {
-    for source in changelog_sources() {
-        let Ok(content) = fs::read_to_string(&source) else {
-            continue;
-        };
-        if let Some(notes) = changelog_section(&content, version) {
-            return notes;
-        }
-    }
-    format!("Release v{version}")
-}
-
-/// The body of the `## [version]` section of one changelog file, if it has one.
-#[cfg(not(test))]
-fn changelog_section(content: &str, version: &str) -> Option<String> {
-    let escaped_version = regex::escape(version);
-    let header_pattern = format!(r"(?m)^## \[{escaped_version}\]");
-    let header_re = Regex::new(&header_pattern).unwrap();
-
-    let version_header = header_re.find(content)?;
-    let after_header = &content[version_header.end()..];
-    let body_start = after_header
-        .find('\n')
-        .map_or(after_header.len(), |i| i + 1);
-    let body = &after_header[body_start..];
-
-    let next_section_re = Regex::new(r"(?m)^## \[").unwrap();
-    let section_body = if let Some(next) = next_section_re.find(body) {
-        &body[..next.start()]
-    } else {
-        body
-    };
-
-    let trimmed = section_body.trim();
-    if trimmed.is_empty() {
-        Some(format!("Release v{version}"))
-    } else {
-        Some(trimmed.to_string())
-    }
+    output.lines().any(line_reports_duplicate_release)
 }
 
 #[cfg_attr(not(test), derive(Serialize))]
@@ -508,7 +434,11 @@ fn main() {
         }
     }
 
-    let mut release_notes = get_changelog_for_version(&normalized_version);
+    let mut release_notes = release_changelog::for_version(Path::new("."), &normalized_version)
+        .unwrap_or_else(|error| {
+            eprintln!("Error: {error}");
+            exit(1);
+        });
     let mut badges = Vec::new();
     if let Some(crate_name) = get_crate_name_from_toml(&cargo_toml) {
         badges.push(crate_release_badges(&crate_name, &normalized_version));
@@ -584,15 +514,18 @@ fn main() {
         .spawn()
         .expect("Failed to execute gh command");
 
-    if let Some(ref mut stdin) = child.stdin {
-        stdin
-            .write_all(payload_json.as_bytes())
-            .expect("Failed to write to stdin");
-    }
-
+    let mut stdin = child.stdin.take().expect("Missing gh stdin");
+    // gh may emit diagnostics before reading its request. Drain both output
+    // pipes while the writer feeds stdin, then observe a failed write before
+    // classifying the API response as an idempotent success.
+    let writer = std::thread::spawn(move || stdin.write_all(payload_json.as_bytes()));
     let output = child
         .wait_with_output()
         .expect("Failed to wait on gh command");
+    writer
+        .join()
+        .expect("Failed to join gh stdin writer")
+        .expect("Failed to write to stdin");
 
     if output.status.success() {
         println!("Created GitHub release: {tag}");

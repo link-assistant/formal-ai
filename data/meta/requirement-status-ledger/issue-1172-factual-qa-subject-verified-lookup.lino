@@ -25,7 +25,7 @@ requirement_status_ledger_shard
     delivered "2026-10-07 (this pull request; JS verified locally, Rust twin awaiting CI)"
   requirement
     id "R1172-3"
-    delivered "implemented — browser and native solvers verify publisher claims and cite capture provenance"
+    delivered "2026-10-07 (this pull request): contextual fact_lookup calls the live resolver with a seed-cue subject extractor and the fact_live_answer template; JS verified locally, Rust awaiting CI"
     automated_test "rust/tests/web/issue-1172-live-fact-parity.test.mjs"
   requirement
     id "R1172-4"
@@ -36,7 +36,7 @@ requirement_status_ledger_shard
     automated_test "rust/tests/web/issue-1172-word-definition.test.mjs"
   requirement
     id "R1172-6"
-    delivered "implemented — both solvers compare verified publisher claims and disclose missing evidence"
+    delivered "2026-10-07 (this pull request; seeded subjects only, live Wikidata tables still open)"
     automated_test "rust/tests/web/issue-0127-fact-query-cache.test.mjs"
   requirement
     id "R1172-7"
@@ -47,5 +47,5 @@ requirement_status_ledger_shard
     automated_test "rust/tests/web/issue-1172-explanation-research.test.mjs"
   requirement
     id "R1172-9"
-    delivered "implemented — historical Wikidata captures retained under rust/tests/fixtures/fact-claims for explicit replay"
+    delivered "implemented — 2026-10-08 (this pull request); the ten seeded fact records are retired: answers derive from committed Wikidata P36/P50 captures (data/cache/wikidata/fact-claims/, data/seed/fact-captures.lino) through the seed realization rules in data/seed/fact-realization.lino, reproducing all 40 retired answers verbatim in both runtimes"
     automated_test "rust/tests/web/issue-1172-seeded-fact-retirement.test.mjs"

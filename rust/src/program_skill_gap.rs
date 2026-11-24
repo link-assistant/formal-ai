@@ -199,3 +199,7 @@ pub(crate) fn publisher_recurrence_gap(prompt: &str, log: &mut EventLog) -> Opti
         1.0,
     ))
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/program_skill_gap/production_tests.rs"]
+mod tests;

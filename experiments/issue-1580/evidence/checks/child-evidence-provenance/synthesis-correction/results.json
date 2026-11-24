@@ -1,0 +1,85 @@
+{
+  "complete": true,
+  "checks": [
+    {
+      "name": "formatting",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/solver_synthesis.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.593,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "executor",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-meta-executor.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 4.768,
+      "rawLines": 21,
+      "rawSha256": "9f42a3361c73ef5dfd674edbaf9af82a988a47c51d95d175dae03daf8acfedd7",
+      "archiveSha256": "33a3ba6f4669bb37f6fd9bf0980982b6a4bbf0257632d6138d41a8d3623e15ca"
+    },
+    {
+      "name": "procedure-census",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-procedure-census.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 24.12,
+      "rawLines": 14,
+      "rawSha256": "f45e35f056249d7db20cd3e4af0f61fa22cdddb8be7730e0a2c1a192cb3c7fcc",
+      "archiveSha256": "9740cb332f81f90c28c5937324f596d487aed874e1350ac5c868bd8910e4a942"
+    },
+    {
+      "name": "selected-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-readable-code,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-language-change-parity,check-wasm-worker-current"
+      ],
+      "exitCode": 0,
+      "seconds": 37.263,
+      "rawLines": 7,
+      "rawSha256": "13f15696bdb9a77ae4e5fc5e3b0e49d3f7ac01a88b908387fd64fc7fab3587df",
+      "archiveSha256": "a33259b782ec05ae8fb9eb0373effe4d35cf334ea5d46aaf73f0f1002c33fed7"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.576,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeExecuted": false,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 152257\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

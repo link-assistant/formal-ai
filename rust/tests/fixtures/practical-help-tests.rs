@@ -212,7 +212,7 @@ fn matching_captures_supply_their_own_excerpt_and_record_the_digest() {
 fn unrelated_or_oversized_source_does_not_support_the_answer() {
     let outside_section =
         format!("<h3>Improve your toilet routine</h3><h3>Another topic</h3><p>{GUIDANCE}</p>");
-    let oversized = vec![b'x'; MAX_CAPTURE_BYTES + 1];
+    let oversized = vec![b'x'; MAXIMUM_CAPTURE_BYTES + 1];
     for body in [
         outside_section.as_bytes(),
         b"Unrelated festival text",

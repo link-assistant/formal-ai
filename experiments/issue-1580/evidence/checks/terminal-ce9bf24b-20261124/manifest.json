@@ -1,0 +1,30 @@
+{
+  "schema": "issue-1580-complete-evidence/v1",
+  "observedAt": "2026-11-24T00:08:23.374433+00:00",
+  "sourceHead": "ce9bf24bda3e0be7c00b31ea64e69f029a6f4212",
+  "testedMerge": "cfb5d762c0def7a0f001e987d0c31e4ce2933be6",
+  "base": "0e550f6d56528d6d26bf575e08ab35c13e4af234",
+  "members": 235,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2965217,
+    "sha256": "26fe613041f09daca3d22d603a1c23c29ef872b043be1b61b6133878ec41d519"
+  },
+  "memberIndex": {
+    "path": "members.json.gz",
+    "bytes": 5482,
+    "sha256": "517a85641193b8df8bef8a3920095bdef5e399501cfe2bc2a3fce8904b61f6ec"
+  },
+  "roundTripVerified": true,
+  "workflows": {
+    "success": 32,
+    "skipped": 1
+  },
+  "fullLogLines": 119429,
+  "javascriptOwnersCompleted": 922,
+  "selectedNativePasses": 441,
+  "semanticFullLogReviewComplete": false,
+  "privateCompositionLibraryExecution": false,
+  "allAcceptanceVerified": false,
+  "independentAuthorshipCredit": 0
+}

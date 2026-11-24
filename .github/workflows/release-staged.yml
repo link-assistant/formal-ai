@@ -183,13 +183,8 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Build release
@@ -248,23 +243,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
-          path: .release-transfer/binary
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_compile-release.outputs.artifact_id }}", path: .release-transfer/binary }
       - name: Validate physical binary producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.auto_compile-release.outputs.bundle_sha }}
@@ -327,23 +312,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
-          path: .release-transfer/binary
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_compile-release.outputs.artifact_id }}", path: .release-transfer/binary }
       - name: Validate physical binary producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.auto_compile-release.outputs.bundle_sha }}
@@ -351,13 +326,8 @@ jobs:
           EXPECT_PRODUCER: auto_compile-release
         run: node _protocol/scripts/release-stage-transfer.mjs import binary
       - name: Download immutable package artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_verify-package.outputs.artifact_id }}
-          path: .release-transfer/package
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_verify-package.outputs.artifact_id }}", path: .release-transfer/package }
       - name: Validate physical package producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.auto_verify-package.outputs.bundle_sha }}
@@ -404,23 +374,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable package artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_verify-package.outputs.artifact_id }}
-          path: .release-transfer/package
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_verify-package.outputs.artifact_id }}", path: .release-transfer/package }
       - name: Validate physical package producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.auto_verify-package.outputs.bundle_sha }}
@@ -469,13 +429,8 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Smoke test the published crate
@@ -529,23 +484,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
-          path: .release-transfer/binary
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_compile-release.outputs.artifact_id }}", path: .release-transfer/binary }
       - name: Validate physical binary producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.auto_compile-release.outputs.bundle_sha }}
@@ -710,25 +655,15 @@ jobs:
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable images artifact
         if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.auto_publish-verify-images.outputs.artifact_id }}
-          path: .release-transfer/images
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.auto_publish-verify-images.outputs.artifact_id }}", path: .release-transfer/images }
       - name: Validate physical images producer transfer
         if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
         env:
@@ -897,13 +832,8 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Build release
@@ -962,23 +892,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
-          path: .release-transfer/binary
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_compile-release.outputs.artifact_id }}", path: .release-transfer/binary }
       - name: Validate physical binary producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.manual_compile-release.outputs.bundle_sha }}
@@ -1041,23 +961,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
-          path: .release-transfer/binary
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_compile-release.outputs.artifact_id }}", path: .release-transfer/binary }
       - name: Validate physical binary producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.manual_compile-release.outputs.bundle_sha }}
@@ -1065,13 +975,8 @@ jobs:
           EXPECT_PRODUCER: manual_compile-release
         run: node _protocol/scripts/release-stage-transfer.mjs import binary
       - name: Download immutable package artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_verify-package.outputs.artifact_id }}
-          path: .release-transfer/package
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_verify-package.outputs.artifact_id }}", path: .release-transfer/package }
       - name: Validate physical package producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.manual_verify-package.outputs.bundle_sha }}
@@ -1118,23 +1023,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable package artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_verify-package.outputs.artifact_id }}
-          path: .release-transfer/package
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_verify-package.outputs.artifact_id }}", path: .release-transfer/package }
       - name: Validate physical package producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.manual_verify-package.outputs.bundle_sha }}
@@ -1182,13 +1077,8 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Smoke test the published crate
@@ -1241,23 +1131,13 @@ jobs:
         uses: actions/checkout@v7
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
-          path: .release-transfer/binary
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_compile-release.outputs.artifact_id }}", path: .release-transfer/binary }
       - name: Validate physical binary producer transfer
         env:
           EXPECT_BUNDLE: ${{ needs.manual_compile-release.outputs.bundle_sha }}
@@ -1414,25 +1294,15 @@ jobs:
         with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
-          path: .release-transfer/source
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_prepare-source.outputs.artifact_id }}", path: .release-transfer/source }
       - name: Verify independent source compiler protocol and main tag authority
         if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable images artifact
         if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          artifact-ids: ${{ needs.manual_publish-verify-images.outputs.artifact_id }}
-          path: .release-transfer/images
-          digest-mismatch: error
+        uses: ./_protocol/.github/actions/download-artifact
+        with: { artifact-ids: "${{ needs.manual_publish-verify-images.outputs.artifact_id }}", path: .release-transfer/images }
       - name: Validate physical images producer transfer
         if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
         env:

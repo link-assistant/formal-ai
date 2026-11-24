@@ -1,0 +1,27 @@
+{
+  "allPassed": true,
+  "checks": [
+    {
+      "gate": "check-abbreviations",
+      "exitCode": 0,
+      "seconds": 4.233,
+      "rawSha256": "7ec7fb5d73202c44f358ca7a3b8d135e28657ece84ee22c1ca1f677bc151053d",
+      "log": "sealed-notes-check-abbreviations.log.gz"
+    },
+    {
+      "gate": "check-readable-code",
+      "exitCode": 0,
+      "seconds": 14.332,
+      "rawSha256": "c909bab8f48ef44282d2cd30feb363bd45e81aa89f0423f48678b939bf128928",
+      "log": "sealed-notes-check-readable-code.log.gz"
+    },
+    {
+      "gate": "check-file-size",
+      "exitCode": 0,
+      "seconds": 17.426,
+      "rawSha256": "4fbb3fb8d32f2bfe3993460da24dc9c4d8aa5de192805ee0d151ffd96cf70901",
+      "log": "sealed-notes-check-file-size.log.gz"
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

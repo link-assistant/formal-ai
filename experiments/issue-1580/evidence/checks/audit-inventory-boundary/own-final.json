@@ -1,0 +1,15 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/javascript-audit-inventory.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 5.742,
+  "log": "own-final.log.gz",
+  "rawSha256": "f45f1c8da0285854e1ec72acd6e21ac1ab66174f7e6336153b7fabc4fc6ab284"
+}

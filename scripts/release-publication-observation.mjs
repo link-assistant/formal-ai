@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+export const BROWSER_ENGINE_ARCHIVE_MAX_BYTES = 128 * 1024 * 1024;
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 const hash = value => assert.match(value, /^[a-f0-9]{64}$/u);
 const commit = value => assert.match(value, /^[a-f0-9]{40}$/u);
@@ -123,7 +124,7 @@ export function captureBrowserPublication(root, protocolDirectory, outputDirecto
     version: selected.derivedVersion
   };
   const filename = binding.packageName.replace(/^@/u, '').replace('/', '-') + '-' + binding.version + '.tgz';
-  const archive = ordinaryBytes(join(root, 'packages/formal-ai-engine', filename), 134217728);
+  const archive = ordinaryBytes(join(root, 'packages/formal-ai-engine', filename), BROWSER_ENGINE_ARCHIVE_MAX_BYTES);
   const worker = ordinaryBytes(join(root, 'js/formal_ai_worker.receipt.json'), 1048576);
   assert.equal(digest(worker), environment.WASM_RECEIPT_SHA256);
   const record = browserPublicationRecord(binding, {

@@ -1,0 +1,236 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "candidate-disabled",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-rust-desktop-checksums.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "stdout": {
+        "file": "candidate-disabled.stdout.gz",
+        "rawSha256": "87a9569fdd1f1bb2509f8b1cf84ff34c2955684629ab4ae4bf86fc5c740f225e",
+        "archiveSha256": "eff080c03036214a21872cb07348de04e31f29c4b798341ea127ec2916c2ce33",
+        "bytes": 1925,
+        "lines": 58
+      },
+      "stderr": {
+        "file": "candidate-disabled.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "counts": {
+        "tests": 3,
+        "pass": 2,
+        "fail": 1,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "candidate-enabled",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-rust-desktop-checksums.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "file": "candidate-enabled.stdout.gz",
+        "rawSha256": "0e5e9e9929857eff1e5a6fe8f1d2e0489c01218e6bafc218a4ac03d19358eec2",
+        "archiveSha256": "e48a2b90401f0bc1071f36ec65b06cfacd910980a911f0ec5dfa5524ffc4a639",
+        "bytes": 832,
+        "lines": 28
+      },
+      "stderr": {
+        "file": "candidate-enabled.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "original-observations",
+      "argv": [
+        "node",
+        "experiments/issue-1580/probe-rust-desktop-checksums.mjs",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/rust-desktop-checksum-comparison/original-observations.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "file": "original-observations.stdout.gz",
+        "rawSha256": "2a391645a76dbfce78ff642d2c6721d00078947b31aa97fcd487d4bcffdb25f4",
+        "archiveSha256": "1f5bb17ac63f60018a13d97a05eaaa665c729337c7ac39e01446c3f63e0db4af",
+        "bytes": 182,
+        "lines": 1
+      },
+      "stderr": {
+        "file": "original-observations.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "counts": {}
+    },
+    {
+      "name": "candidate-observations",
+      "argv": [
+        "node",
+        "experiments/issue-1580/probe-rust-desktop-checksums.mjs",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/rust-desktop-checksum-comparison/candidate-observations.json",
+        "--candidate"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "file": "candidate-observations.stdout.gz",
+        "rawSha256": "26d6e6dfa7212387da957ae2733883c1f9c483ed5f1368adb91d6bd43a96cd3b",
+        "archiveSha256": "0df675ee854fbf57aeed443c53567c09afdff1c3e6a7833ec87c449675f4cef2",
+        "bytes": 182,
+        "lines": 1
+      },
+      "stderr": {
+        "file": "candidate-observations.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "counts": {}
+    },
+    {
+      "name": "formal-observations",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {observeFormalDesktopChecksums} from './experiments/issue-1580/probe-rust-desktop-checksums.mjs'; import {writeFileSync} from 'node:fs'; writeFileSync(process.argv[1],JSON.stringify(observeFormalDesktopChecksums(),null,2)+'\n');",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/rust-desktop-checksum-comparison/formal-observations.json"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 0,
+      "stdout": {
+        "file": "formal-observations.stdout.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "stderr": {
+        "file": "formal-observations.stderr.gz",
+        "rawSha256": "15cb45aabfde4792760ba339ca7cc2feb14440e53804ccb72887fea327d0687e",
+        "archiveSha256": "d44a3a901e6053c3447b4070426da6dddeb65343f637136710caba35621c9d2b",
+        "bytes": 1108,
+        "lines": 15
+      },
+      "counts": {}
+    },
+    {
+      "name": "formal-observations-retry",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {observeFormalDesktopChecksums} from './experiments/issue-1580/probe-rust-desktop-checksums.mjs'; import {writeFileSync} from 'node:fs'; writeFileSync(process.argv[1],JSON.stringify(observeFormalDesktopChecksums(),null,2)+String.fromCharCode(10));",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/rust-desktop-checksum-comparison/formal-observations.json"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "file": "formal-observations-retry.stdout.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "stderr": {
+        "file": "formal-observations-retry.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "counts": {}
+    },
+    {
+      "name": "maintained-template-entrypoint",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "stdout": {
+        "file": "maintained-template-entrypoint.stdout.gz",
+        "rawSha256": "15d1550bf3d71f1f0552494cfafbbba92d8e97d4ce63147278aa3ee57ac9da33",
+        "archiveSha256": "db2fbbfd751f8489ba97a22848d74bfdef973ebcb086b3ae0d4f95f1e29a4c20",
+        "bytes": 13468,
+        "lines": 352
+      },
+      "stderr": {
+        "file": "maintained-template-entrypoint.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "counts": {
+        "tests": 57,
+        "pass": 57,
+        "fail": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "experiments/issue-1580/probe-rust-desktop-checksums.mjs",
+      "sha256": "7cdf8158f98cf6f272a46664a1940e43384932392d12c1caafc757d004ad565d"
+    },
+    {
+      "path": "experiments/issue-1580/template-rust-desktop-checksums.test.mjs",
+      "sha256": "95e204d5ed17e22ef9b2ec2cf0c55e1c55f30f28fab90df4bc992ff276b979b9"
+    },
+    {
+      "path": "rust/tests/web/issue-1580-template-observations.test.mjs",
+      "sha256": "99ba04a4bb02e3f98c79316fb36d8184b56c5838388fb368ef8e9276b56a6018"
+    },
+    {
+      "path": ".github/workflows/desktop-release.yml",
+      "sha256": "240392e0e3b2bda07dbdf7efaa6eed3ddd0f841c414508982439a06462d13692"
+    }
+  ],
+  "harnessCorrection": "The first node -e report writer contained a Python-expanded newline in a JavaScript string. Kept its SyntaxError and retried only that reporting step with String.fromCharCode(10); the already passing focused tests were not repeated.",
+  "rustBuildExecuted": false,
+  "hostedPublicationExecuted": false,
+  "upstreamRepairClaimed": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -270,3 +270,7 @@ fn semantic_facet_target(node: &LinoNode) -> Option<String> {
         _ => None,
     }
 }
+
+#[cfg(test)]
+#[path = "../../../tests/source/source_tests/seed/meanings/parse/production_tests.rs"]
+mod tests;

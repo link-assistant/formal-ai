@@ -72,6 +72,7 @@ pub mod mutating_action;
 pub(crate) mod narration;
 pub(crate) mod normalization_cache;
 mod note_composition;
+mod numbered_source_requirements;
 mod observed_documentation;
 mod observed_source_usage;
 pub mod planner;

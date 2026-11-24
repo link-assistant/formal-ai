@@ -3,7 +3,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::rule_interpreter::{handler_matches, handler_table_rows, handler_table_value};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
-use crate::web_formalize::{PageBlock, formalize_page_with_context};
+use crate::web_formalize::{PageBlock, parse_page_blocks};
 use regex::Regex;
 use std::collections::BTreeSet;
 use std::sync::LazyLock;
@@ -91,10 +91,13 @@ struct Provider {
 impl Provider {
     fn for_project(project: &str) -> Option<Self> {
         let declaration = handler_table_value("documentation-method-providers", project)?;
-        let (root, path) = declaration.split_once('|')?;
+        let values = crate::seed::parser::split_pipe_list(&declaration);
+        let [root, path] = values.as_slice() else {
+            return None;
+        };
         Some(Self {
-            root: root.to_owned(),
-            path: path.to_owned(),
+            root: root.clone(),
+            path: path.clone(),
         })
     }
 
@@ -146,9 +149,8 @@ fn details(bytes: &[u8], symbol: &str) -> Option<(String, String)> {
     if bytes.len() > MAXIMUM_CAPTURE_BYTES || std::str::from_utf8(bytes).is_err() {
         return None;
     }
-    let (_, blocks) = formalize_page_with_context(bytes, Some("text/html"), None);
     let short = symbol.split_once('.')?.1;
-    let mut blocks = blocks.into_iter().map(|(_, block)| block);
+    let mut blocks = parse_page_blocks(bytes, Some("text/html"), None).into_iter();
     blocks.find(|block| {
         matches!(block, PageBlock::Heading { level: 1, text }
             if text.trim().trim_end_matches(['#', '¶']).trim() == symbol)
@@ -228,7 +230,9 @@ pub fn try_with_client<T: SourceTransport>(
     let provider = Provider::for_project(project)?;
     log.append("docs_method:request", prompt);
     log.append("docs_method:project", project.as_str());
-    let language = crate::language::detect(prompt).slug();
+    let language = crate::language::detect_prose(prompt)
+        .unwrap_or_else(|| crate::language::detect(prompt))
+        .slug();
     let acquire_page = |symbol: &str, log: &mut EventLog| {
         let source = provider.page(symbol);
         let capture = match client.fetch(&source) {

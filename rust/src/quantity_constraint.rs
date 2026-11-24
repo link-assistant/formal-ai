@@ -484,12 +484,24 @@ fn exact_evaluation(expression: &str) -> Option<(i128, CalculationEvaluation)> {
 }
 
 fn record_calculation(log: &mut EventLog, evaluated: &CalculationEvaluation) {
-    log.append("calculation:engine", evaluated.engine.slug());
+    log.append_with_origin(
+        "calculation:engine",
+        "calculation:quantity:engine",
+        evaluated.engine.slug(),
+    );
     if let Some(lino) = &evaluated.lino {
-        log.append("calculation:lino", lino.clone());
+        log.append_with_origin(
+            "calculation:lino",
+            "calculation:quantity:lino",
+            lino.clone(),
+        );
     }
     if !evaluated.steps.is_empty() {
-        log.append("calculation:steps", evaluated.steps.len().to_string());
+        log.append_with_origin(
+            "calculation:steps",
+            "calculation:quantity:steps",
+            evaluated.steps.len().to_string(),
+        );
     }
 }
 

@@ -1,0 +1,107 @@
+{
+  "observedAt": "2026-11-20T03:48:47.808327+00:00",
+  "records": [
+    {
+      "name": "negative-admission-before",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=exclusive fragment creation",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "negative-admission-before.log.gz",
+      "sha256": "b36606c11a552d837da044e677d4247ba1cec13e04beaab6320dd8bb604a6abe",
+      "compressedSha256": "e0841103fd791099d22b85bf719f3a824e8dc57dc28cf55c96dbd11e6e0c6917"
+    },
+    {
+      "name": "native-groups-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups-after.log.gz",
+      "sha256": "9559929d577b7eb90c8314dc0198e69c0e62d5a948fde17a09ce33ff184b032f",
+      "compressedSha256": "20f4ea6ee3bcee0ec9522e7599f4bc10df45911aa27a19d28338e56c326a9932"
+    },
+    {
+      "name": "default-branch-admission-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "default-branch-admission-after.log.gz",
+      "sha256": "fab2eca58e95087e9f59d454e739e867058fe2a252e8338f8b26fcac07dcb275",
+      "compressedSha256": "171342b036691045ca88ad8054918665743af080c0c212370077662a961e4aec"
+    },
+    {
+      "name": "rustfmt",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/changelog-fragment-file.rs",
+        "scripts/create-changelog-fragment.rs",
+        "rust/tests/unit/workflow_contracts.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt.log.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "local-gates",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-readable-code,check-changelog-fragment-js-twin,release#1"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "local-gates.log.gz",
+      "sha256": "07b2f342adb7347ae501b9e2dfe2188cee96d90d1bd80c8910b3be268755556e",
+      "compressedSha256": "9b5062c0447d9203a50b0c02cc6965d2407b970e45a7b7e3ed7d9855f73ba809"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "nativeBehaviorPending": "Hosted workflow_contracts target; local Rust builds prohibited by CONTRIBUTING.md.",
+  "initialDraftCommandNote": "The draft helper completed its edits and rustfmt, then its optional rg search returned 1 for a nonexistent test path; it did not run native tests.",
+  "productionSources": {
+    "scripts/changelog-fragment-file.rs": "fab6f4335f74e5823b29fac738fb31599ecb7c769109d0f0151ac850817ec7d9",
+    "scripts/create-changelog-fragment.rs": "e1783ce6d22caf7107cb7dc22887b147e0a35e6aa793b9fd09882e633b0863ef",
+    "scripts/ci-pull-request-admission.mjs": "88c5d4ea1df15c7fc646e572b5859f49b903d08dfaf27b558c67ae8f02727485",
+    "rust/tests/unit/workflow_contracts.rs": "eb195cc207853d0b8c8be06b4b4246dc1b42a041bfd892fce610d5060e37dc82",
+    "experiments/issue-1580/native-regression-groups.test.mjs": "26ecbd0c29b0139abed82cf7f968d9f3028b850022c1993804ba0aef879fbd6c"
+  },
+  "beforeSource": {
+    "commit": "23a263867487a5fd2f269e901078d012cf67bec8",
+    "path": "scripts/create-changelog-fragment.rs",
+    "sha256": "784c78c127695b2708b2be022559d52152a68548f4da402547fb02155d80b496"
+  },
+  "nativeRegressionBeforeFix": "Not executed. The hosted regression target compiles the shared production helper; native behavior remains pending."
+}

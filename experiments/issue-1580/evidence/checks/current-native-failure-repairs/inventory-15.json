@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/main-ancestor.stderr",
+    "file": "491-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/main-ancestor.stdout",
+    "file": "492-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/main.stderr",
+    "file": "493-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/main.stdout",
+    "file": "494-evidence.gz",
+    "bytes": 41,
+    "lines": 1,
+    "rawSha256": "6f674250dd7a08adf0f561f99ccbe15ca03226028532de1d6d27140c62e41282",
+    "archiveSha256": "00bc666a0f885c9c8a1fe798ed7d681137e5700f76ef157230b98467ea35c5c9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/outcome.json",
+    "file": "495-evidence.gz",
+    "bytes": 257,
+    "lines": 9,
+    "rawSha256": "85b596ee42e899e972d8ce0b14190b3c5668faeeca250a6475748c45edaad44f",
+    "archiveSha256": "f852194f5fc3960de6f23e2363a89a2b9f25b6cd631d21af3a66d07be527160f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pr-comments-fresh.stderr",
+    "file": "496-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pr-comments-fresh.stdout",
+    "file": "497-evidence.gz",
+    "bytes": 36071,
+    "lines": 1,
+    "rawSha256": "a278356a74e24895f54119da90cd4e92ec86c68956914a919a18d989d934dd0f",
+    "archiveSha256": "d55f55897f5102da22e3961ffa856eccc66b3cd4a4db30fbcb27a7058ae429df"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pr-comments.json",
+    "file": "498-evidence.gz",
+    "bytes": 43148,
+    "lines": 864,
+    "rawSha256": "728d63f225ee69aecabe5476690cdfc80c0bb990cba22a2687181d7bf25440e0",
+    "archiveSha256": "c9b1616df9116712900c8e8efcb8d6cea85d8944ccc97c1cb829703679ceac35"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pr-comments.stderr",
+    "file": "499-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pr-comments.stdout",
+    "file": "500-evidence.gz",
+    "bytes": 36071,
+    "lines": 1,
+    "rawSha256": "a278356a74e24895f54119da90cd4e92ec86c68956914a919a18d989d934dd0f",
+    "archiveSha256": "d55f55897f5102da22e3961ffa856eccc66b3cd4a4db30fbcb27a7058ae429df"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/publication-records.json",
+    "file": "501-evidence.gz",
+    "bytes": 4051,
+    "lines": 234,
+    "rawSha256": "e418540386afe5c0bd2fbe5de51b6c7d39a8aedc1d94c8b6323ef5358d8a9521",
+    "archiveSha256": "012d504064fa0b956fbffb7761b116f3edd463418afa8205d888fe172cad6dd1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pull-before.stderr",
+    "file": "502-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pull-before.stdout",
+    "file": "503-evidence.gz",
+    "bytes": 19707,
+    "lines": 1,
+    "rawSha256": "e6ab223db09ecf5919ff9b6f37789c1b164ebc11354fc4c81a6c960680a2fc1d",
+    "archiveSha256": "80f9d608c16ad083a36df39a9729ea149a643e2c56394f005bbe84c590aa6bd9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pull-request-body.md",
+    "file": "504-evidence.gz",
+    "bytes": 20784,
+    "lines": 91,
+    "rawSha256": "aabb7212070e8847d26bd0517a2c908f639ead9f4cd05dac8d830d7b8ee29081",
+    "archiveSha256": "56a07a50fbc8571996e1238dc3d2ecd51a6c62908e5c4fd068139d253dd16133"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pull.stderr",
+    "file": "505-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/pull.stdout",
+    "file": "506-evidence.gz",
+    "bytes": 19802,
+    "lines": 1,
+    "rawSha256": "b17ddacdeaeb9d1011c96b973db59af1694c071a1e99b13f8cba02c82001e095",
+    "archiveSha256": "213c2cc272adc12022fd371b7832dbc351b2bc4d137f5df46f07402dc02b78c1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/push.stderr",
+    "file": "507-evidence.gz",
+    "bytes": 108,
+    "lines": 2,
+    "rawSha256": "29d05289d620df1127df12fe66627f65c2023cd350f6c5fae8def627b9c74a88",
+    "archiveSha256": "0688ae52a8b57a8d0d895e872fa768d333a3a304d27544138515fe0564592503"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/push.stdout",
+    "file": "508-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/queued.stderr",
+    "file": "509-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/queued.stdout",
+    "file": "510-evidence.gz",
+    "bytes": 3,
+    "lines": 1,
+    "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/records.json",
+    "file": "511-evidence.gz",
+    "bytes": 2706,
+    "lines": 157,
+    "rawSha256": "01a53ad43647878be52ea7d38f3a5b910ec99d64796b5aba8a88b380c9d8b524",
+    "archiveSha256": "bcf0b02fadc1cd6e58fb0b829a30355717f8089d04964ec8db3100a0d7992cd6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/remote-after.stderr",
+    "file": "512-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/remote-after.stdout",
+    "file": "513-evidence.gz",
+    "bytes": 76,
+    "lines": 1,
+    "rawSha256": "b02d981a9d938515e3ea8111c9078c302da412d841c5d2623aee9f4a034da4b7",
+    "archiveSha256": "fb6e898e8150c50f098edd4a39a830000e2f1e47faf95cb01eb0bd20fad2d30b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/remote-before.stderr",
+    "file": "514-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/remote-before.stdout",
+    "file": "515-evidence.gz",
+    "bytes": 76,
+    "lines": 1,
+    "rawSha256": "73fe11c02665eadf5ca8a886fd38474e4f145ba00240f3bee9ca44e8db5b8217",
+    "archiveSha256": "1a266013bcb69c8ca665ebe5e93b9650917679db09cad438507577a64598524b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/reviews-fresh.stderr",
+    "file": "516-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/reviews-fresh.stdout",
+    "file": "517-evidence.gz",
+    "bytes": 4,
+    "lines": 1,
+    "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+    "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/reviews.json",
+    "file": "518-evidence.gz",
+    "bytes": 3,
+    "lines": 1,
+    "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/reviews.stderr",
+    "file": "519-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/reviews.stdout",
+    "file": "520-evidence.gz",
+    "bytes": 4,
+    "lines": 1,
+    "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+    "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/runs.stderr",
+    "file": "521-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/runs.stdout",
+    "file": "522-evidence.gz",
+    "bytes": 692,
+    "lines": 1,
+    "rawSha256": "6447cefa3beab4a3603265dd6bb9e90bce44c9f69da1318ae638eeff2b2b6e15",
+    "archiveSha256": "0661bf9ae3f591f8e8891d9a93c628d19f79f83c0ecb81eec61c54cb2ab2551d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/status-after.stderr",
+    "file": "523-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/status-after.stdout",
+    "file": "524-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/status-before.stderr",
+    "file": "525-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

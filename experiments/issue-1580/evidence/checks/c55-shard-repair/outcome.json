@@ -1,0 +1,38 @@
+{
+  "before": {
+    "name": "before",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "experiments/issue-1580/hosted-javascript-scheduling.test.mjs"
+    ],
+    "exitCode": 1
+  },
+  "after": {
+    "name": "after",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "experiments/issue-1580/hosted-javascript-scheduling.test.mjs"
+    ],
+    "exitCode": 0
+  },
+  "timingSuite": {
+    "name": "timing-suite",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/ci-speed.test.mjs"
+    ],
+    "exitCode": 0
+  },
+  "raiseOnly": true,
+  "hostedQualification": false,
+  "passed": true
+}

@@ -31,6 +31,7 @@ const DOCUMENTS: &[&str] = &[
     "CONTRIBUTING.md",
     "REQUIREMENTS.md",
     "docs/requirements-traceability.md",
+    "docs/requirements-traceability-continuation.md",
     "docs/benchmarks.md",
     "docs/meta-algorithm.md",
     "docs/philosophy.md",

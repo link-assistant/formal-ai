@@ -17,12 +17,12 @@ restart-hygiene
   binary-prefix "4d5a"
   command "command -v python3 >/dev/null 2>&1 && python3 -c {source} {plan}"
   untrack-command "git rm --cached --ignore-unmatch -- {files}"
-  clean-command "test -z \"$(git status --porcelain --untracked-files=all)\""
+  clean-command 'test -z "$(git status --porcelain --untracked-files=all)"'
   index-guard-command "git diff --cached --quiet -- . {exclude}"
-  branch-guard-command "test \"$(git branch --show-current)\" = {branch}"
+  branch-guard-command 'test "$(git branch --show-current)" = {branch}'
   status-command "git status --porcelain --untracked-files=all"
   scope-refusal "Prepared work remains incomplete: current Git changes extend beyond the previous explicit file/directory scopes, or the fresh status listing is not safely parseable."
-  commit-command "{guard} && git add -- {files} && {guard} && (if git diff --cached --quiet; then echo __formal_ai_commit_unchanged; else git commit -q -m {subject} -m {body}; fi) && __formal_ai_push_ref={branch} && if test -n \"$(git symbolic-ref --quiet --short HEAD)\"; then if test \"$__formal_ai_push_ref\" = HEAD; then __formal_ai_push_ref=$(git branch --show-current); fi; else exit 1; fi && test -n \"$__formal_ai_push_ref\" && git push -q origin \"$__formal_ai_push_ref\" && git rev-parse HEAD"
+  commit-command '{guard} && git add -- {files} && {guard} && (if git diff --cached --quiet; then echo __formal_ai_commit_unchanged; else git commit -q -m {subject} -m {body}; fi) && __formal_ai_push_ref={branch} && if test -n "$(git symbolic-ref --quiet --short HEAD)"; then if test "$__formal_ai_push_ref" = HEAD; then __formal_ai_push_ref=$(git branch --show-current); fi; else exit 1; fi && test -n "$__formal_ai_push_ref" && git push -q origin "$__formal_ai_push_ref" && git rev-parse HEAD'
   source-line "if len(plan['files']) > 256 or len(plan['outputs']) > 256:"
   source-line "    raise ValueError('hygiene_plan_limit')"
   source-line "outputs = {}"

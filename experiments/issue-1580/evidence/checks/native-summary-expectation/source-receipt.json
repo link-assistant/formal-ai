@@ -1,0 +1,16 @@
+{
+  "createdAt": "2026-11-18T13:20:48.194072+00:00",
+  "sourceHead": "035cb62b99a0d5f1336114dbcc593d9e361c2906",
+  "nativeFile": "rust/tests/unit/specification/synthesis.rs",
+  "beforeSha256": "257e83c8d00c70af9ce40adeb4708cc63fb778b103487d4accb0da9545e872b9",
+  "afterSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+  "patchSha256": "261bc1252b2e79538d88d677247eb0da7d83c2bbbc30d7ba792a14705d761a3f",
+  "reason": "The current Rust and JavaScript whole-sentence summarizers agree; a dormant exact-answer assertion predates ea67811fd82f38f12ca91e2d6c042d7e0afc8801.",
+  "regressionLog": "experiments/issue-1580/evidence/ci/native-php-fda677ef/job-134821269126.stdout.gz",
+  "failedLogLines": [
+    1670,
+    1685
+  ],
+  "productionCodeChanged": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-11-18T12:30:20.810699+00:00",
+  "head": "ec8e609bfe5cd7b9c4111683a02fe08fb5fa3185",
+  "parent": "fca86432b7194eb94d0c153860d67f782a9a3401",
+  "pushed": false,
+  "wholeStagedPatchSha256": "fbfc6f8d05c75833ffa222101c8b3c7db714aa2a1dcfbb6668b1c294d6bc8a11",
+  "nativeExecution": false,
+  "hostedPublication": false,
+  "upstreamIssueFiled": false,
+  "independentAuthorshipCredit": 0
+}

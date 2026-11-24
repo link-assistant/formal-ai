@@ -1,0 +1,81 @@
+{
+  "sourceHead": "9cd6731440bc83095b3a3c96aadaac52a70be83e",
+  "ciRun": 44999044965,
+  "ciHead": "a558f83430dd1b114839ca979a02a71730abfac9",
+  "failureLines": [
+    18927,
+    22981,
+    25715
+  ],
+  "completeObjectDelta": [
+    {
+      "caseIndex": 79,
+      "caseId": "rust/tests/unit/specification/meta_construction.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 7,
+      "file": "repo:rust/Cargo.toml",
+      "before": "adbd7893e8223faab5269afcc11d581cb530958348f30d8fe69800b433615b4f",
+      "after": "c28bb20eeb92c35edc2cd6f45c7a69c70eee8c677989c7ebce51d6a7207b9759"
+    },
+    {
+      "caseIndex": 81,
+      "caseId": "rust/tests/unit/specification/meta_self_improvement.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 3,
+      "file": "repo:rust/Cargo.toml",
+      "before": "adbd7893e8223faab5269afcc11d581cb530958348f30d8fe69800b433615b4f",
+      "after": "c28bb20eeb92c35edc2cd6f45c7a69c70eee8c677989c7ebce51d6a7207b9759"
+    },
+    {
+      "caseIndex": 190,
+      "caseId": "rust/tests/unit/specification/selection.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 7,
+      "file": "repo:rust/Cargo.toml",
+      "before": "adbd7893e8223faab5269afcc11d581cb530958348f30d8fe69800b433615b4f",
+      "after": "c28bb20eeb92c35edc2cd6f45c7a69c70eee8c677989c7ebce51d6a7207b9759"
+    },
+    {
+      "caseIndex": 193,
+      "caseId": "rust/tests/unit/specification/skill_ledger.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 8,
+      "file": "repo:rust/Cargo.toml",
+      "before": "adbd7893e8223faab5269afcc11d581cb530958348f30d8fe69800b433615b4f",
+      "after": "c28bb20eeb92c35edc2cd6f45c7a69c70eee8c677989c7ebce51d6a7207b9759"
+    }
+  ],
+  "caseCount": 221,
+  "unsupportedCount": 968,
+  "total": 1189,
+  "allOtherObjectsUnchanged": true,
+  "files": [
+    {
+      "file": "before.v8.gz",
+      "sha256": "19edad0149e3b63fb06593e6f4558f9993b18e99ef51b66d52c41ea3af4cdba2",
+      "gzipSHA256": "ba76a3ccb2193cb557f79b3968c0bc6738e6c099dc4487cba743a092dd8e9288"
+    },
+    {
+      "file": "result.json.gz",
+      "sha256": "ebfd9ed04d8f332e2b2ce744495f54ad52699ccabe2f9adba5252c6c07235051",
+      "gzipSHA256": "948ef812befded03d036d94f2a06c197c1edc2eb047bce87aae6722dba1a23d6"
+    },
+    {
+      "file": "before.log.gz",
+      "sha256": "26af631660c3336ea3351c13bd43957917cd8674afd98a477c91b9fe85345935",
+      "gzipSHA256": "20001b0edd66d57587a471e1da82a4d9a0ea2fe840cabd4520120c69bee71fb9"
+    },
+    {
+      "file": "refresh.log.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSHA256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "rust-specification-fixture-integrity.test.mjs.log.gz",
+      "sha256": "28ddf77c874d0652b3b1b2d2eb270d878e5370225d3d0848aad9d387c7aabec8",
+      "gzipSHA256": "aa4d36b9dae30a20cb66b83e1e7eb242913a05b030d500113aab71a7668e8799"
+    },
+    {
+      "file": "rust-specification-unicode-identifiers.test.mjs.log.gz",
+      "sha256": "a09146effdc0e7a50b1d08514bb768a25e5341d668d3800f494649ec6aa600f5",
+      "gzipSHA256": "057d6f1ce6f71dee77e14eba1373b23be525f9960056bf28c35e46ad73a52818"
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

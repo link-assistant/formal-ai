@@ -37,7 +37,7 @@ import { eqIgnoreAsciiCase, minByKey, splitWhitespace, toAsciiLowercase, trimMat
 const registryEntry = (capability, registry = agenticToolCapabilities()) => registry.find((entry) => entry.id === registryId(capability)) ?? null;
 
 /**
- * Mirrors `fn tool_for` in rust/src/agentic_coding/capability_router.rs.
+ * Mirrors `fn tool_for` in rust/src/agentic_coding/capability_router/tool_classification.rs.
  * @param {string[]} toolNames
  * @param {string} capability
  * @returns {string|null}
@@ -57,7 +57,7 @@ export function toolFor(toolNames, capability) {
   return inScope.find((name) => classifyTool(name) === capability) ?? null;
 }
 
-/** Mirrors `fn shell_command_tool` in rust/src/agentic_coding/capability_router.rs. */
+/** Mirrors `fn shell_command_tool` in rust/src/agentic_coding/capability_router/tool_classification.rs. */
 export function shellCommandTool(toolNames) {
   const shell = registryEntry(Capability.Run);
   if (shell === null) return null;
@@ -113,7 +113,7 @@ const CLASSIFY_ORDER = [
 ];
 
 /**
- * Mirrors `fn classify_tool` in rust/src/agentic_coding/capability_router.rs.
+ * Mirrors `fn classify_tool` in rust/src/agentic_coding/capability_router/tool_classification.rs.
  * @param {string} name
  * @returns {string|null}
  */
@@ -138,12 +138,12 @@ export function classifyTool(name) {
   return null;
 }
 
-/** Mirrors `fn workspace_creation_tool` in rust/src/agentic_coding/capability_router.rs. */
+/** Mirrors `fn workspace_creation_tool` in rust/src/agentic_coding/capability_router/tool_classification.rs. */
 export function workspaceCreationTool(toolNames) {
   return toolFor(toolNames, Capability.Write) ?? toolNames.find(isWorkspaceCreationTool) ?? null;
 }
 
-/** Mirrors `fn is_workspace_creation_tool` in rust/src/agentic_coding/capability_router.rs. */
+/** Mirrors `fn is_workspace_creation_tool` in rust/src/agentic_coding/capability_router/tool_classification.rs. */
 export function isWorkspaceCreationTool(name) {
   if (!isClientWorkspace(scopeOfToolName(name))) return false;
   const capability = classifyTool(name);

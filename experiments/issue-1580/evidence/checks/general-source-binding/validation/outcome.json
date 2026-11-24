@@ -1,0 +1,20 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "sourceUnchangedDuringValidation": true,
+  "sourceHashes": {
+    "rust/src/solver_unknown_reasoning.rs": "a84e6790fc0d81fa8730aeddf761cbc0697ee3733f67b8e53afa73e53683d558",
+    "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs": "c9e8aea5dada5df2cd393eb570f5e04a0e7ff0167fcb188880a2873cfc057dfe",
+    "js/worker/formal_ai_worker_solve.js": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287",
+    "ts/worker/formal_ai_worker_solve.ts": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287",
+    "js/server/worker-script-prerequisites.mjs": "c0965048ab511da7b5570afa1d479beefbda8ee7799bba996a658b8fd494002d",
+    "js/worker-script-prerequisites.js": "a44a88e0e407b6bffae5199dc629da8790c74a0610078f7bd3e02f17dff7287e",
+    "data/meta/runtime-feature-coverage.json": "f1364fe50708557c0f75eedb211f440a1ca18d2a330eb43e94a9818cab691b9a"
+  },
+  "checks": 11,
+  "failed": [],
+  "gateLogsArchived": 86,
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "completedAt": "2026-11-18T16:23:27.871840+00:00"
+}

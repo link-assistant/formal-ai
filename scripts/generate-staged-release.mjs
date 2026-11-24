@@ -1,3 +1,4 @@
+import {readCanonicalSource,partitionCanonicalSource} from './canonical-release-source.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, realpathSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -15,11 +16,12 @@ export function runStagedReleaseGenerator(arguments_) {
   if (arguments_.includes('--write')) assert.ok(outputDirectory, 'write requires an explicit scratch/repository destination');
   const packet = JSON.parse(readFileSync(join(root, evidence, 'stage-source-coverage.json'), 'utf8'));
   const deployed = arguments_.includes('--check-deployed') || arguments_.includes('--deployed');
-  const source = readFileSync(join(root, deployed ? evidence + 'original-release-workflow.yml' : '.github/workflows/release.yml'), 'utf8');
+  const retained=readCanonicalSource(root);
+  const source = deployed ? retained.text : readFileSync(join(root,'.github/workflows/release.yml'),'utf8');
   const sha = value => createHash('sha256').update(value).digest('hex');
   assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');
-  assert.equal(readFileSync(join(root, evidence, 'original-release-workflow.yml'), 'utf8'), source);
-  const {operations,binding,outputs}=buildStagedReleaseProjection(source,packet);
+  assert.equal(readCanonicalSource(root).text, source);
+  const {operations,binding,outputs}=buildStagedReleaseProjection(source,packet,{partitioned:retained.files.length===3});
   if (deployed) assert.equal(readFileSync(join(root,'.github/workflows/release.yml'),'utf8'),outputs.get(evidence+'candidate-release-caller.yml'),'deployed caller differs from checked original projection');
   for (const [path, bytes] of outputs) {
     const destination = outputDirectory ? join(outputDirectory, path.split('/').at(-1)) : join(root, path);
@@ -43,7 +45,7 @@ export function runStagedReleaseGenerator(arguments_) {
   }));
   console.log('STAGED_RELEASE_GENERATOR_PASS');
 }
-export function buildStagedReleaseProjection(source, packet) {
+export function buildStagedReleaseProjection(source, packet, {partitioned=true}={}) {
   const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
   const sha = value => createHash('sha256').update(value).digest('hex');
   assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');
@@ -148,11 +150,11 @@ export function buildStagedReleaseProjection(source, packet) {
       if (stage !== 'prepare-source') action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with: { ref: ' + JSON.stringify(expression('github.sha')) + ', path: _protocol, persist-credentials: false }\n');
       const activeIf = stage === 'create-release' ? '        if: ' + expression('needs.' + prep + ".outputs.active == 'true'") + '\n' : '';
       if (stage !== 'prepare-source') {
-        action('Download immutable selected source artifact', activeIf + '        uses: actions/download-artifact@v8\n        env:\n          NODE_OPTIONS: --disable-warning=DEP0005\n        with:\n          artifact-ids: ' + expression('needs.' + prep + '.outputs.artifact_id') + '\n          path: .release-transfer/source\n          digest-mismatch: error\n');
+        action('Download immutable selected source artifact', activeIf + '        uses: ./_protocol/.github/actions/download-artifact\n        with: { artifact-ids: ' + JSON.stringify(expression('needs.' + prep + '.outputs.artifact_id')) + ', path: .release-transfer/source }\n');
         action('Verify independent source compiler protocol and main tag authority', activeIf + '        run: node _protocol/scripts/release-stage-transfer.mjs verify-source\n');
       }
       const importArtifact = (producer, kind) => {
-        action('Download immutable ' + kind + ' artifact', activeIf + '        uses: actions/download-artifact@v8\n        env:\n          NODE_OPTIONS: --disable-warning=DEP0005\n        with:\n          artifact-ids: ' + expression(needsExpr(producer, 'artifact_id')) + '\n          path: .release-transfer/' + kind + '\n          digest-mismatch: error\n');
+        action('Download immutable ' + kind + ' artifact', activeIf + '        uses: ./_protocol/.github/actions/download-artifact\n        with: { artifact-ids: ' + JSON.stringify(expression(needsExpr(producer, 'artifact_id'))) + ', path: .release-transfer/' + kind + ' }\n');
         action('Validate physical ' + kind + ' producer transfer', activeIf + '        env:\n          EXPECT_BUNDLE: ' + expression(needsExpr(producer, 'bundle_sha')) + '\n          EXPECT_DESCRIPTOR: ' + expression(needsExpr(producer, 'descriptor_sha')) + '\n          EXPECT_PRODUCER: ' + id(producer) + '\n        run: node _protocol/scripts/release-stage-transfer.mjs import ' + kind + '\n');
       };
       if (['verify-package', 'publish-crate', 'publish-verify-images'].includes(stage)) importArtifact('compile-release', 'binary');
@@ -252,6 +254,18 @@ export function buildStagedReleaseProjection(source, packet) {
     assert.equal(callerSource.split(original.body).length, 2);
     callerSource = callerSource.replace(original.body, replacement);
   }
+  // Publication failure must not suppress a validated site's build. Keep the
+  // release dependencies only to preserve a successful release's child SHA.
+  const pages = workflowJobs(callerSource).find(job => job.id === 'build-pages');
+  assert.ok(pages, 'source Pages build required');
+  let pagesBody = pages.body;
+  for (const caller of ['auto-release', 'manual-release']) {
+    const prerequisite = " && needs." + caller + ".result == 'success'";
+    assert.equal(pagesBody.split(prerequisite).length, 2, 'unique original publication prerequisite required');
+    pagesBody = pagesBody.replace(prerequisite, '');
+  }
+  assert.equal(callerSource.split(pages.body).length, 2);
+  callerSource = callerSource.replace(pages.body, pagesBody);
   // Pack short JSON fields to a readable width; preserve long data strings whole.
   function format(value, depth = 0) {
     const width = 160;
@@ -289,7 +303,7 @@ export function buildStagedReleaseProjection(source, packet) {
     bindings: binding,
     originalOperations: 52,
     scope: 'Executable candidate declaration; no scheduler/native/publication/cold execution proof'
-  }, null, 2) + '\n'], [evidence + 'original-release-workflow.yml', source], [evidence + 'stage-source-coverage.json', format(packet) + '\n']]);
+  }, null, 2) + '\n'], ...(partitioned?partitionCanonicalSource(source):[{path:evidence+'original-release-workflow.yml',text:source}]).map(({path,text})=>[path,text]), [evidence + 'stage-source-coverage.json', format(packet) + '\n']]);
   return { operations, binding, outputs };
 }
 if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) runStagedReleaseGenerator(process.argv.slice(2));

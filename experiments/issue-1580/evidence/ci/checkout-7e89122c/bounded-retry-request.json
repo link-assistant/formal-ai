@@ -1,0 +1,9 @@
+{
+  "head": "7e89122c9d030b3af5eec2d346141bba3ff3fdab",
+  "run": 44213727267,
+  "retry": 2,
+  "requestedAt": "2026-11-18T01:20:47.096372+00:00",
+  "reason": "One unchanged-head retry after retaining attempt-1 checkout-only curl 28 / promisor fetch failure; no failed test assertion and no timeout or success criterion changed.",
+  "jobsSha256": "5cde9655373272a49faa33b03b749a837279e1575ad0a7baa35ca71d834f90d9",
+  "stdout": ""
+}

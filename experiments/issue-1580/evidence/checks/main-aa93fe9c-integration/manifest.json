@@ -1,0 +1,17 @@
+{
+  "incomingMain": "aa93fe9caeb222b906904b70be5408a2c8e61b0d",
+  "parentHead": "7c93c4b7e2cdbaa44d02b711f24948918a8d75f8",
+  "archiveSha256": "7a135b1b208690d6b831b5e8c52d483486cf2e3ef0ade8edab70fd285f13f9ff",
+  "payloadCount": 84,
+  "roundTripVerified": true,
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "previousBaselineSha256": "db38dbe7b066d0a049aa68d2184f668ab3b7643c42b05a68cfdec380c673c239",
+  "newBaselineSha256": "5aafd762dc19d768b7cc887aca1927404d1ff1cffd6b8e52132bce70b498ea4b",
+  "serializationByteEquality": false,
+  "completeObjectEquality": true,
+  "supportedCaseSemanticChanges": 0,
+  "sourceIdentityChangesFromPrevious": 4,
+  "nativeExecutedLocally": false,
+  "autonomousAuthorshipCredit": 0,
+  "upstreamTranscriptBytesPreserved": true
+}

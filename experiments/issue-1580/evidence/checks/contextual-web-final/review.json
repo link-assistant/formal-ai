@@ -1,0 +1,17 @@
+{
+  "complete": false,
+  "gateCounts": {
+    "PASS": 85,
+    "FAIL": 2,
+    "SKIP": 52
+  },
+  "verifiedPayloads": 98,
+  "failedGates": [
+    "check-minimal-core-boundary-js-twin",
+    "check-minimal-core-boundary"
+  ],
+  "cause": "Conversation guard grew the reviewed fact handler from 326 to 332 lines.",
+  "repair": "Keep the guard and replace the two eager-looking if-return fallback blocks with equivalent lazy Option::or_else calls in the same order. The maintained handler returns to exactly 326 lines; no ledger, ceiling, comment from the original file, or expectation is removed.",
+  "verification": "Fresh complete lightweight inventory running in contextual-web-verified; this earlier failure stays a failure.",
+  "independentAuthorshipCredit": 0
+}

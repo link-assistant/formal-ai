@@ -385,9 +385,11 @@ for (const [server, binary] of [['JavaScript', undefined], ['native', NATIVE]]) 
         const history = [...messages, user('Hello'), assistant('Hi!'), user('Report')];
         const destination = await ask(run, client, history, true);
         assert.match(destination.text, /GitHub issue/u);
+        if (client.name === 'OpenCode') assert.ok(destination.text.split(/\r?\n/u).length < 4, destination.text);
         history.push(assistant(destination.text), user('GitHub issue'));
         const scope = await ask(run, client, history, true);
         assert.match(scope.text, /Both logs/u);
+        if (client.name === 'OpenCode') assert.ok(scope.text.split(/\r?\n/u).length < 4, scope.text);
         history.push(assistant(scope.text), user('Both logs'));
         const submission = await ask(run, client, history, true);
         assert.match(submission.command, /^formal-ai report create-issue /u);

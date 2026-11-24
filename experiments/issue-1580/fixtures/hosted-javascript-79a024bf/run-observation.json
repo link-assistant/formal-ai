@@ -1,0 +1,13 @@
+{
+  "id": 45011615137,
+  "name": "Layered CI",
+  "head_sha": "79a024bffdcee2dd94149d929e81b4b65496ed2d",
+  "status": "completed",
+  "conclusion": "failure",
+  "run_attempt": 1,
+  "created_at": "2026-11-22T10:16:19Z",
+  "updated_at": "2026-11-22T10:27:52Z",
+  "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45011615137",
+  "check_suite_id": 121814464811,
+  "source": "Selected fields from retained complete fresh-layered-run.log; not a whole API response."
+}

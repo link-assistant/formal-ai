@@ -1,0 +1,205 @@
+{
+  "head": "14ef1b5f8dc590733283b0e4cb0cd75e47ba89d2",
+  "run": 44686151225,
+  "job": 136121028636,
+  "jobName": "Native type and lint check / Rust compile inputs changed",
+  "conclusion": "success",
+  "records": [
+    {
+      "file": "job-136121028636.stdout.gz",
+      "rawSha256": "dff1b5c94818d2404e592f60340dddfc5c5738f7da4f34698b5f13e4aa227f9b",
+      "archiveSha256": "46d60c55c158b685b59741c0c459c9e141764b22230dcab01a72e3b1a5b695be",
+      "bytes": 206531
+    },
+    {
+      "file": "job-136121028636.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0
+    }
+  ],
+  "selectedCaseLines": [
+    {
+      "line": 1743,
+      "text": "2026-11-20T06:16:20.6512495Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.76s"
+    },
+    {
+      "line": 1758,
+      "text": "2026-11-20T06:16:21.7448018Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.08s"
+    },
+    {
+      "line": 1766,
+      "text": "2026-11-20T06:16:30.6488148Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.90s"
+    },
+    {
+      "line": 1794,
+      "text": "2026-11-20T06:16:31.6113020Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s"
+    },
+    {
+      "line": 1808,
+      "text": "2026-11-20T06:16:45.3738809Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.76s"
+    },
+    {
+      "line": 1815,
+      "text": "2026-11-20T06:16:45.5449800Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s"
+    },
+    {
+      "line": 1825,
+      "text": "2026-11-20T06:16:45.9455724Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s"
+    },
+    {
+      "line": 1849,
+      "text": "2026-11-20T06:16:53.0842500Z test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.13s"
+    },
+    {
+      "line": 1867,
+      "text": "2026-11-20T06:17:27.5219163Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 34.43s"
+    },
+    {
+      "line": 1882,
+      "text": "2026-11-20T06:17:33.6623558Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.13s"
+    },
+    {
+      "line": 1887,
+      "text": "2026-11-20T06:17:33.6751484Z test bump_version::tests::manual_bump_reads_and_writes_only_the_package_version ... ok"
+    },
+    {
+      "line": 1897,
+      "text": "2026-11-20T06:17:33.6774963Z test changelog_fragment_file::tests::an_existing_symbolic_link_cannot_overwrite_its_target ... ok"
+    },
+    {
+      "line": 1898,
+      "text": "2026-11-20T06:17:33.6778281Z test changelog_fragment_file::tests::concurrent_creators_have_exactly_one_complete_winner ... ok"
+    },
+    {
+      "line": 1899,
+      "text": "2026-11-20T06:17:33.6779071Z test changelog_fragment_file::tests::missing_parent_is_an_error_without_a_fragment ... ok"
+    },
+    {
+      "line": 1900,
+      "text": "2026-11-20T06:17:33.6779997Z test changelog_fragment_file::tests::repeated_creation_preserves_the_original_fragment_bytes ... ok"
+    },
+    {
+      "line": 1929,
+      "text": "2026-11-20T06:17:33.6955596Z test collect_changelog::changelog_files::snapshot_tests::cleanup_consumes_only_the_sorted_snapshot_and_keeps_new_fragments ... ok"
+    },
+    {
+      "line": 1930,
+      "text": "2026-11-20T06:17:33.6959203Z test collect_changelog::changelog_files::snapshot_tests::cleanup_refuses_changed_or_missing_snapshots_before_deleting_anything ... ok"
+    },
+    {
+      "line": 1931,
+      "text": "2026-11-20T06:17:33.6960303Z test collect_changelog::changelog_files::snapshot_tests::unreadable_fragment_aborts_instead_of_dropping_an_entry ... ok"
+    },
+    {
+      "line": 1932,
+      "text": "2026-11-20T06:17:33.6961119Z test collect_changelog::changelog_files::tests::directory_read_failures_are_not_empty_collections ... ok"
+    },
+    {
+      "line": 1933,
+      "text": "2026-11-20T06:17:33.6961758Z test collect_changelog::changelog_files::tests::missing_directory_has_no_fragments ... ok"
+    },
+    {
+      "line": 1934,
+      "text": "2026-11-20T06:17:33.6976574Z test collect_changelog::tests::changelog_version_uses_the_package_and_refuses_inherited_or_missing_versions ... ok"
+    },
+    {
+      "line": 1935,
+      "text": "2026-11-20T06:17:33.6984958Z test collect_changelog::tests::failed_fragment_or_existing_changelog_reads_preserve_every_input ... Updated CHANGELOG.md with version 1.2.3"
+    },
+    {
+      "line": 1937,
+      "text": "2026-11-20T06:17:33.6987568Z test get_bump_type::changelog_files::snapshot_tests::cleanup_consumes_only_the_sorted_snapshot_and_keeps_new_fragments ... ok"
+    },
+    {
+      "line": 1938,
+      "text": "2026-11-20T06:17:33.6989531Z test get_bump_type::changelog_files::snapshot_tests::cleanup_refuses_changed_or_missing_snapshots_before_deleting_anything ... ok"
+    },
+    {
+      "line": 1939,
+      "text": "2026-11-20T06:17:33.6990634Z test get_bump_type::changelog_files::snapshot_tests::unreadable_fragment_aborts_instead_of_dropping_an_entry ... ok"
+    },
+    {
+      "line": 1940,
+      "text": "2026-11-20T06:17:33.6991783Z test get_bump_type::changelog_files::tests::directory_read_failures_are_not_empty_collections ... ok"
+    },
+    {
+      "line": 1941,
+      "text": "2026-11-20T06:17:33.6992581Z test get_bump_type::changelog_files::tests::missing_directory_has_no_fragments ... ok"
+    },
+    {
+      "line": 1942,
+      "text": "2026-11-20T06:17:33.6993688Z test get_bump_type::github_output::tests::absent_output_path_is_supported ... ok"
+    },
+    {
+      "line": 1943,
+      "text": "2026-11-20T06:17:33.6994446Z test get_bump_type::github_output::tests::appends_without_overwriting_existing_outputs ... ok"
+    },
+    {
+      "line": 1944,
+      "text": "2026-11-20T06:17:33.6995222Z test get_bump_type::github_output::tests::configured_directory_reports_path_and_key ... ok"
+    },
+    {
+      "line": 1945,
+      "text": "2026-11-20T06:17:33.7007831Z test get_bump_type::github_output::tests::configured_output_failure_exits_before_success ... ok"
+    },
+    {
+      "line": 1946,
+      "text": "2026-11-20T06:17:33.7008888Z test get_bump_type::github_output::tests::creates_a_missing_output_file ... ok"
+    },
+    {
+      "line": 1947,
+      "text": "2026-11-20T06:17:33.7009604Z test get_bump_type::github_output::tests::empty_configured_path_is_an_error ... ok"
+    },
+    {
+      "line": 1948,
+      "text": "2026-11-20T06:17:33.7010337Z test get_bump_type::github_output::tests::write_failure_is_returned_after_open ... ok"
+    },
+    {
+      "line": 1949,
+      "text": "2026-11-20T06:17:33.7011309Z test get_bump_type::tests::bump_selection_refuses_incomplete_inventory_and_unreadable_fragments ... No changelog fragments found"
+    },
+    {
+      "line": 1960,
+      "text": "2026-11-20T06:17:33.7056945Z test version_changelog::changelog_files::snapshot_tests::cleanup_consumes_only_the_sorted_snapshot_and_keeps_new_fragments ... ok"
+    },
+    {
+      "line": 1961,
+      "text": "2026-11-20T06:17:33.7058991Z test version_changelog::changelog_files::snapshot_tests::cleanup_refuses_changed_or_missing_snapshots_before_deleting_anything ... ok"
+    },
+    {
+      "line": 1962,
+      "text": "2026-11-20T06:17:33.7060217Z test version_changelog::changelog_files::snapshot_tests::unreadable_fragment_aborts_instead_of_dropping_an_entry ... ok"
+    },
+    {
+      "line": 1963,
+      "text": "2026-11-20T06:17:33.7061275Z test version_changelog::changelog_files::tests::directory_read_failures_are_not_empty_collections ... ok"
+    },
+    {
+      "line": 1964,
+      "text": "2026-11-20T06:17:33.7062212Z test version_changelog::changelog_files::tests::missing_directory_has_no_fragments ... ok"
+    },
+    {
+      "line": 1965,
+      "text": "2026-11-20T06:17:33.7075696Z test version_changelog::tests::release_collection_refuses_io_errors_and_preserves_canonical_output ... Collected 2 changelog fragment(s)"
+    },
+    {
+      "line": 1972,
+      "text": "2026-11-20T06:17:33.7143045Z test workflow_release::change_gated_jobs_never_depend_on_a_skipped_changelog ... ok"
+    },
+    {
+      "line": 1999,
+      "text": "2026-11-20T06:17:34.8867821Z test result: ok. 102 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.21s"
+    },
+    {
+      "line": 2042,
+      "text": "2026-11-20T06:19:46.6069331Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 0.73s"
+    },
+    {
+      "line": 2051,
+      "text": "2026-11-20T06:19:51.6715579Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 4.07s"
+    }
+  ],
+  "fullIssueComplete": false,
+  "nativeRegistryDraftExecuted": false
+}

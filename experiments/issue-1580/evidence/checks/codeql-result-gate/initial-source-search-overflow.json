@@ -1,0 +1,9 @@
+{
+  "commandExitCode": 0,
+  "formalCommandExitCode": 1,
+  "reason": "The broad source search included immutable evidence with a long JSON line; the shell preview was incomplete. Full captured bytes are retained. Source comparison was repeated with bounded source-only paths.",
+  "captureComplete": true,
+  "stdoutBytes": 642686,
+  "stdoutSha256": "0950a383a3dc744aeac52352d3420ac80e8a230100c2da91f8be6acf996b6788",
+  "fullIssueComplete": false
+}

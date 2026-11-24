@@ -1,0 +1,22 @@
+[
+  {
+    "message": "fix: ground cache instruction cues in authored meanings",
+    "head": "6a4128935cccb1e9614dd1f9db4b70a1f0b12914",
+    "files": [
+      "data/meta/notation-ratchet.lino",
+      "data/seed/code-task-cues.lino",
+      "data/seed/meanings-concept-lookup.lino",
+      "rust/embedded/data/seed/code-task-cues.lino",
+      "rust/embedded/data/seed/meanings-concept-lookup.lino",
+      "rust/src/solver_unknown_reasoning.rs"
+    ]
+  },
+  {
+    "message": "fix: admit structured output HTTP changes to native checks",
+    "head": "235fb71c168d9052382d1f4dc473240e14c23495",
+    "files": [
+      "scripts/ci-pull-request-admission.mjs",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ]
+  }
+]

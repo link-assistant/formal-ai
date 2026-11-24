@@ -1,0 +1,2 @@
+# Wheel for the external benchmark workflow's Linux x86_64 Python 3.12 runner.
+pyarrow==26.0.1 --hash=sha256:c718bf97a92a6dea97fd1062c3b9f9e2e83cb9cc926e752289fa4ffff41738f9

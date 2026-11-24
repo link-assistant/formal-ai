@@ -1,0 +1,276 @@
+{
+  "head": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86",
+  "observedAt": "2026-11-21T00:53:16.764519+00:00",
+  "verifiedStreams": 200,
+  "terminalWorkflows": 27,
+  "successfulWorkflows": 23,
+  "skippedWorkflows": 1,
+  "failedWorkflows": [
+    {
+      "id": 44843761970,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44843761970"
+    },
+    {
+      "id": 44843761720,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44843761720"
+    },
+    {
+      "id": 44843748460,
+      "name": "Security",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44843748460"
+    }
+  ],
+  "failedPipelineJobs": [
+    {
+      "databaseId": 136658600085,
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600116,
+      "name": "Native type and lint check / Native contracts (reasoning-1)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600139,
+      "name": "Native type and lint check / Native contracts (reasoning-2)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600152,
+      "name": "Native type and lint check / Native contracts (hive-3)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600154,
+      "name": "Native type and lint check / Native contracts (hive-1)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600162,
+      "name": "Native type and lint check / Native contracts (benchmarks)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600167,
+      "name": "Native type and lint check / Native contracts (coding)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600228,
+      "name": "Native type and lint check / Native contracts (interfaces)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136658600335,
+      "name": "Native type and lint check / Native contracts (hive-2)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136663756908,
+      "name": "Pipeline Status",
+      "conclusion": "failure"
+    }
+  ],
+  "nativeJobs": [
+    {
+      "name": "Native type and lint check / Release registry scripts",
+      "job": 136658600064,
+      "log": "job-136658600064.stdout.gz",
+      "lines": 773,
+      "passed": 48,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 687,
+          "passed": 3,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-21T00:27:29.5412767Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+        },
+        {
+          "line": 715,
+          "passed": 22,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-21T00:27:29.5434110Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+        },
+        {
+          "line": 740,
+          "passed": 19,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-21T00:27:29.5927467Z test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s"
+        },
+        {
+          "line": 750,
+          "passed": 4,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-21T00:27:29.9935806Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s"
+        }
+      ],
+      "cliObservations": [
+        {
+          "line": 22,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-21T00:26:41.9589365Z ##[group]GITHUB_TOKEN Permissions"
+        },
+        {
+          "line": 754,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-21T00:27:31.9780563Z Ran 8 tests in 1.924s"
+        },
+        {
+          "line": 756,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-21T00:27:31.9780733Z OK"
+        }
+      ],
+      "startedAt": "2026-11-21T00:26:40Z",
+      "completedAt": "2026-11-21T00:27:35Z",
+      "seconds": 55.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "job": 136658600085,
+      "log": "job-136658600085.stdout.gz",
+      "lines": 1492,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:26:37Z",
+      "completedAt": "2026-11-21T00:28:29Z",
+      "seconds": 112.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (reasoning-1)",
+      "job": 136658600116,
+      "log": "job-136658600116.stdout.gz",
+      "lines": 1520,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:26:41Z",
+      "completedAt": "2026-11-21T00:30:35Z",
+      "seconds": 234.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (reasoning-2)",
+      "job": 136658600139,
+      "log": "job-136658600139.stdout.gz",
+      "lines": 1519,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:28:58Z",
+      "completedAt": "2026-11-21T00:32:21Z",
+      "seconds": 203.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-3)",
+      "job": 136658600152,
+      "log": "job-136658600152.stdout.gz",
+      "lines": 1525,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:37:03Z",
+      "completedAt": "2026-11-21T00:40:42Z",
+      "seconds": 219.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-1)",
+      "job": 136658600154,
+      "log": "job-136658600154.stdout.gz",
+      "lines": 1518,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:34:24Z",
+      "completedAt": "2026-11-21T00:37:00Z",
+      "seconds": 156.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (benchmarks)",
+      "job": 136658600162,
+      "log": "job-136658600162.stdout.gz",
+      "lines": 1520,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:30:37Z",
+      "completedAt": "2026-11-21T00:34:22Z",
+      "seconds": 225.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (coding)",
+      "job": 136658600167,
+      "log": "job-136658600167.stdout.gz",
+      "lines": 1517,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:26:38Z",
+      "completedAt": "2026-11-21T00:28:56Z",
+      "seconds": 138.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (interfaces)",
+      "job": 136658600228,
+      "log": "job-136658600228.stdout.gz",
+      "lines": 1519,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:32:23Z",
+      "completedAt": "2026-11-21T00:35:48Z",
+      "seconds": 205.0,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-2)",
+      "job": 136658600335,
+      "log": "job-136658600335.stdout.gz",
+      "lines": 1518,
+      "passed": 0,
+      "failed": 0,
+      "summaries": [],
+      "cliObservations": [],
+      "startedAt": "2026-11-21T00:35:51Z",
+      "completedAt": "2026-11-21T00:39:20Z",
+      "seconds": 209.0,
+      "conclusion": "failure"
+    }
+  ],
+  "nativeRustPassingTests": 48,
+  "nativeRustFailingTests": 0,
+  "pullRequestCheckBuckets": {
+    "fail": 11,
+    "skipping": 87,
+    "pass": 45
+  },
+  "annotationCounts": {
+    "warning:emitted": 98,
+    "error:emitted": 14
+  },
+  "allAggregateLinesLiterallyRead": false,
+  "allWarningsResolved": false,
+  "strictOriginalNativeSourceAcceptance": "31/53 strict whole-file identity; 22 separate scoped assertion reviews; historical budgets and live acceptance open",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

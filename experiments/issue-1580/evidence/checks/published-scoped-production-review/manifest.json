@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-22T12:25:34.851111+00:00",
+  "publishedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "base": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "selectedDiffs": 429,
+  "exactPriorReviewCarries": 259,
+  "newCompleteDiffReads": 170,
+  "newCompleteDiffLines": 25477,
+  "scope": "Only the source/workflow paths selected in the scoped inventory. Complete current source, all other PR files and runtime acceptance are not established.",
+  "allScopedPublishedDiffsReviewed": true,
+  "allProductionDiffsReviewed": false,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0,
+  "payloadFormat": "Each numbered .patch.json.gz decodes to one JSON record containing its exact patch and SHA-256. Per-file assessments and prior-review links are split into six files inventories; all seven review-part receipts are retained."
+}

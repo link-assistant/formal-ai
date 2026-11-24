@@ -348,3 +348,6 @@ mod proposition_structure_parity;
 mod provenance_snapshot;
 
 mod readable_source_model;
+
+#[path = "issue_1580_question_boundaries.rs"]
+mod issue_1580_question_boundaries;

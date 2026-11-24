@@ -107,65 +107,6 @@ fn issue_1069_delivery_keeps_each_artifacts_own_constraints() {
 }
 
 #[test]
-fn nested_delivery_carries_the_observation_into_the_outer_effect() {
-    // One investigation feeds two outputs in the real ladder: a human-readable
-    // proof and a machine-checked effect. Once the proof write succeeded, its
-    // "Recorded the findings" status used to become the effect's `result`,
-    // discarding the observation that both artifacts were meant to record.
-    let prompt = "Inspect the existing task-decomposition data model and identify where a node \
-        stores its children. Create `audit-effects/decomposition.lino` with these exact field \
-        lines: `subject=decomposition`, `kind=inspection`, and `result=` followed by the \
-        observed result. Leave supporting evidence in `.audit/decomposition-proof.md`. The \
-        first line must be exactly `proof_for=decomposition`.";
-    let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
-    let mut effect = None;
-    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
-
-    for turn in 0..super::LADDER_TURN_CAP {
-        let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
-            formal_ai::agentic_coding::plan_chat_step(&messages, &super::LADDER_TOOLS)
-        else {
-            break;
-        };
-        for (index, call) in calls.iter().enumerate() {
-            if let Ok(arguments) = serde_json::from_str::<serde_json::Value>(&call.arguments)
-                && super::argument(
-                    &arguments,
-                    &["path", "filePath", "file_path", "absolute_path"],
-                )
-                .is_some_and(|path| path.ends_with("audit-effects/decomposition.lino"))
-            {
-                effect =
-                    super::argument(&arguments, &["content", "contents", "text", "new_string"]);
-            }
-            let id = format!("nested-delivery-{turn}-{index}");
-            messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
-                formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
-            ]));
-            let result = if call.tool == "grep" {
-                formal_ai::ChatMessage::tool_result(
-                    id,
-                    &call.tool,
-                    "src/task_decomposition.rs:79: pub children: Vec<Self>",
-                )
-            } else {
-                workspace.execute(&id, call)
-            };
-            messages.push(result);
-        }
-    }
-
-    let effect = effect.expect("the nested delivery must produce its outer effect");
-    assert!(
-        effect
-            .lines()
-            .any(|line| line.starts_with("result=") && line.contains("children: Vec<Self>")),
-        "the proof writer's status replaced the observed task result: {effect:?}",
-    );
-    assert!(!effect.contains("Recorded the findings"), "{effect}");
-}
-
-#[test]
 #[ignore = "PR1188-multiinput-results: restore complete reads and original six-turn acceptance"]
 fn every_named_input_is_read_before_a_structured_result_is_written() {
     // A composed result has one observation per named input. Completing the

@@ -1,0 +1,406 @@
+{
+  "groups": [
+    {
+      "edition": "2024",
+      "dependencies": {},
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/assemble-requirements.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/audit-seed-metadata.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-capability-routing.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-coding-ladder.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-debt-ratchet.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-disk-usage-policy.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-duplicate-functions.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-evidence-lines.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-formal-ai-contribution.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-issue-citations.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-job-headroom.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-language-parity.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-merge-conflict-policy.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-pull-request-link.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-question-necessity-ratchet.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-requirement-status.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-self-development-release.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-step-budget-headroom.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-wasm-worker-size.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-worker-line-budget.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/clean-seed-readability.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/decode-github-issue-url.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/generate-llm-task-parity.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/generate-module-map.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/generate-requirement-status.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/generate-seed-registry.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/git-config.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/ground-meanings.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/handcheck-runner.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/language-parity-lib.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/migrate-empty-facet-fields.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/migrate-empty-redefinition-fields.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/migrate-meaning-seed.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/migrate-pipe-lists.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/mine-hive-mind-dataset.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/mirror-package-data.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/move-evidence.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/refresh-issue-state.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/render-status.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-ci-gates.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/self-hosting-metric.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/wikidata-json-to-lino.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "toml_edit": "0.25.15",
+        "regex": "1"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/bump-version.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-crate-package-size.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/get-bump-type.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/get-version.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/publish-crate.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/rust-paths.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "walkdir": "2"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-associative-terminology.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-cache-budget.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-file-size.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-hardcoded-language.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-minimal-core-boundary.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-seed-answer-duplicates.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "regex": "1"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-changelog-fragment.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-version-modification.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/detect-code-changes.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "yaml-rust2": "0.13"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-ci-wall-clock.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "serde": {
+          "version": "1",
+          "features": [
+            "derive"
+          ]
+        },
+        "serde_json": "1",
+        "walkdir": "2"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-coverage-ratchet.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "serde": {
+          "version": "=1.0.229",
+          "features": [
+            "derive"
+          ]
+        },
+        "serde_json": "=1.0.151"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-dependencies-latest.rs"
+      ]
+    },
+    {
+      "edition": "2021",
+      "dependencies": {},
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-generated-version-literals.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-head-pipeline-coverage.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/hello-world-task.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/plan-test-partition.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "toml_edit": "0.25.15",
+        "regex": "1",
+        "ureq": "3.5.2",
+        "serde": {
+          "version": "1",
+          "features": [
+            "derive"
+          ]
+        },
+        "serde_json": "1"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-release-needed.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "syn": {
+          "version": "=2.0.119",
+          "features": [
+            "full",
+            "visit",
+            "visit-mut",
+            "clone-impls"
+          ]
+        },
+        "quote": "=1.0.47",
+        "proc-macro2": {
+          "version": "=1.0.107",
+          "features": [
+            "span-locations"
+          ]
+        },
+        "serde_json": "=1.0.151"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-source-duplication.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "syn": {
+          "version": "2",
+          "features": [
+            "full",
+            "visit"
+          ]
+        },
+        "walkdir": "2"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/check-tests-as-docs.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "toml_edit": "0.25.15",
+        "regex": "1",
+        "chrono": "0.4"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/collect-changelog.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/create-changelog-fragment.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "toml_edit": "0.25.15",
+        "regex": "1",
+        "serde": {
+          "version": "1",
+          "features": [
+            "derive"
+          ]
+        },
+        "serde_json": "1"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/create-github-release.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "serde_json": "1"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/cross-org-duplication.rs",
+        "/tmp/gh-issue-solver-1794900398048/scripts/generate-program-cst-grammars.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "lino-objects-codec": "0.2.1"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/download-datasets.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "syn": {
+          "version": "2",
+          "features": [
+            "full"
+          ]
+        }
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/normalize-ordered-lists.rs"
+      ]
+    },
+    {
+      "edition": "2021",
+      "dependencies": {
+        "ureq": "3.5.2",
+        "serde_json": "1.0.154"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/registry.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "toml_edit": "0.25.15",
+        "regex": "1",
+        "chrono": "0.4",
+        "ureq": "3.5.2",
+        "serde": {
+          "version": "1",
+          "features": [
+            "derive"
+          ]
+        },
+        "serde_json": "1"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/version-and-commit.rs"
+      ]
+    },
+    {
+      "edition": "2024",
+      "dependencies": {
+        "toml_edit": "0.25.15",
+        "regex": "1",
+        "ureq": "2"
+      },
+      "sources": [
+        "/tmp/gh-issue-solver-1794900398048/scripts/wait-for-crate.rs"
+      ]
+    }
+  ],
+  "sourceFiles": [
+    "/tmp/gh-issue-solver-1794900398048/scripts/assemble-requirements.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/audit-seed-metadata.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/bump-version.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/cargo-package.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/changelog-files.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/changelog-fragment-file.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-associative-terminology.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-cache-budget.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-capability-routing.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-changelog-fragment.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-ci-wall-clock.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-coding-ladder.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-coverage-ratchet-reports.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-coverage-ratchet-tests.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-coverage-ratchet.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-crate-package-size.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-debt-ratchet.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-dependencies-action-release-tests.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-dependencies-action-release.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-dependencies-latest-parsers.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-dependencies-latest-tests.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-dependencies-latest.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-dependencies-snapshot.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-disk-usage-policy.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-duplicate-functions.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-evidence-lines.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-file-size.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-formal-ai-contribution.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-generated-version-literals.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-hardcoded-language.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-head-pipeline-coverage.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-issue-citations.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-job-headroom.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-language-parity.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-merge-conflict-policy.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-minimal-core-boundary.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-pull-request-link.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-question-necessity-ratchet.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-release-needed.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-requirement-status.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-seed-answer-duplicates.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-self-development-release.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-source-duplication.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-step-budget-headroom.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-tests-as-docs.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-version-modification.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-wasm-worker-size.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/check-worker-line-budget.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/clean-seed-readability.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/collect-changelog.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/create-changelog-fragment.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/create-github-release.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/cross-org-duplication.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/decode-github-issue-url.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/detect-code-changes.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/download-datasets.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/duplication_support.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/generate-llm-task-parity.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/generate-module-map.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/generate-program-cst-grammars.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/generate-requirement-status.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/generate-seed-registry.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/get-bump-type.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/get-version.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/git-config.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/github-output.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/ground-meanings.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/handcheck-runner.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/hello-world-task.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/language-parity-lib.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/lib/registered-module-paths.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/migrate-empty-facet-fields.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/migrate-empty-redefinition-fields.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/migrate-meaning-seed.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/migrate-pipe-lists.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/mine-hive-mind-dataset.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/mirror-package-data.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/move-evidence.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/normalize-ordered-lists.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/plan-test-partition.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/prepared-release.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/publish-crate.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/refresh-issue-state.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/registry.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/render-status.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/run-ci-gates.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/rust-paths.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-development-loop.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-development-policy.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-hosting-attribution.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-hosting-ledger-rows.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-hosting-ledger.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-hosting-metric.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-hosting-replay.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/self-hosting-retraction.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/version-and-commit-tests.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/version-and-commit.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/version-changelog.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/version-specification-witness.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/wait-for-crate.rs",
+    "/tmp/gh-issue-solver-1794900398048/scripts/wikidata-json-to-lino.rs"
+  ]
+}

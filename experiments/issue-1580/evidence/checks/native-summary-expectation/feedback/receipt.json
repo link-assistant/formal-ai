@@ -1,0 +1,48 @@
+{
+  "observedAt": "2026-11-18T13:20:18.796782+00:00",
+  "files": [
+    {
+      "file": "issue.json.gz",
+      "rawBytes": 13290,
+      "rawSha256": "65e68241dbd56474d58a6033d4aba87fd9490b96ab9c6e5e81fa689a917b2cab",
+      "count": 1
+    },
+    {
+      "file": "issue-comments.json.gz",
+      "rawBytes": 4475,
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "count": 1
+    },
+    {
+      "file": "pull.json.gz",
+      "rawBytes": 41929,
+      "rawSha256": "9b76f4b3b8266ee7e02c89f75c26b84d6f9fbc937798bb74144e33ceb15b01d1",
+      "count": 1
+    },
+    {
+      "file": "pull-comments.json.gz",
+      "rawBytes": 31784,
+      "rawSha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302",
+      "count": 9
+    },
+    {
+      "file": "inline-comments.json.gz",
+      "rawBytes": 2,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count": 0
+    },
+    {
+      "file": "reviews.json.gz",
+      "rawBytes": 2,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count": 0
+    },
+    {
+      "file": "sub-issues.json.gz",
+      "rawBytes": 2,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count": 0
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

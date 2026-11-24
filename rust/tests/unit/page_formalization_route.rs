@@ -77,6 +77,7 @@ fn answer(prompt: &str, online: bool) -> formal_ai::SymbolicAnswer {
 const FIRST_STATEMENT: &str = "- The Moon is the only natural satellite of Earth. → (moon \
      wikidata_property_instance_of unknown:only unknown:natural unknown:satellite name:earth)";
 
+/// The causal vocabulary recognizes "because", leaving 195 unknown terms.
 /// Prompts in every seeded language, the first line of the answer and its last.
 const SUMMARIES: &[(&str, &str, &str)] = &[
     (

@@ -1,0 +1,30 @@
+[
+  {
+    "label": "profile-before",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "log": "profile-before.log.gz",
+    "sha256": "ebee39aa0526a5c9cfd361f31ced96aeb5963d126030b8c5affda8988826ee0e"
+  },
+  {
+    "label": "title-before",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/source-walk-offline-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "log": "title-before.log.gz",
+    "sha256": "197df2986f2cabcafb7b167af041b0e0c1e10e50e7ca3cf8d6f20613bf8228ad"
+  }
+]

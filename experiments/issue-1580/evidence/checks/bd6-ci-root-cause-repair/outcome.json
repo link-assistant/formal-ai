@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-11-21T03:10:11.974840+00:00",
+  "passed": true,
+  "gateCounts": {
+    "PASS": 88,
+    "SKIP": 53,
+    "FAIL": 0
+  },
+  "retainedSources": 188,
+  "ciHead": "bd6fe77b98aa1cb89c53bfc0667107f6afb13122",
+  "ciRunCounts": {
+    "success": 23,
+    "skipped": 1,
+    "failure": 3
+  },
+  "verifiedCiCommandStreams": 178,
+  "verifiedProducerPayloads": 110,
+  "rustSarifAbsent": true,
+  "macroObservationsAbsent": true,
+  "wholeAggregateLogsLiterallyReviewed": false,
+  "wholePullRequestDiffReviewed": false,
+  "localNativeExecution": false,
+  "hostedNativeAndCodeqlRepairQualificationPending": true,
+  "independentAuthorshipCredit": 0,
+  "independentReasoningAccepted": 0,
+  "fullIssueComplete": false,
+  "attemptFailures": [
+    "initial helper expected undeclared tempfile dependency before edits",
+    "first quoted wrapper request did not execute verbatim",
+    "first translator pin lookup expected .git in a source archive",
+    "first native contract include used the wrong parent path",
+    "first planner diagnostic helper path did not yet exist",
+    "initial full gate pass detected two unmatched planner functions",
+    "producer collector incorrectly required two SARIF reports after a failed Rust analysis",
+    "Post-archive abbreviation check rejected four evidence filenames containing pr; archive filenames now spell pull-request, original source names and failure logs remain preserved."
+  ]
+}

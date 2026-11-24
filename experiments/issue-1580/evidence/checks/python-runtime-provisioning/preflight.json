@@ -1,0 +1,26 @@
+{
+  "previousHead": "624812120feee0180bf9df8164f87e73326b5cb8",
+  "previousWorkflowsPassed": 24,
+  "activeOrQueued": 0,
+  "freshMain": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+  "feedback": {
+    "issueComments": {
+      "count": 1,
+      "sha256": "cad9b16b46807c1787b8bfc2aab55cd63fc7ee56b4324aa030dcc0068c5e0b42"
+    },
+    "conversationComments": {
+      "count": 9,
+      "sha256": "f6cb38a03649814b9b06488051bf77ad91ead13f6d4c5c87d130572beda036de"
+    },
+    "inlineComments": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "reviews": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "pullRequest": "https://github.com/link-assistant/formal-ai/pull/1581",
+  "acceptanceComplete": false
+}

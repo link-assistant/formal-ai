@@ -1,0 +1,30 @@
+{
+  "publishedHead": "b367d603375dd23223861c92875e079a3a90df13",
+  "fullGateRunCounts": {
+    "PASS": 81,
+    "SKIP": 52,
+    "FAIL": 5
+  },
+  "fullRunInitiallyPassed": false,
+  "initialFiveFailuresResolvedBy": [
+    "corrected-checks/outcome.json",
+    "shellcheck/receipt.json"
+  ],
+  "focusedJavaScriptTests": {
+    "localizedUnknownLanguage": 6,
+    "fixtureIntegrity": 2,
+    "unicodeAndGovernedInventory": 34
+  },
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0,
+  "sourceHashes": {
+    "data/meta/core-boundary-ledger.lino": "a22a46f2b3c6533b523ea75c8d748123446e37e866892ed00a8378cd79193cb6",
+    "docs/status.md": "06cdf53adeec4a34d9af6d02344edc1784ec52f7ea8d9832188802682c4da3e9",
+    "data/meta/worker-line-budget/formal_ai_worker_seed_responses_and_language.lino": "71f409c38ed390e3dbc91089cb932ac97d5584d56aafe4f2f6a47232438a959f",
+    "js/worker/formal_ai_worker_seed_responses_and_language.js": "f750f917a5d66a1ae29aef9177f7b7c45e15adff46d0153371edb2527ba9af9e",
+    "rust/src/unknown_opener.rs": "2927b78d36868b667790568a44738a267331df19729b70209e5078a89afd55d4",
+    "rust/src/web_engine_core.rs": "195455a8697022bf385816a9ac90d2690cb8aec2e150ec712c414187d572e0fe",
+    "rust/tests/web/worker-unknown-language.test.mjs": "823b8262abec926d9aa02ac616e206ac51cd4f2018e3d96c47c1aea91256db32",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8": "4812f698a6381311bbf6e75c9af0ed8bdaa5af74ed7d886b42be01c66f4f4959"
+  }
+}

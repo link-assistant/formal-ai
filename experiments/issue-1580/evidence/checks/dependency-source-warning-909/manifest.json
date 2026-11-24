@@ -1,0 +1,30 @@
+{
+  "baseSource": "707206270b42f9cb48178308ce6810a7cd9d86e4",
+  "reportedByRun": 45114824433,
+  "regressionFailsBefore": true,
+  "regressionPassesAfter": true,
+  "rustfmtPasses": true,
+  "conservation": {
+    "parent": "scripts/check-dependencies-latest.rs",
+    "child": "scripts/check-dependencies-snapshot.rs",
+    "movedBodySha256": "0237584b886305b5a9e99e987249fadb9000d5b2afb1062ebf3ab87c89819ce3",
+    "parentLinesBefore": 909,
+    "parentLinesAfter": 885,
+    "childLinesBefore": 137,
+    "childLinesAfter": 161,
+    "exactMovedBody": true,
+    "unchangedRemainingParent": true,
+    "nativeExecution": false,
+    "independentAuthorshipCredit": 0
+  },
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 13010,
+    "sha256": "429baead29bc85dbdb54367fc4886079816610fff80e70a56332adc829d87400"
+  },
+  "members": 13,
+  "roundTripVerified": true,
+  "nativeVerification": "pending next hosted source head",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -1,0 +1,36 @@
+{
+  "observedAt": "20261118T081126933550Z",
+  "head": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "runCount": 23,
+  "completedSuccessful": 22,
+  "nonPassingCompleted": [
+    {
+      "id": 44262999002,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "createdAt": "2026-11-18T07:58:04Z",
+      "updatedAt": "2026-11-18T08:08:53Z"
+    }
+  ],
+  "active": [],
+  "archives": [
+    {
+      "archive": "20261118T081126933550Z-recent-runs.json.gz",
+      "rawSha256": "770e0335c7e252af11f573eb3f287b21a072b1322354132be20c3b85fc6c04be",
+      "archiveSha256": "abda51c4327e08ed4c55d7e9994bb7a9769d31c82b8c9c59508d0b26b881b726"
+    },
+    {
+      "archive": "20261118T081126933550Z-head-runs.json.gz",
+      "rawSha256": "463a16149959caaa98e910322c97e5c6d6b049b05406f9a65431e95e2916da09",
+      "archiveSha256": "c6625e5d37775498d47f654e7a5e2091741775d98efb75d34ad95c5990f5aa30"
+    },
+    {
+      "archive": "20261118T081126933550Z-checks.json.gz",
+      "rawSha256": "86be04196ce0882b166e59a4c9082a3003b20e4f93e8d58a597bfe386c818d57",
+      "archiveSha256": "154cd45ec656b70fe12a2594aa3345d23922c05e288aef95a22b5212522d5fb2"
+    }
+  ],
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

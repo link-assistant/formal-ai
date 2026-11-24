@@ -1,0 +1,138 @@
+[
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575868,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:53Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575868",
+      "workflowName": "Resolve provenance native dependencies"
+    },
+    "file": "44982575868.log.gz",
+    "rawBytes": 77021,
+    "rawLines": 517,
+    "rawSha256": "39cafea6153a3fb79591f60c9adbe5cd23adfebe7c72e2bc1ba5fcebd0a219f4",
+    "archiveSha256": "83c47f2f7dceae4648bb79d25892724018e41fffbb972b7593b424aea570c550"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575896,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:35Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575896",
+      "workflowName": "Web UI boundary"
+    },
+    "file": "44982575896.log.gz",
+    "rawBytes": 31741,
+    "rawLines": 282,
+    "rawSha256": "8f2a6e86cff890fad697b503fec5950eff1334391d4f27ff960066d0308a84b5",
+    "archiveSha256": "96ac93128338274cc5cb8e40fcb1fc6ef88bb4ed8d8903695787ab21b019cb90"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575990,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T04:40:16Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575990",
+      "workflowName": "CI/CD Pipeline"
+    },
+    "file": "44982575990.log.gz",
+    "rawBytes": 12203660,
+    "rawLines": 71297,
+    "rawSha256": "ab74b518c369da27af8bcbfc262243d1d93ecf7df24ab4ceaa263ed01531b390",
+    "archiveSha256": "d410991af12887c364133ab9eb4f8d23b50ec8a200f70d7d43cdd2d837803941"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:36Z",
+      "databaseId": 44982575756,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:52:44Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575756",
+      "workflowName": "Benchmark Corpus Gate"
+    },
+    "file": "44982575756.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "700ff8dd1dfacc413112134babaf184c70ef653233e9d31dd7f5f96e88cb914c",
+    "archiveSha256": "e2b539cf54d1cf25fce4de9d5d9a194748b02f48ecfb8280c03840f38da9325a"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:36Z",
+      "databaseId": 44982575753,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:00Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575753",
+      "workflowName": "Documentation policy"
+    },
+    "file": "44982575753.log.gz",
+    "rawBytes": 54368,
+    "rawLines": 446,
+    "rawSha256": "acf8a6ec8ce92d89b16923ff0125e441e0a37424dd6758330c889508fe3d14a5",
+    "archiveSha256": "6ed240ed0df781e97281f5ed90af7ab02d8cf3b825663a709fe805b4534b36f9"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:36Z",
+      "databaseId": 44982575703,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:52:57Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575703",
+      "workflowName": "Publish VS Code extension"
+    },
+    "file": "44982575703.log.gz",
+    "rawBytes": 25726,
+    "rawLines": 229,
+    "rawSha256": "fcdb7f8930c0d3dc375697972f51e0a551068186d1800629797e29280321783a",
+    "archiveSha256": "309bd95a29d0034099dffa45cbc3f5192a6a00200467592aa8d1a99ba249ed97"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:36Z",
+      "databaseId": 44982575722,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:52:55Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575722",
+      "workflowName": "Coverage"
+    },
+    "file": "44982575722.log.gz",
+    "rawBytes": 235057,
+    "rawLines": 1591,
+    "rawSha256": "de1c42e4187af896b751f1cb820feb8b16733844d986e3e5e03fd74680e34241",
+    "archiveSha256": "11bbd783a8bb5480676c81445b3d432a84ce8bbc48bafb4bfdab938fbe34b9fa"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:36Z",
+      "databaseId": 44982575700,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:04Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575700",
+      "workflowName": "Security"
+    },
+    "file": "44982575700.log.gz",
+    "rawBytes": 92943,
+    "rawLines": 798,
+    "rawSha256": "a3e261ff901bc001555a25916204c3c2677dc30ecc0caec8e78d623eaef4c28a",
+    "archiveSha256": "7cf7513d8ffb0e002435c8756d11a810b8ef036c12201ac73aa9b5858cac87fe"
+  }
+]

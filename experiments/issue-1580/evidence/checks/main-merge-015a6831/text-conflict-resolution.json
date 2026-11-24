@@ -1,0 +1,10 @@
+{
+  "incomingMain": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "fastInventoryCount": 240,
+  "bothParentsFastTestsRetained": true,
+  "generatedReader": "One existing twelve-line UTF-8 reader and one-pass iterator; both new upstream tests retained alongside all prior tests. Existing 96 MiB/30-second probe retained.",
+  "nativePolicy": "Preserve the upstream calendar_currency exception and guard it with the existing compile-inputs-changed condition; docs-only required contexts report without compiling.",
+  "binaryWitness": "Both parent byte streams preserved; official complete refresh and object comparison remain pending.",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

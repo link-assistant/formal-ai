@@ -63,7 +63,7 @@ test('R1165-6: the offline worker and agentic catalog agree on local commands', 
 });
 
 test('R1165-6: a local command reaches an answer for a task without a publisher page', async () => {
-  const result = await host.solve('Write a Kotlin program that prints FizzBuzz', []);
+  const result = await host.solve('Write a Kotlin program that prints FizzBuzz from 1 through 15', []);
   assert.equal(result.intent, 'write_program');
   assert.match(result.content, /`kotlinc Main\.kt -include-runtime -d Main\.jar`/);
   assert.match(result.content, /`java -jar Main\.jar`/);

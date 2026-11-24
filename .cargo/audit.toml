@@ -18,50 +18,25 @@
 # An ignore without a proof line is a hard error, and so is an ignore carrying
 # both.
 #
-# RUSTSEC-2025-0057 blocked-upstream = "fxhash@0.2.1" report = "https://github.com/link-assistant/web-capture/issues/155"
-#   `fxhash` is unmaintained and has no patched version (`patched = []`), so no
-#   lockfile edit clears it. It is genuinely compiled
-#   into this binary:
-#
-#       cargo tree --locked --target all --all-features --edges all \
-#         --invert fxhash@0.2.1
-#       fxhash v0.2.1
-#       └── fxhash feature "default"
-#           └── selectors v0.26.0
-#               └── scraper v0.21.0
-#                   └── web-capture v0.3.37
-#                       └── web-capture feature "search"
-#                           └── formal-ai v0.347.0
-#
-#   so the `unreachable` form would be a proof this repository cannot
-#   honestly write. Nothing here can remove the crate either: `scraper 0.21.0`
-#   is the newest release satisfying `web-capture`'s `^0.21`, and every
-#   `selectors 0.26.x` it can resolve depends on `fxhash`. `selectors` swapped
-#   `fxhash` for `rustc-hash` in 0.32.0, first reachable through `scraper 0.25`
-#   (`scraper 0.24` requires `selectors ^0.31`, which does not cross the minor
-#   boundary), so the fix is a one-line requirement bump in `web-capture`'s
-#   `rust/Cargo.toml`. That bump is filed, with the reproduction and a build
-#   proving it needs no source changes, at the `report` URL above; the local
-#   copy is `dev/log/issues/1079/pulls/1080/upstream-reports/`.
-#
-#   This entry removes itself: `check-rust-dependencies.sh` fails once
-#   `cargo tree --invert fxhash@0.2.1` finds nothing, which is the moment the
-#   bump reaches this lockfile.
 # RUSTSEC-2026-0543 blocked-upstream = "chrono@0.4.45" report = "https://github.com/link-foundation/command-stream/issues/238"
-#   All chrono versions are unmaintained; the advisory has no patched release.
-#   Both normal dependency paths are required in the committed lockfile:
-#
-#       formal-ai -> command-stream 1.5.3 -> chrono 0.4.45
-#       formal-ai -> link-calculator 0.22.0 -> chrono 0.4.45
-#
-#   The newest published command-stream 1.13.0 and link-calculator 0.24.0
-#   still require chrono, so a downstream version bump cannot remove it.
-#   Migration is already reported to both owners:
-#     https://github.com/link-foundation/command-stream/issues/238
-#     https://github.com/link-assistant/calculator/issues/265
-#   This exception acknowledges only that informational maintenance advisory.
-#   The existing proof gate still verifies chrono's reachability on every run
-#   and fails when it leaves the build graph; vulnerabilities, unsoundness,
-#   yanked releases and every other warning remain fatal.
+#   This is an unmaintained notice, not a claim of a known exploitable defect.
+#   The advisory affects every Chrono version and has `patched = []`:
+#   https://github.com/RustSec/advisory-db/blob/main/crates/chrono/RUSTSEC-2026-0543.md
+#   The current lockfile reaches Chrono through command-stream 1.5.3 and
+#   link-calculator 0.22.0. On 2026-11-20, command-stream merged its Jiff
+#   migration (PR #240), but crates.io still publishes 1.13.0 with Chrono.
+#   Calculator's migration report #265 remains open; its latest published
+#   0.24.0 still requires Chrono. Both dependency paths must be removed before
+#   this exception can expire. A source fix alone is not a published release.
+#   The maintainer's deprecation report confirms the upstream state:
+#   https://github.com/chronotope/chrono/issues/1768
+#   Migration is reported to both dependency owners:
+#   https://github.com/link-foundation/command-stream/issues/238
+#   https://github.com/link-assistant/calculator/issues/265
+#   Retain the existing blocked-upstream policy: CI must prove this exact crate
+#   still reaches the build graph, and fails when the proof becomes stale.
+#   Removing Chrono from both dependency paths remains unfinished work; this
+#   entry records the blocker and does not claim a dependency migration.
+#   Vulnerabilities, unsoundness, yanked releases and every other warning remain fatal.
 [advisories]
-ignore = ["RUSTSEC-2025-0057", "RUSTSEC-2026-0543"]
+ignore = ["RUSTSEC-2026-0543"]

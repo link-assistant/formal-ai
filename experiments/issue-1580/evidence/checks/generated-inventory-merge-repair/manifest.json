@@ -1,0 +1,16 @@
+{
+  "previousHead": "5d68b749fde2bd528fa7809e01dbd115709b6e20",
+  "archiveSha256": "ee418de25ead8ad431c4d25a7cfa62ec6686e65fa21d926acad0a78cbc201e88",
+  "payloadCount": 23,
+  "roundTripVerified": true,
+  "localGateResult": {
+    "pass": 85,
+    "skip": 54,
+    "fail": 4
+  },
+  "focusedTestsPassed": 36,
+  "nativeExecutedLocally": false,
+  "specificationBaselineChanged": false,
+  "allIssueAcceptanceComplete": false,
+  "autonomousAuthorshipCredit": 0
+}

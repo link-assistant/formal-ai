@@ -1,0 +1,91 @@
+{
+  "complete": true,
+  "results": [
+    {
+      "name": "policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "policy.log.gz",
+      "rawSha256": "130acdb1eaa5be00aeaae1d427911dc04c0211b478e8ca5168f84928c9906781",
+      "archiveSha256": "2dc144a59e888b343abd3921f57a9b7f4d22d259cb6210b34d527880a1818700",
+      "seconds": 11.001
+    },
+    {
+      "name": "focused-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "focused-map.log.gz",
+      "rawSha256": "3f7b5f9d9c9ea1e83cca571cb9b6f65327fbaeb43b5e621afda04b937b7749d6",
+      "archiveSha256": "d2506e33e988d57a2a061503eb348e3ee1f21f4e208a0ea1c5e7e71887687ffc",
+      "seconds": 0.868
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/reasoning_contracts.rs"
+      ],
+      "exitCode": 0,
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "seconds": 0.498
+    },
+    {
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-runner-labels"
+      ],
+      "exitCode": 0,
+      "file": "affected-gates.log.gz",
+      "rawSha256": "5222c23be6f28292f43da87c11a938a009046e6de459ecb05b7213380c8af1bd",
+      "archiveSha256": "da7dbdb8cbfb1d12dcdd1e74289bda9da9f9996d53ca3a74128165858463556d",
+      "seconds": 46.952
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "seconds": 0.196
+    }
+  ],
+  "baseHead": "cf22c611dced4a4e5ad52e8cb41a22c06ed947aa",
+  "sourceHashes": {
+    "rust/tests/unit/reasoning_contracts.rs": "d99fec87b7f6e2b2e2524a5fc105ad062d5228457ca3a62fa093ba379cdc680a",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "b12947252833968921b93d55722b8749a06940405caadc6dad0e2d9115300a8d",
+    "scripts/ci-pull-request-admission.mjs": "c9a7af769b62a85072b924a3fb332a9f5cf092728ff22d5be11bbc3dd30878df",
+    "changelog.d/issue-1580-hive-workflow-replay.md": "7f2280de376b6ef86017663d3408ac6fcfbf939a7cef70aa17dfb1986e3bb8b1"
+  },
+  "javascriptPassed": 55,
+  "nativeTestsAdded": 39,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

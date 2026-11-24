@@ -159,8 +159,8 @@ fn receipt_call(messages: &[ChatMessage], index: usize) -> Option<&ToolCall> {
 
 fn write_window<'a>(
     messages: &'a [ChatMessage],
-    target: &str,
     expected: &str,
+    matches_target: impl Fn(&str) -> bool,
 ) -> Option<&'a [ChatMessage]> {
     for index in (0..messages.len()).rev() {
         let Some(call) = receipt_call(messages, index) else {
@@ -169,12 +169,12 @@ fn write_window<'a>(
         if tool_capability(&call.function.name) != Some(Capability::Write) {
             continue;
         }
+        if !matches_target(&call.function.arguments) {
+            continue;
+        }
         let Ok(arguments) = serde_json::from_str::<Value>(&call.function.arguments) else {
             continue;
         };
-        if !argument_matches_path(&arguments, target) {
-            continue;
-        }
         let message = &messages[index];
         if arguments.get("content").and_then(Value::as_str) != Some(expected)
             || message.is_error
@@ -207,7 +207,21 @@ pub(in crate::agentic_coding) fn plan_write_digest_verification(
     change: &VerifiedChange<'_>,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    let Some(current) = write_window(messages, change.target, change.expected) else {
+    plan_bound_write_digest_verification(task, messages, tool_names, change, result, |arguments| {
+        serde_json::from_str::<Value>(arguments)
+            .is_ok_and(|arguments| argument_matches_path(&arguments, change.target))
+    })
+}
+
+pub(in crate::agentic_coding) fn plan_bound_write_digest_verification(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    change: &VerifiedChange<'_>,
+    result: &mut Option<FinalResult>,
+    matches_target: impl Fn(&str) -> bool,
+) -> Option<AgenticPlan> {
+    let Some(current) = write_window(messages, change.expected, matches_target) else {
         return failed(task, change.target, result);
     };
     let command = ["sha256sum -- ", change.target].concat();

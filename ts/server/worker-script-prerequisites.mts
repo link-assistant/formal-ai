@@ -2,8 +2,12 @@
 export const workerScriptPrerequisites = Object.freeze([
   {
     "script": "js/seed_loader.js",
-    "sourceSha256": "9358ab258de5b85f6359934cf2b327ab7a248ba5dcd29b91272b58d850620f41",
+    "sourceSha256": "e7356d4c93a4546d339f8eb8f860fe1c56c4a8a3c5dbe41941525787781dd0f5",
     "requires": [
+      {
+        "script": "js/seed-record-readers.js",
+        "sourceSha256": "510f6aa1b028bed27a89809c6bc8ce40432c45364135a46bc29aa08eba12ac8f"
+      },
       {
         "script": "js/parser-cache-primordials.js",
         "sourceSha256": "84de01ad3dfd183c2b1bb80ab273d1bad9498acc44ac0691755b1e6ca3246c40"
@@ -16,7 +20,7 @@ export const workerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "9358ab258de5b85f6359934cf2b327ab7a248ba5dcd29b91272b58d850620f41"
+        "sourceSha256": "e7356d4c93a4546d339f8eb8f860fe1c56c4a8a3c5dbe41941525787781dd0f5"
       }
     ]
   },
@@ -26,7 +30,7 @@ export const workerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "9358ab258de5b85f6359934cf2b327ab7a248ba5dcd29b91272b58d850620f41"
+        "sourceSha256": "e7356d4c93a4546d339f8eb8f860fe1c56c4a8a3c5dbe41941525787781dd0f5"
       },
       {
         "script": "js/worker/formal_ai_worker_meta_reasoner.js",
@@ -36,7 +40,7 @@ export const workerScriptPrerequisites = Object.freeze([
   },
   {
     "script": "js/worker/formal_ai_worker_solve.js",
-    "sourceSha256": "72a696cf60706e736e6669158ab745a6b78639cbdea300f606f5cd86fe32a533",
+    "sourceSha256": "dd7a53192d6da98de4571e09817ff689bcbc58e4b6b676002cb6149a343bc7a8",
     "requires": [
       {
         "script": "js/worker/formal_ai_worker_web_providers_and_wasm_calls.js",

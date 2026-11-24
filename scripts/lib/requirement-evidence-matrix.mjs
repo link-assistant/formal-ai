@@ -1,5 +1,6 @@
 // Byte-bound requirement citations are evidence inventory, never fresh acceptance proof.
 import fs from 'node:fs';
+import {traceabilityPaths} from './requirements-traceability.mjs';
 import path from 'node:path';
 import {
   createHash}
@@ -106,8 +107,7 @@ export function requirementEvidenceMatrix(root,
   ));
   const structure=directoryInventory();
   for(const entry of structure)for(const name of entry.names??[])if(/\.(md|lino)$/u.test(name))observe(entry.directory+'/'+name);
-  if(fs.existsSync(path.join(root,
-  'docs/requirements-traceability.md')))observe('docs/requirements-traceability.md');
+  for(const file of traceabilityPaths(root))if(fs.existsSync(path.join(root,file)))observe(file);
   if(new Set(candidateManifests).size!==candidateManifests.length)throw new Error('duplicate candidate manifest');
   const rows=requirementRows(root);
   const manifestBindings=[];

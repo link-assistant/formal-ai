@@ -1,0 +1,25 @@
+{
+  "sourceHead": "0b74d3b102290b98d8ad3632e8b00e944b742d03",
+  "workflowCount": 33,
+  "conclusions": {
+    "success": 31,
+    "failure": 1,
+    "skipped": 1
+  },
+  "completeCliLogStreams": 33,
+  "actionableFailedJobs": [
+    137804434929
+  ],
+  "localRepairPendingHostedExecution": true,
+  "review": "Targeted diagnostic and named native/audit review; complete log retention is not complete literal line review.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2075926,
+    "sha256": "458494ae8ff7fe6abe00a98a44f6b9d1fefe3d182194fe17699b07c697f752c7"
+  },
+  "members": 339,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T16:30:58.095195+00:00"
+}

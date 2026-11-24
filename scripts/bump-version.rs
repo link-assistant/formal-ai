@@ -12,13 +12,14 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! ```
 
-use std::env;
-use std::fs;
-use std::process::exit;
 use regex::Regex;
+use std::env;
+use std::path::Path;
+use std::process::exit;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
@@ -81,39 +82,34 @@ fn has_flag(name: &str) -> bool {
 }
 
 fn get_current_version(cargo_toml_path: &str) -> Result<Version, String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
-
-    let re = Regex::new(r#"(?m)^version\s*=\s*"(\d+)\.(\d+)\.(\d+)""#).unwrap();
-
-    if let Some(caps) = re.captures(&content) {
-        let major: u32 = caps.get(1).unwrap().as_str().parse().unwrap();
-        let minor: u32 = caps.get(2).unwrap().as_str().parse().unwrap();
-        let patch: u32 = caps.get(3).unwrap().as_str().parse().unwrap();
-        Ok(Version { major, minor, patch })
-    } else {
-        Err(format!("Could not parse version from {}", cargo_toml_path))
-    }
+    let info = rust_paths::read_package_info(Path::new(cargo_toml_path))?;
+    let re = Regex::new(r"^(\d+)\.(\d+)\.(\d+)$").unwrap();
+    let captures = re
+        .captures(&info.version)
+        .ok_or_else(|| format!("Could not parse package version in {cargo_toml_path}"))?;
+    let component = |index: usize| {
+        captures[index]
+            .parse::<u32>()
+            .map_err(|error| format!("Invalid package version in {cargo_toml_path}: {error}"))
+    };
+    Ok(Version {
+        major: component(1)?,
+        minor: component(2)?,
+        patch: component(3)?,
+    })
 }
 
 fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
-
-    let re = Regex::new(r#"(?m)^(version\s*=\s*")[^"]+(")"#).unwrap();
-    let new_content = re.replace(&content, format!("${{1}}{}${{2}}", new_version).as_str());
-
-    fs::write(cargo_toml_path, new_content.as_ref())
-        .map_err(|e| format!("Failed to write {}: {}", cargo_toml_path, e))?;
-
-    Ok(())
+    rust_paths::update_package_version(Path::new(cargo_toml_path), new_version)
 }
 
 fn main() {
     let bump_type_str = match get_arg("bump-type") {
         Some(s) => s,
         None => {
-            eprintln!("Usage: rust-script scripts/bump-version.rs --bump-type <major|minor|patch> [--dry-run] [--rust-root <path>]");
+            eprintln!(
+                "Usage: rust-script scripts/bump-version.rs --bump-type <major|minor|patch> [--dry-run] [--rust-root <path>]"
+            );
             exit(1);
         }
     };
@@ -121,7 +117,10 @@ fn main() {
     let bump_type = match BumpType::from_str(&bump_type_str) {
         Some(bt) => bt,
         None => {
-            eprintln!("Invalid bump type: {}. Must be major, minor, or patch.", bump_type_str);
+            eprintln!(
+                "Invalid bump type: {}. Must be major, minor, or patch.",
+                bump_type_str
+            );
             exit(1);
         }
     };
@@ -159,10 +158,38 @@ fn main() {
     if dry_run {
         println!("Dry run - no changes made");
     } else {
-        if let Err(e) = update_cargo_toml(package_manifest.to_string_lossy().as_ref(), &new_version) {
+        if let Err(e) = update_cargo_toml(package_manifest.to_string_lossy().as_ref(), &new_version)
+        {
             eprintln!("Error: {}", e);
             exit(1);
         }
         println!("Updated {}", package_manifest.display());
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn manual_bump_reads_and_writes_only_the_package_version() {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let directory =
+            std::env::temp_dir().join(format!("bump-package-{}-{nanos}", std::process::id()));
+        std::fs::create_dir(&directory).unwrap();
+        let manifest = directory.join("Cargo.toml");
+        let content = "[dependencies.decoy]\nversion = \"9.9.9\"\n\
+                       [package]\nname = 'actual'\nversion = '1.2.3'\n";
+        std::fs::write(&manifest, content).unwrap();
+        let current = get_current_version(manifest.to_str().unwrap()).unwrap();
+        assert_eq!(current.to_string(), "1.2.3");
+        update_cargo_toml(manifest.to_str().unwrap(), &current.bump(BumpType::Patch)).unwrap();
+        assert_eq!(
+            std::fs::read_to_string(manifest).unwrap(),
+            content.replace("'1.2.3'", "\"1.2.4\"")
+        );
+        std::fs::remove_dir_all(directory).unwrap();
     }
 }

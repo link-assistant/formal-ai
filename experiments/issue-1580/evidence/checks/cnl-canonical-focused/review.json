@@ -1,0 +1,23 @@
+{
+  "allSixFocusedPayloadsHashVerifiedAndLiterallyRead": true,
+  "counts": {
+    "tests": 47,
+    "pass": 47,
+    "fail": 0,
+    "skipped": 0
+  },
+  "beforeCorrectedBaseline": {
+    "tests": 16,
+    "pass": 13,
+    "fail": 3
+  },
+  "fullDecodedPolicyAndAllFiveGrammarsEqual": true,
+  "otherCanonicalQuotingDecodedTreesEqual": {
+    "allDecodedTreesIdentical": true,
+    "files": 12,
+    "fields": 20,
+    "independentAuthorshipCredit": 0
+  },
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

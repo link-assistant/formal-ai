@@ -1,0 +1,110 @@
+{
+  "complete": true,
+  "checks": [
+    {
+      "name": "worker-budget-measurement",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {readFileSync} from 'node:fs'; import {createHash} from 'node:crypto'; import {factoryOf} from './scripts/generate-worker-crate-modules.mjs'; const value=factoryOf('crate/task_decomposition_cues.mjs',readFileSync('js/agentic/crate/task_decomposition_cues.mjs','utf8')); console.log(JSON.stringify({lines:value.split('\\n').length-Number(value.endsWith('\\n')),sha256:createHash('sha256').update(value).digest('hex')}));"
+      ],
+      "exitCode": 0,
+      "seconds": 0.845,
+      "rawLines": 1,
+      "rawSha256": "1423a8d7e6e738d35648eaaba1c26274f8f9b1d821073c3d718a383856afab66",
+      "archiveSha256": "a91bdbebb3e1cd66b24dcc842b65f62865d8e4cbeb090945cc1709dff4e11390"
+    },
+    {
+      "name": "worker-writer",
+      "argv": [
+        "node",
+        "scripts/generate-worker-crate-modules.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 1.322,
+      "rawLines": 1,
+      "rawSha256": "249e8b0bc77b5ead1c58a2efbfa18f6bca84a3b8a3763c1d20035b73ec1015bc",
+      "archiveSha256": "669db7d303765e728d4719326f31d9860d6cb2f3988ec757a8f5b563724e41ec"
+    },
+    {
+      "name": "typescript-writer",
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 4.237,
+      "rawLines": 1,
+      "rawSha256": "b9200af6651d09441ec5b692bc6ff4335f18a0f15ee6295ac5c9516b823ad362",
+      "archiveSha256": "ce66d3a613b982414f1eed5382b9a312237450fd8f9e52e7094f70f05359bbd1"
+    },
+    {
+      "name": "translation-writer",
+      "argv": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--write",
+        "--fetch",
+        "--jobs",
+        "1",
+        "js/agentic/crate/task_decomposition_cues.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 86.683,
+      "rawLines": 8,
+      "rawSha256": "6c667543ad9b7b67fc6f301c25bbbb8a9467c4fc8dd5db0f2fe2bdf68252f569",
+      "archiveSha256": "31372d42b609d89650cdfd21035dd7fc400f374121a16757dcfce03e13fd90b5"
+    },
+    {
+      "name": "translation-verification",
+      "argv": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.819,
+      "rawLines": 1,
+      "rawSha256": "67bffc6883d5a86bf70b01bd6b76f283b3a7987b726187978d3a3eb926f98799",
+      "archiveSha256": "357c20ba8ce048860db19a76cf62f54dce65beaea175b796e37630c4341438de"
+    },
+    {
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-generated-files,check_js_rust_translation,check-worker-line-budget,check-status-render,check-render-status-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 65.588,
+      "rawLines": 7,
+      "rawSha256": "d19cc7e544e7a7e57c5200b1822870a3e7af8b96bf8f665296797af682f4a25d",
+      "archiveSha256": "c77698373435ffa6db55c4505e8d29da9148944015528184a1053200d25e8436"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.844,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "workerBudgetMeasurement": {
+    "lines": 46,
+    "sha256": "47316904ae0f5bb82df28b4ec82081ea7850a4ed0a0e0ad95ccefb4037174722"
+  },
+  "observedAt": "2026-11-18T10:30:22.110263+00:00",
+  "nativeExecuted": false,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 158528\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,20 @@
+{
+  "purpose": "Final committed first-mirror repair gates including the actual secret scan",
+  "sourceHead": "cee8b8b10e7862dcf34ca88de1d96ce1f09ee8b2",
+  "commands": 14,
+  "javascriptGatesPassed": 12,
+  "allCommandsPassed": true,
+  "fullLiteralLogRead": true,
+  "hostedRepairExecutionVerified": false,
+  "scope": "local committed APT repair, prior to the later locked-scanner repair",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 3253,
+    "sha256": "854445597440814fc52233272890dab7582e86b6caeebb5a982833165bb3fc11"
+  },
+  "members": 20,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T14:11:05.560936+00:00"
+}

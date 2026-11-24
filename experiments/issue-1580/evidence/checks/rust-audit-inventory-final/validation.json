@@ -1,0 +1,149 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "records": [
+    {
+      "name": "cargo-audit-blocked-proof",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/cargo-audit-blocked-proof.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.895,
+      "rawSha256": "f32c23a9de73c23f28673e306e098f8cc90163ca573d25d7fcaad692c0d727e1",
+      "archiveSha256": "fd9157cec74e70566866fb45e942d6150c421796c0a4421308cd838b1197f46a",
+      "lines": 52
+    },
+    {
+      "name": "issue-1571-workflow-diagnostics",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1571-workflow-diagnostics.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.303,
+      "rawSha256": "24d706e1acad6fad14befe327ee4e2d155b13f79b04b3a90a76352f5ea624747",
+      "archiveSha256": "b324e3585ffb452d1db4792793171d66beced00d1f5e7884d2a31f55c8d37e6e",
+      "lines": 40
+    },
+    {
+      "name": "fast-pull-request-production-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 4.942,
+      "rawSha256": "aab1bc53072e4b7e72b0159bf454f9bafec696e421bcbc7cf442d36a719fc32f",
+      "archiveSha256": "6e48705a6a9180f66ec06f393018e58ca1c3797a1e8c2353c782f04d6fea3a4b",
+      "lines": 112
+    },
+    {
+      "name": "translation-before",
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 1,
+      "seconds": 3.323,
+      "rawSha256": "3ddfaedf74da41592156f5b56d16e19df1161928aa2b0027bd6950ce17bb1225",
+      "archiveSha256": "fd136687c46ef9333262e3bca2a8bc0b2a71d533ee169ab67ca79ebdcbf9e5af",
+      "lines": 1
+    },
+    {
+      "name": "translation-write",
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 2.07,
+      "rawSha256": "51e46a9383d4eceba178c35ca5b1179c96a256b74176cf1f83b88d54274a8e58",
+      "archiveSha256": "89ae99417248115a306aa15642489cf33400dd9811776f35888429ed826bd5a3",
+      "lines": 1
+    },
+    {
+      "name": "translation-after",
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 2.349,
+      "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+      "archiveSha256": "470114e67442962d059d5b1f9ab7bd0243317a5033019e789f7d7e52c9fb1820",
+      "lines": 1
+    },
+    {
+      "name": "shell-parse",
+      "argv": [
+        "bash",
+        "-n",
+        "scripts/check-rust-dependencies.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.01,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "shellcheck",
+      "argv": [
+        "shellcheck",
+        "scripts/check-rust-dependencies.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.144,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,lint-shell-scripts,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog"
+      ],
+      "exitCode": 0,
+      "seconds": 107.393,
+      "rawSha256": "28eca4383a072c1f355473ef4187e689b8161cd7839f021c43cb6aabb38960e1",
+      "archiveSha256": "c2266bdead68192e9caaea664f034525cf01d8e77258787789a5ec19a479c2d6",
+      "lines": 10
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.264,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  ],
+  "nativeExecutionObserved": false
+}

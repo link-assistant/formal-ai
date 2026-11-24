@@ -107,6 +107,33 @@ signal_command_tree() {
     true
 }
 
+# The root may finish while a child still owns the output pipe or does work.
+# Keep the deadline until every live process in its group has finished. Zombies
+# have already exited and cannot hold a pipe open; do not wait for their reaper.
+command_is_running() {
+  kill -0 "$command_pid" 2> /dev/null && return 0
+  local processes
+  if ! processes="$(ps -eo pgid=,stat=)"; then
+    printf '\n%s\n' "::error title=Execution budget monitoring failed::Cannot inspect the process group for ${label}." >&2
+    signal_command_tree KILL
+    # The failed inspection cannot certify termination. Still allow bounded
+    # delivery time before releasing the caller: even SIGKILL is asynchronous.
+    # kill -0 also sees zombies, so never wait indefinitely for an outside reaper.
+    # This remains a monitoring failure (125), including when the group vanishes.
+    monitor_failure_started=$SECONDS
+    for ((monitor_check = 0; monitor_check < 20; monitor_check++)); do
+      kill -0 "-$command_pid" 2> /dev/null || break
+      [ $((SECONDS - monitor_failure_started)) -lt 2 ] || break
+      sleep 0.1 2> /dev/null || sleep 1
+    done
+    exit 125
+  fi
+  awk -v group="$command_pid" '
+    $1 == group && $2 !~ /^[ZX]/ { alive = 1 }
+    END { exit !alive }
+  ' <<< "$processes"
+}
+
 # shellcheck disable=SC2329  # invoked indirectly by the trap below
 forward_cancellation() {
   signal_command_tree TERM
@@ -117,12 +144,12 @@ warned=false
 terminated=false
 last_heartbeat=0
 
-while kill -0 "$command_pid" 2> /dev/null; do
+while command_is_running; do
   elapsed=$((SECONDS - started))
 
   if [ "$warned" = false ] && [ "$elapsed" -ge "$threshold" ]; then
     warned=true
-    echo "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or repartition it before the budget terminates the step." >&2
+    printf '\n%s\n' "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or repartition it before the budget terminates the step." >&2
     report_compiler_cache
   fi
 
@@ -132,16 +159,34 @@ while kill -0 "$command_pid" 2> /dev/null; do
     echo "[budget] ${label} has been running for ${elapsed}s of its ${budget_seconds}s budget." >&2
   fi
 
-  if [ "$enforce" = true ] && [ "$elapsed" -ge "$budget_seconds" ]; then
+  # SECONDS counts wall-clock boundaries and may read almost one second high.
+  # A strictly greater reading proves the full positive interval has passed;
+  # warnings may still be early, and a zero budget remains immediate.
+  if [ "$enforce" = true ] &&
+    { [ "$budget_seconds" -eq 0 ] || [ "$elapsed" -gt "$budget_seconds" ]; }; then
     terminated=true
-    echo "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout." >&2
+    printf '\n%s\n' "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout." >&2
     report_compiler_cache
     signal_command_tree TERM
     grace_deadline=$((SECONDS + grace_seconds))
-    while kill -0 "$command_pid" 2> /dev/null && [ "$SECONDS" -lt "$grace_deadline" ]; do
+    while command_is_running && [ "$grace_seconds" -gt 0 ] &&
+      [ "$SECONDS" -le "$grace_deadline" ]; do
       sleep "$poll_seconds"
     done
     signal_command_tree KILL
+    # SIGKILL delivery is asynchronous. An exited root cannot reap its live
+    # descendants; acknowledge group termination before reporting the deadline.
+    # Bound both observations and wall time if a process cannot leave the kernel.
+    kill_started=$SECONDS
+    for ((kill_check = 0; kill_check < 100; kill_check++)); do
+      command_is_running || break
+      [ $((SECONDS - kill_started)) -lt 10 ] || break
+      sleep 0.1 2> /dev/null || sleep 1
+    done
+    if command_is_running; then
+      echo "Cannot confirm process-group termination after SIGKILL." >&2
+      exit 125
+    fi
     break
   fi
 
@@ -158,10 +203,10 @@ report_compiler_cache_write_health
 
 elapsed=$((SECONDS - started))
 if [ "$terminated" = true ]; then
-  printf '%s was terminated after %ss, its full %ss execution budget.\n' \
+  printf '\n%s was terminated after %ss, its full %ss execution budget.\n' \
     "$label" "$elapsed" "$budget_seconds"
   exit 124
 fi
 
-printf '%s took %ss of its %ss execution budget.\n' "$label" "$elapsed" "$budget_seconds"
+printf '\n%s took %ss of its %ss execution budget.\n' "$label" "$elapsed" "$budget_seconds"
 exit "$status"

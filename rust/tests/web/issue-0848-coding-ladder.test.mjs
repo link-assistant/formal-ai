@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { completeOwnedSourceReadFrame } from '../../../js/agentic/tool_result.mjs';
 
 let planner;
 
@@ -118,7 +119,7 @@ describe('R848-6: a structured collection edit transforms the workspace bytes', 
     const messages = [user('In this repository, in scripts/detect-code-changes.rs, add "dev/log/" to the excluded_folders array.')];
     const read = onlyCall(await planner.planChatStep(messages, tools));
     assert.deepEqual([read.tool, JSON.parse(read.arguments).path], ['read_file', 'scripts/detect-code-changes.rs']);
-    pushResult(messages, 'read_1', read, before);
+    pushResult(messages, 'read_1', read, completeOwnedSourceReadFrame(before));
     const write = onlyCall(await planner.planChatStep(messages, tools));
     assert.deepEqual([write.tool, JSON.parse(write.arguments).path, JSON.parse(write.arguments).content],
       ['write_file', 'scripts/detect-code-changes.rs', after]);

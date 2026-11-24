@@ -1,0 +1,65 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 190,
+    "totalPages": 254,
+    "completeFiles": 135,
+    "partialFiles": 1,
+    "literalLines": 12030,
+    "nextForwardPage": 191,
+    "remainingPages": 64,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-inventory.json",
+      "newReadLines": [
+        1289,
+        2604
+      ],
+      "cumulativeReadLines": [
+        1,
+        2604
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-1.json",
+      "newReadLines": [
+        1,
+        23
+      ],
+      "cumulativeReadLines": [
+        1,
+        23
+      ],
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 200,
+    "totalPages": 254,
+    "completeFiles": 136,
+    "partialFiles": 1,
+    "literalLines": 13369,
+    "nextForwardPage": 201,
+    "remainingPages": 54,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "All ten pages were literally read without truncation. The original transitive inventory records retained, updated and removed dependencies; its Maven version strings and upstream references are pinned historical evidence, not present-day package or issue-state assertions. The 2,604-line inventory is complete; registry metadata remains partial. Pages 201\u2013254 and semantic applicability remain unfinished. Supplied reading earns zero independent authorship credit."
+  ]
+}

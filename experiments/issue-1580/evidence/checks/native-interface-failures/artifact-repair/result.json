@@ -1,0 +1,51 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-architecture-contents"
+      ],
+      "exitCode": 0,
+      "seconds": 17.681,
+      "rawSha256": "2c97da8a85f48b0dc1ea00cf240a5de726eb92908d1c51221779c755fcb7b57e",
+      "archiveSha256": "76890eab0a5e8cbec1d02e0c32799858c90a991053a270669f6b9238e4094969",
+      "lines": 7
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/coding/composition.rs",
+        "rust/tests/unit/coding_contracts.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.395,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.206,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  ],
+  "allChecksPassed": true,
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false
+}

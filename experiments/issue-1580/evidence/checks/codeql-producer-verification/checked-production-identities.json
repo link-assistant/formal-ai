@@ -1,0 +1,18 @@
+[
+  {
+    "path": ".github/workflows/security.yml",
+    "sha256": "565df03203d05be40560185016fbb4fa4c40b98509d18bc09d5ad886c16663f6"
+  },
+  {
+    "path": "rust/tests/web/security-codeql-results.test.mjs",
+    "sha256": "8341c7db11b29d6014ff78e8350ae0c1bb580d2f57443d7ef575f8fc7081fb12"
+  },
+  {
+    "path": "data/benchmarks/fast-pull-request-retained-jobs.json",
+    "sha256": "f57965fd9d2830587257e9e5232f4ad3f469711b19fc9136ec012246f6e653bb"
+  },
+  {
+    "path": "changelog.d/1580-codeql-producer-verification.md",
+    "sha256": "8e2e79934d7725d20de8c3bebbbbf3f3f529a9d96dc374bf6a0ca9b8c0e0d0e1"
+  }
+]

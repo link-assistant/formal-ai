@@ -1,0 +1,21 @@
+{
+  "commit": "38d17d406378a6b252a2ba52baf51d26fb5ec13e",
+  "prior": "04a468f53549f0825999c1dd9e53210476723106",
+  "sourceHashes": {
+    "rust/src/formalization/mod.rs": "e9ebc0a3f1abf69d1a3c9b58f7b44af9b2f99df4a50021ee148f425b40b8df29",
+    "rust/tests/source/source_tests/formalization/grammar_native_parity.rs": "31321d7f5e6b08c6cc3e0656173a7c5c3f7a0168f612b6b78eeaafc1710885cd",
+    "rust/tests/fixtures/formalization-native-parity.json": "0e9465fa794dce2318e77d0e45620bd625437b0aeca85c820d681d138ae52fb4",
+    "rust/tests/web/formalization-native-parity.test.mjs": "a495735209d36a5b15d4b661faaa0a17822553e255c118102bd4c3b1824221d4",
+    "changelog.d/20261117_120000_issue-1580-ci-regressions.md": "6bba87626383c28e7641edfb3e22ff0f41e3d406939b8e99b03bda11b0d919c6"
+  },
+  "noRunningWorkers": true,
+  "tests": {
+    "grammarParity": 2,
+    "sharedGrammar": 5,
+    "executor": 9
+  },
+  "focusedGatesPassed": 10,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

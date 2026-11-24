@@ -1,0 +1,22 @@
+{
+  "observedAt": "20261118T054353021275Z",
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "runCount": 23,
+  "completedSuccessful": 21,
+  "nonPassingCompleted": [],
+  "active": [
+    {
+      "id": 44245878901,
+      "name": "Layered CI",
+      "status": "in_progress"
+    },
+    {
+      "id": 44245879421,
+      "name": "CI/CD Pipeline",
+      "status": "in_progress"
+    }
+  ],
+  "scopeGatedSuccessIsNativeAcceptance": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

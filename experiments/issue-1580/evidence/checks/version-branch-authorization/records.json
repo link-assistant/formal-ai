@@ -1,0 +1,63 @@
+[
+  {
+    "name": "full-production-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 11.61150120687671,
+    "file": "full-production-policy.log.gz",
+    "rawSha256": "73b6b5e30a6ba0f6fea0d220be86dceeccea3b984fcd118c85e9664dce7d03a0",
+    "archiveSha256": "bef69af11d4a953cff55fae326b87232803301227c474b1a033527a6b121020b"
+  },
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "scripts/check-version-modification.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.3257641000673175,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "name": "javascript-syntax",
+    "argv": [
+      "node",
+      "--check",
+      "scripts/ci-pull-request-admission.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.05337623902596533,
+    "file": "javascript-syntax.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "name": "relevant-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-readable-code"
+    ],
+    "exitCode": 0,
+    "seconds": 108.2024804870598,
+    "file": "relevant-gates.log.gz",
+    "rawSha256": "19fba7930a0ed76e1494f9f2ee29c0f7799a961b0a0b3cb27a37ba15b52f6fe6",
+    "archiveSha256": "2f0d6b78382551bde5d41207e40f718f677b3a09edb6ff087c5d4180d582beac"
+  }
+]

@@ -67,7 +67,7 @@ fn with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt() {
         ),
         (
             "grok",
-            vec!["--model", "formal-ai", "--verbose", "--prompt", "hi"],
+            vec!["--model", "formal-ai", "--verbose", "-p", "hi"],
         ),
         (
             "aider",

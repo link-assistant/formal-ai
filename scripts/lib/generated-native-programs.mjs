@@ -539,7 +539,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1309,"end":137
 "formal_ai::cnl_output::CNL_POLICY_PATH","canonicalPath":"formal_ai::cnl_output::CNL_POLICY_PATH","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"data/seed/cnl-output.lino","nativeSourceQualified":
 true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":998,"end":1060},"sourceWitnesses":[{"path":
-"rust/src/cnl_output.rs","sha256":"2c23edb55ea310ae0a08297968a0860fce5d79080cda33ff2ddae5b39119b832"},{"path":
+"rust/src/cnl_output.rs","sha256":"3deba603f5bb5ef1a07e98cc793d089df5027cb6fd2a886f3adf8b109d1cb45c"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant CNL-POLICY-PATH (exported) (type string) (value (string data/seed/cnl-output.lino)))","maintainedJavaScript":
 "export const CNL_POLICY_PATH = 'data/seed/cnl-output.lino';","maintainedTranslationSha256":
@@ -680,7 +680,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::engine::DEFAULT_MODEL","canonicalPath":"formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant",
 "nativeType":"&str","returnType":"string","value":"formal-ai","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1811,"end":1855},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"f977c0ee8d4720b5f7ea12c56390c2629027d2544baac97da833e84c51175382"},{"path":
+"rust/src/engine.rs","sha256":"120c2df6ff3f9eab8c57c790e7d3fca479afdbe30a0b8ee6a1430de7fca5e7ee"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
@@ -688,7 +688,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"formal-ai"
 ,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1811,"end":1855},
 "sourceWitnesses":[{"path":"rust/src/engine.rs","sha256":
-"f977c0ee8d4720b5f7ea12c56390c2629027d2544baac97da833e84c51175382"},{"path":"rust/src/lib.rs","sha256":
+"120c2df6ff3f9eab8c57c790e7d3fca479afdbe30a0b8ee6a1430de7fca5e7ee"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
@@ -696,7 +696,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","canonicalPath":"formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"0.2.0","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3986,"end":4037},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"f977c0ee8d4720b5f7ea12c56390c2629027d2544baac97da833e84c51175382"},{"path":
+"rust/src/engine.rs","sha256":"120c2df6ff3f9eab8c57c790e7d3fca479afdbe30a0b8ee6a1430de7fca5e7ee"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant KNOWLEDGE-SCHEMA-VERSION (exported) (type string) (value (string 0.2.0)))","maintainedJavaScript":
 "export const KNOWLEDGE_SCHEMA_VERSION = '0.2.0';","maintainedTranslationSha256":
@@ -704,7 +704,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "canonicalPath":"formal_ai::execution_box::BACKEND_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_EXECUTION_BACKEND","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":1561,"end":1621},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":"rust/src/lib.rs","sha256":
+"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant BACKEND-ENV (exported) (type string) (value (string FORMAL_AI_EXECUTION_BACKEND)))","maintainedJavaScript":
 "export const BACKEND_ENV = 'FORMAL_AI_EXECUTION_BACKEND';","maintainedTranslationSha256":
@@ -712,7 +712,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::execution_box::START_ISOLATION_ENV","canonicalPath":"formal_ai::execution_box::START_ISOLATION_ENV","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"FORMAL_AI_START_ISOLATION","nativeSourceQualified":
 true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":1758},"sourceWitnesses":[{"path":
-"rust/src/execution_box/mod.rs","sha256":"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":
+"rust/src/execution_box/mod.rs","sha256":"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant START-ISOLATION-ENV (exported) (type string) (value (string FORMAL_AI_START_ISOLATION)))",
 "maintainedJavaScript":"export const START_ISOLATION_ENV = 'FORMAL_AI_START_ISOLATION';","maintainedTranslationSha256":
@@ -720,7 +720,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":175
 ,"canonicalPath":"formal_ai::execution_box::START_RUNNER_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_START_RUNNER","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":1819,"end":1879},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":"rust/src/lib.rs","sha256":
+"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant START-RUNNER-ENV (exported) (type string) (value (string FORMAL_AI_START_RUNNER)))","maintainedJavaScript":
 "export const START_RUNNER_ENV = 'FORMAL_AI_START_RUNNER';","maintainedTranslationSha256":
@@ -728,7 +728,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":175
 "canonicalPath":"formal_ai::execution_box::COMMAND_LOG","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"__formal_ai_commands.log","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":2656,"end":2713},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":"rust/src/lib.rs","sha256":
+"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant COMMAND-LOG (exported) (type string) (value (string __formal_ai_commands.log)))","maintainedJavaScript":
 "export const COMMAND_LOG = '__formal_ai_commands.log';","maintainedTranslationSha256":
@@ -736,7 +736,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":175
 "canonicalPath":"formal_ai::history_context::SEED_PATH","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"data/seed/history-formalization.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":
 true,"sourceSpan":{"start":1705,"end":1772},"sourceWitnesses":[{"path":"rust/src/history_context.rs","sha256":
-"5c25bf3d437bcc38706cfa4df26646c387d28b2fb6125490aebd4fb105a1f6d2"},{"path":"rust/src/lib.rs","sha256":
+"fa172c224884ab204307d90a936a6a8cbe446615a34ecc1dbd06c633a73497cc"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant SEED-PATH (exported) (type string) (value (string data/seed/history-formalization.lino)))",
 "maintainedJavaScript":"export const SEED_PATH = 'data/seed/history-formalization.lino';","maintainedTranslationSha256":
@@ -744,7 +744,7 @@ true,"sourceSpan":{"start":1705,"end":1772},"sourceWitnesses":[{"path":"rust/src
 "canonicalPath":"formal_ai::history_context::CURSOR_ROOT","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"repository_history_cursor","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":1834,"end":1892},"sourceWitnesses":[{"path":"rust/src/history_context.rs","sha256":
-"5c25bf3d437bcc38706cfa4df26646c387d28b2fb6125490aebd4fb105a1f6d2"},{"path":"rust/src/lib.rs","sha256":
+"fa172c224884ab204307d90a936a6a8cbe446615a34ecc1dbd06c633a73497cc"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant CURSOR-ROOT (exported) (type string) (value (string repository_history_cursor)))","maintainedJavaScript":
 "export const CURSOR_ROOT = 'repository_history_cursor';","maintainedTranslationSha256":
@@ -869,24 +869,24 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 "maintainedTranslationSha256":"b435e9cb91af878f5d83a95bcd22c60e1f7a91386272c6874b3f57bdfd1064f0"},{"path":
 "formal_ai::lexeme_import::PART_OF_SPEECH","canonicalPath":"formal_ai::lexeme_import::PART_OF_SPEECH","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"noun","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4060,"end":4100},"sourceWitnesses":[{"path":
-"rust/src/lexeme_import.rs","sha256":"3e7822f5ba5f3c671069003a9ae1d554bc8d887919140f266c7a5d9a0e31f6a6"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4112,"end":4152},"sourceWitnesses":[{"path":
+"rust/src/lexeme_import.rs","sha256":"17e8338951df561557bc76c65c164767d05cfa59bd94b065fcd7b89dc3349c6b"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant PART-OF-SPEECH (exported) (type string) (value (string noun)))","maintainedJavaScript":
 "export const PART_OF_SPEECH = 'noun';","maintainedTranslationSha256":
 "4ed83094b8148f992f945d65f94ec601d4969c5aac36676496b9ce722ddcb6ef"},{"path":
 "formal_ai::lexeme_import::GRAMMATICAL_NUMBER","canonicalPath":"formal_ai::lexeme_import::GRAMMATICAL_NUMBER","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"singular","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4183,"end":4231},"sourceWitnesses":[{"path":
-"rust/src/lexeme_import.rs","sha256":"3e7822f5ba5f3c671069003a9ae1d554bc8d887919140f266c7a5d9a0e31f6a6"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4235,"end":4283},"sourceWitnesses":[{"path":
+"rust/src/lexeme_import.rs","sha256":"17e8338951df561557bc76c65c164767d05cfa59bd94b065fcd7b89dc3349c6b"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant GRAMMATICAL-NUMBER (exported) (type string) (value (string singular)))","maintainedJavaScript":
 "export const GRAMMATICAL_NUMBER = 'singular';","maintainedTranslationSha256":
 "8ed21761fd68bfb4d1255ed07d1e46a88a42ec2bf035efc99485484d7db76868"},{"path":"formal_ai::lexeme_import::DEFINED_BY",
 "canonicalPath":"formal_ai::lexeme_import::DEFINED_BY","kind":"nativeConstant","nativeType":"&str","returnType":"string"
-,"value":"entity","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4285,"end":
-4323},"sourceWitnesses":[{"path":"rust/src/lexeme_import.rs","sha256":
-"3e7822f5ba5f3c671069003a9ae1d554bc8d887919140f266c7a5d9a0e31f6a6"},{"path":"rust/src/lib.rs","sha256":
+,"value":"entity","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4337,"end":
+4375},"sourceWitnesses":[{"path":"rust/src/lexeme_import.rs","sha256":
+"17e8338951df561557bc76c65c164767d05cfa59bd94b065fcd7b89dc3349c6b"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant DEFINED-BY (exported) (type string) (value (string entity)))","maintainedJavaScript":
 "export const DEFINED_BY = 'entity';","maintainedTranslationSha256":
@@ -926,8 +926,8 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 "28fc7132cb69641fb41f6786508f7a95717305019adbf8747d686d9c95d5c623"},{"path":
 "formal_ai::program_skill_gap::MISSING_PARAMETER","canonicalPath":"formal_ai::program_skill_gap::MISSING_PARAMETER",
 "kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"missing","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2552,"end":2598},"sourceWitnesses":[{"path":
-"rust/src/program_skill_gap.rs","sha256":"85ea969e7ab244608b8271f61a196e600ee1dca1484c698245ba55280d4f78df"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2712,"end":2758},"sourceWitnesses":[{"path":
+"rust/src/program_skill_gap.rs","sha256":"4d2ab6958379d64217b7077fd9b719da9ac8b7a3f95a0d59d41ab183d0d676ee"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant MISSING-PARAMETER (exported) (type string) (value (string missing)))","maintainedJavaScript":
 "export const MISSING_PARAMETER = 'missing';","maintainedTranslationSha256":
@@ -1103,7 +1103,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 "formal_ai::thinking::DEFAULT_THINKING_LANGUAGE","canonicalPath":"formal_ai::thinking::DEFAULT_THINKING_LANGUAGE","kind"
 :"nativeConstant","nativeType":"&str","returnType":"string","value":"en","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1614,"end":1663},"sourceWitnesses":[{"path":
-"rust/src/thinking.rs","sha256":"bce5adb875301e2cd98155c354ec06aa2a1f8f09fc0f15d1fb9ce13df333f766"},{"path":
+"rust/src/thinking.rs","sha256":"f201388abe5b9f7198d684a392d823daafc0aa78f78848c6a48316ad4838bd3b"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant DEFAULT-THINKING-LANGUAGE (exported) (type string) (value (string en)))","maintainedJavaScript":
 "export const DEFAULT_THINKING_LANGUAGE = 'en';","maintainedTranslationSha256":

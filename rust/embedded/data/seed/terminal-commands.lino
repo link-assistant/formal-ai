@@ -196,6 +196,7 @@ terminal_commands
     token du
     token ps
   shell_tokens
+    token env
     token ls
     token pwd
     token cd

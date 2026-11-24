@@ -370,3 +370,63 @@ test('recording gh dispatches only structurally declared checks contracts in a s
     }
   } finally { rmSync(dir, {recursive: true, force: true}); }
 });
+
+
+test('dispatch consumes paginated REST files with the supported gh CLI flags', {timeout: 30000}, () => {
+  const dir = scratch();
+  try {
+    mkdirSync(path.join(dir, '.github', 'workflows'), {recursive: true});
+    mkdirSync(path.join(dir, 'scripts', 'lib'), {recursive: true});
+    for (const name of ['checks-dispatch-contract.mjs', 'ci-speed-workflows.mjs', 'documentation-paths.mjs']) {
+      copyFileSync(path.join(REPO_ROOT, 'scripts', 'lib', name), path.join(dir, 'scripts', 'lib', name));
+    }
+    const light = ['documentation-policy.yml', 'links.yml', 'web-ui-boundary.yml', 'workflows.yml'];
+    for (const name of [...light, 'native.yml']) {
+      writeFileSync(path.join(dir, '.github', 'workflows', name), dispatchFixture('[checks]'));
+    }
+    const calls = path.join(dir, 'calls'), output = path.join(dir, 'output');
+    const pages = [Array.from({length: 100}, (_, index) => ({filename: `docs/page-${index}.md`,
+      status: 'modified', sha: 'a'.repeat(40), patch: '@@ example REST metadata'})), [{filename: 'docs/last.md'}]];
+    const gh = path.join(dir, 'gh');
+    writeFileSync(gh, `#!/usr/bin/env node
+const fs = require('node:fs'), args = process.argv.slice(2);
+fs.appendFileSync(process.env.FIXTURE_CALLS, JSON.stringify(args) + '\\n');
+if (args[0] === 'pr') {
+  const field = args[args.indexOf('--json') + 1];
+  console.log({headRefName: 'bot/fixture', headRefOid: 'a'.repeat(40), changedFiles: 101}[field]);
+} else if (args[0] === 'api') {
+  if (args.includes('--slurp') && (args.includes('--jq') || args.includes('--template'))) {
+    console.error('the --slurp option is not supported with --jq or --template'); process.exit(1);
+  }
+  if (process.env.FIXTURE_API_FAILURE === 'true') process.exit(1);
+  process.stdout.write(process.env.FIXTURE_PAGES);
+} else if (args[0] !== 'workflow' || args[1] !== 'run') process.exit(71);
+`);
+    chmodSync(gh, 0o755);
+    for (const fixture of [
+      {name: 'complete docs', pages, expected: light},
+      {name: 'renamed from source', pages: [pages[0], [{filename: 'docs/last.md', previous_filename: 'src/main.rs'}]], expected: [...light, 'native.yml']},
+      {name: 'missing final page', pages: [pages[0]], expected: [...light, 'native.yml']},
+      {name: 'API failure', pages, failure: true, expected: [...light, 'native.yml']},
+      {name: 'explicit subset', pages, workflows: 'native.yml', expected: ['native.yml']},
+    ]) {
+      writeFileSync(calls, ''); writeFileSync(output, '');
+      execFileSync('bash', ['-c', stepScript(read('.github/actions/dispatch-checks/action.yml'), 'dispatch')], {
+        cwd: dir, encoding: 'utf8', timeout: 10000, stdio: ['ignore', 'pipe', 'pipe'],
+        env: {...process.env, PATH: dir + ':' + process.env.PATH, PR_NUMBER: '42', WORKFLOWS: fixture.workflows ?? '',
+          REPOSITORY: 'fixture/repository', GITHUB_OUTPUT: output, FIXTURE_CALLS: calls,
+          FIXTURE_PAGES: JSON.stringify(fixture.pages), FIXTURE_API_FAILURE: String(fixture.failure ?? false)},
+      });
+      const observed = readFileSync(calls, 'utf8').trim().split('\n').map(line => JSON.parse(line));
+      const dispatched = observed.filter(args => args[0] === 'workflow').map(args => args[2]).sort();
+      assert.deepEqual(dispatched, fixture.expected.toSorted(), fixture.name);
+      const api = observed.filter(args => args[0] === 'api');
+      assert.equal(api.length, fixture.workflows ? 0 : 1, fixture.name);
+      for (const args of api) {
+        assert.ok(args.includes('--paginate') && args.includes('--slurp'));
+        assert.ok(args.includes('repos/fixture/repository/pulls/42/files?per_page=100'));
+        assert.ok(!args.includes('--jq') && !args.includes('--template'));
+      }
+    }
+  } finally { rmSync(dir, {recursive: true, force: true}); }
+});

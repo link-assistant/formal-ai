@@ -1,0 +1,65 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "rust/src/unknown_opener.rs",
+        "rust/tests/source/unknown_opener_language_tests.rs",
+        "rust/src/web_engine_core.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.091,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "projection",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.504,
+      "rawBytes": 188,
+      "rawLines": 1,
+      "rawSha256": "fc3f033428548a4500f1df0ec78e77db7050b95e954089f214ea64b8cb6ed814"
+    },
+    {
+      "name": "gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-changelog-fragment-js-twin,check-fragment-release-map,check-file-size,check-reconstructed-changelog,check-worker-line-budget,check-status-render,check-hardcoded-language-js-twin,check-hardcoded-language,check-prompt-specialization,check-minimal-core-boundary-js-twin,check-minimal-core-boundary"
+      ],
+      "exitCode": 0,
+      "seconds": 104.467,
+      "rawBytes": 482,
+      "rawLines": 14,
+      "rawSha256": "76081cab5d936bf80e21379b2822042ff43ffa8fd063994bd7009b7c1aa2cfc3"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.205,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nativeBehaviorVerified": false
+}

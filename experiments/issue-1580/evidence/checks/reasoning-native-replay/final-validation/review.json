@@ -1,0 +1,56 @@
+{
+  "allPassed": true,
+  "sourceHead": "070b9748cfddbdad80dfd802c79d697b82cce99c",
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "3e7849770d28f873847d44f414b3207ed56ba11a5dcb830df7f58d57aecb4b1f",
+    "rust/Cargo.toml": "bd74b9a63d0c4111623a92b6c594b4817f1de52af52c4ba460bc8b8dac28c1b9",
+    "scripts/ci-pull-request-admission.mjs": "4dca4bbb530686795d9a886bfa5fb902ae20f5fe5443dc78ec3d27a00d7c266b",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "abbe43f2cc23679948cef796d73aa0dc52106a15106545cda7e6bbca23fe8b4a",
+    "rust/tests/unit/reasoning_contracts.rs": "21ad36629d1aeb80ea552fb11714702c32d313aca65dc6691e15a5c8d0e0fdb7",
+    "changelog.d/issue-1580-native-reasoning-replay.md": "70a2bb7bc31ead26ab947292fa21ea9ad83891a3a3c72d169670bebde58057a6",
+    "experiments/issue_1582/continuation-local-tools.sh": "9f5b4aa70405f2f57b5c6c7567d8143dd182ef37521f3ce99d95a58ce4365435",
+    "rust/tests/unit/ci-cd/network_download_retry.rs": "c7a7c0392c81a6f9f05f0cce34a940145f5fa213cfda5dc046fedd612831a734",
+    "changelog.d/issue-1580-network-retry-inventory.md": "4ca7e984483504a26a486ffa66a36600be22ca0728174022fe3621b6a1256370"
+  },
+  "focusedTests": 44,
+  "policyTests": 32,
+  "candidateValidationTests": 4,
+  "focusedMapTests": 8,
+  "gateCounts": {
+    "PASS": 8,
+    "FAIL": 0,
+    "SKIP": 0
+  },
+  "nativeTestsAddedToHostedLane": 28,
+  "nativeExecuted": false,
+  "reasoningLoopSourcePreservedSinceOriginal": true,
+  "reasoningLoopTests": 17,
+  "maintainedFormalizationTests": 11,
+  "networkBaseline": {
+    "pass": 31,
+    "fail": 1,
+    "reason": "Existing ShellCheck download is not registered in the native remote-download inventory."
+  },
+  "networkAfter": {
+    "pass": 32,
+    "fail": 0
+  },
+  "nativeFailureAddressed": {
+    "run": 44421974106,
+    "job": 135217168022,
+    "line": 1715,
+    "path": "experiments/issue_1582/continuation-local-tools.sh",
+    "repair": "Three curl retries, two-second delay, retry-all-errors, 15-second connection and 60-second transfer deadlines; exact one-invocation inventory entry. Existing completeness and minimum assertions remain intact."
+  },
+  "literalReview": {
+    "networkBeforeLog": true,
+    "networkAfterLog": true,
+    "bothAdjacentFocusedLogs": true,
+    "aggregateGateLog": true,
+    "allDetailedPassingGateLogs": false,
+    "completeIncrementalSourceDiff": true
+  },
+  "formatting": "Rust 2024 formatting for both changed Rust files and bash syntax check pass. No local native build.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

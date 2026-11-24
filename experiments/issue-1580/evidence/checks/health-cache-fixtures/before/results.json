@@ -1,0 +1,258 @@
+[
+  {
+    "source": "rust/tests/web/server-memory-schema.test.mjs",
+    "sourceSha256": "a8604ec69ef455fd0d4fd8843af92532a59d4b08337291bc1b053f6e2fff2b25",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/server-memory-schema.test.mjs"
+    ],
+    "startedAt": "2026-11-17T23:55:04.259643+00:00",
+    "seconds": 1.219,
+    "exitCode": 1,
+    "log": "server-memory-schema.test.mjs.log.gz",
+    "rawSha256": "cadfe956836c8e5821f937758778f466f00ff65381ea065db79d6c4177e7606f",
+    "rawBytes": 4178,
+    "rawLines": 115,
+    "mockCurlCalls": [],
+    "actualNetworkRequests": 0,
+    "nativeExecuted": false,
+    "independentAuthorshipCredit": 0
+  },
+  {
+    "source": "rust/tests/web/issue-1168-source-cache.test.mjs",
+    "sourceSha256": "c0ddde9756ae51c4a426a4b3bfee39ec0f47eb68ffce34f665b61b7d009c9248",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1168-source-cache.test.mjs"
+    ],
+    "startedAt": "2026-11-17T23:55:05.480105+00:00",
+    "seconds": 4.234,
+    "exitCode": 0,
+    "log": "issue-1168-source-cache.test.mjs.log.gz",
+    "rawSha256": "f8f753926aac5b528acc15f3a21f451914ed4dbc174ab563b63aa9afee1a0fee",
+    "rawBytes": 1446,
+    "rawLines": 46,
+    "mockCurlCalls": [],
+    "actualNetworkRequests": 0,
+    "nativeExecuted": false,
+    "independentAuthorshipCredit": 0
+  },
+  {
+    "source": "rust/tests/web/hive-work-item-consumer.test.mjs",
+    "sourceSha256": "422af9aa0bb858ecc812f7e7907e8e6306eaf995db9a2089d3364f018071e1d8",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/hive-work-item-consumer.test.mjs"
+    ],
+    "startedAt": "2026-11-17T23:55:09.714908+00:00",
+    "seconds": 22.198,
+    "exitCode": 1,
+    "log": "hive-work-item-consumer.test.mjs.log.gz",
+    "rawSha256": "3bb67c6646c449f0d7d57b80aa271fb6714d28b24d833462c233d0b4e1323729",
+    "rawBytes": 2696,
+    "rawLines": 80,
+    "mockCurlCalls": [
+      {
+        "url": "https://api.github.com/repos/actions/setup-java/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-python/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/python/cpython/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/JetBrains/kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.adoptium.net/v3/info/available_releases"
+      },
+      {
+        "url": "https://api.github.com/repos/coursier/setup-action/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/scala/scala3/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-java/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-python/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/python/cpython/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/JetBrains/kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.adoptium.net/v3/info/available_releases"
+      },
+      {
+        "url": "https://api.github.com/repos/coursier/setup-action/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/scala/scala3/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/checkout/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/checkout/commits/v7.0.1"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-java/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-python/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/python/cpython/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/JetBrains/kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.adoptium.net/v3/info/available_releases"
+      },
+      {
+        "url": "https://api.github.com/repos/coursier/setup-action/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/scala/scala3/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/checkout/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/checkout/commits/v7.0.1"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-java/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-python/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/python/cpython/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/JetBrains/kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.adoptium.net/v3/info/available_releases"
+      },
+      {
+        "url": "https://api.github.com/repos/coursier/setup-action/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/scala/scala3/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-java/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-python/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/python/cpython/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/JetBrains/kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.adoptium.net/v3/info/available_releases"
+      },
+      {
+        "url": "https://api.github.com/repos/coursier/setup-action/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/scala/scala3/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-java/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-python/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/python/cpython/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/JetBrains/kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.adoptium.net/v3/info/available_releases"
+      },
+      {
+        "url": "https://api.github.com/repos/coursier/setup-action/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/scala/scala3/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-java/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/fwilhe2/setup-kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/actions/setup-python/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/python/cpython/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/JetBrains/kotlin/releases/latest"
+      },
+      {
+        "url": "https://api.adoptium.net/v3/info/available_releases"
+      },
+      {
+        "url": "https://api.github.com/repos/coursier/setup-action/releases/latest"
+      },
+      {
+        "url": "https://api.github.com/repos/scala/scala3/releases/latest"
+      }
+    ],
+    "actualNetworkRequests": 0,
+    "nativeExecuted": false,
+    "independentAuthorshipCredit": 0
+  }
+]

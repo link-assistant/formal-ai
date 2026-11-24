@@ -1,3 +1,4 @@
+import {CANONICAL_FILES,CANONICAL_SOURCE} from './canonical-release-source.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
@@ -97,9 +98,9 @@ export function requireRegisteredTreeEntry(body, treeSha, name, type, mode) {
 export function registeredSourceProfile(sourcePaths) {
   const retained='experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
   assert.ok(Array.isArray(sourcePaths));assert.equal(new Set(sourcePaths).size,sourcePaths.length);
-  assert.ok(sourcePaths.length===2 || sourcePaths.length===4);
+  assert.ok(sourcePaths.length===2 || sourcePaths.length===4 || sourcePaths.length===6);
   const workflows=sourcePaths.filter(file=>/^\.github\/workflows\/[a-z0-9-]+\.yml$/u.test(file));assert.equal(workflows.length,2);
-  if(sourcePaths.length===4)assert.deepEqual(sourcePaths.filter(file=>!workflows.includes(file)).sort(),[retained+'original-release-workflow.yml',retained+'stage-source-coverage.json'].sort());
+  if(sourcePaths.length!==2)assert.deepEqual(sourcePaths.filter(file=>!workflows.includes(file)).sort(),[...(sourcePaths.length===6?CANONICAL_FILES:[CANONICAL_SOURCE]),retained+'stage-source-coverage.json'].sort());
   const root={children:new Map()};
   for (const file of sourcePaths) {
     const parts = file.split('/');
@@ -118,7 +119,7 @@ export function registeredSourceProfile(sourcePaths) {
       node = next;
     }
   }
-  return {root,maximumRequests:sourcePaths.length===4?17:12,requiredRequests:sourcePaths.length===4?17:10,expectedSourceCount:sourcePaths.length};
+  return {root,maximumRequests:sourcePaths.length===2?12:13+sourcePaths.length,requiredRequests:sourcePaths.length===2?10:13+sourcePaths.length,expectedSourceCount:sourcePaths.length};
 }
 export function createGovernedGithubCommandProvider({
   expected,

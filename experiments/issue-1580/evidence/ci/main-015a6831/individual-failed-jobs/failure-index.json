@@ -1,0 +1,211 @@
+{
+  "results": [
+    {
+      "job": "js tier (node --check over js, suite group 1)",
+      "log": "job-134411832223.log.gz",
+      "markers": [
+        {
+          "line": 1557,
+          "text": "2026-11-17T22:25:22.6868508Z ##[error]Process completed with exit code 143."
+        }
+      ]
+    },
+    {
+      "job": "js tier (node --check over js, suite group 2)",
+      "log": "job-134411832333.log.gz",
+      "markers": [
+        {
+          "line": 1621,
+          "text": "2026-11-17T22:23:21.4426246Z \u2716 #1172 R7: a question over a quoted passage is answered from its own sentence with no network call (1527.134527ms)"
+        },
+        {
+          "line": 1798,
+          "text": "2026-11-17T22:23:21.4600435Z \u2716 forGeneration reads the host source cache named by FORMAL_AI_SOURCE_CACHE_DIR (2818.186332ms)"
+        },
+        {
+          "line": 2446,
+          "text": "2026-11-17T22:23:37.8888497Z \u2716 failing tests:"
+        },
+        {
+          "line": 2449,
+          "text": "2026-11-17T22:23:37.8889287Z \u2716 #1172 R7: a question over a quoted passage is answered from its own sentence with no network call (1527.134527ms)"
+        },
+        {
+          "line": 2450,
+          "text": "2026-11-17T22:23:37.8889897Z   AssertionError [ERR_ASSERTION]: Read this and answer: \"The meeting moved from Tuesday to Thursday at 3 pm in room 204.\" When and where is the meeting? made network calls"
+        },
+        {
+          "line": 2489,
+          "text": "2026-11-17T22:23:37.8926069Z \u2716 forGeneration reads the host source cache named by FORMAL_AI_SOURCE_CACHE_DIR (2818.186332ms)"
+        },
+        {
+          "line": 2490,
+          "text": "2026-11-17T22:23:37.8926534Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+        },
+        {
+          "line": 2506,
+          "text": "2026-11-17T22:23:38.7568980Z ##[error]Process completed with exit code 1."
+        }
+      ]
+    },
+    {
+      "job": "js tier (node --check over js, suite group 8)",
+      "log": "job-134411832348.log.gz",
+      "markers": [
+        {
+          "line": 1623,
+          "text": "2026-11-17T22:24:01.9217671Z \u2716 formalize <url> answers the statements of the fetched page in every language (3672.627015ms)"
+        },
+        {
+          "line": 2774,
+          "text": "2026-11-17T22:24:32.4003388Z \u2716 failing tests:"
+        },
+        {
+          "line": 2777,
+          "text": "2026-11-17T22:24:32.4004518Z \u2716 formalize <url> answers the statements of the fetched page in every language (3672.627015ms)"
+        },
+        {
+          "line": 2778,
+          "text": "2026-11-17T22:24:32.4005305Z   AssertionError [ERR_ASSERTION]: formalize this page: https://en.wikipedia.org/wiki/Moon"
+        },
+        {
+          "line": 2795,
+          "text": "2026-11-17T22:24:32.4365606Z ##[error]Process completed with exit code 1."
+        }
+      ]
+    },
+    {
+      "job": "js tier (node --check over js, suite group 7)",
+      "log": "job-134411832372.log.gz",
+      "markers": [
+        {
+          "line": 1335,
+          "text": "2026-11-17T22:23:03.9046925Z \u2716 default host source captures use the user cache independently of caller cwd (8174.602137ms)"
+        },
+        {
+          "line": 1348,
+          "text": "2026-11-17T22:23:05.2535354Z \u2716 generated native registry is current (15870.58213ms)"
+        },
+        {
+          "line": 1356,
+          "text": "2026-11-17T22:23:06.1076438Z \u2716 a separately supported explicit stdout obligation reaches a source write through the same connector (415.439228ms)"
+        },
+        {
+          "line": 1357,
+          "text": "2026-11-17T22:23:06.1117176Z \u2716 a long display placeholder cannot displace the explicit structured issue record (348.000038ms)"
+        },
+        {
+          "line": 1358,
+          "text": "2026-11-17T22:23:06.1130216Z \u2716 a direct structured issue record uses the same decoder as a content-wrapped JSON record (339.510115ms)"
+        },
+        {
+          "line": 1878,
+          "text": "2026-11-17T22:24:16.4096397Z \u2716 original operations and authority remain with selected-source compilation and bounded cold install (5.729429ms)"
+        },
+        {
+          "line": 2709,
+          "text": "2026-11-17T22:26:37.4574207Z \u2716 failing tests:"
+        },
+        {
+          "line": 2712,
+          "text": "2026-11-17T22:26:37.4575121Z \u2716 default host source captures use the user cache independently of caller cwd (8174.602137ms)"
+        },
+        {
+          "line": 2713,
+          "text": "2026-11-17T22:26:37.4575626Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+        },
+        {
+          "line": 2729,
+          "text": "2026-11-17T22:26:37.4580727Z \u2716 generated native registry is current (15870.58213ms)"
+        },
+        {
+          "line": 2758,
+          "text": "2026-11-17T22:26:37.4595488Z \u2716 a separately supported explicit stdout obligation reaches a source write through the same connector (415.439228ms)"
+        },
+        {
+          "line": 2759,
+          "text": "2026-11-17T22:26:37.4608748Z   AssertionError [ERR_ASSERTION]: {\"kind\":\"tool_calls\",\"calls\":[{\"tool\":\"bash\",\"arguments\":\"{\\\"command\\\":\\\"command -v python3 >/dev/null 2>&1 && python3 -c 'import json\\\\nimport os\\\\nimport pathlib\\\\nimport secrets\\\\nimport stat\\\\nimport sys\\\\n\\\\nMAXIMUM_FILE_BYTES = 16 * 1024 * 1024\\\\nplan = json.loads(sys.argv[1])\\\\nroot = pathlib.Path.cwd()\\\\n\\\\n\\\\ndef owned_path(value):\\\\n    if not isinstance(value, str) or not value or '\\\\\\\\''\\\\\\\\x00'\\\\\\\\'' in value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    relative = pathlib.PurePosixPath(value)\\\\n    if relative.is_absolute() or pathlib.PureWindowsPath(value).drive or '\\\\\\\\''..'\\\\\\\\'' in relative.parts or str(relative) != value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    current = root\\\\n    for part in relative.parts:\\\\n        current = current / part\\\\n        if current.is_symlink():\\\\n            raise ValueError('\\\\\\\\''symbolic_owned_path'\\\\\\\\'')\\\\n    return current\\\\n\\\\n\\\\ndef read_regular(path, limit):\\\\n    descriptor = os.open(path, os.O_RDONLY | getattr(os, '\\\\\\\\''O_NOFOLLOW'\\\\\\\\'', 0) | getattr(os, '\\\\\\\\''O_NONBLOCK'\\\\\\\\'', 0))\\\\n    with os.fdopen(descriptor, '\\\\\\\\''rb'\\\\\\\\'') as stream:\\\\n        before = os.fstat(stream.fileno())\\\\n        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:\\\\n            raise ValueError('\\\\\\\\''unbounded_owned_file'\\\\\\\\'')\\\\n        data = stream.read(limit + 1)\\\\n        after = os.fstat(stream.fileno())\\\\n    current = os.lstat(path)\\\\n    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_mode)\\\\n    if len(data) > limit or identity(before) != identity(after) or identity(after) != identity(current):\\\\n        raise ValueError('\\\\\\\\''owned_file_changed'\\\\\\\\'')\\\\n    return data, identity(current)\\\\n\\\\n\\\\nimport hashlib\\\\ndef write_regular_atomic(path, updated, identity, expected_sha=None):\\\\n    if len(updated) > MAXIMUM_FILE_BYTES:\\\\n        raise ValueError('\\\\\\\\''owned_write_limit'\\\\\\\\'')\\\\n    temporary = root / ('\\\\\\\\''.formal-ai-source-'\\\\\\\\'' + secrets.token_hex(12))\\\\n    try:\\\\n        with open(temporary, '\\\\\\\\''xb'\\\\\\\\'') as stream:\\\\n            if stream.write(updated) != len(updated):\\\\n                raise OSError('\\\\\\\\''owned_write_incomplete'\\\\\\\\'')\\\\n            if identity is not None:\\\\n                os.fchmod(stream.fileno(), stat.S_IMODE(identity[4]))\\\\n            stream.flush()\\\\n            os.fsync(stream.fileno())\\\\n        if identity is None:\\\\n            if path.exists() or path.is_symlink():\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n        else:\\\\n            current_bytes, current_identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n            if identity != current_identity:\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n            if expected_sha is not None and hashlib.sha256(current_bytes).hexdigest() != expected_sha:\\\\n                raise ValueError('\\\\\\\\''owned_write_preimage_changed'\\\\\\\\'')\\\\n        os.replace(temporary, path)\\\\n    finally:\\\\n        if temporary.exists():\\\\n            temporary.unlink()\\\\n\\\\n\\\\ndef placeholder_content_matches(data, issue, branch):\\\\n    if not data:\\\\n        return True\\\\n    if not isinstance(issue, str) or not isinstance(branch, str) or len(data) > 1024:\\\\n        return False\\\\n    import re\\\\n    import datetime\\\\n    match = re.fullmatch(r'\\\\\\\\''# \\\\\\\\.gitkeep file auto-generated at ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\\\\\.[0-9]{3}Z) for PR creation at branch (issue-[1-9][0-9]*-[A-Za-z0-9-]+) for issue (https://github\\\\\\\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[1-9][0-9]*)'\\\\\\\\'', data.decode('\\\\\\\\''utf-8'\\\\\\\\'', '\\\\\\\\''strict'\\\\\\\\''))\\\\n    if match is None or match[2] != branch or match[3] != issue:\\\\n        return False\\\\n    if not branch.startswith('\\\\\\\\''issue-'\\\\\\\\'' + issue.rsplit('\\\\\\\\''/'\\\\\\\\'', 1)[1] + '\\\\\\\\''-'\\\\\\\\''):\\\\n        return False\\\\n    try:\\\\n        datetime.datetime.fromisoformat(match[1].replace('\\\\\\\\''Z'\\\\\\\\'', '\\\\\\\\''+00:00'\\\\\\\\''))\\\\n    except ValueError:\\\\n        return False\\\\n    return True\\\\n\\\\npath_value = plan['\\\\\\\\''path'\\\\\\\\'']\\\\npath = owned_path(path_value)\\\\ntry:\\\\n    os.lstat(path)\\\\nexcept FileNotFoundError:\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': True, '\\\\\\\\''error_code'\\\\\\\\'': '\\\\\\\\''ENOENT'\\\\\\\\''}\\\\nelse:\\\\n    data, identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': False, '\\\\\\\\''source'\\\\\\\\'': data.decode('\\\\\\\\''utf-8'\\\\\\\\''), '\\\\\\\\''identity'\\\\\\\\'': [str(value) for value in identity], '\\\\\\\\''sha256'\\\\\\\\'': hashlib.sha256(data).hexdigest()}\\\\nprint(json.dumps(result, ensure_ascii=True))\\\\n' '{\\\\\\\"path\\\\\\\":\\\\\\\"main.rs\\\\\\\"}'\\\"}\"}]}"
+        },
+        {
+          "line": 2776,
+          "text": "2026-11-17T22:26:37.4627314Z \u2716 a long display placeholder cannot displace the explicit structured issue record (348.000038ms)"
+        },
+        {
+          "line": 2777,
+          "text": "2026-11-17T22:26:37.4640362Z   AssertionError [ERR_ASSERTION]: {\"kind\":\"tool_calls\",\"calls\":[{\"tool\":\"bash\",\"arguments\":\"{\\\"command\\\":\\\"command -v python3 >/dev/null 2>&1 && python3 -c 'import json\\\\nimport os\\\\nimport pathlib\\\\nimport secrets\\\\nimport stat\\\\nimport sys\\\\n\\\\nMAXIMUM_FILE_BYTES = 16 * 1024 * 1024\\\\nplan = json.loads(sys.argv[1])\\\\nroot = pathlib.Path.cwd()\\\\n\\\\n\\\\ndef owned_path(value):\\\\n    if not isinstance(value, str) or not value or '\\\\\\\\''\\\\\\\\x00'\\\\\\\\'' in value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    relative = pathlib.PurePosixPath(value)\\\\n    if relative.is_absolute() or pathlib.PureWindowsPath(value).drive or '\\\\\\\\''..'\\\\\\\\'' in relative.parts or str(relative) != value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    current = root\\\\n    for part in relative.parts:\\\\n        current = current / part\\\\n        if current.is_symlink():\\\\n            raise ValueError('\\\\\\\\''symbolic_owned_path'\\\\\\\\'')\\\\n    return current\\\\n\\\\n\\\\ndef read_regular(path, limit):\\\\n    descriptor = os.open(path, os.O_RDONLY | getattr(os, '\\\\\\\\''O_NOFOLLOW'\\\\\\\\'', 0) | getattr(os, '\\\\\\\\''O_NONBLOCK'\\\\\\\\'', 0))\\\\n    with os.fdopen(descriptor, '\\\\\\\\''rb'\\\\\\\\'') as stream:\\\\n        before = os.fstat(stream.fileno())\\\\n        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:\\\\n            raise ValueError('\\\\\\\\''unbounded_owned_file'\\\\\\\\'')\\\\n        data = stream.read(limit + 1)\\\\n        after = os.fstat(stream.fileno())\\\\n    current = os.lstat(path)\\\\n    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_mode)\\\\n    if len(data) > limit or identity(before) != identity(after) or identity(after) != identity(current):\\\\n        raise ValueError('\\\\\\\\''owned_file_changed'\\\\\\\\'')\\\\n    return data, identity(current)\\\\n\\\\n\\\\nimport hashlib\\\\ndef write_regular_atomic(path, updated, identity, expected_sha=None):\\\\n    if len(updated) > MAXIMUM_FILE_BYTES:\\\\n        raise ValueError('\\\\\\\\''owned_write_limit'\\\\\\\\'')\\\\n    temporary = root / ('\\\\\\\\''.formal-ai-source-'\\\\\\\\'' + secrets.token_hex(12))\\\\n    try:\\\\n        with open(temporary, '\\\\\\\\''xb'\\\\\\\\'') as stream:\\\\n            if stream.write(updated) != len(updated):\\\\n                raise OSError('\\\\\\\\''owned_write_incomplete'\\\\\\\\'')\\\\n            if identity is not None:\\\\n                os.fchmod(stream.fileno(), stat.S_IMODE(identity[4]))\\\\n            stream.flush()\\\\n            os.fsync(stream.fileno())\\\\n        if identity is None:\\\\n            if path.exists() or path.is_symlink():\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n        else:\\\\n            current_bytes, current_identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n            if identity != current_identity:\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n            if expected_sha is not None and hashlib.sha256(current_bytes).hexdigest() != expected_sha:\\\\n                raise ValueError('\\\\\\\\''owned_write_preimage_changed'\\\\\\\\'')\\\\n        os.replace(temporary, path)\\\\n    finally:\\\\n        if temporary.exists():\\\\n            temporary.unlink()\\\\n\\\\n\\\\ndef placeholder_content_matches(data, issue, branch):\\\\n    if not data:\\\\n        return True\\\\n    if not isinstance(issue, str) or not isinstance(branch, str) or len(data) > 1024:\\\\n        return False\\\\n    import re\\\\n    import datetime\\\\n    match = re.fullmatch(r'\\\\\\\\''# \\\\\\\\.gitkeep file auto-generated at ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\\\\\.[0-9]{3}Z) for PR creation at branch (issue-[1-9][0-9]*-[A-Za-z0-9-]+) for issue (https://github\\\\\\\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[1-9][0-9]*)'\\\\\\\\'', data.decode('\\\\\\\\''utf-8'\\\\\\\\'', '\\\\\\\\''strict'\\\\\\\\''))\\\\n    if match is None or match[2] != branch or match[3] != issue:\\\\n        return False\\\\n    if not branch.startswith('\\\\\\\\''issue-'\\\\\\\\'' + issue.rsplit('\\\\\\\\''/'\\\\\\\\'', 1)[1] + '\\\\\\\\''-'\\\\\\\\''):\\\\n        return False\\\\n    try:\\\\n        datetime.datetime.fromisoformat(match[1].replace('\\\\\\\\''Z'\\\\\\\\'', '\\\\\\\\''+00:00'\\\\\\\\''))\\\\n    except ValueError:\\\\n        return False\\\\n    return True\\\\n\\\\npath_value = plan['\\\\\\\\''path'\\\\\\\\'']\\\\npath = owned_path(path_value)\\\\ntry:\\\\n    os.lstat(path)\\\\nexcept FileNotFoundError:\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': True, '\\\\\\\\''error_code'\\\\\\\\'': '\\\\\\\\''ENOENT'\\\\\\\\''}\\\\nelse:\\\\n    data, identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': False, '\\\\\\\\''source'\\\\\\\\'': data.decode('\\\\\\\\''utf-8'\\\\\\\\''), '\\\\\\\\''identity'\\\\\\\\'': [str(value) for value in identity], '\\\\\\\\''sha256'\\\\\\\\'': hashlib.sha256(data).hexdigest()}\\\\nprint(json.dumps(result, ensure_ascii=True))\\\\n' '{\\\\\\\"path\\\\\\\":\\\\\\\"main.rs\\\\\\\"}'\\\"}\"}]}"
+        },
+        {
+          "line": 2794,
+          "text": "2026-11-17T22:26:37.4749970Z \u2716 a direct structured issue record uses the same decoder as a content-wrapped JSON record (339.510115ms)"
+        },
+        {
+          "line": 2795,
+          "text": "2026-11-17T22:26:37.4763012Z   AssertionError [ERR_ASSERTION]: {\"kind\":\"tool_calls\",\"calls\":[{\"tool\":\"bash\",\"arguments\":\"{\\\"command\\\":\\\"command -v python3 >/dev/null 2>&1 && python3 -c 'import json\\\\nimport os\\\\nimport pathlib\\\\nimport secrets\\\\nimport stat\\\\nimport sys\\\\n\\\\nMAXIMUM_FILE_BYTES = 16 * 1024 * 1024\\\\nplan = json.loads(sys.argv[1])\\\\nroot = pathlib.Path.cwd()\\\\n\\\\n\\\\ndef owned_path(value):\\\\n    if not isinstance(value, str) or not value or '\\\\\\\\''\\\\\\\\x00'\\\\\\\\'' in value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    relative = pathlib.PurePosixPath(value)\\\\n    if relative.is_absolute() or pathlib.PureWindowsPath(value).drive or '\\\\\\\\''..'\\\\\\\\'' in relative.parts or str(relative) != value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    current = root\\\\n    for part in relative.parts:\\\\n        current = current / part\\\\n        if current.is_symlink():\\\\n            raise ValueError('\\\\\\\\''symbolic_owned_path'\\\\\\\\'')\\\\n    return current\\\\n\\\\n\\\\ndef read_regular(path, limit):\\\\n    descriptor = os.open(path, os.O_RDONLY | getattr(os, '\\\\\\\\''O_NOFOLLOW'\\\\\\\\'', 0) | getattr(os, '\\\\\\\\''O_NONBLOCK'\\\\\\\\'', 0))\\\\n    with os.fdopen(descriptor, '\\\\\\\\''rb'\\\\\\\\'') as stream:\\\\n        before = os.fstat(stream.fileno())\\\\n        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:\\\\n            raise ValueError('\\\\\\\\''unbounded_owned_file'\\\\\\\\'')\\\\n        data = stream.read(limit + 1)\\\\n        after = os.fstat(stream.fileno())\\\\n    current = os.lstat(path)\\\\n    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_mode)\\\\n    if len(data) > limit or identity(before) != identity(after) or identity(after) != identity(current):\\\\n        raise ValueError('\\\\\\\\''owned_file_changed'\\\\\\\\'')\\\\n    return data, identity(current)\\\\n\\\\n\\\\nimport hashlib\\\\ndef write_regular_atomic(path, updated, identity, expected_sha=None):\\\\n    if len(updated) > MAXIMUM_FILE_BYTES:\\\\n        raise ValueError('\\\\\\\\''owned_write_limit'\\\\\\\\'')\\\\n    temporary = root / ('\\\\\\\\''.formal-ai-source-'\\\\\\\\'' + secrets.token_hex(12))\\\\n    try:\\\\n        with open(temporary, '\\\\\\\\''xb'\\\\\\\\'') as stream:\\\\n            if stream.write(updated) != len(updated):\\\\n                raise OSError('\\\\\\\\''owned_write_incomplete'\\\\\\\\'')\\\\n            if identity is not None:\\\\n                os.fchmod(stream.fileno(), stat.S_IMODE(identity[4]))\\\\n            stream.flush()\\\\n            os.fsync(stream.fileno())\\\\n        if identity is None:\\\\n            if path.exists() or path.is_symlink():\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n        else:\\\\n            current_bytes, current_identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n            if identity != current_identity:\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n            if expected_sha is not None and hashlib.sha256(current_bytes).hexdigest() != expected_sha:\\\\n                raise ValueError('\\\\\\\\''owned_write_preimage_changed'\\\\\\\\'')\\\\n        os.replace(temporary, path)\\\\n    finally:\\\\n        if temporary.exists():\\\\n            temporary.unlink()\\\\n\\\\n\\\\ndef placeholder_content_matches(data, issue, branch):\\\\n    if not data:\\\\n        return True\\\\n    if not isinstance(issue, str) or not isinstance(branch, str) or len(data) > 1024:\\\\n        return False\\\\n    import re\\\\n    import datetime\\\\n    match = re.fullmatch(r'\\\\\\\\''# \\\\\\\\.gitkeep file auto-generated at ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\\\\\.[0-9]{3}Z) for PR creation at branch (issue-[1-9][0-9]*-[A-Za-z0-9-]+) for issue (https://github\\\\\\\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[1-9][0-9]*)'\\\\\\\\'', data.decode('\\\\\\\\''utf-8'\\\\\\\\'', '\\\\\\\\''strict'\\\\\\\\''))\\\\n    if match is None or match[2] != branch or match[3] != issue:\\\\n        return False\\\\n    if not branch.startswith('\\\\\\\\''issue-'\\\\\\\\'' + issue.rsplit('\\\\\\\\''/'\\\\\\\\'', 1)[1] + '\\\\\\\\''-'\\\\\\\\''):\\\\n        return False\\\\n    try:\\\\n        datetime.datetime.fromisoformat(match[1].replace('\\\\\\\\''Z'\\\\\\\\'', '\\\\\\\\''+00:00'\\\\\\\\''))\\\\n    except ValueError:\\\\n        return False\\\\n    return True\\\\n\\\\npath_value = plan['\\\\\\\\''path'\\\\\\\\'']\\\\npath = owned_path(path_value)\\\\ntry:\\\\n    os.lstat(path)\\\\nexcept FileNotFoundError:\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': True, '\\\\\\\\''error_code'\\\\\\\\'': '\\\\\\\\''ENOENT'\\\\\\\\''}\\\\nelse:\\\\n    data, identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': False, '\\\\\\\\''source'\\\\\\\\'': data.decode('\\\\\\\\''utf-8'\\\\\\\\''), '\\\\\\\\''identity'\\\\\\\\'': [str(value) for value in identity], '\\\\\\\\''sha256'\\\\\\\\'': hashlib.sha256(data).hexdigest()}\\\\nprint(json.dumps(result, ensure_ascii=True))\\\\n' '{\\\\\\\"path\\\\\\\":\\\\\\\"main.rs\\\\\\\"}'\\\"}\"}]}"
+        },
+        {
+          "line": 2812,
+          "text": "2026-11-17T22:26:37.4781787Z \u2716 original operations and authority remain with selected-source compilation and bounded cold install (5.729429ms)"
+        },
+        {
+          "line": 2813,
+          "text": "2026-11-17T22:26:37.4782389Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+        },
+        {
+          "line": 2836,
+          "text": "2026-11-17T22:26:38.1154558Z ##[error]Process completed with exit code 1."
+        }
+      ]
+    },
+    {
+      "job": "js tier (node --check over js, suite group 5)",
+      "log": "job-134411832462.log.gz",
+      "markers": [
+        {
+          "line": 1353,
+          "text": "2026-11-17T22:25:33.1763596Z \u2716 unbound nested required values produce a terminal failure, no empty call, and actionable diagnostics (10.581624ms)"
+        },
+        {
+          "line": 2022,
+          "text": "2026-11-17T22:26:23.7169832Z \u2716 prepared pull request metadata decodes one working pattern across scalar and JSON quoting layers (41.647148ms)"
+        },
+        {
+          "line": 2198,
+          "text": "2026-11-17T22:26:23.7240412Z \u2716 /health reports detected, minimum, maximum and target schema without migrating (R982-2, R982-3) (2.34774ms)"
+        },
+        {
+          "line": 2213,
+          "text": "2026-11-17T22:26:23.7244979Z \u2716 failing tests:"
+        },
+        {
+          "line": 2216,
+          "text": "2026-11-17T22:26:23.7245751Z \u2716 unbound nested required values produce a terminal failure, no empty call, and actionable diagnostics (10.581624ms)"
+        },
+        {
+          "line": 2217,
+          "text": "2026-11-17T22:26:23.7246247Z   AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:"
+        },
+        {
+          "line": 2234,
+          "text": "2026-11-17T22:26:23.7250891Z \u2716 prepared pull request metadata decodes one working pattern across scalar and JSON quoting layers (41.647148ms)"
+        },
+        {
+          "line": 2235,
+          "text": "2026-11-17T22:26:23.7251429Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+        },
+        {
+          "line": 2253,
+          "text": "2026-11-17T22:26:23.7256272Z \u2716 /health reports detected, minimum, maximum and target schema without migrating (R982-2, R982-3) (2.34774ms)"
+        },
+        {
+          "line": 2254,
+          "text": "2026-11-17T22:26:23.7256689Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:"
+        },
+        {
+          "line": 2285,
+          "text": "2026-11-17T22:26:24.3646522Z ##[error]Process completed with exit code 1."
+        }
+      ]
+    }
+  ],
+  "full_manual_review": false
+}

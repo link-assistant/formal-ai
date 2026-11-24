@@ -1,0 +1,41 @@
+{
+  "observedAt": "2026-11-18T10:57:34.454125+00:00",
+  "payloads": [
+    {
+      "name": "check-generated-files",
+      "rawLines": 2,
+      "rawSha256": "e9165b6420e7204cb2029ff517a759535b203a9552cd90393470bbb4b9da60a1",
+      "archiveSha256": "1714924742266d328fea642d43de877d5cf9a47ff23f78286cdc5ffe91cde47d"
+    },
+    {
+      "name": "check_js_rust_translation",
+      "rawLines": 2,
+      "rawSha256": "212233775d50d76ff6eadf1c0ac578d88b21396b4d4d8bda69f7f5e283084e0e",
+      "archiveSha256": "5ba6d16d0e8cdd9e56ce5100b8d9094a108632296eccbc5439a0020edfe77cec"
+    },
+    {
+      "name": "check-worker-line-budget",
+      "rawLines": 187,
+      "rawSha256": "693959b784cc8c8d82bc635a9994480f47050cd0e3011c9420573ed7bcf4f57b",
+      "archiveSha256": "7d59375bfbc7b168e967e4bf298fb55d9a7d30ebe8a5dc61a82bed202d919c69"
+    },
+    {
+      "name": "check-file-size",
+      "rawLines": 380,
+      "rawSha256": "067601aa8aa99a57df3ea2e700a8fbbf97d8388151d527f7795fc6e7179281e7",
+      "archiveSha256": "6c0199948a6ca8b06a265810a1a6f8261c2128ccc2270f4993b5f20faf241449"
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "rawLines": 2,
+      "rawSha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9",
+      "archiveSha256": "5ee4009241ee13da1c71e44fd09fb5ba26e15b6bfda355aee981d571bca96f50"
+    },
+    {
+      "name": "check-abbreviations",
+      "rawLines": 4,
+      "rawSha256": "a960a72681e465a2d48dc7a91a990da4927812a326c1dc942383f78d764a480f",
+      "archiveSha256": "21647c819e128cfe48f68d91c77a8362fd2b59a190c453208cad9e99281a9f08"
+    }
+  ]
+}

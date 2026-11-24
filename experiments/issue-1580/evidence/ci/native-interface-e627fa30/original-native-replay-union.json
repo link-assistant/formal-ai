@@ -1,0 +1,893 @@
+{
+  "originalFailureHead": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "latestPublishedHead": "e627fa307e0374bf6813159257915f342d8d2419",
+  "originalPanics": 53,
+  "publishedPassingReplayUnion": 27,
+  "withoutPublishedPassingReplay": 26,
+  "originalBudgetFailuresStillOpen": 3,
+  "currentNativeTestsPassed": 131,
+  "currentMatchingOriginalNames": 13,
+  "newPassingReplaysWithOriginalBytesPreserved": [],
+  "tests": [
+    {
+      "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": {
+        "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+        "executedName": "google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+        "path": "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1908,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "f7b89b6540d8be11c846301ea2d6863b9b14786c308a979980e2b037e2c096ce",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true
+      }
+    },
+    {
+      "originalTest": "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": {
+        "originalTest": "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+        "executedName": "place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+        "path": "rust/tests/unit/issue_1138_place_timezone.rs",
+        "publishedTestFileSha256": "e74bdac523ca85b3e44e5faf62a11ba2c5ee235ac1687c3058eea15900eef1d0",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true,
+        "head": "2c9d93c5c61b5a8372f3e7634db1a979085d3c64",
+        "job": 135093530725,
+        "run": 44386721819,
+        "result": "passed",
+        "logRawSha256": "76754826b09568a5e4c94efe1ad33ec485993c60c6442a7743ddcd68bfe2e67c"
+      },
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": {
+        "originalTest": "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+        "executedName": "google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+        "path": "rust/tests/unit/issue_498_google_trends.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1904,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "48d4e0e65c99949431a6f8453e283da50da92ce29f9972a1150130e44753ea7e",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": false
+      }
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_706_any_language::a_language_without_localized_openers_reports_a_gap_not_english",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "a_language_without_localized_openers_reports_a_gap_not_english",
+        "originalLogLines": [
+          1734
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/issue_706_any_language.rs",
+        "publishedSourceSha256": "a4b9cf11a34826d39ab618912a074290d326b3c2469057fb160505dc08d4727f",
+        "currentSourceSha256": "a4b9cf11a34826d39ab618912a074290d326b3c2469057fb160505dc08d4727f",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "data_files::meaning_slugs_are_globally_unique",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": {
+        "originalTest": "data_files::meaning_slugs_are_globally_unique",
+        "executedName": "meaning_slugs_are_globally_unique",
+        "path": "rust/tests/unit/data_files.rs",
+        "publishedTestFileSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true,
+        "head": "2c9d93c5c61b5a8372f3e7634db1a979085d3c64",
+        "job": 135093530725,
+        "run": 44386721819,
+        "result": "passed",
+        "logRawSha256": "76754826b09568a5e4c94efe1ad33ec485993c60c6442a7743ddcd68bfe2e67c"
+      },
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": {
+        "originalTest": "data_files::meaning_slugs_are_globally_unique",
+        "executedName": "meaning_slugs_are_globally_unique",
+        "path": "rust/tests/unit/data_files.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1821,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true
+      }
+    },
+    {
+      "originalTest": "data_files::seed_lino_values_never_pipe_pack_multi_values",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": {
+        "originalTest": "data_files::seed_lino_values_never_pipe_pack_multi_values",
+        "executedName": "seed_lino_values_never_pipe_pack_multi_values",
+        "path": "rust/tests/unit/data_files.rs",
+        "publishedTestFileSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true,
+        "head": "2c9d93c5c61b5a8372f3e7634db1a979085d3c64",
+        "job": 135093530725,
+        "run": 44386721819,
+        "result": "passed",
+        "logRawSha256": "76754826b09568a5e4c94efe1ad33ec485993c60c6442a7743ddcd68bfe2e67c"
+      },
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": {
+        "originalTest": "data_files::seed_lino_values_never_pipe_pack_multi_values",
+        "executedName": "seed_lino_values_never_pipe_pack_multi_values",
+        "path": "rust/tests/unit/data_files.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1826,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true
+      }
+    },
+    {
+      "originalTest": "data_files::lino_data_files_are_parseable_human_readable_and_bounded",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": {
+        "originalTest": "data_files::lino_data_files_are_parseable_human_readable_and_bounded",
+        "executedName": "lino_data_files_are_parseable_human_readable_and_bounded",
+        "path": "rust/tests/unit/data_files.rs",
+        "publishedTestFileSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true,
+        "head": "2c9d93c5c61b5a8372f3e7634db1a979085d3c64",
+        "job": 135093530725,
+        "run": 44386721819,
+        "result": "passed",
+        "logRawSha256": "76754826b09568a5e4c94efe1ad33ec485993c60c6442a7743ddcd68bfe2e67c"
+      },
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": {
+        "originalTest": "data_files::lino_data_files_are_parseable_human_readable_and_bounded",
+        "executedName": "lino_data_files_are_parseable_human_readable_and_bounded",
+        "path": "rust/tests/unit/data_files.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1817,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true
+      }
+    },
+    {
+      "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": {
+        "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+        "executedName": "google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+        "path": "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1907,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "f7b89b6540d8be11c846301ea2d6863b9b14786c308a979980e2b037e2c096ce",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true
+      }
+    },
+    {
+      "originalTest": "capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": {
+        "originalTest": "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+        "executedName": "agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+        "path": "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1864,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "b8c092e4ed1edbee890579d3386c5480831a24e47f2ecc144c6e376e24e898ed",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": false
+      }
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": {
+        "originalTest": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+        "executedName": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+        "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1916,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "8e5119e58505698f4dc2fef71b8c90ef31ac890174b959ec20d571799fbc88c2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": false
+      }
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": {
+        "originalTest": "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+        "executedName": "concept_lookup_self_use::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+        "path": "rust/tests/unit/solver/issue_1138_self_use_concept_lookup.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1875,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "e7829fe5e274988f6a97eff568adab09819ab6fe4ada8ee1f253306340428e02",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true
+      }
+    },
+    {
+      "originalTest": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": {
+        "originalTest": "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+        "executedName": "spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+        "path": "rust/tests/unit/specification/spoken_hour_scheduling.rs",
+        "publishedTestFileSha256": "93256f16fbd0f25c7a74580bfb51fc2a6bc1471e5683ff7194a49461aa068a09",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": true,
+        "allOriginalTestFileBytesPreservedAsPrefix": true,
+        "head": "2c9d93c5c61b5a8372f3e7634db1a979085d3c64",
+        "job": 135093530725,
+        "run": 44386721819,
+        "result": "passed",
+        "logRawSha256": "76754826b09568a5e4c94efe1ad33ec485993c60c6442a7743ddcd68bfe2e67c"
+      },
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "compound_courtesy_and_question_are_answered_in_source_order",
+        "originalLogLines": [
+          1678
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "decomposed_sub_results_are_composed_for_algebra",
+        "originalLogLines": [
+          1679
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "renumbered_algebra_substitution_recomputes_closed_value",
+        "originalLogLines": [
+          1684
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+        "originalLogLines": [
+          1686
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": {
+        "originalTest": "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice",
+        "executedName": "formalization::same_prompt_and_config_produce_same_interpretation_choice",
+        "path": "rust/tests/unit/specification/formalization.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1897,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": false
+      }
+    },
+    {
+      "originalTest": "specification::synthesis::renumbered_word_problem_recomputes_from_quantities",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "renumbered_word_problem_recomputes_from_quantities",
+        "originalLogLines": [
+          1685
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "web_requests::source_search_prompts_still_cover_supported_languages",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": {
+        "originalTest": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+        "executedName": "network_download_retry::no_remote_download_is_left_out_of_that_rule",
+        "path": "rust/tests/unit/ci-cd/network_download_retry.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1866,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "c7a7c0392c81a6f9f05f0cce34a940145f5fa213cfda5dc046fedd612831a734",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": false
+      }
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": {
+        "originalTest": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+        "executedName": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+        "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1914,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "8e5119e58505698f4dc2fef71b8c90ef31ac890174b959ec20d571799fbc88c2",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": false
+      }
+    },
+    {
+      "originalTest": "issue_1138_retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": {
+        "originalTest": "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+        "executedName": "meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+        "path": "rust/tests/unit/solver/issue_869_meeting_scheduling.rs",
+        "publishedTestFileSha256": "89fed7651bf7baa9c5c71bf1d667c8d7d672a54ec22aadeafcc6fdb031bd8898",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": true,
+        "head": "2c9d93c5c61b5a8372f3e7634db1a979085d3c64",
+        "job": 135093530725,
+        "run": 44386721819,
+        "result": "passed",
+        "logRawSha256": "76754826b09568a5e4c94efe1ad33ec485993c60c6442a7743ddcd68bfe2e67c"
+      },
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": false,
+      "currentPublishedReplay": {
+        "originalTest": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+        "executedName": "debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+        "path": "rust/tests/unit/specification/debug_session.rs",
+        "head": "e627fa307e0374bf6813159257915f342d8d2419",
+        "run": 44648187857,
+        "job": 135996221984,
+        "result": "passed",
+        "logLine": 1878,
+        "logRawSha256": "fc8468da0e96632715726073ce3082afc42556d61994faf4455a92e9d77d4483",
+        "publishedTestFileSha256": "8faf53bf31998b6212a4ae5feb8eaaa103f9b9c4fa9d7ad82de45dfb8827b680",
+        "originalFileAvailable": true,
+        "entireTestFileUnchangedSinceOriginal": false,
+        "allOriginalTestFileBytesPreservedAsPrefix": false
+      }
+    },
+    {
+      "originalTest": "specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces",
+      "historicalPublishedReplay": null,
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "paraphrased_algebra_prompt_reaches_same_derivation",
+        "originalLogLines": [
+          1683
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::synthesis::object_counting_filters_items_by_requested_category",
+      "historicalPublishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "object_counting_filters_items_by_requested_category",
+        "originalLogLines": [
+          1682
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    },
+    {
+      "originalTest": "specification::unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss",
+      "historicalPublishedReplay": {
+        "head": "4d105df788a398c6c26a9431393622bb4206dbfe",
+        "job": 135024168069,
+        "run": 44367130256,
+        "result": "passed",
+        "originalLogLines": [
+          1706
+        ],
+        "logRawSha256": "1f2a902449315753d1253b0db31c2d3b1f08ada155bb4ca4e72cbdb7b9df78e5",
+        "correctedMissFixture": true,
+        "limits": "The genuine absent term fixture passed; this does not claim the former cache-shadowed token remains an unknown term."
+      },
+      "latestPublishedReplay": null,
+      "verifiedOnLocalUnpublishedHead": false,
+      "hasPublishedPassingReplay": true,
+      "currentPublishedReplay": null
+    }
+  ],
+  "limits": "Retain the complete prior qualifying replay union. Add credit only for exact completed native success lines joined to unique declarations and preserving the original complete test-file bytes. Matching names from changed contracts are observations, not original-byte acceptance. The native job was cancelled during reasoning, and buffered background logs, skipped later steps and the three original budget failures remain unverified. Full issue acceptance remains unfinished.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "currentMatchingEvidence": [
+    {
+      "test": "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+      "qualifying": true,
+      "path": "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs"
+    },
+    {
+      "test": "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+      "qualifying": false,
+      "path": "rust/tests/unit/issue_498_google_trends.rs"
+    },
+    {
+      "test": "data_files::meaning_slugs_are_globally_unique",
+      "qualifying": true,
+      "path": "rust/tests/unit/data_files.rs"
+    },
+    {
+      "test": "data_files::seed_lino_values_never_pipe_pack_multi_values",
+      "qualifying": true,
+      "path": "rust/tests/unit/data_files.rs"
+    },
+    {
+      "test": "data_files::lino_data_files_are_parseable_human_readable_and_bounded",
+      "qualifying": true,
+      "path": "rust/tests/unit/data_files.rs"
+    },
+    {
+      "test": "agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+      "qualifying": true,
+      "path": "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs"
+    },
+    {
+      "test": "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+      "qualifying": false,
+      "path": "rust/tests/unit/docs_requirements/agent_cli_shell.rs"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+      "qualifying": false,
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"
+    },
+    {
+      "test": "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+      "qualifying": true,
+      "path": "rust/tests/unit/solver/issue_1138_self_use_concept_lookup.rs"
+    },
+    {
+      "test": "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice",
+      "qualifying": false,
+      "path": "rust/tests/unit/specification/formalization.rs"
+    },
+    {
+      "test": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+      "qualifying": false,
+      "path": "rust/tests/unit/ci-cd/network_download_retry.rs"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+      "qualifying": false,
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"
+    },
+    {
+      "test": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+      "qualifying": false,
+      "path": "rust/tests/unit/specification/debug_session.rs"
+    }
+  ],
+  "currentNativeJobConclusion": "cancelled",
+  "namedNativePassesMatched": 131,
+  "currentNativeTestsFailed": 0
+}

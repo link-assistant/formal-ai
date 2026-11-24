@@ -1,0 +1,213 @@
+{
+  "records": [
+    {
+      "name": "negative-workflow-before",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-checkout-retry.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "negative-workflow-before.log.gz",
+      "rawSha256": "6723a0491133e26703270dd91ee2f7a54e2d655b64eb6a00c749cd78f6d11830",
+      "archiveSha256": "0324729d63b5c000877c842a15715e687ea6b528823cb7aa62566baa330b9957"
+    },
+    {
+      "name": "checkout-guard-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-checkout-retry.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "checkout-guard-after.log.gz",
+      "rawSha256": "708c52bbd8c275149e8640bbfb46652aa19e2ecb36af78445d785386b3deef20",
+      "archiveSha256": "a024bd29e47bd5b27b3185bda47260f75e8ddb6175cbab1a79918648eb1c8fd6"
+    },
+    {
+      "name": "final-rustfmt",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "rust/tests/unit/ci-cd/mod.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "scripts/bump-version.rs",
+        "scripts/check-crate-package-size.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/collect-changelog.rs",
+        "scripts/create-changelog-fragment.rs",
+        "scripts/create-github-release.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/get-version.rs",
+        "scripts/publish-crate.rs",
+        "scripts/rust-paths.rs",
+        "scripts/version-and-commit-tests.rs",
+        "scripts/version-and-commit.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/cargo-package.rs",
+        "rust/tests/unit/ci-cd/cargo_package_identity.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "final-rustfmt.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "final-rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "rust/tests/unit/ci-cd/mod.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "scripts/bump-version.rs",
+        "scripts/check-crate-package-size.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/collect-changelog.rs",
+        "scripts/create-changelog-fragment.rs",
+        "scripts/create-github-release.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/get-version.rs",
+        "scripts/publish-crate.rs",
+        "scripts/rust-paths.rs",
+        "scripts/version-and-commit-tests.rs",
+        "scripts/version-and-commit.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/cargo-package.rs",
+        "rust/tests/unit/ci-cd/cargo_package_identity.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "final-rustfmt-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "final-native-admission",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "final-native-admission.log.gz",
+      "rawSha256": "e654a045bf7eafdc67c8135a039c753c226b544c7b761ddbf6d7083ff6d3211d",
+      "archiveSha256": "cc7016245b1824eda0d6fee5ac82f10f280774d1511014ed3bd3f3d862dfd3e1"
+    },
+    {
+      "name": "final-maintained-admission",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "final-maintained-admission.log.gz",
+      "rawSha256": "7626cfb828f746f77d5568d673f1822745913e44a17ae74d626ad49116d34a21",
+      "archiveSha256": "ff5949a86616ed10f79ba94036272e275b3ded7b2d0a3bd566749c74e44fb013"
+    },
+    {
+      "name": "final-local-gates",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-readable-code,check-changelog-fragment-js-twin,release#1,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-runner-labels,check-ci-speed"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "final-local-gates.log.gz",
+      "rawSha256": "8c5b6017f2cd7f51732bd5e897a2caecf756c00dda7ade4e97812d1b782bdf54",
+      "archiveSha256": "2f3f574f87ae002315a911f053c4398b138e1c32298e837243227e513d391729"
+    },
+    {
+      "name": "final-deployed-release-source",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-staged-release.mjs",
+        "--check-deployed"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "final-deployed-release-source.log.gz",
+      "rawSha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce",
+      "archiveSha256": "3816b50a43a2d25b47022d5f33e5f75a98cf635160cdef80035a04e73df66942"
+    },
+    {
+      "name": "negative-maintained-policy-before",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=the focused PR native check limits",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "negative-maintained-policy-before.log.gz",
+      "rawSha256": "7f70c2bf0f89f0e425a2746ac18138e19bb17085a377d7df9946f81928059449",
+      "archiveSha256": "8bed4b70ed9cb9a2b3a667066e89661ba0b9c94f26413994109f29d03bf5c1ef"
+    },
+    {
+      "name": "hosted-entrypoint-includes-retry-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "hosted-entrypoint-includes-retry-tests.log.gz",
+      "rawSha256": "b2105708e4260bd7ce4ea4490ad0060a5dafb4f9542100580a5c7d00c0eb0838",
+      "archiveSha256": "0bcd7c20221341129eafc85150ea328379087447e28927accb61dfe2b4562e65"
+    }
+  ],
+  "hostedCheckoutExecuted": false,
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "initialPolicyFailure": {
+    "exitCode": 1,
+    "test": "the focused PR native check limits execution to lint and isolated regressions",
+    "cause": "The existing exact allowed-command assertion omitted the new checkout guard.",
+    "originalCompleteLogRetained": false,
+    "archiveFilenameReusedDuringContinuation": true,
+    "reproducer": "negative-maintained-policy-before.log.gz"
+  }
+}

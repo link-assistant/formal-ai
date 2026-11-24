@@ -122,6 +122,12 @@ fn executed_search_answers_from_captured_sources_with_citations() {
     .expect("the explicit search request must still route");
 
     assert_eq!(answer.answer, EXECUTED_ANSWER);
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "search:external"
+                && event.payload == "web_search:requested:snorflax calibration")
+    );
 
     assert_eq!(answer.intent, "web_search");
     assert!(
@@ -184,6 +190,17 @@ fn offline_cache_miss_answers_unavailable_not_a_description() {
     .expect("the request must route even when nothing is captured");
 
     assert_eq!(answer.answer, OFFLINE_ANSWER);
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "search:external"
+                && event.payload == "web_search:requested:snorflax calibration")
+    );
+    assert!(
+        !log.events()
+            .iter()
+            .any(|event| event.kind == "web_search:executed")
+    );
 
     assert_eq!(answer.intent, "web_search");
     assert!(

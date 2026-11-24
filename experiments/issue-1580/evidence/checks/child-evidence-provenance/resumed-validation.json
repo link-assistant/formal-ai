@@ -1,0 +1,152 @@
+{
+  "complete": false,
+  "checks": [
+    {
+      "name": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 5.483,
+      "rawLines": 3,
+      "rawSha256": "875ba15852788001f131d6c19d6636052329aaa8366fd4516cfed6e999dab749",
+      "archiveSha256": "9c227872c5ca51471ecb8f6d870e6ec56ace8a81f2ce9ba78dfe7a7b216e6d0a",
+      "log": "resumed-check-abbreviations.log.gz"
+    },
+    {
+      "name": "check-changelog-fragment-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 1.848,
+      "rawLines": 3,
+      "rawSha256": "8406051bc5663b468eace07a964eb9d3f15b6e23cb6760c00e29418fe94dc92b",
+      "archiveSha256": "81119ddba27a8b1e57e03e747f59957c3410b40a0c961b884cd1b2cad7b02c24",
+      "log": "resumed-check-changelog-fragment-js-twin.log.gz"
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 12.661,
+      "rawLines": 3,
+      "rawSha256": "aeb7402b3ac2917fcd86dc0d015ada048879e8996d0673e6a2e59bea3f4e2715",
+      "archiveSha256": "ae2cbe1ccbac1d83e7e2920e54ca16015cf97f376df4907a538b1c809b4ab1d3",
+      "log": "resumed-check-file-size-js-twin.log.gz"
+    },
+    {
+      "name": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 5.367,
+      "rawLines": 3,
+      "rawSha256": "0d25fdd86364de95db60fbaaa3ed0a53387d80c520b367f2c35bb934df757bea",
+      "archiveSha256": "d67764850517e4540eacfe42c05bebdb3d7b42969adef9c4d75402168ab20601",
+      "log": "resumed-check-file-size.log.gz"
+    },
+    {
+      "name": "check-readable-code",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-readable-code"
+      ],
+      "exitCode": 0,
+      "seconds": 17.431,
+      "rawLines": 3,
+      "rawSha256": "1ffe1a2a5386628bf924bcd0409f10e316e03d646920f7dbd85d9594d5c8d5fa",
+      "archiveSha256": "d3aa0f4e4a971caf7ab53bfb32fb83775f0f1a8599e29129a8ab275413d54715",
+      "log": "resumed-check-readable-code.log.gz"
+    },
+    {
+      "name": "check-tests-as-docs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-tests-as-docs"
+      ],
+      "exitCode": 0,
+      "seconds": 12.985,
+      "rawLines": 3,
+      "rawSha256": "be5d9f88bea4c600a43e92545f48e1cb04c84392f4210ddf2a87fd4de90672b4",
+      "archiveSha256": "dc22e35769abb33cd33dd32f88ae1b0ef5378697bf61eb611ddb0362f9a0024f",
+      "log": "resumed-check-tests-as-docs.log.gz"
+    },
+    {
+      "name": "check-tests-as-documentation-javascript-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 11.42,
+      "rawLines": 3,
+      "rawSha256": "c11d2e1273e6656f02cc8b76ed5c9102eb1038ad5b3175bbc4cb04afadd2931f",
+      "archiveSha256": "d4e75d930c35b2f75cd15070d24d477f8a099b73fc427758d086785bc4a51444",
+      "log": "resumed-check-tests-as-documentation-javascript-twin.log.gz"
+    },
+    {
+      "name": "check-twin-citations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-twin-citations"
+      ],
+      "exitCode": 0,
+      "seconds": 2.636,
+      "rawLines": 3,
+      "rawSha256": "c8bf8873a5dccfc308391ebda5c7b5300cdacb45bbc06f7869443dea715b6fd0",
+      "archiveSha256": "cf691f4eee0a79e01be1998d651d724b3100d9d2589276fc7ffe11fc8e7f4a37",
+      "log": "resumed-check-twin-citations.log.gz"
+    },
+    {
+      "name": "check-js-rust-translation",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check_js_rust_translation"
+      ],
+      "exitCode": 1,
+      "seconds": 4.242,
+      "rawLines": 3,
+      "rawSha256": "8925b3035e89c827ae1f552cb50d06ef02785d926409deeb5087b2a15c6d56f0",
+      "archiveSha256": "8e86de236d5a0e0291bdeb4eb07fb35f86eaf1cb5c5bf950bbaa8e4ee938ef94",
+      "log": "resumed-check-js-rust-translation.log.gz"
+    }
+  ],
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 148934\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

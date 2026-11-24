@@ -1,0 +1,18 @@
+{
+  "originalLog": "sealed-abbreviation-failure.log.gz",
+  "originalLogSha256": "7424a6eb37489c259949a9d0bab5a9ca2e1a21c3f679e09188cf2ed66a6e87b3",
+  "rename": {
+    "from": "js-nested-universal-app-audit.json.gz",
+    "to": "javascript-nested-universal-application-audit.json.gz"
+  },
+  "sourceBytesChanged": false,
+  "ratchetChange": "Lower JavaScript abbreviated-binding ceiling from 723 to the measured 722; file-name ceiling remains 90. No threshold is raised.",
+  "command": [
+    "node",
+    "scripts/measure-abbreviations.mjs",
+    "--write"
+  ],
+  "exitCode": 0,
+  "fullLocalGateRerunRequired": true,
+  "autonomousAuthorshipCredit": 0
+}

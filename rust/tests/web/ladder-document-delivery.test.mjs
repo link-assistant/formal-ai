@@ -6,6 +6,7 @@ import {dirname, join} from 'node:path';
 import {composeGeneralChangePlan, planLinksNotation} from '../../../js/agentic/general_planner.mjs';
 import {tmpdir} from 'node:os';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
+import {host, installHost} from '../../../js/agentic/host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {canDeliverFinal, FinalPayloadRole} from '../../../js/agentic/plan.mjs';
@@ -38,7 +39,8 @@ async function replay(prompt, mutate=null, options={}){
     if(options.continue)messages.push({role:'user',content:'Continue if you have next steps'});
    }
   }
-  const paths=new Set([proof,effect,'intake/monday.md','.formal-ai/general-change-plan.lino',...calls.filter(call=>call.tool==='write').map(call=>{const args=JSON.parse(call.arguments);return args.filePath??args.path;})]);
+  const paths=new Set([proof,effect,'intake/monday.md','.formal-ai/general-change-plan.lino',
+   ...Object.keys(options.initial??{}),...calls.filter(call=>call.tool==='write').map(call=>{const args=JSON.parse(call.arguments);return args.filePath??args.path;})]);
   const files=new Map([...paths].filter(path=>existsSync(join(directory,path))).map(path=>[path,readFileSync(join(directory,path),'utf8')]));
   return{files,calls,final};
  }finally{rmSync(directory,{recursive:true,force:true});}
@@ -58,6 +60,81 @@ test('unchanged colon source request preserves all fields, destinations and exac
  assert.deepEqual(result.files.get(effect).split('\n').slice(0,3),['node_path=2.1.2.1.2','node_depth=5','node_kind=leaf']);
  assert.ok(result.files.get(effect).split('\n').find(line=>line.startsWith('result=')).split(/\s+/u).length>=4);
 });
+test('an angle-delimited result instruction records the observed result', async () => {
+  const prompt = colon.replace(
+    '`result=` followed by at least four words that state the task result actually observed in this checkout',
+    '`result=<the task result actually observed in this checkout, at least four words>`',
+  );
+  const result = await replay(prompt, null, { history: observedSearch() });
+  const observed = result.files.get(effect)?.split('\n').find(line => line.startsWith('result='));
+  assert.ok(observed?.includes(marker), result.files.get(effect));
+  assert.ok(result.files.get(proof)?.includes(marker), result.files.get(proof));
+});
+
+test('the result and its proof retain every verified edit in a sequence', async () => {
+  const source = 'settings/options.txt';
+  const prompt = `Insert the line «cobalt dawn» after the line «azure noon» in ${source}, then delete the line «stale entry» from ${source}. `
+    + 'Create `agent-ladder-effects/node.lino` with these exact field lines: `kind=edit` and `result=<each verified edit>`. '
+    + 'Leave supporting evidence in .agent-ladder/node-proof.md. The first line must be exactly `proof_for=edit`.';
+  const result = await replay(prompt, null, {
+    initial: { [source]: 'azure noon\nstale entry\n' },
+    turns: 14,
+  });
+  assert.equal(result.files.get(source), 'azure noon\ncobalt dawn\n');
+  const resultLine = result.files.get(effect)?.split('\n').find(line => line.startsWith('result='));
+  const proofBytes = result.files.get(proof);
+  assert.match(proofBytes ?? '', /^proof_for=edit\n/u);
+  for (const evidence of [resultLine, proofBytes]) {
+    assert.match(evidence ?? '', /cobalt dawn/u);
+    assert.match(evidence ?? '', /stale entry/u);
+  }
+});
+const providerSource = 'rust/src/web_search_core.rs';
+const sourceInitializer = 'pub const WEB_SEARCH_PROVIDERS: &[&str] = &["brave"];\n';
+const seedSource = 'data/seed/meanings-verifiable-task.lino';
+const seedInitializer = readFileSync(new URL('../../../' + seedSource, import.meta.url), 'utf8');
+const numberedRequirement = [
+  "Deliver these requirements: (1) Add wikiquote as a web search provider. (2) Change the MEANINGS_VERIFIABLE_TASK_LINO seed's English pattern expectation surface from continue this to alternating.",
+  'Create `agent-ladder-effects/node.lino` with these exact field lines: `kind=requirement` and `result=<each verified edit>`. Leave supporting evidence in .agent-ladder/node-proof.md. The first line must be exactly `proof_for=requirement`.',
+].join('\n\n');
+
+test('numbered source requirements deliver both digested edits as proof and result', async () => {
+  const originalHost = host();
+  const complete = originalHost.censusSourceClosureComplete();
+  const documents = originalHost.censusDocuments();
+  const initial = { [providerSource]: sourceInitializer, [seedSource]: seedInitializer };
+  installHost({ ...originalHost, censusDocuments: () => documents, censusSourceClosureComplete: () => complete });
+  try {
+    const result = await replay(numberedRequirement, null, { initial, turns: 14 });
+    assert.equal(result.files.get(providerSource), sourceInitializer.replace('"brave"', '"brave", "wikiquote"'));
+    assert.equal(result.files.get(seedSource), seedInitializer.replace('"continue this"', '"alternating"'));
+    assert.match(result.files.get(proof) ?? '', /^proof_for=requirement\n/u);
+    const resultLine = result.files.get(effect)?.split('\n').find(line => line.startsWith('result='));
+    for (const evidence of [resultLine, result.files.get(proof)]) {
+      for (const part of [providerSource, seedSource, 'wikiquote', 'alternating']) {
+        assert.ok(evidence?.includes(part), evidence);
+      }
+    }
+
+    const incomplete = await replay(numberedRequirement.replace('web search provider', 'unlocated target'), null, {
+      initial, turns: 2,
+    });
+    assert.equal(incomplete.calls.some(call => call.tool === 'write'), false);
+    assert.equal(incomplete.files.get(seedSource), seedInitializer);
+    assert.equal(incomplete.files.has(proof), false);
+
+    const corruptDigest = await replay(numberedRequirement, (call, receipt) =>
+      call.tool === 'bash' && JSON.parse(call.arguments).command.startsWith('sha256sum ')
+        ? { content: JSON.stringify({ stdout: 'wrong digest', exit_code: 0, complete: true }) }
+        : receipt, { initial, turns: 14 });
+    assert.equal(corruptDigest.files.get(seedSource), seedInitializer);
+    assert.equal(corruptDigest.files.has(proof), false);
+    assert.equal(corruptDigest.files.has(effect), false);
+  } finally {
+    installHost(originalHost);
+  }
+});
+
 for(const[mode,mutate]of[
  ['bare acknowledgement',(call,receipt)=>call.tool==='bash'?{content:'ok'}:receipt],
  ['wrong successful bytes',(call,receipt)=>call.tool==='bash'?{content:JSON.stringify({stdout:'wrong observed bytes',exit_code:0,complete:true})}:receipt],
@@ -104,6 +181,28 @@ test('original Create preserves earlier history without appending a plan',async(
  assert.equal(result.files.get('.formal-ai/general-change-plan.lino'),prior);
  assert.ok(result.final);
 });
+test('an unexecuted verifiable task cannot fill a result field', async () => {
+  // Captured depth-three request with the original and explicit result forms.
+  const prompt = [
+    "Decomposition node 1.1.1: Deliver these requirements in this repository; each names behaviour or a declaration, never a file, so find the declaration in the source tree first: (1) Add wikiquote as a web search provider. (2) Add sensor_fusion to the plain thinking steps. (3) Add provenance to the semantic facet kinds. (4) Change the MEANINGS_VERIFIABLE_TASK_LINO seed's English pattern expectation surface from continue this to alternating.",
+    "This is recursive binary-tree node 1.1.1 at depth 3. Solve only this node's task in this fresh temporary repository. Its harness-evaluated completion criterion is: requirement_changes. Apply every listed requirement to the tracked source files themselves -- locate each declaration in the repository first (for example with grep), change only the files those requirements touch, and keep them valid Rust. Then create `agent-ladder-effects/node-1.1.1.lino` with these exact field lines: `node_path=1.1.1`, `node_depth=3`, `node_kind=requirement`, and `result=` followed by at least four words that name each file you changed and describe its change. Leave supporting evidence in .agent-ladder/node-1.1.1-proof.md. The first line must be exactly node_path=1.1.1 and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence."
+  ].join('\n\n');
+  const anglePrompt = prompt.replace(
+    '`result=` followed by at least four words that name each file you changed and describe its change',
+    '`result=<the files you changed and what changed in each, at least four words>`',
+  );
+  for (const content of [anglePrompt, prompt]) {
+    const plan = await planChatStep([{ role: 'user', content }], tools);
+    for (const call of plan?.calls ?? []) {
+      if (call.tool !== 'write') continue;
+      const write = JSON.parse(call.arguments);
+      assert.doesNotMatch(write.content, /^result=/mu);
+      assert.notEqual(write.filePath, 'agent-ladder-effects/node-1.1.1.lino');
+      assert.notEqual(write.filePath, '.agent-ladder/node-1.1.1-proof.md');
+    }
+  }
+});
+
 test('unchanged terse source fact retains the actual sentinel in result and proof',async()=>{
  const prompt='Verify that a leaf without an observable completion contract is never treated as independently checkable. Create `agent-ladder-effects/node.lino` with these exact field lines: `node_path=1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout. Leave supporting evidence in `.agent-ladder/node-proof.md`. The first line must be exactly `node_path=1.1`.';
  const history=[{role:'assistant',content:'',tool_calls:[{id:'search-contract',type:'function',function:{name:'grep',arguments:'{"include":"src/**/*","pattern":"unresolved_single_need"}'}}]},{role:'tool',tool_call_id:'search-contract',name:'grep',content:'src/task_decomposition.rs:385: "unresolved_single_need",'}];

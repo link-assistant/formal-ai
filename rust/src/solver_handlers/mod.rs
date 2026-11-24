@@ -155,12 +155,20 @@ pub(crate) fn try_arithmetic_with_online(
         }) {
             Ok(evaluation) => {
                 let formatted = evaluation.formatted;
-                log.append("calculation:engine", evaluation.engine.slug());
+                log.append_with_origin(
+                    "calculation:engine",
+                    "calculation:arithmetic:engine",
+                    evaluation.engine.slug(),
+                );
                 if let Some(lino) = evaluation.lino {
-                    log.append("calculation:lino", lino);
+                    log.append_with_origin("calculation:lino", "calculation:arithmetic:lino", lino);
                 }
                 if !evaluation.steps.is_empty() {
-                    log.append("calculation:steps", evaluation.steps.len().to_string());
+                    log.append_with_origin(
+                        "calculation:steps",
+                        "calculation:arithmetic:steps",
+                        evaluation.steps.len().to_string(),
+                    );
                 }
                 let calculation_body = if expression.contains('=') && formatted.contains(" = ") {
                     format!("{expression} => {formatted}")

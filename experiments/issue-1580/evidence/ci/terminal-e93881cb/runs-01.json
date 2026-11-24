@@ -1,0 +1,138 @@
+[
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575975,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:17Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575975",
+      "workflowName": "Write-Effect Ladder"
+    },
+    "file": "44982575975.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "a2a972a959261097ca9e0473fa3b282255080faad4027c416908af524f36576e",
+    "archiveSha256": "b3ab7c34d3629a408ad87401805ec0f265abaff62468f8d4c10da8d2313e4853"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575883,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:17Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575883",
+      "workflowName": "External Benchmarks"
+    },
+    "file": "44982575883.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "d83c5533a5fe954b2e0384df7fc64d841b1f806c8e3ba5ee0d6e9a1fa6e6d559",
+    "archiveSha256": "4d79c506a203dc624e91bdc08369a6c154ef9bbf7043616c51d426097e5836a2"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575901,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:14Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575901",
+      "workflowName": "Native provenance interoperability and performance"
+    },
+    "file": "44982575901.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "dd9379cdf0193063045323e6b4ce83bf905b984a01f2fbf72c09c12d4936a7fb",
+    "archiveSha256": "83a192995568ec9f3cbbed6e716e1608faea628c208c424402a61bc33bac4ce4"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575961,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:19Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575961",
+      "workflowName": "Self-development status"
+    },
+    "file": "44982575961.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "65fe4c8a86e3058724eb25dc29fa15b50a1786fb115ce0551510e96e5866fbd8",
+    "archiveSha256": "5ad8647324240503e09a405b175c2d5710fc07ec40ba6e8b8934bd7f2bfe838b"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575863,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:41Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575863",
+      "workflowName": "Observe read-only GitHub authorization profiles"
+    },
+    "file": "44982575863.log.gz",
+    "rawBytes": 108244,
+    "rawLines": 697,
+    "rawSha256": "34f5ba7bb80776a1c9493cd854dc110491c3f7c7848e72e78f19d0a721b9fd35",
+    "archiveSha256": "29ddcd5968887098e9803a62f8e46c035edf53c1c94500a5a7a9ec9def3ed186"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575853,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:24Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575853",
+      "workflowName": "Stock Rust Install"
+    },
+    "file": "44982575853.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "d6bf0492302e6bfeef665f221b07a90e51a1dc1f13641f0a046784af411b453a",
+    "archiveSha256": "866bc6c5653e1e4d98bf99115a899f0b63172eee9383db5cb2e87924b27b52f3"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575919,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:24Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575919",
+      "workflowName": "container-images"
+    },
+    "file": "44982575919.log.gz",
+    "rawBytes": 4580,
+    "rawLines": 38,
+    "rawSha256": "ec277db1586b3e05dd8a96724486901dfe03f12769531d9c39575ba4581f9d49",
+    "archiveSha256": "979dbe2f4c78d670e2bc25ae6314e7f58f9951e37b6961ac67115ecca3b90cb3"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575906,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:07Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575906",
+      "workflowName": "Task Ladder"
+    },
+    "file": "44982575906.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "2921a1787bce02e4861746325d751dd73062ca2c322de71c82acd2fa037e1beb",
+    "archiveSha256": "891d89c0a6d6de6520888a53ad81a4fd0a5799f4560462a1b25788f7e7933288"
+  }
+]

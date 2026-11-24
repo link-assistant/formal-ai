@@ -1,0 +1,16 @@
+{
+  "records": 38,
+  "beforeFix": {
+    "passed": 3,
+    "failed": 1
+  },
+  "afterFix": {
+    "headroomCasesPassed": 5,
+    "nativeGroupCasesPassed": 50,
+    "maintainedCasesPassed": 138
+  },
+  "nativeBuildRun": false,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

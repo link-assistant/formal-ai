@@ -1,0 +1,17 @@
+{
+  "run": 44720120798,
+  "head": "1fd0c4fd131e318593299cfe05d0167f6efd35fc",
+  "job": 136233430159,
+  "artifact": 14621054940,
+  "artifactSha256": "844aef3f30f2dcbce12eb625b80d7eee987023008c804a77f187f41894accc3f",
+  "fixture": "rust/tests/fixtures/codeql/hosted-inactive-optional-dependency.json.gz",
+  "fixtureRawSha256": "e4fcbe037ed79ac6c83338fc52e5888e4d2906852bb2ca319188db768bd1aa1e",
+  "fixtureGzipSha256": "b311543f6e69dcab01f51de514b9c3b0ede33652a718aea1ded690ea95898c27",
+  "inputs": {
+    "metadata.json": "6457898232b80839719735d1a1b0c386770c28199fbe0929cc65f9a22999c681",
+    "build.jsonl": "81765630e15a8c467fbaf366bd37284615cc346e455e73959fd4d9ea895d3b64"
+  },
+  "transformation": "Parse both original files; combine the complete metadata and complete JSON build-message stream in a single object, serialize canonically and gzip. No metadata nodes or messages are omitted.",
+  "fullIssueComplete": false,
+  "independentFormalAiReasoningCredit": 0
+}

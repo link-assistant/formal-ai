@@ -1,0 +1,51 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 182,
+    "totalPages": 254,
+    "completeFiles": 135,
+    "partialFiles": 1,
+    "literalLines": 10874,
+    "nextForwardPage": 183,
+    "remainingPages": 72,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-inventory.json",
+      "newReadLines": [
+        133,
+        1288
+      ],
+      "cumulativeReadLines": [
+        1,
+        1288
+      ],
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 190,
+    "totalPages": 254,
+    "completeFiles": 135,
+    "partialFiles": 1,
+    "literalLines": 12030,
+    "nextForwardPage": 191,
+    "remainingPages": 64,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "All eight pages were literally read without truncation. The original transitive inventory records retained, updated and removed dependencies; its Maven version strings and upstream references are pinned historical evidence, not present-day package or issue-state assertions. No new complete file is credited. Pages 191\u2013254 and semantic applicability remain unfinished. Supplied reading earns zero independent authorship credit."
+  ]
+}

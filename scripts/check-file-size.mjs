@@ -16,6 +16,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
+import {safeLogText} from './lib/github-actions-log.mjs';
 
 import {
   RustError, extension, fileName, lineCount, lines, readToString, trimStart, walkDir,
@@ -104,7 +105,7 @@ function isEmbeddedLinoDataLine(line) {
  * `warn(line)` receives the stderr lines the Rust original prints.
  */
 export function checkListedFiles(cwd, listed = null, warn = (line) => process.stderr.write(`${line}\n`)) {
-  const result = { warnings: [], violations: [], embeddedDataViolations: [] };
+  const result = { warnings: [], violations: [], embeddedDataViolations: [], errors: [] };
   // Directories listed paths live under, so a walk need not open the rest.
   const listedDirectories = listed ? directoriesOf(listed) : null;
   // Pruning only skips directories none of whose files the Rust walk would
@@ -115,9 +116,15 @@ export function checkListedFiles(cwd, listed = null, warn = (line) => process.st
       || (listedDirectories !== null && !listedDirectories.has(relative));
   };
   for (const entry of walkDir(cwd, skip)) {
-    if (entry.error || entry.type !== 'file') continue;
+    if (entry.error) {
+      const message = `Error: ${entry.error}`;
+      result.errors.push(message);
+      warn(safeLogText(message));
+      continue;
+    }
+    if (entry.type !== 'file') continue;
     const relative = relativePath(entry.path, cwd);
-    if (shouldExclude(entry.path) || (listed && !listed.has(relative))) continue;
+    if (shouldExclude(relative) || (listed && !listed.has(relative))) continue;
     const limit = fileLimit(entry.path);
     const checkWorkerData = isWorkerJsPath(entry.path);
     if (!limit && !checkWorkerData) continue;
@@ -126,7 +133,9 @@ export function checkListedFiles(cwd, listed = null, warn = (line) => process.st
       content = readToString(entry.path);
     } catch (error) {
       if (!(error instanceof RustError)) throw error;
-      warn(`Warning: Could not read ${entry.path}: ${error.message}`);
+      const message = `Error: Could not read ${entry.path}: ${error.message}`;
+      result.errors.push(message);
+      warn(safeLogText(message));
       continue;
     }
     if (limit) {
@@ -175,12 +184,29 @@ export function warningAnnotation(finding) {
   return `::warning file=${escapeAnnotationProperty(finding.file)}::${escapeAnnotationMessage(message)}`;
 }
 
+/** Parse git diff --numstat -z. Null keeps all warnings on an invalid inventory. */
 export function growingPathsFromNumstat(numstat) {
-  return lines(numstat).flatMap((line) => {
-    const [added, removed, ...rest] = line.split('\t');
-    if (rest.length === 0 || !/^\+?[0-9]+$/.test(added) || !/^\+?[0-9]+$/.test(removed)) return [];
-    return Number(added) > Number(removed) ? [rest.join('\t')] : [];
-  });
+  if (numstat === '') return [];
+  if (!numstat.endsWith('\0')) return null;
+  const records = numstat.slice(0, -1).split('\0');
+  const growing = [];
+  for (let index = 0; index < records.length; index += 1) {
+    const header = records[index];
+    const first = header.indexOf('\t'), second = header.indexOf('\t', first + 1);
+    if (first < 0 || second < 0) return null;
+    const added = header.slice(0, first), removed = header.slice(first + 1, second);
+    let path = header.slice(second + 1);
+    if (path === '') {
+      if (!records[index + 1] || !records[index + 2]) return null;
+      path = records[index + 2]; index += 2;
+    }
+    if (added === '-' && removed === '-') continue;
+    if (!/^\+?[0-9]+$/.test(added) || !/^\+?[0-9]+$/.test(removed)) return null;
+    const addCount = Number(added), removeCount = Number(removed);
+    if (!Number.isSafeInteger(addCount) || !Number.isSafeInteger(removeCount)) return null;
+    if (addCount > removeCount) growing.push(path);
+  }
+  return growing;
 }
 
 function committablePaths() {
@@ -191,20 +217,24 @@ function committablePaths() {
 
 function growingPathsSince(base) {
   if (base === '' || [...base].every((ch) => ch === '0')) return null;
-  const output = spawnSync('git', ['diff', '--numstat', '--diff-filter=ACMR', base, 'HEAD', '--'], { maxBuffer: 1 << 30 });
+  const output = spawnSync('git', ['diff', '--numstat', '-z', '--diff-filter=ACMR', base, 'HEAD', '--'], { maxBuffer: 1 << 30 });
   if (output.error || output.status !== 0) return null;
-  return growingPathsFromNumstat(output.stdout.toString('utf8'));
+  const growing = growingPathsFromNumstat(output.stdout.toString('utf8'));
+  if (growing === null && process.env.FORMAL_AI_FILE_SIZE_DEBUG === '1') {
+    process.stderr.write('Incomplete NUL warning-growth inventory; reporting every size warning.\n');
+  }
+  return growing;
 }
 
 function printWarnings(warnings, out) {
   if (warnings.length === 0) return;
   for (const warning of warnings) {
     out(warningAnnotation(warning));
-    out(`WARNING: ${warning.file} has ${warning.lines} lines (approaching ${warning.label} limit of ${warning.maxLines}, warning threshold: ${warning.warnLines})`);
+    out(`WARNING: ${safeLogText(warning.file)} has ${warning.lines} lines (approaching ${warning.label} limit of ${warning.maxLines}, warning threshold: ${warning.warnLines})`);
   }
   out('');
   out('The following files are approaching their configured line limits:');
-  for (const warning of warnings) out(`  ${warning.file}`);
+  for (const warning of warnings) out(`  ${safeLogText(warning.file)}`);
   out('\nConsider extracting code to prevent concurrent PR merge limit violations.\n');
 }
 
@@ -212,7 +242,7 @@ function printViolations(violations, out) {
   if (violations.length === 0) return;
   out('Found files exceeding the line limit:\n');
   for (const violation of violations) {
-    out(`  ${violation.file}: ${violation.lines} lines (exceeds ${violation.label} limit of ${violation.maxLines})`);
+    out(`  ${safeLogText(violation.file)}: ${violation.lines} lines (exceeds ${violation.label} limit of ${violation.maxLines})`);
   }
   out('\nPlease refactor or split these files to stay under their limits\n');
 }
@@ -220,7 +250,7 @@ function printViolations(violations, out) {
 function printEmbeddedDataViolations(violations, out) {
   if (violations.length === 0) return;
   out('Found embedded Links Notation data in worker JavaScript:\n');
-  for (const violation of violations) out(`  ${violation.file}:${violation.line}: ${violation.message}`);
+  for (const violation of violations) out(`  ${safeLogText(violation.file)}:${violation.line}: ${violation.message}`);
   out('\nMove worker seed data to data/seed and load it through seed_loader.js\n');
 }
 
@@ -231,7 +261,7 @@ function main() {
   const result = checkListedFiles(cwd, committablePaths());
   const growing = growingPathsSince(process.env.FILE_SIZE_WARNING_BASE ?? '');
   printWarnings(growing ? result.warnings.filter((finding) => growing.includes(finding.file)) : result.warnings, out);
-  if (result.violations.length === 0 && result.embeddedDataViolations.length === 0) {
+  if (result.errors.length === 0 && result.violations.length === 0 && result.embeddedDataViolations.length === 0) {
     out('All checked files are within their line limits\n');
     process.exitCode = 0;
     return;

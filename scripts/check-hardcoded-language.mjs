@@ -17,6 +17,7 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import {safeLogText} from './lib/github-actions-log.mjs';
 
 import {
   RustError, compareTuples, extension, ioErrorMessage, isWhitespace, lines, readToString, splitOnce,
@@ -287,7 +288,7 @@ export function scan(root, warn = (line) => process.stderr.write(`${line}\n`)) {
       content = readToString(entry.path);
     } catch (error) {
       if (!(error instanceof RustError)) throw error;
-      warn(`Warning: could not read ${entry.path}: ${error.message}`);
+      warn(safeLogText(`Warning: could not read ${entry.path}: ${error.message}`));
       continue;
     }
     const file = entry.path.startsWith(`${root}/`) ? entry.path.slice(root.length + 1) : entry.path;
@@ -362,13 +363,13 @@ function checkMode(root, out, err) {
     out('New hardcoded user-facing strings found in rust/src/ (not in the allowlist):\n');
     for (const entry of result.newViolations) {
       out(annotation(entry));
-      out(`  ${entry.file}: "${entry.text}"`);
+      out(`  ${safeLogText(entry.file)}: "${safeLogText(entry.text)}"`);
     }
     out('\nMove each string into grounded meanings under data/seed/ and look it\nup (e.g. via seed::response_for), or — only if it is genuinely part of\nthe existing debt — regenerate the allowlist with --write.\n');
   }
   if (result.staleEntries.length) {
     out('Stale allowlist rows (no longer present in rust/src/ — prune them):\n');
-    for (const entry of result.staleEntries) out(`  ${entry.file}: "${entry.text}"`);
+    for (const entry of result.staleEntries) out(`  ${safeLogText(entry.file)}: "${safeLogText(entry.text)}"`);
     out('\nThese strings were migrated or changed. Regenerate the allowlist with:\nrust-script scripts/check-hardcoded-language.rs --write\n');
   }
   return 1;

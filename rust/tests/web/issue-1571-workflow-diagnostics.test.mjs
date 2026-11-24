@@ -1,9 +1,12 @@
 // Issue #1571: CI steps that fail must show why, and caches must cache.
-// Workflow text is read directly so the check needs no installed package.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {execFileSync} from 'node:child_process';
-import {existsSync,readdirSync,readFileSync} from 'node:fs';
+import {execFileSync, spawnSync} from 'node:child_process';
+import {existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import YAML from 'yaml';
 
 const root=new URL('../../../',import.meta.url);
 const workflows=readdirSync(new URL('.github/workflows/',root)).filter(name=>/\.ya?ml$/u.test(name))
@@ -32,13 +35,88 @@ test('every rust-cache step names the rust/ workspace, because the repository ro
  assert.deepEqual(unbound,[]);
 });
 
-test('the learning cycle prints its captured stderr on every exit, so a failed cargo run is not a bare exit 101',()=>{
- const {text}=workflows.find(({name})=>name==='learning-cycle.yml');
- const step=text.slice(text.indexOf('- name: Run one learning cycle'));
- const run=step.slice(0,step.indexOf('\n      - name:'));
- const trap=run.search(/^\s*trap '[^']*cat learning-cycle\/run\.log[^']*' EXIT$/mu);
- assert.ok(trap>=0,run);
- assert.ok(trap<run.indexOf('cargo run'),'the trap is installed before the first cargo run');
+const learningJobs = YAML.parse(workflows.find(({name}) => name === 'learning-cycle.yml').text).jobs;
+const learningJob = learningJobs.cycle;
+
+// Replays PR run 45351919319, where the learning job reserved 90% of its clock.
+test('learning-cycle phase budgets collectively fit each job clock with setup headroom', () => {
+  for (const [name, job] of Object.entries(learningJobs)) {
+    const budgets = job.steps.flatMap(step => step.env?.TEST_BUDGET_SECONDS ?? []);
+    assert.ok(budgets.length && budgets.every(seconds => Number.isInteger(seconds) && seconds > 0), name);
+    const seconds = budgets.reduce((sum, phase) => sum + phase, 0);
+    assert.ok(seconds * 100 <= job['timeout-minutes'] * 60 * 70,
+      `${name} reserves ${seconds} seconds under its ${job['timeout-minutes']}-minute cap`);
+  }
+});
+
+// Replays main run 45175845066, where live capture reached the job deadline.
+test('the live learning capture fails within an execution budget and keeps its diagnostics', (t) => {
+  const jobSteps = learningJob.steps;
+  const capture = jobSteps.find(step => step.id === 'capture');
+  assert.ok(capture, 'the ongoing live capture needs its own execution deadline');
+  const buildJob = learningJobs.build;
+  const build = buildJob.steps.find(step => step.name === 'Build the learning commands once');
+  assert.match(build.run, /cargo build --manifest-path rust\/Cargo.toml --release --locked/u);
+  assert.match(build.run, /--example dump_google_trends_learning --bin formal-ai/u);
+  assert.equal(learningJob.needs, 'build');
+  assert.equal(buildJob.outputs['artifact-id'], '${{ steps.commands.outputs.artifact-id }}');
+  const producer = buildJob.steps.find(step => step.id === 'commands');
+  assert.deepEqual(producer.with.path.trim().split('\n'), [
+    'rust/target/release/formal-ai',
+    'rust/target/release/examples/dump_google_trends_learning',
+  ]);
+  const download = jobSteps.find(step => step.uses === './.github/actions/download-artifact');
+  assert.deepEqual(download.with, {
+    'artifact-ids': '${{ needs.build.outputs.artifact-id }}', path: 'rust/target/release',
+  });
+  const guard = jobSteps.find(step => step.name === 'Check both learning commands before running either');
+  assert.ok(jobSteps.indexOf(download) < jobSteps.indexOf(guard) && jobSteps.indexOf(guard) < jobSteps.indexOf(capture));
+  const diagnostics = jobSteps.find(step => step.with?.name === 'learning-cycle-failure');
+  assert.equal(diagnostics.if, `failure() && hashFiles('learning-cycle/run.log') != ''`);
+  assert.equal(diagnostics.with.path, 'learning-cycle/');
+  const proposals = jobSteps.find(step => step.with?.name === 'learning-cycle-proposals');
+  assert.equal(proposals.if, undefined);
+  const assertionIndex = jobSteps.findIndex(step => step.name === 'Assert the run stayed proposal-only and human-gated');
+  assert.ok(assertionIndex >= 0 && assertionIndex < jobSteps.indexOf(proposals));
+
+  const cwd = mkdtempSync(join(tmpdir(), 'learning-cycle-budget-'));
+  t.after(() => rmSync(cwd, {recursive: true, force: true}));
+  symlinkSync(fileURLToPath(new URL('scripts/', root)), join(cwd, 'scripts'), 'dir');
+  const examples = join(cwd, 'rust', 'target', 'release', 'examples');
+  mkdirSync(examples, {recursive: true});
+  const runnerTemp = join(cwd, 'runner temp');
+  mkdirSync(runnerTemp);
+  const example = join(examples, 'dump_google_trends_learning');
+  const runGuard = () => spawnSync('bash', ['-c', guard.run], {cwd, encoding: 'utf8'});
+  const runCapture = () => spawnSync('bash', ['-c', capture.run], {
+    cwd,
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      RUNNER_TEMP: runnerTemp,
+      TEST_BUDGET_SECONDS: '1',
+      TEST_BUDGET_GRACE_SECONDS: '0',
+      TEST_BUDGET_POLL_SECONDS: '0.05',
+    },
+  });
+
+  writeFileSync(example, '#!/bin/bash\nprintf "frontier\\n"\nprintf "%s\\n" "$FORMAL_AI_SOURCE_CACHE_DIR" >&2\nsleep 4\n');
+  const missing = runGuard();
+  assert.equal(missing.status, 1);
+  assert.match(missing.stdout, /Missing learning command.*formal-ai/u);
+  writeFileSync(join(examples, '..', 'formal-ai'), 'fixture binary\n');
+  assert.equal(runGuard().status, 0);
+  const failure = runCapture();
+  assert.equal(failure.status, 124, failure.stderr);
+  assert.match(failure.stderr, /::error title=Capture the live Google Trends frontier exceeded its execution budget/u);
+  assert.ok(failure.stderr.includes(join(runnerTemp, 'learning-cycle-source')));
+  assert.equal(readFileSync(join(cwd, 'learning-cycle', 'run.log'), 'utf8'), failure.stderr);
+  assert.equal(readFileSync(join(cwd, 'learning-cycle', 'frontier.lino'), 'utf8'), 'frontier\n');
+
+  writeFileSync(example, '#!/bin/bash\nprintf "source_sha256 ready\\n"\n');
+  const success = runCapture();
+  assert.equal(success.status, 0, success.stderr);
+  assert.equal(readFileSync(join(cwd, 'learning-cycle', 'frontier.lino'), 'utf8'), 'source_sha256 ready\n');
 });
 
 // GitHub annotated every job of main run 7837d50 (95 notices) with "The
@@ -94,10 +172,10 @@ test('every runtime package in the desktop and VS Code locks accepts the Node 24
 // while the Cargo audit read only rust/Cargo.lock and stayed green. Which
 // lockfiles the job checks out is pinned in fast-pull-request-production-profile.
 test('the Cargo audit discovers every committed Cargo.lock and holds unshipped ones to vulnerabilities, unsound and yanked',()=>{
- const locks=execFileSync('git',['ls-files','--','Cargo.lock','*/Cargo.lock'],{cwd:root,encoding:'utf8'}).trim().split('\n');
+ const locks=execFileSync('git',['ls-files','-z','--','Cargo.lock','*/Cargo.lock'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
  assert.ok(locks.includes('rust/Cargo.lock')&&locks.length>1,locks.join(', '));
  const script=readFileSync(new URL('scripts/check-rust-dependencies.sh',root),'utf8');
- assert.match(script,/done < <\(git ls-files -- 'Cargo\.lock' '\*\/Cargo\.lock'\)/u);
+ assert.match(script,/git ls-files -z -- 'Cargo\.lock' '\*\/Cargo\.lock'/u);
  assert.match(script,/cargo audit --file "\$each" --deny unsound --deny yanked/u);
- assert.match(script,/::error::\$each is committed but not checked out/u);
+ assert.match(script,/::error::\$annotation_path is committed but not checked out/u);
 });

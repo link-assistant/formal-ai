@@ -66,6 +66,29 @@ fn file_sink_failed(directory: Option<&std::path::Path>, error: &io::Error) {
     }
 }
 
+// Probe writability without leaving a session log when the command emits no events.
+fn check_log_directory(directory: &std::path::Path) -> io::Result<()> {
+    static PROBE_SEQUENCE: AtomicU64 = AtomicU64::new(0);
+    fs::create_dir_all(directory)?;
+    let probe = directory.join(format!(
+        ".writability-{}-{}.tmp",
+        std::process::id(),
+        PROBE_SEQUENCE.fetch_add(1, Ordering::Relaxed)
+    ));
+    let mut options = OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    let mut file = options.open(&probe)?;
+    let flushed = file.flush();
+    drop(file);
+    let removed = fs::remove_file(probe);
+    flushed.and(removed)
+}
+
 pub fn configure(silent: bool, _serve: bool) {
     let silent = silent || crate::solver_config::ephemeral_enabled();
     SILENT.store(silent, Ordering::Relaxed);
@@ -75,7 +98,7 @@ pub fn configure(silent: bool, _serve: bool) {
     FAILURE_REPORTED.store(false, Ordering::Relaxed);
     if !silent {
         if let Some(directory) = directory() {
-            match open_log_file(&directory).and_then(|mut file| file.flush()) {
+            match check_log_directory(&directory) {
                 Ok(()) => set_file_health(&json!({"status":"writable","directory":directory})),
                 Err(error) => file_sink_failed(Some(&directory), &error),
             }
@@ -309,7 +332,8 @@ fn directory() -> Option<PathBuf> {
             std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".formal-ai/logs"))
         })
 }
-/// Render the legacy request trace from its declarative wire header.
+/// Render request metadata; full payloads require their separate explicit custody opt-in.
+/// Mirrors the JavaScript server logger's explicit trace payload boundary.
 #[must_use]
 pub fn request_trace_message(method: &str, path: &str, body: &str) -> String {
     static HEADER: OnceLock<String> = OnceLock::new();
@@ -329,7 +353,11 @@ pub fn request_trace_message(method: &str, path: &str, body: &str) -> String {
         header,
         &[("method", method), ("path", path), ("body_bytes", &bytes)],
     );
-    format!("{header}\n{body}")
+    if crate::solver_config::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY") {
+        format!("{header}\n{body}")
+    } else {
+        header
+    }
 }
 
 // Producer budgets mirror js/logging/diagnostic-metadata.mjs, not reader policy.

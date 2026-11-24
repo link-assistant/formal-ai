@@ -1,0 +1,175 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-observations/focused.stdout",
+      "file": "php-pipe-observations--focused.stdout.gz",
+      "bytes": 395,
+      "lines": 11,
+      "rawSha256": "a56f0a7afae7f657b0bc51e3332e39e7d22696ec4a8b576bc0640c321221c94e",
+      "archiveSha256": "06b3cf3769e550699d2c68ecce45c01781d104e12459029ab7df86c493c59a07"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-observations/focused.stderr",
+      "file": "php-pipe-observations--focused.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-observations/outcome.json",
+      "file": "php-pipe-observations--outcome.json.gz",
+      "bytes": 430,
+      "lines": 12,
+      "rawSha256": "d8aae0fa39e32794797d047e58acd5a3d7de3a2b7d3aca3806eff162fe3fd591",
+      "archiveSha256": "f2d672fec7f7cf3f97882954670c7553f63c625b846abe0490c6e400720fcc2d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-observations/precise-duplicate-review.txt",
+      "file": "php-pipe-observations--precise-duplicate-review.txt.gz",
+      "bytes": 17267,
+      "lines": 281,
+      "rawSha256": "70e63c5f98c8ffa0eb59332403f42fe220d2cea99e536df2d7c32b4b20477df4",
+      "archiveSha256": "838a3a73e63be7e89be958502ff7a046489c1de8e517f3d4812e08b8d2dc8771"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-maintained-check/outcome.json",
+      "file": "php-pipe-maintained-check--outcome.json.gz",
+      "bytes": 71,
+      "lines": 5,
+      "rawSha256": "6fe360319978937b19da20820594f894e821f36f83452a9b5fc4c6720cdab9ee",
+      "archiveSha256": "953b1a3b02b36f63c5f6cf3d2a2d4db163f54fbaaccfec924bb52d2be4aa1ef4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-maintained-check/entry.stdout",
+      "file": "php-pipe-maintained-check--entry.stdout.gz",
+      "bytes": 12883,
+      "lines": 152,
+      "rawSha256": "0f9a579cba61de55761f70cc04bd6a37e78123e8cb9d5aa5c45950685758c813",
+      "archiveSha256": "0d838fedf540c73ec760d9dff1ed22a54ffde1c5fabb2e442c405b169e2efbe4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-maintained-check/entry.stderr",
+      "file": "php-pipe-maintained-check--entry.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/outcome.json",
+      "file": "php-pipe-annotation-verification--outcome.json.gz",
+      "bytes": 318,
+      "lines": 18,
+      "rawSha256": "acf245e0de2bd05e2f101285e970cf47b717453cfa0a79b8caecca7007cac3f9",
+      "archiveSha256": "649df4ef2fe64b2daf637f64303d854d858cded6a8f35408a82b6ffe48b79231"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/old-warning.stdout",
+      "file": "php-pipe-annotation-verification--old-warning.stdout.gz",
+      "bytes": 1517,
+      "lines": 30,
+      "rawSha256": "7e38dda5c3727162fa35fbc6a7f66304f063aa0447968fd9d29a8e0654a4dc69",
+      "archiveSha256": "7ffeb348c2963bb42f04b7279eab88c34992f953b06e2e7dd9f8dc198b046066"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/old-warning.stderr",
+      "file": "php-pipe-annotation-verification--old-warning.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/maintained-entry.stdout",
+      "file": "php-pipe-annotation-verification--maintained-entry.stdout.gz",
+      "bytes": 11407,
+      "lines": 127,
+      "rawSha256": "4aea476cbacf44389c6e08166022d20a7564286dfc441badb405aaaa88b2a964",
+      "archiveSha256": "d8cce0bc120b272fc58f700ec984c20c42298a261f777481f99fcf8a7cfd0377"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/maintained-entry.stderr",
+      "file": "php-pipe-annotation-verification--maintained-entry.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/verify.py",
+      "file": "php-pipe-annotation-verification--verify.py.gz",
+      "bytes": 1518,
+      "lines": 15,
+      "rawSha256": "94465117661a43eccfde485e7b05c62c339c3346d3ec6f0bf6dec884f1017da0",
+      "archiveSha256": "35be1a8a79ca19bec8618e59116c04a733e92fbeb9aba525cb6b87dc4a26cc3f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/old-wrapper.sh",
+      "file": "php-pipe-annotation-verification--old-wrapper.sh.gz",
+      "bytes": 8368,
+      "lines": 202,
+      "rawSha256": "2cac2f8212f7862a03686b29c499bd06cbda63fb728bbaf577a0d0b049f085ad",
+      "archiveSha256": "a43364c213e29e3d2f5f00ab350e32aab78b893895b9a6b1aadae21f476f9491"
+    },
+    {
+      "source": "/tmp/issue-1580-research/php-pipe-annotation-verification/old-boundary.test.mjs",
+      "file": "php-pipe-annotation-verification--old-boundary.test.mjs.gz",
+      "bytes": 2861,
+      "lines": 58,
+      "rawSha256": "d9fd8ff878f252ffe7da3c84d614543527296416bcab00f98902bc354128cd0a",
+      "archiveSha256": "6201ea46e2d9ce4c0c41ad23a9c8525f02bb1ed7889e65ca276f98fd4af0b003"
+    },
+    {
+      "source": "/tmp/issue-1580-research/draft-php-pipe-observations.py",
+      "file": "helper--draft-php-pipe-observations.py.gz",
+      "bytes": 1990,
+      "lines": 16,
+      "rawSha256": "f195b81e12b8e53c71308e4ad1c1c6ff4246c7564b91b0653f847cccdca1fb3d",
+      "archiveSha256": "645b98a1135751e9558593ae1c34a75b5de3fca00e51d1d13ca0c87125f0a3ce"
+    },
+    {
+      "source": "/tmp/issue-1580-research/repair-annotation-fixture-readiness.py",
+      "file": "helper--repair-annotation-fixture-readiness.py.gz",
+      "bytes": 2715,
+      "lines": 42,
+      "rawSha256": "a17cb20b8610808c1028af19d94985bc230752fc1d8807375beddf18b9f46c97",
+      "archiveSha256": "bbb246192cb4ca5df618913ad5253968d06cf3078c33fad04400e4e02079f64e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/verify-php-pipe-and-annotation-round.py",
+      "file": "helper--verify-php-pipe-and-annotation-round.py.gz",
+      "bytes": 1991,
+      "lines": 21,
+      "rawSha256": "c30837bd389dfdfb63b8293f6718906f34c66d08a317085e033f5c4027ea0bf9",
+      "archiveSha256": "05cb5589781ebb53f4dcc7b7b3de11bf23ba3c2d8ec195bb588bd56c3a4107c8"
+    },
+    {
+      "source": "/tmp/issue-1580-research/seal-php-pipe-and-annotation-evidence.py",
+      "file": "helper--seal-php-pipe-and-annotation-evidence.py.gz",
+      "bytes": 7163,
+      "lines": 89,
+      "rawSha256": "d7dd0ebb07a809362d89b4b2b73ab5baa7c4f12db09a65b2e06fd79dd3320170",
+      "archiveSha256": "eede961387bac43270c4cc46578bcd71829446b3d5bcc40d0680e9b4ddbaaf5e"
+    },
+    {
+      "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/fixtures/php-template/scripts/src/Process.php",
+      "file": "fixture--Process.php.gz",
+      "bytes": 1670,
+      "lines": 63,
+      "rawSha256": "97a1b126035a71434739ecc962d73c74b44ea8ea802263b74031e04332b43bbf",
+      "archiveSha256": "071a559b4cf9896eb1f746367aa84eba3dfcc4375a66019c90e203f565e2a623"
+    },
+    {
+      "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/fixtures/php-template/scripts/src/ProcessResult.php",
+      "file": "fixture--ProcessResult.php.gz",
+      "bytes": 501,
+      "lines": 28,
+      "rawSha256": "b16970ed6e98e100c00dc3716c0084c1186f0e1a41cfafc96de2696657147d1c",
+      "archiveSha256": "02f28e87dfcf257cfbe89fdee4bfc3b5288977ae2beb72b6c5852b9fca60d8ee"
+    }
+  ],
+  "allHashesVerified": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

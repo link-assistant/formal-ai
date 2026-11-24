@@ -1,0 +1,70 @@
+{
+  "entries": [
+    {
+      "file": "record-0000.gz",
+      "source": "affected-gates.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0001.gz",
+      "source": "affected-gates.stdout",
+      "rawSha256": "f665acc77770a7630798fa15a9172e159f6bc12cec31a059e4973b1a4d204660",
+      "archiveSha256": "2440a92df75e3c24f060a420912431e443ed2542c613db281123818ba7b4dd1d",
+      "bytes": 279,
+      "lines": 9
+    },
+    {
+      "file": "record-0002.gz",
+      "source": "commands.json",
+      "rawSha256": "522d24144e90cde6f246bd9a5da1470f0799772a580757b416d9eda40f9be809",
+      "archiveSha256": "08e57a1e21e9daff1ed314cf5eb933ccc7f62ff89d5ae3b4fdb3853e60cf6792",
+      "bytes": 487,
+      "lines": 22
+    },
+    {
+      "file": "record-0003.gz",
+      "source": "index-before.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0004.gz",
+      "source": "index-before.stdout",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0005.gz",
+      "source": "ledger-before.gz",
+      "rawSha256": "00ab7ac1fc551c8be83dd1e5a6c704f828e50da4703ff4ecd5ddf4cfecc77c27",
+      "archiveSha256": "9c9c77aeb9988cbe7e0817324c57cbf8030278809bc294e041caedeb84e6186e",
+      "bytes": 23837,
+      "lines": 181
+    },
+    {
+      "file": "record-0006.gz",
+      "source": "worker.log",
+      "rawSha256": "486cbd5d7a4e5da167edf4abbae0f90f250624c5efbaa3abba18b8fc1d44035e",
+      "archiveSha256": "e25281c1b08abe13591764c442bcdfd60e850dd05d7927b5a5d58661d092345d",
+      "bytes": 32,
+      "lines": 2
+    },
+    {
+      "file": "record-0007.gz",
+      "source": "repair-generic-component-notation.py",
+      "rawSha256": "b2ad9ac12d3b7acbc4a38da7f95600376f128cd699d2cf4e6b484dcfc2b3c705",
+      "archiveSha256": "44981e77d2809e5399d7c55e338227ea67accfc58f4f4376977459dfbe67c5cf",
+      "bytes": 4988,
+      "lines": 59
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

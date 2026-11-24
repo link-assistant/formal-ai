@@ -1,0 +1,159 @@
+{
+  "complete": false,
+  "checks": [
+    {
+      "name": "format-source",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "rust/src/meta_executor.rs",
+        "rust/src/meta_executor/decomposition.rs",
+        "rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.128,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "seed-writer",
+      "argv": [
+        "node",
+        "scripts/generate-seed-registry.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 0.118,
+      "rawLines": 8,
+      "rawSha256": "1279428e5ec7e58c281d860e81aa9a2fca085124391653b6a388b91d2569f011",
+      "archiveSha256": "25f7842a8a9e2ba452afcdbe79e634efe52357447bd4381b2d7409995393879d"
+    },
+    {
+      "name": "worker-writer",
+      "argv": [
+        "node",
+        "scripts/generate-worker-crate-modules.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 1.368,
+      "rawLines": 1,
+      "rawSha256": "2846054bb565e5c0a01c488e728f5247ac711b27ad7757af4524aaef06b235de",
+      "archiveSha256": "3bd035650ab902d07e208d7766f32b2a1f24f6f4217e3133b263e1bbbfb42218"
+    },
+    {
+      "name": "typescript-writer",
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 2.918,
+      "rawLines": 1,
+      "rawSha256": "208975fd0793d9e72ae9c819a1b66a03921dfe523a0ff765d01b76e8d2341707",
+      "archiveSha256": "bf462b81ecede1021bca140a969e7e94e6e9f1ca535c1e300a7a401859ebe1ce"
+    },
+    {
+      "name": "fixture-writer",
+      "argv": [
+        "node",
+        "experiments/issue-1550/parity-fixture.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 5.741,
+      "rawLines": 3,
+      "rawSha256": "5519296b947e0bb5f1c8cbcf2a909aa0f992b740ef18416fbc7b2bb5ad882ecd",
+      "archiveSha256": "a793412f0b2797b1a11d0d1014c62bc183955f07dc40f2d502528070accf4528"
+    },
+    {
+      "name": "executor",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-meta-executor.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.819,
+      "rawLines": 33,
+      "rawSha256": "8e36a2da3f766ec28381a868af9b176fc52f2b893a9d7d8a6234cfd4a16a50bd",
+      "archiveSha256": "84d61131ca1c700bd3b9dd8880ca5b4cbe46357826d3ddb6483714bc4ab72c13"
+    },
+    {
+      "name": "factual-questions",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 11.551,
+      "rawLines": 23,
+      "rawSha256": "f5d00ceb1885c76121b8a8976ecbcb1a022c6065ee36fe96767308e28e4d191f",
+      "archiveSha256": "d27c2a6254775716ccf8c2e9982f67a524ea556aebb89f8415d489995d442b83"
+    },
+    {
+      "name": "fixture-check",
+      "argv": [
+        "node",
+        "experiments/issue-1550/parity-fixture.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 6.149,
+      "rawLines": 3,
+      "rawSha256": "522246f421112f829cf1d1cfb89b1a6bd61ae3c556798f4b66334820b9e3d5f2",
+      "archiveSha256": "65a7dba385c459198afa248e90fc44d744a92dab189ce66997a8f35cebcb3e7e"
+    },
+    {
+      "name": "format-check",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/meta_executor.rs",
+        "rust/src/meta_executor/decomposition.rs",
+        "rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.105,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "translation-writer",
+      "argv": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--write",
+        "--fetch",
+        "--jobs",
+        "1",
+        "js/agentic/crate/meta_executor.mjs",
+        "js/agentic/crate/task_decomposition_cues.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.191,
+      "rawLines": 12,
+      "rawSha256": "625587aa1a96839e56109418614e2f1d3757a26a7799dad908797b7d3a505f4a",
+      "archiveSha256": "9fb194dbb901619051e54888fb9326c0c6a94a7f875b65f60ef83d902c11c3a0"
+    }
+  ],
+  "observedAt": "2026-11-18T09:59:07.856023+00:00",
+  "nativeExecuted": false,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 152257\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

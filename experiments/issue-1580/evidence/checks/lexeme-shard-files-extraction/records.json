@@ -1,0 +1,90 @@
+{
+  "entries": [
+    {
+      "file": "extract-lexeme-shard-files.py.gz",
+      "rawSha256": "e58855714f655d937d8147d093e7a005862791728169944f47976ada41510bcb",
+      "archiveSha256": "ea5a49a27d8d1496a22e078e64e0596a721f1f658a5dfc66d2987e5de1e367d1",
+      "bytes": 6464,
+      "lines": 77
+    },
+    {
+      "file": "branch.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "branch.stdout.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+      "bytes": 24,
+      "lines": 1
+    },
+    {
+      "file": "commands.json.gz",
+      "rawSha256": "39ac22104af003a14d59356a69329e9b09d200fb2f769df9b7e6d2d65b4766c2",
+      "archiveSha256": "df04040f1c82fb60ef96cb5f5b1086bf1da873b5f3fe18560342f92c6a8ba2a2",
+      "bytes": 696,
+      "lines": 43
+    },
+    {
+      "file": "index-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "index-before.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "inverse-proof.json.gz",
+      "rawSha256": "48783ceac2892f5c31a09b5ff339d41a6a7025b1139bcbbbaeb50192793107f0",
+      "archiveSha256": "74a0e65c52826c9ad7befac5ffb543b938778ce21b313a30249b9909a901f54e",
+      "bytes": 573,
+      "lines": 14
+    },
+    {
+      "file": "lexeme-projection-javascript.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "lexeme-projection-javascript.stdout.gz",
+      "rawSha256": "67b6ab5f28d6c314aa9fd999da15b187558bca91f498ed260d0d2ba3adbd08a3",
+      "archiveSha256": "588a2334a29e0953df3dea1cff8cfaa03ffc3c9ce95b77000804831b73362a29",
+      "bytes": 612,
+      "lines": 13
+    },
+    {
+      "file": "original-source.rs.gz.gz",
+      "rawSha256": "09e384e0f74c257019e9dd68f22aec63f5d96aa574fc90991a768948d20f13d0",
+      "archiveSha256": "a65dc1b93960dc18069d3f77cc6a6b146af920c3cfb35529529a14294eeb49da",
+      "bytes": 8902,
+      "lines": 57
+    },
+    {
+      "file": "rust-format.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "rust-format.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -26,9 +26,10 @@ MODEL_CATALOG="$RUN_DIR/formal-ai-model-catalog.json"
 
 codex_cli() {
   if [ -n "$CODEX_BIN" ]; then
-    "$CODEX_BIN" "$@"
+    python3 "$ROOT/experiments/issue_859_codex_e2e/own-process-group.py" "$CODEX_BIN" "$@"
   else
-    bunx --package "@openai/codex@$CODEX_VERSION" codex "$@"
+    python3 "$ROOT/experiments/issue_859_codex_e2e/own-process-group.py" \
+      bunx --package "@openai/codex@$CODEX_VERSION" codex "$@"
   fi
 }
 

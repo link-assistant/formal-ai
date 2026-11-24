@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_quantity_constraints.js"
-  ceiling 174
-  rationale "The explicit quantity aggregate parser and inclusive-bound comparison. Native twin rust/src/quantity_constraint.rs owns the same source frame; tryArithmetic also delegates ordinary expressions to tryArithmeticExpression."
+  ceiling 180
+  rationale "The explicit quantity aggregate parser and inclusive-bound comparison. Native twin rust/src/quantity_constraint.rs owns the same source frame; tryArithmetic also delegates ordinary expressions to tryArithmeticExpression. Issue #1580 adds six lines reusing existing prime validation before loose arithmetic, matching solver_dispatch::handle_arithmetic in the default JavaScript runtime; no new primality algorithm or global allowance."

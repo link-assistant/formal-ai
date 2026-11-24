@@ -1,0 +1,193 @@
+{
+  "files": [
+    {
+      "file": "after.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "after.stdout.gz",
+      "bytes": 2638,
+      "sha256": "6adae32977be43731a51527dab4ca0834dd3fe2eb45204c22bf2ba900f777155"
+    },
+    {
+      "file": "before.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "before.stdout.gz",
+      "bytes": 3136,
+      "sha256": "9ec282973fdd149938e29de073cdaaaa709788a64c39907ef230c46c5aafb5eb"
+    },
+    {
+      "file": "changelog-fragment-output.test.mjs.before.gz",
+      "bytes": 3401,
+      "sha256": "ef20cd627ef6d744a96e5656ba2cb9d286bfff960961bedad9a4d9aa366eb2ef"
+    },
+    {
+      "file": "check-abbreviations.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "check-abbreviations.stdout.gz",
+      "bytes": 67,
+      "sha256": "7888153859515be6f7ed0d54bf1d61352ebe6283ccd0ec9555e0bc7454db6b1a"
+    },
+    {
+      "file": "check-changelog-fragment-js-twin.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "check-changelog-fragment-js-twin.stdout.gz",
+      "bytes": 80,
+      "sha256": "49745cf7b6aca05e1465769133984b3d8053f78d877d3329d67881223d06f99f"
+    },
+    {
+      "file": "check-changelog-fragment.mjs.before.gz",
+      "bytes": 3722,
+      "sha256": "d412a06bf5e426a4e2edc8067235a0fba6c38f238192d3fb8aa19eafe0f3587a"
+    },
+    {
+      "file": "check-changelog-fragment.rs.before.gz",
+      "bytes": 5884,
+      "sha256": "1d687da0029c21818bc3bd2b5111bde6c8461d139e1e22410c908129ae383dfa"
+    },
+    {
+      "file": "check-file-size.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "check-file-size.stdout.gz",
+      "bytes": 63,
+      "sha256": "582282a9667970db3179738358a2237d1b677cfce4c1b3093a3f232fef04ab38"
+    },
+    {
+      "file": "check-readable-code.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "check-readable-code.stdout.gz",
+      "bytes": 68,
+      "sha256": "6adf6f0f383107e2b332393a2168cf4a657daa656bd06a9027cf8f006ab7291e"
+    },
+    {
+      "file": "default-branch-build-policy.test.mjs.before.gz",
+      "bytes": 87664,
+      "sha256": "bf71b6b9d46138e2e03dd3caa9ad09da9ec16bf5f3062fe9e5282249d86175e8"
+    },
+    {
+      "file": "final.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "final.stdout.gz",
+      "bytes": 797,
+      "sha256": "a16952e2f5aebaaea0d0a5032369dc106b92baf4c816600f3a57c453024e34a3"
+    },
+    {
+      "file": "git-output.mjs.before.gz",
+      "bytes": 701,
+      "sha256": "99f8e50728b67c5c170ac308ab391cdc3c2c0f8d88b24bb21559795c2a5fe159"
+    },
+    {
+      "file": "native-admission.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "native-admission.stdout.gz",
+      "bytes": 7006,
+      "sha256": "b98904f2df795000f6492de00162af90cb88d6343cb11fff2bcb2a1222d8d832"
+    },
+    {
+      "file": "native-registration.json.gz",
+      "bytes": 1022,
+      "sha256": "f28bbdef2ef66c83cdc9a694cb0cb64995f49934e7b081e80c60307becf5c889"
+    },
+    {
+      "file": "outcome.json.gz",
+      "bytes": 1572,
+      "sha256": "69acd9f82444596fe8445a4e951547807cbd8d7ae0b5292b1aa1d62795de50be"
+    },
+    {
+      "file": "policy.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "policy.stdout.gz",
+      "bytes": 15923,
+      "sha256": "a562b0607dfccc25821184616a9067112da914c8712042a56cb81657606c32f6"
+    },
+    {
+      "file": "rustfmt-edition-write.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "rustfmt-edition-write.stdout.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "rustfmt-final.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "rustfmt-final.stdout.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "rustfmt-write.stderr.gz",
+      "bytes": 967,
+      "sha256": "0e333e483dda20869279e1a800201ecf89e4995b8a0af2b28ac632d07f17ebe5"
+    },
+    {
+      "file": "rustfmt-write.stdout.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "rustfmt.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "rustfmt.stdout.gz",
+      "bytes": 274,
+      "sha256": "1ee858f4db461d59a48d9b1a0ec4b9bf811141309f110e4569218035c1f67268"
+    },
+    {
+      "file": "source-pattern-before.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "source-pattern-before.stdout.gz",
+      "bytes": 3683,
+      "sha256": "7defcc599405dfbe33c16c331790d4bc799d20fe90979ffc0a2c3eb1087bb160"
+    },
+    {
+      "file": "workflows.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflows.stdout.gz",
+      "bytes": 57,
+      "sha256": "6332fbbc0d39f4f2facab0423c6b5072c1676d9cb12041c1e1f32022d7e60808"
+    }
+  ],
+  "beforeFailed": true,
+  "finalPassed": true,
+  "initialNoRenamesAttemptExposedRootLayoutRegexBug": true,
+  "rustfmtEditionFailureRetained": true
+}

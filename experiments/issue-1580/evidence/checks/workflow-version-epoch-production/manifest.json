@@ -1,0 +1,60 @@
+{
+  "schema": "formal-ai-issue-1580-production-epoch-probe-v1",
+  "at": "2026-11-22T09:21:07.356484+00:00",
+  "productionHead": "bbc0ac4d86dec65f8fe47378befe16c1c8776ffb",
+  "files": [
+    {
+      "file": "production-epoch-probe-first.log.gz",
+      "bytes": 23483,
+      "sha256": "c8b4b1d0594bdf6593b6a04bb3c6678ef5e5f9ef96488502539af8d33e8d95de"
+    },
+    {
+      "file": "production-epoch-probe-corrected.log.gz",
+      "bytes": 2524,
+      "sha256": "af19d3a5bf51d6a72d552fb9969f010cead16bc1fc3422273bb96a1632b9d4aa"
+    },
+    {
+      "file": "production-epoch-probe-final.log.gz",
+      "bytes": 2524,
+      "sha256": "af19d3a5bf51d6a72d552fb9969f010cead16bc1fc3422273bb96a1632b9d4aa"
+    },
+    {
+      "file": "recipe-epoch-correct-native-entrypoints-driver.log.gz",
+      "bytes": 18566,
+      "sha256": "cb8c9b74e0277332da4db7badad4ff01e368ac72b8c8bf6f39b994586150e2db"
+    },
+    {
+      "file": "hive-3909-current-driver.log.gz",
+      "bytes": 4042,
+      "sha256": "592ed25b79a2cc46eb3c76720d35ec20cfe6e2334ee9b905c82561a8f09b382e"
+    }
+  ],
+  "initialProbeSha256": "da83d24597af76ad2fd43d94a22d5a94ff360d80e7c1ff648adf3fc80d154b5e",
+  "sourceHashes": {
+    "experiments/issue-1580/probe-workflow-double-resolution.mjs": "5d97a169ffe4bbeedb93674657923a5698494351ea06176063d1dae9af737d01",
+    "js/agentic/command_reroute.mjs": "65e4df270dd6572061a83dfe957c02fe11be03fcc30266fac816f190baef935f",
+    "js/agentic/ci_workflow.mjs": "c7fd5742be8a3dc88949b361832acca246bf21aacd6ac9e403b0bfd7c3a0cdfa",
+    "js/agentic/crate/version_resolution.mjs": "3c374af6f8867c689aa6f3b4b465c2848b7674e0b0da7f0f2603d28301b03932",
+    "rust/src/agentic_coding/command_reroute.rs": "ea63cdd69720ac58e703c0cf0cfa4a8ce1ef18a4d86107485a16dc84280f87f2",
+    "rust/src/agentic_coding/command_reroute/recipe_execution.rs": "edbe60b05ca45955ba637d775be64003c04750d7847a4ffe2f3dae43f09124a5",
+    "rust/src/agentic_coding/ci_workflow.rs": "f7760bdda32bceb035019c25bde05a4cbc2659535d0e8ce5491785be0f5edf95"
+  },
+  "observed": {
+    "stableNextCommand": "sh tests/verify-output.sh",
+    "cachedOriginNextResult": "recipe-source-epoch-invalidated",
+    "sameResolvedPins": true,
+    "generationPassesPerPlannerCall": 2,
+    "fixtureCaptureCount": 119
+  },
+  "initialFixtureFailures": [
+    "The guessed workflow path differed from the maintained generator path.",
+    "Reusing a mutable answer object let one control modify the next control input."
+  ],
+  "initialFullOutputLiterallyReviewed": false,
+  "finalOutputFullyReviewed": true,
+  "nativeRuntimeExecuted": false,
+  "nativeSourceReview": "The complete 140-line workflow module and the first 240 lines of recipe execution are read. Source correspondence is not native runtime proof.",
+  "hostedRootCauseVerified": false,
+  "productionFixImplemented": false,
+  "autonomousAuthorshipCredit": 0
+}

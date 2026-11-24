@@ -1,0 +1,15 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "experiments/issue-1580/template-python-release-formatting.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 2.32,
+  "log": "focused-first.log.gz",
+  "rawSha256": "751d151756638b491b164047166ff60c9a850bcceb76c87998cc843877cc99be"
+}

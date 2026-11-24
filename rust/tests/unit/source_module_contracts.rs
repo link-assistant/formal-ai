@@ -111,7 +111,7 @@ mod small_model_fallback {
 }
 
 mod triz_solver {
-    use formal_ai::seed::parser::parse_lino;
+    use formal_ai::seed::parse_lino;
     use formal_ai::triz_solver::{triz_cues, triz_demands, triz_families};
 
     #[test]

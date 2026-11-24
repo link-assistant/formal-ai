@@ -1,0 +1,10 @@
+[
+  {
+    "source": "warning-evidence-consumers-focused/stdout",
+    "file": "warning-evidence-consumers-focused/stdout.gz",
+    "rawSha256": "b9b0af7775d36d0e83bee597630567b59ce11aa53f72f20fcfc116e3c798e1f0",
+    "archiveSha256": "e735e80d312508315729646ffd10cb359fe1bedd103d912ef1968c3b86e72d57",
+    "bytes": 1477,
+    "lines": 8
+  }
+]

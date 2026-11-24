@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-11-18T01:35:42.031074+00:00",
+  "head": "7e89122c9d030b3af5eec2d346141bba3ff3fdab",
+  "capturePhase": "after focused checks; source unchanged since checks, verified by draft diff review",
+  "nativeBehaviorVerified": false,
+  "files": [
+    {
+      "path": "rust/src/solver_handlers/verifiable_task.rs",
+      "bytes": 26861,
+      "sha256": "de8e147289af40dbdea905bfe1797ae8b4e2959cef2f2b0db8e2c2bdba02c087"
+    },
+    {
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "bytes": 34204,
+      "sha256": "03540cabfa6375a71fab2175a7b743b5c02e25a22432b589a0d2840fe684e480"
+    },
+    {
+      "path": "rust/tests/unit/specification/synthesis.rs",
+      "bytes": 18714,
+      "sha256": "257e83c8d00c70af9ce40adeb4708cc63fb778b103487d4accb0da9545e872b9"
+    },
+    {
+      "path": "rust/tests/web/connector-work-item-receipts.test.mjs",
+      "bytes": 9956,
+      "sha256": "591de9e3c84923d144562c6be4adf2c29af083e9c55b1d4554c7d16e9f5db349"
+    },
+    {
+      "path": "rust/tests/web/issue-1138-execution-parity.test.mjs",
+      "bytes": 4317,
+      "sha256": "a5395bac4d4d0e8308c912f17997c5a40b7c031c75fecffd7ae64ee4d7eb4653"
+    }
+  ]
+}

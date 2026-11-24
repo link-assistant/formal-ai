@@ -58,6 +58,7 @@ async function solve(prompt) {
 const FIRST_STATEMENT = "- The Moon is the only natural satellite of Earth. → "
   + "(moon wikidata_property_instance_of unknown:only unknown:natural unknown:satellite name:earth)";
 
+/** The causal vocabulary recognizes "because", leaving 195 unknown terms. */
 /** Prompts in every seeded language and the first line of the answer. */
 const SUMMARIES = [
   [
@@ -106,6 +107,31 @@ test("formalize <url> answers the statements of the fetched page in every langua
     assert.equal(lines.at(-1), more, prompt);
     assert.ok(answer.evidence.includes(`page_formalization:request:${URL_UNDER_TEST}`), prompt);
     assert.ok(answer.evidence.includes("response:page_formalization"), prompt);
+  }
+});
+
+test("each of the 62 factual statements retains its actual known terms", async () => {
+  await ready;
+  worker.roundTripProse = fixtureParagraphs("Moon").join("\n");
+  const report = plain(evaluate(worker, `(() => {
+    const page = crateModule('crate/page_formalization.mjs');
+    const text = crateModule('crate/text_formalization.mjs');
+    const typed = crateModule('crate/typed_meaning.mjs');
+    const report = page.formalizePage(roundTripProse, 'en');
+    return {counts: {factual: report.factual, survived: report.survived},
+      rows: report.sentences.flatMap(sentence => sentence.statements).map(statement => {
+        const reread = text.clauseStatement(text.deformalizeStatement(statement, 'en'), 'en', null, false);
+        return {source: statement.text, known: text.knownIds(statement), back: text.knownIds(reread),
+          typed: typed.typedMeaning(statement.dialogue), backTyped: typed.typedMeaning(reread.dialogue)};
+      })};
+  })()`));
+  assert.deepEqual(report.counts, {factual: 62, survived: 62});
+  assert.equal(report.rows.length, 67);
+  const factual = report.rows.filter(row => row.known.length > 0);
+  assert.equal(factual.length, 62);
+  for (const row of factual) {
+    assert.deepEqual(row.back, row.known, row.source);
+    assert.equal(row.backTyped, row.typed, row.source);
   }
 });
 

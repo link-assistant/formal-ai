@@ -1,0 +1,18 @@
+{
+  "subject": "Committed warning repair secret gate",
+  "source": "db399c509eebd977215b76752f1174a20c762641",
+  "baseline": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "secretGatePassed": true,
+  "fullLiteralLogRead": true,
+  "hostedRepairPending": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1247,
+    "sha256": "6c27f439d6b247cdcf5e24649fb6bb32036f05162107229eed5cb7116880936a"
+  },
+  "members": 6,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T14:32:04.701574+00:00"
+}

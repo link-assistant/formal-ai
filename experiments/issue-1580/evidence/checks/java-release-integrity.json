@@ -1,0 +1,55 @@
+{
+  "observedAt": "2026-11-17T12:38:42.673454+00:00",
+  "sourceRepository": "link-foundation/java-ai-driven-development-pipeline-template",
+  "sourceCommit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "commands": [
+    "timeout 600 node --test --test-concurrency=1 experiments/issue-1580/template-java-release-integrity.test.mjs",
+    "timeout 600 node --test --test-concurrency=1 rust/tests/web/issue-1580-template-observations.test.mjs",
+    "node experiments/formal_ai_subagent/local-gates.mjs --only check-file-size,check-file-size-js-twin,check-changelog-fragment-js-twin,check-ci-speed"
+  ],
+  "results": {
+    "focused": {
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    "maintained": {
+      "pass": 16,
+      "fail": 0,
+      "skip": 0
+    },
+    "gates": {
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "reproduction": "The unchanged release helper suppresses a real rejected Git commit, reports released=true and pushes a new-version tag containing the old version to a disposable local bare remote. Both modes reproduce. A one-line candidate repair in disposable copies blocks tags/pushes; four successful release controls retain the correct version.",
+  "limits": [
+    "No hosted workflow or Maven build",
+    "No external network or remote template modification",
+    "The candidate repair is not applied upstream",
+    "No native runtime or whole-issue completion claim",
+    "Supplied scripts and decisions earn zero independent Formal AI reasoning/authorship credit"
+  ],
+  "files": [
+    {
+      "file": "java-release-integrity-focused.log.gz",
+      "bytes": 630,
+      "sha256": "44019f26554df28637d520a16a61f7075745e16b13bd849fc999c45fc5f4d75b",
+      "compressedSha256": "4b703859c98a231b95ed4e1c690588a159b8d2f6c6a15baef305eb21a9d57fd7"
+    },
+    {
+      "file": "java-release-integrity-maintained.log.gz",
+      "bytes": 1711,
+      "sha256": "5485750d9448478b706ac459edba3deb4a5758e8a29ef9802569c91b67a2c56c",
+      "compressedSha256": "71fa93a6aac3764698e8aee499f5bc6b8bb0b7c0e400f666c44eb4b1af165c31"
+    },
+    {
+      "file": "java-release-integrity-gates.log.gz",
+      "bytes": 165,
+      "sha256": "823fb34ddaf3efa9b6d23a609e6661887edeed2b64a249715359141a15bedbea",
+      "compressedSha256": "4eddb43d78b01bf9b2e73a928fd6c9b293800d212f98d1cb902b3958818d6fc1"
+    }
+  ]
+}

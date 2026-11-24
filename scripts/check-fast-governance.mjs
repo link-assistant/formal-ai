@@ -14,7 +14,9 @@ export const governanceChecks = Object.freeze([
   {name: 'honest-closure', command: 'python3', args: ['scripts/check-closure-audit.py']},
   {name: 'role-namespace', command: 'python3', args: ['scripts/generate-role-registry.py', '--check']},
   {name: 'seed-metadata', command: process.execPath, args: [...nodeArguments, 'scripts/audit-seed-metadata.mjs']},
-  {name: 'response-language-parity', command: process.execPath, args: [...nodeArguments, 'scripts/generate-response-parity-debt.mjs', '--check']}
+  {name: 'response-language-parity', command: process.execPath, args: [...nodeArguments, 'scripts/generate-response-parity-debt.mjs', '--check']},
+  // Issue #1580: PR #1577 grew a worker module past its shard and only main's lint saw it.
+  {name: 'worker-line-budget', command: process.execPath, args: [...nodeArguments, 'scripts/check-worker-line-budget.mjs']}
 ]);
 
 function hostedEnvironment(environment) {

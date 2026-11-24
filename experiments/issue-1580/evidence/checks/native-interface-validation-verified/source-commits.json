@@ -1,0 +1,20 @@
+{
+  "repairCommit": "5ddbc75e86198496dd5f6684fa540d44ae894106",
+  "interfaceCommit": "7cbf0a8f11e28f379419b9e30c7d10de64dd9dbe",
+  "localJavascriptPassed": 65,
+  "affectedGatesPassed": 7,
+  "nativeTestsAdded": 77,
+  "nativeReplayObserved": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "sourceHashes": {
+    "rust/Cargo.toml": "4128544673f11119aa47b685f29757ae0b0543c9a7bdbb7afb8155b2bc65d539",
+    "rust/tests/integration/interface_contracts.rs": "e43aa364797dea08f6c9bf8be842c3a6a568bce9af4e43d21b07cd661cbbfd5b",
+    "rust/tests/unit/reasoning_contracts.rs": "733c296db658b83722bc5e60261f67c4236106bfe65e82c371bcbb595f42a932",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "5823229b44c2e99bdce38db02a42392368b21145c0cd8eb0a3c4423e772bfbac",
+    "scripts/ci-native-regressions.sh": "b8143e60e682bd89672af13e88c4afb4ff485614d68a0ee50ec4666f7ca3e0c1",
+    "scripts/ci-pull-request-admission.mjs": "11058c9f5b028b685448ff91e8cd1d4ec993261ac60d524148cfc8123d82bfaf",
+    "ts/worker/formal_ai_worker_source_endpoints.ts": "af9d28a0f508dde226c4b36f8c4b1dd69b35b61235c9332d3e84cee297ce89b9",
+    "changelog.d/issue-1580-native-interfaces.md": "37aba5b6629952963aa92c707934fd4a37213d22fd5438d73dc022dc4092b17c"
+  }
+}

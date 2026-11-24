@@ -1,0 +1,268 @@
+[
+  {
+    "file": "sealed-macro-observation-batch/abbreviation-list.txt.gz",
+    "rawSha256": "fe4ad300426eec7a22bd63e880d5584e702c843fdd6960226e048ac72104cd25",
+    "archiveSha256": "91800f3e6ad3cece1dd19492452ba87e4ea905d13db72ef00a92658b0d17950e",
+    "bytes": 4703,
+    "lines": 96
+  },
+  {
+    "file": "sealed-macro-observation-batch/check-abbreviations.detailed.log.gz",
+    "rawSha256": "bd33bcc4ee03f1de9c2734b0a39d17b68b5100656bf99fee59b4ee4762b083ca",
+    "archiveSha256": "529e8626fc483de267aea5a32d1e94db9c916f450edce706238ac1e5483811ff",
+    "bytes": 423,
+    "lines": 5
+  },
+  {
+    "file": "sealed-macro-observation-batch/check-file-size-js-twin.detailed.log.gz",
+    "rawSha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9",
+    "archiveSha256": "5ee4009241ee13da1c71e44fd09fb5ba26e15b6bfda355aee981d571bca96f50",
+    "bytes": 139,
+    "lines": 2
+  },
+  {
+    "file": "sealed-macro-observation-batch/check-file-size.detailed.log.gz",
+    "rawSha256": "941deca2018bf9247aadecbb387d17970458330d4261afff3541d1cb43635bbe",
+    "archiveSha256": "e23d2fc70b4fc3c25e3af75be11c50d0433ce23ff7ad5f5128b8ec25fda6d53e",
+    "bytes": 47545,
+    "lines": 368
+  },
+  {
+    "file": "sealed-macro-observation-batch/gates.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch/gates.stdout.gz",
+    "rawSha256": "3604b8154afeb230ab0c41150d7fe90c41024197a2e4bf4b0ec5b1973bb8049b",
+    "archiveSha256": "93b0138bb25d2647b65d8d9cc5c396838bd607831766eb42508cf4f0d95750d3",
+    "bytes": 244,
+    "lines": 6
+  },
+  {
+    "file": "sealed-macro-observation-batch/outcome.json.gz",
+    "rawSha256": "147fa1d19061d66ae0321580b9084f29a6b980575cbe804eeca6995bf812ff68",
+    "archiveSha256": "2d6a81c372a4661dca679eb0d5b14455ab69d091039ce369e36b91a40fbcd297",
+    "bytes": 594,
+    "lines": 30
+  },
+  {
+    "file": "sealed-macro-observation-batch/pid.gz",
+    "rawSha256": "056e4ea89fcfaf031763f617192dc9fb74db87493bf898c0c613a2667b02743f",
+    "archiveSha256": "9dffd5841e28e622c9249b2eb94622fa931c5ce2f4bb99da35b5b54f41433d4f",
+    "bytes": 8,
+    "lines": 1
+  },
+  {
+    "file": "sealed-macro-observation-batch/stage.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch/stage.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch/staged-selection.json.gz",
+    "rawSha256": "0fa50fc4a1520307520e6a074e862cbadfa4d0f13aa57be513a8d57457a190bf",
+    "archiveSha256": "2607ecb14f28bcc26aa74be775ad8a8cdafc1366f3003df895f4c096242f2fea",
+    "bytes": 141980,
+    "lines": 3152
+  },
+  {
+    "file": "sealed-macro-observation-batch/worker.log.gz",
+    "rawSha256": "86e5c6f25fc5ca0ad8326b11a03b0b145593bf7010cef15550c0d60c6726cfed",
+    "archiveSha256": "b4020c91558198610b71cd7c1cd584ff12bed4412d557e09295ada10cc965011",
+    "bytes": 659,
+    "lines": 12
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/check-abbreviations.detailed.log.gz",
+    "rawSha256": "9d706e09ccc0e2ed635bd9d6afc31dda7ecccbc5c7033a67d1cb2abd63a79cdc",
+    "archiveSha256": "0d98b455a8ecbd2206064e6f46eb440a146288475047af09290ccbd31eb80221",
+    "bytes": 169,
+    "lines": 4
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/check-file-size-js-twin.detailed.log.gz",
+    "rawSha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9",
+    "archiveSha256": "5ee4009241ee13da1c71e44fd09fb5ba26e15b6bfda355aee981d571bca96f50",
+    "bytes": 139,
+    "lines": 2
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/check-file-size.detailed.log.gz",
+    "rawSha256": "941deca2018bf9247aadecbb387d17970458330d4261afff3541d1cb43635bbe",
+    "archiveSha256": "e23d2fc70b4fc3c25e3af75be11c50d0433ce23ff7ad5f5128b8ec25fda6d53e",
+    "bytes": 47545,
+    "lines": 368
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/gates.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/gates.stdout.gz",
+    "rawSha256": "5f2adf9c398854eb73152ee592921fa4da5542cc61718ee378e6beb2adf588ee",
+    "archiveSha256": "f99aaa54a06e5a8165d7e7e130ef03c56095d30ac33bd62ecc811fb4c1f084ff",
+    "bytes": 154,
+    "lines": 6
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/outcome.json.gz",
+    "rawSha256": "527908ddc48997cf28152077da03e953dae11de0e2c27e1942e23fc4f9b0295e",
+    "archiveSha256": "4ffae9ddecead948da3bb0ae0c8a80ee2d67e2fc0ca8c2c6273413b16d2a5110",
+    "bytes": 72451,
+    "lines": 681
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/pid.gz",
+    "rawSha256": "e58a96f35f4f8c7505fe6953095d70c3e66e6e20e24a3e48e01a06cd022456c2",
+    "archiveSha256": "099ec4dc765aa292dec651217f25d5c5f485154ba3a8afccfe1f81b213045650",
+    "bytes": 8,
+    "lines": 1
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/secrets.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/secrets.stdout.gz",
+    "rawSha256": "d738b128fb05b42c35614b863dea7b02bf0844f7f466a6f8ba65586430dad963",
+    "archiveSha256": "bb338ee469d78ef505e0765b6d5e80b587f2694a7e8d3ebe863c63933b347e66",
+    "bytes": 235,
+    "lines": 5
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/stage.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/stage.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/staged-selection.json.gz",
+    "rawSha256": "1b4029565b24d077a296acfafaa7ceaa637d78afd72be6432f823489306b53dd",
+    "archiveSha256": "ba22b922bd1c70c58186e57c67bf081cb0ec01176f812c2ba5fb5f4cd8eacea6",
+    "bytes": 142251,
+    "lines": 3157
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/whitespace.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/whitespace.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "sealed-macro-observation-batch-corrected/worker.log.gz",
+    "rawSha256": "16ae6a4e71aec367fdd3dc109d63d32f02280f751ecb210f700b29d89e3b4dd3",
+    "archiveSha256": "5b8c11a5e238c41c99958eb71129a38cd40447d2898881eb18468c4978e7979b",
+    "bytes": 87,
+    "lines": 5
+  },
+  {
+    "file": "helpers/seal-next-repair-batch.py.gz",
+    "rawSha256": "f96e4d7737da052a972eb3b45b1818fec0e47395b6059ad1523c393146d18c9c",
+    "archiveSha256": "6d6854a4384e10d3ac5975a1727085e31404898c3b99f1838949a9a14a0a204b",
+    "bytes": 2502,
+    "lines": 46
+  },
+  {
+    "file": "helpers/seal-next-repair-batch.log.gz",
+    "rawSha256": "b8e49d544abebb2b98dcb95d10913a0cb4f73c663dc885b83ef5c9aa7e161827",
+    "archiveSha256": "0110b7acd0f12cd55bac49d0875612cbdb197646e8c422c723a85b7507bd24b2",
+    "bytes": 167,
+    "lines": 4
+  },
+  {
+    "file": "helpers/seal-macro-observation-batch.log.gz",
+    "rawSha256": "767ab2454cc6c4b549f5dceced8a0268d425111a561ae4ddf54c25348027ad2d",
+    "archiveSha256": "2e225857c28c4eddd61b7a3a5c5c390ee55038163c95f69737e946f31540b6d9",
+    "bytes": 245,
+    "lines": 4
+  },
+  {
+    "file": "helpers/seal-macro-observation-batch-corrected.log.gz",
+    "rawSha256": "0eaa2d96500b54b2aaf920a6c9ba623624dc6477f3d13b35344cd61bd4d49f38",
+    "archiveSha256": "5a66df4305fb872d6d4040f1a1d2453814c7955ca0936c098ac6b299eb6d1b01",
+    "bytes": 255,
+    "lines": 4
+  },
+  {
+    "file": "helpers/correct-macro-archive-paths.py.gz",
+    "rawSha256": "675e1723f0ab2fff030d5f3ae814ef54393d34617b775c8a82a0353c3c28d383",
+    "archiveSha256": "02863b9b8ea6829b993360580e7548dac26861247b102dcbfc6819af2df562e7",
+    "bytes": 1654,
+    "lines": 33
+  },
+  {
+    "file": "helpers/correct-macro-archive-paths.log.gz",
+    "rawSha256": "d4034e29675a150f0e774b100491d7c3ec18cdad33351c3bc35c025d177f3c8c",
+    "archiveSha256": "11efc28b528f90965ac5b29d5455594691c1a1cab94e7ef4500388be3150fe4e",
+    "bytes": 213,
+    "lines": 4
+  },
+  {
+    "file": "helpers/record-current-hosted-and-runtime-checkpoint.py.gz",
+    "rawSha256": "8eca50a33c33a9c55407a88ee4ae91b4a6d467e47c8766f36ae014c3ce3b5043",
+    "archiveSha256": "23c1855bed821f58226284dade78c35bce1dd9ea697023152fd0b03114100abe",
+    "bytes": 5141,
+    "lines": 70
+  },
+  {
+    "file": "helpers/record-current-hosted-and-runtime-checkpoint.log.gz",
+    "rawSha256": "3b93205e0710ffbfb5f2f4b643591d79ea9f0861a20029ecca1013c8d733e7c3",
+    "archiveSha256": "f3d8802380312116f79b9be6ccdd77010d82a9272e3ea68b350340a160964633",
+    "bytes": 217,
+    "lines": 4
+  },
+  {
+    "file": "helpers/document-terminal-bootstrap-head.py.gz",
+    "rawSha256": "09104e548ecf56c25a70dd4d207b99e2776baf789fc68e316f75537028b1b50d",
+    "archiveSha256": "296d4e63a40bc6293d99380fef7c700c349db6f0d815aa2bcfb4e76e149f30cb",
+    "bytes": 10899,
+    "lines": 109
+  },
+  {
+    "file": "helpers/document-terminal-bootstrap-head.log.gz",
+    "rawSha256": "4dfcac79b8bd0d7333dbe8843c9538a7cff141a6bc5b4a6f227ff141bd7b0774",
+    "archiveSha256": "27160ac6abefba0dab1672493ad5ca7f3b18168970c88d22964acbb74edc4323",
+    "bytes": 207,
+    "lines": 4
+  },
+  {
+    "file": "helpers/archive-macro-batch-sealing.py.gz",
+    "rawSha256": "a11968632015c38e6c3fedb8eefbe3a714e47dcc3eba2a72b8b3091ae3843d95",
+    "archiveSha256": "dd51432e346a45a6829e31da51ef69b2e0e9e357656eb67c0ae2ae756cd40d4b",
+    "bytes": 3686,
+    "lines": 47
+  }
+]

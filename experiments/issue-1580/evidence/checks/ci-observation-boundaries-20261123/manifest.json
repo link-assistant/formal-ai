@@ -1,0 +1,183 @@
+{
+  "source": "cec9207c3e139e2212f6d4ea478ff1b88e17be7c",
+  "scope": "Actual current-head failure logs; supplied candidate implementations; complete before/after controls and source-object comparisons. No native repair execution credit.",
+  "independentAuthorshipCredit": 0,
+  "archive": {
+    "path": "complete-replay.tar.gz",
+    "bytes": 1055836,
+    "sha256": "69d781da309ca7b318cf303068d1452e3ff69fa63a6dc52635903f8e421e3d2e"
+  },
+  "roundTripVerified": true,
+  "files": [
+    {
+      "path": "accepted-source-after.log",
+      "bytes": 224,
+      "sha256": "2cef488e4094bba44e740e991d03f2c84d3393b2b86c890d2479559ef487f163"
+    },
+    {
+      "path": "accepted-source-before.log",
+      "bytes": 3408,
+      "sha256": "acc33dd08e62c33033139347cce5092a8fca11d4960d19b1ad7a1a245f1be06d"
+    },
+    {
+      "path": "audit-observation-boundary/after-tests.log",
+      "bytes": 1576,
+      "sha256": "2119899951146dd6ad7028e8cfd69fe328b448459af332be581f290af0900ded"
+    },
+    {
+      "path": "audit-observation-boundary/before-final-tests.log",
+      "bytes": 5550,
+      "sha256": "0f23b00e993633b2382e6660c03cb953b8df2ab096e5ec1b2532e3fd515cd068"
+    },
+    {
+      "path": "audit-observation-boundary/before-tests.log",
+      "bytes": 6597,
+      "sha256": "a0223f5c9c69d03d3aa07e0bd5be0e2694f3855d37e68b9d04e24fb65ed708a6"
+    },
+    {
+      "path": "audit-observation-boundary/before.sh",
+      "bytes": 9185,
+      "sha256": "64cbfd18a0059f4b18944d973b75fa2173133b90603ed20d914dca2a6d249ad6"
+    },
+    {
+      "path": "audit-observation-boundary/before.test.mjs",
+      "bytes": 7130,
+      "sha256": "998b9f236660ec6cff5c044bd2ff7a036af72aad3692eb80db506b9c9ee2e459"
+    },
+    {
+      "path": "audit-observation-boundary/blocked-proof-tests.log",
+      "bytes": 863,
+      "sha256": "0e128216b62efdbd11bd84b9b3dc284b403f8edf54d7a59d45a947327df8ec21"
+    },
+    {
+      "path": "audit-observation-boundary/proof-tests.log",
+      "bytes": 389,
+      "sha256": "93c92a497bb4a31d7711da484b6411efc18e539eb8efd157097f0064cdd42b58"
+    },
+    {
+      "path": "boundary-focused-tests/cargo-audit-inventory.test.log",
+      "bytes": 1578,
+      "sha256": "992ae8ebe47ba41f729eed2f03c6e815b79e9448b61468c763a76e5f77df38bb"
+    },
+    {
+      "path": "boundary-focused-tests/issue-1138-concept-lookup.test.log",
+      "bytes": 662,
+      "sha256": "b6dfcb16218274eb3e10e1ed194295490a06d904a5ba8a86bf2d40cbd56c0c1d"
+    },
+    {
+      "path": "boundary-focused-tests/issue-1571-workflow-diagnostics.test.log",
+      "bytes": 693,
+      "sha256": "4db6e3f5bdbc92439422940f58847ad83824a24512e950a8bfedfa819eaf2f5e"
+    },
+    {
+      "path": "boundary-focused-tests/issue-991-how-to-synthesis.test.log",
+      "bytes": 992,
+      "sha256": "e5d5e13b76260aeb8c42855d7da01f6f58e1b265846b34014500d6b85b0f6e23"
+    },
+    {
+      "path": "boundary-focused-tests/outcome.json",
+      "bytes": 1794,
+      "sha256": "8ee04b586b1b458b3edd93fe7961d7626183ca15a33025c6b9ba66b9c15532ee"
+    },
+    {
+      "path": "boundary-focused-tests/procedural-runtime-parity.test.log",
+      "bytes": 1970,
+      "sha256": "e4618f34e79bbeb71fdab72bd6a2fddf2686ea14ee9cdd137ce9432b562264a4"
+    },
+    {
+      "path": "boundary-focused-tests/progress.json",
+      "bytes": 1614,
+      "sha256": "de30ab6e5cccddf7b6908a6f9b6d6216b648da5d0fccdd56fd7d57bc9f093c0d"
+    },
+    {
+      "path": "cec-native-lint-failure.log",
+      "bytes": 270410,
+      "sha256": "8339a2b022f81f0462990f9ef8fffda54117c09c7d83acbd1d12b14662f1f440"
+    },
+    {
+      "path": "cec-reasoning-1-failure.log",
+      "bytes": 78547,
+      "sha256": "db02e277403e677b300ee7c0924aa07e5df88fa61082ba0ee641a1b3e431b49d"
+    },
+    {
+      "path": "complete-witness-after.log",
+      "bytes": 2949,
+      "sha256": "5f4c86c06665ed81ef9466927db00e16f261c03ef848635b15cfd7c6409c3498"
+    },
+    {
+      "path": "current-repair-source.diff",
+      "bytes": 5166,
+      "sha256": "718e5a743b375cefe82838f1b0d77227224d9499c34d83ee7fc78a9bf70a05ce"
+    },
+    {
+      "path": "draft-accepted-source-detail.py",
+      "bytes": 2406,
+      "sha256": "2c7d00f959649c32c853bcf7e50c5d5ca5978b84ce5657cd46e365a6fcece9b9"
+    },
+    {
+      "path": "draft-audit-observation-boundary.py",
+      "bytes": 6219,
+      "sha256": "d186454a608944bb6be7258c00d42e1aa633a82d387a739679a4385d1089a25d"
+    },
+    {
+      "path": "draft-wordnet-observation-regression.py",
+      "bytes": 2276,
+      "sha256": "b667e20fcc053737204b401c436391f62f2b8807eff86534cb4611f56cd61669"
+    },
+    {
+      "path": "fixture-integrity-after.log",
+      "bytes": 309,
+      "sha256": "389337a51cb4603a0782acbb73df760b975b46eb95c2fb46219d5fd468165ead"
+    },
+    {
+      "path": "fixture-witness-after.v8",
+      "bytes": 1846348,
+      "sha256": "8fe5d0f7701c9c888a95ab8e49d0456edf91896a737fd684df44647a0d9fa51e"
+    },
+    {
+      "path": "fixture-witness-before.v8",
+      "bytes": 1846586,
+      "sha256": "6fecab27a7f1e99377dcffa30083deec82d40090ada3d331148eef11eb651752"
+    },
+    {
+      "path": "fixture-witness-refresh.json",
+      "bytes": 1583,
+      "sha256": "c71a02998463f82f8eb0c06a2edaf2f40342e1bcd8c66cc51167185bc7f402b4"
+    },
+    {
+      "path": "hosted-security-producer.log",
+      "bytes": 833826,
+      "sha256": "9f767276f86604170d73fc6300ae4f5a003d52bc141774b277d2f464744155b2"
+    },
+    {
+      "path": "refresh-fixture-witness.mjs",
+      "bytes": 2854,
+      "sha256": "a6ebbee8f1e2914f403fba3dea60226a72a71af1493b3727fc339d40fef269dc"
+    },
+    {
+      "path": "refresh-retained-link-payload.mjs",
+      "bytes": 1915,
+      "sha256": "9a3b944f3a9f26f9fa3eadf37959cc0659c5a24835df0814a1d81e0b6e6d642e"
+    },
+    {
+      "path": "retained-link-payload-refresh.json",
+      "bytes": 503,
+      "sha256": "177d915f48c37abf3c5fffe19089e143cb32cc31fb3395a3b143d9488f8919f6"
+    },
+    {
+      "path": "retained-payload-after.log",
+      "bytes": 3251,
+      "sha256": "948e73debe38be09e97208abcc034258cf7bd4dd721ff8dfb78fd10f146653fc"
+    },
+    {
+      "path": "run-focused-boundary-tests.py",
+      "bytes": 1109,
+      "sha256": "6cbd568fecf21ebf90da07cf303b72f216eeb8af46b03f3e084a66b32c434269"
+    },
+    {
+      "path": "wordnet-boundary-after.log",
+      "bytes": 213,
+      "sha256": "db0ab9cdb7f4e74215144353b1eadcb9277aff587a5d3c2d8e4a23bcb4fec6f5"
+    }
+  ]
+}

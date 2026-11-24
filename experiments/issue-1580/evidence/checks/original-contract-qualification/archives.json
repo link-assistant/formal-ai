@@ -1,0 +1,458 @@
+[
+  {
+    "file": "001.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-1.txt",
+    "rawSha256": "1f1787b865e23a34aafecff07d6a42fac5b36b71ef2033b51b24a6a79c73ca7e",
+    "archiveSha256": "5ac2216ce6a7849430ec6a07f0fa039598350e135b978a17a1926d19b0eea5ef",
+    "rawBytes": 8514,
+    "rawLines": 215
+  },
+  {
+    "file": "002.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-10.txt",
+    "rawSha256": "6e65c3cdad19f76d7f587f5eab554279321cd2f33caaa3e9974dee0ba8266cc9",
+    "archiveSha256": "81b83bb5ab20b9e39d451c95dc9c2c357f21f57e90eddfeb74722f14785187c3",
+    "rawBytes": 10993,
+    "rawLines": 334
+  },
+  {
+    "file": "003.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-11.txt",
+    "rawSha256": "4d2729fe8e47adb22b2ac9ac2651512d175c656abda14523fe56aedeeb013f51",
+    "archiveSha256": "c2745dc4fe6de1a23ee50518f42c9f7348225452d53f8077003a96b84f0c0c5c",
+    "rawBytes": 23860,
+    "rawLines": 493
+  },
+  {
+    "file": "004.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-2.txt",
+    "rawSha256": "7129fabd75f1c4aa67e563f52cf1227c03fd0f8b222afa7fbca8482843d8d8da",
+    "archiveSha256": "15f384c11cac9769a23800f281527b089c535b43d503e208105774a99c313c51",
+    "rawBytes": 11375,
+    "rawLines": 294
+  },
+  {
+    "file": "005.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-3.txt",
+    "rawSha256": "2127e6ce64e36cf199c9c7e7cd08c9fe94a8ebbc524bd9dad1ba5e36285448cb",
+    "archiveSha256": "d6b116d975ce31559c60c0459b8b491fb5da9521b461b4ef694004321383f041",
+    "rawBytes": 9582,
+    "rawLines": 227
+  },
+  {
+    "file": "006.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-4.txt",
+    "rawSha256": "10c204b425643db93532d6b10ef9b235bdd831807bffdb0abcc65c56f116c80e",
+    "archiveSha256": "14c39faf12fcab5a7944570afea3a40432013c03b1df94a3a3158591fc3ff310",
+    "rawBytes": 3985,
+    "rawLines": 85
+  },
+  {
+    "file": "007.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-5.txt",
+    "rawSha256": "31ce4d031a8b185e4e76694ef3f0c6d9ab666576527fc645486d9a9b0a0644ad",
+    "archiveSha256": "29e046f98e38785de120d12974e42eca31b2a1ed01201c34df31aa25204de35e",
+    "rawBytes": 5370,
+    "rawLines": 170
+  },
+  {
+    "file": "008.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-6.txt",
+    "rawSha256": "eb94e2762bf72ee776532429660fa6bc036e1acbcf5d028bd9049a74ce686341",
+    "archiveSha256": "22c2e7e13e3c424015efdfada495f3c0f4130c0c5fb70b82426ddf86d568659d",
+    "rawBytes": 5705,
+    "rawLines": 155
+  },
+  {
+    "file": "009.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-7.txt",
+    "rawSha256": "5d82a39657bd2e1be71f74facee955d10f0b43b3c848cc8400afc27603c97498",
+    "archiveSha256": "b716a776315bb1a0af87de632fc477dd6f9729a35efb0ab4fbb78a00a4b45d58",
+    "rawBytes": 10255,
+    "rawLines": 297
+  },
+  {
+    "file": "010.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-8.txt",
+    "rawSha256": "7528bf56c4ab1de1880e2c1ac7f1156354a441f32e33ee810cc3f0deb7da3b3b",
+    "archiveSha256": "91a9787015eace560b67771b42300cb881251f68658c8d1a7a6752c21f471e38",
+    "rawBytes": 7272,
+    "rawLines": 161
+  },
+  {
+    "file": "011.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/functions-part-9.txt",
+    "rawSha256": "160b2bd8041835891e4ba86e7614fe872b1a569cdfd7b6eb7a4f9f592212d972",
+    "archiveSha256": "4959a93e48dcec232b2fe4c87bfb25251e91409c35a35c5be7bd0b83250edf53",
+    "rawBytes": 4591,
+    "rawLines": 117
+  },
+  {
+    "file": "012.txt.gz",
+    "source": "/tmp/issue-1580-research/original-contract-current-functions/root-hive-fixture.patch",
+    "rawSha256": "d5ec32e74d9b77cd23092778e0a983d5942ca0f0178dca7aab8255aed0f5c322",
+    "archiveSha256": "17efde2d8c4bb4e64ebd251b8777bf8775b7599139e1d663971122446bcc8fab",
+    "rawBytes": 8814,
+    "rawLines": 187
+  },
+  {
+    "file": "013.txt.gz",
+    "source": "working-tree:rust/tests/fixtures/hive-mind/offline_delivery.rs",
+    "rawSha256": "d8c13899d476d1c3741ccca617dd930ba2f6904eed9b8dce02aa5833d6f3bf8f",
+    "archiveSha256": "a22ebb06f67d69a1e1b9e06c3e9d64966fe8f4f7b695ee69c0630c2c1f1a1d05",
+    "rawBytes": 15773,
+    "rawLines": 433
+  },
+  {
+    "file": "014.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/fixtures/hive-mind/offline_delivery.rs",
+    "rawSha256": "757f8c1331eec0126b4aa4cf1f6125f087894a15d5d8d08f27d8b67bd193dd6f",
+    "archiveSha256": "2bff09e6fbd8e54ced8608409873e539a6ecf136df58262b882539ac9af04a09",
+    "rawBytes": 15326,
+    "rawLines": 420
+  },
+  {
+    "file": "015.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/fixtures/hive-mind/offline_delivery.rs",
+    "rawSha256": "d8c13899d476d1c3741ccca617dd930ba2f6904eed9b8dce02aa5833d6f3bf8f",
+    "archiveSha256": "a22ebb06f67d69a1e1b9e06c3e9d64966fe8f4f7b695ee69c0630c2c1f1a1d05",
+    "rawBytes": 15773,
+    "rawLines": 433
+  },
+  {
+    "file": "016.txt.gz",
+    "source": "working-tree:rust/tests/integration/issue_819_tui_isolation.rs",
+    "rawSha256": "1ed6de6ff03f0743f087104aedf8d836f169b99fb21924a87cd728151eb92fc6",
+    "archiveSha256": "daf0abac8c545983df012faec0b965dc40be55012ec73696334364e3a64906f1",
+    "rawBytes": 3562,
+    "rawLines": 97
+  },
+  {
+    "file": "017.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/integration/issue_819_tui_isolation.rs",
+    "rawSha256": "2242c4e5e6334c146f6d81b47583136a894f2b7a624479c24fc14a984b1aafd2",
+    "archiveSha256": "0730c8fab738fa9f7830150f4bf20a15bfc95b786e9b12f6fc32613b6be72f39",
+    "rawBytes": 3369,
+    "rawLines": 93
+  },
+  {
+    "file": "018.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/integration/issue_819_tui_isolation.rs",
+    "rawSha256": "1ed6de6ff03f0743f087104aedf8d836f169b99fb21924a87cd728151eb92fc6",
+    "archiveSha256": "daf0abac8c545983df012faec0b965dc40be55012ec73696334364e3a64906f1",
+    "rawBytes": 3562,
+    "rawLines": 97
+  },
+  {
+    "file": "019.txt.gz",
+    "source": "working-tree:rust/tests/integration/with_formal_ai.rs",
+    "rawSha256": "d6b93ce35cd81d7fa3256e92c65132274344ba740533ef133fee3f0d7b1ba3cf",
+    "archiveSha256": "1f145bb62f63b9f115c8d474beb6f73bf10fdd227fbbcebbc66b453a8742112f",
+    "rawBytes": 32175,
+    "rawLines": 945
+  },
+  {
+    "file": "020.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/integration/with_formal_ai.rs",
+    "rawSha256": "3f95e66e3708f3b1d984f44b2fd0616eb02ad7df43ff188dabe2a4d856a3e786",
+    "archiveSha256": "f5aff374e21b99e8a38e552fe39ca47415f0439f7ab115723021785c29643c43",
+    "rawBytes": 31792,
+    "rawLines": 931
+  },
+  {
+    "file": "021.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/integration/with_formal_ai.rs",
+    "rawSha256": "d6b93ce35cd81d7fa3256e92c65132274344ba740533ef133fee3f0d7b1ba3cf",
+    "archiveSha256": "1f145bb62f63b9f115c8d474beb6f73bf10fdd227fbbcebbc66b453a8742112f",
+    "rawBytes": 32175,
+    "rawLines": 945
+  },
+  {
+    "file": "022.txt.gz",
+    "source": "working-tree:rust/tests/integration/with_formal_ai_argv.rs",
+    "rawSha256": "a6825176174d355184f9eea23a750fc559d29fd16a479baf8f63d76042532707",
+    "archiveSha256": "67eeff429a2e6f00bb99487dcda4ca213dd800c37631d15d8fbccd26425be049",
+    "rawBytes": 14040,
+    "rawLines": 441
+  },
+  {
+    "file": "023.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/integration/with_formal_ai_argv.rs",
+    "rawSha256": "74703fb170ce6951ca7259aa13c5249a34dada98d6f5774c6b123bf47406bee4",
+    "archiveSha256": "3fd2f7e171bc812290431ec95ab074df8174f7446c92b8c19901c2d3f9723d91",
+    "rawBytes": 13771,
+    "rawLines": 431
+  },
+  {
+    "file": "024.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/integration/with_formal_ai_argv.rs",
+    "rawSha256": "a6825176174d355184f9eea23a750fc559d29fd16a479baf8f63d76042532707",
+    "archiveSha256": "67eeff429a2e6f00bb99487dcda4ca213dd800c37631d15d8fbccd26425be049",
+    "rawBytes": 14040,
+    "rawLines": 441
+  },
+  {
+    "file": "025.txt.gz",
+    "source": "working-tree:rust/tests/unit/ci-cd/network_download_retry.rs",
+    "rawSha256": "c7a7c0392c81a6f9f05f0cce34a940145f5fa213cfda5dc046fedd612831a734",
+    "archiveSha256": "0374116e45d8cd17ea5d0dfa13c874fccb6a9e73283fa26c0b66af61702b4138",
+    "rawBytes": 7828,
+    "rawLines": 189
+  },
+  {
+    "file": "026.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/ci-cd/network_download_retry.rs",
+    "rawSha256": "90ec43ea0b65eaa33f5e03927ea4fa886b48c6959d5e899c497c2385a5db2b8f",
+    "archiveSha256": "68dd3d8f73c7a0beb0e7ae4ce25eef4f7465b7511f4089d5156730771cb6626f",
+    "rawBytes": 7712,
+    "rawLines": 187
+  },
+  {
+    "file": "027.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/ci-cd/network_download_retry.rs",
+    "rawSha256": "c7a7c0392c81a6f9f05f0cce34a940145f5fa213cfda5dc046fedd612831a734",
+    "archiveSha256": "0374116e45d8cd17ea5d0dfa13c874fccb6a9e73283fa26c0b66af61702b4138",
+    "rawBytes": 7828,
+    "rawLines": 189
+  },
+  {
+    "file": "028.txt.gz",
+    "source": "working-tree:rust/tests/unit/ci-cd/workflow_release.rs",
+    "rawSha256": "e16c455ce479a37a360eaea79eeb389b27b267bcc58a4a66472146c257062093",
+    "archiveSha256": "88c53006807fca34c41197ede138cc455903da17ddb59d3f530b412d8b8d12d8",
+    "rawBytes": 47312,
+    "rawLines": 985
+  },
+  {
+    "file": "029.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/ci-cd/workflow_release.rs",
+    "rawSha256": "c4472977961b36cf906189d51ac6e928d99110223002d91a3e6ea3c334a5fd53",
+    "archiveSha256": "edae623d5521fbb4a1ecea57e00da5bb7e44de1166cfb442be0b2ab01a3244e9",
+    "rawBytes": 46539,
+    "rawLines": 973
+  },
+  {
+    "file": "030.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/ci-cd/workflow_release.rs",
+    "rawSha256": "e16c455ce479a37a360eaea79eeb389b27b267bcc58a4a66472146c257062093",
+    "archiveSha256": "88c53006807fca34c41197ede138cc455903da17ddb59d3f530b412d8b8d12d8",
+    "rawBytes": 47312,
+    "rawLines": 985
+  },
+  {
+    "file": "031.txt.gz",
+    "source": "working-tree:rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+    "rawSha256": "b8c092e4ed1edbee890579d3386c5480831a24e47f2ecc144c6e376e24e898ed",
+    "archiveSha256": "ae5e744b70e2247fdedf490c0531d34779bef5482fc048262476ff227b632980",
+    "rawBytes": 6209,
+    "rawLines": 175
+  },
+  {
+    "file": "032.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+    "rawSha256": "dedd6453d0b0b2167bd053d6a4bdc101bcb24a6c70a7751b59ccbf2a6c069682",
+    "archiveSha256": "6f4c76c8e33ef7a945e0a5485c33e8ecb9241f1f414c686e20d09466b55224fd",
+    "rawBytes": 5427,
+    "rawLines": 153
+  },
+  {
+    "file": "033.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+    "rawSha256": "b8c092e4ed1edbee890579d3386c5480831a24e47f2ecc144c6e376e24e898ed",
+    "archiveSha256": "ae5e744b70e2247fdedf490c0531d34779bef5482fc048262476ff227b632980",
+    "rawBytes": 6209,
+    "rawLines": 175
+  },
+  {
+    "file": "034.txt.gz",
+    "source": "working-tree:rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+    "rawSha256": "47004d934729afd0ff2c97c48d60011f6d77d569fe6828c44e241513fb9b2929",
+    "archiveSha256": "e82df34b7369ee7dfa3a44aa02ab685fcebce6bf694088813ad49f53f35e54e3",
+    "rawBytes": 21014,
+    "rawLines": 528
+  },
+  {
+    "file": "035.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+    "rawSha256": "7e7533fd43e25b229be7126d9032ecda4fa2be1ed30b67cca2ce5e7bd7ba5e6d",
+    "archiveSha256": "6dc63dcae2e9e3ea952876aeb02a4a65116e486f191da75f9a450ac7f47d097b",
+    "rawBytes": 15846,
+    "rawLines": 427
+  },
+  {
+    "file": "036.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+    "rawSha256": "47004d934729afd0ff2c97c48d60011f6d77d569fe6828c44e241513fb9b2929",
+    "archiveSha256": "e82df34b7369ee7dfa3a44aa02ab685fcebce6bf694088813ad49f53f35e54e3",
+    "rawBytes": 21014,
+    "rawLines": 528
+  },
+  {
+    "file": "037.txt.gz",
+    "source": "working-tree:rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+    "rawSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+    "archiveSha256": "cd99a2c2766715b35fda54d8ad588167fb8fded4fc1d516add951859c9702bc4",
+    "rawBytes": 36828,
+    "rawLines": 1000
+  },
+  {
+    "file": "038.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+    "rawSha256": "0d7f54f332e7a7bb52b672aa086ecffd9c87712783a19b76aa66c6dde0b382b2",
+    "archiveSha256": "a516e4e08673663f66a3dad4b3249ac297d66ce358de28a2a1e1d00873089ea2",
+    "rawBytes": 31629,
+    "rawLines": 882
+  },
+  {
+    "file": "039.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+    "rawSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+    "archiveSha256": "cd99a2c2766715b35fda54d8ad588167fb8fded4fc1d516add951859c9702bc4",
+    "rawBytes": 36828,
+    "rawLines": 1000
+  },
+  {
+    "file": "040.txt.gz",
+    "source": "working-tree:rust/tests/unit/issue_498_google_trends.rs",
+    "rawSha256": "48d4e0e65c99949431a6f8453e283da50da92ce29f9972a1150130e44753ea7e",
+    "archiveSha256": "779be6a126d2319f2f74e4bb7f67b06967acf5ff3beca1186dc59d5d31599d7c",
+    "rawBytes": 6832,
+    "rawLines": 175
+  },
+  {
+    "file": "041.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/issue_498_google_trends.rs",
+    "rawSha256": "d71b2c0cb33aff4e5788eb59a58c75f10c57628b060059b2be68b35fc0fadf4b",
+    "archiveSha256": "533911548d0237a40cdec697f46e2704203346283af510a1d5baf8596cb4a031",
+    "rawBytes": 6741,
+    "rawLines": 175
+  },
+  {
+    "file": "042.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/issue_498_google_trends.rs",
+    "rawSha256": "48d4e0e65c99949431a6f8453e283da50da92ce29f9972a1150130e44753ea7e",
+    "archiveSha256": "779be6a126d2319f2f74e4bb7f67b06967acf5ff3beca1186dc59d5d31599d7c",
+    "rawBytes": 6832,
+    "rawLines": 175
+  },
+  {
+    "file": "043.txt.gz",
+    "source": "working-tree:rust/tests/unit/page_formalization_route.rs",
+    "rawSha256": "3f5b90614851c906716c9f2808cc5e9abfc25039641021103ffd97985d2e2477",
+    "archiveSha256": "ad3410c52be716ee301737e6562455f22ad7a6e51412ab2a99d0ed8d6b3ad3ff",
+    "rawBytes": 8156,
+    "rawLines": 186
+  },
+  {
+    "file": "044.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/page_formalization_route.rs",
+    "rawSha256": "eaa664e03ad469213345104ef2e79b60bfbffbcbb9b7b54617ce21ff9d37136c",
+    "archiveSha256": "a2a1d3df0f1e6ccb27f95b7980118c1fc9dbddf9240998d38bce4021663e82c1",
+    "rawBytes": 8081,
+    "rawLines": 185
+  },
+  {
+    "file": "045.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/page_formalization_route.rs",
+    "rawSha256": "3f5b90614851c906716c9f2808cc5e9abfc25039641021103ffd97985d2e2477",
+    "archiveSha256": "ad3410c52be716ee301737e6562455f22ad7a6e51412ab2a99d0ed8d6b3ad3ff",
+    "rawBytes": 8156,
+    "rawLines": 186
+  },
+  {
+    "file": "046.txt.gz",
+    "source": "working-tree:rust/tests/unit/specification/debug_session.rs",
+    "rawSha256": "8faf53bf31998b6212a4ae5feb8eaaa103f9b9c4fa9d7ad82de45dfb8827b680",
+    "archiveSha256": "814163fe9f9dc86cad95598f9266eb0d82f38f24ac426a777abe26fb628dc219",
+    "rawBytes": 33153,
+    "rawLines": 842
+  },
+  {
+    "file": "047.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/specification/debug_session.rs",
+    "rawSha256": "8da5534f8a41bab9b89b8dbd25bc93baa1d1e76f2c041c0f70a05e90b39dcaac",
+    "archiveSha256": "b189013e869ca0eae41cfdbb08cd710b62830aa24dc5a22b8fa381ef4b8152b3",
+    "rawBytes": 33071,
+    "rawLines": 841
+  },
+  {
+    "file": "048.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/specification/debug_session.rs",
+    "rawSha256": "8faf53bf31998b6212a4ae5feb8eaaa103f9b9c4fa9d7ad82de45dfb8827b680",
+    "archiveSha256": "814163fe9f9dc86cad95598f9266eb0d82f38f24ac426a777abe26fb628dc219",
+    "rawBytes": 33153,
+    "rawLines": 842
+  },
+  {
+    "file": "049.txt.gz",
+    "source": "working-tree:rust/tests/unit/specification/formalization.rs",
+    "rawSha256": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3",
+    "archiveSha256": "95dc7a42834c208404a8cec8d1d7f41119803ad325990d852c8cd2587d97182e",
+    "rawBytes": 10845,
+    "rawLines": 340
+  },
+  {
+    "file": "050.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/specification/formalization.rs",
+    "rawSha256": "96038b52dc0f1ce195bf9f3034ca7a82a5707c58d3ffacbcb9d59a9f0e5dff65",
+    "archiveSha256": "9b59bc35ef16f50b2c5425b63d54343edfa30fc3b0e9e77ef2229dacd6d0f467",
+    "rawBytes": 10664,
+    "rawLines": 337
+  },
+  {
+    "file": "051.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/specification/formalization.rs",
+    "rawSha256": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3",
+    "archiveSha256": "95dc7a42834c208404a8cec8d1d7f41119803ad325990d852c8cd2587d97182e",
+    "rawBytes": 10845,
+    "rawLines": 340
+  },
+  {
+    "file": "052.txt.gz",
+    "source": "working-tree:rust/tests/unit/specification/reasoning_paths_procedures.rs",
+    "rawSha256": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6",
+    "archiveSha256": "8aa6de06b542f27eab8cf4fd387d2b17b684a724e84d78286f9e1a931bcd4b91",
+    "rawBytes": 40284,
+    "rawLines": 1000
+  },
+  {
+    "file": "053.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/specification/reasoning_paths_procedures.rs",
+    "rawSha256": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+    "archiveSha256": "1addd4541c337207e5fea7accb3f935c7f6b8b6ae8519c03aa80847d5ea0d02b",
+    "rawBytes": 40278,
+    "rawLines": 1000
+  },
+  {
+    "file": "054.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/specification/reasoning_paths_procedures.rs",
+    "rawSha256": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6",
+    "archiveSha256": "8aa6de06b542f27eab8cf4fd387d2b17b684a724e84d78286f9e1a931bcd4b91",
+    "rawBytes": 40284,
+    "rawLines": 1000
+  },
+  {
+    "file": "055.txt.gz",
+    "source": "working-tree:rust/tests/unit/web_requests.rs",
+    "rawSha256": "3e304c3ff7504b33bc6cfdfb9b91a2f89b4351dd033d125738a6f17da2d692ca",
+    "archiveSha256": "a00c565246dae207b44e02aac755a8616b3f4b154fb0f03cf81803004b782b70",
+    "rawBytes": 31883,
+    "rawLines": 840
+  },
+  {
+    "file": "056.txt.gz",
+    "source": "015a683197c89e8f74375b097e8dd06a57dcea8f:rust/tests/unit/web_requests.rs",
+    "rawSha256": "b201b4bcc5fb9c74e1bf209612a820091b1559d85caef6553a068c2e52e17b15",
+    "archiveSha256": "f5ff55e587cbbe19e43c66752b4bc1338dc017c664f770ca2f9956b504fe7a6d",
+    "rawBytes": 31339,
+    "rawLines": 832
+  },
+  {
+    "file": "057.txt.gz",
+    "source": "f4588ce40023a1cc722cbed4ed7f977581fd4530:rust/tests/unit/web_requests.rs",
+    "rawSha256": "3e304c3ff7504b33bc6cfdfb9b91a2f89b4351dd033d125738a6f17da2d692ca",
+    "archiveSha256": "a00c565246dae207b44e02aac755a8616b3f4b154fb0f03cf81803004b782b70",
+    "rawBytes": 31883,
+    "rawLines": 840
+  }
+]

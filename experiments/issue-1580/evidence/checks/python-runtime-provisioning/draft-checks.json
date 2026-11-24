@@ -1,0 +1,49 @@
+[
+  {
+    "name": "runtime-regression",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "experiments/issue-1580/template-python-runtime.test.mjs"
+    ],
+    "exitCode": 0,
+    "uncompressedSha256": "10d0e634c1667f0003511864ad664983898c8b30b545fa752b57aa6414c01b56",
+    "historicalLogPath": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/runtime-regression.log.gz",
+    "log": null,
+    "retention": "This first passing draft log was overwritten by an unchanged second passing runtime probe. Its printed summary and digest remain in the complete command transcript. The preserved runtime-regression.log.gz is the later 31-second probe; final current-source runtime coverage is in maintained-observations.log.gz. Do not equate those different full-log hashes."
+  },
+  {
+    "name": "maintained-observations",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "rust/tests/web/issue-1580-template-observations.test.mjs"
+    ],
+    "exitCode": 0,
+    "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/maintained-observations.log.gz",
+    "uncompressedSha256": "6b4e10f190c6b2e825430984033cc970762ea62f5deec02ebc173c1e282e2eb5"
+  },
+  {
+    "name": "fast-profile",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 1,
+    "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/fast-profile.log.gz",
+    "uncompressedSha256": "fbe9ae57ab1baf84515caa57e43aa89c183fad0412bbc09693e9a4a6dc4584a8"
+  }
+]

@@ -1,0 +1,133 @@
+{
+  "head": "58a35f7d9ecdd0cb6af89778e910dcc347afba60",
+  "workflows": {
+    "total": 23,
+    "success": 22,
+    "failure": 1
+  },
+  "failedRun": 44413122357,
+  "nativeJob": 135186508512,
+  "verifiedPayloads": 76,
+  "nativeResults": [
+    {
+      "line": 1633,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1649,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "line": 1656,
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "line": 1684,
+      "passed": 22,
+      "failed": 0
+    },
+    {
+      "line": 1698,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "line": 1705,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1733,
+      "passed": 2,
+      "failed": 2
+    },
+    {
+      "line": 1758,
+      "passed": 18,
+      "failed": 0
+    },
+    {
+      "line": 1776,
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "line": 1791,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "line": 1838,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "line": 1847,
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "nativePassed": 98,
+  "nativeFailed": 2,
+  "nativeFailureLogLines": [
+    1712,
+    1713,
+    1719,
+    1720,
+    1725,
+    1726,
+    1733
+  ],
+  "rootCause": "The native sparse checkout excluded all experiment files. The two unchanged network-download contracts could not read install_client.sh or discover the required script sweep.",
+  "repair": {
+    "workflow": ".github/workflows/native-type-check.yml",
+    "regression": "rust/tests/web/default-branch-build-policy.test.mjs",
+    "regressionName": "native sparse checkout retains nested shell inputs without experiment payloads",
+    "before": {
+      "pass": 29,
+      "fail": 1
+    },
+    "after": {
+      "pass": 30,
+      "fail": 0
+    },
+    "nativeVerification": "pending next published head"
+  },
+  "literalNativeLogRanges": [
+    [
+      1650,
+      1950
+    ],
+    [
+      1850,
+      1908
+    ],
+    [
+      1936,
+      1986
+    ]
+  ],
+  "fullNativeLogLiteralRead": false,
+  "fullWorkflowLogLiteralRead": false,
+  "hostedReplays": {
+    "forcedFunctions": 2,
+    "structuredOutput": 1,
+    "localizedProcedure": 1
+  },
+  "originalPanics": {
+    "total": 53,
+    "strictPublishedPassingReplayUnion": 16,
+    "withoutQualifyingReplay": 37,
+    "additionalNameMatchWithoutPreservedOriginalBytes": "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+    "source": "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+    "originalSha256": "dedd6453d0b0b2167bd053d6a4bdc101bcb24a6c70a7751b59ccbf2a6c069682",
+    "publishedSha256": "b8c092e4ed1edbee890579d3386c5480831a24e47f2ecc144c6e376e24e898ed",
+    "explanation": "The maintained test follows the extracted CLI arguments and shared environment loader. It passes on this head but its complete file is not byte-preserved, so no new strict historical replay credit is accepted."
+  },
+  "originalBudgetFailuresStillOpen": 3,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

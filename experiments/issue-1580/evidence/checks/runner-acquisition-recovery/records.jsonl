@@ -1,0 +1,4 @@
+{"file":"draft/draft-result.json.gz","bytes":72,"lines":1,"rawSha256":"a17ce5481a695605cd34c2ac4a581c84884c41441ef911ead39534d815167eb2","archiveSha256":"dd59027efd4302dd458bc5dbca7151cdfca6f2e05b3458226597075d8963c349"}
+{"file":"draft/first-tests.stderr.gz","bytes":0,"lines":0,"rawSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","archiveSha256":"ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"}
+{"file":"draft/first-tests.stdout.gz","bytes":1642,"lines":34,"rawSha256":"6fe94bd38f7370677d9552a8174d782755e38cbe19f2ab44a39ecf37b81b919e","archiveSha256":"1d0ecd487a42e196ce0a3dd50f19e9ec838b2d5c6edff9b8d8eb9ce0dee7b97d"}
+{"file":"focused/runner-acquisition-recovery.test.stdout.gz","bytes":1743,"lines":35,"rawSha256":"36300b223c00203f1567d0710aa5dc662f4fe9f0c3016fb79d5efecedef2b759","archiveSha256":"3178a964c08ce265740ad5b2c50159dbf7211eaebf1880ffa244970c381c01b2"}

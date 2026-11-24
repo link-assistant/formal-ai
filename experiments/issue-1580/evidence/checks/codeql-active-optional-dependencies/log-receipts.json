@@ -1,0 +1,37 @@
+[
+  {
+    "file": "after.log.gz",
+    "rawSha256": "016af21ef98650cac1315f733829c8a4eb408efe76cb8399d4d2feb331cec96c",
+    "archiveSha256": "8956eed7ac615eaa0338096b30cac81220dc481d967a616be98969e707d973ff",
+    "bytes": 1877,
+    "lines": 25
+  },
+  {
+    "file": "before.log.gz",
+    "rawSha256": "8b94c070e56c6c4d1fe00d5b2d8b5d9393e6dca2abd8b368a8ddf0caa1e80eb7",
+    "archiveSha256": "f6fa1ac084ce1d5fe53a9d51f0bfdf7a9b5f851d7f12dee747fbcf2307f67838",
+    "bytes": 4749,
+    "lines": 83
+  },
+  {
+    "file": "check-changelog-fragment-js-twin.log.gz",
+    "rawSha256": "2ba5c5a5c81501a19c4bc1662d7b1f4e7ea6f265bbef56c206a22d07141b50f7",
+    "archiveSha256": "f056c40122469498278660f6ad6a2537a72002dbcbcbd2cea7f66f30f6d86e10",
+    "bytes": 80,
+    "lines": 3
+  },
+  {
+    "file": "diff-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "release-1.log.gz",
+    "rawSha256": "88a2144762089e0fc4ce98f673ac544c950da7602ad74457f95ee2eb0c0174ba",
+    "archiveSha256": "13197d29c5e04b5889874e5e7ab21bf31552dd8fb7333e5ecf01c50aa566b980",
+    "bytes": 57,
+    "lines": 3
+  }
+]

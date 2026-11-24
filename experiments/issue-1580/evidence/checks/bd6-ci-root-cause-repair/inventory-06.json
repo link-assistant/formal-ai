@@ -1,0 +1,34 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/verify-and-commit-bd6-ci-repair.log",
+    "file": "post-archive-initial-01-verify-and-commit-bd6-ci-repair.log.gz",
+    "rawSha256": "e8e917bcd0653b730e5563e27d7f1cb01dc76bacf1f8a2068aeb36be0c20bdf6",
+    "archiveSha256": "692a70fc37bb640b8179b8ffaaaa781ce4dfb011187a010c7ff4246bb9ca73bb",
+    "bytes": 812,
+    "lines": 12
+  },
+  {
+    "source": "/tmp/issue-1580-research/bd6-ci-repair-final-commits/documentation-gates.stdout",
+    "file": "post-archive-initial-02-documentation-gates.stdout.gz",
+    "rawSha256": "88b916b2a4008bf5c3a807ba753cf75bd08b5616cf537e9a72c489137298c341",
+    "archiveSha256": "641e33fea4da2ca16ea1838edfbaf07074b3bf299cd5db207d01bd8a332d4b6d",
+    "bytes": 212,
+    "lines": 5
+  },
+  {
+    "source": "/tmp/issue-1580-research/bd6-post-archive-abbreviated-filenames.log",
+    "file": "post-archive-initial-03-bd6-post-archive-abbreviated-filenames.log.gz",
+    "rawSha256": "a845fd7ec70075d0802de041a7e0b76628788c95ba24d246bb2dd651a08f82e1",
+    "archiveSha256": "91109b8fd2af00521e47b63f072d8a895df19661ee807a860f8a106afdb8f1bd",
+    "bytes": 4716,
+    "lines": 97
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-bd6-evidence-filenames.py",
+    "file": "post-archive-initial-04-repair-bd6-evidence-filenames.py.gz",
+    "rawSha256": "9e8f65fd626302fd7bb1b4f5c08c31c23e7262be8b3c3ddc260c0fdd0de58b52",
+    "archiveSha256": "bfe0e8c5613d2d0e8ca541b36ab0b367b7e8679ef87de142470968dfaf0429ef",
+    "bytes": 2818,
+    "lines": 30
+  }
+]

@@ -1,0 +1,65 @@
+{
+  "provenance": "External procedure and conclusions supplied to actual JavaScript Formal AI; zero independent authorship/reasoning credit. Native probes use finite JavaScript mocks, not local Rust execution.",
+  "files": [
+    {
+      "path": "validation/after.log.gz",
+      "rawBytes": 296,
+      "rawSha256": "8c9a303ea21117c717d60881638ee07b57da8b072337c39e8db17dbebce6aa34"
+    },
+    {
+      "path": "validation/before.log.gz",
+      "rawBytes": 1242,
+      "rawSha256": "5a3644df800406a164f6dec4efb243d2ec9acc4ee5558ec040c4e322d8424371"
+    },
+    {
+      "path": "validation/capture.log.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/model.json.gz",
+      "rawBytes": 692,
+      "rawSha256": "81b7b549ccedcdeb4841167875a05b3224fa396fb4e1cf7a6a90c4cfe5601b89"
+    },
+    {
+      "path": "validation/refresh.log.gz",
+      "rawBytes": 184,
+      "rawSha256": "ff3bb27eab4381044ee09751cd4495e3f74a2240567f957a093c7751c3551922"
+    },
+    {
+      "path": "refresh-javascript-observations.mjs.gz",
+      "rawBytes": 2096,
+      "rawSha256": "b2496fb03d3d27bfa59680026a9bfaae745fdb7eea223108f2a4c7282a976682"
+    },
+    {
+      "path": "report-javascript-rebalance.mjs.gz",
+      "rawBytes": 1529,
+      "rawSha256": "7082146a2861664ebdb4d8408bfcdb3fc951a1d25e8f14b4c210f8adfdcebe6b"
+    },
+    {
+      "path": "check-javascript-observations.py.gz",
+      "rawBytes": 843,
+      "rawSha256": "403290663485272878d34ee63cfd8502d5476675e63961413bd38a1fce39ca07"
+    },
+    {
+      "path": "draft-javascript-observation-regression.py.gz",
+      "rawBytes": 749,
+      "rawSha256": "ca895bd00cc6c93874c3b8b8e2b2b4af5aff71680eef2e1b09463b58ed41c573"
+    },
+    {
+      "path": "formal-driver.log.gz",
+      "rawBytes": 289,
+      "rawSha256": "11473d563fe6e2a47742db1a7bfb527309bbdff57678142ae69427003027c0c6"
+    },
+    {
+      "path": "model-formal-driver.log.gz",
+      "rawBytes": 588,
+      "rawSha256": "b5f88d4ecd4ad46afb72e42808fce3c147464987eabe397229f6a73fc08c6738"
+    },
+    {
+      "path": "preimage/javascript-test-durations.lino.gz",
+      "rawBytes": 42701,
+      "rawSha256": "e07790db14a11241974ca69d54d7598d8b97f6140a2c573427474cc391b0bfa7"
+    }
+  ]
+}

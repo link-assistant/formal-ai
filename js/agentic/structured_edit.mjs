@@ -8,14 +8,15 @@
 import { callbackText as canonicalUnaryText } from './callback_values.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { latestResult, sourceFromReadResult } from './code_artifact.mjs';
-import { planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
+import { Progress } from './progress.mjs';
+import { planEditPreimageGap, planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
 import { renderSeededChange } from './code_task.mjs';
 import { insertMembersViaLinks } from './link_edit_rules.mjs';
-import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+import { FinalDisposition, jsonText, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { resolveRequirementTarget } from './requirement_resolution.mjs';
 import { quotedSegmentSpans, unwrapTransportQuotes } from './crate/normal_markov.mjs';
+import { parseLexiconText, words as meaningWords } from './crate/seed_meanings.mjs';
 import { mentionsRole } from './write_lexicon.mjs';
 import { isAlphanumeric, isAsciiAlphanumeric, isAsciiDigit, isWhitespace, trimEndMatches, trimMatches } from './write_str.mjs';
 
@@ -40,37 +41,65 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
   const task = unwrapTransportQuotes(rawTask);
   const edit = memberInsertion(task);
   if (!edit) return null;
-  const currentTurn = messages.slice(evidenceWindowStart(messages));
-  const read = latestResult(currentTurn, Capability.Read);
-  const source = read === null ? '' : sourceFromReadResult(read);
-  if (source === '') {
-    const readTool = toolFor(toolNames, Capability.Read);
-    return readTool ? planOne(readTool, readArguments(edit.target)) : null;
-  }
-  const result = insertMembers(source, edit);
-  if (!result) return null;
-  const [updated, inserted] = result;
-  // A read that already lists every member is itself the observation: a run
-  // resumed after a client compaction answers at once instead of spending
-  // another full-file observation that pushes it over the threshold again.
-  if (!inserted.length && latestResult(currentTurn, Capability.Write) === null) {
-    const rendered = renderSeededChange('coding-member-already-present', task, edit.target, [['{members}', quotedList(edit.values)]]);
-    return rendered === null ? null : finalAnswer(rendered);
-  }
-  // Members the file already lists need no write: after a client compaction
-  // the run re-reads the file it already changed, and rewriting it in full
-  // pushed the session straight back over the compaction threshold (the
-  // issue #1028 ladder looped read -> write until its budget ran out).
-  if (inserted.length && latestResult(currentTurn, Capability.Write) === null) {
-    const writeTool = toolFor(toolNames, Capability.Write);
-    return writeTool ? planOne(writeTool, writeArguments(edit.target, updated)) : null;
-  }
-  const [intent, members] = inserted.length
-    ? ['coding-member-inserted', quotedList(inserted)]
-    : ['coding-member-already-present', quotedList(edit.values)];
-  return planWriteDigestVerification(task, currentTurn, toolNames, {
-    target: edit.target, expected: updated, intent, slots: [['{members}', members]],
+  return planMemberChange(task, messages, toolNames, edit, false);
+}
+
+export function planDeclaredMemberChange(task, messages, toolNames, target, declaration, value) {
+  const evidence = messages.slice(evidenceWindowStart(messages));
+  return planMemberChange(task, evidence, toolNames, { target, named: [declaration], values: [value] }, true);
+}
+
+function planMemberChange(task, messages, toolNames, edit, strict) {
+  return planVerifiedSourceChange(task, messages, toolNames, edit.target, source => {
+    const result = insertMembers(source, edit, strict);
+    if (result === null) return null;
+    const [updated, inserted] = result;
+    const intent = inserted.length === 0 ? 'coding-member-already-present' : 'coding-member-inserted';
+    return { updated, intent, slots: [['{members}', quotedList(inserted.length === 0 ? edit.values : inserted)]] };
   });
+}
+
+export function planSeedLiteralChange(task, messages, toolNames, target, old, next) {
+  const evidence = messages.slice(evidenceWindowStart(messages));
+  return planVerifiedSourceChange(task, evidence, toolNames, target, source => {
+    if (!parseLexiconText(source).some(meaning => meaningWords(meaning).includes(old))) return null;
+    const quoted = JSON.stringify(old);
+    const at = source.indexOf(quoted);
+    if (at < 0 || source.indexOf(quoted, at + quoted.length) >= 0) return null;
+    const updated = source.slice(0, at) + JSON.stringify(next) + source.slice(at + quoted.length);
+    return { updated, intent: 'coding-text-replaced', slots: [['{old}', old], ['{new}', next]] };
+  });
+}
+
+function planVerifiedSourceChange(task, messages, toolNames, target, compute) {
+  const currentTurn = messages.slice(evidenceWindowStart(messages));
+  const progress = Progress.scan(messages);
+  const attemptedWrite = progress.attemptedMutationFor(target, Capability.Write);
+  const preimage = attemptedWrite
+    ? progress.sourceReadBeforeLatestMutationFor(target, Capability.Write)
+    : progress.freshSourceReadFor(target);
+  if (typeof preimage?.source !== 'string') {
+    const projected = progress.projectedSourcePath(target);
+    if (attemptedWrite || progress.sourceReadFor(target) !== null
+      || (projected !== null && progress.sourceReadFor(projected) !== null)) return planEditPreimageGap(target);
+    const readTool = toolFor(toolNames, Capability.Read);
+    return readTool ? planOne(readTool, readArguments(target)) : null;
+  }
+  const change = compute(preimage.source);
+  if (change === null) return null;
+  const { updated, intent, slots } = change;
+  // An already satisfied change needs no rewrite after a client compaction.
+  if (updated === preimage.source && !attemptedWrite) {
+    const rendered = renderSeededChange(intent, task, target, slots);
+    return rendered === null ? null : resolvedFinalAnswer(rendered, FinalDisposition.Finding, intent);
+  }
+  if (!attemptedWrite) {
+    const writeTool = toolFor(toolNames, Capability.Write);
+    return writeTool ? planOne(writeTool, writeArguments(target, updated)) : null;
+  }
+  return planWriteDigestVerification(task, currentTurn, toolNames, {
+    target, expected: updated, intent, slots,
+  }, (argumentsText, path) => progress.matchesWorkspaceSourcePath(argumentsText, path));
 }
 
 function wordsJoined(text) {
@@ -135,14 +164,15 @@ function memberInsertion(task) {
   return { target, values, named };
 }
 
-function insertMembers(source, edit) {
-  if (edit.named.length) {
+function insertMembers(source, edit, strict = false) {
+  if (!strict && edit.named.length) {
     const viaLinks = insertMembersViaLinks(source, edit.named[0], edit.values);
     if (viaLinks) return viaLinks;
   }
   const bytes = encoder.encode(source);
   const [regions, literals] = scan(bytes);
-  const anchor = anchorByMembers(regions, literals, edit.values) ?? anchorByName(source, bytes, regions, literals, edit.named);
+  const anchor = strict ? declaredStringArray(source, regions, edit.named[0])
+    : anchorByMembers(regions, literals, edit.values) ?? anchorByName(source, bytes, regions, literals, edit.named);
   if (!anchor) return null;
   const members = directMembers(literals, anchor.open);
   const absent = edit.values.filter((value) => !members.some((member) => member.value === value));
@@ -174,6 +204,16 @@ export function insertQuotedMembersIntoNamedList(source, declaration, requiremen
 
 function quotedList(values) {
   return values.map((value) => `"${value}"`).join(', ');
+}
+
+/** A census-owned string array requires an actual, unique initializer in the observed bytes. */
+function declaredStringArray(source, regions, name) {
+  if (!validIdentifier(name)) return null;
+  const declaration = new RegExp(String.raw`\b(?:const|static)\s+${name}\s*:\s*&?\s*\[\s*&str\s*\]\s*=\s*&?\s*(?=\[)`, 'gu');
+  const openers = [...source.matchAll(declaration)].map(match =>
+    encoder.encode(source.slice(0, match.index + match[0].length)).length);
+  const candidates = regions.filter(region => openers.includes(region.open));
+  return candidates.length === 1 ? candidates[0] : null;
 }
 
 function anchorByMembers(regions, literals, values) {

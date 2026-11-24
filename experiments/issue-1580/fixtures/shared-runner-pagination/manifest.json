@@ -1,0 +1,56 @@
+{
+  "schema": "issue-1580-shared-runner-pagination-v1",
+  "sources": [
+    {
+      "language": "cpp",
+      "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+      "pin": "45c42aff119b366ba103a9342ec3c33731bb7e2e",
+      "path": "scripts/unacquired_jobs.py",
+      "fixture": "cpp-unacquired_jobs.py.gz",
+      "gitBlob": "90a1442f875c912f95e6ec39176cee757ef60f31",
+      "sha256": "3d02319e50b8d61d21d8876d7ff5ec225c3614514820e130cde310d6e79bba59",
+      "bytes": 7906
+    },
+    {
+      "language": "cpp",
+      "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+      "pin": "45c42aff119b366ba103a9342ec3c33731bb7e2e",
+      "path": "LICENSE",
+      "fixture": "cpp-LICENSE.gz",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "bytes": 1211
+    },
+    {
+      "language": "csharp",
+      "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+      "pin": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+      "path": "scripts/runner-acquisition.mjs",
+      "fixture": "csharp-runner-acquisition.mjs.gz",
+      "gitBlob": "681c9667e0d67c305e8cfdeaa1604382b5bff6d1",
+      "sha256": "cb34ec0653751a939899fdc3463a020d5bf2230aa906409afe14e293378c46ff",
+      "bytes": 7484
+    },
+    {
+      "language": "csharp",
+      "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+      "pin": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+      "path": "scripts/fetch-with-retries.mjs",
+      "fixture": "csharp-fetch-with-retries.mjs.gz",
+      "gitBlob": "451b238027f926d4679f0705c89209973a2b2e04",
+      "sha256": "0ebd36310c3a9b7eb514b55d14a50abd9059ce54a0d579f68ba7c637133e1148",
+      "bytes": 1347
+    },
+    {
+      "language": "csharp",
+      "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+      "pin": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+      "path": "LICENSE",
+      "fixture": "csharp-LICENSE.gz",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "bytes": 1211
+    }
+  ],
+  "authorshipCredit": 0
+}

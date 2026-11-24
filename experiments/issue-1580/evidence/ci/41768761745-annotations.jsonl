@@ -1,0 +1,12 @@
+{"line": 1342, "text": "Actual Hive agent work-item contradicted-documentation\tUNKNOWN STEP\t2026-11-04T03:51:47.2621773Z ##[error]Process completed with exit code 1."}
+{"line": 2055, "text": "Actual Hive agent work-item original-documentation\tUNKNOWN STEP\t2026-11-04T03:51:45.7715022Z ##[error]Process completed with exit code 1."}
+{"line": 2768, "text": "Actual Hive claude work-item unsupported\tUNKNOWN STEP\t2026-11-04T03:51:46.6121033Z ##[error]Process completed with exit code 1."}
+{"line": 3481, "text": "Actual Hive agent work-item unsupported\tUNKNOWN STEP\t2026-11-04T03:51:46.5833584Z ##[error]Process completed with exit code 1."}
+{"line": 4194, "text": "Actual Hive codex work-item contradicted-documentation\tUNKNOWN STEP\t2026-11-04T03:51:46.0077216Z ##[error]Process completed with exit code 1."}
+{"line": 4908, "text": "Actual Hive agent work-item renamed-components\tUNKNOWN STEP\t2026-11-04T03:51:54.8007604Z ##[error]Process completed with exit code 1."}
+{"line": 5623, "text": "Actual Hive claude work-item renamed-components\tUNKNOWN STEP\t2026-11-04T03:51:42.8106081Z ##[error]Process completed with exit code 1."}
+{"line": 6329, "text": "Actual Hive claude work-item original-documentation\tUNKNOWN STEP\t2026-11-04T03:51:37.3980551Z ##[error]Process completed with exit code 1."}
+{"line": 7040, "text": "Actual Hive claude work-item contradicted-documentation\tUNKNOWN STEP\t2026-11-04T03:51:44.0517018Z ##[error]Process completed with exit code 1."}
+{"line": 7751, "text": "Actual Hive codex work-item renamed-components\tUNKNOWN STEP\t2026-11-04T03:51:42.9089078Z ##[error]Process completed with exit code 1."}
+{"line": 8465, "text": "Actual Hive codex work-item unsupported\tUNKNOWN STEP\t2026-11-04T03:51:42.0965713Z ##[error]Process completed with exit code 1."}
+{"line": 9178, "text": "Actual Hive codex work-item original-documentation\tUNKNOWN STEP\t2026-11-04T03:51:45.2114948Z ##[error]Process completed with exit code 1."}

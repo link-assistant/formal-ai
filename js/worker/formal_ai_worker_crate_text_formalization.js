@@ -59,7 +59,7 @@ const LONGEST_PHRASE = 4;
 const LONGEST_HAN_WORD = 8;
 /** Mirrors `SHORTEST_STEM` in rust/src/formalization/text_statements.rs: an inflected word keeps at least this many characters. */
 const SHORTEST_STEM = 3;
-/** Mirrors `enum WordKind` in rust/src/formalization/text_statements.rs. */
+/** Mirrors `enum WordKind` in rust/src/formalization/text_statements/types.rs. */
 const WordKind = Object.freeze({
   Meaning: 'meaning',
   Name: 'name',
@@ -70,7 +70,7 @@ const WordKind = Object.freeze({
   Anaphor: 'anaphor',
   Continuation: 'continuation',
 });
-/** Mirrors `enum Polarity` in rust/src/formalization/text_statements.rs. */
+/** Mirrors `enum Polarity` in rust/src/formalization/text_statements/types.rs. */
 const Polarity = Object.freeze({ Asserted: 'asserted', Denied: 'denied' });
 const HAN = 'han';
 const APOSTROPHES = new Set(["'", '’']);
@@ -85,11 +85,11 @@ const isWordCharacter = (character) => WORD_CHARACTER.test(character);
 const isHan = (character) => scriptOf(character) === HAN;
 /** Mirrors `fn is_numeral_character` in rust/src/formalization/text_statements.rs. */
 const isNumeralCharacter = (character) => character !== undefined && NUMERAL.test(character);
-/** Mirrors `WordKind::is_term` in rust/src/formalization/text_statements.rs: the word kinds that become terms. */
+/** Mirrors `WordKind::is_term` in rust/src/formalization/text_statements/types.rs: the word kinds that become terms. */
 function isTermKind(kind) {
   return kind === WordKind.Meaning || kind === WordKind.Name || kind === WordKind.Number || kind === WordKind.Unknown;
 }
-/** Mirrors `WordKind::is_known` in rust/src/formalization/text_statements.rs: the term kinds that name something formal. */
+/** Mirrors `WordKind::is_known` in rust/src/formalization/text_statements/types.rs: the term kinds that name something formal. */
 function isKnownKind(kind) {
   return kind === WordKind.Meaning || kind === WordKind.Name || kind === WordKind.Number;
 }

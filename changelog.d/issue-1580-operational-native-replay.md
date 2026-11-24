@@ -1,0 +1,1 @@
+Run the existing shell documentation and network download retry contracts in the focused native regression lane. Changes to their documentation inputs and every discovered shell script now select that lane.

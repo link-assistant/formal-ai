@@ -56,6 +56,7 @@ try {
   loadWorkerAsset("worker-bootstrap-responses.js");
   loadWorkerAsset("seed-files.js");
   loadWorkerAsset("parser-cache-primordials.js");
+  loadWorkerAsset("seed-record-readers.js");
   loadWorkerAsset("seed_loader.js");
 } catch (error) {
   // Required bootstrap failures must reach the application's worker error handler.

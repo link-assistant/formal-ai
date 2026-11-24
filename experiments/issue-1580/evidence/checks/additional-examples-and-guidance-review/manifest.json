@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-22T12:45:52.218847+00:00",
+  "publishedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "base": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "reviewedDiffs": 6,
+  "records": [
+    {
+      "archive": "source-patch-01.txt.gz",
+      "sha256": "d9d15fb4c84a7dd54b1647868ea1f1f07291589f01974347d0428baa2936f42d",
+      "bytes": 7302,
+      "path": "CONTRIBUTING.md",
+      "completeDiffLiterallyRead": true
+    },
+    {
+      "archive": "source-patch-02.txt.gz",
+      "sha256": "b214d533007bdf608cb14ad2f9fc1b34b3d1d01247de7d2ecd4611a72953b393",
+      "bytes": 3322,
+      "path": "rust/examples/dump_google_trends_catalog.rs",
+      "completeDiffLiterallyRead": true
+    },
+    {
+      "archive": "source-patch-03.txt.gz",
+      "sha256": "95426ad71e5188b3152db133fb122270ba29e295880aea49c21ce0f54269a42b",
+      "bytes": 1004,
+      "path": "rust/examples/generate_grammar_projection_rules/main.rs",
+      "completeDiffLiterallyRead": true
+    },
+    {
+      "archive": "source-patch-04.txt.gz",
+      "sha256": "2be3c80427e351b2aa88e064ca46bb02eb561d8094145d537851293677782e62",
+      "bytes": 39097,
+      "path": "rust/examples/generate_grammar_projection_rules/rules.rs",
+      "completeDiffLiterallyRead": true
+    },
+    {
+      "archive": "source-patch-05.txt.gz",
+      "sha256": "d1616b2cc117ab58e993c85715c0bc6252c0b9e3607713bb60f8ea5d1807a0fa",
+      "bytes": 23562,
+      "path": "rust/examples/generate_grammar_projection_rules/rules/primary_spine.rs",
+      "completeDiffLiterallyRead": true
+    },
+    {
+      "archive": "source-patch-06.txt.gz",
+      "sha256": "0a2d57140fa598128a21cefdde7a82d80a163eaf700e448584bf9bf14e1e5998",
+      "bytes": 15779,
+      "path": "rust/examples/generate_grammar_projection_rules/rules/reverse_spine.rs",
+      "completeDiffLiterallyRead": true
+    },
+    {
+      "archive": "moved-guidance-01.txt.gz",
+      "sha256": "62b656aa542e4ba9c5077c362fa0ce3de9ef75f54071a5cd83b826f274aa6ff5",
+      "bytes": 5248,
+      "path": "docs/development/merge-conflict-layout.md",
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "archive": "moved-guidance-02.txt.gz",
+      "sha256": "65684365fffae94e675c01078518945acbf286fa8fe67ac9f1c6cbb989e6bfbc",
+      "bytes": 1188,
+      "path": "docs/development/changelog-management.md",
+      "completeSourceLiterallyRead": true
+    }
+  ],
+  "findings": [
+    "Contributing guidance moves retain both sections and repair their relative links and anchors.",
+    "The Google Trends example keeps stdout mode and adds a fresh output directory with actual driver observations and verification receipts; source review does not establish its runtime result.",
+    "Grammar rule spines preserve the exact prior row bytes and order; the parent flat-maps the same ordered row groups."
+  ],
+  "grammarRuleRowsPreservedExactly": true,
+  "allProductionDiffsReviewed": false,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0
+}

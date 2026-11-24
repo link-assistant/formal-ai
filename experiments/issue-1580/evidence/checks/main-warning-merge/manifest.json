@@ -1,0 +1,345 @@
+{
+  "schema": "issue-1580-main-warning-merge/v1",
+  "main": "97fe40bc1027f8b37238416bfb099e064935e218",
+  "localParent": "23a78fd4da6111282e81214f7c8f8849d5333a58",
+  "checks": {
+    "complete": true,
+    "checks": [
+      {
+        "name": "translation-currency",
+        "exit": 0,
+        "seconds": 2.534,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/translation-currency.log"
+      },
+      {
+        "name": "baseline-difference-review",
+        "exit": 0,
+        "seconds": 0.169,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/baseline-difference-review.log"
+      },
+      {
+        "name": "issue-1587-request-context",
+        "exit": 0,
+        "seconds": 10.374,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/issue-1587-request-context.log"
+      },
+      {
+        "name": "issue-1609-client-reports",
+        "exit": 0,
+        "seconds": 22.137,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/issue-1609-client-reports.log"
+      },
+      {
+        "name": "rustfmt",
+        "exit": 0,
+        "seconds": 0.179,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/rustfmt.log"
+      },
+      {
+        "name": "deployed-release",
+        "exit": 0,
+        "seconds": 0.551,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/deployed-release.log"
+      },
+      {
+        "name": "all-local-gates",
+        "exit": 1,
+        "seconds": 529.097,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/all-local-gates.log"
+      },
+      {
+        "name": "whitespace",
+        "exit": 2,
+        "seconds": 0.301,
+        "path": "/tmp/issue-1580-research/resolved-warning-merge-validation/whitespace.log"
+      }
+    ]
+  },
+  "fullGateFailures": [
+    "FAIL check-wasm-worker-current 0.1s -> experiments/formal_ai_subagent/sandboxes/gates/check-wasm-worker-current.log"
+  ],
+  "compiledWorkerVerified": false,
+  "independentAuthorshipCredit": 0,
+  "files": [
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/all-local-gates.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--all-local-gates.log.gz",
+      "bytes": 7290,
+      "sha256": "d4ffb990d4978d156bc2ffdea7646d499eb563f458981eb52578c1521803526c",
+      "compressedSha256": "5484592b074c03fc6f7f0010a28e85504f3a00403311f6913f3b52e3786efa45"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/baseline-difference-review.json",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--baseline-difference-review.json.gz",
+      "bytes": 2252,
+      "sha256": "8639590261a827dfb21adc51c5b3cc3aea8a54cd33cbf6624611e4cb022fb58d",
+      "compressedSha256": "6b0110bd259f67290f12a3186c57cb9ed05f282d9fa7fb5678bc50d55929bc3f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/browser-engine-release-integration.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--browser-engine-release-integration.log.gz",
+      "bytes": 2781,
+      "sha256": "c74ac9300b9b342054c6efb958f23b3f5f4fa3c864de9f30d31a634bad9aeda3",
+      "compressedSha256": "7a235fa1ce5899044dd6bc1fcff86c3be8400fa043c65246f57de2ae90ccc6b6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/default-branch-build-policy.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--default-branch-build-policy.log.gz",
+      "bytes": 15793,
+      "sha256": "e522890e7b34d329e12f1a7240028f69456bb6fd93c37d3b97e278623e347b54",
+      "compressedSha256": "cadca7a0f24dd2fef190efd997b7320173335407768aa463a50694a5f371ec58"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/deployed-release.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--deployed-release.log.gz",
+      "bytes": 135,
+      "sha256": "27f5df4ccfed883546bd9e445f0d695206be206ad6a633f7b9223e8195ddd291",
+      "compressedSha256": "1626e81166729e9399209fbe4251578a83761993b5fafd13f5c3d389b26fde89"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/governed-baseline-refresh.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--governed-baseline-refresh.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/issue-1587-request-context.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--issue-1587-request-context.log.gz",
+      "bytes": 453,
+      "sha256": "dfbe2fcf276d5519ba5d7274d68487fe389e2da0a1239089c64947daac3f4cb8",
+      "compressedSha256": "0b3570b17c8a6664117c683f23003c265ced78eb62d8677b89d88ed78590d4cb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/issue-1609-client-reports.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--issue-1609-client-reports.log.gz",
+      "bytes": 3203,
+      "sha256": "d147ace24a75ec9d3049820d9e79eb77a3c8fb66a491a32a1c0eb30bec3e1f10",
+      "compressedSha256": "db980369e188466f8098ef3aa49a712d449dc2ca5851da0a0008df1af99ec715"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/native-registry-currency.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--native-registry-currency.log.gz",
+      "bytes": 22,
+      "sha256": "df87305aedb537c1d1f3ba75ccd79f6e68e7cf4bc6f875b426e178b5ea1488c1",
+      "compressedSha256": "226df5a482963ec7219ce5ea73602f1b39bee7d3fabb0c591ebb6f57bf33bab8"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/native-registry-generate.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--native-registry-generate.log.gz",
+      "bytes": 19,
+      "sha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746",
+      "compressedSha256": "8617531febebb95f8c91bc47261d1892b82dbd44a577f97b2467507e37815a3d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/notation-list.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--notation-list.log.gz",
+      "bytes": 6469,
+      "sha256": "f94c5e0dab8346715bd0bf0e81591fdb5288cb12023355fe8db9a7159bfbbbfa",
+      "compressedSha256": "333c038dec3326901b8bbc50846eeb570b2a87580040511fc6958306c1b95502"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/outcome.json",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--outcome.json.gz",
+      "bytes": 2775,
+      "sha256": "0e1f2ab442051e5c5680483e05d1a1bc83a1c3bc93ad9cc48debf0f2eab00d5b",
+      "compressedSha256": "e7440442712cd4f3d9cabdce32e7b68b7615474cb671e984945a62c89c6ccb39"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/runtime-inventory-generate.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--runtime-inventory-generate.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/rust-specification-unicode-identifiers.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--rust-specification-unicode-identifiers.log.gz",
+      "bytes": 2953,
+      "sha256": "33ab40a23724b420f8e2aacaf4a39116ffbdaa8b1372e2a63c23fc952ac5d2fb",
+      "compressedSha256": "b6e0c51644dfc150a14a427c3c1c5bce802f01b029e143abb918faa2e3b7c6bb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/rustfmt.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--rustfmt.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/selected-source-wasm.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--selected-source-wasm.log.gz",
+      "bytes": 3736,
+      "sha256": "f952fd7ddc39082792bfb635cc46df0a0952bd560f644a6fc1dbe046266d9d60",
+      "compressedSha256": "9c765490a0707c09dff679bb7bf1ee55e12f792f38bd06de9c2ed370b27b149f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/translation-currency.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--translation-currency.log.gz",
+      "bytes": 368,
+      "sha256": "be19818bf18ba266614378dd478bcbec7076617fba66597dc0820000d50ea870",
+      "compressedSha256": "209ea530332904b02e1101d82db8617dfc2f225ad113bd23becca5a83ede0e09"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/translation-supervisor.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--translation-supervisor.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/translation-writer-outcome.json",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--translation-writer-outcome.json.gz",
+      "bytes": 250,
+      "sha256": "ce05039a921cb94a0afca6bfaf570833e51fbf4c971aea4c884c6dbff29fff78",
+      "compressedSha256": "2ef780ae97316f6740ca3f33b61bdce80d6f17a1fb65bf27670f0285d25e5925"
+    },
+    {
+      "source": "/tmp/issue-1580-research/main-warning-merge-validation/translation-writer.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/main-warning-merge-validation--translation-writer.log.gz",
+      "bytes": 1483,
+      "sha256": "bf373a6b37b1018cbaadba85e9b2d45d0180d53302498af49b0723fd1855533d",
+      "compressedSha256": "70ebaef78bac282525cdb7fdfbbc672cc96bc8916880c16eab5c8f0b31ca27b6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/all-local-gates.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--all-local-gates.log.gz",
+      "bytes": 7003,
+      "sha256": "99b69ba6ff3667c84b886fc654a3fa0ceacc6dfb46a5af9805bb3eb8b142009d",
+      "compressedSha256": "b8110bda4c3c435fcaaac6a156dd2afd8c2469ee28e539fc81ded7731352d677"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/baseline-difference-review.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--baseline-difference-review.log.gz",
+      "bytes": 1835,
+      "sha256": "f6604f413e20df8a80bbad712aa18de93a7ddc0c5fe7949ae7819fb501775156",
+      "compressedSha256": "f8085c994929fdac2b2ba8dafdacd89172cc3c4f0833022b903061a635c0cd93"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/deployed-release.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--deployed-release.log.gz",
+      "bytes": 135,
+      "sha256": "27f5df4ccfed883546bd9e445f0d695206be206ad6a633f7b9223e8195ddd291",
+      "compressedSha256": "1626e81166729e9399209fbe4251578a83761993b5fafd13f5c3d389b26fde89"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/issue-1587-request-context.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--issue-1587-request-context.log.gz",
+      "bytes": 452,
+      "sha256": "d9868f26d15548aea85f29e23339413266de1f6171710b809904bbf09f2f0e37",
+      "compressedSha256": "839e558262b9479619b31302784f183596a59efd827c20456493bfe42ce7fe99"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/issue-1609-client-reports.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--issue-1609-client-reports.log.gz",
+      "bytes": 978,
+      "sha256": "a62032a86b89db6c99ac5154e42b94006b5f669e9bf3727bd8d041f975204f29",
+      "compressedSha256": "c03bdc00908c2f212ce8a1169fdb03037490475505dc2fece40bb7efb0ce352c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/outcome.json",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--outcome.json.gz",
+      "bytes": 1551,
+      "sha256": "65c27493e56f84f087ae960e615d293c561914f6178cc459dc9c52d3fc0b417c",
+      "compressedSha256": "c8bb1df40fa1897f48b0fed94a440f39a857900a0829d412e31eba1c4e1e5bab"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/render-status-check.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--render-status-check.log.gz",
+      "bytes": 28,
+      "sha256": "5e4ef6784a8229bd7a4cd12a3ca2e0d1ceba9ebf22f1f1d116b96a175fecf9b5",
+      "compressedSha256": "648c7357a0c867f3c5a6d0d8a50ecb3fa4ba49700e009a31edc879deebaabbf7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/render-status-refresh.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--render-status-refresh.log.gz",
+      "bytes": 27,
+      "sha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436",
+      "compressedSha256": "850bfb24000723ccc55317848ae384514875ad715f5c019406514232cea51a5f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/rustfmt.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--rustfmt.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/source-whitespace-provenance.json",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--source-whitespace-provenance.json.gz",
+      "bytes": 869,
+      "sha256": "3454e8adf5474c4cab6baf57bdf08dbe46f668cda5da90da8dc053533df52276",
+      "compressedSha256": "9c88a4d9ed369545ffa369e6deac6cb7aad2bf146e50b941dfd415e8e7444a39"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/source-whitespace-unfiltered.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--source-whitespace-unfiltered.log.gz",
+      "bytes": 25219,
+      "sha256": "f44bd0ffd8fff722f59c70a402df5fca32189a08925ea33e1135b1bc4d9c7ea8",
+      "compressedSha256": "acdd76664e666e2cd0488200eb6ec7c74148386b54aeebdeb65f1dc503e91022"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/source-whitespace.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--source-whitespace.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/status-diff.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--status-diff.log.gz",
+      "bytes": 577,
+      "sha256": "db6cd8db0d5f47cbb057f60fc580406e72dcb8cb9ae118942a35f61b0e00f82b",
+      "compressedSha256": "265b2391ec05d2d19005362ad5745a9427ed8c38a7802ae58621181aa627fd28"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/translation-currency.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--translation-currency.log.gz",
+      "bytes": 188,
+      "sha256": "67c2783d2c3a6574a524941021485beede5a73c8da52f76588e115d2ed9165a5",
+      "compressedSha256": "a63b9e418e68fbe263550976db4122189ce8c78667679bc59f5496883d758355"
+    },
+    {
+      "source": "/tmp/issue-1580-research/resolved-warning-merge-validation/whitespace.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/resolved-warning-merge-validation--whitespace.log.gz",
+      "bytes": 29400,
+      "sha256": "28952739ca42c44428f0eaaab190046854b92a76c6e838acad98144c0b2050e3",
+      "compressedSha256": "f67f33008e1d612f0b6a2e8e6f43f081b055ee0820eda55254f65a05369e5186"
+    },
+    {
+      "source": "/tmp/issue-1580-research/desktop-capture-sparse-regression/after.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/desktop-capture-sparse-regression--after.log.gz",
+      "bytes": 646,
+      "sha256": "dcf3f8f934a9aa9f5d78a8af729426a9ebda974cfc44420fd465c97a3d5826c8",
+      "compressedSha256": "dc4f5191fcc69905f9777569fe0560e7a98e112cb6ca18127fa294b8b7c14d27"
+    },
+    {
+      "source": "/tmp/issue-1580-research/desktop-capture-sparse-regression/before.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/desktop-capture-sparse-regression--before.log.gz",
+      "bytes": 1681,
+      "sha256": "8dba8de6b262e7eed7f9099dc3978596f5524ff89afaf2becad81351b7040a5c",
+      "compressedSha256": "25a0d89a314f624f9f6285f2c8740872c2397c9625ff65880b3590d37336e8dc"
+    },
+    {
+      "source": "/tmp/issue-1580-research/reconcile-translation-ledger-driver.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/issue-1580-research--reconcile-translation-ledger-driver.log.gz",
+      "bytes": 401,
+      "sha256": "52a873d4dc59d5c4caa8bec90b50b7fe178d0126e7593c25cf3c8ca6c5c1ba35",
+      "compressedSha256": "a7b5a72be3187acbfd5842c3cb56c8269ea73b429618477a03bc5432311214ca"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fix-merged-client-constraints-driver.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/issue-1580-research--fix-merged-client-constraints-driver.log.gz",
+      "bytes": 309,
+      "sha256": "9162c984c5eb8680388f1f49902882eea8ad329f8fc7eed8b09d88584b4eda36",
+      "compressedSha256": "d2d2cb9d49f650b6e68f334edf2bb46acf3cf911f1b6909beeed4657ff1c6d65"
+    },
+    {
+      "source": "/tmp/issue-1580-research/strengthen-merged-client-regression-driver.log",
+      "archive": "experiments/issue-1580/evidence/checks/main-warning-merge/issue-1580-research--strengthen-merged-client-regression-driver.log.gz",
+      "bytes": 236,
+      "sha256": "d23a62a00578f9a28439f2d69a662b7cd8eafa5f85752745f8da469805d8b317",
+      "compressedSha256": "81d6690546c6266c686ebe575e7a77f916d420db9ac2689bec2f8d47ce327394"
+    }
+  ]
+}

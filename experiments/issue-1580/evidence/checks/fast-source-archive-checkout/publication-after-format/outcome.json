@@ -1,0 +1,119 @@
+{
+  "createdAt": "2026-11-18T01:08:35.886612+00:00",
+  "commands": [
+    {
+      "name": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 4.591,
+      "rawSha256": "7888153859515be6f7ed0d54bf1d61352ebe6283ccd0ec9555e0bc7454db6b1a",
+      "rawBytes": 67,
+      "rawLines": 3
+    },
+    {
+      "name": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 6.227,
+      "rawSha256": "95978770e3b00bc1c58e8b0a87fe1d33bfcf90dddced7e726182abb6b0d0e06d",
+      "rawBytes": 63,
+      "rawLines": 3
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 3.953,
+      "rawSha256": "204f0d31eec82b8088baea7f3ed0fe3f3769eaa9bfedffee015e412b6b093604",
+      "rawBytes": 71,
+      "rawLines": 3
+    },
+    {
+      "name": "deployed-projection",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-staged-release.mjs",
+        "--check-deployed"
+      ],
+      "exitCode": 0,
+      "seconds": 0.517,
+      "rawSha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce",
+      "rawBytes": 135,
+      "rawLines": 2
+    },
+    {
+      "name": "source-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 3.519,
+      "rawSha256": "833975d1cb85fbee6e41ef74fc90d1d8ccb185633e88f82d011c1add3fd20f2e",
+      "rawBytes": 1835,
+      "rawLines": 24
+    },
+    {
+      "name": "diff-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.436,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0,
+      "rawLines": 0
+    },
+    {
+      "name": "stage-transition",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/staged-release-activation-transition.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 9.512,
+      "rawSha256": "77d45841698123f178cd73a4d203614f562a4e11e42a46a7eff38dd08cfe42ee",
+      "rawBytes": 436,
+      "rawLines": 11
+    }
+  ],
+  "sources": {
+    ".github/workflows/release.yml": "625cc84c5c2a9773e5e04d427590df6b4686d7ce15fb8c9cb5e80ebd61d0b9ad",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs": "d6e4c77e2a3b72cf6582f815e4e0390d5349d9031d3cbd533e64971d76b0b223",
+    "docs/case-studies/issue-1580/checkout-archive-checkpoint.md": "f886fe9b42d545c3f0ab81903317d181222be1ed993402161113839b56e773d1",
+    "docs/case-studies/issue-1580/templates/java-historical-partial-review.json": "dc5793fa494575d4468159939c8c288214f37ffcbdb9ea93f4f6d07ab15d6051",
+    "experiments/issue-1580/work-plan.md": "ba0beb9bdac7cb2ff6f86f53d70abd42221d35d6258b786ef8063fa044d2fa39",
+    "experiments/issue-1580/evidence/supplied-bootstrap-20261117.tar.gz": "57fadfb33e06159bfadf35a9efddf893653f9375d871823336a5c8d7c47f5978"
+  }
+}

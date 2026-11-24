@@ -1,0 +1,41 @@
+{
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "head": "9451c81b5e14f118301f2e571f4a651fb8da79d0",
+  "independentSemanticQualification": false,
+  "canonicalSourceReviewStillRequired": true,
+  "wholePullRequestReviewed": false,
+  "proofCount": 94,
+  "parts": [
+    {
+      "file": "proofs-00.json",
+      "records": 16,
+      "sha256": "655cf35cda08afda8625583ec6f835f382767b1fc2759f784f4e4e083f3a1182"
+    },
+    {
+      "file": "proofs-01.json",
+      "records": 16,
+      "sha256": "b97d6d07af8330ea5616aad17f9b95b3f30cd000e14543d884dc5b3d867eed84"
+    },
+    {
+      "file": "proofs-02.json",
+      "records": 16,
+      "sha256": "1d9f2e05c36a530a36f309885b699d3fd7e659ca38309d6f1fa0bc59bcd8d91c"
+    },
+    {
+      "file": "proofs-03.json",
+      "records": 16,
+      "sha256": "0a1e3c53d38300fb7315eadbad6c35c21d294c0b07a2272e92b992d060aa4484"
+    },
+    {
+      "file": "proofs-04.json",
+      "records": 16,
+      "sha256": "aad11bb80ab3e0cd5b3ea1a1a187bd1c82088e469d7a99d1b42f5b467169defc"
+    },
+    {
+      "file": "proofs-05.json",
+      "records": 14,
+      "sha256": "0ac011a67c19d329c96ba6ffc11970764373f2f854a611a8e934351d1e8b750a"
+    }
+  ],
+  "scope": "Exact final bytes qualify copy/archive preservation only; canonical-source semantic review is separate."
+}

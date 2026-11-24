@@ -1,0 +1,106 @@
+{
+  "at": "2026-11-22T06:18:53.620962+00:00",
+  "files": [
+    {
+      "file": "after.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "after.stdout.gz",
+      "bytes": 4001,
+      "sha256": "c7711ee17113c1863af65c44dad94c605512e74f9cdf980d091ae56ab48d36b5"
+    },
+    {
+      "file": "before.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "before.stdout.gz",
+      "bytes": 6837,
+      "sha256": "101494476c48eb9b86b8596dc05bd30d5a1ef77c9ae69e96d2af0c21be869830"
+    },
+    {
+      "file": "check-abbreviations.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "check-abbreviations.stdout.gz",
+      "bytes": 67,
+      "sha256": "7ec7fb5d73202c44f358ca7a3b8d135e28657ece84ee22c1ca1f677bc151053d"
+    },
+    {
+      "file": "check-file-size.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "check-file-size.stdout.gz",
+      "bytes": 64,
+      "sha256": "a481265f0209243eaecfc4e525b8492e0566c5a0f4a98fab7850b01a2ea36e16"
+    },
+    {
+      "file": "check-readable-code.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "check-readable-code.stdout.gz",
+      "bytes": 68,
+      "sha256": "cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c"
+    },
+    {
+      "file": "check-required-documentation.mjs.before.gz",
+      "bytes": 2470,
+      "sha256": "3b00821d881745e3da3cd6867af3f47f5c70466d697576366874c65955473ef8"
+    },
+    {
+      "file": "documentation-cli.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "documentation-cli.stdout.gz",
+      "bytes": 46,
+      "sha256": "7154be1a2c8cf0b04e3b8dbc902b3149517b680cb284ee340602a73152d43933"
+    },
+    {
+      "file": "documentation-only-ci-policy.test.mjs.before.gz",
+      "bytes": 17305,
+      "sha256": "18c7e9fbb172a0223c5a40fb83ff8385dbd983b1d6c8838e11dc6f94abe528fd"
+    },
+    {
+      "file": "final-gates.json.gz",
+      "bytes": 185,
+      "sha256": "c6775fdf848d2253db75f872e1284855975bcd3fd991ebaa64c39a4748250233"
+    },
+    {
+      "file": "outcome.json.gz",
+      "bytes": 1050,
+      "sha256": "f4e63f11c675131b6b275af1ca02d5a8da4ba376fb268daa6638a82e1163eee3"
+    },
+    {
+      "file": "search.txt.gz",
+      "bytes": 1911,
+      "sha256": "2558d819d27fe8546bac8d35648edfd3a8f1cd95d30edb6239c1932655187b1d"
+    },
+    {
+      "file": "workflows.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflows.stdout.gz",
+      "bytes": 57,
+      "sha256": "baedfb5f868ee8a8cbc62632c2435689a47cba976f0788c084a213e63be82066"
+    }
+  ],
+  "failingBefore": true,
+  "passingAfter": true,
+  "physicalNonClosingCases": 12,
+  "validClosingControls": 8,
+  "testCount": 37,
+  "independentAuthorshipCredit": 0
+}

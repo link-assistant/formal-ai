@@ -1,0 +1,74 @@
+{
+  "observedAt": "2026-11-17T17:01:03.621474+00:00",
+  "head": "12aff82c189eab0d2f920b0f233f2d1a868d2815",
+  "feedback": {
+    "feedback-issue": {
+      "count": 1,
+      "changedIds": [],
+      "rawSha256": "65e68241dbd56474d58a6033d4aba87fd9490b96ab9c6e5e81fa689a917b2cab"
+    },
+    "feedback-issue-comments": {
+      "count": 1,
+      "changedIds": [],
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834"
+    },
+    "feedback-pull-request": {
+      "count": 1,
+      "changedIds": [],
+      "rawSha256": "e95cc463773e764bc32668d9582f1a9aad6d6281df85fff29ffb81fe90601427"
+    },
+    "feedback-pull-request-comments": {
+      "count": 9,
+      "changedIds": [],
+      "rawSha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302"
+    },
+    "feedback-inline-comments": {
+      "count": 0,
+      "changedIds": [],
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "feedback-reviews": {
+      "count": 0,
+      "changedIds": [],
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "main": "512ce428029a92687628b4180309ee5ab660fe08",
+  "mainIsAncestor": true,
+  "branchRuns": {
+    "in_progress": [],
+    "queued": []
+  },
+  "recentBranchRuns": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-17T15:39:17Z",
+      "databaseId": 44116798699,
+      "headSha": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-17T15:39:17Z",
+      "databaseId": 44116798910,
+      "headSha": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-17T15:39:17Z",
+      "databaseId": 44116798709,
+      "headSha": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-17T15:39:17Z",
+      "databaseId": 44116797991,
+      "headSha": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-17T15:39:16Z",
+      "databaseId": 44116797657,
+      "headSha": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
+    }
+  ]
+}

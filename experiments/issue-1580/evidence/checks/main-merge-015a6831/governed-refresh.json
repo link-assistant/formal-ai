@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--max-old-space-size=256",
+    "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+    "--refresh-reviewed-baseline",
+    "--reviewed-reader-sha=861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+    "--previous-baseline-sha=2d26230754fe9b58b1f9da9cf7d0d0c2bf4f64a9d6b303684ee3ddf2c84e518d"
+  ],
+  "exitCode": 0,
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "beforeSha256": "2d26230754fe9b58b1f9da9cf7d0d0c2bf4f64a9d6b303684ee3ddf2c84e518d",
+  "afterSha256": "e2ea3efb185e9e92c2f90ee743b5a6d1bc4cd89c8c34376e08b44f91bb87eae7",
+  "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "logLines": 0
+}

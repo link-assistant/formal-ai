@@ -1,0 +1,103 @@
+{
+  "sourceHead": "71e1dee442fd74589df20a1d6f33710b6dec0d18",
+  "hostedResults": {
+    "total": 24,
+    "success": 22,
+    "failure": 2
+  },
+  "failures": [
+    {
+      "run": 44071443786,
+      "diagnosticLines": [
+        7931,
+        7934
+      ],
+      "cause": "Named ESM export parse is unavailable from the CI CommonJS yaml package"
+    },
+    {
+      "run": 44071444011,
+      "diagnosticLines": [
+        1136,
+        1143
+      ],
+      "cause": "Saved registry responses exceeded the maintained text limit (4005 and 6302 lines)"
+    }
+  ],
+  "localVerification": {
+    "templateTests": 10,
+    "templateSkips": 0,
+    "referenceGraphTests": 2,
+    "gateRunnerTests": 11,
+    "workingRulesTests": 5,
+    "pushGateRulesTests": 6,
+    "fileSizeGates": 2,
+    "touchedGates": 4
+  },
+  "negativeControls": {
+    "commonJsInventoryBefore": {
+      "pass": 2,
+      "fail": 1
+    },
+    "gateSelectionBefore": {
+      "pass": 9,
+      "fail": 2
+    }
+  },
+  "nonEvidence": "The initial check_file_size invocation ran zero gates. It has no verification credit; the correctly named check-file-size and check-file-size-js-twin were subsequently executed and passed.",
+  "files": [
+    {
+      "file": "inventory-cjs-before.log.gz",
+      "bytes": 2258,
+      "sha256": "433106c82bf205c7eef8a6b450b9321c610a011a1226b9ebcaccdd9da7aeff28",
+      "compressedSha256": "6b026f49702ee5e5688258949aaf315aa889c4354d32b8b5e34c2d49d1924a59"
+    },
+    {
+      "file": "template-observations-sixth.log.gz",
+      "bytes": 1088,
+      "sha256": "c92befc200a2b294a5334f5344d2c7630c2ab75b47c14d30993e7f8eaa85b04a",
+      "compressedSha256": "882bfc554eb551785a8d002d555b3592c2b5bda14136abf214223699291fb12f"
+    },
+    {
+      "file": "template-reference-graph-sixth.log.gz",
+      "bytes": 322,
+      "sha256": "8c8554f8a0faf92d1b605340c7f7ba45dfc82da622e3ab609c309435e039f3db",
+      "compressedSha256": "d24af8dc85cca364cda2b176f71d1a417704e413fb2aa848a80b4abd3d0f727d"
+    },
+    {
+      "file": "file-size-sixth.log.gz",
+      "bytes": 98,
+      "sha256": "49ba5d333a437e3aa8902f096137f03592b3288462e6580bda0d7bd2ad5dc34a",
+      "compressedSha256": "f21e8018cea94987490cb0d2bb61436a08a5bb0f716066c49041341ee3b765b5"
+    },
+    {
+      "file": "gate-selection-before.log.gz",
+      "bytes": 3288,
+      "sha256": "b5af4d7e0e0b57f51e442a96d05a5d724b38db9ed2cadfb238b657130437bdb8",
+      "compressedSha256": "c3dec6f3dbd7589b7da139c7c47d8890768207b832ecc5cf788032cae398132d"
+    },
+    {
+      "file": "gate-selection-after.log.gz",
+      "bytes": 1202,
+      "sha256": "0b2d60abeb06a2ca48f5ff5a83920252fc38d6ecfc20ce90245a2b5515383243",
+      "compressedSha256": "01eaf644746e1db6bb11f87e0333bf68fc303f0b0795fed46c8589119e061276"
+    },
+    {
+      "file": "working-rules-sixth.log.gz",
+      "bytes": 560,
+      "sha256": "bfa0ff2170f2057c37ecf589c5e92c7ec227c6f65e425eb67f9da716d2606299",
+      "compressedSha256": "ce2e1bd5c0a0a7d7c1853ea980e0f37d78ee5af0ad1def364b126433bce26566"
+    },
+    {
+      "file": "push-gate-rules-sixth.log.gz",
+      "bytes": 518,
+      "sha256": "ae96ac432539378f5686836ff1b9e18f78035f8331bf9e66b2794164488b4d25",
+      "compressedSha256": "77b6a3f01e3479c3b4899ad39dc21fec822acaa9e46e7606a9687554c8e55d7d"
+    },
+    {
+      "file": "touched-gates-sixth.log.gz",
+      "bytes": 165,
+      "sha256": "7a5bb6328310b1fb8bc964bb561aaf9568c48e34c651b6f455364007a6fc594f",
+      "compressedSha256": "88e84d2618bf976794496d7c45643e358a976e79605e9f6351214dfbd990f092"
+    }
+  ]
+}

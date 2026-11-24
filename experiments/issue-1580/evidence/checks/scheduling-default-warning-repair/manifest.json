@@ -1,0 +1,78 @@
+{
+  "initialPassingFileGateStillWarned": true,
+  "oldLines": 1419,
+  "newLines": 1387,
+  "warningLineThreshold": 1400,
+  "failureLineThreshold": 1500,
+  "previousPlanningDefault": 0.34,
+  "proposedPlanningDefault": 0.4,
+  "rounding": "ceil(priorDefault * 10) / 10",
+  "priorDefaultFloorPreserved": true,
+  "historicalObservationFallbackUnchanged": true,
+  "rawObservations": 916,
+  "rawObservationsDropped": 0,
+  "explicitRecords": 674,
+  "defaultCoveredSmallObservations": 242,
+  "replayCasesPassed": 10,
+  "finiteReserveCandidates": 13,
+  "nativeExecutionVerified": false,
+  "correctedWholeGateVerificationPending": true,
+  "independentAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false,
+  "files": [
+    {
+      "file": "01.log.gz",
+      "source": "c90-javascript-costs/table-before-rounded-fallback.lino",
+      "bytes": 55044,
+      "sha256": "581ad8830aa2bd890b20d50706d8b8d15f2fc6f076f7806511f47abf429848b9"
+    },
+    {
+      "file": "02.log.gz",
+      "source": "c90-javascript-costs/reserve-probe-before-rounded-fallback.jsonl",
+      "bytes": 9846,
+      "sha256": "69f3a238d0e069b64b2116d4da42739ac692112897d03452560753930433e20f"
+    },
+    {
+      "file": "03.log.gz",
+      "source": "c90-javascript-costs/reserve-probe.jsonl",
+      "bytes": 10175,
+      "sha256": "07f0b41510e201df58240383e86e2b619cec3692e2eada36192716736b4e40ad"
+    },
+    {
+      "file": "04.log.gz",
+      "source": "c90-javascript-costs/updated-weights.json",
+      "bytes": 46004,
+      "sha256": "a0eb23ba41a48ff5846a7ec38b0c13b5dec4f595e688be9a8cd5cc5fa34e7bdc"
+    },
+    {
+      "file": "05.log.gz",
+      "source": "c90-javascript-costs/default-covered-observations.json",
+      "bytes": 37025,
+      "sha256": "eee5b2475ab257b0842f4246a7ab12ebcbabcaeb6e6f1c399255fed32af8304b"
+    },
+    {
+      "file": "06.log.gz",
+      "source": "c90-javascript-costs/scheduling-after-rounded-fallback.log",
+      "bytes": 1217,
+      "sha256": "339d3a6dc5e750256f99d815eec2cad1255e8c356dab52f844090f4318078463"
+    },
+    {
+      "file": "07.log.gz",
+      "source": "c90-javascript-costs/rounded-fallback-outcome.json",
+      "bytes": 1355,
+      "sha256": "55549465cfb5161bba16545c1df50218308f070af6c10ecd67b87d578f7b346a"
+    },
+    {
+      "file": "08.log.gz",
+      "source": "read-corrected-file-gates-driver.log",
+      "bytes": 7978,
+      "sha256": "78b8acc6f3a3fb3e2e257aa88d32a6c0c65543eb27594da9671b80aef36cfaa4"
+    },
+    {
+      "file": "09.log.gz",
+      "source": "round-current-scheduling-default.py",
+      "bytes": 5281,
+      "sha256": "206bc1f48f28767d08df49008fbabbc1aebcbe55ba4a0fe3263e7bb1455d5f6a"
+    }
+  ]
+}

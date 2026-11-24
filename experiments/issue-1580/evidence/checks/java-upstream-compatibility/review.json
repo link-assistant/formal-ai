@@ -1,0 +1,47 @@
+{
+  "asOf": "2026-11-19",
+  "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+  "pinnedCommit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "scope": "Three linked compatibility issues, every current comment, release metadata, and the published Plexus DefaultProgress source. Full Java template semantic applicability and Maven runtime replay remain unfinished.",
+  "decisions": [
+    {
+      "issue": "https://github.com/jacoco/jacoco/issues/2347",
+      "state": "open",
+      "commentsRead": 0,
+      "release": "0.8.16",
+      "observation": "JaCoCo still references the previous Maven reporting/Doxia API; replacing its isolated plugin realm with reporting 4/Doxia 2 fails with a missing legacy Sink. The historical template kept a scoped compatible plugin realm and retained coverage.",
+      "application": "Formal AI has no Maven plugin realm. Preserve coverage and executable compatibility checks when changing transitive dependencies; do not import Java-specific overrides into Rust.",
+      "runtimeVerifiedHere": false
+    },
+    {
+      "issue": "https://github.com/codehaus-plexus/plexus-build-api/issues/127",
+      "state": "closed",
+      "commentsRead": 6,
+      "repair": "https://github.com/codehaus-plexus/plexus-build-api/pull/139",
+      "mergedAt": "2026-11-14T13:10:52Z",
+      "publishedArtifact": "org.codehaus.plexus:plexus-build-api:1.4.0",
+      "observation": "The actual current Maven Central source has @MojoExecutionScoped and no @Singleton on DefaultProgress. The source-level duplicate-scope defect is repaired in a published artifact; no Maven injection replay is claimed here. The historical recommendation to stay on 1.2.0 is stale for this source defect.",
+      "application": "Do not preserve an old compatibility pin just because a captured issue was once open. Verify the current publication and the actual affected source, then replay the consuming runtime before changing an active dependency. Formal AI does not consume this Maven artifact.",
+      "runtimeVerifiedHere": false
+    },
+    {
+      "issue": "https://github.com/diffplug/spotless/issues/2808",
+      "state": "open",
+      "commentsRead": 3,
+      "release": "3.11.0",
+      "observation": "The full maintainer workaround exports javac api/file/parser/tree/util packages to the formatter JVM. It grants required compiler-package access; suppressing Unsafe warnings alone does not repair that access boundary.",
+      "application": "Formal AI has no Spotless dependency. Apply the permission-boundary principle to actual consumers without copying JVM export flags or claiming warning suppression is a repair.",
+      "runtimeVerifiedHere": false
+    }
+  ],
+  "oldGroupLookup": {
+    "artifact": "org.sonatype.plexus:plexus-build-api",
+    "latest": "0.0.7",
+    "currentArtifactGroup": false,
+    "decision": "Retained as an incorrect namespace lookup, excluded from current Plexus version conclusions."
+  },
+  "completeRepositorySemanticReview": false,
+  "dependencySafetyVerified": false,
+  "mavenExecuted": false,
+  "independentAuthorshipCredit": 0
+}

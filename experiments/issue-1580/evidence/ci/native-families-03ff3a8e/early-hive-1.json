@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "gh",
+    "api",
+    "--allow-escape-sequences",
+    "repos/link-assistant/formal-ai/actions/jobs/136038408357/logs"
+  ],
+  "job": 136038408357,
+  "run": 44660788773,
+  "head": "03ff3a8e8a6999bb436de66dd625b3c637720ba1",
+  "rawSha256": "7e98418cf6c2895895ed788bedde56307965e8ec90767803e51ac13ad654a471",
+  "archiveSha256": "4c7d9ad1d01df894c659033634eb30be73c9a73f8752f2b130751cd53c597eaa",
+  "lines": 1437,
+  "file": "early-hive-1.log.gz"
+}

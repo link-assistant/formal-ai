@@ -1,0 +1,25 @@
+{
+  "records": [
+    {
+      "file": "page-formalization.log.gz",
+      "rawSha256": "5b743149aeaa02d631298eeae15ff1c4c702e68ef72d146f7932ab1480aa710e",
+      "archiveSha256": "8a8e6cea0f4c2453c0197f21b703f7f328333bd887b7cc4ae8dc0c3e01e59a0f",
+      "lines": 14
+    },
+    {
+      "file": "web-requests.log.gz",
+      "rawSha256": "5ecb60f408bc684b95dab0b07c1d3d8f294a4649d77bd4fe5a87bd445c505cfe",
+      "archiveSha256": "00894ce1dff0d1a959a328ae4e99b3c8790f981bab3c9bc1fe5dc30bf9877375",
+      "lines": 8
+    }
+  ],
+  "existingPageFormalizationTestsPassed": 6,
+  "webRoutingObservations": 8,
+  "webObservationsAreAssertions": false,
+  "externalNetworkDisabled": true,
+  "fullLogsReadInPriorResearchContext": true,
+  "offlineAnswersOmitQueryAndDoNotCertifyNativeSearchAnswerContract": true,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}
