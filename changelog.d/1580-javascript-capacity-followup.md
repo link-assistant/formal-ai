@@ -1,3 +1,3 @@
 ### Fixed
 
-- Retain all JavaScript owners and timing floors while increasing Layered CI to the twelve groups selected by fifteen hosted timing cohorts. Keep the 270-second warning and 360-second termination budgets unchanged.
+- Run the complete JavaScript suite in twelve groups selected by fifteen hosted timing cohorts. Retain every test owner, timings from failed files, prior timing floors, the 270-second warning and the 360-second deadline.

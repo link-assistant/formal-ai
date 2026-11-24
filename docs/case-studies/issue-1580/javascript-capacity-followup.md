@@ -81,4 +81,29 @@ same owner inventory, the same weights, and the 270-second warning and
 Reproduce with `node --test --test-concurrency=1 experiments/issue-1580/javascript-capacity-replay.test.mjs`.
 The prior workflow fails the new matrix assertion. The receipt preserves
 all 922 owner events and their original job and log identities.
-The revised allocation still needs a hosted run.
+
+[Layered CI 45342732009](https://github.com/link-assistant/formal-ai/actions/runs/45342732009)
+runs all twelve groups successfully on head
+`ec03bde97ede61bbdf74ba5fad8e4283978539c0`. The longest observed group takes
+201 seconds. The full log contains zero JavaScript runtime warnings.
+
+## Pending release notes review
+
+The comparison from main `0e550f6d56528d6d26bf575e08ab35c13e4af234`
+to `0bbe8533277bef4053d1ecc89f86196383a09801` adds 213 changelog fragments.
+The 110,686-byte scoped diff has SHA-256
+`c379db486f6d526217b5c0b50709e3c92f03412b64f92035f3c32ff03c7ae726`
+using `git diff --no-renames --unified=2 <main>...<head> -- changelog.d`.
+Reviewing the complete fragment bodies found four superseded JavaScript
+capacity claims and one superseded native Hive capacity claim. A comparison
+against the parsed workflow matrices reproduces all five discrepancies.
+The pending release notes now describe twelve JavaScript groups and four
+native Hive groups. Earlier fragment bytes remain available in the
+reviewed Git commit. The matrix comparison and the existing scheduling replay
+verify the configured counts.
+
+The unchanged file-size scanner also checked the full tracked-path inventory
+of 133,770 paths at `0bbe85332`, applying its normal exclusions and limits.
+It reported zero size warnings, hard violations, embedded-data violations or
+scan errors. Source duplication and semantic style criteria retain separate
+qualification requirements.
