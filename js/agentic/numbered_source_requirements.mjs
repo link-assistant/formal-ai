@@ -9,20 +9,20 @@ import { planBoundRequestSteps } from './request_sequence.mjs';
 import { planDeclaredMemberChange, planSeedLiteralChange } from './structured_edit.mjs';
 import { bareSurfaces, safeRelativePath } from './write_request.mjs';
 
-const MAX_REQUIREMENTS = 64;
-const MAX_PARAGRAPH_LENGTH = 8192;
+const MAXIMUM_REQUIREMENTS = 64;
+const MAXIMUM_PARAGRAPH_LENGTH = 8192;
 const SOURCE_CONTRACT_MISSING = 'coding-source-authoring-contract-missing';
 
 // Use only the opening instruction paragraph. A numbered list in a quoted
 // payload, a declaration example or a later evidence field grants no edits.
 function numberedClauses(task) {
   const head = task.trimStart().split(/\r?\n[^\S\r\n]*\r?\n/u, 1)[0];
-  if (head.length > MAX_PARAGRAPH_LENGTH) return null;
+  if (head.length > MAXIMUM_PARAGRAPH_LENGTH) return null;
   const quotes = quotedSegmentSpans(head);
   const markers = [...head.matchAll(/(^|\s)\(([1-9][0-9]?)\)(?=\s)/gu)]
     .filter(match => !quotes.some(quote => match.index + match[1].length >= quote.start
       && match.index + match[1].length < quote.end));
-  if (markers.length < 2 || markers.length > MAX_REQUIREMENTS) return null;
+  if (markers.length < 2 || markers.length > MAXIMUM_REQUIREMENTS) return null;
   const lead = head.slice(0, markers[0].index).trim();
   if (lead !== '' && !lead.endsWith(':')) return null;
   return markers.map((marker, index) => ({

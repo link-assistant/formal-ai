@@ -15,8 +15,8 @@ use crate::normal_markov::quoted_segment_spans;
 use crate::protocol::{ChatMessage, latest_user_request};
 use crate::seed;
 
-const MAX_REQUIREMENTS: usize = 64;
-const MAX_PARAGRAPH_LENGTH: usize = 8192;
+const MAXIMUM_REQUIREMENTS: usize = 64;
+const MAXIMUM_PARAGRAPH_LENGTH: usize = 8192;
 const SOURCE_CONTRACT_MISSING: &str = "coding-source-authoring-contract-missing";
 
 static PARAGRAPH_END: LazyLock<Regex> =
@@ -29,7 +29,7 @@ static CLAUSE_MARKER: LazyLock<Regex> = LazyLock::new(|| {
 fn numbered_clauses(task: &str) -> Option<Vec<(usize, &str)>> {
     let task = task.trim_start();
     let head = PARAGRAPH_END.splitn(task, 2).next()?;
-    if head.len() > MAX_PARAGRAPH_LENGTH {
+    if head.len() > MAXIMUM_PARAGRAPH_LENGTH {
         return None;
     }
     let quotes = quoted_segment_spans(head);
@@ -50,7 +50,7 @@ fn numbered_clauses(task: &str) -> Option<Vec<(usize, &str)>> {
         return None;
     };
     let lead = head[..*start].trim();
-    if !(2..=MAX_REQUIREMENTS).contains(&markers.len())
+    if !(2..=MAXIMUM_REQUIREMENTS).contains(&markers.len())
         || (!lead.is_empty() && !lead.ends_with(':'))
     {
         return None;
