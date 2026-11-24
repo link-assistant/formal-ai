@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { setImmediate } from 'node:timers/promises';
 import { test } from 'node:test';
 import {createRequire} from 'node:module';
 const YAML = createRequire(import.meta.url)('yaml');
 import { REPO_ROOT } from '../../../js/server/lino.mjs';
-import { releaseRoute, bindCompletedSource, validateInventory, checksumRows, assessCoverage, macosAssetNames, MAX_ASSET_BYTES, MAX_TOTAL_BYTES } from '../../../scripts/verify-public-release-downloads.mjs';
+import { releaseRoute, bindCompletedSource, validateInventory, checksumRows, assessCoverage, macosAssetNames, runVerification, MAX_ASSET_BYTES, MAX_TOTAL_BYTES } from '../../../scripts/verify-public-release-downloads.mjs';
 import { validateDigestCoverage } from '../../../scripts/release-advertisement.mjs';
 const repository = 'link-assistant/formal-ai',
   tag = 'v1.2.3';
@@ -58,6 +62,74 @@ function fixture() {
     version
   };
 }
+function transferFixture(t) {
+  const directory = fs.mkdtempSync(join(tmpdir(), 'formal-ai-release-verification-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+  const names = ['BUILD-PROVENANCE.txt', ...expected];
+  const bodies = new Map(names.map(name => [name, Buffer.from(name)]));
+  const checksums = expected.map(name => digest(bodies.get(name)) + '  ' + name).join('\n');
+  bodies.set('SHA256SUMS.txt', Buffer.from(checksums + '\n'));
+  const assets = Array.from(bodies, ([name, bytes], index) => ({
+    ...asset(name, index + 1),
+    size: bytes.length,
+    digest: 'sha256:' + digest(bytes)
+  }));
+  return {
+    directory,
+    bodies,
+    selection: { repository, tag, definition, assets, releaseId: 10 }
+  };
+}
+
+// This replays main run 45295717630 with small, independently hashed bodies.
+test('complete verification overlaps public streams with a fixed bound and stores only evidence', async t => {
+  const { directory, bodies, selection } = transferFixture(t);
+  let active = 0;
+  let peak = 0;
+  const responseOrder = [];
+  t.mock.method(globalThis, 'fetch', async url => {
+    const name = new URL(url).pathname.split('/').at(-1);
+    active++;
+    peak = Math.max(peak, active);
+    await setImmediate();
+    if (name === selection.assets[0].name) await setImmediate();
+    active--;
+    responseOrder.push(name);
+    return new Response(bodies.get(name));
+  });
+  const evidence = await runVerification({ selection, outputDirectory: directory });
+  assert.ok(peak > 1 && peak <= 3, 'expected bounded, overlapping public downloads');
+  assert.notEqual(responseOrder[0], selection.assets[0].name);
+  assert.deepEqual(evidence.downloads.map(item => item.name), [...bodies.keys()]);
+  assert.equal(evidence.coverage.byteVerifiedAssets, bodies.size);
+  assert.equal(evidence.publicationAuthority, false);
+  assert.deepEqual(fs.readFileSync(join(directory, 'BUILD-PROVENANCE.txt')), bodies.get('BUILD-PROVENANCE.txt'));
+  for (const name of expected) {
+    if (/\.(?:tgz|tar\.gz|AppImage|dmg|zip|deb|exe)$/u.test(name)) {
+      assert.equal(fs.existsSync(join(directory, name)), false, name);
+    }
+  }
+});
+
+test('failed public transfer identifies its asset and retains only verified progress', async t => {
+  const { directory, bodies, selection } = transferFixture(t);
+  const rejected = selection.assets[1].name;
+  t.mock.method(globalThis, 'fetch', async url => {
+    const name = new URL(url).pathname.split('/').at(-1);
+    return new Response(name === rejected ? Buffer.alloc(bodies.get(name).length) : bodies.get(name));
+  });
+  await assert.rejects(runVerification({ selection, outputDirectory: directory }), error => {
+    return error.message.includes(rejected) && /digest mismatch/u.test(error.message);
+  });
+  const progress = JSON.parse(fs.readFileSync(join(directory, 'download-observations.json')));
+  assert.equal(progress.verificationComplete, false);
+  assert.ok(progress.downloads.some(item => item.name === 'BUILD-PROVENANCE.txt'));
+  assert.ok(!progress.downloads.some(item => item.name === rejected));
+  assert.equal(fs.existsSync(join(directory, 'download-evidence.json')), false);
+  assert.equal(fs.existsSync(join(directory, rejected)), false);
+});
+
 test('source-derived advertised fixture requires every observed public byte and never grants publication authority', () => {
   const value = fixture();
   assert.equal(validateInventory(value.release, value.assets, repository, tag).assetCount, value.assets.length);
@@ -410,7 +482,7 @@ test('download resolution hydrates only its reviewed controller inputs while pub
   // Reviewed main 101992d84e7b12c843722992050585192dfc3996: acquisition changes cannot alter actual downstream verification.
   const downstream = source.slice(source.indexOf('\n  all-public-bytes:\n'));
   assert.notEqual(source.indexOf('\n  all-public-bytes:\n'), -1);
-  // Normalize only the reviewed runner pin, artifact transport and explicit Mac shell.
+  // Normalize the reviewed runner pin, artifact transport, Mac shell and stream step label.
   // Every other downstream byte remains bound to the original verification contract.
   assert.doesNotMatch(downstream, /runs-on: ubuntu-latest/u);
   const adapter = '      - uses: ./.github/actions/download-artifact\n';
@@ -419,7 +491,10 @@ test('download resolution hydrates only its reviewed controller inputs while pub
   const shell = '    defaults:\n      run:\n        shell: bash\n';
   assert.equal(downstream.split(shell).length - 1, 1);
   assert.deepEqual(YAML.parse(source).jobs['macos-public-packages'].defaults, {run: {shell: 'bash'}});
+  const streamStep = 'name: Stream and hash every public asset';
+  assert.equal(downstream.split(streamStep).length - 1, 1);
   const original = downstream.replaceAll('runs-on: ubuntu-24.04', 'runs-on: ubuntu-latest')
-    .replaceAll(adapter, originalAdapter).replace(shell, '');
+    .replaceAll(adapter, originalAdapter).replace(shell, '')
+    .replace(streamStep, 'name: Stream, hash and delete every public asset');
   assert.equal(createHash('sha256').update(original).digest('hex'), '11977c67b61a050577b42afa0ea0f0f37bc321e03601bd66e1b5e03d3b8f4018');
 });

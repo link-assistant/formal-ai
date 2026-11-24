@@ -355,56 +355,66 @@ export async function runVerification({
     assert.ok(asset, 'missing selected asset ' + name);
     return asset;
   });
-  const downloads = [];
-  const journal = path.join(directory, 'download-observations.json');
-  fs.writeFileSync(journal, JSON.stringify({
-    schema: 'public-release-download-progress/v1',
-    downloads: [],
-    verificationComplete: false,
-    publicationAuthority: false
-  }) + '\n', {
-    flag: 'wx'
-  });
-  let retainedBytes = 0;
-  const started = Date.now(),
-    deadline = started + 11 * 60 * 1000;
-  for (const asset of assets) {
-    assert.ok(Date.now() < deadline, 'public verification deadline exceeded');
-    const destination = path.join(directory, asset.name);
+  const destinations = assets.map(asset => {
     const keep = mode === 'macos' || retained(asset.name) && asset.size <= 1024 * 1024;
-    try {
-      const result = await downloadPublicReleaseAsset({
-        asset,
-        repository: selection.repository,
-        tag: selection.tag,
-        destination,
-        maxBytes: MAX_ASSET_BYTES,
-        deadline
-      });
-      assert.equal(result.repository, selection.repository);
-      assert.equal(result.tag, selection.tag);
-      assert.equal(result.id, asset.id);
-      assert.equal(result.name, asset.name);
-      assert.equal(result.size, asset.size);
-      assert.equal(result.sha256, asset.digest.slice(7));
-      assert.equal(result.completed, true);
-      assert.equal(result.transport, 'anonymous-public-release-download');
-      assert.equal(result.publicationAuthority, false);
-      downloads.push(result);
-      fs.writeFileSync(journal, JSON.stringify({
-        schema: 'public-release-download-progress/v1',
-        downloads,
-        verificationComplete: false,
-        publicationAuthority: false
-      }, null, 2) + '\n');
-      if (keep && mode === 'all') {
-        retainedBytes += asset.size;
-        assert.ok(retainedBytes <= 16 * 1024 * 1024, 'retained evidence limit');
-      }
-    } finally {
-      if (!keep && fs.existsSync(destination)) fs.unlinkSync(destination);
-    }
+    return keep ? path.join(directory, asset.name) : null;
+  });
+  if (mode === 'all') {
+    const retainedBytes = assets.reduce((total, asset, index) => {
+      return total + (destinations[index] ? asset.size : 0);
+    }, 0);
+    assert.ok(retainedBytes <= 16 * 1024 * 1024, 'retained evidence limit');
   }
+
+  const downloads = new Array(assets.length);
+  const journal = path.join(directory, 'download-observations.json');
+  function recordProgress(flag) {
+    fs.writeFileSync(journal, JSON.stringify({
+      schema: 'public-release-download-progress/v1',
+      downloads: downloads.filter(Boolean),
+      verificationComplete: false,
+      publicationAuthority: false
+    }, null, 2) + '\n', { flag });
+  }
+  recordProgress('wx');
+
+  const started = Date.now();
+  const deadline = started + 11 * 60 * 1000;
+  const workers = mode === 'all' ? 3 : 1;
+  let nextAsset = 0;
+  let failure;
+  await Promise.all(Array.from({ length: workers }, async () => {
+    while (!failure && nextAsset < assets.length) {
+      const index = nextAsset++;
+      const asset = assets[index];
+      try {
+        assert.ok(Date.now() < deadline, 'public verification deadline exceeded');
+        const result = await downloadPublicReleaseAsset({
+          asset,
+          repository: selection.repository,
+          tag: selection.tag,
+          destination: destinations[index],
+          maxBytes: MAX_ASSET_BYTES,
+          deadline
+        });
+        assert.equal(result.repository, selection.repository);
+        assert.equal(result.tag, selection.tag);
+        assert.equal(result.id, asset.id);
+        assert.equal(result.name, asset.name);
+        assert.equal(result.size, asset.size);
+        assert.equal(result.sha256, asset.digest.slice(7));
+        assert.equal(result.completed, true);
+        assert.equal(result.transport, 'anonymous-public-release-download');
+        assert.equal(result.publicationAuthority, false);
+        downloads[index] = result;
+        recordProgress('w');
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        failure ??= new Error('Public release asset ' + asset.name + ': ' + message, { cause: error });
+      }
+    }
+  }));
+  if (failure) throw failure;
   const checksumBytes = fs.readFileSync(path.join(directory, 'SHA256SUMS.txt'));
   const coverage = mode === 'all' ? assessCoverage({
     definition: selection.definition,

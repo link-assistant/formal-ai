@@ -1,0 +1,31 @@
+# Public release download deadline
+
+Verify Public Release Downloads failed on main at source
+`0e550f6d56528d6d26bf575e08ab35c13e4af234`. The `all-public-bytes` step
+started at 00:18:30 UTC. The full log records the timeout and exit 1 at lines
+4039–4040, about 11 minutes later. The resolver, browser job and both Mac jobs
+succeeded. [Run 45295717630](https://github.com/link-assistant/formal-ai/actions/runs/45295717630)
+
+The retained progress receipt records 26 of 74 assets and 5,272,103,454 of
+6,311,618,402 bytes verified. In selection order the next asset was the
+369,486,861-byte Windows ARM64 portable executable. The original error gives
+no asset name or per-transfer timings, so the receipt establishes where the
+serial verifier stopped. It cannot distinguish slow transfer from a stalled
+connection. [Byte evidence](https://github.com/link-assistant/formal-ai/actions/runs/45295717630/artifacts/14875559860)
+
+The all-assets verifier now runs at most three downloads under the same shared
+deadline. It hashes archives in the response stream and writes only the small
+evidence files it retains. The Mac path still writes both packages for the
+renderer checks. An asset failure identifies the selected name and stops
+starting new downloads. In-flight transfers can finish within the deadline and
+contribute verified progress. Final evidence still requires exact size,
+SHA-256, checksum coverage and anonymous public transport for every asset.
+
+Run the regression with `node --test --test-concurrency=1 rust/tests/web/verify-public-release-downloads.test.mjs`.
+The small fixture checks that public requests overlap within the worker bound,
+then checks stable receipt ordering, retained evidence, complete byte coverage
+and the refusal path for a corrupt asset. Before the change the overlap and
+asset-name assertions both failed. The production workflow runs following a
+successful Desktop Release on main. The local fixture establishes the control
+flow and checksum behavior. Production throughput still needs a hosted run
+of the new verifier. [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581)
