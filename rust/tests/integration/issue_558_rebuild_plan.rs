@@ -27,8 +27,12 @@ fn agent_mode_routes_rebuild_to_a_write() {
             &formal_ai::HumanApproval::granted("integration-reviewer"),
         )
         .unwrap();
-    let temporary = tempfile::tempdir().unwrap();
-    let path = temporary.path().join("accepted-changes.json");
+    let temporary = std::env::temp_dir().join(format!(
+        "formal-ai-issue-558-rebuild-{}-{port}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&temporary).unwrap();
+    let path = temporary.join("accepted-changes.json");
     std::fs::write(&path, serde_json::to_vec(&[&receipt]).unwrap()).unwrap();
     let _server = spawn_formal_ai_server_with_args(
         port,
@@ -124,4 +128,5 @@ fn agent_mode_routes_rebuild_to_a_write() {
         assert!(content.contains("reversible"), "{prompt}");
         assert!(content.contains("integration-reviewer"), "{prompt}");
     }
+    let _ = std::fs::remove_dir_all(&temporary);
 }
