@@ -27,7 +27,15 @@ children, and nests their complete documents under the corresponding result.
 Source-operand calculations and unselected children contribute no inherited
 provenance. The original failing native case remains unchanged. Small library
 regressions additionally cover recording, deduplication, selection and
-nonconsumption. Their native execution awaits hosted verification.
+nonconsumption. Their private library filter was absent from the existing hosted
+step; the follow-up adds it beside the already compiled library regressions.
+A bounded shell replay fails before that addition and verifies every invocation
+and failure propagation afterward. Native execution of these private cases awaits
+the follow-up hosted head. All 67 native-lane policy controls and 184 branch
+policy controls pass locally, including an independent failing composition
+sibling and a later failure that retains its original status. Eleven affected
+workflow gates pass. The [library coverage receipt](../../../experiments/issue-1580/evidence/checks/composed-child-library-replay-20261124/manifest.json)
+retains the original missing-invocation failure and complete corrected outputs.
 
 To reproduce the reported native case in CI, use
 bash scripts/ci-native-regressions.sh reasoning-2. Locally, run the currency
@@ -46,6 +54,19 @@ publication authority. Quoted shell guards are not actual failures.
 The [complete receipt](../../../experiments/issue-1580/evidence/checks/composed-child-provenance-20261123/manifest.json)
 round-trip verifies 315 members, retaining complete terminal logs, all original
 local failures, source snapshots and follow-up checks. Earlier immutable
-receipts remain unchanged. New hosted execution and all wider acceptance
-remain unfinished in [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581).
+receipts remain unchanged. The terminal ce9bf24b follow-up records 32 successful
+workflows and one explicit skip across 119,429 complete log lines. All 922
+JavaScript owners complete, with a maximum suite step of 229 seconds under the
+unchanged 270-second warning limit. All ten selected native families pass all
+441 cases. Pipeline log line 70500 records the original unchanged Russian
+procedure/evidence case passing. The tested merge is
+cfb5d762c0def7a0f001e987d0c31e4ce2933be6 against main 0e550f6d.
+Three actual annotations remain: two dependency OpenSSF warnings and unknown
+registry publication authority. Historical dependency maintenance stays open.
+Complete log preservation does not claim full semantic review.
+
+The [terminal receipt](../../../experiments/issue-1580/evidence/checks/terminal-ce9bf24b-20261124/manifest.json)
+retains the exact source, all 33 full logs, job metadata and qualified owner
+observations. The newly added private-case CI filter, new transport controls and
+all wider acceptance remain unfinished in [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581).
 Supplied work receives zero independent authorship or reasoning credit.

@@ -1,3 +1,21 @@
+## Active checkpoint: real transport controls and native library coverage (2026-11-24)
+
+The objective remains every requirement of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
+
+- [x] Qualify terminal ce9bf24b against main 0e550f6d; retain every log and original hosted regression result without claiming full semantic log review.
+- [x] Add finite real HTTPS pre-request and HTTP post-request resets to the current link recheck helper. All three physical controls pass; the maintained owner passes 444 observations and eleven affected gates.
+- [x] Preserve historical lychee, malformed-lock and updater evidence separately from current qualified behavior. Current lychee internals, actual Cargo audit rejection and updater engine compatibility stay unfinished.
+- [x] Reproduce missing private composition-test CI execution with the actual workflow shell and a mocked Cargo boundary. Add its filter to the existing compiled library step; preserve all sibling invocations after failures.
+- [x] Pass all 67 native-lane controls, 184 branch-policy controls and eleven workflow gates; seal complete terminal and local receipts with original failures retained.
+- [ ] Finish final documentation, diff and secret checks before publishing.
+- [ ] Publish only after the branch is idle, then collect and qualify every hosted check on the exact new head, including the four actual native library cases and three real transport controls.
+- [ ] Finish all wider original requirements below. Upstream dependencies, strict style, CodeQL, production delivery, serving identity, trusted epochs and independent authorship remain unfinished.
+- Supplied work receives zero independent authorship or reasoning credit; the native goal remains usage-limited.
+
+Evidence: [terminal composition results](../../docs/case-studies/issue-1580/composed-child-provenance.md),
+[real transport controls](../../docs/case-studies/issue-1580/link-transport-reset-controls.md).
+
 ## Active checkpoint: native provenance and captured currency (2026-11-23)
 
 The objective remains every requirement of issue #1580 in
@@ -10,8 +28,8 @@ The objective remains every requirement of issue #1580 in
 - [x] Pass procedural JavaScript, governed source integrity, source projection, Rust formatting and twelve affected gates. Preserve both initial check-invocation mistakes.
 - [x] Finish desktop follow-up: 441 maintained observations and ten affected gates pass. Six counterpart references and original historical template references remain intact.
 - [x] Seal a complete 315-member receipt with both CI failures, all local failures and the fresh dependency observations.
-- [ ] Publish the complete idle-branch batch after final documentation and secret checks, then qualify every hosted check on its exact head.
-- [ ] Verify the native repair in CI; a source-only review and JavaScript parity do not prove native execution.
+- [x] Publish ce9bf24b after final checks; qualify all 33 terminal workflows: 32 successes and one explicit skip, with 119,429 retained log lines.
+- [x] Verify the unchanged original native evidence assertion in hosted reasoning-2; all 441 selected native cases and 922 JavaScript owners pass. The private library cases require the follow-up CI filter below.
 - [ ] Complete every wider original criterion below. OpenSSF, historical dependency, registry authority, CodeQL and production/runtime criteria remain unfinished. Supplied work earns zero independent authorship/reasoning credit.
 
 Evidence: [composition and currency](../../docs/case-studies/issue-1580/composed-child-provenance.md),

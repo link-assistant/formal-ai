@@ -1,0 +1,25 @@
+{
+  "schema": "issue-1580-complete-evidence/v1",
+  "observedAt": "2026-11-24T00:09:24.503336+00:00",
+  "baseline": "5aa3a90b6b2cd6d0804110f71e09ae60c4111ab7",
+  "members": 34,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 123991,
+    "sha256": "2908b559b790afc08ac9824af2d00e708d7e85be9d1c124e47afe8f3a81b1ef2"
+  },
+  "memberIndex": {
+    "path": "members.json.gz",
+    "bytes": 1574,
+    "sha256": "97cd1c430b107e3f7c5974e2db7f1546401401356cff61cf6aa55913cf730c62"
+  },
+  "roundTripVerified": true,
+  "originalMissingInvocationFailureRetained": true,
+  "localNativeLaneControlsPassed": 67,
+  "localBranchPolicyControlsPassed": 184,
+  "affectedWorkflowGatesPassed": 11,
+  "localRustBuildOrExecution": false,
+  "newPrivateNativeCasesExecuted": false,
+  "allAcceptanceVerified": false,
+  "independentAuthorshipCredit": 0
+}
