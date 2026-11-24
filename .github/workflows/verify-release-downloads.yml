@@ -78,7 +78,7 @@ jobs:
         with:
           name: public-release-selection
           path: ${{ runner.temp }}/release-selection
-      - name: Stream, hash and delete every public asset
+      - name: Stream and verify every public asset
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ needs.resolve.outputs.tag }}

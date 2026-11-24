@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { test } from 'node:test';
 import {createRequire} from 'node:module';
 const YAML = createRequire(import.meta.url)('yaml');
 import { REPO_ROOT } from '../../../js/server/lino.mjs';
-import { releaseRoute, bindCompletedSource, validateInventory, checksumRows, assessCoverage, macosAssetNames, MAX_ASSET_BYTES, MAX_TOTAL_BYTES } from '../../../scripts/verify-public-release-downloads.mjs';
+import { runVerification, releaseRoute, bindCompletedSource, validateInventory, checksumRows, assessCoverage, macosAssetNames, MAX_ASSET_BYTES, MAX_TOTAL_BYTES } from '../../../scripts/verify-public-release-downloads.mjs';
 import { validateDigestCoverage } from '../../../scripts/release-advertisement.mjs';
 const repository = 'link-assistant/formal-ai',
   tag = 'v1.2.3';
@@ -351,7 +354,6 @@ test('the annotated completion trigger retains default-source read-only authenti
 });
 
 test('download resolution hydrates only its reviewed controller inputs while public verification stays exact', async () => {
-  const {createHash} = await import('node:crypto');
   const {posix} = await import('node:path');
   const source = fs.readFileSync(new URL('../../../.github/workflows/verify-release-downloads.yml', import.meta.url), 'utf8');
   assertReadOnlyCompletionBoundary(source);
@@ -410,7 +412,7 @@ test('download resolution hydrates only its reviewed controller inputs while pub
   // Reviewed main 101992d84e7b12c843722992050585192dfc3996: acquisition changes cannot alter actual downstream verification.
   const downstream = source.slice(source.indexOf('\n  all-public-bytes:\n'));
   assert.notEqual(source.indexOf('\n  all-public-bytes:\n'), -1);
-  // Normalize only the reviewed runner pin, artifact transport and explicit Mac shell.
+  // Normalize the reviewed runner pin, artifact transport, Mac shell and verification step label.
   // Every other downstream byte remains bound to the original verification contract.
   assert.doesNotMatch(downstream, /runs-on: ubuntu-latest/u);
   const adapter = '      - uses: ./.github/actions/download-artifact\n';
@@ -419,7 +421,68 @@ test('download resolution hydrates only its reviewed controller inputs while pub
   const shell = '    defaults:\n      run:\n        shell: bash\n';
   assert.equal(downstream.split(shell).length - 1, 1);
   assert.deepEqual(YAML.parse(source).jobs['macos-public-packages'].defaults, {run: {shell: 'bash'}});
+  const stepLabel = 'Stream and verify every public asset';
+  assert.equal(downstream.split(stepLabel).length - 1, 1);
   const original = downstream.replaceAll('runs-on: ubuntu-24.04', 'runs-on: ubuntu-latest')
-    .replaceAll(adapter, originalAdapter).replace(shell, '');
+    .replaceAll(adapter, originalAdapter).replace(shell, '')
+    .replace(stepLabel, 'Stream, hash and delete every public asset');
   assert.equal(createHash('sha256').update(original).digest('hex'), '11977c67b61a050577b42afa0ea0f0f37bc321e03601bd66e1b5e03d3b8f4018');
+});
+
+// Main run 45295717630 exhausted the serial verifier's deadline after 26 of 74 assets.
+test('full release verification overlaps transfers with a limit of three and retains only receipts', async t => {
+  const supplied = fixture();
+  const directory = fs.mkdtempSync(join(tmpdir(), 'formal-ai-public-release-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const payload = Buffer.from('verify the actual public bytes\n');
+  const digest = 'sha256:' + createHash('sha256').update(payload).digest('hex');
+  const checksums = Buffer.from(expected.map(name => digest.slice(7) + '  ' + name + '\n').join(''));
+  const uniqueAssets = supplied.assets.map(item => item.name === 'SHA256SUMS.txt'
+    ? { ...item, size: checksums.length, digest: 'sha256:' + createHash('sha256').update(checksums).digest('hex') }
+    : { ...item, size: payload.length, digest });
+  const selection = {
+    repository, tag, assets: uniqueAssets, definition, releaseId: supplied.release.id
+  };
+  let inFlight = 0;
+  let peak = 0;
+  const visited = [];
+  t.mock.method(globalThis, 'fetch', async url => {
+    const name = new URL(url).pathname.split('/').at(-1);
+    visited.push(name);
+    inFlight++;
+    peak = Math.max(peak, inFlight);
+    await new Promise(resolve => setImmediate(resolve));
+    inFlight--;
+    return new Response(name === 'SHA256SUMS.txt' ? checksums : payload);
+  });
+  const outcome = await runVerification({ selection, outputDirectory: directory });
+  assert.equal(peak, 3);
+  const names = uniqueAssets.map(item => item.name);
+  assert.deepEqual([...visited].sort(), [...names].sort());
+  assert.deepEqual(outcome.downloads.map(item => item.name), names);
+  assert.equal(outcome.coverage.byteVerifiedAssets, uniqueAssets.length);
+  assert.equal(fs.existsSync(join(directory, 'SHA256SUMS.txt')), true);
+  for (const item of uniqueAssets.filter(item => !item.name.endsWith('.txt') && !item.name.endsWith('.json'))) {
+    assert.equal(fs.existsSync(join(directory, item.name)), false);
+  }
+});
+
+test('a failed public transfer identifies its asset and cannot produce a complete result', async t => {
+  const directory = fs.mkdtempSync(join(tmpdir(), 'formal-ai-public-release-failed-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const assets = Array.from({ length: 6 }, (_, index) => asset('artifact-' + index + '.tgz', index + 1));
+  const selection = { repository, tag, assets, definition };
+  const requests = [];
+  t.mock.method(globalThis, 'fetch', async url => {
+    requests.push(new URL(url).pathname.split('/').at(-1));
+    if (requests.length === 1) return new Response(null, { status: 503 });
+    await new Promise(resolve => setImmediate(resolve));
+    return new Response(null, { status: 503 });
+  });
+  await assert.rejects(runVerification({ selection, outputDirectory: directory }), /public asset artifact-0\.tgz: .*complete bytes/u);
+  assert.deepEqual(requests, assets.slice(0, 3).map(item => item.name));
+  const progress = JSON.parse(fs.readFileSync(join(directory, 'download-observations.json'), 'utf8'));
+  assert.equal(progress.verificationComplete, false);
+  assert.deepEqual(progress.downloads, []);
+  assert.equal(fs.existsSync(join(directory, 'download-evidence.json')), false);
 });
