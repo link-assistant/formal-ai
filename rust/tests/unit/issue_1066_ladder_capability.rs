@@ -20,35 +20,12 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ToolCall;
 
 mod canonical_facts;
+mod nested_delivery;
 mod tool_results;
 use crate::tool_workspace;
 mod written_files;
 
-/// The fourteen tool names `@link-assistant/agent` advertises, in the order the
-/// live ladder trace recorded them.
-const LADDER_TOOLS: [&str; 14] = [
-    "bash",
-    "batch",
-    "codesearch",
-    "edit",
-    "glob",
-    "grep",
-    "list",
-    "read",
-    "task",
-    "todoread",
-    "todowrite",
-    "webfetch",
-    "websearch",
-    "write",
-];
-
-/// How many turns a replayed run is given to reach the file it was asked for.
-///
-/// The ladder runs its nodes with a turn budget too; this is a smaller one,
-/// because a literal write that has not happened within a handful of turns is
-/// the failure these tests exist to catch, not a run that needs longer.
-const LADDER_TURN_CAP: usize = 6;
+use nested_delivery::{LADDER_TOOLS, LADDER_TURN_CAP};
 
 fn plan(prompt: &str) -> Option<AgenticPlan> {
     plan_chat_step(&[ChatMessage::user(prompt)], &LADDER_TOOLS)

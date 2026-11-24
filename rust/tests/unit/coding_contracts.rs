@@ -12,3 +12,6 @@ mod agentic_general_planner;
 mod observed_plan_tools;
 #[path = "issue_1066_ladder_capability/tool_workspace.rs"]
 mod tool_workspace;
+
+#[path = "issue_1066_ladder_capability/nested_delivery.rs"]
+mod nested_delivery;
