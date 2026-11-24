@@ -1,3 +1,10 @@
+## Active checkpoint: secret scanner pipe fixture (2026-11-24)
+
+- [x] Separate the passing browser archive check in JavaScript group 10 from the failure in group 4 on the same branch head `53a2c45d1`. The [group 4 job](https://github.com/link-assistant/formal-ai/actions/runs/45348339023/job/138288371045) reports exit 134 from its mock `npx` on Node 24.22.3.
+- [x] Replace the mock's synchronous UTF-8 read of a pipe with stream decoding. Preserve its fixed npm argument, all 1,800 filenames, the complete receipt and the detected-secret failure control. The failure is consistent with [Node issue #66341](https://github.com/nodejs/node/issues/66341); the production scanner already uses streaming input.
+- [x] Run both focused cases and all 49 tests in the owning suite with the released Node 24.22.3 binary. The full-suite prerequisite is to put that binary on `PATH` for the existing subprocess fixtures as the hosted job does.
+- [ ] Verify the corrected fixture in the next exact-head hosted Layered run.
+
 ## Active checkpoint: scheduled learning cycle (2026-11-24)
 
 - [x] Retain the original bare Cargo exit and the newer live-frontier cancellation. Confirm the newest cancelled job finished its build and reached the live example.

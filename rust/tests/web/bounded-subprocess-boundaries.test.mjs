@@ -159,16 +159,30 @@ test('secret scanner uses one bounded npm command and retains every literal file
   // Model npm's fixed shell command and the separate filename stream.
   fs.writeFileSync(path.join(temporary, 'npx'), `#!${process.execPath}
 const fs = require('node:fs');
-const args = process.argv.slice(2);
-const marker = args.indexOf('node');
-if (marker < 0) process.exit(2);
-if (args[marker + 1] !== 'scripts/check-secrets-files.mjs' || args.length !== marker + 2) process.exit(3);
-const files = fs.readFileSync(0, 'utf8').split(String.fromCharCode(0)).filter(Boolean);
-const quote = value => "'" + value.replaceAll("'", "'" + String.fromCharCode(92) + "''") + "'";
-const bytes = Buffer.byteLength(args.map(quote).join(' '));
-fs.appendFileSync(process.env.SECRET_SCAN_RECEIPTS, JSON.stringify({files, bytes}) + '\\n');
-if (bytes > 120 * 1024) { console.error('mock npm spawn E2BIG'); process.exit(7); }
-if (files.includes('fixture-detected-secret')) process.exit(1);
+const {text} = require('node:stream/consumers');
+
+async function main() {
+  const args = process.argv.slice(2);
+  const marker = args.indexOf('node');
+  if (marker < 0) return 2;
+  if (args[marker + 1] !== 'scripts/check-secrets-files.mjs' || args.length !== marker + 2) return 3;
+  // Node issue #66341 affects synchronous UTF-8 reads of pipe descriptors.
+  const files = (await text(process.stdin)).split(String.fromCharCode(0)).filter(Boolean);
+  const quote = value => "'" + value.replaceAll("'", "'" + String.fromCharCode(92) + "''") + "'";
+  const bytes = Buffer.byteLength(args.map(quote).join(' '));
+  fs.appendFileSync(process.env.SECRET_SCAN_RECEIPTS, JSON.stringify({files, bytes}) + '\\n');
+  if (bytes > 120 * 1024) {
+    console.error('mock npm spawn E2BIG');
+    return 7;
+  }
+  return files.includes('fixture-detected-secret') ? 1 : 0;
+}
+main().then(status => {
+  process.exitCode = status;
+}, error => {
+  console.error(error);
+  process.exitCode = 1;
+});
 `, {mode: 0o755});
   const files = Array.from({length: 1800}, (_, index) =>
     `fixture/${index.toString().padStart(4, '0')}/a file with 'quotes' 世界 ${'a'.repeat(70)}.txt`);
