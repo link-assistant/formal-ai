@@ -55,78 +55,153 @@ pub(super) fn plan_structured_edit_step(
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
     let edit = member_insertion(task)?;
-    // A continuation cue resumes this run rather than opening a new request,
-    // so the read, write, and verification evidence gathered for it must
-    // survive the ping (issue #1138): slicing at the last user message -- the
-    // cue itself -- restarted the read on every ping and the insertion never
-    // advanced.
+    plan_member_change(task, messages, tool_names, &edit, false, result)
+}
+
+pub(super) fn plan_declared_member_change(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    target: &str,
+    declaration: &str,
+    value: &str,
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    let edit = MemberInsertion {
+        target: target.to_owned(),
+        values: vec![value.to_owned()],
+        named: vec![declaration.to_owned()],
+    };
+    let evidence = &messages[super::planner::evidence_window_start(messages)..];
+    plan_member_change(task, evidence, tool_names, &edit, true, result)
+}
+
+fn plan_member_change(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    edit: &MemberInsertion,
+    strict: bool,
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    plan_verified_source_change(task, messages, tool_names, &edit.target, result, |source| {
+        let (updated, inserted) = apply_member_insertion(source, edit, strict)?;
+        let (intent, members) = if inserted.is_empty() {
+            ("coding-member-already-present", quoted_list(&edit.values))
+        } else {
+            ("coding-member-inserted", quoted_list(&inserted))
+        };
+        Some(SourceChange {
+            updated,
+            intent,
+            slots: vec![(MEMBERS_SLOT, members)],
+        })
+    })
+}
+
+pub(super) fn plan_seed_literal_change(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    target: &str,
+    old: &str,
+    next: &str,
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    let evidence = &messages[super::planner::evidence_window_start(messages)..];
+    plan_verified_source_change(task, evidence, tool_names, target, result, |source| {
+        if !seed::parse_lexicon_text(source)
+            .meanings
+            .iter()
+            .any(|meaning| meaning.words().any(|value| value == old))
+        {
+            return None;
+        }
+        let quoted = json!(old).to_string();
+        let mut matches = source.match_indices(&quoted);
+        let (at, _) = matches.next()?;
+        if matches.next().is_some() {
+            return None;
+        }
+        let mut updated = source.to_owned();
+        updated.replace_range(at..at + quoted.len(), &json!(next).to_string());
+        Some(SourceChange {
+            updated,
+            intent: "coding-text-replaced",
+            slots: vec![("{old}", old.to_owned()), ("{new}", next.to_owned())],
+        })
+    })
+}
+
+struct SourceChange {
+    updated: String,
+    intent: &'static str,
+    slots: Vec<(&'static str, String)>,
+}
+
+fn plan_verified_source_change(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    target: &str,
+    result: &mut Option<FinalResult>,
+    compute: impl FnOnce(&str) -> Option<SourceChange>,
+) -> Option<AgenticPlan> {
+    // A continuation cue resumes this run and retains the original evidence window.
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
     let progress = Progress::scan(messages);
-    let attempted_write = progress.attempted_mutation_for(&edit.target, Capability::Write);
+    let attempted_write = progress.attempted_mutation_for(target, Capability::Write);
     let preimage = if attempted_write {
-        progress.source_read_before_latest_mutation_for(&edit.target, Capability::Write)
+        progress.source_read_before_latest_mutation_for(target, Capability::Write)
     } else {
-        progress.fresh_source_read_for(&edit.target)
+        progress.fresh_source_read_for(target)
     };
-
     let Some(source) = preimage.and_then(|observation| observation.source.as_deref()) else {
-        let projected = progress.projected_source_path(&edit.target);
+        let projected = progress.projected_source_path(target);
         if attempted_write
-            || progress.source_read_for(&edit.target).is_some()
+            || progress.source_read_for(target).is_some()
             || projected.is_some_and(|path| progress.source_read_for(&path).is_some())
         {
-            return Some(plan_edit_preimage_gap(&edit.target, result));
+            return Some(plan_edit_preimage_gap(target, result));
         }
         let read_tool = tool_for(tool_names, Capability::Read)?;
-        return Some(plan_one(read_tool, read_arguments(&edit.target)));
+        return Some(plan_one(read_tool, read_arguments(target)));
     };
-    let (updated, inserted) = insert_members(source, &edit)?;
-    // A read that already lists every member is itself the observation: a run
-    // resumed after a client compaction answers at once instead of spending
-    // another full-file observation that pushes it over the threshold again.
-    if inserted.is_empty() && !attempted_write {
+    let SourceChange {
+        updated,
+        intent,
+        slots,
+    } = compute(source)?;
+    let slots: Vec<_> = slots
+        .iter()
+        .map(|(key, value)| (*key, value.as_str()))
+        .collect();
+    // An already satisfied change needs no rewrite after a client compaction.
+    if updated == source && !attempted_write {
         return Some(record(
-            AgenticPlan::Final(render_seeded_change(
-                "coding-member-already-present",
-                task,
-                &edit.target,
-                &[(MEMBERS_SLOT, &quoted_list(&edit.values))],
-            )?),
+            AgenticPlan::Final(render_seeded_change(intent, task, target, &slots)?),
             FinalDisposition::Finding,
-            "coding-member-already-present",
+            intent,
             result,
         ));
     }
-
-    // Members the file already lists need no write: after a client compaction
-    // the run re-reads the file it already changed, and rewriting it in full
-    // pushed the session straight back over the compaction threshold (the
-    // issue #1028 ladder looped read -> write until its budget ran out).
     if !attempted_write {
         let write_tool = tool_for(tool_names, Capability::Write)?;
-        return Some(plan_one(
-            write_tool,
-            write_arguments(&edit.target, &updated),
-        ));
+        return Some(plan_one(write_tool, write_arguments(target, &updated)));
     }
-    let (intent, members) = if inserted.is_empty() {
-        ("coding-member-already-present", quoted_list(&edit.values))
-    } else {
-        ("coding-member-inserted", quoted_list(&inserted))
-    };
     plan_bound_write_digest_verification(
         task,
         current_turn,
         tool_names,
         &VerifiedChange {
-            target: &edit.target,
+            target,
             expected: &updated,
             intent,
-            slots: &[(MEMBERS_SLOT, members.as_str())],
+            slots: &slots,
             list_slots: &[],
         },
         result,
-        |arguments| progress.matches_workspace_source_path(arguments, &edit.target),
+        |arguments| progress.matches_workspace_source_path(arguments, target),
     )
 }
 
@@ -285,16 +360,28 @@ struct Literal {
 /// missing is discovered from the target's bytes, so it is knowledge only this
 /// function has. It is empty when the list already held everything asked for.
 fn insert_members(source: &str, edit: &MemberInsertion) -> Option<(String, Vec<String>)> {
-    // Issue #1085 (D2.1): a links-network substitution first; the byte path
-    // below remains for shapes the rule file does not declare.
-    if let Some(updated) = edit.named.first().and_then(|list| {
-        super::link_edit_rules::insert_members_via_links(source, list, &edit.values)
-    }) {
+    apply_member_insertion(source, edit, false)
+}
+
+fn apply_member_insertion(
+    source: &str,
+    edit: &MemberInsertion,
+    strict: bool,
+) -> Option<(String, Vec<String>)> {
+    if !strict
+        && let Some(updated) = edit.named.first().and_then(|list| {
+            super::link_edit_rules::insert_members_via_links(source, list, &edit.values)
+        })
+    {
         return Some(updated);
     }
     let (regions, literals) = scan(source);
-    let anchor = anchor_by_members(&regions, &literals, &edit.values)
-        .or_else(|| anchor_by_name(source, &regions, &literals, &edit.named))?;
+    let anchor = if strict {
+        declared_string_array(source, &regions, edit.named.first()?)?
+    } else {
+        anchor_by_members(&regions, &literals, &edit.values)
+            .or_else(|| anchor_by_name(source, &regions, &literals, &edit.named))?
+    };
     let members = direct_members(&literals, anchor.open);
     let absent = edit
         .values
@@ -385,10 +472,26 @@ fn quoted_list(values: &[String]) -> String {
         .join(", ")
 }
 
-/// The list the request is about is the one that already holds the members the
-/// request named. The smallest such region wins, so a `matches!(subject, Some(
-/// "a" | "b"))` resolves to the alternation rather than to the macro call that
-/// contains it.
+/// A census-owned string array requires an actual, unique initializer in the observed bytes.
+fn declared_string_array(source: &str, regions: &[Region], name: &str) -> Option<Region> {
+    if !valid_identifier(name) {
+        return None;
+    }
+    let declaration = regex::Regex::new(&format!(
+        r"(?:const|static)\s+{name}\s*:\s*&?\s*\[\s*&str\s*\]\s*=\s*&?\s*\["
+    ))
+    .ok()?;
+    let mut anchors = declaration.find_iter(source).filter_map(|matched| {
+        regions
+            .iter()
+            .find(|region| region.open == matched.end() - 1)
+    });
+    let anchor = anchors.next()?;
+    anchors.next().is_none().then_some(*anchor)
+}
+
+/// The smallest region holding the members wins. In `matches!(subject,
+/// Some("a" | "b"))`, this selects the alternation inside the macro call.
 fn anchor_by_members(
     regions: &[Region],
     literals: &[Literal],

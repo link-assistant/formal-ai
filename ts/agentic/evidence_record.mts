@@ -18,6 +18,7 @@ import { namesCallableArtifact } from './evidence_record/artifact_header.mjs';
 import { planRecordReadbackStep } from './evidence_record/record_observation.mjs';
 import { workspaceDiscoveryStep } from './workspace_discovery.mjs';
 import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
+import { planNumberedSourceRequirements } from './numbered_source_requirements.mjs';
 import { instructionEnd } from './positional_edit.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
 import { isContinuationCue, traceRoute } from './planner/continuation.mjs';
@@ -210,7 +211,10 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
   const isWorkspaceObservation = observed !== null;
   let answer = observed;
   if (answer === null) {
-    const plan = await planChatStepResolved(residualMessages, toolNames);
+    const sourcePlan = (obligation.first_line !== null || obligation.field_lines.length > 0)
+      && parseObligation(obligation.residual) === null
+      ? await planNumberedSourceRequirements(obligation.residual, residualMessages, toolNames) : null;
+    const plan = sourcePlan ?? await planChatStepResolved(residualMessages, toolNames);
     if (plan && plan.kind === 'tool_calls') {
       traceRoute('evidence_record', 'investigating');
       return plan;

@@ -6,6 +6,7 @@ import {dirname, join} from 'node:path';
 import {composeGeneralChangePlan, planLinksNotation} from '../../../js/agentic/general_planner.mjs';
 import {tmpdir} from 'node:os';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
+import {host, installHost} from '../../../js/agentic/host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {canDeliverFinal, FinalPayloadRole} from '../../../js/agentic/plan.mjs';
@@ -88,6 +89,52 @@ test('the result and its proof retain every verified edit in a sequence', async 
     assert.match(evidence ?? '', /stale entry/u);
   }
 });
+const providerSource = 'rust/src/web_search_core.rs';
+const sourceInitializer = 'pub const WEB_SEARCH_PROVIDERS: &[&str] = &["brave"];\n';
+const seedSource = 'data/seed/meanings-verifiable-task.lino';
+const seedInitializer = readFileSync(new URL('../../../' + seedSource, import.meta.url), 'utf8');
+const numberedRequirement = [
+  "Deliver these requirements: (1) Add wikiquote as a web search provider. (2) Change the MEANINGS_VERIFIABLE_TASK_LINO seed's English pattern expectation surface from continue this to alternating.",
+  'Create `agent-ladder-effects/node.lino` with these exact field lines: `kind=requirement` and `result=<each verified edit>`. Leave supporting evidence in .agent-ladder/node-proof.md. The first line must be exactly `proof_for=requirement`.',
+].join('\n\n');
+
+test('numbered source requirements deliver both digested edits as proof and result', async () => {
+  const originalHost = host();
+  const complete = originalHost.censusSourceClosureComplete();
+  const documents = originalHost.censusDocuments();
+  const initial = { [providerSource]: sourceInitializer, [seedSource]: seedInitializer };
+  installHost({ ...originalHost, censusDocuments: () => documents, censusSourceClosureComplete: () => complete });
+  try {
+    const result = await replay(numberedRequirement, null, { initial, turns: 14 });
+    assert.equal(result.files.get(providerSource), sourceInitializer.replace('"brave"', '"brave", "wikiquote"'));
+    assert.equal(result.files.get(seedSource), seedInitializer.replace('"continue this"', '"alternating"'));
+    assert.match(result.files.get(proof) ?? '', /^proof_for=requirement\n/u);
+    const resultLine = result.files.get(effect)?.split('\n').find(line => line.startsWith('result='));
+    for (const evidence of [resultLine, result.files.get(proof)]) {
+      for (const part of [providerSource, seedSource, 'wikiquote', 'alternating']) {
+        assert.ok(evidence?.includes(part), evidence);
+      }
+    }
+
+    const incomplete = await replay(numberedRequirement.replace('web search provider', 'unlocated target'), null, {
+      initial, turns: 2,
+    });
+    assert.equal(incomplete.calls.some(call => call.tool === 'write'), false);
+    assert.equal(incomplete.files.get(seedSource), seedInitializer);
+    assert.equal(incomplete.files.has(proof), false);
+
+    const corruptDigest = await replay(numberedRequirement, (call, receipt) =>
+      call.tool === 'bash' && JSON.parse(call.arguments).command.startsWith('sha256sum ')
+        ? { content: JSON.stringify({ stdout: 'wrong digest', exit_code: 0, complete: true }) }
+        : receipt, { initial, turns: 14 });
+    assert.equal(corruptDigest.files.get(seedSource), seedInitializer);
+    assert.equal(corruptDigest.files.has(proof), false);
+    assert.equal(corruptDigest.files.has(effect), false);
+  } finally {
+    installHost(originalHost);
+  }
+});
+
 for(const[mode,mutate]of[
  ['bare acknowledgement',(call,receipt)=>call.tool==='bash'?{content:'ok'}:receipt],
  ['wrong successful bytes',(call,receipt)=>call.tool==='bash'?{content:JSON.stringify({stdout:'wrong observed bytes',exit_code:0,complete:true})}:receipt],

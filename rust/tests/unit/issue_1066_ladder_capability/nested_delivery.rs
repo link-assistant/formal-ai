@@ -67,6 +67,60 @@ fn the_result_and_proof_retain_each_verified_edit_in_a_sequence() {
     workspace
         .write_initial(source, "azure noon\nstale entry\n")
         .unwrap();
+    execute_edit_delivery(&mut workspace, prompt);
+    assert_eq!(workspace.read(source).unwrap(), "azure noon\ncobalt dawn\n");
+    let effect = workspace.read("agent-ladder-effects/node.lino").unwrap();
+    let proof = workspace.read(".agent-ladder/node-proof.md").unwrap();
+    assert!(proof.starts_with("proof_for=edit\n"), "{proof}");
+    let result = effect
+        .lines()
+        .find_map(|line| line.strip_prefix("result="))
+        .expect("verified edits have a result");
+    for evidence in [result, &proof] {
+        assert!(evidence.contains("cobalt dawn"), "{evidence}");
+        assert!(evidence.contains("stale entry"), "{evidence}");
+    }
+}
+
+#[test]
+fn numbered_source_requirements_deliver_both_digested_edits_as_evidence() {
+    let source = "rust/src/web_search_core.rs";
+    let initial = "pub const WEB_SEARCH_PROVIDERS: &[&str] = &[\"brave\"];\n";
+    let seed = "data/seed/meanings-verifiable-task.lino";
+    let seed_initial = include_str!("../../../../data/seed/meanings-verifiable-task.lino");
+    let prompt = "Deliver these requirements: (1) Add wikiquote as a web search provider. \
+        (2) Change the MEANINGS_VERIFIABLE_TASK_LINO seed's English pattern expectation surface \
+        from continue this to alternating.\n\nCreate `agent-ladder-effects/node.lino` with these \
+        exact field lines: `kind=requirement` and `result=<each verified edit>`. Leave supporting \
+        evidence in .agent-ladder/node-proof.md. The first line must be exactly `proof_for=requirement`.";
+    let mut workspace = ToolWorkspace::new(prompt);
+    workspace.write_initial(source, initial).unwrap();
+    workspace.write_initial(seed, seed_initial).unwrap();
+    execute_edit_delivery(&mut workspace, prompt);
+
+    assert_eq!(
+        workspace.read(source).unwrap(),
+        initial.replace("\"brave\"", "\"brave\", \"wikiquote\"")
+    );
+    assert_eq!(
+        workspace.read(seed).unwrap(),
+        seed_initial.replace("\"continue this\"", "\"alternating\"")
+    );
+    let effect = workspace.read("agent-ladder-effects/node.lino").unwrap();
+    let proof = workspace.read(".agent-ladder/node-proof.md").unwrap();
+    assert!(proof.starts_with("proof_for=requirement\n"), "{proof}");
+    let result = effect
+        .lines()
+        .find_map(|line| line.strip_prefix("result="))
+        .expect("verified edits have a result");
+    for evidence in [result, &proof] {
+        for part in [source, seed, "wikiquote", "alternating"] {
+            assert!(evidence.contains(part), "{evidence}");
+        }
+    }
+}
+
+fn execute_edit_delivery(workspace: &mut ToolWorkspace, prompt: &str) {
     let mut messages = vec![ChatMessage::user(prompt)];
     for turn in 0..14 {
         let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &LADDER_TOOLS) else {
@@ -81,18 +135,6 @@ fn the_result_and_proof_retain_each_verified_edit_in_a_sequence() {
             )]));
             messages.push(workspace.execute(&id, call));
         }
-    }
-    assert_eq!(workspace.read(source).unwrap(), "azure noon\ncobalt dawn\n");
-    let effect = workspace.read("agent-ladder-effects/node.lino").unwrap();
-    let proof = workspace.read(".agent-ladder/node-proof.md").unwrap();
-    assert!(proof.starts_with("proof_for=edit\n"), "{proof}");
-    let result = effect
-        .lines()
-        .find_map(|line| line.strip_prefix("result="))
-        .expect("verified edits have a result");
-    for evidence in [result, &proof] {
-        assert!(evidence.contains("cobalt dawn"), "{evidence}");
-        assert!(evidence.contains("stale entry"), "{evidence}");
     }
 }
 

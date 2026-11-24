@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { WorkerHost } from '../../js/server/worker-host.mjs';
+import { recordReadbackCommand } from '../../js/agentic/evidence_record/record_observation.mjs';
 import { installNodeHost } from '../../js/agentic/node-host.mjs';
 
 const [, , tracePath, mode] = process.argv;
@@ -27,7 +28,7 @@ async function replayBoundedRequest(content, sources, outputs, plan, maxCalls) {
   const calls = [];
   const paths = new Set([...Object.keys(sources), ...outputs]);
   const commands = new Map([...paths].flatMap(path => [
-    ['sha256sum -- ' + path, path], ['cat -- ' + path, path], ["cat -- '" + path + "'", path],
+    ['sha256sum -- ' + path, path], [recordReadbackCommand(path), path],
   ]));
   let blocked = null;
   try {
@@ -42,7 +43,7 @@ async function replayBoundedRequest(content, sources, outputs, plan, maxCalls) {
       const args = JSON.parse(call.arguments);
       const path = call.tool === 'bash' ? commands.get(args.command) : args.filePath ?? args.file_path ?? args.path;
       if (!['bash', 'read', 'write', 'edit'].includes(call.tool) || !paths.has(path)) {
-        blocked = { tool: call.tool, path: path ?? null };
+        blocked = { tool: call.tool, path: path ?? null, command: args.command ?? null };
         break;
       }
       const id = 'scoped-clause-' + step;
@@ -75,6 +76,8 @@ if (mode === '--composite') {
   const { files, ...replay } = await replayBoundedRequest(request, sources, outputs, plan, 24);
   const effects = Object.fromEntries(Object.entries(expectedSourceEffects).map(([path, needle]) =>
     [path, (files[path]?.split(needle).length ?? 0) === sources[path].split(needle).length + 1]));
+  const seedPath = 'data/seed/meanings-verifiable-task.lino';
+  effects[seedPath] &&= files[seedPath] === sources[seedPath].replace('"continue this"', '"alternating"');
   const delivered = Object.fromEntries(outputs.map(path => [path, files[path] ?? null]));
   const grounded = outputs.every(path => Object.entries(expectedSourceEffects)
     .every(([source, needle]) => delivered[path]?.includes(source) && delivered[path].includes(needle.slice(1, -1))));

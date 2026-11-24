@@ -17,6 +17,7 @@ use std::collections::HashMap;
 use super::capability_router::tool_for;
 use super::final_result::{FinalDisposition, FinalPayloadRole, FinalResult, record};
 use super::general_planner::{compose_general_change_plan, has_authoritative_literal_write};
+use super::numbered_source_requirements::plan_numbered_source_requirements;
 use super::planner::{
     AgenticPlan, Capability, plan_chat_step_resolved, plan_one, plan_settled_routes, trace_route,
     write_arguments,
@@ -376,7 +377,21 @@ pub(super) fn plan_evidence_record_step(
     let answer = match observed {
         Some(answer) => answer,
         None => {
-            if let Some(resolved) = plan_chat_step_resolved(&residual_messages, tool_names) {
+            let source_plan = if (obligation.first_line.is_some()
+                || !obligation.field_lines.is_empty())
+                && parse_obligation(&obligation.residual).is_none()
+            {
+                plan_numbered_source_requirements(
+                    &obligation.residual,
+                    &residual_messages,
+                    tool_names,
+                )
+            } else {
+                None
+            };
+            if let Some(resolved) =
+                source_plan.or_else(|| plan_chat_step_resolved(&residual_messages, tool_names))
+            {
                 if !resolved.can_deliver() {
                     trace_route("evidence_record", "residual_not_finding");
                     return Some(resolved.into_plan(result));

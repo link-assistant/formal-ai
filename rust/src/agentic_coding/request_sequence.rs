@@ -320,7 +320,7 @@ pub(super) fn plan_bound_request_steps(
     parts: &[String],
     messages: &[ChatMessage],
     tool_names: &[&str],
-    plan_for: fn(&[ChatMessage], &[&str]) -> Option<ResolvedPlan>,
+    plan_for: impl Fn(&[ChatMessage], &[&str]) -> Option<ResolvedPlan>,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let (base, exchanges) = turn_exchanges(messages);
