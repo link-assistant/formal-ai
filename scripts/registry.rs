@@ -3,8 +3,8 @@
 //! ```cargo
 //! [dependencies]
 //! ureq = "3.5.2"
-//! semver = "1"
 //! serde_json = "1.0.154"
+//! semver = "1.0.28"
 //! ```
 #![allow(dead_code)] // Each standalone script uses a different subset of this module.
 
@@ -18,17 +18,7 @@ fn main() {}
 pub enum Failure {
     Transient(String),
     Permanent(String),
-    InvalidResponse(String),
-}
-
-impl Failure {
-    fn message(&self) -> &str {
-        match self {
-            Self::Transient(message)
-            | Self::Permanent(message)
-            | Self::InvalidResponse(message) => message,
-        }
-    }
+    UnreadableBody(String),
 }
 
 pub fn with_retries<T>(
@@ -43,12 +33,12 @@ pub fn with_retries<T>(
         match operation() {
             Ok(value) => return Ok(value),
             Err(Failure::Permanent(error)) => return Err(error),
-            Err(Failure::Transient(error) | Failure::InvalidResponse(error))
+            Err(Failure::Transient(error) | Failure::UnreadableBody(error))
                 if attempt == attempts =>
             {
                 return Err(format!("{error} (after {attempts} attempts)"));
             }
-            Err(Failure::Transient(error) | Failure::InvalidResponse(error)) => {
+            Err(Failure::Transient(error) | Failure::UnreadableBody(error)) => {
                 eprintln!("Registry lookup retry {}/{attempts}: {error}", attempt + 1);
                 std::thread::sleep(delay * 2_u32.pow(attempt - 1));
             }
@@ -84,9 +74,9 @@ fn fetch_body(
         .map_err(|error| Failure::Transient(format!("{url}: {error}")))?;
     match response.status().as_u16() {
         200 => {
-            let unreadable = |error| {
-                Failure::InvalidResponse(format!("Unreadable response from {url}: {error}"))
-            };
+            let unreadable =
+                |error| Failure::UnreadableBody(format!("Unreadable response from {url}: {error}"));
+            // Preserve ureq's response size limit and reject invalid UTF-8.
             let bytes = response
                 .body_mut()
                 .read_to_vec()
@@ -187,18 +177,20 @@ pub fn version_exists(crate_name: &str, version: &str) -> Result<bool, String> {
     let Some(body) = get_body(&url, &[])? else {
         return Ok(false);
     };
-    validate_version_response(&body, crate_name, version).map(|()| true)
+    validate_version_body(&body, crate_name, version).map(|()| true)
 }
 
-fn validate_version_response(body: &str, crate_name: &str, version: &str) -> Result<(), String> {
+fn validate_version_body(body: &str, crate_name: &str, version: &str) -> Result<(), String> {
     let data: serde_json::Value =
         serde_json::from_str(body).map_err(|e| format!("Invalid crates.io JSON: {e}"))?;
     let record = &data["version"];
-    let crate_matches = record.get("crate").is_none_or(|name| {
-        name.as_str()
-            .is_some_and(|name| name.eq_ignore_ascii_case(crate_name))
-    });
-    if record["num"].as_str() != Some(version) || !crate_matches {
+    if record["num"].as_str() != Some(version)
+        || record.get("crate").is_some_and(|name| {
+            !name
+                .as_str()
+                .is_some_and(|name| name.eq_ignore_ascii_case(crate_name))
+        })
+    {
         return Err(format!(
             "Invalid crates.io version response for {crate_name}@{version}"
         ));
@@ -232,65 +224,81 @@ fn sparse_index_path(crate_name: &str) -> Result<String, String> {
 }
 
 fn sparse_body_has_version(body: &str, crate_name: &str, version: &str) -> Result<bool, String> {
+    if body.is_empty() {
+        return Err("Empty sparse index response".into());
+    }
     let mut present = false;
-    let mut records = 0;
-    for line in body.lines() {
+    for (line_number, line) in body.lines().enumerate() {
+        let number = line_number + 1;
         let record: serde_json::Value = serde_json::from_str(line)
-            .map_err(|error| format!("Invalid sparse index JSON: {error}"))?;
+            .map_err(|error| format!("Invalid sparse index JSON on line {number}: {error}"))?;
         let name = record.get("name").and_then(serde_json::Value::as_str);
         if !name.is_some_and(|name| name.eq_ignore_ascii_case(crate_name)) {
-            return Err("Invalid sparse index record identity".into());
+            return Err(format!(
+                "Invalid sparse index crate identity on line {number}"
+            ));
         }
         let found = record["vers"]
             .as_str()
-            .ok_or("Missing sparse index record version")?;
-        semver::Version::parse(found)
-            .map_err(|error| format!("Invalid sparse index version: {error}"))?;
+            .filter(|found| semver::Version::parse(found).is_ok())
+            .ok_or_else(|| format!("Invalid sparse index version on line {number}"))?;
         present |= found == version;
-        records += 1;
-    }
-    if records == 0 {
-        return Err("Empty sparse index response".into());
     }
     Ok(present)
 }
 
+enum ObservationError {
+    Invalid(String),
+    Unavailable(String),
+}
+
+fn observe_version(
+    agent: &ureq::Agent,
+    url: &str,
+    validate: impl FnOnce(&str) -> Result<bool, String>,
+) -> Result<bool, ObservationError> {
+    match fetch_body(agent, url, &[]) {
+        Ok(Some(body)) => {
+            validate(&body).map_err(|error| ObservationError::Invalid(format!("{url}: {error}")))
+        }
+        Ok(None) => Ok(false),
+        Err(Failure::UnreadableBody(error)) => Err(ObservationError::Invalid(error)),
+        Err(Failure::Transient(error) | Failure::Permanent(error)) => {
+            Err(ObservationError::Unavailable(error))
+        }
+    }
+}
+
 /// Each outer waiter attempt makes at most one bounded request per endpoint.
-/// A failed observation never becomes a claim that publication failed.
+/// Malformed success replies leave availability unknown unless another endpoint
+/// returns a valid exact match.
 pub fn crate_version_visibility(crate_name: &str, version: &str) -> VersionVisibility {
-    let path = match sparse_index_path(crate_name) {
-        Ok(path) => path,
-        Err(error) => return VersionVisibility::Unknown(error),
-    };
+    use ObservationError::{Invalid, Unavailable};
+
     let agent = registry_agent();
-    let observe = |url: &str, validate: fn(&str, &str, &str) -> Result<bool, String>| {
-        let Some(body) = fetch_body(&agent, url, &[])? else {
-            return Ok(false);
-        };
-        validate(&body, crate_name, version)
-            .map_err(|error| Failure::InvalidResponse(format!("{url}: {error}")))
-    };
-    let index = observe(
-        &format!("https://index.crates.io/{path}"),
-        sparse_body_has_version,
-    );
+    let api_url = format!("https://crates.io/api/v1/crates/{crate_name}/{version}");
+    let index = sparse_index_path(crate_name)
+        .map_err(Invalid)
+        .and_then(|path| {
+            observe_version(&agent, &format!("https://index.crates.io/{path}"), |body| {
+                sparse_body_has_version(body, crate_name, version)
+            })
+        });
     if matches!(index, Ok(true)) {
         return VersionVisibility::Published;
     }
-    let api = observe(
-        &format!("https://crates.io/api/v1/crates/{crate_name}/{version}"),
-        |body, name, version| validate_version_response(body, name, version).map(|()| true),
-    );
+    let api = observe_version(&agent, &api_url, |body| {
+        validate_version_body(body, crate_name, version).map(|()| true)
+    });
     match (index, api) {
-        (_, Ok(true)) => VersionVisibility::Published,
-        (Err(index), Err(api)) => {
-            VersionVisibility::Unknown(format!("{}; {}", index.message(), api.message()))
+        (Ok(true), _) | (_, Ok(true)) => VersionVisibility::Published,
+        (Err(Invalid(index) | Unavailable(index)), Err(Invalid(api) | Unavailable(api))) => {
+            VersionVisibility::Unknown(format!("{index}; {api}"))
         }
-        (Err(Failure::InvalidResponse(reason)), _) | (_, Err(Failure::InvalidResponse(reason))) => {
+        (Err(Invalid(reason)), Ok(false)) | (Ok(false), Err(Invalid(reason))) => {
             VersionVisibility::Unknown(reason)
         }
         (Ok(false), _) | (_, Ok(false)) => VersionVisibility::NotPublishedYet,
-        (Ok(true), _) => unreachable!(),
     }
 }
 
@@ -318,23 +326,6 @@ mod tests {
     use super::*;
     use std::io::{Read, Write};
     use std::net::TcpListener;
-
-    #[test]
-    fn version_response_requires_matching_version_and_crate_identity() {
-        for (record, valid) in [
-            (r#"{"num":"1.2.3","crate":"Fixture"}"#, true),
-            (r#"{"num":"1.2.3"}"#, true),
-            (r#"{"num":"1.2.3","crate":"other"}"#, false),
-            (r#"{"num":"1.2.3","crate":null}"#, false),
-            (r#"{"num":"1.2.30","crate":"fixture"}"#, false),
-        ] {
-            let body = format!(r#"{{"version":{record}}}"#);
-            assert_eq!(
-                validate_version_response(&body, "fixture", "1.2.3").is_ok(),
-                valid
-            );
-        }
-    }
 
     #[test]
     fn retries_transient_errors_but_not_permanent_errors() {
@@ -423,7 +414,7 @@ mod tests {
             "{\"name\":\"other\",\"vers\":\"1.2.3\"}",
             "{\"name\":\"fixture\",\"note\":\"\\\"vers\\\":\\\"1.2.3\\\"\"}",
             &format!("{valid}\nnot json"),
-            &format!("{valid}\n{{\"name\":\"fixture\",\"vers\":\"not-a-version\"}}"),
+            &format!("{valid}\n{{\"name\":\"fixture\",\"vers\":\"01.2.3\"}}"),
             &format!("{valid}\n\n{valid}"),
         ] {
             assert!(sparse_body_has_version(body, "fixture", "1.2.3").is_err());

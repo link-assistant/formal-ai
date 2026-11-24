@@ -29,8 +29,8 @@
 //! toml_edit = "0.25.15"
 //! regex = "1"
 //! ureq = "3.5.2"
-//! semver = "1"
 //! serde_json = "1"
+//! semver = "1.0.28"
 //! ```
 
 use std::env;

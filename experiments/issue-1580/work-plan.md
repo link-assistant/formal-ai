@@ -1,13 +1,10 @@
-## Active checkpoint: registry response validation (2026-11-24)
+## Active checkpoint: historical Cargo audit (2026-11-24)
 
-The objective remains every requirement of issue #1580 in
-[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
+- [x] Trace the historical audit warning to optional Lindera. Keep the original Rust parser and offline-resolvable lock, with 32 production-profile checks passing.
+- [ ] Qualify the audit on the exact hosted head. The complete local gate inventory has 89 runnable passes and 54 explicit skips for the two development batches, after restoring eight initially missing prerequisites.
+- [ ] Finish the wider original criteria below. Supplied commands and code earn zero independent credit.
 
-- [x] Compare the release and registry changes in [Rust template #267](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/pull/267). Formal AI already drains both release CLI output pipes and applies strict changelog closing-fence handling. Its registry waiter still accepted a different crate with the requested version and classified malformed HTTP 200 replies as absence if the other registry endpoint returned 404.
-- [x] Verify the supplied crate identity and validate the complete UTF-8 sparse index before accepting version visibility. Preserve a malformed success response as uncertainty unless the other endpoint positively identifies the requested version. Keep ordinary network failures distinct from invalid bodies and preserve the retry policy.
-- [x] Admit four focused controls to the existing hosted registry harness. The preserved registry source from `459f298f4` serves as the executable negative control for wrong crate names, malformed successes paired with 404, and malformed version records.
-- [x] Pass three HTTP fixture controls, 67 native selection checks, 184 branch-policy checks, four applicable local gates and Rust formatting. Use the same semver version and checksum already in the repository lock. Execute the native tests in hosted CI.
-- [ ] Verify the new before-and-after controls in hosted CI with the exact revised source. Supplied work earns zero independent Formal AI authorship or reasoning credit.
+Evidence: [Cargo audit](../../docs/case-studies/issue-1580/codeql-optional-dependency-checkpoint.md#historical-rust-reproducer-dependency-repair-24-november-2026).
 
 ## Active checkpoint: public release verification (2026-11-24)
 
@@ -18,7 +15,7 @@ The objective remains every requirement of issue #1580 in
 - [x] Stream archived bytes through SHA-256 without local archive files. Use at most three concurrent public asset transfers and preserve the exact source, coverage, deadline and retained receipts. The macOS package path continues to download locally.
 - [x] Reproduce serial execution and ambiguous transfer errors with two failing tests. Verify the correction with 42 verifier, ten public transport, 25 browser package and four regression-ledger tests. Record the main-only failure and its existing fast-PR test file.
 - [x] Replay the actual verifier against the [same public release](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.11) and original producer run 45290459294, attempt one. The verifier checked 74 assets, 47 checksum rows, 35 advertised assets and 6,311,618,402 public bytes in 343 seconds. The complete evidence JSON has SHA-256 `37e746bd81d5ad53c375625165d8f6123a22c0ca9a29327614ebf2145549176d`.
-- [x] Refresh all eight template heads. Five are unchanged. [C# #115](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/pull/115) and [C++ #43](https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/pull/43) address the upstream runner annotation reports. Formal AI's current recovery helper already paginates returned check-run annotations. [Rust #267](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/pull/267) includes the release CLI pipe fix already present in Formal AI. These source observations leave the full current deltas and wider behavioral comparison open.
+- [x] Refresh all eight template heads and compare the 19 changed source paths against the prior full-tree receipt. The C# and C++ annotation pagination is already implemented locally. The Rust changes exposed a gap in malformed registry-response classification. Fix the shared waiter and retain exact before-and-after native controls with hosted execution pending. [Template delta and verification](../../docs/case-studies/issue-1580/templates/current-tree-delta-20261124.md)
 - [x] Collect terminal workflow statuses for `459f298f4`: 32 successes and one skip. Both download regressions pass in [Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/45330724259), full log lines 13485–13486. The revised production verifier still needs a successful Desktop Release from main before its hosted workflow can run.
 - [ ] Finish the wider original criteria below. This work adds zero independent Formal AI authorship or reasoning credit.
 
@@ -30,7 +27,7 @@ The objective remains every requirement of issue #1580 in
 - [x] Qualify terminal ce9bf24b against main 0e550f6d; retain every log and original hosted regression result without claiming full semantic log review.
 - [x] Add finite real HTTPS pre-request and HTTP post-request resets to the current link recheck helper. All three physical controls pass; the maintained owner passes 444 observations and eleven affected gates.
 - [x] Replay both failure phases with the published lychee 0.24.2 binary selected by the current workflow action default. HTTPS opens one connection and fails. HTTP sends three requests and fails. The [probe and reproduction](../../docs/case-studies/issue-1580/link-transport-reset-controls.md) preserve the two phases and the exit codes.
-- [x] Preserve historical lychee, malformed-lock and updater evidence separately from current qualified behavior. Current lychee internals, actual Cargo audit rejection and updater engine compatibility stay unfinished.
+- [x] Preserve historical malformed-lock and updater evidence separately from current qualified behavior. Actual Cargo audit rejection and updater engine compatibility stay unfinished.
 - [x] Reproduce missing private composition-test CI execution with the actual workflow shell and a mocked Cargo boundary. Add its filter to the existing compiled library step; preserve all sibling invocations after failures.
 - [x] Pass all 67 native-lane controls, 184 branch-policy controls and eleven workflow gates; seal complete terminal and local receipts with original failures retained.
 - [ ] Finish final documentation, diff and secret checks before publishing.

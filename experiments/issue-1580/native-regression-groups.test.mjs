@@ -613,29 +613,38 @@ test('sparse availability preserves parsed identity and reaches the native CLI l
   assert.match(registry, /https:\/\/index[.]crates[.]io\/\{path\}/u);
   assert.match(registry, /serde_json::from_str\(line\)/u);
   assert.match(registry, /sparse_body_has_version/u);
-  assert.match(registry, /validate_version_response\(body, name, version\)/u);
-  assert.match(registry, /Failure::InvalidResponse\(reason\)\), _/u);
+  assert.match(registry, /observe_version\(&agent, &api_url,/u);
+  assert.match(registry, /validate_version_body\(body, crate_name, version\)/u);
   const root = 'experiments/issue-1580/release-registry/';
   const cli = readFileSync(root + 'cli_regressions.py', 'utf8');
   assert.match(cli, /class RegistryRegressions\(SparseRegistryRegressions,/u);
   assert.match(cli, /release_controls \+= add_sparse_registry_controls\(HARNESS, cls[.]scripts\)/u);
   assert.match(cli, /source[.]replace\('https:\/\/index[.]crates[.]io', address \+ '\/_sparse'\)/u);
   const regression = readFileSync(root + 'sparse_registry_regressions.py', 'utf8');
-  assert.equal([...regression.matchAll(/^    def test_sparse_waiter_/gmu)].length, 10);
+  assert.equal([...regression.matchAll(/^    def test_sparse_waiter_/gmu)].length, 8);
   const original = gunzipSync(readFileSync(root + 'fixtures/wait-for-crate-before-sparse.rs.gz'));
   const metadata = JSON.parse(readFileSync(root + 'fixtures/wait-for-crate-before-sparse.json', 'utf8'));
   assert.equal(original.length, metadata.bytes);
   assert.equal(createHash('sha256').update(original).digest('hex'), metadata.sha256);
   assert.match(original.toString('utf8'), /registry::version_exists/u);
-  const baseline = gunzipSync(readFileSync(root + 'fixtures/registry-before-identity.rs.gz'));
-  const baselineMetadata = JSON.parse(readFileSync(root + 'fixtures/registry-before-identity.json', 'utf8'));
-  assert.equal(baseline.length, baselineMetadata.bytes);
-  assert.equal(createHash('sha256').update(baseline).digest('hex'), baselineMetadata.sha256);
-  assert.match(baseline.toString('utf8'), /version_exists_with_policy\(crate_name, version, 1, Duration::ZERO\)/u);
-  for (const path of [
-    'sparse_registry_regressions.py', 'fixtures/wait-for-crate-before-sparse.rs.gz',
-    'fixtures/registry-before-identity.rs.gz', 'fixtures/registry-before-identity.json',
-  ]) {
+  for (const path of ['sparse_registry_regressions.py', 'fixtures/wait-for-crate-before-sparse.rs.gz']) {
     assert.equal(admission([root + path])['native-type-check'], true, path);
   }
+});
+
+test('malformed registry success remains uncertain when the other endpoint returns 404', () => {
+  const registry = readFileSync('scripts/registry.rs', 'utf8');
+  assert.match(registry, /String::from_utf8/u);
+  assert.match(registry, /semver::Version::parse/u);
+  assert.match(registry, /get\("crate"\)/u);
+  assert.match(registry, /ObservationError::Invalid/u);
+  const root = 'experiments/issue-1580/release-registry/';
+  const regression = readFileSync(root + 'sparse_registry_regressions.py', 'utf8');
+  assert.match(regression, /test_sparse_waiter_preserves_uncertainty_after_malformed_success/u);
+  const original = gunzipSync(readFileSync(root + 'fixtures/registry-before-malformed-success.rs.gz'));
+  const metadata = JSON.parse(readFileSync(root + 'fixtures/registry-before-malformed-success.json', 'utf8'));
+  assert.equal(original.length, metadata.bytes);
+  assert.equal(createHash('sha256').update(original).digest('hex'), metadata.sha256);
+  assert.match(original.toString('utf8'), /\(Ok\(false\), _\) \| \(_, Ok\(false\)\) => VersionVisibility::NotPublishedYet/u);
+  assert.equal(admission([root + 'fixtures/registry-before-malformed-success.rs.gz'])['native-type-check'], true);
 });

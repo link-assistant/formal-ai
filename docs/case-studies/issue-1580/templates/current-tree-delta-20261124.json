@@ -1,0 +1,222 @@
+{
+  "priorReceipt": "current-tree-comparison-20261123.jsonl.gz",
+  "priorReceiptSha256": "8bbcb5abea431879a51110382fd24c9a2f2acacc8407a5f63f5ec023845e1e8c",
+  "patchArchive": "current-tree-delta-20261124-patches.jsonl.gz",
+  "patchArchiveSha256": "89b63fbfb3f3b9f2dea6b5d47f1aacca55df528155fb00905bb9a9fbdcd519ac",
+  "patchPayloadSha256": "fbd703a336ab22ce592a8f2769c30ba8f513ff1eeca3eff6656053029fc37046",
+  "totalBlobs": 3030,
+  "allEightCompleteTreePathUnionsVerified": true,
+  "completePracticeImplementationAndVerification": false,
+  "fullIssueComplete": false,
+  "independentFormalAiAuthorshipCredit": 0,
+  "templates": [
+    {
+      "language": "javascript",
+      "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+      "priorHead": "8e72538d579d904aff818c2447fb3c2413d3a989",
+      "head": "8e72538d579d904aff818c2447fb3c2413d3a989",
+      "blobs": 566,
+      "unchangedBlobs": 566,
+      "changed": []
+    },
+    {
+      "language": "rust",
+      "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+      "priorHead": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+      "head": "1d29f5541bce3fd47925c0b498937aee19776121",
+      "blobs": 375,
+      "unchangedBlobs": 364,
+      "changed": [
+        {
+          "path": "CHANGELOG.md",
+          "oldGitBlob": "06e2b633ba0b5df567c3067d14a5cb71bfba9d5b",
+          "newGitBlob": "ce748f18a45046044a34bb9d3beea99ce0f5bbf2",
+          "patchSha256": "b2960f6a4e01f4607d25eb9469ce731ac368e500f6731787366f6c2cc7214ff0",
+          "decision": "Release history for the new Rust template version."
+        },
+        {
+          "path": "Cargo.lock",
+          "oldGitBlob": "f1261c6b3318b06b62cef9c2b59e030fec55f39e",
+          "newGitBlob": "11915070c641f1b9c4b5b6d77b7b64269ca53527",
+          "patchSha256": "f7724100ba01a45f9f86956c94d3db6718009148c511f3b56db8076f986c7ac2",
+          "decision": "Rust template version and lock addition. The Formal AI standalone registry harness pins the same semver crate."
+        },
+        {
+          "path": "Cargo.toml",
+          "oldGitBlob": "4a4539654490090b888112e892704e78a5c46166",
+          "newGitBlob": "a8f2c2fa80b6c5269ea3a642ecf1cbc8928cbf4d",
+          "patchSha256": "e91109f23885568df27403f7f151dcf82d19d281a4f765f656e1733c52bed3ff",
+          "decision": "Template-specific application version. The Formal AI standalone registry scripts also declare semver."
+        },
+        {
+          "path": "experiments/issue-266-regressions.py",
+          "oldGitBlob": null,
+          "newGitBlob": "f2ed0d556a4a2c1a8c56e4ac61431990a6a3c7e2",
+          "patchSha256": "ada90694157adc3f0a2aa8601b3b64794966cf88156076b745752af58c9495e5",
+          "decision": "Reviewed the physical CLI controls for the five script changes. Formal AI runs corresponding native fixtures in release-registry."
+        },
+        {
+          "path": "scripts/check-file-size.rs",
+          "oldGitBlob": "6e94c9e507a70a7f87e79e71375b1277b69bc7e6",
+          "newGitBlob": "41851cf5067db27fae16b7aa62d50dd71767018d",
+          "patchSha256": "41d556e082cdbc794715080e035412dfc94c842bc990960781f5cd4407ede225",
+          "decision": "Both Formal AI scanner implementations fail on incomplete walks and unreadable maintained files."
+        },
+        {
+          "path": "scripts/create-github-release.rs",
+          "oldGitBlob": "6fcd512915aa485e68b60555f385123c78d96732",
+          "newGitBlob": "e505cfa8a198132a8a9d505bd3fd963f540d897c",
+          "patchSha256": "8eabff84c49505202fbf4b7e7304dbcac2e4897984337d21cd1b3f38472c79e0",
+          "decision": "Formal AI already drains stdout and stderr while writing the release payload. The native harness exercises pipe-sized diagnostics."
+        },
+        {
+          "path": "scripts/registry.rs",
+          "oldGitBlob": "0d57e884de14e08f634002b63709e33bb7d5e95b",
+          "newGitBlob": "7359d7eb415ba7b628ebe101fa34a74cbfad9d6b",
+          "patchSha256": "f34f72130c79d4986d9d5da28db91831d8045ea6c6f3f5e01a4f5c46aef8cc37",
+          "decision": "Added full-byte UTF-8 decoding and exact API identity validation to the shared Formal AI helper."
+        },
+        {
+          "path": "scripts/release-content.rs",
+          "oldGitBlob": "79ffab0f04a139cd1db66884d683d7e8433cd796",
+          "newGitBlob": "bfce983653d2829064382c4a5de020f84364fa90",
+          "patchSha256": "31d6be97779efa310dc05b47bfd271a71c7743570abed09abe566387f85f5fb3",
+          "decision": "Formal AI release-changelog recognizes only spaces and tabs after the closing run of fence characters."
+        },
+        {
+          "path": "scripts/rust-paths.rs",
+          "oldGitBlob": "4f4d9d36b710dc029918ab6ec53c26677174adc6",
+          "newGitBlob": "ff5f1991a5a82e809d71538f3c61583be536757b",
+          "patchSha256": "5edc7883b35cbb0ee187ab596fa6363ea17de42778efca07c04ef2e15eb60a8e",
+          "decision": "Formal AI cargo-package already propagates non-NotFound workspace-manifest reads. Added a native CLI fixture for corrupt and missing first members."
+        },
+        {
+          "path": "scripts/test-scripts.sh",
+          "oldGitBlob": "a6e0d59bd1757d1339ae9d86a8b650b1deffa5df",
+          "newGitBlob": "d14579b0c4a22414d2da6773a8885bcbdbfad2b9",
+          "patchSha256": "3c75160fe4ae4561ec5a95bf22ef88558d76c49b0aee40619bc3cc4c2e779ee7",
+          "decision": "The existing Formal AI native-type-check release-registry job runs the isolated Rust and CLI controls."
+        },
+        {
+          "path": "scripts/wait-for-crate.rs",
+          "oldGitBlob": "fd0e4888d74e9dfcce00021f5e4f0b6938f46fe0",
+          "newGitBlob": "e07eb143be4359f5c769c4333800bd7227818b65",
+          "patchSha256": "19d92b33546dfa6c8d1a91ebb7753eea6a5375e01b29f55a0325417a8b020d26",
+          "decision": "Formal AI validates every SemVer record and preserves malformed success as uncertainty if the peer returns absence."
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+      "priorHead": "7a05d0515fac2966885b272302c1055985bc948b",
+      "head": "7a05d0515fac2966885b272302c1055985bc948b",
+      "blobs": 340,
+      "unchangedBlobs": 340,
+      "changed": []
+    },
+    {
+      "language": "php",
+      "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+      "priorHead": "e12a25d7ce9d8bfd37f238b1b238c0006bf52031",
+      "head": "e12a25d7ce9d8bfd37f238b1b238c0006bf52031",
+      "blobs": 611,
+      "unchangedBlobs": 611,
+      "changed": []
+    },
+    {
+      "language": "csharp",
+      "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+      "priorHead": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+      "head": "10edf2e5268f62d905fe116d28d9ad6662a23d25",
+      "blobs": 340,
+      "unchangedBlobs": 337,
+      "changed": [
+        {
+          "path": ".changeset/paginate-runner-acquisition-annotations.md",
+          "oldGitBlob": null,
+          "newGitBlob": "068e1778d0ba7c6ae65414b69ad412bf6ba849ea",
+          "patchSha256": "c9460e8fcce63035bbebd4f8e8969cfc7053eccabc9e97e021cdd31c715b928e",
+          "decision": "C# template release note for pagination."
+        },
+        {
+          "path": "scripts/runner-acquisition.mjs",
+          "oldGitBlob": "681c9667e0d67c305e8cfdeaa1604382b5bff6d1",
+          "newGitBlob": "4746a4f8a07d5abd94010111caa20a011ab7aa59",
+          "patchSha256": "bfe3bc2f69fded9ca8625df94c966ea761b3d7f245d120c6cb44a0dc17b5422a",
+          "decision": "Formal AI already gets complete pages for actions jobs and check-run annotations."
+        },
+        {
+          "path": "scripts/runner-acquisition.test.mjs",
+          "oldGitBlob": "90feafa55a473f0269275537d2f1d719b0614eab",
+          "newGitBlob": "d3567419b24e9b18b120b90ebdf1531b22161299",
+          "patchSha256": "c2b16e7f12d70a9dfdb6547a79af9ca432d0310df558c3567125d15cd9bbfbde",
+          "decision": "Formal AI runner recovery tests exercise annotation pages and preserve the checked run identity."
+        }
+      ]
+    },
+    {
+      "language": "java",
+      "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+      "priorHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+      "head": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+      "blobs": 207,
+      "unchangedBlobs": 207,
+      "changed": []
+    },
+    {
+      "language": "cpp",
+      "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+      "priorHead": "e4a3bac7dc38ede3def41943f826b2d052a98a12",
+      "head": "c1c60fb39ee5d697eef6875a61e2ae61cf4ecdfa",
+      "blobs": 552,
+      "unchangedBlobs": 547,
+      "changed": [
+        {
+          "path": "CHANGELOG.md",
+          "oldGitBlob": "509f317db2ea353d0d1113e9cb3d78f34c9da09f",
+          "newGitBlob": "c24b8e32785f5737f63bbc0f835baafd57d1b39f",
+          "patchSha256": "fb277557d91d5172115358682adee143d74e02e0c063adf1c965122aba1cd2e4",
+          "decision": "C++ template release note for pagination."
+        },
+        {
+          "path": "CMakeLists.txt",
+          "oldGitBlob": "d0752fec565a15ac011c9257e431a0c08a4b3c4f",
+          "newGitBlob": "e5d19cac6d67f87c4d1e648bebb040df5cc1438b",
+          "patchSha256": "7bbeb5a3d5233d68b8b87ee216f320aafe40db80efaba7480f517feb5ee7346a",
+          "decision": "C++ template release version, with no Formal AI CMake package counterpart."
+        },
+        {
+          "path": "scripts/tests/test_unacquired_jobs.py",
+          "oldGitBlob": "08c281d55b2fd5e9cea7d00ea7e217fa0f05ba78",
+          "newGitBlob": "45cd4e0a50877397692974aa55330dd10b8a9185",
+          "patchSha256": "66e0134511e9dd123e15ca34e011faa20a53329855bc4d36569807e100522116",
+          "decision": "Formal AI already tests annotation traversal and prevents reruns for actual test failure and assigned runners."
+        },
+        {
+          "path": "scripts/unacquired_jobs.py",
+          "oldGitBlob": "90a1442f875c912f95e6ec39176cee757ef60f31",
+          "newGitBlob": "109cba8d0ed9b788f3ac0313dff3d08eb672b006",
+          "patchSha256": "c71e28c9cc51ac8c6f52b3b5a61acad2e5992f655dc2cba05f0cf1afb8e2761e",
+          "decision": "Formal AI already gets complete pages for actions jobs and check-run annotations."
+        },
+        {
+          "path": "vcpkg.json",
+          "oldGitBlob": "1cdfe96d283546fbd1abbcebd02f199f705dffde",
+          "newGitBlob": "5bcca5c97cba31c50833b3db4b7d86c8887bbb40",
+          "patchSha256": "062059ae5849cdbd77308e405936fe03cc32c335fd5a7ba66f96b4923c5eb7c7",
+          "decision": "C++ template package version, with no Formal AI vcpkg counterpart."
+        }
+      ]
+    },
+    {
+      "language": "go",
+      "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+      "priorHead": "785292ebe92fadbb5a3fcef3c6835ccfb076b203",
+      "head": "785292ebe92fadbb5a3fcef3c6835ccfb076b203",
+      "blobs": 39,
+      "unchangedBlobs": 39,
+      "changed": []
+    }
+  ]
+}

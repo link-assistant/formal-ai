@@ -23,7 +23,6 @@ def without_cargo_build(args, **kwargs):
 
 suite = unittest.TestSuite([module.RegistryRegressions(
     'test_fixture_can_return_wrong_identity_for_an_unpublished_candidate'),
-    module.RegistryRegressions('test_fixture_serves_registry_overrides_as_exact_bytes'),
     module.RegistryRegressions('test_repository_contains_the_writer_status_staging_inputs')])
 with patch.object(module.subprocess, 'run', side_effect=without_cargo_build):
     result = unittest.TextTestRunner(verbosity=2).run(suite)

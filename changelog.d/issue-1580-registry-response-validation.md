@@ -1,3 +1,4 @@
 ### Fixed
 
-- Check crates.io release responses for the requested crate and version. Preserve invalid response bodies as an unknown availability result and validate all sparse-index records.
+- Keep crate availability uncertain when a registry endpoint returns a malformed success response and its peer reports the version absent.
+- Require valid SemVer in every sparse index record and reject API responses that identify a different crate.
