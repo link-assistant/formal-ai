@@ -39,7 +39,6 @@ pub use tool_args::delimit_tool_args;
 use url::{base_url_with_port, join_url_path};
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
-const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
 const RENDERED_PLACEHOLDER: &str = concat!("{", "rendered", "}");
 const ERROR_PLACEHOLDER: &str = concat!("{", "error", "}");
 
@@ -870,6 +869,41 @@ fn backup_path(path: &Path, suffix: &str) -> PathBuf {
     PathBuf::from(backup)
 }
 
+const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
+
+fn restore_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
+    if !backup_path.exists() {
+        return Ok(());
+    }
+    let backup = fs::read_to_string(backup_path)?;
+    if backup == EMPTY_BACKUP_SENTINEL {
+        match fs::remove_file(path) {
+            Ok(()) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(error.into()),
+        }
+    } else {
+        write_file(path, &backup)?;
+    }
+    fs::remove_file(backup_path)?;
+    Ok(())
+}
+
+fn ensure_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
+    if backup_path.exists() {
+        return Ok(());
+    }
+    if let Some(parent) = backup_path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    if path.exists() {
+        fs::copy(path, backup_path)?;
+    } else {
+        fs::write(backup_path, EMPTY_BACKUP_SENTINEL)?;
+    }
+    Ok(())
+}
+
 fn write_file(path: &Path, contents: &str) -> Result<(), Box<dyn Error>> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
@@ -877,3 +911,7 @@ fn write_file(path: &Path, contents: &str) -> Result<(), Box<dyn Error>> {
     fs::write(path, contents)?;
     Ok(())
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/client_integrations/production_tests.rs"]
+mod tests;

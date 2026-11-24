@@ -17,9 +17,9 @@ use crate::seed::{ClientIntegration, ConfigFormat};
 use super::command::ensure_trailing_newline;
 use super::global_verify::{probe_headless_start, verify_written_config};
 use super::{
-    EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER, ModelLimits, RENDERED_PLACEHOLDER, RenderContext,
-    WithFormalAiArgs, backup_path, codex_model_catalog, global_config_path, render_context,
-    render_template, write_file,
+    ERROR_PLACEHOLDER, ModelLimits, RENDERED_PLACEHOLDER, RenderContext, WithFormalAiArgs,
+    backup_path, codex_model_catalog, ensure_backup, global_config_path, render_context,
+    render_template, restore_backup, write_file,
 };
 
 /// Opening marker of the block a shell profile lets formal-ai own, per tool.
@@ -164,39 +164,6 @@ pub(super) fn undo_global_config(
         integration.id,
         config_backup_path.display()
     );
-    Ok(())
-}
-
-fn restore_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
-    if !backup_path.exists() {
-        return Ok(());
-    }
-    let backup = fs::read_to_string(backup_path)?;
-    if backup == EMPTY_BACKUP_SENTINEL {
-        match fs::remove_file(path) {
-            Ok(()) => {}
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-            Err(error) => return Err(error.into()),
-        }
-    } else {
-        write_file(path, &backup)?;
-    }
-    fs::remove_file(backup_path)?;
-    Ok(())
-}
-
-fn ensure_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
-    if backup_path.exists() {
-        return Ok(());
-    }
-    if let Some(parent) = backup_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    if path.exists() {
-        fs::copy(path, backup_path)?;
-    } else {
-        fs::write(backup_path, EMPTY_BACKUP_SENTINEL)?;
-    }
     Ok(())
 }
 
