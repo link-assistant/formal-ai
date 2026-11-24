@@ -1,3 +1,16 @@
+## Active checkpoint: public release verification (2026-11-24)
+
+The objective remains every requirement of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
+
+- [x] Inspect the only failed workflow on main at `0e550f6d56`. The [original run](https://github.com/link-assistant/formal-ai/actions/runs/45295717630) reached the 660-second public verification deadline with 26 of 74 assets verified. Preserve the failed run and its [partial receipt](https://github.com/link-assistant/formal-ai/actions/runs/45295717630/artifacts/14875559860).
+- [x] Stream archived bytes through SHA-256 without local archive files. Use at most three concurrent public asset transfers and preserve the exact source, coverage, deadline and retained receipts. The macOS package path continues to download locally.
+- [x] Reproduce serial execution and ambiguous transfer errors with two failing tests. Verify the correction with 42 verifier, ten public transport, 25 browser package and four regression-ledger tests. Record the main-only failure and its existing fast-PR test file.
+- [x] Replay the actual verifier against the [same public release](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.11) and original producer run 45290459294, attempt one. The verifier checked 74 assets, 47 checksum rows, 35 advertised assets and 6,311,618,402 public bytes in 343 seconds. The complete evidence JSON has SHA-256 `37e746bd81d5ad53c375625165d8f6123a22c0ca9a29327614ebf2145549176d`.
+- [x] Refresh all eight template heads. Five are unchanged. [C# #115](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/pull/115) and [C++ #43](https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/pull/43) address the upstream runner annotation reports. Formal AI's current recovery helper already paginates returned check-run annotations. [Rust #267](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/pull/267) includes the release CLI pipe fix already present in Formal AI. These source observations leave the full current deltas and wider behavioral comparison open.
+- [ ] Collect and qualify every hosted check on the exact PR head. The revised production verifier still needs a successful Desktop Release from main before its hosted workflow can run.
+- [ ] Finish the wider original criteria below. This work adds zero independent Formal AI authorship or reasoning credit.
+
 ## Active checkpoint: real transport controls and native library coverage (2026-11-24)
 
 The objective remains every requirement of issue #1580 in
