@@ -67,7 +67,10 @@ fn concept_lookup_recipe_is_grounded_in_the_live_retrieval_kernel() {
     }
 
     let expected = [
-        ("unknown_surfaces", "rust/src/concept_lookup/unknown_surfaces.rs"),
+        (
+            "unknown_surfaces",
+            "rust/src/concept_lookup/unknown_surfaces.rs",
+        ),
         ("select_sources", "rust/src/source_walk.rs"),
         ("walk_sources", "rust/src/source_walk.rs"),
         ("lookup_surface", "rust/src/concept_lookup.rs"),

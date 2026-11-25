@@ -137,8 +137,14 @@ pub(super) struct ResearchFinalEvidence {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub(super) enum ResearchDiscoveryContext {
     None,
-    Search { query: String, attempted: usize },
-    Source(ResearchProvenance),
+    Search {
+        query: String,
+        attempted: usize,
+    },
+    /// Boxed: provenance carries two `serde_json::Value`s and a map, so an
+    /// unboxed variant trips `clippy::large_enum_variant` once the resolved
+    /// `serde_json` grows `Value` (dependencies-latest run 45648404039).
+    Source(Box<ResearchProvenance>),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
