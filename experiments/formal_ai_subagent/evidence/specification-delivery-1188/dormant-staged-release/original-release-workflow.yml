@@ -3,14 +3,14 @@
   "parts": [
     {
       "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-1.txt",
-      "bytes": 41827,
-      "sha256": "c8f6d2f4e82dd51e79537363f7fa436671b9a06b214b3aa28a103b9536da63c3"
+      "bytes": 42181,
+      "sha256": "f455d77a612570d20b9535911e4d1315f6fc176109dcb742a0d3529ab9145b2a"
     },
     {
       "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-2.txt",
-      "bytes": 41163,
-      "sha256": "08217a54f7b147e215bef68de16546b7455302a63467deb350633c6f0177101b"
+      "bytes": 41384,
+      "sha256": "081f393e83a2c35336615147c4f009154464cbce174149c93bb31b6d8953d50f"
     }
   ],
-  "sha256": "b2d829db74251de9d6f7653754656ab89d1207faf295f035e4c1577ecb00d759"
+  "sha256": "aaf797a1b5c3d18d3a880c21a58a41fbb93946b82f6b3f45e76b2d5d98d1fa61"
 }

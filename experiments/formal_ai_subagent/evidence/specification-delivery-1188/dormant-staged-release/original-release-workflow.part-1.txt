@@ -64,6 +64,10 @@ jobs:
     uses: ./.github/workflows/hive-source-provenance.yml
   detect-changes:
     name: Detect Changes
+    # actions: read lets the admission confirm the previous head passed (#1637).
+    permissions:
+      contents: read
+      actions: read
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
@@ -79,6 +83,7 @@ jobs:
       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
       native-type-check: ${{ steps.changes.outputs.native-type-check }}
+      pull-request-code-changed: ${{ steps.changes.outputs.pull-request-code-changed }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -95,6 +100,10 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          # Issue #1637: a push onto an already-green head is judged by its own range.
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+          GITHUB_EVENT_AFTER: ${{ github.event.after }}
+          GITHUB_TOKEN: ${{ github.token }}
           # A fragment waiting on main runs lint/test/build, so Auto Release runs (#1064).
           RELEASE_PIPELINE: 'true'
         run: |
@@ -111,7 +120,8 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-changelog${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes]
-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    # The fragment belongs to the whole pull request: a narrow push must not skip it (#1637).
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.pull-request-code-changed == 'true'
     steps:
       - {uses: actions/checkout@v7, timeout-minutes: 2,
          env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '30'},
@@ -739,8 +749,3 @@ jobs:
           # Issue #1085 (D3.3): the ledger row names who opened each qualifying
           # pull request, read through `gh` with the job token.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
-        run: |
-          rust-script scripts/version-and-commit.rs \
-            --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
-            --resume-prepared \
