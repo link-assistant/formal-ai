@@ -3,79 +3,177 @@ test_durations
   purpose "Assign parallel test shards longest-first, so a long test never lands last on a machine everything else has finished waiting for."
   source_run 37802763478
   recorded 2026-10-08
+  lower_bound_run 45636781871
+  lower_bound "Issue #1639: entries renamed by the agentic_coding module move follow their tests, entries naming no listed test are dropped, and every test the main run 45636781871 reported running past 60 seconds weighs at least the time from its start to its result or to the shard budget. Those are lower bounds under 4-thread contention, not single-test timings; regenerate replaces them."
   unit seconds
   floor "Only tests at or above 1 second are recorded, at most 700; the rest weigh default-seconds each."
   default-seconds 0.092
   regenerate "node experiments/formal_ai_subagent/ci-durations.mjs --tests --write"
+  test "agentic_coding::coding_research_production::canonical_native_production_route_handles_cold_held_out_typescript_and_reuses_without_writes"
+    seconds 1055
+  test "agentic_coding::issue_1562_cited_programs::the_three_reports_write_run_and_commit_nothing_and_name_the_defect"
+    seconds 1025
+  test "agentic_coding::issue_558_source_links::serialized_owned_source_shard_4"
+    seconds 744
+  test "agentic_coding::issue_1562_cited_programs::a_session_whose_only_written_file_is_named_by_no_obligation_commits_nothing"
+    seconds 706
+  test "agentic_coding::issue_1558_reference_resolution::issue_1487_linked_name_is_read_under_js_agentic_crate"
+    seconds 675
+  test "issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter"
+    seconds 602
   test "coding_discovery::composition_search::search_is_deterministic_across_runs"
     seconds 520.4
   test "coding_discovery::multilingual::five_language_paraphrases_share_specs_concepts_and_verified_compositions"
-    seconds 478.3
+    seconds 489
+  test "agentic_coding::issue_558_source_links::serialized_owned_source_shard_0"
+    seconds 484
+  test "agentic_coding::issue_558_source_links::serialized_owned_source_shard_6"
+    seconds 441
+  test "agentic_coding::issue_558_source_links::serialized_owned_source_shard_5"
+    seconds 431
+  test "issue_701_learning_adoption::the_adoption_ledger_records_a_real_capability_delta_in_every_language"
+    seconds 418
+  test "agentic_coding::issue_558_source_links::serialized_owned_source_shard_3"
+    seconds 412
+  test "agentic_coding::issue_558_source_links::serialized_owned_source_shard_2"
+    seconds 401
+  test "agentic_coding::issue_558_source_links::serialized_owned_source_shard_7"
+    seconds 382
+  test "agentic_coding::work_item_report_outcome::hive_mind_sessions_read_a_repository_file_and_do_not_refuse_the_read"
+    seconds 363
+  test "issue_1160_regular_prompt::the_restart_prompt_ignores_a_stray_kotlin_jar_commits_pushes_and_keeps_the_pull_request_ready"
+    seconds 336
+  test "seed::issue_1138_intent_phrase_migration::held_out_web_search_paraphrases_reach_the_canonical_search_answer"
+    seconds 335
+  test "seed::issue_699_handler_migration::held_out_number_constraint_paraphrases_are_data_driven"
+    seconds 327
   test "coding_discovery::multilingual::composition_from_sources_holds_in_five_languages"
     seconds 318.5
   test "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation"
     seconds 298.9
   test "coding_discovery::composition_search::a_typed_lowering_without_an_oracle_stays_explicitly_unverified"
     seconds 269
+  test "agentic_coding::work_item_report_outcome::issue_1486_link_into_dot_github_is_read_at_its_linked_path"
+    seconds 261
   test "coding_discovery::composition_search::an_unseen_combination_of_seeded_meanings_composes"
     seconds 258.7
+  test "issue_1559_standing_requirement_scope::replaying_the_two_recorded_prompts_shows_no_text_of_the_first_prompt_in_the_second_session"
+    seconds 249
   test "specification::benchmarks::issue_315_programming_benchmark_cases_synthesize_and_verify"
     seconds 226.9
+  test "agentic_coding::issue_1558_reference_resolution::issue_1507_runtime_name_is_a_term_and_other_files_are_still_read"
+    seconds 201
   test "coding_discovery::structural_composition::held_out_sequence_and_symmetry_schemas_execute"
     seconds 195.7
   test "solver::issue_938_meta_algorithm_builder::shared_program_synthesis_trace_is_multilingual"
     seconds 174.1
+  test "agentic_coding::issue_1558_reference_resolution::hive_mind_4033_successful_read_is_not_planned_again"
+    seconds 170
+  test "issue_1157_idempotent_commit::the_commit_names_its_files_and_a_repeated_run_is_a_clean_no_op"
+    seconds 167
+  test "meta_executor_census::every_specification_prompt_runs_the_recursive_procedure"
+    seconds 160
+  test "agentic_coding::issue_558_self_healing::committed_self_healing_case_is_generated_and_written_by_the_driver"
+    seconds 158
   test "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts"
     seconds 156.8
+  test "issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome"
+    seconds 149
+  test "grounded_local_action::generated_local_routing_property_holds_for_twelve_prompts_per_language"
+    seconds 147
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_scala"
+    seconds 147
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_kotlin"
+    seconds 143
   test "coding_discovery::structural_composition::held_out_arithmetic_scan_and_geometry_schemas_execute"
     seconds 139.7
   test "specification::benchmarks::issue_326_program_synthesis_accepts_native_operation_verbs"
     seconds 138
   test "coding_discovery::structural_composition::held_out_filter_predicate_and_string_window_schemas_execute"
-    seconds 127.8
+    seconds 136
+  test "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder"
+    seconds 130
   test "solver::issue_1138_self_use_concept_lookup::an_honest_refusal_names_every_source_it_consulted"
     seconds 127.1
   test "solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured"
     seconds 126.1
   test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language"
     seconds 125.8
+  test "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language"
+    seconds 124
   test "issue_1138_rust_projection::every_owned_rust_module_round_trips_through_the_network_serialization"
     seconds 119.9
+  test "agentic_coding::issue_498_google_trends_learning::committed_google_trends_learning_report_is_generated_by_the_recipe"
+    seconds 117
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_python"
+    seconds 115
+  test "agentic_coding::issue_538_agentic::driver_is_deterministic_for_the_meaning_detail_task"
+    seconds 114
   test "coding_discovery::composition::existing_collection_meanings_compose_into_held_out_programs"
     seconds 107.3
-  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
-    seconds 101
+  test "agentic_coding::issue_1558_reference_resolution::issue_1485_linked_name_is_read_at_its_linked_path"
+    seconds 103
+  test "agentic_coding::issue_538_agentic::recursive_source_content_is_generated_and_written_by_the_driver"
+    seconds 96
   test "coding_discovery::composition::structural_compositions_cover_tuple_pairwise_and_vowel_counting"
-    seconds 92.9
-  test "solver::issue_1173_route3_recurrence::the_native_solver_answers_the_probes_with_the_source_recurrence"
-    seconds 72.4
+    seconds 96
+  test "issue_701_learning_adoption::every_failure_to_adopt_is_preserved_as_a_durable_record"
+    seconds 93
+  test "solver::issue_840_route_ladder::route_only_ladder_replay_holds_for_every_node"
+    seconds 92
+  test "issue_701_learning_adoption::committed_adoption_ledger_matches_a_fresh_run"
+    seconds 88
+  test "issue_701_learning_adoption::the_trends_corpus_unknown_rate_is_ratcheted_to_zero"
+    seconds 88
   test "installation_conversion::extended::popular_github_projects_route_through_install_conversion"
-    seconds 70.3
+    seconds 87
+  test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian"
+    seconds 82
+  test "issue_1160_regular_prompt::the_regular_prompt_delivers_a_ready_pull_request"
+    seconds 82
+  test "semantic_intent_routing::web_search_routes_action_variations_in_every_supported_language"
+    seconds 80
+  test "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified"
+    seconds 75
+  test "issue_1066_ladder_capability::an_open_web_query_stops_at_the_end_of_the_request"
+    seconds 74
+  test "issue_499_learn_from_source::the_directive_routes_into_the_human_gated_learning_frontier"
+    seconds 74
+  test "agentic_coding::issue_1085_requirement_resolution::committed_leaf_rules_apply_or_refuse_their_original_conflicting_scope"
+    seconds 73
   test "specification::code_generation_blueprint::partial_composite_request_without_statistics_stays_a_named_skill_gap"
     seconds 69.8
   test "coding_discovery::structural_composition::held_out_relation_ordering_and_pattern_schemas_execute"
     seconds 69.7
   test "specification::code_generation_blueprint::budget_calculator_request_returns_python_blueprint_program"
     seconds 69.1
-  test "agentic_coding::agentic_coding::issue_498_google_trends_learning::driver_drives_the_google_trends_learning_recipe_to_a_write"
+  test "agentic_coding::issue_498_google_trends_learning::driver_drives_the_google_trends_learning_recipe_to_a_write"
     seconds 67.6
+  test "agentic_coding::work_item_report_outcome::issue_1501_page_session_reads_a_file_and_its_requirements_carry_no_chrome"
+    seconds 66
+  test "issue_499_learn_from_source::learn_from_source_is_recognized_in_every_supported_language"
+    seconds 64
+  test "issue_1066_ladder_capability::a_document_specification_is_read_in_every_registered_language"
+    seconds 63
+  test "agentic_coding::issue_538_agentic::driver_runs_the_meaning_detail_loop_and_writes_the_seed_block"
+    seconds 62
+  test "agentic_coding::issue_538_agentic::self_inspection_session_retains_actual_source_model_write_and_read"
+    seconds 62
   test "issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli"
     seconds 60.3
+  test "issue_499_learn_from_source::the_acknowledgement_is_localized_to_the_prompt_language"
+    seconds 60
   test "coding_discovery::routing::coding_task_is_not_claimed_by_concept_or_arithmetic_routes"
     seconds 59.1
   test "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap"
     seconds 58.8
   test "specification::text_manipulation_benchmarks::issue_408_text_code_edit_profile_passes_local_ratchet"
     seconds 58.2
-  test "agentic_coding::agentic_coding::issue_498_google_trends_learning::planner_walks_the_google_trends_learning_recipe"
+  test "agentic_coding::issue_498_google_trends_learning::planner_walks_the_google_trends_learning_recipe"
     seconds 56.3
-  test "agentic_coding::agentic_coding::issue_716_agentic_execution::responses_routes_a_discovered_function_artifact_to_the_write_tool"
-    seconds 54.4
   test "issue_499_learn_from_source::committed_agent_cli_session_matches_a_fresh_learn_from_source_run"
     seconds 53.4
-  test "issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter"
-    seconds 51
-  test "agentic_coding::agentic_coding::issue_498_google_trends_learning::committed_agent_cli_session_matches_a_fresh_google_trends_learning_run"
+  test "agentic_coding::issue_498_google_trends_learning::committed_agent_cli_session_matches_a_fresh_google_trends_learning_run"
     seconds 49.3
   test "issue_705_anticipation::the_same_history_produces_byte_identical_predictions_and_ledger"
     seconds 47.9
@@ -93,8 +191,6 @@ test_durations
     seconds 38.5
   test "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family"
     seconds 38.5
-  test "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language"
-    seconds 38
   test "issue_1138_family_migration::no_answer_is_byte_equal_to_a_seed_body_field"
     seconds 37.4
   test "coding_discovery::composition::held_out_grid_examples_select_the_supported_predecessor_relation"
@@ -121,10 +217,6 @@ test_durations
     seconds 28.1
   test "specification::telegram_surface::telegram_long_replies_are_chunked"
     seconds 27.6
-  test "solver::issue_840_route_ladder::route_only_ladder_replay_holds_for_every_node"
-    seconds 27.5
-  test "issue_499_learn_from_source::learn_from_source_is_recognized_in_every_supported_language"
-    seconds 26.7
   test "web_engine_core::issue_1186_formalization_probe_set::every_rendered_target_deformalizes_with_its_structure_preserved"
     seconds 26.3
   test "issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch"
@@ -135,14 +227,10 @@ test_durations
     seconds 24.2
   test "conversational_variations::conversational_variation_benchmark_routes_every_case"
     seconds 23.2
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::explicit_passthrough_covers_the_full_command_taxonomy"
+  test "agentic_coding::issue_749_shell_routing::explicit_passthrough_covers_the_full_command_taxonomy"
     seconds 21.7
-  test "agentic_coding::agentic_coding::issue_1155_read_validation::a_successful_curl_read_drives_execution_and_the_sentinel_stays_out_of_the_text"
+  test "agentic_coding::issue_1155_read_validation::a_successful_curl_read_drives_execution_and_the_sentinel_stays_out_of_the_text"
     seconds 21.4
-  test "semantic_intent_routing::web_search_routes_action_variations_in_every_supported_language"
-    seconds 21.3
-  test "issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome"
-    seconds 21
   test "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case"
     seconds 20.7
   test "issue_1164_pascal_from_documentation::recomposed_programs_compile_and_print_the_held_out_literal"
@@ -151,7 +239,7 @@ test_durations
     seconds 20.4
   test "issue_932_box_language_projects::generated_programs_are_identical_across_prompt_locales"
     seconds 19.7
-  test "agentic_coding::agentic_coding::issue_1155_read_validation::a_sentinel_success_is_page_evidence_and_never_replanned"
+  test "agentic_coding::issue_1155_read_validation::a_sentinel_success_is_page_evidence_and_never_replanned"
     seconds 18.8
   test "issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands"
     seconds 18.7
@@ -161,20 +249,10 @@ test_durations
     seconds 18.6
   test "local_path_discovery::every_seeded_local_path_phrase_routes_to_find"
     seconds 18.4
-  test "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder"
-    seconds 18.4
-  test "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified"
-    seconds 18.2
-  test "issue_499_learn_from_source::the_acknowledgement_is_localized_to_the_prompt_language"
-    seconds 18
   test "issue_705_anticipation::idle_dreaming_persists_the_ledger_and_later_live_usage_records_a_hit"
     seconds 17.9
-  test "issue_499_learn_from_source::the_directive_routes_into_the_human_gated_learning_frontier"
-    seconds 17
   test "semantic_intent_routing::local_path_object_routes_read_variations_without_web_misroutes"
     seconds 16.9
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::whole_shell_task_matrix_routes_without_web_search"
-    seconds 16.4
   test "verifiable_task::routing::no_existing_handler_loses_a_prompt_it_answers_today"
     seconds 15.5
   test "repository_workspace::issue_1138_named_tests::timeout_is_reported_with_the_deadline_and_elapsed"
@@ -193,8 +271,6 @@ test_durations
     seconds 13
   test "specification::code_generation_blueprint::english_http_json_statistics_request_records_blueprint_capabilities"
     seconds 12.8
-  test "agentic_coding::agentic_coding::issue_538_agentic::driver_is_deterministic_for_the_meaning_detail_task"
-    seconds 12.8
   test "specification::code_generation_blueprint::comments_capability_composes_the_emitted_program_end_to_end"
     seconds 12.7
   test "issue_1106_projection_reuse::rebuilding_a_projection_costs_what_appending_to_it_costs"
@@ -203,24 +279,14 @@ test_durations
     seconds 12.6
   test "caller_framing_context::every_policy_lead_suppresses_its_command_in_every_language"
     seconds 12.4
-  test "issue_701_learning_adoption::committed_adoption_ledger_matches_a_fresh_run"
-    seconds 11.7
   test "repository_workspace::issue_1138_repository_workspace::apply_change_returns_evidence_for_the_observed_bytes"
     seconds 11.4
   test "repository_workspace::issue_1138_repository_workspace::diff_is_empty_for_an_untouched_clone"
     seconds 11.4
-  test "issue_701_learning_adoption::the_adoption_ledger_records_a_real_capability_delta_in_every_language"
-    seconds 11.3
   test "issue_991_how_to_synthesis::the_reader_facing_guide_is_rendered_from_seeded_prose"
-    seconds 11.3
-  test "issue_701_learning_adoption::every_failure_to_adopt_is_preserved_as_a_durable_record"
     seconds 11.3
   test "repository_workspace::issue_1138_repository_workspace::workspace_is_isolated_from_the_ambient_checkout"
     seconds 10.9
-  test "grounded_local_action::generated_local_routing_property_holds_for_twelve_prompts_per_language"
-    seconds 10.4
-# Exact current module/runtime identity; source_run 37802763478 measurement stays 10.2 seconds.
-  # Historical measured key: agentic_coding::agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given
   test "agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given"
     seconds 10.2
   test "repository_workspace::issue_1138_locate_targets::census_locates_a_declaration_the_prompt_never_names"
@@ -229,7 +295,7 @@ test_durations
     seconds 9.7
   test "prerequisite::issue_1138_setup_publisher::two_dependents_share_one_setup"
     seconds 9.7
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::passthrough_prefixes_have_language_parity"
+  test "agentic_coding::issue_749_shell_routing::passthrough_prefixes_have_language_parity"
     seconds 9.6
   test "caller_framing_context::a_sentence_about_commands_is_not_passed_through_as_one"
     seconds 9.3
@@ -239,17 +305,13 @@ test_durations
     seconds 9.3
   test "specification::code_generation_blueprint::python_comments_omitted_drops_docstring_and_hash_comments_end_to_end"
     seconds 9.2
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::natural_shell_intents_cover_file_vcs_build_and_search_tasks"
+  test "agentic_coding::issue_749_shell_routing::natural_shell_intents_cover_file_vcs_build_and_search_tasks"
     seconds 9.2
-  test "agentic_coding::agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe"
+  test "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe"
     seconds 9
-  test "issue_701_learning_adoption::the_trends_corpus_unknown_rate_is_ratcheted_to_zero"
-    seconds 9
-  test "agentic_coding::agentic_coding::issue_498_google_trends_learning::committed_google_trends_learning_report_is_generated_by_the_recipe"
-    seconds 8.9
-  test "agentic_coding::agentic_coding::issue_538_agentic::planner_walks_the_full_recipe_for_the_meaning_detail_task"
+  test "agentic_coding::issue_538_agentic::planner_walks_the_full_recipe_for_the_meaning_detail_task"
     seconds 8.8
-  test "agentic_coding::agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run"
+  test "agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run"
     seconds 8.8
   test "issue_932_box_language_projects::install_guides_convert_into_scripts_that_keep_every_traditional_command"
     seconds 8.2
@@ -285,7 +347,7 @@ test_durations
     seconds 6.8
   test "issue_701_dreaming_amendment_class::the_production_entry_point_and_the_replay_core_agree"
     seconds 6.6
-  test "agentic_coding::agentic_coding::issue_498_google_trends_learning::the_learning_report_is_a_faithful_proposal_only_run"
+  test "agentic_coding::issue_498_google_trends_learning::the_learning_report_is_a_faithful_proposal_only_run"
     seconds 6.6
   test "compatibility_research_evidence::research_deepens_toward_the_part_of_the_question_the_evidence_left_open"
     seconds 6.5
@@ -293,15 +355,11 @@ test_durations
     seconds 6.5
   test "issue_1138_solve_cli::solve_writes_all_four_trailers"
     seconds 6.5
-  test "agentic_coding::agentic_coding::issue_538_agentic::committed_agent_cli_session_matches_a_fresh_run"
-    seconds 6.4
   test "issue_498_google_trends::prompts_are_generated_from_the_seed_templates"
     seconds 6.4
-  test "agentic_coding::agentic_coding::issue_538_agentic::driver_runs_the_meaning_detail_loop_and_writes_the_seed_block"
+  test "agentic_coding::issue_498_google_trends_catalog::planner_walks_the_google_trends_catalog_recipe"
     seconds 6.3
-  test "agentic_coding::agentic_coding::issue_498_google_trends_catalog::planner_walks_the_google_trends_catalog_recipe"
-    seconds 6.3
-  test "agentic_coding::agentic_coding::capability_first_tool_routing::shared_navigation_planning_and_delegation_capabilities_route_by_intent"
+  test "agentic_coding::capability_first_tool_routing::shared_navigation_planning_and_delegation_capabilities_route_by_intent"
     seconds 6.2
   test "specification::behavior_rules::behavior_rules_count_followup_covers_supported_languages"
     seconds 6.2
@@ -323,8 +381,6 @@ test_durations
     seconds 5.8
   test "issue_1021_behaviour_range::a_cue_that_names_its_object_still_takes_a_plain_name"
     seconds 5.6
-  test "agentic_coding::agentic_coding::issue_558_source_links::agent_mode_routes_source_links_request_to_a_projection_write"
-    seconds 5.5
   test "issue_1180_repository_qa::chat_answers_what_a_function_does_from_the_census"
     seconds 5.5
   test "specification::behavior_rules::behavior_rules_list_possessive_list_phrase_covers_supported_languages"
@@ -341,9 +397,7 @@ test_durations
     seconds 5.4
   test "issue_1021_behaviour_range::a_prose_listing_request_routes_to_ls_in_any_word_order"
     seconds 5.4
-  test "agentic_coding::agentic_coding::issue_538_agentic::committed_potato_session_matches_a_fresh_run"
-    seconds 5.4
-  test "agentic_coding::agentic_coding::issue_538_agentic::driver_runs_the_potato_recipe_with_a_different_request"
+  test "agentic_coding::issue_538_agentic::driver_runs_the_potato_recipe_with_a_different_request"
     seconds 5.4
   test "issue_1075_held_out_grounding::every_registered_language_lands_in_the_clients_workspace"
     seconds 5.3
@@ -353,14 +407,12 @@ test_durations
     seconds 5.2
   test "repository_workspace::issue_1138_named_tests::missing_interpreter_is_a_prerequisite_not_a_failure"
     seconds 5.2
-  test "agentic_coding::agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_leaf_reaches_a_real_change"
+  test "agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_leaf_reaches_a_real_change"
     seconds 5.2
   test "issue_1075_held_out_grounding::concurrent_clients_each_keep_their_own_workspace"
     seconds 5.1
   test "issue_701_dreaming_amendment_class::a_covered_task_is_never_reported_unresolved"
     seconds 5.1
-  test "agentic_coding::agentic_coding::issue_558_self_explanation::agent_mode_routes_explain_request_to_a_grounded_write"
-    seconds 5
   test "specification::behavior_rules::behavior_rules_short_list_phrase_covers_supported_languages"
     seconds 5
   test "specification::equation_corpus::issue_891_equation_corpus_solves_every_type"
@@ -375,17 +427,15 @@ test_durations
     seconds 4.8
   test "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages"
     seconds 4.8
-  test "agentic_coding::agentic_coding::issue_1154_progress_arguments::every_argument_spelling_records_the_same_read"
+  test "agentic_coding::issue_1154_progress_arguments::every_argument_spelling_records_the_same_read"
     seconds 4.7
-  test "agentic_coding::agentic_coding::location_and_edit_routing::whole_reported_dialog_stays_local_and_preserves_diagnostics"
+  test "agentic_coding::location_and_edit_routing::whole_reported_dialog_stays_local_and_preserves_diagnostics"
     seconds 4.6
   test "issue_671_supplied_file_bytes::the_refusal_that_shipped_before_is_gone"
     seconds 4.6
   test "specification::behavior_rules::behavior_rules_list_answer_is_localized_for_supported_languages"
     seconds 4.6
   test "specification::text_manipulation::native_text_operation_verbs_trigger_in_every_supported_language"
-    seconds 4.6
-  test "agentic_coding::agentic_coding::issue_558_change_request::agent_mode_routes_change_request_to_a_reviewable_write"
     seconds 4.6
   test "caller_framing_context::a_declarative_statement_does_not_fire_an_intent"
     seconds 4.6
@@ -397,10 +447,8 @@ test_durations
     seconds 4.5
   test "solver::issue_1138_self_use_toolchain::a_prompt_that_names_a_toolchain_is_not_told_it_named_none"
     seconds 4.5
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::explicit_shell_forms_pass_the_complete_command_through"
+  test "agentic_coding::issue_749_shell_routing::explicit_shell_forms_pass_the_complete_command_through"
     seconds 4.5
-  test "agentic_coding::agentic_coding::issue_558_rebuild_plan::agent_mode_routes_rebuild_to_a_write"
-    seconds 4.4
   test "ci_cd::macos_package_retry::a_distant_job_deadline_still_allows_the_retry"
     seconds 4.4
   test "ci_cd::macos_package_retry::retries_electron_builder_request_timeout"
@@ -408,8 +456,6 @@ test_durations
   test "issue_746_hosted_tools::gemini_function_declarations_and_hosted_google_search_both_route"
     seconds 4.3
   test "issue_1075_held_out_grounding::a_connector_that_needs_a_project_id_is_not_given_a_blank_one"
-    seconds 4.3
-  test "issue_1066_ladder_capability::an_open_web_query_stops_at_the_end_of_the_request"
     seconds 4.3
   test "pull_request_1188_workspace_search::a_named_file_is_the_scope_and_a_request_to_change_the_uses_is_not_a_search"
     seconds 4.2
@@ -431,24 +477,18 @@ test_durations
     seconds 4
   test "issue_1106_projection_reuse::a_prefix_containing_escaped_characters_is_restored_exactly"
     seconds 4
-  test "agentic_coding::agentic_coding::issue_558_repair_strategy::agent_mode_routes_repair_strategy_to_a_write"
-    seconds 3.9
-  test "agentic_coding::agentic_coding::issue_848_coding_ladder::repository_searches_use_the_named_code_subject"
+  test "agentic_coding::issue_848_coding_ladder::repository_searches_use_the_named_code_subject"
     seconds 3.9
   test "issue_1106_projection_reuse::a_second_completion_does_not_rebuild_the_whole_projection"
     seconds 3.9
   test "pull_request_1188_teach_e::g37_a_rename_with_both_paths_quoted_moves_the_file"
     seconds 3.9
-  test "agentic_coding::agentic_coding::issue_1154_progress_arguments::a_schema_declared_key_plans_exactly_as_the_command_key"
+  test "agentic_coding::issue_1154_progress_arguments::a_schema_declared_key_plans_exactly_as_the_command_key"
     seconds 3.9
   test "coding_discovery::composition_search::a_reduction_over_two_scalar_parameters_reads_both"
     seconds 3.8
   test "specification::openai_compatibility::http_openai_surfaces_accept_model_aliases_and_return_canonical_model"
     seconds 3.8
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::codex_responses_preserves_arbitrary_commands_and_uses_cmd"
-    seconds 3.7
-  test "protocol::issue_819_narration::desktop_find_narration_is_localized_and_command_free"
-    seconds 3.7
   test "fetched_page_answer_extraction::multilingual_extraction::every_supported_language_gets_an_extract_and_not_a_page_dump"
     seconds 3.7
   test "issue_1021_behaviour_range::a_named_task_is_not_answered_with_a_minimal_script"
@@ -456,8 +496,6 @@ test_durations
   test "issue_671_supplied_file_bytes::the_answer_is_not_shaped_like_an_edit_block"
     seconds 3.6
   test "issue_991_how_to_http::chat_completions_honours_a_service_opt_out"
-    seconds 3.6
-  test "agentic_coding::agentic_coding::issue_558_learning_ledger::agent_mode_routes_ledger_request_to_a_promotion_write"
     seconds 3.6
   test "issue_680_intent_routing::chat_completions_routes_edit_intent_to_tool_call"
     seconds 3.6
@@ -467,15 +505,13 @@ test_durations
     seconds 3.5
   test "issue_758_capability_routing::live_http_server_routes_reported_folder_variants_to_one_shell_contract"
     seconds 3.4
-  test "agentic_coding::agentic_coding::work_item_planning::a_read_work_item_describing_a_program_reaches_an_authoring_route"
+  test "agentic_coding::work_item_planning::a_read_work_item_describing_a_program_reaches_an_authoring_route"
     seconds 3.4
   test "ci_cd::macos_package_retry::retries_known_hdiutil_device_failures_and_cleans_incomplete_dmg"
     seconds 3.4
   test "test_status::test_status_matrix_is_classified_across_languages"
     seconds 3.4
-  test "agentic_coding::agentic_coding::issue_1154_progress_arguments::codex_cmd_read_drives_execution_instead_of_repeating"
-    seconds 3.3
-  test "agentic_coding::agentic_coding::agentic_coding::issue_676_planner_maps_execute_pwd_to_pwd_command"
+  test "agentic_coding::issue_1154_progress_arguments::codex_cmd_read_drives_execution_instead_of_repeating"
     seconds 3.3
   test "coding_ladder_rungs::r916_01_a_missing_file_is_a_failure_in_every_registered_language"
     seconds 3.3
@@ -507,21 +543,15 @@ test_durations
     seconds 3.1
   test "issue_712_intent_routing::gemini_update_request_routes_to_edit"
     seconds 3.1
-  test "memory::issue_714_agentic_mode::gemini_continues_after_the_client_returns_a_function_response"
-    seconds 3.1
   test "ci_cd::step_budgets_within_job_clocks::budget_wrapper_terminates_the_overrun_and_reports_it_as_an_error"
     seconds 3
   test "ci_cd::third_party_cli_version_pins::a_budget_warning_reports_the_counters_without_touching_the_result"
-    seconds 3
-  test "memory::issue_714_agentic_mode::chat_completions_routes_report_to_bash_not_websearch"
-    seconds 3
-  test "memory::issue_714_agentic_mode::gemini_routes_localized_report_to_shell_alias"
     seconds 3
   test "solver::issue_531_pattern_inference::grid_report_localizes_symmetry_description"
     seconds 3
   test "issue_1021_behaviour_range::a_coding_request_naming_no_language_is_a_coding_request"
     seconds 3
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::workspace_intents_follow_the_cargo_marker_of_the_current_directory"
+  test "agentic_coding::issue_749_shell_routing::workspace_intents_follow_the_cargo_marker_of_the_current_directory"
     seconds 3
   test "issue_1075_held_out_grounding::an_identity_the_request_does_name_is_carried_into_the_call"
     seconds 3
@@ -531,8 +561,6 @@ test_durations
     seconds 2.9
   test "issue_1066_ladder_capability::a_label_that_calls_the_work_atomic_does_not_replace_it_with_a_verdict"
     seconds 2.9
-  test "agentic_coding::agentic_coding::issue_558_self_healing::agent_mode_routes_self_healing_request_to_a_repair_case_write"
-    seconds 2.9
   test "issue_1021_behaviour_range::a_command_naming_noun_is_stripped_for_every_command"
     seconds 2.9
   test "issue_991_how_to_http::chat_completions_answers_a_how_to_request_from_the_committed_captures"
@@ -541,21 +569,17 @@ test_durations
     seconds 2.9
   test "issue_918_handler_rules_batch::a_software_project_follow_up_renders_the_seeded_sentences"
     seconds 2.9
-  test "memory::issue_714_agentic_mode::responses_routes_report_to_any_run_capability_alias"
-    seconds 2.9
   test "issue_1066_ladder_capability::written_files::a_literal_payload_never_crosses_a_sentence_boundary"
     seconds 2.8
   test "issue_1066_ladder_capability::a_dotted_number_is_never_mistaken_for_a_file_to_read"
     seconds 2.8
   test "issue_931_local_transports::issue_931_whole_task_uses_the_same_cli_as_server_and_client"
     seconds 2.8
-  test "agentic_coding::agentic_coding::agentic_coding::agentic_backend_actions::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report"
-    seconds 2.8
   test "issue_1066_ladder_capability::written_files::an_answer_only_the_symbolic_engine_reaches_is_still_delivered_to_the_named_file"
     seconds 2.8
   test "installation_conversion::extended::unlisted_tools_still_route_through_install_conversion"
     seconds 2.8
-  test "agentic_coding::agentic_coding::report_context_collection::conversation_learning_endpoint_stages_structured_server_trace_for_review"
+  test "agentic_coding::report_context_collection::conversation_learning_endpoint_stages_structured_server_trace_for_review"
     seconds 2.8
   test "issue_1138_execution_box::the_halving_ladder_records_every_n_it_tried"
     seconds 2.8
@@ -577,13 +601,13 @@ test_durations
     seconds 2.6
   test "issue_1066_ladder_capability::written_files::an_unquoted_pinned_line_stops_before_the_following_body_clause"
     seconds 2.6
-  test "agentic_coding::agentic_coding::issue_1154_progress_arguments::repeated_successful_read_is_reported_not_replanned"
+  test "agentic_coding::issue_1154_progress_arguments::repeated_successful_read_is_reported_not_replanned"
     seconds 2.6
-  test "agentic_coding::agentic_coding::proactive_failure_reports::expected_tool_refusals_do_not_claim_formal_ai_detected_a_failure"
+  test "agentic_coding::proactive_failure_reports::expected_tool_refusals_do_not_claim_formal_ai_detected_a_failure"
     seconds 2.6
   test "issue_1066_ladder_capability::a_specified_document_is_composed_even_when_the_request_names_a_file"
     seconds 2.6
-  test "agentic_coding::agentic_coding::location_and_edit_routing::github_report_requests_three_separate_context_links"
+  test "agentic_coding::location_and_edit_routing::github_report_requests_three_separate_context_links"
     seconds 2.6
   test "specification::prompt_variations::identity_matrix_is_classified_as_identity_across_languages"
     seconds 2.6
@@ -595,17 +619,13 @@ test_durations
     seconds 2.5
   test "http_client::a_response_that_pauses_mid_body_is_read_in_full"
     seconds 2.5
-  test "agentic_coding::agentic_coding::work_item_planning::an_uncovered_language_is_not_invented_into_an_artifact"
+  test "agentic_coding::work_item_planning::an_uncovered_language_is_not_invented_into_an_artifact"
     seconds 2.5
-  test "agentic_coding::agentic_coding::agentic_coding::agentic_backend_actions::learn_about::earlier_research_results_do_not_complete_a_new_research_turn"
-    seconds 2.5
-  test "agentic_coding::agentic_coding::proactive_failure_reports::detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses"
+  test "agentic_coding::proactive_failure_reports::detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses"
     seconds 2.5
   test "issue_386_cancel_sort::issue_386_cancel_sort_follow_up_must_not_be_unknown"
     seconds 2.4
   test "specification::definition_fusion::definition_merge_examples_show_exact_behavior_across_terms_and_concepts"
-    seconds 2.4
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::strict_shell_schema_gets_required_extras_for_every_language"
     seconds 2.4
   test "http_server::spawned_server_records_only_in_private_scratch_memory"
     seconds 2.4
@@ -657,8 +677,6 @@ test_durations
     seconds 2.2
   test "specification::reasoning_paths_procedures::procedural_elaboration_followup_covers_many_topics"
     seconds 2.2
-  test "agentic_coding::agentic_coding::agentic_coding::agentic_backend_actions::factual_question::research_prefers_an_official_source_and_cites_it"
-    seconds 2.2
   test "memory::issue_714_agentic_mode::completed_client_tool_execution_becomes_durable_learning_evidence"
     seconds 2.2
   test "ci_cd::javascript_dependency_audit::a_hung_request_is_killed_at_its_deadline_and_the_next_attempt_answers"
@@ -673,11 +691,9 @@ test_durations
     seconds 2.1
   test "ci_cd::macos_package_retry::retry_is_skipped_when_it_would_exceed_the_packaging_budget"
     seconds 2.1
-  test "agentic_coding::agentic_coding::issue_749_shell_routing::explicit_and_listing_routes_win_over_embedded_semantic_cues"
+  test "agentic_coding::issue_749_shell_routing::explicit_and_listing_routes_win_over_embedded_semantic_cues"
     seconds 2.1
   test "protocol::tool_result_presentation::follow_up_can_recover_a_numbered_line_or_the_complete_payload"
-    seconds 2.1
-  test "agentic_coding::agentic_coding::agentic_coding::issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode"
     seconds 2.1
   test "coding_discovery::composition_search::a_reduction_over_three_scalar_parameters_reads_all_three"
     seconds 2.1
@@ -686,8 +702,6 @@ test_durations
   test "specification::conversational_reverification::free_time_answers_are_prompt_stable_but_not_one_canned_reply"
     seconds 2.1
   test "issue_671_absolute_path_projection::a_declared_working_directory_wins_over_the_servers_own"
-    seconds 2.1
-  test "agentic_coding::agentic_coding::agentic_coding::driver_is_deterministic"
     seconds 2.1
   test "specification::code_generation_coreference::bare_imperative_results_follow_ups_bind_active_program_in_all_languages"
     seconds 2.1
@@ -711,9 +725,7 @@ test_durations
     seconds 2.1
   test "issue_839_report_script::two_conversations_sharing_a_first_message_file_different_contexts"
     seconds 2
-  test "agentic_coding::agentic_coding::issue_538_agentic::committed_diagram_is_generated_and_written_by_the_driver"
-    seconds 2
-  test "agentic_coding::agentic_coding::issue_538_agentic::committed_diagram_session_matches_a_fresh_run"
+  test "agentic_coding::issue_538_agentic::committed_diagram_is_generated_and_written_by_the_driver"
     seconds 2
   test "ci_cd::step_budgets_within_job_clocks::budget_enforcement_has_a_documented_escape_hatch"
     seconds 2
@@ -747,13 +759,11 @@ test_durations
     seconds 1.9
   test "issue_1066_self_development::incremental_harness_assertions_parse_a_utf8_report_under_a_posix_locale"
     seconds 1.9
-  test "agentic_coding::agentic_coding::agentic_coding::issue_676_planner_ignores_shell_tokens_without_run_context"
-    seconds 1.9
   test "issue_755_file_read_write::the_whole_write_read_task_persists_and_reads_back_the_users_content"
     seconds 1.9
   test "issue_819_report_flow::opencode_empty_exact_find_result_widens_without_command_leakage"
     seconds 1.9
-  test "agentic_coding::agentic_coding::issue_538_agentic::planner_walks_the_diagram_recipe"
+  test "agentic_coding::issue_538_agentic::planner_walks_the_diagram_recipe"
     seconds 1.9
   test "issue_819_report_flow::opencode_desktop_find_is_narrated_naturally_and_runs_find"
     seconds 1.9
@@ -810,8 +820,6 @@ test_durations
   test "coding_ladder_rungs::r916_07_a_declarative_statement_of_fact_is_not_a_request"
     seconds 1.8
   test "issue_1066_ladder_capability::a_question_about_a_task_is_answered_by_thinking_about_the_task"
-    seconds 1.8
-  test "semantic_intent_routing::explicit_content_and_file_object_route_write_variations"
     seconds 1.8
   test "caller_framing_context::asking_for_the_date_still_runs_date"
     seconds 1.8
@@ -917,8 +925,6 @@ test_durations
     seconds 1.6
   test "issue_1021_behaviour_range::a_named_exercise_is_answered_as_a_program"
     seconds 1.6
-  test "agentic_coding::agentic_coding::agentic_coding::issue_607_planner_maps_shell_tools_to_ls_command"
-    seconds 1.6
   test "specification::arbitrary_skill_compilation::whole_task_uses_one_artifact_across_solver_interpreter_explanation_and_agent"
     seconds 1.6
   test "installation_conversion::unwrapped_readme_with_shell_fences_stays_markdown_source"
@@ -939,7 +945,7 @@ test_durations
     seconds 1.5
   test "memory_maintenance::dreaming_recalculates_topic_frequency_and_learns_durable_requirements"
     seconds 1.5
-  test "agentic_coding::agentic_coding::file_read_tool_calls::ls_folder_prompt_reads_last_file_from_listing"
+  test "agentic_coding::file_read_tool_calls::ls_folder_prompt_reads_last_file_from_listing"
     seconds 1.5
   test "specification::task_decomposition::every_sub_task_surfaces_as_a_sub_impulse_event"
     seconds 1.5
@@ -951,7 +957,7 @@ test_durations
     seconds 1.5
   test "specification::task_decomposition::splitting_is_recognised_in_every_supported_language"
     seconds 1.5
-  test "agentic_coding::agentic_coding::issue_1131_member_insertion_guard::every_registered_language_needs_the_verb_before_a_member_list_grows"
+  test "agentic_coding::issue_1131_member_insertion_guard::every_registered_language_needs_the_verb_before_a_member_list_grows"
     seconds 1.5
   test "issue_1138_concept_lookup_http::chat_completions_resolves_an_unknown_word_from_the_committed_captures"
     seconds 1.5
@@ -961,19 +967,15 @@ test_durations
     seconds 1.5
   test "documentation_status::check_mode_is_green_against_the_committed_ledgers"
     seconds 1.5
-  test "agentic_coding::agentic_coding::file_read_tool_calls::direct_file_read_prompts_emit_read_tool_calls"
+  test "agentic_coding::file_read_tool_calls::direct_file_read_prompts_emit_read_tool_calls"
     seconds 1.5
   test "caller_framing_context::an_explicitly_introduced_command_survives_sentence_scoping"
     seconds 1.5
-  test "agentic_coding::agentic_coding::issue_1021_verified_move::a_requested_move_runs_its_checks_around_the_action"
+  test "agentic_coding::issue_1021_verified_move::a_requested_move_runs_its_checks_around_the_action"
     seconds 1.5
   test "specification::prompt_variations::capabilities_matrix_is_classified_as_capabilities_across_languages"
     seconds 1.5
-  test "agentic_coding::agentic_coding::agentic_coding::issue_607_driver_executes_ls_inside_the_sandbox_workspace"
-    seconds 1.5
   test "seed::issue_1138_intent_phrase_migration::greetings_route_through_the_social_greeting_role"
-    seconds 1.5
-  test "agentic_coding::agentic_coding::agentic_coding::driver_fetches_the_canonical_source_and_writes_the_knowledge_base"
     seconds 1.5
   test "formal_ai::software_project_request_returns_reviewable_plan"
     seconds 1.5
@@ -1017,7 +1019,7 @@ test_durations
     seconds 1.4
   test "protocol::tool_result_presentation::every_tool_gets_the_same_generic_friendly_renderer"
     seconds 1.4
-  test "agentic_coding::agentic_coding::issue_527_question_catalog::planner_walks_the_question_catalog_recipe"
+  test "agentic_coding::issue_527_question_catalog::planner_walks_the_question_catalog_recipe"
     seconds 1.4
   test "document_originality_check::document_originality_requests_route_to_grounded_attachment_workflow"
     seconds 1.4
@@ -1027,11 +1029,9 @@ test_durations
     seconds 1.4
   test "issue_755_file_read_write::repeated_read_turns_are_deterministic"
     seconds 1.4
-  test "agentic_coding::agentic_coding::file_read_tool_calls::read_every_file_lists_then_reads_each_file"
+  test "agentic_coding::file_read_tool_calls::read_every_file_lists_then_reads_each_file"
     seconds 1.4
   test "openai_chat_streaming::cli_serve_streams_chat_completion_chunks_over_loopback_http"
-    seconds 1.4
-  test "pull_request_1188_teach_f::g85_a_file_move_without_line_numbers_is_still_a_file_move"
     seconds 1.4
   test "specification::behavior_rules::behavior_rules_count_followup_answers_reported_russian_prompt"
     seconds 1.4
@@ -1045,7 +1045,7 @@ test_durations
     seconds 1.4
   test "issue_680_intent_routing::responses_routes_web_search_intent_to_function_call"
     seconds 1.4
-  test "agentic_coding::agentic_coding::location_and_edit_routing::british_behaviour_rule_queries_match_the_rule_catalog"
+  test "agentic_coding::location_and_edit_routing::british_behaviour_rule_queries_match_the_rule_catalog"
     seconds 1.4
   test "specification::coding_modification_benchmarks::issue_362_multilingual_multi_turn_coding_modification_ratchet"
     seconds 1.4
@@ -1079,13 +1079,9 @@ test_durations
     seconds 1.3
   test "memory_learning::failed_replays_are_preserved_as_refinement_records"
     seconds 1.3
-  test "agentic_coding::agentic_coding::agentic_coding::issue_624_server_emits_tool_calls_for_natural_language_directory_listing"
-    seconds 1.3
   test "issue_1066_hollow_answers::the_refusal_to_enumerate_is_written_in_the_language_that_asked"
     seconds 1.3
   test "issue_1066_hollow_answers::a_colon_in_a_later_sentence_does_not_become_the_task"
-    seconds 1.3
-  test "specification::prompt_variations_facts::capital_matrix_resolves_every_seeded_country"
     seconds 1.3
   test "seed::issue_1085_seed_links::the_network_rebuilds_a_native_link_cli_store_without_accumulating"
     seconds 1.3
@@ -1115,8 +1111,6 @@ test_durations
     seconds 1.3
   test "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt"
     seconds 1.3
-  test "agentic_coding::agentic_coding::agentic_coding::agentic_backend_actions::factual_question::election_search_then_fetch_then_answers_from_results"
-    seconds 1.3
   test "issue_1182_duplicate_gate::two_identical_bodies_across_files_fail_without_a_baseline"
     seconds 1.3
   test "solver::issue_1138_self_use_toolchain::an_ask_to_run_code_is_not_answered_by_reading_about_it"
@@ -1127,17 +1121,13 @@ test_durations
     seconds 1.3
   test "issue_671_absolute_path_projection::a_client_that_accepts_relative_paths_keeps_the_requested_spelling"
     seconds 1.3
-  test "agentic_coding::agentic_coding::agentic_coding::agentic_backend_actions::report_issue::report_request_emits_atomic_report_script"
+  test "agentic_coding::file_read_tool_calls::read_file_in_named_folder_lists_then_reads_nested_file"
     seconds 1.3
-  test "agentic_coding::agentic_coding::file_read_tool_calls::read_file_in_named_folder_lists_then_reads_nested_file"
-    seconds 1.3
-  test "agentic_coding::agentic_coding::issue_527_question_catalog::catalog_classifies_smallest_first_and_answers_meaningful_questions"
+  test "agentic_coding::issue_527_question_catalog::catalog_classifies_smallest_first_and_answers_meaningful_questions"
     seconds 1.2
   test "specification::chat_surface::behavior_rule_listing_includes_capabilities_and_farewell_rules"
     seconds 1.2
   test "issue_1176_quantities_dates::variance_and_standard_deviation_derive_from_exact_fractions"
-    seconds 1.2
-  test "protocol::issue_819_narration::open_web_search_is_explained_as_a_web_search"
     seconds 1.2
   test "local_report_export::every_report_context_is_exported_by_the_local_cli"
     seconds 1.2
@@ -1155,17 +1145,11 @@ test_durations
     seconds 1.2
   test "memory::issue_1180_history_context::chat_answers_a_lineage_question_from_this_repositorys_history"
     seconds 1.2
-  test "agentic_coding::agentic_coding::issue_716_agentic_execution::responses_does_not_write_an_explanation_about_programs"
-    seconds 1.2
   test "multilingual_variations::assistant_free_time_variations_match_across_languages"
     seconds 1.2
   test "multilingual_variations::greeting_russian_variations_match"
     seconds 1.2
   test "issue_1180_repository_qa::chat_explains_why_the_self_development_status_fails"
-    seconds 1.2
-  test "agentic_coding::agentic_coding::agentic_coding::issue_624_planner_maps_natural_language_directory_listing_to_ls"
-    seconds 1.2
-  test "agentic_coding::agentic_coding::agentic_coding::agentic_backend_actions::report_issue::every_supported_language_routes_report_intent_from_seed_data"
     seconds 1.2
   test "issue_1075_held_out_grounding::an_explicit_default_is_still_honoured"
     seconds 1.2
@@ -1183,15 +1167,13 @@ test_durations
     seconds 1.2
   test "unresolved_request_research::researched_unknown_returns_a_grounded_answer_after_search_and_fetch"
     seconds 1.2
-  test "protocol::issue_819_narration::opencode_run_shell_schema_still_gets_a_command_free_explanation"
-    seconds 1.2
   test "installation_conversion::conversion_answer_exposes_algorithm_construction_trace"
     seconds 1.2
   test "issue_1175_routing::argument_shaped_prompts_after_a_shell_token_stay_terminal_commands"
     seconds 1.2
   test "solver::budget_search::budget_search_zero_budget_proposes_no_skill"
     seconds 1.2
-  test "agentic_coding::agentic_coding::issue_870_routing::process_requests_share_one_multilingual_semantic_route"
+  test "agentic_coding::issue_870_routing::process_requests_share_one_multilingual_semantic_route"
     seconds 1.2
   test "specification::prompt_variations::matrix_answers_are_deterministic_for_identical_prompts"
     seconds 1.2
@@ -1206,8 +1188,6 @@ test_durations
   test "issue_1066_ladder_capability::canonical_facts::a_serialized_relationship_uses_its_literal_links_key"
     seconds 1.2
   test "issue_1182_duplicate_gate::the_write_baseline_mode_makes_the_same_tree_pass"
-    seconds 1.2
-  test "agentic_coding::agentic_coding::agentic_coding::planner_walks_the_full_search_fetch_write_run_recipe"
     seconds 1.2
   test "issue_933_answer_parity::issue_933_thanks_and_wellbeing_answer_in_full_in_every_language"
     seconds 1.2
@@ -1235,8 +1215,6 @@ test_durations
     seconds 1.1
   test "multilingual_variations::arithmetic_chinese_word_variations_match"
     seconds 1.1
-  test "agentic_coding::agentic_coding::agentic_coding::issue_676_planner_maps_natural_language_file_listing_to_ls"
-    seconds 1.1
   test "issue_1176_quantities_dates::percentile_joins_other_operations_and_languages"
     seconds 1.1
   test "verifiable_task::routing::a_named_unknown_outranks_the_terminal_command_route"
@@ -1253,8 +1231,6 @@ test_durations
     seconds 1.1
   test "multilingual_variations::farewell_russian_variations_match"
     seconds 1.1
-  test "agentic_coding::agentic_coding::agentic_coding::a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale"
-    seconds 1.1
   test "coding_discovery::composition_search::a_reduction_over_one_sequence_parameter_stays_a_reduction"
     seconds 1.1
   test "specification::chat_surface::behavior_rules_list_works_for_hindi_speakers"
@@ -1264,10 +1240,6 @@ test_durations
   test "solver::issue_847_task_decomposition::splitting_a_coding_task_into_subtasks_is_answered_not_refused"
     seconds 1.1
   test "issue_751_token_usage::responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata"
-    seconds 1.1
-  test "issue_1021_behaviour_range::a_framework_named_coding_request_is_answered_in_that_framework"
-    seconds 1.1
-  test "protocol::issue_819_narration::fetch_narration_names_the_source_url"
     seconds 1.1
   test "memory_maintenance::multilingual_topics_receive_distinct_stable_amendment_ids"
     seconds 1.1
@@ -1279,21 +1251,15 @@ test_durations
     seconds 1.1
   test "documentation_status::deleting_the_status_document_and_regenerating_reproduces_its_content_id"
     seconds 1.1
-  test "seed::issue_699_handler_migration::held_out_number_constraint_paraphrases_are_data_driven"
+  test "agentic_coding::proactive_failure_reports::explicit_unsuccessful_results_invite_reports_but_pending_results_do_not"
     seconds 1.1
-  test "agentic_coding::agentic_coding::proactive_failure_reports::explicit_unsuccessful_results_invite_reports_but_pending_results_do_not"
-    seconds 1.1
-  test "agentic_coding::agentic_coding::agentic_general_planner::command_stdout_plan_executes_generate_then_verify_through_cli_tools"
-    seconds 1.1
-  test "agentic_coding::agentic_coding::agentic_coding::driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer"
+  test "agentic_coding::agentic_general_planner::command_stdout_plan_executes_generate_then_verify_through_cli_tools"
     seconds 1.1
   test "issue_744_qwen_tool_schema::qwen_web_fetch_receives_every_required_argument_and_no_undeclared_keys"
     seconds 1.1
   test "web_requests::information_search_variants_route_to_web_search_handler"
     seconds 1.1
   test "solver::issue_847_task_decomposition::atomicity_is_answerable_in_every_supported_language"
-    seconds 1.1
-  test "memory::issue_918_browser_twins::a_compound_interest_report_converts_at_the_seeded_euro_and_ruble_rates"
     seconds 1.1
   test "test_status::test_status_prompts_are_recognized"
     seconds 1.1
@@ -1302,8 +1268,6 @@ test_durations
   test "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage"
     seconds 1.1
   test "issue_1021_behaviour_range::a_one_letter_alias_does_not_match_inside_an_accented_word"
-    seconds 1.1
-  test "protocol::issue_819_narration::desktop_find_is_explained_without_printing_the_command"
     seconds 1.1
   test "specification::issue_893_summarization_validation::issue_893_whole_task_validates_real_repository_files_against_the_ratchet"
     seconds 1.1
@@ -1317,11 +1281,11 @@ test_durations
     seconds 1.1
   test "memory_maintenance::dreaming_simulates_frequent_topic_tasks_and_mines_recurring_structures"
     seconds 1
-  test "agentic_coding::agentic_coding::issue_1021_verified_move::a_move_onto_an_occupied_destination_stops_before_it_acts"
+  test "agentic_coding::issue_1021_verified_move::a_move_onto_an_occupied_destination_stops_before_it_acts"
     seconds 1
   test "web_engine_core::issue_1177_code_task_handlers::engine_answers_regex_synthesis_request"
     seconds 1
-  test "agentic_coding::agentic_coding::agentic_general_planner::compound_github_work_item_routes_to_agentic_planning_before_project_lookup"
+  test "agentic_coding::agentic_general_planner::compound_github_work_item_routes_to_agentic_planning_before_project_lookup"
     seconds 1
   test "memory_maintenance::core_background_dreaming_learns_but_does_not_free_without_consent"
     seconds 1
@@ -1338,8 +1302,6 @@ test_durations
   test "specification::conversational_reverification::independent_questions_are_answered_in_source_order_in_every_language"
     seconds 1
   test "issue_671_absolute_path_projection::agent_read_absolutises_when_only_the_tool_description_says_so"
-    seconds 1
-  test "seed::issue_1138_intent_phrase_migration::held_out_web_search_paraphrases_reach_the_canonical_search_answer"
     seconds 1
   test "pull_request_1188_teach_f::g69_an_addition_that_quotes_no_text_earns_a_question"
     seconds 1
