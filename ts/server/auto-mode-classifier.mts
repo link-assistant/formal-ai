@@ -11,6 +11,7 @@
 // transcript entries written by the user never trip a rule.
 
 import { childValue, childrenNamed, parseLino, readRepoFile } from './lino.mjs';
+import { serverMessage } from './messages.mjs';
 
 let policy = null;
 
@@ -23,7 +24,7 @@ function expandAlternatives(pattern, rule) {
   return pattern.replace(/\{([a-z]+(?:-[a-z]+)*)\}/gu, (_, name) => {
     const alternatives = childrenNamed(rule, name).map((child) => child.value);
     if (alternatives.length === 0) {
-      throw new Error(`auto-mode classifier rule \`${rule.value}\` has no \`${name}\` alternatives`);
+      throw new Error(serverMessage('auto-mode-classifier-alternatives-missing', { rule: rule.value, name }));
     }
     return `(?:${alternatives.join('|')})`;
   });

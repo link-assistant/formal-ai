@@ -566,3 +566,5 @@ server_messages
     text "Trigger cycle limit exceeded"
   message dynamic-meta-event-value-missing
     text "Event has no value for {reference}"
+  message auto-mode-classifier-alternatives-missing
+    text "auto-mode classifier rule `{rule}` has no `{name}` alternatives"
