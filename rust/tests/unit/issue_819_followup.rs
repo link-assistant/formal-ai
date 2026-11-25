@@ -197,6 +197,26 @@ fn narrated_question_tool_call_does_not_end_the_report_flow() {
     assert!(github.contains("formal-ai report create-issue"), "{github}");
 }
 
+/// Claude Code returns a multi-select AskUserQuestion answer as one
+/// comma-joined string; every chosen destination is still fulfilled (#1632).
+#[test]
+fn claude_multi_select_answer_runs_every_selected_destination() {
+    let mut messages = vec![
+        ChatMessage::user("Report"),
+        ChatMessage::tool_result(
+            "choose_reports",
+            "AskUserQuestion",
+            r#"User has answered your questions: "What would you like to report? Select one or more."="Harness log, GitHub issue". You can now continue with the user's answers in mind."#,
+        ),
+    ];
+
+    let harness = next_command(&mut messages, "exported");
+    assert!(harness.contains("--source harness"), "{harness}");
+
+    let github = next_command(&mut messages, "https://github.com/o/r/issues/1");
+    assert!(github.contains("formal-ai report create-issue"), "{github}");
+}
+
 /// The planned steps are not just well-formed strings — they run.
 ///
 /// Each destination is executed on its own and its real stdout is fed back into

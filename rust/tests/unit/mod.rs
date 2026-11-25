@@ -352,5 +352,7 @@ mod readable_source_model;
 #[path = "issue_1580_question_boundaries.rs"]
 mod issue_1580_question_boundaries;
 
+#[path = "issue_1632_auto_mode_classifier.rs"]
+mod issue_1632_auto_mode_classifier;
 #[path = "issue_1632_how_to_priority.rs"]
 mod issue_1632_how_to_priority;
