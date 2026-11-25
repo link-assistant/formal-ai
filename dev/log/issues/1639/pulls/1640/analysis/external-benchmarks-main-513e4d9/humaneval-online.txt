@@ -1,0 +1,9 @@
+suite=humaneval passed=12 failed=8 total=20
+FAIL HumanEval/1 answer contains no Python code
+FAIL HumanEval/3 answer contains no Python code
+FAIL HumanEval/4 python exited with exit status: 1: Traceback (most recent call last):\n  File "/tmp/extbench-1639/root3/target/formal-ai-benchmarks/run/humaneval/HumanEval_4.py", line 21, in <module>\n    check(mean_absolute_deviation)\n    ~~~~~^^^^^^^^^^…
+FAIL HumanEval/6 answer contains no Python code
+FAIL HumanEval/7 answer contains no Python code
+FAIL HumanEval/11 answer contains no Python code
+FAIL HumanEval/17 answer contains no Python code
+FAIL HumanEval/19 answer contains no Python code

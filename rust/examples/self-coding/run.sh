@@ -33,7 +33,7 @@ git -C "$work" commit -qm fixture
 # Private, empty memory per run keeps planning independent of other E2E scripts.
 # Store its generated .lino and binary .links state below .git so Agent does not
 # mistake server-private state for an authored repository effect.
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$work/.git/formal-ai-memory/memory.lino" FORMAL_AI_DREAMING=0 "$BIN" serve \
   --host 127.0.0.1 --port "$PORT" >"$server" 2>&1 &
 server_pid=$!

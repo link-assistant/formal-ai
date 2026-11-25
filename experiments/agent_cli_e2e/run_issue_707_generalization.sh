@@ -40,13 +40,33 @@ PUBLISHER_PID=""
 # shellcheck source=experiments/agent_cli_e2e/issue_707_fixture.sh
 source "$ROOT/experiments/agent_cli_e2e/issue_707_fixture.sh"
 
+# Issue #1639: a failure exits through this trap, which used to delete the
+# workdir before anything reached $EVIDENCE_DIR -- run 45636781871 failed in the
+# reference derivation and its upload step found no files. On a non-zero exit,
+# keep the logs and plans (not the corpus or memory stores) under failure/.
+preserve_failure_evidence() {
+  local target="$EVIDENCE_DIR/failure" file relative
+  mkdir -p "$target" || return 0
+  while IFS= read -r -d '' file; do
+    relative="${file#"$WORKDIR"/}"
+    mkdir -p "$target/$(dirname "$relative")" && cp -- "$file" "$target/$relative" || true
+  done < <(find "$WORKDIR" -type f \( -name '*.log' -o -name '*.err' -o -name '*.local.json' \
+    -o -name '*.txt' -o -name '*.jsonl' -o -name 'opencode.json' \) -print0 2>/dev/null)
+  echo "failure evidence kept in $target" >&2
+}
+
 cleanup() {
+  local status=$?
   if [[ -n "$SERVER_PID" ]]; then
     kill "$SERVER_PID" 2>/dev/null || true
+    wait "$SERVER_PID" 2>/dev/null || true
   fi
   if [[ -n "$PUBLISHER_PID" ]]; then
     kill "$PUBLISHER_PID" 2>/dev/null || true
     wait "$PUBLISHER_PID" 2>/dev/null || true
+  fi
+  if [[ "$status" -ne 0 && -d "$WORKDIR" ]]; then
+    preserve_failure_evidence
   fi
   rm -rf -- "$WORKDIR"
 }
@@ -89,29 +109,8 @@ for index in "${!CASE_IDS[@]}"; do
     || fail "local synthesis failed for $case_id"
   "$BIN" --silent computer-use --from "$COMPUTER_USE_CORPUS" --plan --prompt "$prompt" \
     >"$WORKDIR/prompts/$case_id.txt" || fail "explicit plan could not be derived for $case_id"
-  node -e '
-    const fs = require("node:fs");
-    const { createHash } = require("node:crypto");
-    const [file, caseId, prompt, explicitPath] = process.argv.slice(1);
-    const outcome = JSON.parse(fs.readFileSync(file, "utf8")).outcome;
-    if (!outcome.verified) throw new Error(caseId + " did not verify locally");
-    if (!outcome.plan.id.startsWith("synthesized-")) {
-      throw new Error(caseId + " was recalled, not synthesized: " + outcome.plan.id);
-    }
-    const explicit = fs.readFileSync(explicitPath, "utf8").trimEnd().split("\n").at(-2);
-    const steps = JSON.parse(explicit).map((step) => step.primitive);
-    if (JSON.stringify(steps) !== JSON.stringify(outcome.plan.steps.map((step) => step.primitive))) {
-      throw new Error(caseId + " explicit plan differs from local synthesis");
-    }
-    const digest = createHash("sha256").update(explicit).digest("hex");
-    process.stdout.write(JSON.stringify({
-      case_id: caseId,
-      prompt,
-      plan_id: "computer-use-" + digest.slice(0, 24),
-      learned_plan_id: outcome.plan.id,
-      steps,
-    }) + "\n");
-  ' "$WORKDIR/$case_id.local.json" "$case_id" "$prompt" "$WORKDIR/prompts/$case_id.txt" >>"$WORKDIR/expected.jsonl" \
+  node "$ROOT/experiments/agent_cli_e2e/issue-707-reference.mjs" \
+    "$WORKDIR/$case_id.local.json" "$case_id" "$prompt" "$WORKDIR/prompts/$case_id.txt" >>"$WORKDIR/expected.jsonl" \
     || fail "local reference rejected for $case_id"
 done
 cp "$WORKDIR/expected.jsonl" "$EVIDENCE_DIR/expected.jsonl"

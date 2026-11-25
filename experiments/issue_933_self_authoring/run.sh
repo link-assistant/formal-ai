@@ -31,7 +31,7 @@ conversational_variation_floor_learning
 cp "$ROOT/experiments/issue_933_self_authoring/verify.sh" "$WORKSPACE/verify.sh"
 chmod +x "$WORKSPACE/verify.sh"
 
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$WORKSPACE/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
 server_pid=$!

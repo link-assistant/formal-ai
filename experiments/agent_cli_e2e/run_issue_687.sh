@@ -76,7 +76,7 @@ chmod +x "$FAKE_BIN/gh"
 # the deterministic planner enough to drop a tool-call round — the exact reason
 # the `>= 11 rounds` assertion flaked on main (issue #828). FORMAL_AI_DREAMING=0
 # also stops the background compaction thread from mutating this file mid-run.
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!

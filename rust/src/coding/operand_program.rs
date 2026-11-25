@@ -361,6 +361,21 @@ impl ProgramReply {
     }
 }
 
+/// Record the shared meta-algorithm builder for a catalog program this module
+/// answers. The catalog path in `solver.rs` records it after this function
+/// declines, so a program answer returned here must record it itself, as the
+/// browser twin's `tryWriteProgram` does for documented and bound programs.
+/// Scripts never carried the builder and keep their trace. Issue #1639: with
+/// read access on by default (#1582) "Write hello world in Rust" returned the
+/// rediscovered Rust book program with no builder trace.
+fn record_catalog_construction(reply: &ProgramReply, log: &mut EventLog) {
+    if matches!(reply, ProgramReply::Program { .. })
+        && log.first_of("rule_synthesis_candidate").is_none()
+    {
+        crate::coding::record_algorithm_construction(log);
+    }
+}
+
 /// Compose a program from a publisher page acquired under the request's policy.
 pub(crate) fn try_write_documented_program(
     prompt: &str,
@@ -425,6 +440,7 @@ pub(crate) fn try_write_documented_program(
             template: &template,
         };
         let body = reply.render(spec, &output, None);
+        record_catalog_construction(&reply, log);
         log.append("program_parameter:language", row.slug.to_owned());
         log.append("program_parameter:task", task.slug.to_owned());
         log.append("program_parameters", spec.parameter_summary());
@@ -480,6 +496,7 @@ pub(crate) fn try_write_documented_program(
             .to_owned(),
     );
     log.append("execution_environment", source.to_owned());
+    record_catalog_construction(&reply, log);
     log.append("program_parameter:language", row.slug.to_owned());
     log.append("program_parameter:task", task.slug.to_owned());
     log.append("program_parameters", spec.parameter_summary());

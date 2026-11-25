@@ -175,14 +175,16 @@ fi
 # FORMAL_AI_AGENT_MODE=1 flips the permission gate on for tool-call execution
 # (see AssociativePackage / permission_for_capability). FORMAL_AI_TRACE_REQUESTS=1
 # adds a request trace to the server log so a failed run has visible planner
-# state to diagnose.
+# state to diagnose. Since ec6ade5cd (#1592) that trace is a `trace`-level event,
+# so FORMAL_AI_LOG_LEVEL=trace is required too: without it the default `debug`
+# level drops every `[trace] POST` header and MIN_POSTS sees 0 (issue #1639).
 # Private, empty memory per run so the chat handler's memory-fed planning and the
 # `POST /v1/chat/completions` round count stay deterministic and independent of
 # what earlier E2E scripts recorded into the shared ~/.formal-ai/memory.lino
 # (issue #828). Keep server-owned state outside WORKDIR: link-cli writes a binary
 # sidecar beside the LiNo file, and Agent must not mistake either file for an
 # authored workspace effect. FORMAL_AI_DREAMING=0 stops background compaction.
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$SERVER_STATE/memory.lino" FORMAL_AI_DREAMING=0 \
   env "${source_capture_env[@]}" "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!

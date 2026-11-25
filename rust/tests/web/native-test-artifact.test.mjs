@@ -125,8 +125,18 @@ test('primary server parity keeps its full source and every case within separate
 test('artifact adapter streams real archives and refuses unsafe or corrupt members', {timeout:30000},()=>{
  const result=spawnSync('python3',[fileURLToPath(new URL('../../../experiments/issue-1580/artifact-extraction-fixtures.py',import.meta.url))],{encoding:'utf8',maxBuffer:256*1024});
  assert.equal(result.status,0,result.stdout+result.stderr);
- assert.match(result.stderr,/Ran 8 tests/u);
+ assert.match(result.stderr,/Ran 9 tests/u);
  assert.match(result.stderr,/\nOK\n/u);
+});
+test('issue #1639: a lone pattern match extracts under its artifact name, as two matches do',()=>{
+ // actions/download-artifact v5+ writes a single match straight into `path`;
+ // the one-leaf ladder dispatch 45659315559 then joined "0 wrote a result".
+ const action=YAML.parse(readFileSync(new URL('../../../.github/actions/download-artifact/action.yml',import.meta.url),'utf8'));
+ const extract=action.runs.steps.find(step=>step.id==='extract');
+ assert.equal(extract.env.NEST_PATTERN_SELECTION,"${{ inputs.name == '' && inputs.artifact-ids == '' }}");
+ assert.match(extract.run,/--nest-pattern-selection "\$NEST_PATTERN_SELECTION"/u);
+ const extractor=readFileSync(new URL('../../../scripts/extract-artifacts.py',import.meta.url),'utf8');
+ assert.match(extractor,/def nest_single_match\(sources\)/u);
 });
 test('shared native and renderer downloads replace the deprecated extractor without suppressing warnings',()=>{
  for(const name of ['download-formal-ai-binary','release-web']){

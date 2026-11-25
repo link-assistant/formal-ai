@@ -168,31 +168,47 @@ check_crates_io() {
     return
   fi
 
-  # crates.io has no read endpoint that accepts an API token. `GET /api/v1/me`
-  # is declared `AuthCheck::only_cookie()` in crates.io's `src/controllers/
-  # user/me.rs`, so every API token -- valid, revoked or expired -- is answered
-  # 403 there; the probe that shipped with issue #1081 read that 403 as "the
-  # token is revoked, expired or misscoped" and blocked the release of run
-  # 34149311523 with a token that had published v0.347.0 two days earlier
-  # (issue #1085). Endpoint-scoped tokens are rejected on every route that
-  # does not require their scope, and the only route that requires the
-  # publish scope is the publish itself. So the token is never sent anywhere
-  # from here: the one honest read-only verdict is `unknown`, stated with the
-  # reason, and `cargo publish` remains the step that proves it.
-  local body status
+  # crates.io has no read endpoint that accepts an API token: `GET /api/v1/me`
+  # is `AuthCheck::only_cookie()` (crates.io `src/controllers/user/me.rs`), so
+  # every API token is answered 403 there, and reading that 403 as "revoked"
+  # blocked the release of run 34149311523 (issue #1085). The publish route
+  # itself can be probed without publishing, though (issue #1639, ported from
+  # the rust pipeline template's `scripts/crates-publish-preflight.mjs`):
+  # crates.io `src/controllers/krate/publish.rs` reads the length-prefixed
+  # metadata, authenticates the token against the publish endpoint scope and
+  # the crate scope, and only then reads the archive length. A request that
+  # carries valid metadata and no archive therefore gets exactly HTTP 400
+  # `invalid tarball length` when the token may publish this crate, and 401/403
+  # when it may not, and nothing is ever published.
+  #
+  # Each probe spends one token of the account's `PublishUpdate` bucket, which
+  # crates.io `src/rate_limiter.rs` sizes at a burst of 30 refilled once a
+  # minute, so a probe per push cannot starve a real publish. Both modes probe:
+  # a same-repository pull request already holds the token in its environment.
+  local body status probe meta len
   body="$(mktemp)"
+  probe="$(mktemp)"
+  meta="{\"name\":\"${CRATE_NAME}\",\"vers\":\"0.0.0-preflight\"}"
+  len=${#meta}
+  # u32 little-endian metadata length, the metadata, and no archive at all.
+  # shellcheck disable=SC2059 # the format is built from fixed octal escapes
+  printf "$(printf '\\%03o\\%03o\\%03o\\%03o' $((len & 255)) $(((len >> 8) & 255)) \
+    $(((len >> 16) & 255)) $(((len >> 24) & 255)))" >"$probe"
+  printf '%s' "$meta" >>"$probe"
+  curl_headers=("Authorization: ${token}" "Content-Type: application/octet-stream")
+  status="$(http_status "$body" -X PUT --data-binary "@${probe}" "${CRATES_IO_API}/crates/new")"
   curl_headers=()
-  status="$(http_status "$body" "${CRATES_IO_API}/crates/${CRATE_NAME}")"
-  trace "crates.io crate lookup -> HTTP ${status}"
-  case "$status" in
-    200 | 404)
-      record unknown "$check" "token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only \`cargo publish\` can prove it"
-      ;;
-    *)
-      record unknown "$check" "token present; crates.io answered HTTP ${status} to a public crate lookup, so neither the registry nor the token could be checked"
-      ;;
-  esac
-  rm -f "$body"
+  trace "crates.io publish probe (no archive) -> HTTP ${status}"
+  # The response body is never echoed: a remote body may repeat a header.
+  if [ "$status" = 400 ] && grep -q '"detail":"invalid tarball length"' "$body" \
+    && [ "$(grep -o '"detail"' "$body" | wc -l)" -eq 1 ]; then
+    record verified "$check" "publish token and crate scope accepted by a no-archive publish probe (nothing was published)"
+  elif [ "$status" = 401 ] || [ "$status" = 403 ]; then
+    record failed "$check" "crates.io rejected the publish token or its crate scope (HTTP ${status} to a no-archive publish probe)"
+  else
+    record unknown "$check" "the no-archive publish probe answered HTTP ${status} without the exact missing-archive confirmation"
+  fi
+  rm -f "$body" "$probe"
 }
 
 # Open and immediately cancel a blob upload session: the smallest request a

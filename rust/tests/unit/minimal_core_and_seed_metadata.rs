@@ -690,7 +690,17 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // Source projection roles and canonical vocabulary are included; the full
     // source-derived expected map above must equal every committed shard.
     // This is measured metadata debt, with all original completeness guards.
-    assert_eq!(expected_gaps.len(), 1073);
+    // Issue #1639 recounted 1081: the shards were rewritten with the eight new
+    // records while this pin kept 1073. PR #1614 (17aabb4d0, b5d7bb4e2,
+    // bf813658e) added `fact_subject_connector`, `inception`, `inventor`,
+    // `start` and `opening-date` to `data/seed/meanings-facts.lino`, and PR
+    // #1599 (c656a4cf2) added `forklift-operator`, `storekeeper` and
+    // `warehouse-supervisor`, which PR #1581 (82c692256) moved into
+    // `data/seed/meanings-occupations.lino`. Neither
+    // file has ever carried the five reviewed fields for any record, so each
+    // is a gap like its siblings, and `committed_gaps(root) == expected_gaps`
+    // above already holds them.
+    assert_eq!(expected_gaps.len(), 1081);
 }
 
 #[test]

@@ -39,7 +39,7 @@ TASK="Run issue_864_command_that_does_not_exist"
 printf '%s\n' "$TASK" >"$OUT/task.txt"
 
 FORMAL_AI_AGENT_MODE=1 \
-FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
 FORMAL_AI_DIALOG_LOG_DIR="$OUT/dialog-logs" \
 FORMAL_AI_LOG_DIR="$OUT/native-logs" \
 FORMAL_AI_MEMORY_PATH="$WORK/memory.lino" \

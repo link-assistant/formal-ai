@@ -414,6 +414,16 @@ const RUST_BOOK_HELLO_WORLD: &str = "https://doc.rust-lang.org/book/ch01-02-hell
 
 #[test]
 fn hello_world_matrix_emits_a_code_block_per_language() {
+    // Issue #1639: the shared on-disk source cache is per job, so an earlier
+    // online test in the same shard (run 45636781871) had captured the MDN
+    // console page and the JavaScript answer reported that rediscovery, which
+    // no listed answer names. The matrix is an offline contract: replay it in
+    // a child with an exclusive, empty cache.
+    if crate::offline_replay::in_child(
+        "specification::prompt_variations::hello_world_matrix_emits_a_code_block_per_language",
+    ) {
+        return;
+    }
     let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
         offline: true,
         ..formal_ai::SolverConfig::default()
@@ -453,12 +463,11 @@ fn hello_world_matrix_emits_a_code_block_per_language() {
             }
             combination => panic!("missing documented hello-world answer for {combination:?}"),
         };
-        // Since 10a6f2855 (#1165) an offline solve replays the shared on-disk
-        // source cache (`source_cache_root()`). When an earlier online run in
-        // the same job captured the Rust book's hello-world page, the Rust
-        // answer reports that rediscovery instead of "not probed"; every other
-        // line is unchanged. Without the capture the documented answer stands.
-        // Both answers are listed, so the test shows each exact text.
+        // Since 10a6f2855 (#1165) an offline solve replays the on-disk source
+        // cache (`source_cache_root()`). The child above starts from an empty
+        // one, so the documented answer is expected; the Rust rediscovery
+        // text stays listed for a cache seeded with the Rust book's
+        // hello-world page, and every other line is unchanged.
         let rediscovered = if *expected_language == "rust" {
             expected_answer
                 .replace(

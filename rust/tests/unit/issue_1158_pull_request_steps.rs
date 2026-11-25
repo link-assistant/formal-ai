@@ -19,6 +19,17 @@ fn the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pul
     if !available(&["git", "node", "jq", "python3", "rustc", "timeout"]) {
         return;
     }
+    // Issue #1639: the planner re-solves the recipe on every turn, and with read
+    // access on by default (c0e480a36, #1582) each solve consults the per-job
+    // shared source cache, which the rediscovery tests running beside this one
+    // write. In main run 45636781871 the recipe no longer matched the source it
+    // had written and the delivery stopped at the scope refusal. Replay it with
+    // read access denied and an exclusive, empty cache.
+    if crate::offline_replay::in_network_denied_child(
+        "issue_1158_pull_request_steps::the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pull_request",
+    ) {
+        return;
+    }
     let workspace = Workspace::new("Rust", "issue-1158");
     let session = workspace.session(&offline(FORMAL_AI_PROMPT), 40);
     assert!(

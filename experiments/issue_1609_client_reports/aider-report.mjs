@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { createInterface } from 'node:readline';
+import { aiderReportTurns } from './aider-report-turns.mjs';
 
 const [command, ...prefix] = process.argv.slice(2);
 const child = spawn(command, [
@@ -10,13 +11,7 @@ const child = spawn(command, [
 ], { env: { ...process.env, TERM: 'dumb' }, stdio: ['pipe', 'pipe', 'inherit'] });
 const closed = once(child, 'close');
 const lines = createInterface({ input: child.stdout });
-const turns = [
-  [/Hi[!,]/u, 'Report issue'],
-  [/^3\. GitHub issue/u, '3'],
-  [/^3\. Server log/u, '1'],
-  [/^formal-ai report create-issue --session '[^']+' --source both /u, null],
-  [/^https:\/\/github\.com\/link-assistant\/formal-ai\/issues\/9999$/u, 'n\n/exit'],
-];
+const turns = aiderReportTurns;
 
 let index = 0;
 const deadline = setTimeout(() => child.kill(), 120_000);
@@ -32,7 +27,8 @@ try {
     index += 1;
   }
   const [code] = await closed;
-  assert.equal(code, 0);
+  // A deadline kill closes with code null; name the line the script still awaited.
+  assert.equal(code, 0, `Aider closed with ${code} while awaiting ${turns[index]?.[0] ?? 'nothing'}`);
   assert.equal(index, turns.length, 'Aider did not complete the report and show the GitHub URL');
 } finally {
   clearTimeout(deadline);

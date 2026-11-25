@@ -358,6 +358,8 @@ impl<'a> AuthoringRun<'a> {
             .args(["serve", "--host", "127.0.0.1", "--port", &port_string])
             .env("FORMAL_AI_AGENT_MODE", "1")
             .env("FORMAL_AI_TRACE_REQUESTS", "1")
+            // The request header is a `trace`-level event since #1592 (#1639).
+            .env("FORMAL_AI_LOG_LEVEL", "trace")
             .env("FORMAL_AI_MEMORY_PATH", self.state.path.join("memory.lino"))
             .env("FORMAL_AI_DREAMING", "0")
             .stdout(Stdio::from(server_log.try_clone()?))

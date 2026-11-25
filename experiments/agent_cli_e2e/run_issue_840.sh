@@ -104,7 +104,7 @@ run_agent_case() {
   mkdir -p "$case_dir" "$dialog_dir" || exit 1
 
   FORMAL_AI_AGENT_MODE=1 \
-    FORMAL_AI_TRACE_REQUESTS=1 \
+    FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
     FORMAL_AI_DIALOG_LOG_DIR="$dialog_dir" \
     FORMAL_AI_MEMORY_PATH="$case_dir/memory.lino" FORMAL_AI_DREAMING=0 \
     "$BIN" serve --host 127.0.0.1 --port "$case_port" > "$server_log" 2>&1 &

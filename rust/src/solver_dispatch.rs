@@ -98,6 +98,17 @@ fn arithmetic_with_online(
     if shell_compose_claims(prompt) {
         return None;
     }
+    // A conversion through the Julian year is the unit handler's: the
+    // calculator reads "2 years in days" with a 365-day year (730 days), the
+    // SI catalogue with the Julian year (730.5 days), and the browser's
+    // calculator declines it for the unit handler (issue #1639, issue #1588
+    // intent spans).
+    if crate::solver_handlers::derives_julian_year_conversion(
+        prompt,
+        &crate::engine::normalize_prompt(prompt),
+    ) {
+        return None;
+    }
     // A seeded number-property request owns its operands before loose expression extraction.
     if let Some(choice) = crate::solver_helpers::record_validation(log, prompt) {
         return Some(crate::solver_handlers::finalize_simple(

@@ -182,6 +182,18 @@ fn new_coding_tasks_are_each_supported_in_a_popular_language() {
 /// same canonical program-kind role as the browser operand regression.
 #[test]
 fn factorial_operand_excludes_the_number_of_requested_functions() {
+    // Issue #1639: this is a catalog-binding contract. Since c30b54f15 a Python
+    // function request first probes the Wikifunctions recurrence, and with read
+    // access on by default (c0e480a36, #1582) or a shared source cache already
+    // holding that capture, "...5 का फ़ैक्टोरियल लौटाए" was answered by the
+    // general `def factorial(n)` recurrence and never reached the catalog
+    // binding (main run 45636781871). Replay it with read access denied and an
+    // exclusive, empty cache, as #1637 did for the other network-dependent cases.
+    if crate::offline_replay::in_network_denied_child(
+        "specification::code_generation::task_catalog::factorial_operand_excludes_the_number_of_requested_functions",
+    ) {
+        return;
+    }
     for (prompt, expected) in [
         (
             "Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए",
@@ -193,27 +205,11 @@ fn factorial_operand_excludes_the_number_of_requested_functions() {
         ),
     ] {
         let response = answer(prompt);
-        // An unbound `n` either refuses (no publisher capture replayed) or,
-        // when the shared on-disk source cache (`source_cache_root()`, filled
-        // by online runs in the same CI job) already holds the Wikifunctions
-        // factorial recurrence, composes that general recurrence. Neither
-        // outcome may bind the artifact count ("one"/"एक") as the operand.
-        if response.answer.contains("```python") {
-            assert!(
-                response.answer.contains(
-                    "def factorial(n):\n    return 1 if (n == 0) else (n * factorial(n - 1))"
-                ),
-                "{prompt}: a composed answer must be the general recurrence: {}",
-                response.answer
-            );
-            assert!(
-                response.answer.contains("wikifunctions.org"),
-                "{prompt}: a composed answer must cite its publisher: {}",
-                response.answer
-            );
-        } else {
-            assert_eq!(response.answer, expected, "{prompt}");
-        }
+        // With no publisher capture replayed, an unbound `n` refuses; it never
+        // binds the artifact count ("one"/"एक") as the operand. The composed
+        // recurrence of a seeded cache is covered by
+        // solver::issue_1173_route3_recurrence and issue-1396-native.test.mjs.
+        assert_eq!(response.answer, expected, "{prompt}");
         assert!(
             !response.answer.contains("range(1, 2)"),
             "{prompt}: the artifact count was bound as the operand: {}",

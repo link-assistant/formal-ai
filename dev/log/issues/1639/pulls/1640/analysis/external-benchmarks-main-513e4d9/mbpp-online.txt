@@ -1,0 +1,11 @@
+suite=mbpp passed=10 failed=10 total=20
+FAIL MBPP/1 answer contains no Python code
+FAIL MBPP/5 answer contains no Python code
+FAIL MBPP/7 python exited with exit status: 1: File "/tmp/extbench-1639/root3/target/formal-ai-benchmarks/run/mbpp/MBPP_7.py", line 1\n    function solution(input) {\n             ^^^^^^^^\nSyntaxError: invalid syntax
+FAIL MBPP/9 answer contains no Python code
+FAIL MBPP/12 answer contains no Python code
+FAIL MBPP/13 answer contains no Python code
+FAIL MBPP/14 answer contains no Python code
+FAIL MBPP/15 answer contains no Python code
+FAIL MBPP/16 answer contains no Python code
+FAIL MBPP/20 answer contains no Python code

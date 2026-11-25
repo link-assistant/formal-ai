@@ -11,7 +11,6 @@
     "rust/tests/unit/candidate_solution_portfolios.rs::comparison_ledger_answers_why_in_all_supported_languages",
     "rust/tests/unit/candidate_solution_portfolios.rs::rule_synthesis_is_a_second_portfolio_leaf_with_the_same_engine",
     "rust/tests/unit/formal_ai.rs::software_project_approval_returns_implementation_starter",
-    "rust/tests/unit/issue_823_recursive_learning.rs::the_live_solver_recalls_an_approved_lesson_instead_of_rederiving_it",
     "rust/tests/unit/issue_920_question_necessity.rs::issue_920_proof_followups_keep_only_the_smallest_requirement_question",
     "rust/tests/unit/software_project.rs::approval_returns_language_aware_generated_code_surface",
     "rust/tests/unit/software_project.rs::software_project_dialogue_examples_formalize_plan_then_implement_after_approval",

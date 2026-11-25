@@ -85,7 +85,7 @@ docker run --rm --name "$NAME" --network host \
   -v "$STATE:/state" \
   -v "$EVIDENCE_DIR:/evidence" \
   -w /sidecar \
-  -e FORMAL_AI_AGENT_MODE=1 -e FORMAL_AI_TRACE_REQUESTS=1 \
+  -e FORMAL_AI_AGENT_MODE=1 -e FORMAL_AI_TRACE_REQUESTS=1 -e FORMAL_AI_LOG_LEVEL=trace \
   -e FORMAL_AI_DIALOG_LOG_DIR=/evidence/dialog-logs -e FORMAL_AI_LOG_DIR=/evidence/native-logs \
   -e FORMAL_AI_MEMORY_PATH=/state/memory.lino -e FORMAL_AI_DREAMING=0 \
   "$IMAGE" formal-ai serve --host 0.0.0.0 --port "$PORT" > "$LOG" 2>&1 &

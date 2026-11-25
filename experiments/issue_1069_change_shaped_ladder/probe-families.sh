@@ -63,7 +63,7 @@ run_family() {
   local base_commit
   base_commit="$(git -C "$work" rev-parse HEAD)"
 
-  FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+  FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
     FORMAL_AI_MEMORY_PATH="$work/.git/formal-ai-memory/memory.lino" FORMAL_AI_DREAMING=0 \
     "$BIN" serve --host 127.0.0.1 --port "$port" > "$RUN_DIR/$family-server.log" 2>&1 &
   server_pid=$!

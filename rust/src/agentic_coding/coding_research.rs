@@ -674,10 +674,10 @@ pub(super) fn plan_coding_research_step(
             &effect,
             &request,
             observations,
-            ResearchProvenance::from_observed(&proposal["provenance"]).map_or(
-                ResearchDiscoveryContext::None,
-                ResearchDiscoveryContext::Source,
-            ),
+            ResearchProvenance::from_observed(&proposal["provenance"])
+                .map_or(ResearchDiscoveryContext::None, |provenance| {
+                    ResearchDiscoveryContext::Source(Box::new(provenance))
+                }),
             result,
         ));
     }

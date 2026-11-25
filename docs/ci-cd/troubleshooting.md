@@ -128,16 +128,21 @@ If `build_type` is `workflow`, prefer the Pages artifact deployment path above.
 
 ## Crates.io Publishing Fails
 
-> **The release preflight cannot verify a crates.io token read-only.**
+> **The release preflight verifies the crates.io token without publishing.**
 > `GET /api/v1/me` is `AuthCheck::only_cookie()` in crates.io
-> (`rust/src/controllers/user/me.rs`): it answers HTTP 403 to every API token,
-> valid or not, and endpoint-scoped tokens are rejected on every route that
-> does not require their scope. A probe that reads that 403 as "revoked or
-> expired" is a false positive (run 34149311523 blocked a release with the
-> token that had published v0.347.0 two days earlier; issue #1085).
-> `scripts/preflight-credentials.sh` therefore reports the crates.io token as
-> `unknown` with that reason and never sends it anywhere; `cargo publish`
-> itself is the only step that proves it.
+> (`src/controllers/user/me.rs`): it answers HTTP 403 to every API token,
+> valid or not, so reading that 403 as "revoked or expired" is a false
+> positive (run 34149311523 blocked a release with the token that had
+> published v0.347.0 two days earlier; issue #1085). The preflight never calls
+> it. Since issue #1639 `scripts/preflight-credentials.sh` instead sends
+> `PUT /api/v1/crates/new` with valid metadata and no archive, as the rust
+> pipeline template does. crates.io authenticates and scope-checks the token
+> before it reads the archive length, so HTTP 400 `invalid tarball length`
+> means the token may publish this crate, 401/403 means it may not, and any
+> other answer is reported as `unknown`. Nothing is published; the probe
+> spends one token of the account's publish rate limit (burst 30, refilled
+> once a minute). `experiments/issue-1639/preflight-crates-probe-cases.sh`
+> drives every verdict offline.
 
 ### Symptom
 The "Publish to Crates.io" step fails with an error.

@@ -6,7 +6,7 @@ inputs:
   artifact-ids:
     description: Comma-separated artifact IDs
   pattern:
-    description: Artifact name pattern
+    description: Artifact name pattern; without merge-multiple, each match extracts under its name, even a lone match
   path:
     description: Extraction destination
     default: ${{ github.workspace }}
@@ -128,8 +128,11 @@ runs:
         DESTINATION: ${{ inputs.path }}
         MERGE_MULTIPLE: ${{ inputs.merge-multiple }}
         ALLOW_EMPTY_SELECTION: ${{ inputs.name == '' && inputs.artifact-ids == '' }}
+        # A pattern (or every-artifact) selection extracts each artifact under
+        # its own name even when only one matches (issue #1639).
+        NEST_PATTERN_SELECTION: ${{ inputs.name == '' && inputs.artifact-ids == '' }}
       run: |
-        "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+        "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION" --nest-pattern-selection "$NEST_PATTERN_SELECTION"
     - name: Remove temporary raw archives
       if: always() && steps.temporary.outcome == 'success'
       shell: bash

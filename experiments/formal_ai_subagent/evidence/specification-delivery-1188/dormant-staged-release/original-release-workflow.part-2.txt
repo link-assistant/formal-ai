@@ -1,3 +1,7 @@
+        env:
+          # Issue #1085 (D3.3): the ledger row names who opened each qualifying
+          # pull request, read through `gh` with the job token.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
         run: |
           rust-script scripts/version-and-commit.rs \

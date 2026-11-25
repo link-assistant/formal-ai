@@ -69,7 +69,8 @@ fn lino_seed_mirrors_every_catalog_template() {
         {
             continue;
         }
-        let seed_code = template_code(&root, template.task_slug, template.language_slug);
+        let seed_code = template_code(&root, template.task_slug, template.language_slug)
+            .or_else(|| rendered_template_code(&root, template.task_slug, template.language_slug));
         assert_eq!(
             seed_code.as_deref(),
             Some(template.code),
@@ -91,12 +92,72 @@ fn lino_seed_has_no_extra_templates() {
                 || child_value(node, "program_source") == Some(DOCUMENTATION_ROUTE)
         })
         .count();
+    let composed = program_templates()
+        .filter(|template| {
+            template_row(&root, template.task_slug, template.language_slug).is_none()
+                && rendered_template_code(&root, template.task_slug, template.language_slug)
+                    .is_some()
+        })
+        .count();
     assert_eq!(
-        seed_templates,
+        seed_templates + composed,
         program_template_count(),
-        "lino seed template count ({seed_templates}) must equal the catalog count ({})",
+        "lino seed template count ({seed_templates} rows + {composed} composed by a \
+         print_renderer) must equal the catalog count ({})",
         program_template_count()
     );
+}
+
+/// The program the seed composes for a print-literal task (`operation
+/// print_literal`, such as `hello_world`) from the language's
+/// `print_renderer` row. Since commit 10a6f2855 the seed keeps no
+/// `template_hello_world_laravel` row: the production catalog renders the
+/// Laravel hello world from `print_renderer laravel` and the task's `output`
+/// (`literal_output_program` in `rust/src/coding/catalog/mod.rs`), so the
+/// parity check renders it the same way instead of looking for a row
+/// (issue #1639).
+fn rendered_template_code(root: &LinoNode, task_slug: &str, language_slug: &str) -> Option<String> {
+    let task = root
+        .children
+        .iter()
+        .find(|node| node.name == format!("task_{task_slug}"))?;
+    if child_value(task, "operation") != Some("print_literal") {
+        return None;
+    }
+    let output = child_value(task, "output")?;
+    let renderer = root
+        .children
+        .iter()
+        .find(|node| node.name == WRITE_PROGRAM_INTENT)?
+        .children
+        .iter()
+        .find(|node| node.name == "print_renderer" && node.id == language_slug)?;
+    let style = child_value(renderer, "literal").unwrap_or_default();
+    let mut literal = match style {
+        "shell" => format!("'{}'", output.replace('\'', "'\\''")),
+        "php_single" => format!("'{}'", output.replace('\\', "\\\\").replace('\'', "\\'")),
+        _ => {
+            let mut quoted = String::from("\"");
+            for character in output.chars() {
+                match character {
+                    '\t' => quoted.push_str("\\t"),
+                    '\\' | '"' => {
+                        quoted.push('\\');
+                        quoted.push(character);
+                    }
+                    '$' if style == "dollar" => quoted.push_str("\\$"),
+                    '#' if style == "ruby" => quoted.push_str("\\#"),
+                    _ => quoted.push(character),
+                }
+            }
+            quoted.push('"');
+            quoted
+        }
+    };
+    if style == "rust_format" && output.contains(['{', '}']) {
+        literal = format!("\"{{}}\", {literal}");
+    }
+    Some(child_value(renderer, "syntax")?.replace("{literal}", &literal))
 }
 
 fn seed_tree() -> LinoNode {
