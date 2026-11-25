@@ -566,6 +566,13 @@ jobs:
           # workflow (benchmark-corpus-gate.yml), skipped by run-prebuilt-tests.sh.
           TEST_BUDGET_SECONDS: 1080
           TEST_SUITE: full
+          # Issue #1639: read access is default-on since #1582, so a default
+          # solver in this lane asked live publishers. Live latency held shard
+          # tests past the budget (web-search paraphrases >400s live, 7s
+          # denied) and live answers changed expected ones. Tests that need
+          # the network opt in with FORMAL_AI_LIVE_FETCH=1 or remove this
+          # variable themselves (with_formal_ai/issue_1582.rs).
+          FORMAL_AI_NETWORK: denied
           SHARD_INDEX: ${{ matrix.shard || 1 }}
           SHARD_TOTAL: ${{ matrix.shards }}
           # PR #1188: seconds a shard spends in other steps (shard 1 the LiNo and
@@ -585,6 +592,8 @@ jobs:
           # 417-590s (run 37802763478); four release shards fit well inside 1080s.
           TEST_BUDGET_SECONDS: 1080
           TEST_SUITE: specification
+          # Issue #1639: hermetic, as the full lane above.
+          FORMAL_AI_NETWORK: denied
           SHARD_INDEX: ${{ matrix.shard || 1 }}
           SHARD_TOTAL: ${{ matrix.shards }}
           RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
