@@ -62,6 +62,8 @@ function sourceWalkRegistry() {
       apiLanguages: sourceWalkList(value("api_language")),
       licenseName: value("license_name"),
       licenseUrl: value("license_url"),
+      article: value("article"),
+      articleSpace: value("article_space"),
       tier: value("source_tier") || sourceWalkTierFromPrimacy(primacy ? primacy.value : ""),
       registryIndex,
     };
@@ -209,7 +211,9 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
   const now = typeof extractor.now === "number" ? extractor.now : sourceWalkNowSeconds();
   for (const { record, url: firstUrl } of candidates.selected) {
     const accessibilityKey = extractor.accessibilityKey?.(record, firstUrl) || record.id;
-    if (sourceWalkServiceKnownUnreachable(accessibilityKey, now)) {
+    // A priority source (wikiHow for how-to, issue #1632) is re-probed even
+    // when a cached failure marks it unreachable; a success refreshes it.
+    if (!extractor.alwaysProbe?.(record) && sourceWalkServiceKnownUnreachable(accessibilityKey, now)) {
       const known = sourceWalkAccessibility.get(accessibilityKey);
       walked.outcomes.push(sourceWalkOutcome(
         record.id,

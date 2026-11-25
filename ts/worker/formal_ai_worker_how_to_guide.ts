@@ -596,6 +596,9 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
   return { items, follow, detail: items.length > 0 ? capture.url : detail };
 }
 
+/** The how-to source asked first and never skipped on a cached failure (issue #1632). */
+const HOW_TO_PRIORITY_SOURCE = "wikihow";
+
 /** Synthesise a guide for `task` from the enabled registry services. */
 async function synthesizeHowToGuide(task, preferences, bounds, now, language = "") {
   const limits = bounds || HOW_TO_GUIDE_BOUNDS;
@@ -607,6 +610,7 @@ async function synthesizeHowToGuide(task, preferences, bounds, now, language = "
     online: preferences?.offline !== true && preferences?.allowNetwork !== false,
     bounded: true,
     accessibilityKey: howToAccessibilityKey,
+    alwaysProbe: (record) => record.id === HOW_TO_PRIORITY_SOURCE,
     emptyStatus: "no_steps",
     fallbackEntryUrl: (record, url) => howToMediaWikiApi(record.api) && limits.maxDepth > 0
       ? howToSearchUrl({ api: url }, subject) : null,
@@ -671,6 +675,22 @@ function howToGuideEvidence(guide) {
   return lines;
 }
 
+/**
+ * The human article an `action=parse` capture came from (issue #1632).
+ * Mirrors `SourceRecord::article_url` in rust/src/seed/sources.rs.
+ */
+function howToArticleUrl(step) {
+  const record = howToSourceRegistry().find((candidate) => candidate.id === step.sourceId);
+  if (!record?.article) return step.sourceUrl;
+  let url;
+  try { url = new URL(step.sourceUrl); } catch { return step.sourceUrl; }
+  const page = (url.searchParams.get("page") || "").trim();
+  if (!url.pathname.endsWith("/api.php") || url.searchParams.get("action") !== "parse" || !page) return step.sourceUrl;
+  const space = sourceWalkPercentEncode(record.articleSpace || "_");
+  const title = page.split(/\s+/u).map(sourceWalkPercentEncode).join(space);
+  return record.article.split("{origin}").join(url.origin).split("{title}").join(title);
+}
+
 /** One seeded `how_to_guide_*` phrase with its named fields substituted. */
 function howToGuideChrome(intent, language, values) {
   let rendered = answerFor(intent, language || "en");
@@ -687,7 +707,7 @@ function howToGuideMarkdown(guide, language, diagnostics = true) {
     .find(steps => steps.length >= HOW_TO_MIN_ACCEPTED_STEPS);
   const steps = primary || guide.steps;
   const citations = new Set(steps.map(step => say("how_to_guide_citation", {
-    source: step.sourceId, url: step.sourceUrl, license: step.licenseName, license_url: step.licenseUrl,
+    source: step.sourceId, url: howToArticleUrl(step), license: step.licenseName, license_url: step.licenseUrl,
   })));
   const sources = [say("how_to_guide_sources_heading")];
   if (!diagnostics) return [heading, steps.map((step, index) => `${index + 1}. ${step.text}`).join("\n"),

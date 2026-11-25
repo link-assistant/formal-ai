@@ -62,6 +62,8 @@ function sourceWalkRegistry() {
       apiLanguages: sourceWalkList(value("api_language")),
       licenseName: value("license_name"),
       licenseUrl: value("license_url"),
+      article: value("article"),
+      articleSpace: value("article_space"),
       tier: value("source_tier") || sourceWalkTierFromPrimacy(primacy ? primacy.value : ""),
       registryIndex,
     };

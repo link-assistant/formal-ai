@@ -264,12 +264,17 @@ fn append_citations<'a>(
     lines: &mut Vec<String>,
 ) {
     for step in steps {
+        // Cite the page a reader can open, not the API endpoint the bytes were
+        // fetched through (issue #1632); the capture URL stays in the evidence.
+        let url = crate::seed::source_record(&step.source_id)
+            .and_then(|record| record.article_url(&step.source_url))
+            .unwrap_or_else(|| step.source_url.clone());
         let citation = chrome(
             "how_to_guide_citation",
             language,
             &[
                 ("source", &step.source_id),
-                ("url", &step.source_url),
+                ("url", &url),
                 ("license", &step.license_name),
                 ("license_url", &step.license_url),
             ],
