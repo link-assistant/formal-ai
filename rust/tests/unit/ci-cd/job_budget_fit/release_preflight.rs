@@ -131,8 +131,11 @@ fn run(mode: &str, routes: &str) -> Output {
     output
 }
 
+/// The crates.io line is what a no-archive publish probe gets when the token
+/// may publish the crate: authentication and scope pass, then the archive
+/// length is missing (issue #1639).
 const EVERYTHING_PUBLISHABLE: &str = concat!(
-    "/crates/ 200 {\"crate\":{\"name\":\"formal-ai\"}}\n",
+    "/crates/new 400 {\"errors\":[{\"detail\":\"invalid tarball length\"}]}\n",
     "/token 200 {\"token\":\"bearer\"}\n",
     "blobs/uploads 202\n"
 );
@@ -141,10 +144,10 @@ fn stdout(output: &Output) -> String {
     String::from_utf8_lossy(&output.stdout).to_string()
 }
 
-/// crates.io cannot be verified read-only (see
-/// `the_crates_io_token_is_never_judged_by_the_cookie_only_me_endpoint`), so a
-/// fully publishable release reports it as the one honest `unknown` and is not
-/// blocked by it.
+/// Issue #1639: every credential of a publishable release is verified, the
+/// crates.io token included, so the run carries no `unknown` warning. Until
+/// then the crates.io token was the one permanent `unknown`, and every push to
+/// main printed two warnings that asked nobody to do anything.
 #[test]
 fn a_release_whose_credentials_all_work_is_not_blocked() {
     let output = run("release", EVERYTHING_PUBLISHABLE);
@@ -154,13 +157,63 @@ fn a_release_whose_credentials_all_work_is_not_blocked() {
         "a publishable release must not be blocked: {report}"
     );
     assert!(
-        report.contains("2 verified, 0 failed, 1 unknown"),
+        report.contains("3 verified, 0 failed, 0 unknown"),
         "{report}"
     );
     assert!(
-        report.contains("GET /api/v1/me is cookie-only"),
-        "the unknown verdict must say why crates.io cannot be probed: {report}"
+        report.contains("nothing was published"),
+        "the crates.io verdict must say the probe published nothing: {report}"
     );
+    assert!(!report.contains("::warning::"), "{report}");
+}
+
+/// Issue #1639: a token the publish route rejects is a definite failure, and
+/// an answer that is not exactly the missing-archive error proves nothing.
+#[test]
+fn the_crates_io_publish_probe_separates_denied_from_unconfirmed() {
+    let denied = stdout(&run(
+        "release",
+        concat!(
+            "/crates/new 403 {\"errors\":[{\"detail\":\"this token does not have the required permissions\"}]}\n",
+            "/token 200 {\"token\":\"bearer\"}\n",
+            "blobs/uploads 202\n"
+        ),
+    ));
+    assert!(
+        denied.contains("2 verified, 1 failed, 0 unknown"),
+        "{denied}"
+    );
+    assert!(denied.contains("rejected the publish token"), "{denied}");
+    let unconfirmed = stdout(&run(
+        "release",
+        concat!(
+            "/crates/new 400 {\"errors\":[{\"detail\":\"missing or empty metadata fields\"}]}\n",
+            "/token 200 {\"token\":\"bearer\"}\n",
+            "blobs/uploads 202\n"
+        ),
+    ));
+    assert!(
+        unconfirmed.contains("2 verified, 0 failed, 1 unknown"),
+        "{unconfirmed}"
+    );
+    assert!(
+        !unconfirmed.contains("missing or empty metadata"),
+        "a remote body is never echoed: {unconfirmed}"
+    );
+}
+
+/// Issue #1639: a pull request reads the same verified verdict, so its run
+/// carries no `unknown` warning either, and still never fails on it.
+#[test]
+fn report_mode_verifies_the_crates_io_token_without_failing() {
+    let output = run("report", EVERYTHING_PUBLISHABLE);
+    let report = stdout(&output);
+    assert!(output.status.success(), "{report}");
+    assert!(
+        report.contains("3 verified, 0 failed, 0 unknown"),
+        "{report}"
+    );
+    assert!(!report.contains("::warning::"), "{report}");
 }
 
 /// The point of the preflight is one report naming *every* broken credential,
@@ -190,9 +243,8 @@ fn every_failure_is_reported_and_not_only_the_first() {
 /// (`src/controllers/user/me.rs`): it answers 403 to every API token, valid or
 /// not. The issue #1081 probe read that 403 as a revoked token and blocked the
 /// release of run 34149311523 with the token that had published v0.347.0 two
-/// days earlier. No crates.io read endpoint accepts a token, so the honest
-/// verdict is `unknown`, the token is never sent anywhere, and `/me` is never
-/// called.
+/// days earlier. `/me` is therefore never called; the token goes only to the
+/// no-archive publish probe (issue #1639), by the private `-K -` channel.
 #[test]
 fn the_crates_io_token_is_never_judged_by_the_cookie_only_me_endpoint() {
     let dir = sandbox();
@@ -203,7 +255,7 @@ fn the_crates_io_token_is_never_judged_by_the_cookie_only_me_endpoint() {
         "release",
         concat!(
             "/me 403 {\"errors\":[{\"detail\":\"authentication failed\"}]}\n",
-            "/crates/ 200 {\"crate\":{\"name\":\"formal-ai\"}}\n",
+            "/crates/new 400 {\"errors\":[{\"detail\":\"invalid tarball length\"}]}\n",
             "/token 200 {\"token\":\"bearer\"}\n",
             "blobs/uploads 202\n"
         ),
@@ -221,14 +273,21 @@ fn the_crates_io_token_is_never_judged_by_the_cookie_only_me_endpoint() {
         output.status.success(),
         "a 403 from a cookie-only endpoint is not a rejected token: {report}"
     );
-    assert!(report.contains("1 unknown"), "{report}");
+    assert!(
+        report.contains("3 verified, 0 failed, 0 unknown"),
+        "{report}"
+    );
     assert!(
         !calls.contains("/api/v1/me"),
         "the cookie-only endpoint must never be consulted: {calls}"
     );
     assert!(
-        !calls.contains("cargo-token") && !configs.contains("cargo-token"),
-        "the publish token has no read-only use and must not leave the job: {calls}\n{configs}"
+        !calls.contains("cargo-token"),
+        "the publish token must never reach an argument list: {calls}"
+    );
+    assert!(
+        configs.contains("Authorization: cargo-token"),
+        "the publish probe must authenticate, by the private channel: {configs}"
     );
     assert!(
         !report.contains("revoked, expired or misscoped"),
@@ -328,11 +387,11 @@ fn every_opened_blob_upload_session_is_cancelled() {
     }
     // The registry credential still has to be sent, or the probe proves
     // nothing: the same assertion passes trivially for a script that
-    // authenticates with nothing at all. The crates.io token is the exception
-    // (issue #1085): no read endpoint accepts it, so it must not be sent.
+    // authenticates with nothing at all. The crates.io token goes only to the
+    // no-archive publish probe (issues #1085 and #1639).
     assert!(
-        !configs.contains("cargo-token"),
-        "the crates.io token has no read-only use and must not be sent: {configs}"
+        configs.contains("Authorization: cargo-token"),
+        "the crates.io token must reach the publish probe by the private channel: {configs}"
     );
     assert!(
         configs.contains("Authorization: Bearer"),
