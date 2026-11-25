@@ -1,6 +1,6 @@
 //! Precedence-climbing arithmetic evaluator for the universal solver.
 //!
-//! Used by the universal solver's `try_arithmetic` handler. The evaluator is
+//! Used by the universal solver's `try_arithmetic_with_online` handler. The evaluator is
 //! pure (no I/O, no allocations beyond the token vector) and shared across
 //! every interface so "what is 2 + 2?" produces the same trace from CLI,
 //! HTTP, Telegram and the demo.
