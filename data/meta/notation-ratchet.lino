@@ -35,15 +35,26 @@
 # try_synthesize_from_sub_results, which record the executed test of an answer.
 # Rust spells function names with `_`, so the generated table cannot write them
 # with `-`; no hand-written record gained a `_` name.
+#
+# On 2026-11-25 two ceilings were raised for issue #1637 (PR #1638). data/seed
+# underscore-names went from 9171 to 9172 for the prompt pattern
+# pattern_concept_prefix_explain_the_word ("explain the word X"). Every member
+# of the pattern_concept_prefix_ family is spelled with `_`, so a member spelled
+# with `-` alone would mix two conventions in one family. data/meta
+# repeated-fields went from 72 to 73 because the core-boundary contract
+# (scripts/check-minimal-core-boundary.rs, minimal_core_and_seed_metadata.rs)
+# requires `kind "Generic interpreter"` on every registered interpreter. Two
+# components that main had labelled with free-form kinds now carry it, so the
+# field repeats by contract, not by copy.
 notation-ratchet
   scope data/meta
     underscore-names 1937
     abbreviated-names 192
     duplicated-blocks 9
-    repeated-fields 72
+    repeated-fields 73
     characters 2032944
   scope data/seed
-    underscore-names 9171
+    underscore-names 9172
     abbreviated-names 237
     duplicated-blocks 26
     repeated-fields 160

@@ -516,6 +516,11 @@ function splitKnownProceduralActionObject(task) {
 }
 
 function extractElidedProceduralHowToTask(clean) {
+  // An elided lead ("как …") only guesses a procedure from an
+  // infinitive-shaped word, and an opinion lead shares that word: "как ты
+  // думаешь, есть ли свобода воли" asks for an opinion, and "есть" merely
+  // ends like an infinitive. The seeded opinion lead outranks the guess.
+  if (handlerRuleSetClaims("opinion_question", clean, clean.toLowerCase())) return null;
   // Issue #481: telegraphic English prompts can omit the connector in
   for (const form of roleWordForms(ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD)) {
     if (!clean.startsWith(form.before)) continue;

@@ -273,3 +273,22 @@ main-run 45018538750
       failed "Agent CLI leaf 2.2.2.2.1 selected five frontier tests that did not exercise the changed ledger"
       check rust/tests/web/ladder-registered-tests.test.mjs
       marker "Replays main run 45018538750"
+
+main-run 45549993600
+  javascript-twin
+    regression native-capture-case-in-two-cargo-targets
+      introduced-by "commit 634eb760a path-included unit sources into the reasoning_contracts target"
+      failed "native-response-observations: source test has no unique registration (2 !== 1) for five capture cases"
+      check rust/tests/web/native-test-module-graph.test.mjs
+      marker "every committed native capture case binds to exactly one registered caller (issue #1637)"
+  workflow-policy
+    regression verify-package-claude-auto-permission-mode
+      introduced-by "PR #1636 (issue #1632), commit faa55b564"
+      failed "verify-package: claude report asserted permissionMode default, the orphaned server failed every later client"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "main run 45549993600"
+    regression pages-deployment-synthetic-build-version
+      introduced-by "PR #1581, commit f8718c44e"
+      failed "deploy-pages: POST /pages/deployments responded HTTP 404 for a synthetic pages_build_version"
+      check rust/tests/web/pages-deployment.test.mjs
+      marker "the build version is the source commit SHA"

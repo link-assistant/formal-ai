@@ -186,6 +186,8 @@ fn ignored_only_changes_set_no_flags_for_pushes_or_pull_requests() {
             "experiments/repro.mjs",
             "dev/log/run.rs",
             "docs/case-studies/issue-846/repro.rs",
+            ".gitkeep",
+            "rust/src/.gitkeep",
         ] {
             assert_eq!(
                 classify_changes(&[path.to_string()]),

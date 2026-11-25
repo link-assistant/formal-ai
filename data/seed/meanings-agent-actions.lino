@@ -64,7 +64,7 @@ meanings
     example "the toilet goal specifies which section and terms identify relevant guidance"
     grounding "https://www.nhs.uk/conditions/constipation/"
   urge
-    defined-by need
+    defined-by concept
     role noun
     precondition "a person experiences a bodily need"
     effect "expresses the impulse to act on the need"

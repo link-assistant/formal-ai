@@ -1,3 +1,8 @@
+          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
+        run: |
+          rust-script scripts/version-and-commit.rs \
+            --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
+            --resume-prepared \
             --branch main
       - name: Get current version
         id: current_version

@@ -41,7 +41,14 @@ pub fn handle_summarization_request(
 ) -> Option<SymbolicAnswer> {
     // Words from the supplied passage cannot introduce a new request.
     let folded = crate::engine::normalize_prompt(command_head(prompt));
-    if !crate::seed::lexicon().mentions_role(ROLE_TEXT_SUMMARIZATION_ACTION, &folded) {
+    let lexicon = crate::seed::lexicon();
+    if !lexicon.mentions_role(ROLE_TEXT_SUMMARIZATION_ACTION, &folded) {
+        return None;
+    }
+    // "Summarize conversation: …" belongs to `conversation_memory`.
+    if lexicon.mentions_role(seed::ROLE_CONVERSATION_REFERENCE, &folded)
+        || lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &folded)
+    {
         return None;
     }
     let payload = free_text_payload(prompt)?;

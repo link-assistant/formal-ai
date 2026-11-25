@@ -409,6 +409,9 @@ fn hello_world_matrix_routes_to_parametric_write_program_intent() {
     }
 }
 
+/// The publisher page an offline replay may cite for the Rust hello world.
+const RUST_BOOK_HELLO_WORLD: &str = "https://doc.rust-lang.org/book/ch01-02-hello-world.html";
+
 #[test]
 fn hello_world_matrix_emits_a_code_block_per_language() {
     let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
@@ -450,7 +453,47 @@ fn hello_world_matrix_emits_a_code_block_per_language() {
             }
             combination => panic!("missing documented hello-world answer for {combination:?}"),
         };
-        assert_eq!(response.answer, expected_answer);
+        // Since 10a6f2855 (#1165) an offline solve replays the shared on-disk
+        // source cache (`source_cache_root()`). When an earlier online run in
+        // the same job captured the Rust book's hello-world page, the Rust
+        // answer reports that rediscovery instead of "not probed"; every other
+        // line is unchanged. Without the capture the documented answer stands.
+        // Both answers are listed, so the test shows each exact text.
+        let rediscovered = if *expected_language == "rust" {
+            expected_answer
+                .replace(
+                    "Execution status: not probed in this environment.",
+                    &format!(
+                        "Execution status: not run; this program was rediscovered from \
+                         {RUST_BOOK_HELLO_WORLD} and its output contract was checked by \
+                         decomposition, not by executing it."
+                    ),
+                )
+                .replace(
+                    "Output, not observed in this environment:",
+                    "Expected output after verification:",
+                )
+                .replace(
+                    "Статус выполнения: не проверялось в этой среде.",
+                    &format!(
+                        "Статус выполнения: не запускалась; программа заново найдена на \
+                         странице {RUST_BOOK_HELLO_WORLD}, её контракт вывода проверен \
+                         разбором, а не запуском."
+                    ),
+                )
+                .replace(
+                    "Вывод, не наблюдавшийся в этой среде:",
+                    "Ожидаемый вывод после проверки:",
+                )
+        } else {
+            expected_answer.to_owned()
+        };
+        let documented = [expected_answer, rediscovered.as_str()];
+        assert!(
+            documented.contains(&response.answer.as_str()),
+            "prompt {prompt:?}: {}",
+            response.answer
+        );
         assert!(
             response.answer.contains(fence),
             "prompt {prompt:?} should include {fence} fence, got: {}",
@@ -725,16 +768,25 @@ fn factual_qna_matrix_records_wikidata_anchor() {
     }
 }
 
+// The `language:<slug>` link is recorded by the solver when it receives the
+// turn (`UniversalSolver::solve`), not by the fact handler, so the publisher
+// replay in `fact_answer` (a direct handler call since 17aabb4d0) never carries
+// it. The turn runs through an offline solver: the language evidence is the
+// same with or without network access, and the test stays hermetic.
 #[test]
 fn factual_qna_matrix_records_per_language_evidence() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    });
     for (prompts, tag) in [
         (ENGLISH_FACTUAL_PROMPTS, "language:en"),
         (RUSSIAN_FACTUAL_PROMPTS, "language:ru"),
         (HINDI_FACTUAL_PROMPTS, "language:hi"),
         (CHINESE_FACTUAL_PROMPTS, "language:zh"),
     ] {
-        for (prompt, subject) in prompts {
-            let response = super::prompt_variations_facts::fact_answer(prompt, subject);
+        for (prompt, _subject) in prompts {
+            let response = solver.solve(prompt);
             assert!(
                 response.evidence_links.iter().any(|link| link == tag),
                 "{prompt}: {:?}",

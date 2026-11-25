@@ -11,12 +11,12 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2667
+  carried_items 2668
   scanned_clear 15
   blockers_per_item 0 15
   blockers_per_item 1 841
   blockers_per_item 2 265
-  blockers_per_item 3 307
+  blockers_per_item 3 308
   blockers_per_item 4 226
   blockers_per_item 5 215
   blockers_per_item 6 154
@@ -49,8 +49,8 @@ translation_blockers
   blockers_per_item 41 1
   blockers_per_item 43 1
 construct "field access" items 993 only 26
-construct "call of a sibling function" items 990 only 38
-construct "call of an imported function" items 718 only 20
+construct "call of a sibling function" items 991 only 39
+construct "call of an imported function" items 718 only 19
 construct "null" items 637 only 5
 construct "object without a $ tag" items 600 only 27
 construct "arrow function" items 396 only 2
@@ -60,7 +60,7 @@ construct "method call .push()" items 317 only 4
 construct "method call .slice()" items 304 only 7
 construct "method call .filter()" items 286 only 0
 construct "arrow callback of .map()" items 277 only 0
-construct "regular expression" items 265 only 38
+construct "regular expression" items 266 only 38
 construct "JSDoc type {…}" items 260 only 5
 construct "sibling value" items 239 only 17
 construct "nullish coalescing" items 236 only 0
@@ -75,7 +75,7 @@ construct "method call .find()" items 169 only 0
 construct "method call .split()" items 166 only 0
 construct "destructuring" items 149 only 0
 construct "assignment of a field or element" items 144 only 0
-construct "method call .test()" items 139 only 0
+construct "method call .test()" items 140 only 0
 construct "global call String()" items 134 only 0
 construct "imported value" items 130 only 2
 construct "Array.from" items 128 only 0
@@ -394,9 +394,9 @@ construct "new Uint8Array" items 1 only 0
 construct "new WeakMap" items 1 only 1
 unlock 1 "import of names its module carries" unlocked 364 cumulative 364
 unlock 2 "import from outside the module directory" unlocked 205 cumulative 569
-unlock 3 "call of a sibling function" unlocked 38 cumulative 607
-unlock 4 "field access" unlocked 43 cumulative 650
-unlock 5 "call of an imported function" unlocked 44 cumulative 694
+unlock 3 "call of a sibling function" unlocked 39 cumulative 608
+unlock 4 "field access" unlocked 43 cumulative 651
+unlock 5 "call of an imported function" unlocked 43 cumulative 694
 unlock 6 "null" unlocked 62 cumulative 756
 unlock 7 "object without a $ tag" unlocked 58 cumulative 814
 unlock 8 "JSDoc type {…}" unlocked 48 cumulative 862
@@ -407,13 +407,13 @@ unlock 12 "new Set" unlocked 36 cumulative 1018
 unlock 13 "Object.freeze" unlocked 36 cumulative 1054
 unlock 14 "method call .push()" unlocked 34 cumulative 1088
 unlock 15 "method call .slice()" unlocked 37 cumulative 1125
-unlock 16 "method call .test()" unlocked 35 cumulative 1160
-unlock 17 "method call .indexOf()" unlocked 28 cumulative 1188
-unlock 18 "nullish coalescing" unlocked 27 cumulative 1215
-unlock 19 "global call String()" unlocked 27 cumulative 1242
-unlock 20 "method call .replace()" unlocked 30 cumulative 1272
-unlock 21 "undefined" unlocked 26 cumulative 1298
-unlock 22 "method call .join()" unlocked 24 cumulative 1322
-unlock 23 "Array.from" unlocked 28 cumulative 1350
-unlock 24 "destructuring" unlocked 20 cumulative 1370
-unlock 25 "assignment of a field or element" unlocked 31 cumulative 1401
+unlock 16 "method call .test()" unlocked 36 cumulative 1161
+unlock 17 "method call .indexOf()" unlocked 28 cumulative 1189
+unlock 18 "nullish coalescing" unlocked 27 cumulative 1216
+unlock 19 "global call String()" unlocked 27 cumulative 1243
+unlock 20 "method call .replace()" unlocked 30 cumulative 1273
+unlock 21 "undefined" unlocked 26 cumulative 1299
+unlock 22 "method call .join()" unlocked 24 cumulative 1323
+unlock 23 "Array.from" unlocked 28 cumulative 1351
+unlock 24 "destructuring" unlocked 20 cumulative 1371
+unlock 25 "assignment of a field or element" unlocked 31 cumulative 1402

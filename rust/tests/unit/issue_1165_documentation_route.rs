@@ -13,6 +13,7 @@ use formal_ai::discovery_production::{
     documented_command_matches, documented_run_commands_from, language_has_documented_procedure,
 };
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../fixtures/coding-discovery/documentation_replay.rs"]
 mod replay;
 

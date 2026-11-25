@@ -8,8 +8,8 @@
 // Only Node.js built-ins are used, so there is no bundle to rebuild and no
 // bundled punycode module raising DEP0040 (actions/deploy-pages#434).
 // Adapted from the Unlicense Python template at c532c173801dfb12e681b0730c4abbf93aefd0ca.
-// Retry identity binds the immutable artifact and source; a commit alone is insufficient.
-import { createHash } from 'node:crypto';
+// The build version is the source commit SHA, as in v5: GitHub binds a Pages
+// deployment to a commit and answers HTTP 404 for any other version (issue #1637).
 import { appendFileSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
 
@@ -64,7 +64,8 @@ function hint(error, { serverUrl, repository }) {
   if (!(error instanceof HttpError)) return '';
   if (error.status === 401 || error.status === 403) return ' Ensure the job grants "pages: write" and "id-token: write".';
   if (error.status === 404)
-    return ` Ensure GitHub Pages is enabled with Source "GitHub Actions": ${serverUrl}/${repository}/settings/pages`;
+    return ' Ensure pages_build_version is the full source commit SHA and the artifact_id belongs to this run,'
+      + ` and that GitHub Pages is enabled with Source "GitHub Actions": ${serverUrl}/${repository}/settings/pages`;
   if (error.status >= 500 || error.status === 429)
     return ' Server error, is githubstatus.com reporting a Pages outage? Re-run the deployment later.';
   return '';
@@ -119,8 +120,9 @@ export function oidcToken({ env = process.env, fetchImpl = fetch } = {}) {
   };
 }
 
-// GitHub accepts a unique build-version string. Keep the source SHA in the
-// artifact stamp; use an artifact-bound version only for API retry identity.
+// The build version GitHub accepts is the full source commit SHA, the value
+// actions/deploy-pages@v5 sends (GITHUB_SHA). The synthetic artifact-bound hash
+// sent by f8718c44e made every POST /pages/deployments answer HTTP 404 (issue #1637).
 export function deploymentVersion(repository, artifactId, sourceSha) {
   if (typeof repository !== 'string' || repository.trim() !== repository || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))
     throw new Error('Missing or invalid repository (owner/name).');
@@ -128,9 +130,7 @@ export function deploymentVersion(repository, artifactId, sourceSha) {
     throw new Error('Missing or invalid Pages artifact ID: pass the build job artifact_id output.');
   if (typeof sourceSha !== 'string' || ![40, 64].includes(sourceSha.length) || !/^[a-f0-9]+$/i.test(sourceSha))
     throw new Error('Missing or invalid build version (the full source commit SHA).');
-  return createHash('sha256').update(JSON.stringify([
-    'pages-artifact-v1', repository.toLowerCase(), String(artifactId), sourceSha.toLowerCase(),
-  ])).digest('hex');
+  return sourceSha.toLowerCase();
 }
 
 export async function deployPages({
@@ -159,8 +159,9 @@ export async function deployPages({
   let deployment;
   for (let attempt = 1; !deployment; attempt++) {
     try {
-      // A lost response may hide a deployment that was created. Adopt it unless
-      // it already failed, so a retry never adopts another artifact from the same source commit.
+      // A lost response may hide a deployment that was created. Adopt it only while
+      // it is still running: a finished deployment of the same commit may come from
+      // another artifact (an earlier run), so a retry deploys this artifact again.
       if (attempt > 1) deployment = await existingDeployment(request, base, buildVersion);
       if (deployment) log(`Adopted the deployment of ${buildVersion} that attempt ${attempt - 1} created.`);
       else {
@@ -222,7 +223,8 @@ export async function deployPages({
 async function existingDeployment(request, base, buildVersion) {
   try {
     const found = await request('GET', `${base}/deployments/${buildVersion}`);
-    return found?.status && !FAILED[found.status] ? { ...found, id: found.id || buildVersion } : null;
+    return found?.status && !FAILED[found.status] && found.status !== SUCCEEDED
+      ? { ...found, id: found.id || buildVersion } : null;
   } catch (error) {
     if (error instanceof HttpError && error.status === 404) return null;
     throw error;

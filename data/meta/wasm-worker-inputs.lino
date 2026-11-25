@@ -36,7 +36,7 @@ input rust/embedded/data/seed/search-fusion-language-grammar.lino
 input rust/embedded/data/seed/unknown-openers.lino
   sha256 1eab909c38f7b4a333afc0c884b189288954a9ab06e06dfdd1d33dedc403e971
 input rust/src/arithmetic.rs
-  sha256 244e6b63c13c3419a6022703ace52989af8e4790185647fdb71cc2ef51f0496b
+  sha256 e996910316fccd6390bcba7f2d0a7484c791c3641dff9023c2463cde8d768cfe
 input rust/src/arithmetic_word_tables.rs
   sha256 9a4fc4e1a3cff77f76bf2d2920f66b73cd42e1708545a125278e391855400ac6
 input rust/src/callback_values/nonempty.rs

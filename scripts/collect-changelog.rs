@@ -345,6 +345,7 @@ mod tests {
         let _cleanup = Cleanup(directory.clone());
         let manifest = directory.join("Cargo.toml");
         let path = manifest.to_str().unwrap();
+        let old = Regex::new(r#"(?m)^version\s*=\s*"([^"]+)""#).unwrap();
         for (identity, expected) in [
             ("version = '1.2.3'", Some("1.2.3")),
             ("version.workspace = true", None),
@@ -355,7 +356,6 @@ mod tests {
                 "[dependencies.decoy]\nversion = \"9.9.9\"\n[package] # actual\nname = 'actual'\n{identity}\n"
             );
             // The former global regex always selected this dependency version.
-            let old = Regex::new(r#"(?m)^version\s*=\s*"([^"]+)""#).unwrap();
             assert_eq!(&old.captures(&content).unwrap()[1], "9.9.9");
             fs::write(&manifest, &content).unwrap();
             let actual = get_version_from_cargo(path);

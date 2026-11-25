@@ -421,11 +421,33 @@ pub(crate) fn open_series_subject<'a>(
         .requests
         .iter()
         .find(|entry| entry.language == language)?;
-    let subject = request
-        .frames
-        .iter()
-        .find_map(|frame| series_subject(normalized, frame))?;
+    let subject = request.frames.iter().find_map(|frame| {
+        series_subject(normalized, frame).filter(|subject| names_a_series(subject, &request.frames))
+    })?;
     Some((subject, request))
+}
+
+/// Whether a captured subject holds a word beyond the request's own frames and
+/// the seeded function words.
+///
+/// "List films in release order" fits "{subject} films in release order" with
+/// the directive "list" as its subject; that names no series (issue #1175).
+fn names_a_series(subject: &str, frames: &[String]) -> bool {
+    let frame_words = frames
+        .iter()
+        .map(|frame| frame.replace(SUBJECT_SLOT, " "))
+        .collect::<Vec<_>>();
+    subject
+        .split_whitespace()
+        .map(|word| word.trim_matches(|character: char| character.is_ascii_punctuation()))
+        .filter(|word| !word.is_empty())
+        .any(|word| {
+            let lowered = word.to_lowercase();
+            !frame_words
+                .iter()
+                .any(|frame| frame.split_whitespace().any(|known| known == lowered))
+                && crate::capability_routing::content_beyond_roles(&lowered, &[])
+        })
 }
 
 pub(crate) fn try_open_release_timeline<T: crate::source_fetch::SourceTransport>(

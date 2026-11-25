@@ -442,6 +442,16 @@ fn workflows_are_audited_for_security_not_only_syntax() {
         .map(|(_, body)| body)
         .expect(".github/workflows/workflows.yml must exist (issue #1076)");
 
+    // c31311218 (issue #1580) replaced `zizmorcore/zizmor-action` with
+    // `scripts/run-zizmor.mjs`, which pins the same image digest and retries
+    // only an advisory transport failure. The audit's flags moved with it, so
+    // the policy below is asked of the script the workflow runs.
+    assert!(
+        audit.contains("run: node scripts/run-zizmor.mjs regular"),
+        "workflows.yml must run zizmor at least once (issue #1076)"
+    );
+    let runner = repository_file("scripts/run-zizmor.mjs");
+
     // Principle 14: a confidence floor, not a severity floor. `min-severity`
     // would drop findings by how bad they are, which is how a real high-severity
     // finding gets hidden behind a threshold nobody revisits. `min-confidence`
@@ -455,30 +465,32 @@ fn workflows_are_audited_for_security_not_only_syntax() {
     // opposite trade -- it adds a class of finding rather than dropping one --
     // and `pinned_tool_images::a_pedantic_pass_enforces_the_hash_pin_policy_on_images`
     // pins its shape.
-    let default_persona_pass = audit
-        .split("uses: zizmorcore/zizmor-action@")
-        .nth(1)
-        .expect("workflows.yml must run zizmor at least once (issue #1076)");
     assert!(
-        default_persona_pass.contains("min-confidence: medium"),
+        runner.contains("`--min-confidence=${persona === 'regular' ? 'medium' : 'high'}`"),
         "the zizmor job must set a confidence floor (issue #1076)"
     );
-    assert!(
-        !default_persona_pass.contains("min-severity"),
-        "the zizmor job must not filter by severity -- that hides real findings \
-         rather than noisy ones (hive-mind CI/CD best practices, principle 14)"
-    );
+    for line in runner
+        .lines()
+        .filter(|line| line.contains("--min-severity"))
+    {
+        assert!(
+            line.contains("if (persona === 'pedantic')"),
+            "the zizmor job must not filter the default pass by severity -- that \
+             hides real findings rather than noisy ones (hive-mind CI/CD best \
+             practices, principle 14): {line}"
+        );
+    }
 
     // Principle 14: annotations, not SARIF. A SARIF upload needs code scanning
     // enabled and fails quietly on forks; an annotation is a red check anywhere.
     assert!(
-        audit.contains("advanced-security: false") && audit.contains("annotations: true"),
+        runner.contains("'--format=github'") && !runner.contains("sarif"),
         "zizmor findings must surface as annotations, not a SARIF upload that \
          fails silently where code scanning is off (issue #1076)"
     );
 
-    // The audit must name what it audits. `zizmor-action`'s `inputs:` defaults
-    // to `.`, and at that scope it walks `docs/case-studies/`, where this
+    // The audit must name what it audits. Without an explicit scope zizmor
+    // walks `.`, and at that scope it reads `docs/case-studies/`, where this
     // repository archives other projects' workflows as evidence. Measured on
     // this tree: default scope exits 14 with 1739 findings, 140 of them high,
     // every displayed one in an archived copy of a workflow no one here can
@@ -486,11 +498,10 @@ fn workflows_are_audited_for_security_not_only_syntax() {
     // nobody can act on is a false positive, and issue #1076 is about removing
     // those -- not adding one.
     assert!(
-        audit.contains("inputs: .github/workflows .github/actions"),
-        "the zizmor job must state its scope explicitly. `inputs:` defaults to \
-         `.`, which audits the archived workflows under docs/case-studies/ and \
-         fails the job on findings that belong to other repositories \
-         (issue #1076)"
+        runner.contains("args.push('--', '.github/workflows', '.github/actions');"),
+        "the zizmor job must state its scope explicitly. Unscoped, it audits the \
+         archived workflows under docs/case-studies/ and fails the job on \
+         findings that belong to other repositories (issue #1076)"
     );
 
     // Principle 14: actionlint runs as the image, because the bare binary is a

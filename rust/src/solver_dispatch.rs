@@ -29,7 +29,7 @@ use crate::solver_handlers::{
     handle_planning_request, handle_product_search, handle_regex_synthesis,
     handle_shell_command_compose, handle_sql_synthesis, handle_statistics,
     handle_summarization_request, handle_test_generation, handle_text_rewrite,
-    handle_unit_conversion, handle_word_problem, try_arithmetic, try_brainstorming_request,
+    handle_unit_conversion, handle_word_problem, try_brainstorming_request,
     try_calendar_create_event, try_calendar_reasoning, try_compound_interest, try_concept_lookup,
     try_conversation_memory, try_coreference_request, try_document_originality_check,
     try_document_request, try_fact_checking, try_fact_lookup, try_fact_lookup_with_offline,
@@ -82,6 +82,16 @@ fn handle_arithmetic(
     _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    arithmetic_with_online(prompt, log, crate::solver_config::read_network_allowed())
+}
+
+/// The arithmetic method body shared by the handler table and the contextual
+/// override, so the override's live network setting keeps the same guards.
+fn arithmetic_with_online(
+    prompt: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
     // The browser asks the shell composer before arithmetic, so a command it
     // composes is its answer even where a digit and a `/` promote arithmetic
     // here ("find .log files larger than 10 MB under /var", issue #1177).
@@ -99,7 +109,8 @@ fn handle_arithmetic(
             1.0,
         ));
     }
-    crate::quantity_constraint::try_answer(prompt, log).or_else(|| try_arithmetic(prompt, log))
+    crate::quantity_constraint::try_answer(prompt, log)
+        .or_else(|| crate::solver_handlers::try_arithmetic_with_online(prompt, log, online))
 }
 
 fn handle_javascript_execution(
@@ -297,13 +308,7 @@ pub fn try_contextual_override(
                 runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
             )
         }
-        "arithmetic" => crate::quantity_constraint::try_answer(prompt, log).or_else(|| {
-            crate::solver_handlers::try_arithmetic_with_online(
-                prompt,
-                log,
-                !runtime.solver_config.offline,
-            )
-        }),
+        "arithmetic" => arithmetic_with_online(prompt, log, !runtime.solver_config.offline),
         "compound_interest" => crate::solver_handlers::compound_interest::try_with_online(
             prompt,
             normalized,

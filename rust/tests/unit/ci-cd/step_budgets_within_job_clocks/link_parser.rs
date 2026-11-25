@@ -62,8 +62,12 @@ pub(super) fn assert_contract() {
             );
         }
     }
+    // 9f81c231d (issue #1580): compared as a string, and a missing output is
+    // a failure, because a null observation coerces to 0 and is no success.
     assert!(
-        unwrapped(live).contains("!cancelled() && steps.lychee.outputs.exit_code != 0"),
+        unwrapped(live).contains(
+            "!cancelled() && (!steps.lychee.outputs.exit_code || steps.lychee.outputs.exit_code != '0')"
+        ),
         "a cancelled link check must not append a `broken links` error to a run \
          that never finished checking them"
     );

@@ -121,10 +121,6 @@ pub use {
     web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind,
     web_search_intent::web_search_query_for,
 };
-pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    try_arithmetic_with_online(prompt, log, crate::solver_config::read_network_allowed())
-}
-
 pub(crate) fn try_arithmetic_with_online(
     prompt: &str,
     log: &mut EventLog,

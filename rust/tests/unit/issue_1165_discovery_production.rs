@@ -25,6 +25,7 @@ use formal_ai::discovery_production::{
 };
 use formal_ai::web_formalize::{PageBlock, formalize_page_with_context};
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../fixtures/coding-discovery/documentation_replay.rs"]
 mod replay;
 

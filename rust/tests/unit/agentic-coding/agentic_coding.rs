@@ -195,7 +195,11 @@ fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, res
 fn planner_ignores_non_formalization_tasks() {
     // A request unrelated to issue #468 yields no plan, so the server falls
     // through to its ordinary symbolic solver and agentic coding stays opt-in.
-    let messages = vec![ChatMessage::user("What is the capital of France?")];
+    // The request is one the solver answers locally: a fact lookup such as a
+    // capital is no longer resolved from shipped captures (PR #1614) and is
+    // rightly adopted by the open-web research route when `web_search` is
+    // advertised, so it no longer exercises the fall-through.
+    let messages = vec![ChatMessage::user("What is 731 plus 83?")];
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
     assert_eq!(plan_chat_step(&messages, &tools), None);
 }

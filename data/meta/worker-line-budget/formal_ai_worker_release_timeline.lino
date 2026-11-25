@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_release_timeline.js"
-  ceiling 253
-  rationale "Film timeline queries validate a scoped publisher result before formatting supported release dates and announced titles. The parser also serves historical captures supplied by tests."
+  ceiling 273
+  rationale "Film timeline queries validate a scoped publisher result before formatting supported release dates and announced titles. The parser also serves historical captures supplied by tests. The open-series subject guard twins Rust `names_a_series` (issue #1637), so a directive such as 'list' is never taken for a series name."

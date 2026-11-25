@@ -11,6 +11,7 @@
 //! only when a benchmark gate is green *and* a human approves, and it is reachable
 //! through the agentic interface as the ninth recipe.
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/issue-558/repair_fixture.rs"]
 mod repair_fixture;
 use repair_fixture::CHANGE_TASK;

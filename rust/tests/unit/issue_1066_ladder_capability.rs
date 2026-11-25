@@ -665,16 +665,30 @@ fn a_client_that_speaks_no_computer_use_is_not_told_a_primitive_is_missing() {
         !matches!(plan(prompt), Some(AgenticPlan::Final(answer)) if answer.starts_with("capability_gap:")),
         "the capability gap was reported to a client that advertises no computer-use primitive"
     );
-    // A client that *is* running computer-use plans and is missing one
-    // primitive is told exactly which one, because there the gap is actionable.
+    // Since 66169b8fa a computer-use plan comes only from an explicit
+    // ```computer-use block -- prose is no longer synthesized into guessed
+    // resources -- so the same prose is not a plan for a computer-use client
+    // either (the JavaScript twin pins the same in
+    // rust/tests/web/agentic-computer-use.test.mjs).
     assert_eq!(
         plan_chat_step(&[ChatMessage::user(prompt)], &["fs.read"]),
-        Some(AgenticPlan::Final(
-            "capability_gap: required primitive fs.write was not advertised for plan \
-             synthesized-computer_use_resource_customers-computer_use_count_lines, step \
-             synthesized-computer_use_resource_customers-computer_use_count_lines-01."
-                .to_owned()
-        ))
+        None
+    );
+    // A client that *is* running computer-use plans and is missing one
+    // primitive is told exactly which one, because there the gap is actionable.
+    let explicit = format!(
+        "{prompt}\n```computer-use\n[{{\"primitive\":\"fs.write\",\"arguments\":\
+         {{\"path\":\"counts.md\",\"content\":\"3\",\"confirmed\":true}}}}]\n```"
+    );
+    let id = formal_ai::computer_use::plan_request(&explicit)
+        .expect("an explicit fs.write step is a valid computer-use plan")
+        .id;
+    assert_eq!(
+        formal_ai::computer_use::plan_agentic_step(&[ChatMessage::user(&explicit)], &["fs.read"]),
+        Some(AgenticPlan::Final(format!(
+            "capability_gap: required primitive fs.write was not advertised for plan {id}, \
+             step {id}-01."
+        )))
     );
 }
 

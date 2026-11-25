@@ -184,10 +184,17 @@ fn get_changed_files_in_repo(
     Ok(decode_git_paths(&output))
 }
 
+// Twin of isInertPath in scripts/ci-pull-request-admission.mjs (issue #1637):
+// an empty `.gitkeep` placeholder carries no behaviour.
+fn is_inert_path(file_path: &str) -> bool {
+    file_path == ".gitkeep" || file_path.ends_with("/.gitkeep")
+}
+
 fn is_ignored_by_ci(file_path: &str) -> bool {
-    CI_IGNORED_PATH_PREFIXES
-        .iter()
-        .any(|prefix| file_path.starts_with(prefix))
+    is_inert_path(file_path)
+        || CI_IGNORED_PATH_PREFIXES
+            .iter()
+            .any(|prefix| file_path.starts_with(prefix))
 }
 
 // Exact twin of documentationPaths in scripts/documentation-only-ci-policy.mjs.

@@ -108,10 +108,12 @@ jobs:
 
       # Redirect the child's stdout inside the wrapper. The wrapper's own
       # timing summaries belong in the run log, outside the LiNo documents.
+      # Periodic progress lines are opt-in like every other CI diagnostic
+      # (issue #1076): set the FORMAL_AI_CI_VERBOSE repository variable.
       - name: Capture the live Google Trends frontier
         id: capture
         env:
-          FORMAL_AI_CI_VERBOSE: 'true'
+          FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
           TEST_BUDGET_SECONDS: 720
         run: |
           set -euo pipefail

@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_triz.js"
-  ceiling 86
-  rationale "TRIZ worksheet derived from explicitly stated demands. Reads the shared grammar, methods and localized responses. The benchmark belongs to tests."
+  ceiling 100
+  rationale "TRIZ worksheet derived from explicitly stated demands. Reads the shared grammar, methods and localized responses. The benchmark belongs to tests. Stem cues skip the rest of their word in spaced scripts, as the Rust `is_spaced_word_char` does (issue #1637)."

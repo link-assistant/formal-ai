@@ -10,6 +10,7 @@ use formal_ai::{
 };
 use serde::Deserialize;
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/fact-claims/publisher_transport.rs"]
 mod publisher_transport;
 

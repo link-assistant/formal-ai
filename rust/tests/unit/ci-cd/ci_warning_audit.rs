@@ -11,42 +11,6 @@ fn repository_file(path: &str) -> String {
         .replace("\r\n", "\n")
 }
 
-fn action_step<'a>(workflow: &'a str, action: &str) -> Vec<&'a str> {
-    let mut lines = Vec::new();
-    let mut offset = 0;
-    for line in workflow.split_inclusive('\n') {
-        lines.push((offset, line));
-        offset += line.len();
-    }
-    let mut steps = Vec::new();
-    for (index, (start, line)) in lines.iter().enumerate() {
-        let trimmed = line.trim_start();
-        if !trimmed.starts_with("- ") {
-            continue;
-        }
-        let indent = line.len() - trimmed.len();
-        let end = lines[index + 1..]
-            .iter()
-            .find_map(|(at, next)| {
-                let trimmed = next.trim_start();
-                let depth = next.len() - trimmed.len();
-                (!trimmed.is_empty()
-                    && !trimmed.starts_with('#')
-                    && (depth < indent || (depth == indent && trimmed.starts_with("- "))))
-                .then_some(*at)
-            })
-            .unwrap_or(workflow.len());
-        let step = &workflow[*start..end];
-        if step
-            .lines()
-            .any(|line| line.trim_start().trim_start_matches("- ") == format!("uses: {action}"))
-        {
-            steps.push(step);
-        }
-    }
-    steps
-}
-
 #[test]
 fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     let workflow = release_workflow();
@@ -165,34 +129,55 @@ fn budget_warning_is_live_instead_of_post_process() {
 
 #[test]
 fn download_artifact_deprecation_is_suppressed_only_on_affected_steps() {
-    // Issue #1039 replaced the macOS slice's `download-artifact` step with
-    // `scripts/download-artifact-with-retry.sh`, so that workflow no longer
-    // uses the action at all and is not listed here. The rule this test pins is
-    // "every v8 step suppresses DEP0005", not "every workflow has a v8 step" --
-    // a workflow that stops using the action cannot regress the warning.
-    // `release.yml` no longer names the action directly: issue #1051 moved its
-    // downloads into a composite action, which the sweep below still covers.
+    // Issue #1580 (f400d7ab2) moved every artifact consumer onto the
+    // workflow-owned `.github/actions/download-artifact` adapter. It fetches
+    // the raw archive with `skip-decompress: true` and extracts it with
+    // Python, so the upstream extraction path that emitted DEP0005 never runs.
+    // The old per-step `--disable-warning=DEP0005` suppression is therefore
+    // replaced by a stricter rule: the adapter's transport steps run with
+    // `--throw-deprecation`, and no workflow reaches the upstream action
+    // directly where a deprecation could be silenced or ignored again.
+    let adapter = repository_file(".github/actions/download-artifact/action.yml");
+    let transports: Vec<&str> = adapter
+        .split("\n    - ")
+        .filter(|step| step.contains("uses: actions/download-artifact@"))
+        .collect();
+    assert!(
+        !transports.is_empty(),
+        "the artifact adapter should still use actions/download-artifact for transport"
+    );
+    for step in &transports {
+        assert!(
+            step.contains("skip-decompress: true"),
+            "every adapter transport step must skip the deprecated extraction:\n{step}"
+        );
+        assert!(
+            step.contains("NODE_OPTIONS: ${{ steps.observation_options.outputs.node-options }}"),
+            "every adapter transport step must run under the observed Node options:\n{step}"
+        );
+    }
+    assert!(
+        adapter.contains("--throw-deprecation"),
+        "the adapter must turn deprecations into failures instead of suppressing them"
+    );
+    assert!(
+        !adapter.contains("DEP0005"),
+        "the adapter must not suppress the deprecation it is meant to avoid"
+    );
+
     for path in [
         ".github/workflows/agentic-cli-matrix.yml",
         ".github/workflows/desktop-release.yml",
     ] {
         let workflow = repository_file(path);
-        let steps = action_step(&workflow, "actions/download-artifact@v8");
         assert!(
-            !steps.is_empty(),
-            "{path} should exercise download-artifact v8"
+            workflow.contains("/.github/actions/download-artifact"),
+            "{path} should download its artifacts through the adapter"
         );
-        for step in steps {
-            assert!(
-                step.contains("NODE_OPTIONS: --disable-warning=DEP0005"),
-                "{path} has an unsuppressed download-artifact v8 step:\n{step}"
-            );
-        }
     }
 
-    // The rule still applies to every *other* workflow, including the ones not
-    // listed above. Dropping macos-core-tests.yml from the list must not create
-    // a blind spot if a v8 step comes back to it later.
+    // The rule applies to every workflow, not only the ones listed above: a
+    // direct step coming back anywhere would bypass the adapter.
     for entry in fs::read_dir(format!(
         "{}/../.github/workflows",
         env!("CARGO_MANIFEST_DIR")
@@ -206,13 +191,11 @@ fn download_artifact_deprecation_is_suppressed_only_on_affected_steps() {
         let workflow = fs::read_to_string(&path)
             .unwrap_or_else(|error| panic!("failed to read {}: {error}", path.display()))
             .replace("\r\n", "\n");
-        for step in action_step(&workflow, "actions/download-artifact@v8") {
-            assert!(
-                step.contains("NODE_OPTIONS: --disable-warning=DEP0005"),
-                "{} has an unsuppressed download-artifact v8 step:\n{step}",
-                path.display()
-            );
-        }
+        assert!(
+            !workflow.contains("actions/download-artifact@"),
+            "{} uses actions/download-artifact directly instead of .github/actions/download-artifact",
+            path.display()
+        );
     }
 }
 

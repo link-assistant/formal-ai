@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 347
   workaround_items 37
   inferred_signatures 3
-  carried_items 2667
+  carried_items 2668
   translated_modules 116
   fully_translated_modules 1
   refused_modules 49
@@ -89,7 +89,7 @@ module js/agentic/crate/literal_content.mjs translated 0 workaround 0 inferred 0
 module js/agentic/crate/literal_instruction_view.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/memory.mjs translated 5 workaround 0 inferred 0 carried 19
 module js/agentic/crate/meta_core.mjs translated 2 workaround 0 inferred 0 carried 31
-module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 36
+module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 37
 module js/agentic/crate/meta_frame.mjs translated 6 workaround 0 inferred 0 carried 47
 module js/agentic/crate/meta_translate.mjs translated 1 workaround 1 inferred 0 carried 8
 module js/agentic/crate/method_registry.mjs translated 9 workaround 0 inferred 0 carried 22
@@ -200,7 +200,7 @@ refusal "type: unknown name (a sibling item or an import)" 124
 refusal "function value …" 113
 refusal "object without a $ tag" 102
 refusal "new expression" 100
-refusal "regular expression" 70
+refusal "regular expression" 71
 refusal "method call .find()" 64
 refusal "method call .filter()" 62
 refusal "method call .split()" 62

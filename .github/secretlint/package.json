@@ -6,6 +6,6 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "secretlint": "14.0.0"
+    "secretlint": "14.1.0"
   }
 }

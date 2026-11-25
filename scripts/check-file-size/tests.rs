@@ -148,7 +148,7 @@ fn warning_annotations_are_limited_to_growing_files() {
 
 #[test]
 fn numstat_selects_only_files_with_net_line_growth() {
-    let numstat = "12\t0\tsrc/growing.rs\03\t3\tsrc/unchanged.rs\01\t8\tsrc/shrinking.rs\0-\t-\tassets/binary.png\0";
+    let numstat = "12\t0\tsrc/growing.rs\x003\t3\tsrc/unchanged.rs\x001\t8\tsrc/shrinking.rs\0-\t-\tassets/binary.png\0";
 
     assert_eq!(
         growing_paths_from_numstat(numstat).unwrap(),

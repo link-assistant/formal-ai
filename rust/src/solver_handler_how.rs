@@ -586,6 +586,10 @@ fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTas
 }
 
 fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<ProceduralHowToTask> {
+    // A seeded opinion lead ("как ты думаешь, есть ли …") outranks the infinitive guess.
+    if crate::rule_interpreter::handler_matches("opinion_question", clean_prompt) {
+        return None;
+    }
     for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD) {
         let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) else {
             continue;

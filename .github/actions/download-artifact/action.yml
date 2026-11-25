@@ -28,7 +28,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7
       id: python
       with:
         update-environment: false

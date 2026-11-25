@@ -26,7 +26,8 @@ consumer downloads the exact artifact ID from that producer in the current
 workflow run and verifies both command files before use. Its 720-second
 capture and two 90-second replays reserve half of the consumer's job clock.
 
-The live capture prints periodic progress. The child writes its LiNo output
+The live capture prints periodic progress when the `FORMAL_AI_CI_VERBOSE`
+repository variable is `true`. The child writes its LiNo output
 directly. The wrapper's timing summaries and the child's diagnostics reach
 both the step log and the retained diagnostic file. Failed phases keep their
 nonzero status. Build and capture failures have separate diagnostic artifacts,

@@ -49,7 +49,28 @@ fn selects_python_personal_budget_report_blueprint() {
     assert_eq!(blueprint.recipe.slug, "personal_budget_report");
     assert_eq!(blueprint.program.language_slug, "python");
     assert!(blueprint.program.code.contains("budget_50_30_20"));
-    assert!(blueprint.program.code.contains("budget_report.md"));
+    // Commit 0f4a76eac ("Generate composite programs from caller scenarios")
+    // replaced the hard-coded `budget_report.md` with a caller-supplied report
+    // path (`python budget_report.py <scenario.json> <report.md>`), so the
+    // program must still write its Markdown report, now to that path.
+    assert!(
+        blueprint
+            .program
+            .run_command
+            .contains("budget_report.py <scenario.json> <report.md>")
+    );
+    assert!(
+        blueprint
+            .program
+            .code
+            .contains("parser.add_argument('output', type=Path)")
+    );
+    assert!(
+        blueprint
+            .program
+            .code
+            .contains("args.output.write_text(report, encoding='utf-8')")
+    );
 }
 
 #[test]

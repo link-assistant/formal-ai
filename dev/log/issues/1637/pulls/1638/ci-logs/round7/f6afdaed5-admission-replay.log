@@ -1,0 +1,48 @@
+== release.yml
+Comparing b2c928ae8e23d04f8ca02cfc238f2ebc5778851e to f6afdaed5fca28b1cbe421e415195b720afed994 (push range; the previous head passed release.yml).
+rs-changed=false
+toml-changed=false
+docs-changed=false
+workflow-changed=false
+pipeline-changed=false
+agentic-routing-changed=false
+any-code-changed=false
+js-changed=false
+ts-changed=false
+rust-changed=false
+release-pending=false
+native-type-check=false
+admission-range=push
+pull-request-code-changed=true
+== layered-ci.yml
+Comparing b2c928ae8e23d04f8ca02cfc238f2ebc5778851e to f6afdaed5fca28b1cbe421e415195b720afed994 (push range; the previous head passed layered-ci.yml).
+rs-changed=false
+toml-changed=false
+docs-changed=false
+workflow-changed=false
+pipeline-changed=false
+agentic-routing-changed=false
+any-code-changed=false
+js-changed=false
+ts-changed=false
+rust-changed=false
+release-pending=false
+native-type-check=false
+admission-range=push
+pull-request-code-changed=true
+== coverage.yml
+Comparing b2c928ae8e23d04f8ca02cfc238f2ebc5778851e to f6afdaed5fca28b1cbe421e415195b720afed994 (push range; the previous head passed coverage.yml).
+rs-changed=false
+toml-changed=false
+docs-changed=false
+workflow-changed=false
+pipeline-changed=false
+agentic-routing-changed=false
+any-code-changed=false
+js-changed=false
+ts-changed=false
+rust-changed=false
+release-pending=false
+native-type-check=false
+admission-range=push
+pull-request-code-changed=true

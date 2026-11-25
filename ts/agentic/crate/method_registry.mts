@@ -28,7 +28,7 @@ export const CONTEXTUAL_HANDLER_NAMES = Object.freeze([
   'http_fetch', 'proof_request', 'meta_explanation', 'numeric_list', 'program_synthesis',
   'shell_command_transform', 'text_manipulation', 'task_decomposition', 'response_language_followup',
   'fact_checking', 'world_state', 'web_search', 'docs_method_explanation',
-  'procedural_how_to', 'fact_lookup',
+  'procedural_how_to', 'procedural_how_to_followup', 'summarization', 'fact_lookup', 'coreference',
 ]);
 
 const HANDLER_PRECEDENCE_PATH = 'data/seed/handler-precedence.lino';

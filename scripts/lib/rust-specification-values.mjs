@@ -417,7 +417,7 @@ node.binding.sourceWitnesses))throw new Error('unowned or foreign native enum va
       runtime.observations.push({ operation: node.binding.path, arguments: args, result });
       return result;
     }
-    if (kind === 'solver') return runtime.host;
+    if (kind === 'solver') return node.binding.offline ? offlineHost(runtime.host) : runtime.host;
     if (kind === 'historySolver') return solve(runtime.host, args[0], args[1], runtime);
     if (kind === 'pureHelper') {
       const values = new Map(node.binding.parameters.map((parameter, index) => [parameter.name, args[index]]));
@@ -473,6 +473,11 @@ node.binding.sourceWitnesses))throw new Error('unowned or foreign native enum va
     if (node.name === 'to_lowercase') return target.toLowerCase();
   }
   throw new Error('unsupported typed runtime operation ' + node.kind);
+}
+
+/** The worker host answering with its `offline` preference, as `SolverConfig { offline: true, .. }`. */
+function offlineHost(host) {
+  return { solve: (prompt, history) => host.solve(prompt, history, { preferences: { offline: true } }) };
 }
 
 async function solve(host, prompt, history, runtime) {

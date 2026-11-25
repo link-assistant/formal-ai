@@ -66,11 +66,24 @@ fn formal_ai_executes_associative_learning_through_agent_cli() {
 fn associative_learning_requires_a_supplied_observation_network() {
     let requested = "Rank our linked facts and save associative-learning-report.lino";
     let interrupted = format!("{requested}\n```lino\ndemo_memory");
-    for request in [requested, interrupted.as_str()] {
-        let outcome = run_agentic_task(request).expect("agent workspace");
-        assert!(outcome.steps.is_empty());
-        assert!(outcome.final_answer.contains("fenced `lino` block"));
-    }
+    let outcome = run_agentic_task(requested).expect("agent workspace");
+    assert!(outcome.steps.is_empty(), "{:?}", outcome.steps);
+    assert!(
+        outcome.final_answer.contains("fenced `lino` block"),
+        "{}",
+        outcome.final_answer
+    );
+    // An unclosed fence is refused before any report is derived: the
+    // request-level quote guard (G71) names the quote that never closes, the
+    // same contract the JS twin pins in agentic-recipes-b.test.mjs.
+    let outcome = run_agentic_task(&interrupted).expect("agent workspace");
+    assert!(outcome.steps.is_empty(), "{:?}", outcome.steps);
+    assert!(
+        outcome.final_answer.contains("fenced `lino` block")
+            || outcome.final_answer.contains("never closes"),
+        "{}",
+        outcome.final_answer
+    );
 
     let changed = REPORT_MEMORY.replace("accessCount \"2\"", "accessCount \"8\"");
     let outcome = run_agentic_task(&format!("{requested}\n```lino\n{changed}\n```"))

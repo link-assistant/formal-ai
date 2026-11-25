@@ -19,7 +19,9 @@
 use formal_ai::agentic_coding::general_planner::{
     GeneralPlanMode, PLAN_PATH, PlanTerminalState, compose_general_change_plan, objective_text,
 };
-use formal_ai::agentic_coding::{AgenticPlan, run_agentic_task};
+use formal_ai::agentic_coding::{
+    AgenticPlan, run_agentic_task, run_agentic_task_with_source_fetch,
+};
 use formal_ai::protocol::ChatMessage;
 
 use crate::tool_workspace;
@@ -160,9 +162,17 @@ fn repository_work_item_run_reports_planned_not_executed_instead_of_success() {
     assert_eq!(calls[0].tool, "run_command");
     assert!(calls[0].arguments.contains("gh issue view"), "{calls:?}");
 
-    let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
+    // d26a8e76f moved the GitHub issue snapshots out of the runtime, so the
+    // default driver transport now reads #904 live whenever the network is
+    // open (as on CI) and the run then depends on the issue's current text.
+    // This scenario is the unavailable-source run, so the transport is pinned
+    // to the corpus's own missing-source error.
+    let outcome = run_agentic_task_with_source_fetch(HARNESS_PROMPT, |url: &str| {
+        Err(format!("web_fetch error: 404 not found for {url}"))
+    })
+    .expect("Agent CLI replay");
     assert!(!outcome.hit_turn_cap);
-    // The exact original request is still missing from the offline corpus.
+    // The exact original request is unavailable to this run.
     // A known failed provider read must not be recorded as a retrieved goal.
     assert!(outcome.steps.iter().all(|step| step.tool != "write_file"));
     assert!(outcome.steps.iter().any(|step| step.tool == "web_fetch"));
@@ -343,10 +353,11 @@ fn a_read_work_item_describing_a_program_reaches_an_authoring_route() {
 /// when this was written and are covered now, so the rule is checked against
 /// languages that really are missing. Adding either of these is what should
 /// make this test fail — the failure is the signal to move it on, not to
-/// weaken it.
+/// weaken it. Haskell was moved on exactly that way when 10a6f2855 (PR #1614)
+/// added it to `data/seed/hello-world-programs.lino`; Fortran replaces it.
 #[test]
 fn an_uncovered_language_is_not_invented_into_an_artifact() {
-    for language in ["Haskell", "Elixir"] {
+    for language in ["Fortran", "Elixir"] {
         let messages = work_item_transcript(&hello_world_work_item(language));
         let plan = formal_ai::agentic_coding::plan_chat_step(
             &messages,

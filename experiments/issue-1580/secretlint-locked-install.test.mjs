@@ -50,7 +50,9 @@ test('default secret scan installs the committed closure before consuming its li
  assert.deepEqual(install.manifest,JSON.parse(readFileSync('.github/secretlint/package.json','utf8')));
  assert.deepEqual(install.lock,JSON.parse(readFileSync('.github/secretlint/package-lock.json','utf8')));
  assert.deepEqual(scan.files,files);assert.deepEqual(scan.args,['scripts/check-secrets-files.mjs']);
- assert.equal(scan.version,'14.0.0');
+ // The scripts' default pin is the committed manifest's version: a bump that
+ // misses scripts/check-secrets.sh fails here, not only on a live CI scan.
+ assert.equal(scan.version,JSON.parse(readFileSync('.github/secretlint/package.json','utf8')).dependencies.secretlint);
 });
 test('a failed locked install cannot scan or print a clean result and still cleans its temporary directory',()=>{
  const result=run(['plain.txt'],{installStatus:17});assert.equal(result.status,17,result.stdout+result.stderr);
@@ -68,7 +70,7 @@ test('an explicit scanner version override retains the existing separately reque
 test('the default scanner lock covers every package with exact registry identity and integrity',()=>{
  const manifest=JSON.parse(readFileSync('.github/secretlint/package.json','utf8'));
  const lock=JSON.parse(readFileSync('.github/secretlint/package-lock.json','utf8'));
- assert.equal(manifest.private,true);assert.deepEqual(manifest.dependencies,{secretlint:'14.0.0'});
+ assert.equal(manifest.private,true);assert.deepEqual(manifest.dependencies,{secretlint:'14.1.0'});
  assert.deepEqual(lock.packages[''].dependencies,manifest.dependencies);assert.equal(lock.lockfileVersion,3);
  const packages=Object.entries(lock.packages).filter(([name])=>name!=='');assert(packages.length>1);
  for(const [name,value] of packages){

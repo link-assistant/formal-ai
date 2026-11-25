@@ -193,10 +193,30 @@ fn factorial_operand_excludes_the_number_of_requested_functions() {
         ),
     ] {
         let response = answer(prompt);
-        assert_eq!(response.answer, expected, "{prompt}");
+        // An unbound `n` either refuses (no publisher capture replayed) or,
+        // when the shared on-disk source cache (`source_cache_root()`, filled
+        // by online runs in the same CI job) already holds the Wikifunctions
+        // factorial recurrence, composes that general recurrence. Neither
+        // outcome may bind the artifact count ("one"/"एक") as the operand.
+        if response.answer.contains("```python") {
+            assert!(
+                response.answer.contains(
+                    "def factorial(n):\n    return 1 if (n == 0) else (n * factorial(n - 1))"
+                ),
+                "{prompt}: a composed answer must be the general recurrence: {}",
+                response.answer
+            );
+            assert!(
+                response.answer.contains("wikifunctions.org"),
+                "{prompt}: a composed answer must cite its publisher: {}",
+                response.answer
+            );
+        } else {
+            assert_eq!(response.answer, expected, "{prompt}");
+        }
         assert!(
-            !response.answer.contains("```python"),
-            "{prompt}: {}",
+            !response.answer.contains("range(1, 2)"),
+            "{prompt}: the artifact count was bound as the operand: {}",
             response.answer
         );
     }

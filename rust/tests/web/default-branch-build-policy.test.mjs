@@ -1,5 +1,6 @@
 import '../../../experiments/issue-1580/native-rerun-concurrency.test.mjs';
 import '../../../experiments/issue-1580/large-change-admission.test.mjs';
+import './default-branch-build-policy/push-range-admission.test.mjs';
 import '../../../experiments/issue-1580/stage-source-capture.test.mjs';
 // Replays the recorded release/PR topology without compiling or publishing products.
 import test from 'node:test';
@@ -29,6 +30,18 @@ test('Codex report fixture from main run 44953310700 disables background marketp
   const report = script.match(/^\s*codex\)\n([\s\S]*?)^\s*;;/mu)?.[1];
   assert.match(report, /CODEX_EXTRA_ARGS='--disable plugins'/u);
   assert.match(report, /SCENARIO=report-publication/u);
+});
+
+test('client report fixtures from main run 45549993600 expect Claude auto mode and free the ports between clients', () => {
+  // #1632 made `formal-ai with claude` pass --permission-mode auto; the stale
+  // 'default' assertion killed the client and the orphaned server failed every later client.
+  const stream = read('experiments/issue_1609_client_reports/stream-report.mjs');
+  assert.match(stream, /event\.permissionMode, client === 'claude' \? 'auto' : 'default'/u);
+  const seed = read('data/seed/client-integrations.lino');
+  assert.match(seed, /default-argument "auto"/u);
+  const script = read('experiments/issue_1609_client_reports/verify-release.sh');
+  const loop = script.match(/^for client in claude agent codex gemini qwen aider grok; do\n([\s\S]*?)^done$/mu)?.[1];
+  assert.match(loop, /if ! wait "\$!"; then[\s\S]*?fi\n[\s\S]*?release_ports 19409 19410\n$/u);
 });
 
 test('Pages rustdoc from main run 45020746043 has no links to private output helpers', () => {
@@ -656,7 +669,8 @@ test('base source reads fail closed on transport, redirects, oversized bodies an
 test('changelog acquisition keeps complete Git history and only hydrates its checker closure', () => {
   const job=workflow('release.yml').jobs.changelog;
   assert.equal(job['timeout-minutes'],10);
-  assert.equal(job.if,"github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'");
+  // Issue #1637: the fragment is judged on the whole pull request, never on a narrow push.
+  assert.equal(job.if,"github.event_name == 'pull_request' && needs.detect-changes.outputs.pull-request-code-changed == 'true'");
   assert.deepEqual(job.needs,['detect-changes']);
   const checkout=job.steps.find(step=>step.uses==='actions/checkout@v7');
   assert.equal(checkout['timeout-minutes'],2);

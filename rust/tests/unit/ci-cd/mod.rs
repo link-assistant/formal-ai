@@ -5,11 +5,13 @@ mod authoring_effects;
 mod box_language_release_legs;
 mod cargo_package_identity;
 mod changelog_parsing;
+#[allow(clippy::duplicate_mod)]
 #[path = "../../../../scripts/check-associative-terminology.rs"]
 mod check_associative_terminology;
 #[allow(clippy::duplicate_mod)]
 #[path = "../../../../scripts/check-crate-package-size.rs"]
 mod check_crate_package_size;
+#[allow(clippy::duplicate_mod)]
 #[path = "../../../../scripts/check-file-size.rs"]
 mod check_file_size;
 mod ci_diagnostic_audit;

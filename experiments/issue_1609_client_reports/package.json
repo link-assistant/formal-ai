@@ -3,11 +3,11 @@
   "private": true,
   "dependencies": {
     "@anthropic-ai/claude-code": "2.1.325",
-    "@google/gemini-cli": "0.66.0",
+    "@google/gemini-cli": "0.71.1",
     "@link-assistant/agent": "0.27.0",
     "@openai/codex": "0.171.0",
-    "@qwen-code/qwen-code": "0.26.4",
-    "opencode-ai": "1.19.5"
+    "@qwen-code/qwen-code": "0.28.4",
+    "opencode-ai": "1.19.6"
   },
   "overrides": {
     "glob": "14.0.6",

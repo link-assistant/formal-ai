@@ -2,6 +2,7 @@
 
 use crate::http_server::{
     http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+    spawn_formal_ai_server_with_args,
 };
 use std::sync::{Mutex, MutexGuard};
 
@@ -201,7 +202,14 @@ fn all_reported_capability_classes_route_in_one_matrix() {
 fn leading_edit_action_is_language_general() {
     let _guard = server_test_lock();
     let port = reserve_loopback_port();
-    let _server = spawn_formal_ai_server_agent_mode(port);
+    // Routing an edit request is a local decision. Keep the server from
+    // spending the 30 s response budget on live source reads (read access is
+    // default-on since #1582); the Hindi turn stalled past it on CI.
+    let _server = spawn_formal_ai_server_with_args(
+        port,
+        &["--agent-mode"],
+        &[("FORMAL_AI_NETWORK", "denied")],
+    );
     let cases = [
         ("English", "update main.rs and change foo to bar"),
         ("Russian", "измени main.rs и замени foo на bar"),

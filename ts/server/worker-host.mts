@@ -552,8 +552,8 @@ export class WorkerHost {
    * greets with the canonical wording, so the worker's per-reply greeting
    * variation (a browser preference) is off here.
    */
-  async solve(prompt, history = [], options = {}) {
-    const solve = "solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)";
+  async solve(prompt, history = [], { preferences = {}, ...options } = {}) {
+    const solve = "solve(__serverPrompt, __serverHistory, { greetingVariations: false, ...__serverPreferences }, {}, [], __serverOptions)";
     const expression = options.readOnly ? `(async () => {
       const retained = new Map(metaLearnedChunks);
       try { return await ${solve}; }
@@ -561,13 +561,14 @@ export class WorkerHost {
         metaLearnedChunks.clear();
         for (const [word, chunk] of retained) metaLearnedChunks.set(word, chunk);
         metaNewChunks.clear();
-        __serverPrompt = __serverHistory = __serverOptions = undefined;
+        __serverPrompt = __serverHistory = __serverOptions = __serverPreferences = undefined;
       }
     })()` : solve;
     const result = await this.run(expression, {
       __serverPrompt: prompt,
       __serverHistory: history,
       __serverOptions: options,
+      __serverPreferences: preferences,
     });
     // Issue #1165 R1165-10: the native `WriteProgram` branch reads the procedure cache file.
     return applyProcedureCache(result, prompt, this, await this.catalogTemplate());

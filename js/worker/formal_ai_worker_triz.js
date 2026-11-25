@@ -45,11 +45,25 @@ function trizDemand(text) {
   return /[\p{Alphabetic}\p{N}]/u.test(trimmed) ? trimmed : null;
 }
 
+// A letter, digit or Devanagari sign of a script that separates words with spaces.
+function trizSpacedWordChar(character) {
+  if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af]/u.test(character)) return false;
+  return /[\p{Alphabetic}\p{N}\u0900-\u097f]/u.test(character);
+}
+
 function trizDemands(prompt) {
   const rules = trizRules();
   const cue = rules.cue.exec(prompt);
   if (!cue) return null;
-  const tail = prompt.slice(cue.index + cue[0].length).trimStart();
+  // Stem cues ("противоречи", "contradiction") can stop inside a word, so the
+  // demands begin after the rest of that word ("противоречие: ..."), never
+  // inside it. Han and other unspaced scripts have no word end to skip to.
+  let rest = Array.from(prompt.slice(cue.index + cue[0].length));
+  if (trizSpacedWordChar(Array.from(cue[0]).at(-1) ?? "")) {
+    const end = rest.findIndex((character) => !trizSpacedWordChar(character));
+    rest = end === -1 ? [] : rest.slice(end);
+  }
+  const tail = rest.join("").trimStart();
   const tailFrame = tail.replace(/^[:：]\s*/u, "").replace(rules.prefix, "");
   const balanced = rules.balancedPrefix.exec(tailFrame);
   const frame = balanced ? tailFrame.slice(balanced[0].length) : tailFrame;

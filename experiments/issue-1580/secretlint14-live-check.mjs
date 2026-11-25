@@ -10,8 +10,8 @@ import {spawnSync} from 'node:child_process';
 import {createScanner,checkFiles} from '../../scripts/check-secrets-files.mjs';
 
 const bin=process.env.SECRETLINT_TEST_BIN;
-assert.ok(bin,'SECRETLINT_TEST_BIN is required; install only secretlint@14.0.0');
-const engine=await createScanner('14.0.0',bin);
+assert.ok(bin,'SECRETLINT_TEST_BIN is required; install only secretlint@14.1.0');
+const engine=await createScanner('14.1.0',bin);
 const directory=mkdtempSync(join(tmpdir(),'secretlint14-live-'));
 const github='gh'+'p_'+'A'.repeat(36);
 const slack='xo'+'xb-'+'1'.repeat(12)+'-'+'2'.repeat(13)+'-'+'A'.repeat(24);
@@ -32,7 +32,7 @@ try {
   const filename=join(directory,'::error:: forged annotation.txt');
   writeFileSync(filename,github);
   const cli=spawnSync(process.execPath,[fileURLToPath(new URL('../../scripts/check-secrets-files.mjs',import.meta.url))],{
-    env:{...process.env,SECRETLINT_VERSION:'14.0.0',PATH:bin+delimiter+(process.env.PATH??'')},
+    env:{...process.env,SECRETLINT_VERSION:'14.1.0',PATH:bin+delimiter+(process.env.PATH??'')},
     input:filename+'\0',encoding:'utf8',maxBuffer:1024*1024});
   assert.equal(cli.error,undefined);
   assert.equal(cli.status,1,'a real finding must fail the CLI');

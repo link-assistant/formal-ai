@@ -9,6 +9,7 @@ import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import YAML from 'yaml';
+import {selfContradictoryJobs} from '../../../experiments/issue-1637/self-contradictory-event-guards.mjs';
 import {selectFastTests} from '../../../scripts/list-fast-pull-request-tests.mjs';
 import {fileLimit} from '../../../scripts/check-file-size.mjs';
 import {ROOTS,familyOf} from '../../../scripts/check-readable-code.mjs';
@@ -64,9 +65,13 @@ test('heavy original job bodies remain intact and default PR dispatches cannot a
     assert.equal(Boolean(evaluate(oldPredicate, full)),false,row.file+'/'+row.id+' override cannot restore PR builds');
   }
 });
+test('no job guard both refuses and requires one event, which would skip it forever (issue #1637)', () => {
+  assert.deepEqual(selfContradictoryJobs(), []);
+});
 test('main keeps production builds and original selected integrations', () => {
   for (const row of manifest.jobs) {
-    if (row.file === 'release.yml' && ['docker-build','docker-slim'].includes(row.id)) continue; // PR-only probes; main publishes real images separately.
+    // Issue #1637: docker-build/docker-slim were skipped here while their `if:` required
+    // both `event_name != 'pull_request'` and `== 'pull_request'`, so they never ran.
     const job=workflow(row.file).jobs[row.id];
     assert.equal(Boolean(evaluate(job.if,context('push','refs/heads/main'))),true,row.file+'/'+row.id);
   }
@@ -481,7 +486,7 @@ test('secrets scanning retains full history and every current file within separa
   for(const marker of ['git merge-base "$base" HEAD',
     'read_inventory git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD',
     'read_inventory git ls-files -z','if ! wait "$producer"; then',
-    'SECRETLINT_VERSION:-14.0.0',
+    'SECRETLINT_VERSION:-14.1.0',
     '-p "secretlint@${SECRETLINT_VERSION}"'])
     assert.ok(scanner.includes(marker),'full reviewed secret selection/guard lost: '+marker);
   assert.equal(scanner.includes('-p "@secretlint/secretlint-rule-preset-recommend@'),false,'recommended rules are built into the pinned scanner');

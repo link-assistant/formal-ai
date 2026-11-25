@@ -34,8 +34,11 @@ mod live_fact_answer;
 mod google_trends;
 use google_trends as issue_498_google_trends;
 
+// The concept-lookup cases replay in a network-denied child process.
 #[path = "solver/issue_1138_self_use_concept_lookup.rs"]
 mod concept_lookup_self_use;
+#[allow(dead_code)]
+mod offline_replay;
 #[path = "specification/reasoning_paths_procedures.rs"]
 mod procedures;
 #[path = "issue_1138_retrieval_method.rs"]

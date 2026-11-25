@@ -422,6 +422,24 @@ impl UniversalSolver {
                         program_language.as_deref(),
                     ),
                 );
+                // The dead end keeps the parameters the request did fill, so a
+                // reader sees which target it asked for ("laravel", not "php")
+                // and which slot is still missing. The worker's dead end carries
+                // the same `program_parameter:*` evidence
+                // (`formal_ai_worker_write_program_and_research.js`).
+                log.append(
+                    "program_parameter:language",
+                    program_language
+                        .as_deref()
+                        .unwrap_or(crate::program_skill_gap::MISSING_PARAMETER)
+                        .to_owned(),
+                );
+                log.append(
+                    "program_parameter:task",
+                    task.as_deref()
+                        .unwrap_or(crate::program_skill_gap::MISSING_PARAMETER)
+                        .to_owned(),
+                );
             }
 
             if let Some(answer) = try_synthesize_from_sub_results(prompt, log, &sub_results) {

@@ -90,8 +90,10 @@ pub fn try_brainstorming_request(
     }
     let category = seeds.pick_category(normalized)?;
     let language = detect_language(prompt).slug();
+    // Normalized words keep punctuation and hyphens out of the topic, as in the browser twin.
+    let folded = crate::engine::normalize_prompt(normalized);
     let topic = seeds
-        .topic(normalized)
+        .topic(&folded)
         .filter(|topic| !super::creative_composition::topic_words(topic, language).is_empty());
     let (body, confidence) = match topic {
         Some(topic) if category.operations.is_empty() => {

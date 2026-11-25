@@ -49,7 +49,7 @@ export function finalizeSimple(prompt, log, intent, responseLink, body, confiden
   log.append('intent', intent);
   if (!log.firstOf('candidate')) log.append('candidate', intent);
   // Issue #1550: the executed leaf test and the selection it supports.
-  if (!log.firstOf('validation')) log.append('validation', answerValidation(intent, body));
+  if (!log.firstOf('validation')) log.appendWithOrigin('validation', 'validation:answer', answerValidation(intent, body));
   log.append('response', responseLink);
   if (!log.firstOf('trace:simplification')) {
     const validations = log.events.filter((event) => event.kind === 'validation').map((event) => event.payload);

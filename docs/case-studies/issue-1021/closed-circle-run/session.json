@@ -83,12 +83,12 @@
       "prompt": "Move /Users/konard/Code/link-assistant/hive-control-center to ~/Code/Archive/link-assistant"
     },
     {
-      "intent": "write_script_laravel",
+      "intent": "write_program_skill_gap",
       "issue": 723,
       "prompt": "напиши мне код на PHP Laravel"
     },
     {
-      "intent": "write_script_laravel",
+      "intent": "write_program_skill_gap",
       "issue": 723,
       "prompt": "write me PHP Laravel code"
     }

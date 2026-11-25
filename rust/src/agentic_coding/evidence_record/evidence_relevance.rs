@@ -44,6 +44,13 @@ pub(super) fn later_route_delivering(
     {
         return Some("declined_composed_target");
     }
+    // A learning report is named by its artifact and owns it even on the turn
+    // it can only ask for the missing memory (issue #686).
+    if super::super::learning_report::route(task)
+        .is_some_and(|report| obligation.target == report.path)
+    {
+        return Some("declined_learning_report");
+    }
     settled_route_delivers(task, &obligation.target, tool_names).then_some("declined_settled_route")
 }
 

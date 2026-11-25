@@ -178,6 +178,7 @@ coding-guidance-execution-status-line
   ru "Статус выполнения: {status} в среде «{environment}»."
   hi "निष्पादन स्थिति: {status} ({environment} में)।"
   zh "执行状态：{status}（{environment}）。"
+  es "Estado de ejecución: {status} en {environment}."
 coding-guidance-execution-composed-line
   record_type "coding_guidance"
   id "execution-composed-line"
@@ -185,6 +186,7 @@ coding-guidance-execution-composed-line
   ru "Статус выполнения: {status}."
   hi "निष्पादन स्थिति: {status}।"
   zh "执行状态：{status}。"
+  es "Estado de ejecución: {status}."
 coding-guidance-execution-status-verified
   record_type "coding_guidance"
   id "execution-status-verified"
@@ -192,6 +194,7 @@ coding-guidance-execution-status-verified
   ru "скомпилировано и запущено"
   hi "संकलित और चलाया गया"
   zh "已编译并运行"
+  es "compilado y ejecutado"
 coding-guidance-execution-status-unavailable
   record_type "coding_guidance"
   id "execution-status-unavailable"
@@ -199,6 +202,7 @@ coding-guidance-execution-status-unavailable
   ru "не скомпилировано и не запущено"
   hi "संकलित या चलाया नहीं गया"
   zh "未编译或运行"
+  es "no compilado ni ejecutado"
 coding-guidance-execution-status-not-probed
   record_type "coding_guidance"
   id "execution-status-not-probed"
@@ -206,6 +210,7 @@ coding-guidance-execution-status-not-probed
   ru "не проверялось в этой среде"
   hi "इस वातावरण में जाँचा नहीं गया"
   zh "未在本环境中探测"
+  es "no comprobado en este entorno"
 coding-guidance-execution-output-verified
   record_type "coding_guidance"
   id "execution-output-verified"
@@ -213,6 +218,7 @@ coding-guidance-execution-output-verified
   ru "Вывод"
   hi "आउटपुट"
   zh "输出"
+  es "Salida"
 coding-guidance-execution-output-unavailable
   record_type "coding_guidance"
   id "execution-output-unavailable"
@@ -220,6 +226,7 @@ coding-guidance-execution-output-unavailable
   ru "Ожидаемый вывод после проверки"
   hi "सत्यापन के बाद अपेक्षित आउटपुट"
   zh "验证后的预期输出"
+  es "Salida esperada tras la verificación"
 coding-guidance-execution-output-not-probed
   record_type "coding_guidance"
   id "execution-output-not-probed"
@@ -227,6 +234,7 @@ coding-guidance-execution-output-not-probed
   ru "Вывод, не наблюдавшийся в этой среде"
   hi "आउटपुट, इस वातावरण में नहीं देखा गया"
   zh "输出，未在本环境中观察到"
+  es "Salida, no observada en este entorno"
 coding-guidance-execution-rediscovered
   record_type "coding_guidance"
   id "execution-rediscovered"
@@ -250,6 +258,7 @@ coding-guidance-program-intro
   ru "Вот минимальная программа на языке {language} ({task}):"
   hi "यहाँ {language} में एक न्यूनतम प्रोग्राम है ({task}):"
   zh "这是一个最小的 {language} 程序（{task}）："
+  es "Este es un programa mínimo en {language} ({task}):"
 coding-guidance-script-intro
   record_type "coding_guidance"
   id "script-intro"

@@ -517,14 +517,30 @@ pub(crate) fn try_write_documented_program(
         );
     }
     record_unfulfilled_obligations(prompt, log);
-    Some(crate::solver_handlers::finalize_simple(
+    let mut answer = crate::solver_handlers::finalize_simple(
         prompt,
         log,
         &reply.intent(row.slug),
         &spec.response_link(),
         &body,
         0.9,
-    ))
+    );
+    // A program answer carries its execution recipe: the rediscovered source
+    // under the file and commands its documented contract binds, so an agent
+    // harness can write, check and run it (issues #716, #1165 R1165-6).
+    answer.execution_recipe = Some(Box::new(crate::engine::ExecutionRecipe {
+        language: row.code_fence.to_owned(),
+        source: documented.recipe.entry.clone(),
+        path: documented.contract.save_as.clone(),
+        supporting_files: Vec::new(),
+        commands: documented
+            .contract
+            .commands
+            .iter()
+            .map(|command| command.command.clone())
+            .collect(),
+    }));
+    Some(answer)
 }
 
 fn record_unfulfilled_obligations(prompt: &str, log: &mut EventLog) {

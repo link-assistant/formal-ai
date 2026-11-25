@@ -27,6 +27,12 @@ class EventLog {
     this.events.push({ id, kind: String(kind), payload: text });
     return id;
   }
+  /** `EventLog::append_with_origin`: record which append site emitted the event. */
+  appendWithOrigin(kind, origin, payload) {
+    const identifier = this.append(kind, payload);
+    this.events[this.events.length - 1].source_origin = String(origin);
+    return identifier;
+  }
   firstOf(kind) {
     return this.events.find((event) => event.kind === kind) || null;
   }

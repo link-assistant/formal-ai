@@ -1,7 +1,7 @@
 {
   "schema": "formal-ai-runtime-feature-coverage-v1",
   "sources": [
-    {"path":"rust/src/main.rs","sha256":"170628ad602af264f5aebb552521f6d0826e9458ff794ec2520f8903bd60e8c8"},
+    {"path":"rust/src/main.rs","sha256":"0a7109fc466fa0871f843fd185b617f14dc8d3ae2a2acd2870b72321f4a5c63c"},
     {"path":"js/server/main.mjs","sha256":"231b1356d6b71533338cc8c3b5843151fcf96b78a77e749ae5f71e1b74254b7c"},
     {"path":"js/agentic/orchestration_cli.mjs","sha256":"bddd5ce346266f61e14de5a4a7052a087588cd4b0f3d337bc1b0763caa106e84"},
     {"path":"js/provenance/cli.mjs","sha256":"5f2385788ba008835e62021647b0d70355093db1819546b7d7d9cc82d91c56da"},
