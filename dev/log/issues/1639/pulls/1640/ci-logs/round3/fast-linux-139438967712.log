@@ -1,0 +1,626 @@
+﻿2026-11-25T18:57:43.0641634Z Current runner version: '2.338.2'
+2026-11-25T18:57:43.0679441Z ##[group]Runner Image Provisioner
+2026-11-25T18:57:43.0680211Z Hosted Compute Agent
+2026-11-25T18:57:43.0680882Z Version: 20261111.635
+2026-11-25T18:57:43.0681435Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+2026-11-25T18:57:43.0681984Z Build Date: 2026-11-11T01:49:01Z
+2026-11-25T18:57:43.0682461Z Worker ID: {97584d03-d483-474d-83b8-a3bff4da9d5e}
+2026-11-25T18:57:43.0682988Z Region: us-west-2
+2026-11-25T18:57:43.0683441Z Cloud: AWS
+2026-11-25T18:57:43.0683835Z ##[endgroup]
+2026-11-25T18:57:43.0684838Z ##[group]Operating System
+2026-11-25T18:57:43.0685285Z Ubuntu
+2026-11-25T18:57:43.0685694Z 24.04.5
+2026-11-25T18:57:43.0686066Z LTS
+2026-11-25T18:57:43.0686490Z ##[endgroup]
+2026-11-25T18:57:43.0686892Z ##[group]Runner Image
+2026-11-25T18:57:43.0687321Z Image: ubuntu-24.04
+2026-11-25T18:57:43.0687761Z Version: 20261122.23.1
+2026-11-25T18:57:43.0688702Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261122.23/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-25T18:57:43.0689821Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261122.23
+2026-11-25T18:57:43.0690707Z ##[endgroup]
+2026-11-25T18:57:43.0691557Z ##[group]GITHUB_TOKEN Permissions
+2026-11-25T18:57:43.0693327Z Contents: read
+2026-11-25T18:57:43.0693831Z Metadata: read
+2026-11-25T18:57:43.0694228Z ##[endgroup]
+2026-11-25T18:57:43.0695765Z Secret source: Actions
+2026-11-25T18:57:43.0696440Z Cache mode: write
+2026-11-25T18:57:43.0696941Z Prepare workflow directory
+2026-11-25T18:57:43.1073318Z Prepare all required actions
+2026-11-25T18:57:43.1110428Z Getting action download info
+2026-11-25T18:57:43.4624911Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-25T18:57:44.6471637Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-11-25T18:57:44.9773889Z Complete job name: Fast Linux source and requirement checks
+2026-11-25T18:57:45.0434667Z ##[group]Run actions/checkout@v7
+2026-11-25T18:57:45.0435836Z with:
+2026-11-25T18:57:45.0436444Z   persist-credentials: false
+2026-11-25T18:57:45.0437119Z   fetch-depth: 1
+2026-11-25T18:57:45.0437788Z   filter: blob:none
+2026-11-25T18:57:45.0439891Z   sparse-checkout: /*
+!/dev/log/
+!/docs/case-studies/**/*.gz
+!/docs/case-studies/**/*.log
+!/docs/case-studies/**/*.zip
+!/docs/case-studies/**/*.tgz
+!/docs/case-studies/**/*.diff
+!/experiments/*/evidence/**/*.gz
+!/experiments/*/evidence/**/*.log
+!/experiments/*/evidence/**/*.zip
+!/experiments/*/evidence/**/*.tgz
+!/experiments/*/evidence/**/*.diff
+
+2026-11-25T18:57:45.0442253Z   sparse-checkout-cone-mode: false
+2026-11-25T18:57:45.0442965Z   repository: link-assistant/formal-ai
+2026-11-25T18:57:45.0446573Z   token: ***
+2026-11-25T18:57:45.0447162Z   ssh-strict: true
+2026-11-25T18:57:45.0447782Z   ssh-user: git
+2026-11-25T18:57:45.0448371Z   clean: true
+2026-11-25T18:57:45.0448995Z   fetch-tags: false
+2026-11-25T18:57:45.0449702Z   show-progress: true
+2026-11-25T18:57:45.0450599Z   lfs: false
+2026-11-25T18:57:45.0451199Z   submodules: false
+2026-11-25T18:57:45.0451804Z   set-safe-directory: true
+2026-11-25T18:57:45.0452557Z   allow-unsafe-pr-checkout: false
+2026-11-25T18:57:45.0453590Z env:
+2026-11-25T18:57:45.0454398Z   GIT_CONFIG_COUNT: 1
+2026-11-25T18:57:45.0455105Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-11-25T18:57:45.0455821Z   GIT_CONFIG_VALUE_0: main
+2026-11-25T18:57:45.0456459Z   CARGO_NET_RETRY: 10
+2026-11-25T18:57:45.0457070Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:57:45.0457754Z   CARGO_TERM_COLOR: always
+2026-11-25T18:57:45.0458433Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:57:45.0459101Z   FORMAL_AI_NON_LINUX_CI: run
+2026-11-25T18:57:45.0459828Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:57:45.0460621Z   RUST_BACKTRACE: full
+2026-11-25T18:57:45.0461454Z   CARGO_REGISTRY_TOKEN: ***
+2026-11-25T18:57:45.0462186Z   CARGO_TOKEN: ***
+2026-11-25T18:57:45.0462837Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-11-25T18:57:45.0463720Z   DOCKERHUB_IMAGE: konard/formal-ai
+2026-11-25T18:57:45.0464597Z   GIT_HTTP_LOW_SPEED_LIMIT: 1024
+2026-11-25T18:57:45.0465307Z   GIT_HTTP_LOW_SPEED_TIME: 20
+2026-11-25T18:57:45.0465939Z ##[endgroup]
+2026-11-25T18:57:48.1643391Z Syncing repository: link-assistant/formal-ai
+2026-11-25T18:57:48.1644694Z ##[group]Getting Git version info
+2026-11-25T18:57:48.1645175Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+2026-11-25T18:57:48.1645783Z [command]/usr/bin/git version
+2026-11-25T18:57:48.3782800Z git version 2.56.1
+2026-11-25T18:57:48.3802005Z ##[endgroup]
+2026-11-25T18:57:48.3810879Z Temporarily overriding HOME='/home/runner/work/_temp/39ec018d-4a0b-4c9a-b68e-c4098cb00401' before making global git config changes
+2026-11-25T18:57:48.3812091Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-25T18:57:48.3816439Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-11-25T18:57:48.3878911Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+2026-11-25T18:57:48.3881474Z ##[group]Determining repository object format
+2026-11-25T18:57:48.3882646Z ##[endgroup]
+2026-11-25T18:57:48.3883335Z ##[group]Initializing the repository
+2026-11-25T18:57:48.3886656Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+2026-11-25T18:57:48.4072425Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+2026-11-25T18:57:48.4078766Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+2026-11-25T18:57:48.4129519Z ##[endgroup]
+2026-11-25T18:57:48.4130078Z ##[group]Disabling automatic garbage collection
+2026-11-25T18:57:48.4131808Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-25T18:57:48.4155505Z ##[endgroup]
+2026-11-25T18:57:48.4155991Z ##[group]Setting up auth
+2026-11-25T18:57:48.4156360Z Removing SSH command configuration
+2026-11-25T18:57:48.4161108Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T18:57:48.4189261Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T18:57:48.6297067Z Removing HTTP extra header
+2026-11-25T18:57:48.6302739Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T18:57:48.6333746Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T18:57:48.6481490Z Removing includeIf entries pointing to credentials config files
+2026-11-25T18:57:48.6484084Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T18:57:48.6508574Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T18:57:48.6661924Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-25T18:57:48.6689705Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:57:48.6713117Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:57:48.6736431Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:57:48.6757765Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:57:48.6777819Z ##[endgroup]
+2026-11-25T18:57:48.6778394Z ##[group]Fetching the repository
+2026-11-25T18:57:48.6783275Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin +6936d616b61cde5866b65b44ec6ea6fc81edd04e:refs/remotes/pull/1640/merge
+2026-11-25T18:57:49.5948843Z From https://github.com/link-assistant/formal-ai
+2026-11-25T18:57:49.5951386Z  * [new ref]         6936d616b61cde5866b65b44ec6ea6fc81edd04e -> pull/1640/merge
+2026-11-25T18:57:49.5953013Z ##[endgroup]
+2026-11-25T18:57:49.5953668Z ##[group]Determining the checkout info
+2026-11-25T18:57:49.5954274Z ##[endgroup]
+2026-11-25T18:57:49.5954864Z ##[group]Setting up sparse checkout
+2026-11-25T18:57:49.5957201Z [command]/usr/bin/git config core.sparseCheckout true
+2026-11-25T18:57:49.5985730Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+2026-11-25T18:57:49.6004952Z .git/info/sparse-checkout
+2026-11-25T18:57:49.6009125Z ##[endgroup]
+2026-11-25T18:57:49.6010000Z ##[group]Checking out the ref
+2026-11-25T18:57:49.6012285Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1640/merge
+2026-11-25T18:58:04.8605761Z Updating files:   0% (1/27382)
+2026-11-25T18:58:04.8621585Z Updating files:   0% (240/27382)
+2026-11-25T18:58:04.8700769Z Updating files:   1% (274/27382)
+2026-11-25T18:58:04.8762264Z Updating files:   2% (548/27382)
+2026-11-25T18:58:04.8822566Z Updating files:   3% (822/27382)
+2026-11-25T18:58:04.8897976Z Updating files:   4% (1096/27382)
+2026-11-25T18:58:04.8969827Z Updating files:   5% (1370/27382)
+2026-11-25T18:58:04.9036868Z Updating files:   6% (1643/27382)
+2026-11-25T18:58:04.9104649Z Updating files:   7% (1917/27382)
+2026-11-25T18:58:04.9171416Z Updating files:   8% (2191/27382)
+2026-11-25T18:58:04.9233880Z Updating files:   9% (2465/27382)
+2026-11-25T18:58:04.9294842Z Updating files:  10% (2739/27382)
+2026-11-25T18:58:04.9357956Z Updating files:  11% (3013/27382)
+2026-11-25T18:58:04.9436758Z Updating files:  12% (3286/27382)
+2026-11-25T18:58:04.9491409Z Updating files:  13% (3560/27382)
+2026-11-25T18:58:04.9547767Z Updating files:  14% (3834/27382)
+2026-11-25T18:58:04.9600130Z Updating files:  15% (4108/27382)
+2026-11-25T18:58:04.9658777Z Updating files:  16% (4382/27382)
+2026-11-25T18:58:04.9738698Z Updating files:  17% (4655/27382)
+2026-11-25T18:58:04.9875848Z Updating files:  18% (4929/27382)
+2026-11-25T18:58:04.9929975Z Updating files:  19% (5203/27382)
+2026-11-25T18:58:04.9985666Z Updating files:  20% (5477/27382)
+2026-11-25T18:58:05.0041054Z Updating files:  21% (5751/27382)
+2026-11-25T18:58:05.0236461Z Updating files:  22% (6025/27382)
+2026-11-25T18:58:05.0344138Z Updating files:  23% (6298/27382)
+2026-11-25T18:58:05.0832264Z Updating files:  24% (6572/27382)
+2026-11-25T18:58:05.0876368Z Updating files:  25% (6846/27382)
+2026-11-25T18:58:05.0918438Z Updating files:  26% (7120/27382)
+2026-11-25T18:58:05.1145554Z Updating files:  27% (7394/27382)
+2026-11-25T18:58:05.1429736Z Updating files:  28% (7667/27382)
+2026-11-25T18:58:05.1615150Z Updating files:  29% (7941/27382)
+2026-11-25T18:58:05.1974166Z Updating files:  30% (8215/27382)
+2026-11-25T18:58:05.2452639Z Updating files:  31% (8489/27382)
+2026-11-25T18:58:05.2636626Z Updating files:  32% (8763/27382)
+2026-11-25T18:58:05.2767285Z Updating files:  33% (9037/27382)
+2026-11-25T18:58:05.3433158Z Updating files:  34% (9310/27382)
+2026-11-25T18:58:05.3939459Z Updating files:  35% (9584/27382)
+2026-11-25T18:58:05.4635894Z Updating files:  36% (9858/27382)
+2026-11-25T18:58:05.4798454Z Updating files:  37% (10132/27382)
+2026-11-25T18:58:05.5178056Z Updating files:  38% (10406/27382)
+2026-11-25T18:58:05.5402873Z Updating files:  39% (10679/27382)
+2026-11-25T18:58:05.5606969Z Updating files:  40% (10953/27382)
+2026-11-25T18:58:05.5671251Z Updating files:  41% (11227/27382)
+2026-11-25T18:58:05.5950109Z Updating files:  42% (11501/27382)
+2026-11-25T18:58:05.6211613Z Updating files:  43% (11775/27382)
+2026-11-25T18:58:05.6372174Z Updating files:  44% (12049/27382)
+2026-11-25T18:58:05.6578460Z Updating files:  45% (12322/27382)
+2026-11-25T18:58:05.7042671Z Updating files:  46% (12596/27382)
+2026-11-25T18:58:05.7160122Z Updating files:  47% (12870/27382)
+2026-11-25T18:58:05.8229289Z Updating files:  48% (13144/27382)
+2026-11-25T18:58:05.8608626Z Updating files:  49% (13418/27382)
+2026-11-25T18:58:05.8897065Z Updating files:  49% (13533/27382)
+2026-11-25T18:58:05.9462128Z Updating files:  50% (13691/27382)
+2026-11-25T18:58:05.9649069Z Updating files:  51% (13965/27382)
+2026-11-25T18:58:05.9859659Z Updating files:  52% (14239/27382)
+2026-11-25T18:58:06.0002668Z Updating files:  53% (14513/27382)
+2026-11-25T18:58:06.0248761Z Updating files:  54% (14787/27382)
+2026-11-25T18:58:06.0469823Z Updating files:  55% (15061/27382)
+2026-11-25T18:58:06.0571169Z Updating files:  56% (15334/27382)
+2026-11-25T18:58:06.0674640Z Updating files:  57% (15608/27382)
+2026-11-25T18:58:06.0818845Z Updating files:  58% (15882/27382)
+2026-11-25T18:58:06.1042783Z Updating files:  59% (16156/27382)
+2026-11-25T18:58:06.1117714Z Updating files:  60% (16430/27382)
+2026-11-25T18:58:06.1200989Z Updating files:  61% (16704/27382)
+2026-11-25T18:58:06.1298270Z Updating files:  62% (16977/27382)
+2026-11-25T18:58:06.1416599Z Updating files:  63% (17251/27382)
+2026-11-25T18:58:06.1533260Z Updating files:  64% (17525/27382)
+2026-11-25T18:58:06.1618236Z Updating files:  65% (17799/27382)
+2026-11-25T18:58:06.1708585Z Updating files:  66% (18073/27382)
+2026-11-25T18:58:06.1812271Z Updating files:  67% (18346/27382)
+2026-11-25T18:58:06.1935443Z Updating files:  68% (18620/27382)
+2026-11-25T18:58:06.2104744Z Updating files:  69% (18894/27382)
+2026-11-25T18:58:06.2218249Z Updating files:  70% (19168/27382)
+2026-11-25T18:58:06.2489102Z Updating files:  71% (19442/27382)
+2026-11-25T18:58:06.2594712Z Updating files:  72% (19716/27382)
+2026-11-25T18:58:06.2691593Z Updating files:  73% (19989/27382)
+2026-11-25T18:58:06.2777619Z Updating files:  74% (20263/27382)
+2026-11-25T18:58:06.2881430Z Updating files:  75% (20537/27382)
+2026-11-25T18:58:06.3098286Z Updating files:  76% (20811/27382)
+2026-11-25T18:58:06.3252109Z Updating files:  77% (21085/27382)
+2026-11-25T18:58:06.3405293Z Updating files:  78% (21358/27382)
+2026-11-25T18:58:06.3534365Z Updating files:  79% (21632/27382)
+2026-11-25T18:58:06.3648026Z Updating files:  80% (21906/27382)
+2026-11-25T18:58:06.3801322Z Updating files:  81% (22180/27382)
+2026-11-25T18:58:06.3961817Z Updating files:  82% (22454/27382)
+2026-11-25T18:58:06.4126799Z Updating files:  83% (22728/27382)
+2026-11-25T18:58:06.4280498Z Updating files:  84% (23001/27382)
+2026-11-25T18:58:06.4359210Z Updating files:  85% (23275/27382)
+2026-11-25T18:58:06.4449552Z Updating files:  86% (23549/27382)
+2026-11-25T18:58:06.4581826Z Updating files:  87% (23823/27382)
+2026-11-25T18:58:06.4766244Z Updating files:  88% (24097/27382)
+2026-11-25T18:58:06.4905512Z Updating files:  89% (24370/27382)
+2026-11-25T18:58:06.5039309Z Updating files:  90% (24644/27382)
+2026-11-25T18:58:06.5164616Z Updating files:  91% (24918/27382)
+2026-11-25T18:58:06.5289612Z Updating files:  92% (25192/27382)
+2026-11-25T18:58:06.5402746Z Updating files:  93% (25466/27382)
+2026-11-25T18:58:06.5510392Z Updating files:  94% (25740/27382)
+2026-11-25T18:58:06.5646103Z Updating files:  95% (26013/27382)
+2026-11-25T18:58:06.5771513Z Updating files:  96% (26287/27382)
+2026-11-25T18:58:06.5879085Z Updating files:  97% (26561/27382)
+2026-11-25T18:58:06.5999813Z Updating files:  98% (26835/27382)
+2026-11-25T18:58:06.6162538Z Updating files:  99% (27109/27382)
+2026-11-25T18:58:06.6163204Z Updating files: 100% (27382/27382)
+2026-11-25T18:58:06.6163780Z Updating files: 100% (27382/27382), done.
+2026-11-25T18:58:06.7177339Z Note: switching to 'refs/remotes/pull/1640/merge'.
+2026-11-25T18:58:06.7177684Z 
+2026-11-25T18:58:06.7178140Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-25T18:58:06.7178661Z changes and commit them, and you can discard any commits you make in this
+2026-11-25T18:58:06.7179178Z state without impacting any branches by switching back to a branch.
+2026-11-25T18:58:06.7179691Z 
+2026-11-25T18:58:06.7179845Z If you want to create a new branch to retain commits you create, you may
+2026-11-25T18:58:06.7180427Z do so (now or later) by using -c with the switch command. Example:
+2026-11-25T18:58:06.7180695Z 
+2026-11-25T18:58:06.7180883Z   git switch -c <new-branch-name>
+2026-11-25T18:58:06.7181028Z 
+2026-11-25T18:58:06.7181156Z Or undo this operation with:
+2026-11-25T18:58:06.7181313Z 
+2026-11-25T18:58:06.7181431Z   git switch -
+2026-11-25T18:58:06.7181595Z 
+2026-11-25T18:58:06.7181767Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-25T18:58:06.7182024Z 
+2026-11-25T18:58:06.7182316Z HEAD is now at 6936d616 Merge 4c57e3b6434b653f8e5577dd483cc1f270902984 into 3388db3489e92430ca195d67cfa3fd04093d0404
+2026-11-25T18:58:06.7230477Z ##[endgroup]
+2026-11-25T18:58:06.7272688Z [command]/usr/bin/git log -1 --format=%H
+2026-11-25T18:58:06.7294292Z 6936d616b61cde5866b65b44ec6ea6fc81edd04e
+2026-11-25T18:58:06.7304661Z ##[group]Removing auth
+2026-11-25T18:58:06.7305219Z Removing SSH command configuration
+2026-11-25T18:58:06.7305698Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T18:58:06.7331010Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T18:58:06.7652561Z Removing HTTP extra header
+2026-11-25T18:58:06.7655700Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T18:58:06.7679511Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T18:58:06.7990042Z Removing includeIf entries pointing to credentials config files
+2026-11-25T18:58:06.7993044Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T18:58:06.8016703Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-11-25T18:58:06.8017377Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-11-25T18:58:06.8017989Z includeif.gitdir:/github/workspace/.git.path
+2026-11-25T18:58:06.8018495Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-25T18:58:06.8022965Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-11-25T18:58:06.8058426Z /home/runner/work/_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:58:06.8067150Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-5bf4ce1b\-8ffd\-4ed8\-9ffa\-a0db948e1a73\.config
+2026-11-25T18:58:06.8090810Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-11-25T18:58:06.8108234Z /home/runner/work/_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:58:06.8117350Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-5bf4ce1b\-8ffd\-4ed8\-9ffa\-a0db948e1a73\.config
+2026-11-25T18:58:06.8140911Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-25T18:58:06.8159439Z /github/runner_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:58:06.8164784Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-5bf4ce1b\-8ffd\-4ed8\-9ffa\-a0db948e1a73\.config
+2026-11-25T18:58:06.8188128Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-25T18:58:06.8205963Z /github/runner_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config
+2026-11-25T18:58:06.8210508Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-5bf4ce1b\-8ffd\-4ed8\-9ffa\-a0db948e1a73\.config
+2026-11-25T18:58:06.8233892Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T18:58:06.8554851Z Removing credentials config '/home/runner/work/_temp/git-credentials-5bf4ce1b-8ffd-4ed8-9ffa-a0db948e1a73.config'
+2026-11-25T18:58:06.8560025Z ##[endgroup]
+2026-11-25T18:58:06.8759780Z ##[group]Run actions/setup-node@v7
+2026-11-25T18:58:06.8760081Z with:
+2026-11-25T18:58:06.8760654Z   node-version: 22
+2026-11-25T18:58:06.8760896Z   check-latest: false
+2026-11-25T18:58:06.8762895Z   token: ***
+2026-11-25T18:58:06.8763110Z   package-manager-cache: true
+2026-11-25T18:58:06.8763372Z env:
+2026-11-25T18:58:06.8763570Z   GIT_CONFIG_COUNT: 1
+2026-11-25T18:58:06.8763811Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-11-25T18:58:06.8764128Z   GIT_CONFIG_VALUE_0: main
+2026-11-25T18:58:06.8764356Z   CARGO_NET_RETRY: 10
+2026-11-25T18:58:06.8764609Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:58:06.8764857Z   CARGO_TERM_COLOR: always
+2026-11-25T18:58:06.8765089Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:58:06.8765350Z   FORMAL_AI_NON_LINUX_CI: run
+2026-11-25T18:58:06.8765603Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:58:06.8765847Z   RUST_BACKTRACE: full
+2026-11-25T18:58:06.8766137Z   CARGO_REGISTRY_TOKEN: ***
+2026-11-25T18:58:06.8766411Z   CARGO_TOKEN: ***
+2026-11-25T18:58:06.8766758Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-11-25T18:58:06.8767046Z   DOCKERHUB_IMAGE: konard/formal-ai
+2026-11-25T18:58:06.8767322Z ##[endgroup]
+2026-11-25T18:58:07.1999208Z Found in cache @ /opt/hostedtoolcache/node/22.23.5/x64
+2026-11-25T18:58:08.6769432Z ##[group]Environment details
+2026-11-25T18:58:11.2480097Z node: v22.23.5
+2026-11-25T18:58:11.2480786Z npm: 10.9.9
+2026-11-25T18:58:11.2481108Z yarn: 1.22.22
+2026-11-25T18:58:11.2481785Z ##[endgroup]
+2026-11-25T18:58:11.2586983Z ##[group]Run node scripts/check-readable-code.mjs
+2026-11-25T18:58:11.2587503Z node scripts/check-readable-code.mjs
+2026-11-25T18:58:11.2587859Z node scripts/check-file-size.mjs
+2026-11-25T18:58:11.2588156Z node scripts/check-ci-speed.mjs
+2026-11-25T18:58:11.2588479Z node scripts/check-hardcoded-language.mjs
+2026-11-25T18:58:11.2588794Z node scripts/check-js-literals.mjs
+2026-11-25T18:58:11.2589119Z node scripts/check-tests-as-docs.mjs
+2026-11-25T18:58:11.2589451Z node scripts/assemble-requirements.mjs
+2026-11-25T18:58:11.2589782Z node scripts/generate-requirement-status.mjs
+2026-11-25T18:58:11.2590122Z node scripts/check-requirement-status.mjs
+2026-11-25T18:58:11.2590641Z node scripts/render-status.mjs --check
+2026-11-25T18:58:11.2591057Z node scripts/render-progressive-plan.mjs --check
+2026-11-25T18:58:11.2591522Z node scripts/mirror-package-data.mjs --check
+2026-11-25T18:58:11.2591850Z node scripts/check-fast-governance.mjs
+2026-11-25T18:58:11.7322701Z shell: /usr/bin/bash -e {0}
+2026-11-25T18:58:11.7323036Z env:
+2026-11-25T18:58:11.7323363Z   GIT_CONFIG_COUNT: 1
+2026-11-25T18:58:11.7323676Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-11-25T18:58:11.7323948Z   GIT_CONFIG_VALUE_0: main
+2026-11-25T18:58:11.7324207Z   CARGO_NET_RETRY: 10
+2026-11-25T18:58:11.7324443Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:58:11.7324696Z   CARGO_TERM_COLOR: always
+2026-11-25T18:58:11.7324963Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:58:11.7325232Z   FORMAL_AI_NON_LINUX_CI: run
+2026-11-25T18:58:11.7325492Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:58:11.7325720Z   RUST_BACKTRACE: full
+2026-11-25T18:58:11.7326219Z   CARGO_REGISTRY_TOKEN: ***
+2026-11-25T18:58:11.7326549Z   CARGO_TOKEN: ***
+2026-11-25T18:58:11.7326798Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-11-25T18:58:11.7327095Z   DOCKERHUB_IMAGE: konard/formal-ai
+2026-11-25T18:58:11.7327555Z ##[endgroup]
+2026-11-25T18:58:15.0660615Z readable code: 5831 code files are multi-line and readable (1 exemption(s) in use)
+2026-11-25T18:58:15.0960141Z 
+2026-11-25T18:58:15.0961296Z Checking file line limits: Rust 1000, every other maintained text format 1500...
+2026-11-25T18:58:15.0961634Z 
+2026-11-25T18:58:15.8913894Z All checked files are within their line limits
+2026-11-25T18:58:15.8914302Z 
+2026-11-25T18:58:15.9742990Z CI speed: 204 of 212 jobs in 61 workflows meet the 30-minute limit and 8 carry a recorded exception; long jobs start first; test shards are planned longest-first.
+2026-11-25T18:58:16.0052049Z 
+2026-11-25T18:58:16.0053227Z Checking rust/src/ for hardcoded user-facing natural language (R379)...
+2026-11-25T18:58:16.0053572Z 
+2026-11-25T18:58:16.4810580Z Detected prose literals: 611 | allowlisted: 611
+2026-11-25T18:58:16.4811073Z 
+2026-11-25T18:58:16.4811412Z No new hardcoded natural language; allowlist is in sync (611 entries).
+2026-11-25T18:58:16.4811714Z 
+2026-11-25T18:58:17.1432440Z natural-language literals (worker): 376 (ceiling 376)
+2026-11-25T18:58:17.1433104Z natural-language literals (meta): 0 (ceiling 0)
+2026-11-25T18:58:17.1433536Z natural-language literals (server): 0 (ceiling 0)
+2026-11-25T18:58:17.1434052Z natural-language literals (agentic): 0 (ceiling 0)
+2026-11-25T18:58:19.5730057Z 
+2026-11-25T18:58:19.5731939Z Checking behavioural tests show exact example answers (R234-2)...
+2026-11-25T18:58:19.5732362Z 
+2026-11-25T18:58:19.5742077Z All loose-only behavioural tests are tracked in the 297-row burn-down allowlist; every other answer assertion is exact
+2026-11-25T18:58:19.5742651Z 
+2026-11-25T18:58:19.6255249Z 
+2026-11-25T18:58:19.6256474Z Checking REQUIREMENTS.md and docs/requirements/assembled/ against docs/requirements/ (181 shards)...
+2026-11-25T18:58:19.6256834Z 
+2026-11-25T18:58:19.6257183Z REQUIREMENTS.md and its 6 part(s) match the shards.
+2026-11-25T18:58:19.6257414Z 
+2026-11-25T18:58:19.7500021Z requirement-status ledger is current (169 files)
+2026-11-25T18:58:20.1065837Z requirement-status parity holds for 1529 assembled requirements
+2026-11-25T18:58:20.4263134Z status surfaces are current
+2026-11-25T18:58:20.7530706Z progressive plan: 1529 requirements; recorded 34, measured 3, partial 128; 916 pinned only by Rust
+2026-11-25T18:58:20.8417961Z package-data mirror: 323 files demanded, 0 refreshed (0 bytes), all byte-equal
+2026-11-25T18:58:21.0647206Z fast-governance language-parity: PASS (195ms)
+2026-11-25T18:58:21.0647807Z language parity: 42 explicit dated gaps; debt rows are exact
+2026-11-25T18:58:21.0648120Z 
+2026-11-25T18:58:21.1110519Z fast-governance minimal-core: FAIL (46ms)
+2026-11-25T18:58:21.1111064Z minimal-core boundary audit failed:
+2026-11-25T18:58:21.1111526Z rust/src/solver_handlers/mod.rs grew from 747 to 749 lines
+2026-11-25T18:58:21.1112004Z rust/src/solver_handlers/unit_conversion.rs grew from 605 to 648 lines
+2026-11-25T18:58:21.1112484Z source_lines_max grew from 36691 to 36736
+2026-11-25T18:58:21.1112853Z outside_core_lines_max grew from 17655 to 17657
+2026-11-25T18:58:21.1113061Z 
+2026-11-25T18:58:21.3845963Z fast-governance current-debt-ceilings: PASS (274ms)
+2026-11-25T18:58:21.3846842Z Current debt ceilings match measured source; base nonincrease is checked by the existing separate gate
+2026-11-25T18:58:21.3847144Z 
+2026-11-25T18:58:22.7163931Z fast-governance honest-closure: PASS (1331ms)
+2026-11-25T18:58:22.7164566Z closure audit (data/meta/closure-audit.lino):
+2026-11-25T18:58:22.7165512Z   unresolved_distinct_honest: measured 1012 / reviewed 1012
+2026-11-25T18:58:22.7165895Z closure audit holds
+2026-11-25T18:58:22.7166020Z 
+2026-11-25T18:58:22.7902403Z fast-governance role-namespace: PASS (73ms)
+2026-11-25T18:58:22.7903022Z roles: 673 (345 also meanings, 328 predicate-only)
+2026-11-25T18:58:22.7903689Z checked /home/runner/work/formal-ai/formal-ai/data/seed/roles.lino
+2026-11-25T18:58:22.7903926Z 
+2026-11-25T18:58:22.8852640Z fast-governance seed-metadata: PASS (95ms)
+2026-11-25T18:58:22.8853228Z seed metadata: audited 2634 concepts; 1081 per-record gaps captured in data
+2026-11-25T18:58:22.8853886Z 
+2026-11-25T18:58:22.9331618Z fast-governance response-language-parity: PASS (47ms)
+2026-11-25T18:58:22.9332396Z data/meta/response-language-parity-debt.lino is current
+2026-11-25T18:58:22.9332768Z 
+2026-11-25T18:58:22.9930987Z fast-governance worker-line-budget: PASS (59ms)
+2026-11-25T18:58:22.9931467Z 
+2026-11-25T18:58:22.9931760Z Checking the UI-glue line budget for the split JavaScript worker...
+2026-11-25T18:58:22.9932117Z 
+2026-11-25T18:58:22.9932403Z Worker JavaScript line counts (js/worker/*.js):
+2026-11-25T18:58:22.9932944Z       89 /     89  js/worker/formal_ai_worker.js
+2026-11-25T18:58:22.9933432Z       84 /     84  js/worker/formal_ai_worker_agent_workspace.js
+2026-11-25T18:58:22.9933991Z      814 /    814  js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js
+2026-11-25T18:58:22.9934574Z      741 /    742  js/worker/formal_ai_worker_behavior_rules_and_self_facts.js
+2026-11-25T18:58:22.9935110Z      187 /    187  js/worker/formal_ai_worker_browser_runtime.js
+2026-11-25T18:58:22.9935664Z     1117 /   1146  js/worker/formal_ai_worker_calendar_and_proofs.js
+2026-11-25T18:58:22.9936159Z      715 /    715  js/worker/formal_ai_worker_calendar_offset.js
+2026-11-25T18:58:22.9936655Z       26 /     27  js/worker/formal_ai_worker_candidate_validation.js
+2026-11-25T18:58:22.9937196Z      659 /    659  js/worker/formal_ai_worker_capabilities_and_runtime_rules.js
+2026-11-25T18:58:22.9937775Z      170 /    170  js/worker/formal_ai_worker_catalog_parameters.js
+2026-11-25T18:58:22.9938280Z      223 /    230  js/worker/formal_ai_worker_claim_evidence.js
+2026-11-25T18:58:22.9938740Z      277 /    277  js/worker/formal_ai_worker_claim_operands.js
+2026-11-25T18:58:22.9939241Z       40 /     40  js/worker/formal_ai_worker_closed_programs.js
+2026-11-25T18:58:22.9939804Z      829 /    843  js/worker/formal_ai_worker_code_examples.js
+2026-11-25T18:58:22.9940512Z      203 /    210  js/worker/formal_ai_worker_code_plans.js
+2026-11-25T18:58:22.9941394Z      333 /    333  js/worker/formal_ai_worker_code_refactoring.js
+2026-11-25T18:58:22.9941871Z      815 /    815  js/worker/formal_ai_worker_code_synthesis.js
+2026-11-25T18:58:22.9942397Z      534 /    534  js/worker/formal_ai_worker_code_task_support.js
+2026-11-25T18:58:22.9942823Z     1083 /   1083  js/worker/formal_ai_worker_code_tasks.js
+2026-11-25T18:58:22.9943458Z     1393 /   1393  js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js
+2026-11-25T18:58:22.9944012Z       42 /     42  js/worker/formal_ai_worker_compiled_procedure.js
+2026-11-25T18:58:22.9944401Z      383 /    383  js/worker/formal_ai_worker_concept_lookup.js
+2026-11-25T18:58:22.9944900Z     1065 /   1269  js/worker/formal_ai_worker_concept_queries_and_arithmetic.js
+2026-11-25T18:58:22.9945335Z       60 /     60  js/worker/formal_ai_worker_conversation_followups.js
+2026-11-25T18:58:22.9945768Z       66 /     66  js/worker/formal_ai_worker_conversation_history.js
+2026-11-25T18:58:22.9946169Z       29 /     29  js/worker/formal_ai_worker_conversation_summary_request.js
+2026-11-25T18:58:22.9946538Z      153 /    153  js/worker/formal_ai_worker_coreference.js
+2026-11-25T18:58:22.9946915Z       16 /     16  js/worker/formal_ai_worker_crate_ascii_character.js
+2026-11-25T18:58:22.9947258Z       22 /     23  js/worker/formal_ai_worker_crate_callback_values.js
+2026-11-25T18:58:22.9947653Z      507 /    520  js/worker/formal_ai_worker_crate_cnl_grammar.js
+2026-11-25T18:58:22.9948004Z      497 /    500  js/worker/formal_ai_worker_crate_cnl_output.js
+2026-11-25T18:58:22.9948409Z      264 /    278  js/worker/formal_ai_worker_crate_coding_catalog.js
+2026-11-25T18:58:22.9948796Z       72 /   1000  js/worker/formal_ai_worker_crate_command_output_contract.js
+2026-11-25T18:58:22.9949230Z       69 /     69  js/worker/formal_ai_worker_crate_concise_dependency_restatement.js
+2026-11-25T18:58:22.9949698Z      193 /    193  js/worker/formal_ai_worker_crate_content.js
+2026-11-25T18:58:22.9950062Z       66 /     66  js/worker/formal_ai_worker_crate_conversation_summary.js
+2026-11-25T18:58:22.9950776Z      226 /    229  js/worker/formal_ai_worker_crate_dependency_summarization.js
+2026-11-25T18:58:22.9951185Z      197 /    198  js/worker/formal_ai_worker_crate_dialogue_formalization.js
+2026-11-25T18:58:22.9951600Z       80 /     85  js/worker/formal_ai_worker_crate_engine.js
+2026-11-25T18:58:22.9951970Z       69 /     69  js/worker/formal_ai_worker_crate_engine_stable_identifier.js
+2026-11-25T18:58:22.9952338Z      172 /    180  js/worker/formal_ai_worker_crate_event_log.js
+2026-11-25T18:58:22.9952730Z      390 /    414  js/worker/formal_ai_worker_crate_fact_derivation.js
+2026-11-25T18:58:22.9953104Z       29 /     29  js/worker/formal_ai_worker_crate_final_payload.js
+2026-11-25T18:58:22.9953451Z       46 /     47  js/worker/formal_ai_worker_crate_final_result.js
+2026-11-25T18:58:22.9953970Z       50 /     55  js/worker/formal_ai_worker_crate_formalization_grammar.js
+2026-11-25T18:58:22.9954385Z      180 /    180  js/worker/formal_ai_worker_crate_formalization_segment.js
+2026-11-25T18:58:22.9954801Z       82 /     83  js/worker/formal_ai_worker_crate_google_trends_feed.js
+2026-11-25T18:58:22.9955175Z      150 /    153  js/worker/formal_ai_worker_crate_host.js
+2026-11-25T18:58:22.9955614Z      214 /    231  js/worker/formal_ai_worker_crate_intent_formalization.js
+2026-11-25T18:58:22.9956042Z      206 /    206  js/worker/formal_ai_worker_crate_intent_formalization_requirements.js
+2026-11-25T18:58:22.9956455Z      474 /    474  js/worker/formal_ai_worker_crate_language.js
+2026-11-25T18:58:22.9956867Z      134 /    134  js/worker/formal_ai_worker_crate_least_action.js
+2026-11-25T18:58:22.9957258Z      115 /    115  js/worker/formal_ai_worker_crate_links_format.js
+2026-11-25T18:58:22.9957646Z       54 /     54  js/worker/formal_ai_worker_crate_literal_authoring_contract.js
+2026-11-25T18:58:22.9958047Z       27 /     27  js/worker/formal_ai_worker_crate_literal_body_ownership.js
+2026-11-25T18:58:22.9958481Z      168 /    168  js/worker/formal_ai_worker_crate_literal_content.js
+2026-11-25T18:58:22.9959168Z       19 /     19  js/worker/formal_ai_worker_crate_literal_instruction_view.js
+2026-11-25T18:58:22.9959638Z       36 /     55  js/worker/formal_ai_worker_crate_lowercase_spans.js
+2026-11-25T18:58:22.9960071Z       50 /     50  js/worker/formal_ai_worker_crate_messages.js
+2026-11-25T18:58:22.9960652Z      531 /    534  js/worker/formal_ai_worker_crate_meta_executor.js
+2026-11-25T18:58:22.9961019Z      254 /    275  js/worker/formal_ai_worker_crate_method_registry.js
+2026-11-25T18:58:22.9961384Z      115 /    115  js/worker/formal_ai_worker_crate_modules.js
+2026-11-25T18:58:22.9961793Z      163 /    287  js/worker/formal_ai_worker_crate_normal_markov.js
+2026-11-25T18:58:22.9962237Z       33 /   1000  js/worker/formal_ai_worker_crate_normalization_cache.js
+2026-11-25T18:58:22.9962637Z       53 /     53  js/worker/formal_ai_worker_crate_operation_owner.js
+2026-11-25T18:58:22.9963000Z      114 /    117  js/worker/formal_ai_worker_crate_page_formalization.js
+2026-11-25T18:58:22.9963378Z       98 /     98  js/worker/formal_ai_worker_crate_plan.js
+2026-11-25T18:58:22.9963753Z      446 /    446  js/worker/formal_ai_worker_crate_proposition_structure.js
+2026-11-25T18:58:22.9964146Z      148 /    148  js/worker/formal_ai_worker_crate_quoted_segments.js
+2026-11-25T18:58:22.9964554Z       33 /     33  js/worker/formal_ai_worker_crate_raw_lowercase_span.js
+2026-11-25T18:58:22.9964991Z      145 /    145  js/worker/formal_ai_worker_crate_recursive_execution.js
+2026-11-25T18:58:22.9965411Z      195 /    201  js/worker/formal_ai_worker_crate_requirement_extraction.js
+2026-11-25T18:58:22.9965804Z      188 /    188  js/worker/formal_ai_worker_crate_round_trip_translation.js
+2026-11-25T18:58:22.9966173Z      273 /    301  js/worker/formal_ai_worker_crate_rust_str.js
+2026-11-25T18:58:22.9966517Z      149 /    163  js/worker/formal_ai_worker_crate_seed.js
+2026-11-25T18:58:22.9966910Z       99 /    108  js/worker/formal_ai_worker_crate_seed_caller_context.js
+2026-11-25T18:58:22.9967274Z       69 /     69  js/worker/formal_ai_worker_crate_seed_concepts.js
+2026-11-25T18:58:22.9967720Z      314 /    347  js/worker/formal_ai_worker_crate_seed_meanings.js
+2026-11-25T18:58:22.9968075Z       33 /     33  js/worker/formal_ai_worker_crate_seed_parser.js
+2026-11-25T18:58:22.9968434Z       63 /    144  js/worker/formal_ai_worker_crate_seed_registry.js
+2026-11-25T18:58:22.9968795Z       59 /     59  js/worker/formal_ai_worker_crate_seed_reports.js
+2026-11-25T18:58:22.9969159Z       45 /     45  js/worker/formal_ai_worker_crate_seed_terminal_commands.js
+2026-11-25T18:58:22.9969607Z       38 /     38  js/worker/formal_ai_worker_crate_shell-command-negative-ownership.js
+2026-11-25T18:58:22.9970027Z      183 /    198  js/worker/formal_ai_worker_crate_shell_command_policy.js
+2026-11-25T18:58:22.9970630Z      166 /    177  js/worker/formal_ai_worker_crate_skill_compiler.js
+2026-11-25T18:58:22.9971058Z      365 /    395  js/worker/formal_ai_worker_crate_skill_procedure.js
+2026-11-25T18:58:22.9971456Z      215 /    229  js/worker/formal_ai_worker_crate_skill_procedure_artifact.js
+2026-11-25T18:58:22.9971863Z      113 /    113  js/worker/formal_ai_worker_crate_solver_event_projection.js
+2026-11-25T18:58:22.9972241Z      262 /    262  js/worker/formal_ai_worker_crate_solver_formalization.js
+2026-11-25T18:58:22.9972780Z      100 /    100  js/worker/formal_ai_worker_crate_statement_relation.js
+2026-11-25T18:58:22.9973167Z      455 /    496  js/worker/formal_ai_worker_crate_summarization.js
+2026-11-25T18:58:22.9973560Z      285 /    285  js/worker/formal_ai_worker_crate_summarization_dedup.js
+2026-11-25T18:58:22.9973986Z      154 /    167  js/worker/formal_ai_worker_crate_summarization_dialog.js
+2026-11-25T18:58:22.9974395Z      153 /    169  js/worker/formal_ai_worker_crate_summarization_identifier.js
+2026-11-25T18:58:22.9974833Z      207 /    207  js/worker/formal_ai_worker_crate_summarization_markdown.js
+2026-11-25T18:58:22.9975243Z      167 /    182  js/worker/formal_ai_worker_crate_summarization_vocabulary.js
+2026-11-25T18:58:22.9975756Z       46 /     46  js/worker/formal_ai_worker_crate_task_decomposition_cues.js
+2026-11-25T18:58:22.9976159Z      643 /    666  js/worker/formal_ai_worker_crate_text_formalization.js
+2026-11-25T18:58:22.9976574Z      117 /    117  js/worker/formal_ai_worker_crate_theorem_claim_binding.js
+2026-11-25T18:58:22.9977022Z      479 /    479  js/worker/formal_ai_worker_crate_translation_formalization.js
+2026-11-25T18:58:22.9977402Z       91 /     91  js/worker/formal_ai_worker_crate_typed_meaning.js
+2026-11-25T18:58:22.9977785Z      145 /    145  js/worker/formal_ai_worker_crate_unread_structure.js
+2026-11-25T18:58:22.9978147Z       80 /     80  js/worker/formal_ai_worker_crate_write_lexicon.js
+2026-11-25T18:58:22.9978549Z       35 /     35  js/worker/formal_ai_worker_crate_write_lino.js
+2026-11-25T18:58:22.9978894Z      191 /    219  js/worker/formal_ai_worker_crate_write_str.js
+2026-11-25T18:58:22.9979220Z      672 /    672  js/worker/formal_ai_worker_creative.js
+2026-11-25T18:58:22.9979587Z      586 /    649  js/worker/formal_ai_worker_creative_writing.js
+2026-11-25T18:58:22.9979959Z      135 /    135  js/worker/formal_ai_worker_currency_quotes.js
+2026-11-25T18:58:22.9980479Z      329 /    329  js/worker/formal_ai_worker_derivation.js
+2026-11-25T18:58:22.9980831Z      164 /    164  js/worker/formal_ai_worker_dispatch.js
+2026-11-25T18:58:22.9981223Z      120 /    120  js/worker/formal_ai_worker_documentation_method.js
+2026-11-25T18:58:22.9981599Z       66 /    115  js/worker/formal_ai_worker_documented_commands.js
+2026-11-25T18:58:22.9982007Z     1250 /   1250  js/worker/formal_ai_worker_equations_and_word_problems.js
+2026-11-25T18:58:22.9982391Z       38 /    376  js/worker/formal_ai_worker_fact_derivation.js
+2026-11-25T18:58:22.9982798Z     1307 /   1307  js/worker/formal_ai_worker_facts_and_software_phrases.js
+2026-11-25T18:58:22.9983170Z      948 /    948  js/worker/formal_ai_worker_factual_qa.js
+2026-11-25T18:58:22.9983523Z       89 /     89  js/worker/formal_ai_worker_formalization.js
+2026-11-25T18:58:22.9983983Z      778 /    778  js/worker/formal_ai_worker_formalization_request.js
+2026-11-25T18:58:22.9984381Z      310 /    310  js/worker/formal_ai_worker_formalization_support.js
+2026-11-25T18:58:22.9984751Z      482 /    482  js/worker/formal_ai_worker_formalization_targets.js
+2026-11-25T18:58:22.9985125Z     1134 /   1134  js/worker/formal_ai_worker_format_conversion.js
+2026-11-25T18:58:22.9985532Z      235 /    235  js/worker/formal_ai_worker_handler_rule_values.js
+2026-11-25T18:58:22.9985875Z      819 /    819  js/worker/formal_ai_worker_handler_rules.js
+2026-11-25T18:58:22.9986240Z      733 /    735  js/worker/formal_ai_worker_how_to_guide.js
+2026-11-25T18:58:22.9986591Z      129 /    129  js/worker/formal_ai_worker_indexed_procedures.js
+2026-11-25T18:58:22.9987038Z      633 /    633  js/worker/formal_ai_worker_installation_and_software_followups.js
+2026-11-25T18:58:22.9987457Z     1154 /   1157  js/worker/formal_ai_worker_meaning_lexicon.js
+2026-11-25T18:58:22.9987809Z      110 /    110  js/worker/formal_ai_worker_memory_inspection.js
+2026-11-25T18:58:22.9988214Z      674 /    674  js/worker/formal_ai_worker_memory_programs.js
+2026-11-25T18:58:22.9988567Z      160 /    160  js/worker/formal_ai_worker_meta_composite.js
+2026-11-25T18:58:22.9988930Z     1198 /   1198  js/worker/formal_ai_worker_meta_reasoner.js
+2026-11-25T18:58:22.9989296Z      644 /    647  js/worker/formal_ai_worker_meta_synthesis.js
+2026-11-25T18:58:22.9989663Z      554 /    554  js/worker/formal_ai_worker_native_lanes.js
+2026-11-25T18:58:22.9990029Z      105 /    105  js/worker/formal_ai_worker_natural_language_tools.js
+2026-11-25T18:58:22.9990921Z      100 /    100  js/worker/formal_ai_worker_network_snapshot.js
+2026-11-25T18:58:22.9991311Z      302 /    302  js/worker/formal_ai_worker_notation.js
+2026-11-25T18:58:22.9991675Z      753 /    754  js/worker/formal_ai_worker_number_constraints.js
+2026-11-25T18:58:22.9992043Z      412 /    505  js/worker/formal_ai_worker_obligation_plans.js
+2026-11-25T18:58:22.9992458Z      488 /    488  js/worker/formal_ai_worker_obligations.js
+2026-11-25T18:58:22.9992822Z      124 /    124  js/worker/formal_ai_worker_page_formalization.js
+2026-11-25T18:58:22.9993532Z      637 /    637  js/worker/formal_ai_worker_pattern_inference.js
+2026-11-25T18:58:22.9993886Z      108 /    108  js/worker/formal_ai_worker_policy_gates.js
+2026-11-25T18:58:22.9994264Z      126 /    126  js/worker/formal_ai_worker_practical_help.js
+2026-11-25T18:58:22.9994604Z      269 /    269  js/worker/formal_ai_worker_product_search.js
+2026-11-25T18:58:22.9994947Z     1248 /   1250  js/worker/formal_ai_worker_program_blueprints.js
+2026-11-25T18:58:22.9995326Z      425 /    425  js/worker/formal_ai_worker_program_ir.js
+2026-11-25T18:58:22.9995692Z      974 /   1030  js/worker/formal_ai_worker_program_plans.js
+2026-11-25T18:58:22.9996040Z      282 /    318  js/worker/formal_ai_worker_program_requests.js
+2026-11-25T18:58:22.9996385Z       46 /     48  js/worker/formal_ai_worker_project_summaries.js
+2026-11-25T18:58:22.9996709Z      279 /    279  js/worker/formal_ai_worker_prompt_data.js
+2026-11-25T18:58:22.9997111Z      180 /    180  js/worker/formal_ai_worker_quantity_constraints.js
+2026-11-25T18:58:22.9997461Z      223 /    223  js/worker/formal_ai_worker_reasoning_guards.js
+2026-11-25T18:58:22.9997800Z      143 /    259  js/worker/formal_ai_worker_recurrence.js
+2026-11-25T18:58:22.9998167Z      113 /    113  js/worker/formal_ai_worker_recurrence_discovery.js
+2026-11-25T18:58:22.9998538Z      184 /    184  js/worker/formal_ai_worker_recurrence_objects.js
+2026-11-25T18:58:22.9998884Z      273 /    273  js/worker/formal_ai_worker_release_timeline.js
+2026-11-25T18:58:22.9999248Z      221 /    221  js/worker/formal_ai_worker_requirement_contradiction.js
+2026-11-25T18:58:22.9999661Z        6 /    219  js/worker/formal_ai_worker_requirement_extraction.js
+2026-11-25T18:58:23.0000034Z     1051 /   1210  js/worker/formal_ai_worker_search_queries_and_how_to.js
+2026-11-25T18:58:23.0000597Z       18 /     18  js/worker/formal_ai_worker_search_statement_fusion.js
+2026-11-25T18:58:23.0001027Z       20 /     20  js/worker/formal_ai_worker_seed_captures.js
+2026-11-25T18:58:23.0001396Z      797 /    922  js/worker/formal_ai_worker_seed_responses_and_language.js
+2026-11-25T18:58:23.0001782Z      512 /    512  js/worker/formal_ai_worker_shell_compose.js
+2026-11-25T18:58:23.0002151Z     1031 /   1031  js/worker/formal_ai_worker_software_project_plans.js
+2026-11-25T18:58:23.0002526Z     1359 /   1359  js/worker/formal_ai_worker_solve.js
+2026-11-25T18:58:23.0002851Z      413 /    413  js/worker/formal_ai_worker_solver_events.js
+2026-11-25T18:58:23.0003198Z      140 /    140  js/worker/formal_ai_worker_source_callable_contracts.js
+2026-11-25T18:58:23.0003585Z       36 /     36  js/worker/formal_ai_worker_source_endpoints.js
+2026-11-25T18:58:23.0003971Z       41 /     41  js/worker/formal_ai_worker_source_fetch.js
+2026-11-25T18:58:23.0004348Z      107 /    107  js/worker/formal_ai_worker_source_qualified_definition.js
+2026-11-25T18:58:23.0004735Z       16 /     16  js/worker/formal_ai_worker_source_qualified_events.js
+2026-11-25T18:58:23.0005142Z      296 /    299  js/worker/formal_ai_worker_source_walk.js
+2026-11-25T18:58:23.0005510Z      829 /    832  js/worker/formal_ai_worker_statement_verification.js
+2026-11-25T18:58:23.0005885Z     1070 /   1070  js/worker/formal_ai_worker_statistics.js
+2026-11-25T18:58:23.0006229Z      122 /    122  js/worker/formal_ai_worker_text_payload.js
+2026-11-25T18:58:23.0006598Z      753 /    903  js/worker/formal_ai_worker_text_transform.js
+2026-11-25T18:58:23.0006947Z       14 /     14  js/worker/formal_ai_worker_tool_execution_policy.js
+2026-11-25T18:58:23.0007316Z      150 /    151  js/worker/formal_ai_worker_translation_composition.js
+2026-11-25T18:58:23.0007775Z     1185 /   1231  js/worker/formal_ai_worker_translation_recall_and_compound_interest.js
+2026-11-25T18:58:23.0008189Z      100 /    100  js/worker/formal_ai_worker_triz.js
+2026-11-25T18:58:23.0008510Z      721 /    721  js/worker/formal_ai_worker_units.js
+2026-11-25T18:58:23.0008897Z       33 /     33  js/worker/formal_ai_worker_unknown_language.js
+2026-11-25T18:58:23.0009309Z      155 /    155  js/worker/formal_ai_worker_verifiable_task.js
+2026-11-25T18:58:23.0009661Z     1023 /   1023  js/worker/formal_ai_worker_web_formalize.js
+2026-11-25T18:58:23.0010065Z     1168 /   1168  js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
+2026-11-25T18:58:23.0010891Z     1316 /   1317  js/worker/formal_ai_worker_web_search_and_projects.js
+2026-11-25T18:58:23.0011293Z      256 /    256  js/worker/formal_ai_worker_wikihow.js
+2026-11-25T18:58:23.0011688Z     1344 /   1392  js/worker/formal_ai_worker_wikipedia_and_shell_commands.js
+2026-11-25T18:58:23.0012062Z      121 /    121  js/worker/formal_ai_worker_word_relations.js
+2026-11-25T18:58:23.0012551Z     1274 /   1279  js/worker/formal_ai_worker_write_program_and_research.js
+2026-11-25T18:58:23.0012835Z 
+2026-11-25T18:58:23.0013001Z   total: 66257 lines (summed ceilings 70579, target 3000)
+2026-11-25T18:58:23.0013229Z 
+2026-11-25T18:58:23.0013552Z Every module is within its own ceiling. 63257 line(s) above the 3000-line UI-glue target.
+2026-11-25T18:58:23.0014495Z Migrate more solver logic into the Rust→WASM worker, then run
+2026-11-25T18:58:23.0014971Z `rust-script scripts/check-worker-line-budget.rs --write` to lock in the drop.
+2026-11-25T18:58:23.0015264Z 
+2026-11-25T18:58:23.0015269Z 
+2026-11-25T18:58:23.0017101Z {"scope":"current source governance; not base nonincrease or tests-as-docs parity","results":[{"name":"language-parity","passed":true,"status":0,"durationMs":195},{"name":"minimal-core","passed":false,"status":1,"durationMs":46},{"name":"current-debt-ceilings","passed":true,"status":0,"durationMs":274},{"name":"honest-closure","passed":true,"status":0,"durationMs":1331},{"name":"role-namespace","passed":true,"status":0,"durationMs":73},{"name":"seed-metadata","passed":true,"status":0,"durationMs":95},{"name":"response-language-parity","passed":true,"status":0,"durationMs":47},{"name":"worker-line-budget","passed":true,"status":0,"durationMs":59}]}
+2026-11-25T18:58:23.0029677Z ##[error]Process completed with exit code 1.
+2026-11-25T18:58:23.0146002Z Post job cleanup.
+2026-11-25T18:58:23.0822108Z [command]/usr/bin/git version
+2026-11-25T18:58:23.0873494Z git version 2.56.1
+2026-11-25T18:58:23.0897922Z Temporarily overriding HOME='/home/runner/work/_temp/8ff6ba0c-8a7a-4326-a2c7-70afac2bae07' before making global git config changes
+2026-11-25T18:58:23.0899334Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-25T18:58:23.0901552Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-11-25T18:58:23.0926054Z Removing SSH command configuration
+2026-11-25T18:58:23.0930722Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T18:58:23.0954749Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T18:58:23.1356284Z Removing HTTP extra header
+2026-11-25T18:58:23.1362186Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T18:58:23.1389943Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T18:58:23.1725405Z Removing includeIf entries pointing to credentials config files
+2026-11-25T18:58:23.1730504Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T18:58:23.1756361Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T18:58:23.2197221Z Evaluate and set job outputs
+2026-11-25T18:58:23.2204097Z Cleaning up orphan processes
