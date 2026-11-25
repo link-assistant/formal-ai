@@ -348,7 +348,7 @@ pub fn source_registry() -> Vec<SourceRecord> {
                 license_name: entry.find_child_value("license_name").to_owned(),
                 license_url: entry.find_child_value("license_url").to_owned(),
                 article: entry.find_child_value("article").to_owned(),
-                article_space: entry.find_child_value("article_space").to_owned(),
+                article_space: entry.find_child_value("article-space").to_owned(),
                 cache_path: entry.find_child_value("cache_path").to_owned(),
                 note: entry.find_child_value("note").to_owned(),
                 need_kinds: seed_list(entry.find_child_value("need_kinds"))

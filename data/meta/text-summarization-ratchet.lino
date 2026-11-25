@@ -18,13 +18,21 @@
 # lists the 13 such merges no longer made, so duplicates-removed fell from 79
 # to 69 (experiments/issue-1487/dedup-count.mjs measures both rules on one
 # tree) and retention by 0.001 to 0.003; the correctness fix is recorded here.
+# Re-based for issue #1632: the Russian report verbs отправь/отправить grow
+# report_issue_action, so the shared English surface "report" now names
+# act_record (fewest surfaces wins). Issue 80 then stops dropping "Open
+# formal-ai-memory.lino in any text editor and remove …" as a restatement of
+# "Click Export memory … save formal-ai-memory.lino": a false merge made only
+# because "open" and "report" both named report_issue_action. Retention is
+# unchanged; duplicates-removed fell from 69 to 68 and issues from 36 to 35
+# (experiments/issue-1632/summarization-dedup-diff.mjs, probe-restates.mjs).
 text-summarization-ratchet
   source "scripts/measure-dependency-summarization.mjs"
   corpus "data/benchmarks/dependency-summarization/corpus.lino"
   documents 70
   compression 0.639
   key-fact-retention 0.649
-  duplicates-removed 69
+  duplicates-removed 68
   pages-documents 40
   pages-compression 0.639
   pages-key-fact-retention 0.815
@@ -32,4 +40,4 @@ text-summarization-ratchet
   issues-documents 30
   issues-compression 0.639
   issues-key-fact-retention 0.546
-  issues-duplicates-removed 36
+  issues-duplicates-removed 35

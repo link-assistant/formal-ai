@@ -20,11 +20,11 @@ export function classifierPolicy() {
   const root = parseLino(readRepoFile('data/seed/auto-mode-classifier.lino'));
   policy = {
     markers: childrenNamed(root, 'marker').map((node) => node.value),
-    transcriptOpen: childValue(root, 'transcript_open'),
-    transcriptClose: childValue(root, 'transcript_close'),
-    userEntryKey: childValue(root, 'user_entry_key'),
-    allowText: childValue(root, 'allow_text'),
-    blockTemplate: childValue(root, 'block_template'),
+    transcriptOpen: childValue(root, 'transcript-open'),
+    transcriptClose: childValue(root, 'transcript-close'),
+    userEntryKey: childValue(root, 'user-entry-key'),
+    allowText: childValue(root, 'allow-text'),
+    blockTemplate: childValue(root, 'block-template'),
     rules: childrenNamed(root, 'rule').map((node) => ({
       name: node.value,
       reason: childValue(node, 'reason'),

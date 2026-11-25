@@ -63,7 +63,7 @@ function sourceWalkRegistry() {
       licenseName: value("license_name"),
       licenseUrl: value("license_url"),
       article: value("article"),
-      articleSpace: value("article_space"),
+      articleSpace: value("article-space"),
       tier: value("source_tier") || sourceWalkTierFromPrimacy(primacy ? primacy.value : ""),
       registryIndex,
     };
@@ -80,6 +80,19 @@ function sourceWalkPercentEncode(value) {
       : `%${byte.toString(16).toUpperCase().padStart(2, "0")}`;
   }
   return encoded;
+}
+
+/**
+ * The human article an `action=parse` capture came from (issue #1632), or the
+ * capture URL itself. Mirrors `SourceRecord::article_url` in rust/src/seed/sources.rs.
+ */
+function sourceWalkArticleUrl(record, sourceUrl) {
+  let url;
+  try { url = new URL(sourceUrl); } catch { return sourceUrl; }
+  const page = (url.searchParams.get("page") || "").trim();
+  if (!record?.article || !url.pathname.endsWith("/api.php") || url.searchParams.get("action") !== "parse" || !page) return sourceUrl;
+  const title = page.split(/\s+/u).map(sourceWalkPercentEncode).join(sourceWalkPercentEncode(record.articleSpace || "_"));
+  return record.article.split("{origin}").join(url.origin).split("{title}").join(title);
 }
 
 function sourceWalkTierWeight(tier) {

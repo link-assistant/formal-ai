@@ -64,8 +64,8 @@ fn parse_policy(text: &str) -> ClassifierPolicy {
     let root = tree
         .children
         .iter()
-        .find(|node| node.name == "auto_mode_classifier")
-        .expect("data/seed/auto-mode-classifier.lino must declare auto_mode_classifier");
+        .find(|node| node.name == "auto-mode-classifier")
+        .expect("data/seed/auto-mode-classifier.lino must declare auto-mode-classifier");
     let values = |name: &str| -> Vec<String> {
         root.children
             .iter()
@@ -90,11 +90,11 @@ fn parse_policy(text: &str) -> ClassifierPolicy {
         .collect();
     ClassifierPolicy {
         markers: values("marker"),
-        transcript_open: root.find_child_value("transcript_open").to_owned(),
-        transcript_close: root.find_child_value("transcript_close").to_owned(),
-        user_entry_key: root.find_child_value("user_entry_key").to_owned(),
-        allow_text: root.find_child_value("allow_text").to_owned(),
-        block_template: root.find_child_value("block_template").to_owned(),
+        transcript_open: root.find_child_value("transcript-open").to_owned(),
+        transcript_close: root.find_child_value("transcript-close").to_owned(),
+        user_entry_key: root.find_child_value("user-entry-key").to_owned(),
+        allow_text: root.find_child_value("allow-text").to_owned(),
+        block_template: root.find_child_value("block-template").to_owned(),
         rules,
     }
 }
