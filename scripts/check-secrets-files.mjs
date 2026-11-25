@@ -93,7 +93,7 @@ if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
   const token='secret-scan-'+randomUUID();
   console.log('::stop-commands::'+token);
   try {
-    const version=process.env.SECRETLINT_VERSION??'14.0.0';
+    const version=process.env.SECRETLINT_VERSION??'14.1.0';
     const engine=await createScanner(version);
     const result=await checkFiles(filenames(process.stdin),engine);
     console.log(JSON.stringify({secretsScan:result}));

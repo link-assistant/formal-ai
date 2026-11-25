@@ -101,14 +101,14 @@ done
 # whatever `latest` was at the moment the job ran, so the same commit could pass
 # today and fail tomorrow with no change of ours, and a compromised publish would
 # execute in CI unreviewed. Bump SECRETLINT_VERSION deliberately.
-SECRETLINT_VERSION="${SECRETLINT_VERSION:-14.0.0}"
+SECRETLINT_VERSION="${SECRETLINT_VERSION:-14.1.0}"
 debug "secretlint ${SECRETLINT_VERSION}"
 
 # Feed the exact existing selection through stdin rather than interpolating paths
 # into npm's shell command. The pinned API is loaded once for all archive members.
 export SECRETLINT_VERSION
 scan_files() {
-  if [ "$SECRETLINT_VERSION" = 14.0.0 ]; then
+  if [ "$SECRETLINT_VERSION" = 14.1.0 ]; then
     # npm exec pins the root package, but resolves its semver transitives again.
     # Install the committed closure separately from application dependencies.
     scanner_directory="$(mktemp -d "${TMPDIR:-/tmp}/formal-ai-secretlint.XXXXXX")"
