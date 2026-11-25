@@ -72,7 +72,7 @@ mkdir -p \
 
 FORMAL_AI_MEMORY_PATH="${SCRATCH}/memory.lino" \
 FORMAL_AI_DREAMING=0 \
-FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
 "${BIN}" serve --agent-mode --host 127.0.0.1 --port "${PORT}" \
   >"${OUT}/raw-logs/formal-ai-server.log" 2>&1 &
 SERVER_PID=$!

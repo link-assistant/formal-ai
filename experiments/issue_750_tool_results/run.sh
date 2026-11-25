@@ -27,7 +27,7 @@ git -C "$WORK" add alpha.txt beta.json
 git -C "$WORK" commit -qm fixture
 
 FORMAL_AI_AGENT_MODE=1 \
-FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
 FORMAL_AI_MEMORY_PATH="$OUT/memory.lino" \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" >"$OUT/formal-ai.log" 2>&1 &
 SERVER_PID=$!

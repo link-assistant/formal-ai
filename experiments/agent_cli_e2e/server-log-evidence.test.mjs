@@ -56,3 +56,31 @@ test('missing completed exchanges cannot satisfy already observed HTTP POSTs',()
 test('all-endpoint reporting counts actual POST headers once across both APIs',()=>{
  const raw=typed(header)+'\n'+typed('[trace] POST /v1/messages (3 byte body)');assert.equal(projectServerLog(raw,{completionPath:'*'}).posts,2);
 });
+// Issue #1639: ec6ade5cd (#1592) emits the request header only at `trace`
+// level, but the harnesses kept setting FORMAL_AI_TRACE_REQUESTS=1 alone, so
+// every POST count read 0 under the default `debug` level ("expected ≥5 chat
+// completions, got 0"). A server launch that asks for the request trace must
+// also raise the level in the same environment block.
+test('every harness launch that traces requests also enables the trace level',()=>{
+ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+ // Every shell script in the repository, not only this directory: the same
+ // omission sat in 40 more launches (the issue 1028 ladder among them).
+ const skip=new Set(['.git','node_modules','target','dev']);
+ const harnesses=[];
+ const walk=relative=>{for(const entry of fs.readdirSync(path.join(root,relative),{withFileTypes:true})){
+  if(skip.has(entry.name))continue;
+  const next=relative?relative+'/'+entry.name:entry.name;
+  if(entry.isDirectory())walk(next);else if(entry.name.endsWith('.sh'))harnesses.push(next);
+ }};
+ walk('');
+ let launches=0;
+ for(const harness of harnesses){
+  const lines=fs.readFileSync(path.join(root,harness),'utf8').split('\n');
+  lines.forEach((line,index)=>{
+   if(/^\s*#/u.test(line)||!/\bFORMAL_AI_TRACE_REQUESTS=(1|true)\b/u.test(line))return;
+   launches++;
+   assert.match(lines.slice(index,index+4).join('\n'),/\bFORMAL_AI_LOG_LEVEL=trace\b/u,harness+':'+(index+1));
+  });
+ }
+ assert.ok(launches>=60,'expected every harness launch in the repository to be scanned');
+});

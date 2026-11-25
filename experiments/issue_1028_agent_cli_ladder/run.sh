@@ -382,7 +382,7 @@ PY
   # `setsid` gives the server its own process group so `kill -- -pid` takes
   # its children with it. macOS has no setsid; there the plain kill in
   # cleanup_one still stops the server, so a developer can run one node.
-  "${SETSID[@]}" env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+  "${SETSID[@]}" env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
     FORMAL_AI_MEMORY_PATH="$STAGE/memory/node-$id/memory.lino" \
     FORMAL_AI_DREAMING=0 "$BIN" serve --agent-mode --host 127.0.0.1 --port "$port" \
     >"$session_dir/formal-ai.log" 2>&1 &

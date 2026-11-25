@@ -35,7 +35,7 @@ git -C "$work" commit -qm fixture
 printf '%s\n' "$TASK" >"$OUT/task.txt"
 
 FORMAL_AI_AGENT_MODE=1 \
-FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
 FORMAL_AI_MEMORY_PATH="$work/memory.lino" \
 FORMAL_AI_DREAMING=0 \
 "$BIN" serve --host 127.0.0.1 --port "$PORT" >"$OUT/formal-ai.log" 2>&1 &

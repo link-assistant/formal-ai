@@ -74,7 +74,7 @@ cd "$PROJECT_DIR" || exit 1
 
 # Private, empty memory per run (issue #828) and no background compaction, so
 # this leg's planning is independent of what other E2E scripts recorded.
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
 SERVER_PID=$!
