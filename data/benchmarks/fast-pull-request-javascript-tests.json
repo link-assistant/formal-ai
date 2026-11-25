@@ -276,6 +276,7 @@
     "rust/tests/web/full-provenance-refusals-cli.test.mjs",
     "rust/tests/web/issue-1580-source-warning-headroom.test.mjs",
     "rust/tests/web/native-test-module-graph.test.mjs",
-    "rust/tests/web/pages-deployment.test.mjs"
+    "rust/tests/web/pages-deployment.test.mjs",
+    "rust/tests/web/issue-1639-e2e-harness-contracts.test.mjs"
   ]
 }

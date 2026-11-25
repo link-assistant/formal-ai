@@ -109,36 +109,8 @@ for index in "${!CASE_IDS[@]}"; do
     || fail "local synthesis failed for $case_id"
   "$BIN" --silent computer-use --from "$COMPUTER_USE_CORPUS" --plan --prompt "$prompt" \
     >"$WORKDIR/prompts/$case_id.txt" || fail "explicit plan could not be derived for $case_id"
-  node -e '
-    const fs = require("node:fs");
-    const { createHash } = require("node:crypto");
-    const [file, caseId, prompt, explicitPath] = process.argv.slice(1);
-    const outcome = JSON.parse(fs.readFileSync(file, "utf8")).outcome;
-    if (!outcome.verified) throw new Error(caseId + " did not verify locally");
-    if (!outcome.plan.id.startsWith("synthesized-")) {
-      throw new Error(caseId + " was recalled, not synthesized: " + outcome.plan.id);
-    }
-    const explicit = fs.readFileSync(explicitPath, "utf8").trimEnd().split("\n").at(-2);
-    // The explicit plan names primitives by their dotted wire name ("fs.write");
-    // the serde plan carries the enum variant ("FsWrite") the verifier maps back,
-    // and each executed step record carries the dotted name again (issue #1639).
-    const dotted = JSON.parse(explicit).map((step) => step.primitive);
-    if (JSON.stringify(dotted) !== JSON.stringify(outcome.steps.map((step) => step.primitive))) {
-      throw new Error(caseId + " explicit plan differs from local synthesis");
-    }
-    const steps = outcome.plan.steps.map((step) => step.primitive);
-    if (steps.length !== dotted.length) {
-      throw new Error(caseId + " local plan and executed steps differ in length");
-    }
-    const digest = createHash("sha256").update(explicit).digest("hex");
-    process.stdout.write(JSON.stringify({
-      case_id: caseId,
-      prompt,
-      plan_id: "computer-use-" + digest.slice(0, 24),
-      learned_plan_id: outcome.plan.id,
-      steps,
-    }) + "\n");
-  ' "$WORKDIR/$case_id.local.json" "$case_id" "$prompt" "$WORKDIR/prompts/$case_id.txt" >>"$WORKDIR/expected.jsonl" \
+  node "$ROOT/experiments/agent_cli_e2e/issue-707-reference.mjs" \
+    "$WORKDIR/$case_id.local.json" "$case_id" "$prompt" "$WORKDIR/prompts/$case_id.txt" >>"$WORKDIR/expected.jsonl" \
     || fail "local reference rejected for $case_id"
 done
 cp "$WORKDIR/expected.jsonl" "$EVIDENCE_DIR/expected.jsonl"
