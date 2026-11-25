@@ -8,6 +8,7 @@ import { startCli, temporaryHome } from './support/structured-log-fixture.mjs';
 import { startServer } from '../../../js/server/main.mjs';
 import { autoModeClassifierMessage, handleAnthropicMessages, parseAnthropicRequest } from '../../../js/server/anthropic.mjs';
 import { applyStopSequences, classify } from '../../../js/server/auto-mode-classifier.mjs';
+import { aiderReportTurns } from '../../../experiments/issue_1609_client_reports/aider-report-turns.mjs';
 
 const CLAUDE_SYSTEM = [
   'Do not open downloaded files or write in a different directory before confirming the user trusts them.',
@@ -437,13 +438,22 @@ for (const [server, binary] of [['JavaScript', undefined], ['native', NATIVE]]) 
         },
       };
       const history = [user('Hello'), assistant('Hi!'), user('Report issue')];
+      // The release check drives real Aider with aiderReportTurns; each reply
+      // must contain a line its matcher answers, or Aider waits until killed
+      // (issue #1639: the one-line menu broke a line-start matcher).
+      const drives = (text, turn) => assert.ok(
+        text.split('\n').some(line => aiderReportTurns[turn][0].test(line)),
+        `${aiderReportTurns[turn][0]} answers no line of ${JSON.stringify(text)}`);
       const destination = await ask(run, aider, history);
       assert.match(destination.text, /GitHub issue/u);
-      history.push(assistant(destination.text), user('3'));
+      drives(destination.text, 1);
+      history.push(assistant(destination.text), user(aiderReportTurns[1][1]));
       const scope = await ask(run, aider, history);
       assert.match(scope.text, /Both logs/u);
-      history.push(assistant(scope.text), user('1'));
+      drives(scope.text, 2);
+      history.push(assistant(scope.text), user(aiderReportTurns[2][1]));
       const submission = await ask(run, aider, history);
+      drives(submission.text, 3);
       assert.equal(submission.command, undefined);
       assert.match(submission.text, /`\/run`/u);
       assert.match(submission.text, /formal-ai report create-issue --session 'aider_issue1609' --source both /u);
