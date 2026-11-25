@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Older releases are archived under `docs/changelog/` so that no file
 exceeds the repository's 1500-line cap (newest first):
 
-- [0.355.0 to 0.355.30](docs/changelog/releases-from-0.355.0.md)
+- [0.355.0 to 0.355.32](docs/changelog/releases-from-0.355.0.md)
 - [0.353.0 to 0.354.1](docs/changelog/releases-from-0.353.0.md)
 - [0.352.0 to 0.352.1](docs/changelog/releases-from-0.352.0.md)
 - [0.346.0 to 0.351.0](docs/changelog/releases-from-0.346.0.md)
@@ -20,6 +20,28 @@ exceeds the repository's 1500-line cap (newest first):
 - [0.1.0 to 0.104.0](docs/changelog/releases-from-0.1.0.md)
 
 <!-- changelog-insert-here -->
+
+## [0.357.1] - 2026-11-25
+
+### Fixed
+- CI/CD false negatives, false positives, warnings and errors found in the issue #1637 audit:
+  - the `docker-build` and `docker-slim` jobs could never run, because their condition both refused and required `pull_request`; they now run on `main` after `build-artifacts`, and a contract test rejects any job guard that contradicts itself;
+  - the scheduled `dependencies-latest` gate now passes: setup-node and setup-python move to v7, secretlint, the issue-1609 client CLIs and `@link-foundation/ui-links` are bumped, and the registry snapshot gains the records it was missing;
+  - the semantic grounding graph is closed (missing Wikidata cache records were added and two dangling relations repointed);
+  - Rust 1.100 clippy lint errors are cleared, along with unused rust-script dependencies;
+  - ordered-list checks now treat Cargo `[[test]]` and `[[bin]]` targets as module roots;
+  - native capture cases compiled into two Cargo targets are qualified with `@target`, so each case binds to exactly one caller;
+  - GitHub Pages deployment sends the source commit SHA as `pages_build_version` (as `actions/deploy-pages@v5` does) instead of a synthetic digest the API rejected with 404, and a retry no longer adopts a finished deployment of another artifact;
+  - the release client-report check expects `--permission-mode auto` for Claude and frees the report ports between clients;
+  - the main run 45549993600 regressions are recorded in the main-only regression ledger with their pull-request replays;
+  - corpus shards can trace each prompt and its duration (`FORMAL_AI_CORPUS_TRACE`, off by default); the CI shard job enables it and logs runner memory and disk, so a killed shard leaves evidence.
+  - Rust/JS server parity (R1013) is restored: output projections keep one key order, JS reports carry `violations` and `source_origin`, and the method registry hash matches;
+  - CI/CD contract tests that drifted on main (workflow, dependency-check, core-boundary ledger and traceability documents) agree with their contracts again;
+  - procedural specification tests that build an offline solver replay in JavaScript, because the reader and worker host now carry an offline binding;
+  - solver, routing and handler regressions from main run 45549993600 are fixed in Rust and in the JS/TS twins, with the seed mirrors kept byte-equal;
+  - network-dependent integration cases (issue 1138 family behaviour, issue 712 Hindi routing) run with read access denied, so their answers no longer change with the runner's network;
+  - the issue 1157 delivery test prints the failed answer and the commands it ran.
+  - the secrets scan, its scripts and its tests pin the same locked secretlint version (14.1.0).
 
 ## [0.357.0] - 2026-11-25
 
@@ -1192,29 +1214,3 @@ Give the single public Pages smoke a bounded cold-CDN worker allowance while pre
 Fix post-publication self-authoring when GitHub adds descendant jobs during pagination: discard the changing inventory and restart from page one at most three times, retaining the shared deadline, request limit, and exact publisher/source/attempt checks. Replay the observed 59-to-60 job-count race offline and refuse persistent churn or invalid job identities.
 
 Fix release freshness checks when GitHub reports a queued or waiting parent pipeline while its staged writer is running. Share nonterminal aggregate validation across all staged entry points while preserving exact current-job, runner, source, attempt and writer-group membership proof. Replay the observed failure and stale/foreign/missing-lease refusals in essential offline PR tests.
-
-## [0.355.32] - 2026-11-04
-
-Formalize explicitly requested sums and inclusive bounds through the existing JavaScript and Rust calculators, preserving the original quantities and source spans. Decline unsupported conditions and mixed units, and keep aggregate concept questions outside the comparison handler. Preserve computed quantity evidence through the server projection, and keep the legacy worker within its existing budget through a separate quantity module. Add captured regression and ownership checks to the essential offline PR inventory; retain complete responses for reasoning acceptance.
-
-Complete quantity seed metadata, role declarations and localized dictionaries; preserve backend input scope, strengthen exact QA answers, correct debug source ownership and move cheap governance checks into the fast PR preflight.
-
-Fix quantity routing source provenance and grammar scope without weakening formalization quality checks.
-
-## [0.355.31] - 2026-11-04
-
-### Tests
-
-- Verify dependency versions, native target constraints, literal feature options and imported-call excerpts in the guide actually written by the maintained planner.
-
-### Documentation
-
-- Record bounded original-task and held-out documentation probes, including an independently checked useful partial edit through the actual Agent client and the maintained JavaScript backend.
-- Keep ordinary Hive execution, remaining clients, production orchestration and full integration acceptance explicitly pending. Preserve incomplete attempts and distinguish supplied scaffolding from source-derived work.
-
-### Performance
-
-- Bound quote-predecessor character iteration to the final two UTF-16 units instead of materializing each complete prefix. Preserve Unicode, index coercion and quote-span behavior, with generated TypeScript and browser-worker counterparts.
-- A single captured terminal request replay retained identical response content while taking 5.55 seconds before the change and 2.49 seconds afterward. Deterministic work-bound and semantic tests protect the optimization without a wall-clock CI gate.
-
-Fix stale requirement verdict projections and check their freshness in the fast JavaScript PR gate. Bound live work-item runner and broker commands by the authenticated job deadline, allow progressing image acquisition within that window, and reserve time for cleanup and evidence upload. Preserve historical cleanup ownership when the current policy gains a new helper. Retain the failed acquisition logs and truthful test-issue/protected-branch outcomes; full client acceptance remains pending. Verified protected-only branch residue is explicitly deferred after issue/PR closure; it remains incomplete and grants no delivery credit, while uncertain cleanup still fails.

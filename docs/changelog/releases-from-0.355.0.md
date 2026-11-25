@@ -1,6 +1,32 @@
-# Changelog archive: 0.355.0 to 0.355.30
+# Changelog archive: 0.355.0 to 0.355.32
 
 Releases in this range, newest first. Newer releases are in [CHANGELOG.md](../../CHANGELOG.md).
+
+## [0.355.32] - 2026-11-04
+
+Formalize explicitly requested sums and inclusive bounds through the existing JavaScript and Rust calculators, preserving the original quantities and source spans. Decline unsupported conditions and mixed units, and keep aggregate concept questions outside the comparison handler. Preserve computed quantity evidence through the server projection, and keep the legacy worker within its existing budget through a separate quantity module. Add captured regression and ownership checks to the essential offline PR inventory; retain complete responses for reasoning acceptance.
+
+Complete quantity seed metadata, role declarations and localized dictionaries; preserve backend input scope, strengthen exact QA answers, correct debug source ownership and move cheap governance checks into the fast PR preflight.
+
+Fix quantity routing source provenance and grammar scope without weakening formalization quality checks.
+
+## [0.355.31] - 2026-11-04
+
+### Tests
+
+- Verify dependency versions, native target constraints, literal feature options and imported-call excerpts in the guide actually written by the maintained planner.
+
+### Documentation
+
+- Record bounded original-task and held-out documentation probes, including an independently checked useful partial edit through the actual Agent client and the maintained JavaScript backend.
+- Keep ordinary Hive execution, remaining clients, production orchestration and full integration acceptance explicitly pending. Preserve incomplete attempts and distinguish supplied scaffolding from source-derived work.
+
+### Performance
+
+- Bound quote-predecessor character iteration to the final two UTF-16 units instead of materializing each complete prefix. Preserve Unicode, index coercion and quote-span behavior, with generated TypeScript and browser-worker counterparts.
+- A single captured terminal request replay retained identical response content while taking 5.55 seconds before the change and 2.49 seconds afterward. Deterministic work-bound and semantic tests protect the optimization without a wall-clock CI gate.
+
+Fix stale requirement verdict projections and check their freshness in the fast JavaScript PR gate. Bound live work-item runner and broker commands by the authenticated job deadline, allow progressing image acquisition within that window, and reserve time for cleanup and evidence upload. Preserve historical cleanup ownership when the current policy gains a new helper. Retain the failed acquisition logs and truthful test-issue/protected-branch outcomes; full client acceptance remains pending. Verified protected-only branch residue is explicitly deferred after issue/PR closure; it remains incomplete and grants no delivery credit, while uncertain cleanup still fails.
 
 ## [0.355.30] - 2026-11-04
 
