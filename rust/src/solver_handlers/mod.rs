@@ -102,7 +102,9 @@ pub use text_manipulation::{
 };
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use text_rewrite::handle_text_rewrite;
-pub use unit_conversion::handle_unit_conversion;
+pub use unit_conversion::{
+    derives_julian_year_conversion, derives_unit_conversion, handle_unit_conversion,
+};
 pub use user_intent::{names_stated_claim, try_proof_request, try_proof_request_with_config};
 pub use verifiable_task::try_verifiable_task;
 pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
