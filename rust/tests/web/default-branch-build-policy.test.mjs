@@ -31,6 +31,18 @@ test('Codex report fixture from main run 44953310700 disables background marketp
   assert.match(report, /SCENARIO=report-publication/u);
 });
 
+test('client report fixtures from main run 45549993600 expect Claude auto mode and free the ports between clients', () => {
+  // #1632 made `formal-ai with claude` pass --permission-mode auto; the stale
+  // 'default' assertion killed the client and the orphaned server failed every later client.
+  const stream = read('experiments/issue_1609_client_reports/stream-report.mjs');
+  assert.match(stream, /event\.permissionMode, client === 'claude' \? 'auto' : 'default'/u);
+  const seed = read('data/seed/client-integrations.lino');
+  assert.match(seed, /default-argument "auto"/u);
+  const script = read('experiments/issue_1609_client_reports/verify-release.sh');
+  const loop = script.match(/^for client in claude agent codex gemini qwen aider grok; do\n([\s\S]*?)^done$/mu)?.[1];
+  assert.match(loop, /if ! wait "\$!"; then[\s\S]*?fi\n[\s\S]*?release_ports 19409 19410\n$/u);
+});
+
 test('Pages rustdoc from main run 45020746043 has no links to private output helpers', () => {
   const source = read('rust/src/intent_formalization/obligations.rs');
   const privateLink = source.match(/^\/\/\/.*\[`?(?:explicit_count|output_again)`?\]/mu);
