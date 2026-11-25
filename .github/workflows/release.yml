@@ -64,6 +64,10 @@ jobs:
     uses: ./.github/workflows/hive-source-provenance.yml
   detect-changes:
     name: Detect Changes
+    # actions: read lets the admission confirm the previous head passed (#1637).
+    permissions:
+      contents: read
+      actions: read
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
@@ -109,6 +113,10 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          # Issue #1637: a push onto an already-green head is judged by its own range.
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+          GITHUB_EVENT_AFTER: ${{ github.event.after }}
+          GITHUB_TOKEN: ${{ github.token }}
           # A fragment waiting on main runs lint/test/build, so Auto Release runs (#1064).
           RELEASE_PIPELINE: 'true'
         run: |

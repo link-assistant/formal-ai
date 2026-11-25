@@ -239,16 +239,26 @@ export function nativeCompileInput(path) {
   if (path.startsWith('.github/workflows/')) return true;
   return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));
 }
+// Issue #1637: `.gitkeep` placeholders (Hive Mind's task-details commit and its
+// revert) carry no behaviour, so on their own they select no check.
+export function isInertPath(path) {
+  return path === '.gitkeep' || path.endsWith('/.gitkeep');
+}
 // Classify conservatively: extra lightweight checks are cheaper than missed changes.
-export function admission(paths) {
+// `verifiedPushRange` marks paths that come from a push whose previous head
+// already passed this workflow (see selectChangedPaths). An empty range then
+// means nothing changed, not an unknown change.
+export function admission(paths, {verifiedPushRange = false} = {}) {
   assert(Array.isArray(paths) && paths.every(path => typeof path === 'string'));
-  const relevant = paths.filter(path => !['experiments/', 'dev/log/', 'docs/case-studies/'].some(prefix => path.startsWith(prefix)));
+  const relevant = paths.filter(path => !isInertPath(path)
+    && !['experiments/', 'dev/log/', 'docs/case-studies/'].some(prefix => path.startsWith(prefix)));
   const code = relevant.some(path => !isDocumentation(path));
   return Object.fromEntries(['rs-changed', 'toml-changed', 'docs-changed', 'workflow-changed',
     'pipeline-changed', 'agentic-routing-changed', 'any-code-changed', 'js-changed',
     'ts-changed', 'rust-changed', 'release-pending', 'native-type-check'].map(key => [key,
       key === 'release-pending' ? false : key === 'docs-changed' ? relevant.some(isDocumentation)
-        : key === 'native-type-check' ? paths.length === 0 || paths.some(nativeCompileInput) : code]));
+        : key === 'native-type-check' ? (!verifiedPushRange && paths.length === 0) || paths.some(nativeCompileInput)
+        : code]));
 }
 export function versionIn(text) {
   // Use Python 3.11+'s standard TOML parser. Parsing the complete document
@@ -313,6 +323,74 @@ export function changedPaths(event, before, invoke = git) {
 
 const SOURCE_READ_LIMIT = 4 * 1024 * 1024;
 const GIT_SHA = /^[a-f0-9]{40}$/u;
+
+/**
+ * Issue #1637: on `pull_request` `synchronize` the paths GitHub filters with,
+ * and `changedPaths` returns, cover the whole pull request. A push that only
+ * reverts a `.gitkeep` therefore re-ran every check the pull request ever
+ * selected. This returns the pushed range when it is safe to judge the push
+ * alone, and null otherwise. Safe means: the checked-out merge commit is built
+ * from the pushed head, the push only appended commits to the previous head,
+ * and the previous head has a successful run of this same workflow. Any
+ * missing or unexpected answer widens back to the full pull request diff.
+ */
+export function pushRangeCandidate(env) {
+  if (env.GITHUB_EVENT_NAME !== 'pull_request' || env.GITHUB_EVENT_ACTION !== 'synchronize') return null;
+  const before = env.GITHUB_EVENT_BEFORE ?? '', after = env.GITHUB_EVENT_AFTER ?? '';
+  if (!GIT_SHA.test(before) || !GIT_SHA.test(after) || before === after) return null;
+  // GITHUB_WORKFLOW_REF: owner/repo/.github/workflows/release.yml@refs/pull/1/merge
+  const workflow = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/\.github\/workflows\/([A-Za-z0-9_.-]+\.ya?ml)@/u
+    .exec(env.GITHUB_WORKFLOW_REF ?? '')?.[1];
+  const repository = env.GITHUB_REPOSITORY ?? '';
+  if (!workflow || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u.test(repository)) return null;
+  return {before, after, workflow, repository};
+}
+/** true: a successful run exists; false: none; null: the answer is not trustworthy. */
+export async function previousHeadPassed({repository, workflow, sha, token, fetcher = globalThis.fetch,
+  timeoutMs = 10000}) {
+  if (typeof token !== 'string' || !token.trim() || typeof fetcher !== 'function') return null;
+  const deadline = Date.now() + timeoutMs, controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const body = await boundedGithubJson(fetcher, 'repos/' + repository + '/actions/workflows/' + workflow
+      + '/runs?head_sha=' + sha + '&event=pull_request&status=success&per_page=1', token, controller.signal,
+    () => assert(Date.now() < deadline, 'previous head lookup deadline exceeded'));
+    if (!Number.isSafeInteger(body?.total_count) || !Array.isArray(body.workflow_runs)) return null;
+    if (body.total_count === 0) return false;
+    const run = body.workflow_runs[0];
+    return run?.head_sha === sha && run.conclusion === 'success' ? true : null;
+  } catch { return null; } finally { clearTimeout(timer); controller.abort(); }
+}
+/** Select the paths the admission classifies; `range` says which comparison produced them. */
+export async function selectChangedPaths({env = process.env, invoke = git, fetcher = globalThis.fetch,
+  log = message => console.error(message)} = {}) {
+  const full = () => ({range: 'full', paths: changedPaths(env.GITHUB_EVENT_NAME, env.GITHUB_EVENT_BEFORE, invoke)});
+  const candidate = pushRangeCandidate(env);
+  if (!candidate) return full();
+  const {before, after} = candidate;
+  try {
+    const parents = invoke(['rev-list', '--parents', '-n', '1', 'HEAD']).trim().split(/\s+/u);
+    if (parents.length !== 3 || parents[2] !== after) {
+      log('Push range rejected: the checked-out merge commit is not built from ' + after + '; comparing the full pull request.');
+      return full();
+    }
+    // Throws unless `before` is a reachable ancestor (a force push or rebase is judged as a whole).
+    invoke(['merge-base', '--is-ancestor', before, after]);
+  } catch {
+    log('Push range rejected: ' + before + ' is not an ancestor of ' + after + '; comparing the full pull request.');
+    return full();
+  }
+  const passed = await previousHeadPassed({repository: candidate.repository, workflow: candidate.workflow,
+    sha: before, token: env.GITHUB_TOKEN || env.GH_TOKEN, fetcher});
+  if (passed !== true) {
+    log('Push range rejected: previous head ' + before + (passed === false ? ' has no successful '
+      : ' could not be verified for a successful ') + candidate.workflow + ' run; comparing the full pull request.');
+    return full();
+  }
+  const inventory = invoke === git ? gitPathInventory : args => invoke(args).split('\0').filter(Boolean);
+  log('Comparing ' + before + ' to ' + after + ' (push range; the previous head passed ' + candidate.workflow + ').');
+  return {range: 'push', paths: inventory(['diff', '--no-renames', '--name-only', '-z', before, after])};
+}
 function sourceIdentity(value, repository, suffix) {
   const url = new URL(value);
   assert(url.origin === 'https://api.github.com' && !url.username && !url.password
@@ -457,7 +535,9 @@ export async function readBaseManifest({repository,base,token,fetcher=globalThis
 
 async function main(mode) {
   if (mode === 'detect') {
-    const result = admission(changedPaths(process.env.GITHUB_EVENT_NAME, process.env.GITHUB_EVENT_BEFORE));
+    const {range, paths} = await selectChangedPaths();
+    if (process.env.FORMAL_AI_CI_VERBOSE === 'true') console.error(JSON.stringify({admissionRange: {range, paths}}));
+    const result = admission(paths, {verifiedPushRange: range === 'push'});
     for (const [key, value] of Object.entries(result)) {
       const line = `${key}=${value}\n`;
       if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, line);
