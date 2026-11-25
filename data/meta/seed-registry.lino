@@ -32,6 +32,8 @@ seed_registry
   seed agreement-rules
     bundle true
     web true
+  seed auto-mode-classifier
+    bundle true
   seed brainstorm-seeds
     bundle true
     web true

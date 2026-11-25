@@ -607,6 +607,7 @@ async function synthesizeHowToGuide(task, preferences, bounds, now, language = "
     online: preferences?.offline !== true && preferences?.allowNetwork !== false,
     bounded: true,
     accessibilityKey: howToAccessibilityKey,
+    alwaysProbe: (record) => record.id === "wikihow", // issue #1632: the priority how-to source
     emptyStatus: "no_steps",
     fallbackEntryUrl: (record, url) => howToMediaWikiApi(record.api) && limits.maxDepth > 0
       ? howToSearchUrl({ api: url }, subject) : null,
@@ -687,7 +688,7 @@ function howToGuideMarkdown(guide, language, diagnostics = true) {
     .find(steps => steps.length >= HOW_TO_MIN_ACCEPTED_STEPS);
   const steps = primary || guide.steps;
   const citations = new Set(steps.map(step => say("how_to_guide_citation", {
-    source: step.sourceId, url: step.sourceUrl, license: step.licenseName, license_url: step.licenseUrl,
+    source: step.sourceId, url: sourceWalkArticleUrl(howToSourceRegistry().find((record) => record.id === step.sourceId), step.sourceUrl), license: step.licenseName, license_url: step.licenseUrl,
   })));
   const sources = [say("how_to_guide_sources_heading")];
   if (!diagnostics) return [heading, steps.map((step, index) => `${index + 1}. ${step.text}`).join("\n"),

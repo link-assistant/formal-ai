@@ -89,11 +89,11 @@ const EXECUTED_ANSWER: &str = concat!(
 
 /// The exact offline answer for the explicit request: the localized
 /// `web_search_unavailable` response naming the extracted query.
-const OFFLINE_ANSWER: &str = "No captured provider response is available for `snorflax calibration`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.";
+const OFFLINE_ANSWER: &str = "No captured provider response is available for `snorflax calibration`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls.";
 
 /// The exact fallback answer: the same response naming the whole unresolved
 /// instruction, which is the fallback's focus.
-const FALLBACK_ANSWER: &str = "No captured provider response is available for `Calibrate the snorflax against silent teal weather`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.";
+const FALLBACK_ANSWER: &str = "No captured provider response is available for `Calibrate the snorflax against silent teal weather`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls.";
 
 fn temp_cache(label: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!(

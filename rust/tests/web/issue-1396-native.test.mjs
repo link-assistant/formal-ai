@@ -30,6 +30,8 @@ const PUBLISHER_SEARCH = `https://ru.wikihow.com/Special:LSearch?fulltext=Search
 const MISSING_TITLE = JSON.stringify({ error: { code: "missingtitle" } });
 const PUBLISHER_RESULTS = `<a class="result_link" href="https://ru.wikihow.com/${RUSSIAN_SLUG}">хорошо покакать</a>`;
 const DISCOVERED_API = parseUrl(encodeURIComponent("хорошо покакать"));
+// Citations name the human article, not the API capture (issue #1632).
+const RUSSIAN_ARTICLE = `https://ru.wikihow.com/${RUSSIAN_SLUG}`;
 const RUSSIAN_CAPTURE = readFileSync(new URL("../fixtures/issue-1396/wiki-how-ru.json", import.meta.url), "utf8");
 const NHS_SOURCE = "https://www.nhs.uk/conditions/constipation/";
 const NHS_CAPTURE = readFileSync(new URL("../fixtures/practical-help/toilet.html", import.meta.url), "utf8");
@@ -139,7 +141,7 @@ test("native offline chat discovers procedures from verified Wikibooks captures"
     const content = (await response.json()).choices[0].message.content;
     const firstStep = content.match(/^1\. (.+)$/mu)?.[1];
     assert.match(firstStep ?? "", book.firstStep);
-    assert.ok(content.includes(book.page), content);
+    assert.ok(content.includes(book.article), content);
     assert.doesNotMatch(content, /unrelated instruction/u);
   }
 });
@@ -197,7 +199,7 @@ async function startNativeProcedureReplay(t, { agentMode = false, publisherSearc
   return { cache, url: run.url, run };
 }
 
-async function askChatProcedure(url, messages, { source = RUSSIAN_API, tools } = {}) {
+async function askChatProcedure(url, messages, { source = RUSSIAN_ARTICLE, tools } = {}) {
   const response = await fetch(`${url}/v1/chat/completions`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -241,7 +243,7 @@ async function assertGreetingProcedureStream(url, signal) {
   const deltas = frames.flatMap(frame => JSON.parse(frame).choices.map(choice => choice.delta));
   assert.ok(!deltas.some(delta => delta.tool_calls?.length), "the reply should not request a client tool");
   const content = deltas.map(delta => delta.content || "").join("");
-  assert.equal(content, everydayMethodReply(DISCOVERED_API));
+  assert.equal(content, everydayMethodReply(RUSSIAN_ARTICLE));
 }
 
 test("native streaming chat recovers the Russian guide after a greeting with only publisher search captured", NATIVE_CASE, async (t) => {
@@ -274,7 +276,8 @@ test("native chat recovers a matching article after discarding an unrelated one"
   storeCapture(cache, RUSSIAN_API, JSON.stringify(unrelated));
   storeCapture(cache, search, sourceResults(title));
   storeCapture(cache, matching, RUSSIAN_CAPTURE);
-  const recovered = await askChatProcedure(url, [{ role: "user", content: RUSSIAN_REQUEST }], { source: matching });
+  // The matching capture is cited by its article URL (issue #1632).
+  const recovered = await askChatProcedure(url, [{ role: "user", content: RUSSIAN_REQUEST }]);
   assert.ok(!recovered.includes(RUSSIAN_API), recovered);
 });
 
@@ -489,7 +492,7 @@ async function assertProceduralAgentRouting(url, signal) {
   const guide = exact.flatMap(item => item.content || []).map(part => part.text || "").join("\n");
   assert.match(guide, /## Как какать/u);
   assert.match(guide, /1\. Не откладывайте/u);
-  assert.ok(guide.includes(DISCOVERED_API), guide);
+  assert.ok(guide.includes(RUSSIAN_ARTICLE), guide);
   assert.ok(!exact.some(item => item.type === "web_search_call"), JSON.stringify(exact));
   const general = await ask("How to make pancakes?");
   assert.ok(general.some(item => item.content?.some(part => /make pancakes/iu.test(part.text))), JSON.stringify(general));

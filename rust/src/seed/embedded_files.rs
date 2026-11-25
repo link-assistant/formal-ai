@@ -8,6 +8,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/agent-info.lino", AGENT_INFO_LINO),
         ("data/seed/agentic-tool-capabilities.lino", AGENTIC_TOOL_CAPABILITIES_LINO),
         ("data/seed/agreement-rules.lino", AGREEMENT_RULES_LINO),
+        ("data/seed/auto-mode-classifier.lino", AUTO_MODE_CLASSIFIER_LINO),
         ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
         ("data/seed/caller-context.lino", CALLER_CONTEXT_LINO),
         ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),

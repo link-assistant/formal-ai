@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 
 use crate::anthropic::{
     AnthropicContentBlock, AnthropicMessagesRequest, anthropic_message_sse,
-    create_anthropic_message_with_solver_and_memory,
+    auto_mode_classifier_message, create_anthropic_message_with_solver_and_memory,
 };
 use crate::context_capacity::ContextCapacity;
 use crate::engine::knowledge_graph;
@@ -762,6 +762,22 @@ fn http_solver() -> UniversalSolver {
 fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
     match serde_json::from_str::<AnthropicMessagesRequest>(body) {
         Ok(request) => {
+            // Claude Code's auto-mode classifier (issue #1632) is answered before
+            // the model check: Claude Code sends it on whichever model tier it
+            // picked (e.g. `claude-sonnet-5`), and it must never reach the
+            // solver, memory, or the 60 s client timeout.
+            if let Some(verdict) = auto_mode_classifier_message(&request) {
+                return if request.stream {
+                    ApiHttpResponse {
+                        status_code: 200,
+                        content_type: "text/event-stream",
+                        body: anthropic_message_sse(&verdict),
+                        deprecated: false,
+                    }
+                } else {
+                    json_response(200, &verdict)
+                };
+            }
             if let Some(response) = unsupported_model_response(request.model.as_deref()) {
                 return response;
             }

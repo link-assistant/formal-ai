@@ -33,11 +33,9 @@ const UNKNOWN_PROMPT: &str = "look up the latest news about renewable energy";
 /// What the solver answers offline, exactly — recorded here so the test doubles
 /// as documentation (R234-2) and so a change in the answer is a decision rather
 /// than a silent drift. Live fetching is off by default, so the request is
-/// reported as an unexecuted plan naming the sources it would have used.
+/// reported without naming sources that contributed nothing (issue #1632).
 const EXPECTED_ANSWER: &str = "No captured provider response is available for `renewable energy`. \
-Live fetching is off by default; enable it explicitly to populate the replayable source cache. \
-The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and \
-Wikinews.";
+Live fetching is off by default; enable it explicitly to populate the replayable source cache.";
 
 #[test]
 fn ordinary_recall_never_parses_the_pinned_module() {

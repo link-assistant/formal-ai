@@ -318,6 +318,9 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
     synthesize_how_to_guide_in((task, ""), client, preferences, bounds, availability, now)
 }
 
+/// The how-to source asked first and never skipped on a cached failure.
+pub const PRIORITY_HOW_TO_SOURCE: &str = "wikihow";
+
 pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
     (task, language): (&str, &str),
     client: &CachedSourceClient<T>,
@@ -353,7 +356,13 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
             continue;
         };
         let endpoint = crate::source_walk::endpoint_key(&record, &url);
-        if availability.known_unreachable(&endpoint, now) {
+        // wikiHow is the priority source for "how to X?" (issue #1632, R1). A
+        // single timeout, HTTP 429 or 5xx used to mark it unreachable for the
+        // whole seven-day accessibility TTL, and every how-to question then
+        // answered "no verified instructions" without asking wikiHow again.
+        // The cached failure still skips the other services, but the priority
+        // source is always probed; a successful fetch refreshes its record.
+        if record.id != PRIORITY_HOW_TO_SOURCE && availability.known_unreachable(&endpoint, now) {
             guide.outcomes.push(GuideSourceOutcome::new(
                 &record.id,
                 "unreachable_cached",
@@ -370,7 +379,7 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
             now,
         };
         let mut steps = walk_source(&record, &url, &extractor, &walk, availability, &mut outcome);
-        if record.id == "wikihow"
+        if record.id == PRIORITY_HOW_TO_SOURCE
             && steps.len() < MIN_ACCEPTED_STEPS
             && let Some(recovered) =
                 wiki_how::recover(&record, &url, &extractor, &walk, &mut outcome)
@@ -869,3 +878,7 @@ fn order_steps(mut steps: Vec<GuideStep>, max_steps: usize) -> Vec<GuideStep> {
     steps.truncate(max_steps);
     steps
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/how_to_guide/production_tests.rs"]
+mod tests;

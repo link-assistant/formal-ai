@@ -178,7 +178,7 @@ fn latest_news_routes_to_wikinews_search_across_supported_languages() {
         if language == "English" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `latest news`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `latest news`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls."
             );
         }
 
@@ -211,10 +211,12 @@ fn latest_news_routes_to_wikinews_search_across_supported_languages() {
             "{language} latest-news prompt should include Wikinews in the search plan: {:?}",
             response.evidence_links,
         );
+        // Issue #1632 (R2): the plan stays in the evidence links above, but
+        // an answer that used no source data names no unexecuted source.
         assert!(
-            response.answer.to_lowercase().contains("wikinews")
-                || response.answer.to_lowercase().contains("викиновости"),
-            "{language} latest-news answer should direct the user to Wikinews, got: {}",
+            !response.answer.to_lowercase().contains("wikinews")
+                && !response.answer.to_lowercase().contains("викиновости"),
+            "{language} latest-news answer should not name the unused Wikinews source, got: {}",
             response.answer,
         );
         assert_ne!(response.intent, "unknown");
@@ -428,7 +430,7 @@ fn web_search_source_marker_prompts_extract_query_without_source_marker() {
         if language == "en" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `apple`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `apple`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls."
             );
         }
 
@@ -631,7 +633,7 @@ fn information_search_variants_route_to_web_search_handler() {
         if prompt == "Find information about Rust programming" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `rust programming`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `rust programming`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls."
             );
         }
         assert_eq!(
@@ -704,7 +706,7 @@ fn source_search_prompts_still_cover_supported_languages() {
         if language == "English" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `rust programming`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `rust programming`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls."
             );
         }
 

@@ -90,7 +90,7 @@ try {
   assert.doesNotMatch(next.text, /План поиска процедуры|reciprocal rank fusion|sha256|max_depth=/u);
   console.log(JSON.stringify({ client: http ? "http" : "opencode", greeting: first.text, verifiedNumberedInstructions: true,
     numberedSteps: next.text.split("\n").filter(line => /^\d+\. /u.test(line)).length,
-    verifiedEverydayMethod: true, publisherRequests }, null, 2));
+    verifiedEverydayMethod: true, answer: next.text, publisherRequests }, null, 2));
 } finally {
   if (running) await new Promise(resolve => running.server.close(resolve));
   await rm(directory, { recursive: true, force: true });

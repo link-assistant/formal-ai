@@ -303,7 +303,7 @@ test('R703-2: vendor entrypoints keep the editing and prompt arguments each clie
   for (const cli of REQUIRED_CLIS) executableScript(bin, cli, '#!/bin/sh\nprintf \'%s\\n\' "$*"\n');
   const expected = {
     agent: ['--model', 'formal-ai', '--permission-mode', 'auto', '--no-retry-on-rate-limits', '--output-format', 'stream-json', '-p', 'vendor task'],
-    claude: ['--model', 'formal-ai', '--permission-mode', 'acceptEdits', '--output-format', 'stream-json', '--verbose', '--print', 'vendor task'],
+    claude: ['--model', 'formal-ai', '--permission-mode', 'auto', '--output-format', 'stream-json', '--verbose', '--print', 'vendor task'],
     codex: ['-m', 'formal-ai', 'exec', '--skip-git-repo-check', '--sandbox', 'workspace-write', '--json', 'vendor task'],
     gemini: ['-m', 'formal-ai', '--skip-trust', '--approval-mode', 'auto_edit', '--output-format', 'stream-json', '-p', 'vendor task'],
     opencode: ['run', '-m', 'formal-ai', '--auto', '--format', 'json', 'vendor task'],

@@ -6,6 +6,9 @@ const escapeTitle = title => encodeURIComponent(title).replace(/[()]/gu, charact
   "%" + character.codePointAt(0).toString(16).toUpperCase());
 export const bookPage = title =>
   `${api}?action=parse&page=${escapeTitle(title)}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
+// Answers cite the human article, not the API capture (issue #1632).
+export const bookArticle = title =>
+  `https://en.wikibooks.org/wiki/${title.trim().split(/\s+/u).map(escapeTitle).join("_")}`;
 export const bookSearch = (query, namespace = "") =>
   `${api}?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=5&format=json&origin=*${namespace}`;
 
@@ -16,6 +19,7 @@ export const procedureBooks = [
     search: bookSearch("prepare basic bread dough"),
     scoped: bookSearch("basic bread dough", "&srnamespace=102"),
     page: bookPage("Cookbook:Basic Bread Dough"),
+    article: bookArticle("Cookbook:Basic Bread Dough"),
     files: ["prepare-basic-bread-dough", "basic-bread-dough-cookbook", "basic-bread-dough-parse"],
     firstStep: /^Add ingredients to a 2-\s*pound capacity/u,
   },
@@ -25,6 +29,7 @@ export const procedureBooks = [
     search: bookSearch("prepare pancakes north american"),
     scoped: bookSearch("pancakes north american", "&srnamespace=102"),
     page: bookPage("Cookbook:Pancakes (North American)"),
+    article: bookArticle("Cookbook:Pancakes (North American)"),
     files: ["prepare-pancakes-north-american", "pancakes-north-american-cookbook", "pancakes-north-american-parse"],
     firstStep: /^In a large bowl, mix dry ingredients/u,
   },

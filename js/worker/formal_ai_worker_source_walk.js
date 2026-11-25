@@ -62,6 +62,8 @@ function sourceWalkRegistry() {
       apiLanguages: sourceWalkList(value("api_language")),
       licenseName: value("license_name"),
       licenseUrl: value("license_url"),
+      article: value("article"),
+      articleSpace: value("article-space"),
       tier: value("source_tier") || sourceWalkTierFromPrimacy(primacy ? primacy.value : ""),
       registryIndex,
     };
@@ -78,6 +80,19 @@ function sourceWalkPercentEncode(value) {
       : `%${byte.toString(16).toUpperCase().padStart(2, "0")}`;
   }
   return encoded;
+}
+
+/**
+ * The human article an `action=parse` capture came from (issue #1632), or the
+ * capture URL itself. Mirrors `SourceRecord::article_url` in rust/src/seed/sources.rs.
+ */
+function sourceWalkArticleUrl(record, sourceUrl) {
+  let url;
+  try { url = new URL(sourceUrl); } catch { return sourceUrl; }
+  const page = (url.searchParams.get("page") || "").trim();
+  if (!record?.article || !url.pathname.endsWith("/api.php") || url.searchParams.get("action") !== "parse" || !page) return sourceUrl;
+  const title = page.split(/\s+/u).map(sourceWalkPercentEncode).join(sourceWalkPercentEncode(record.articleSpace || "_"));
+  return record.article.split("{origin}").join(url.origin).split("{title}").join(title);
 }
 
 function sourceWalkTierWeight(tier) {
@@ -209,7 +224,9 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
   const now = typeof extractor.now === "number" ? extractor.now : sourceWalkNowSeconds();
   for (const { record, url: firstUrl } of candidates.selected) {
     const accessibilityKey = extractor.accessibilityKey?.(record, firstUrl) || record.id;
-    if (sourceWalkServiceKnownUnreachable(accessibilityKey, now)) {
+    // A priority source (wikiHow for how-to, issue #1632) is re-probed even
+    // when a cached failure marks it unreachable; a success refreshes it.
+    if (!extractor.alwaysProbe?.(record) && sourceWalkServiceKnownUnreachable(accessibilityKey, now)) {
       const known = sourceWalkAccessibility.get(accessibilityKey);
       walked.outcomes.push(sourceWalkOutcome(
         record.id,

@@ -112,7 +112,7 @@ meanings
     defined-by inquiry
     role agent_action_report_subject
     lexeme en issue bug problem github repository repo
-    lexeme ru баг проблема проблеме ошибка ошибке issue
+    lexeme ru баг проблема проблеме проблему ошибка ошибке ошибку issue "отчёт об ошибке" "отчет об ошибке"
     lexeme hi समस्या त्रुटि
     lexeme zh 问题 错误
     lexeme es issue incidencia problema error fallo repositorio

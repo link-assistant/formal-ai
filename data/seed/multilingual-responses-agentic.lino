@@ -182,23 +182,23 @@ multilingual_responses
   response response_web_search_unavailable_en
     intent web_search_unavailable
     language en
-    text "No captured provider response is available for `{query}`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+    text "No captured provider response is available for `{query}`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls."
   response response_web_search_unavailable_ru
     intent web_search_unavailable
     language ru
-    text "Для `{query}` нет захваченного ответа провайдера. Чтение из сети включено по умолчанию. Проверьте соединение, ошибки провайдера и явные запреты; спросите, как включить доступ к интернету, для настройки разрешений оболочки. Невыполненный план включает DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary и Wikinews."
+    text "Для `{query}` нет захваченного ответа провайдера. Чтение из сети включено по умолчанию. Проверьте соединение, ошибки провайдера и явные запреты; спросите, как включить доступ к интернету, для настройки разрешений оболочки."
   response response_web_search_unavailable_hi
     intent web_search_unavailable
     language hi
-    text "`{query}` के लिए कोई कैप्चर की गई प्रदाता प्रतिक्रिया उपलब्ध नहीं है। नेटवर्क से पढ़ना डिफ़ॉल्ट रूप से चालू है। कनेक्शन, प्रदाता की त्रुटियाँ और स्पष्ट ऑफ़लाइन प्रतिबंध जाँचें; हार्नेस अनुमतियों के लिए पूछें कि इंटरनेट की अनुमति कैसे दें। निष्पादित न की गई योजना में DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary और Wikinews शामिल हैं।"
+    text "`{query}` के लिए कोई कैप्चर की गई प्रदाता प्रतिक्रिया उपलब्ध नहीं है। नेटवर्क से पढ़ना डिफ़ॉल्ट रूप से चालू है। कनेक्शन, प्रदाता की त्रुटियाँ और स्पष्ट ऑफ़लाइन प्रतिबंध जाँचें; हार्नेस अनुमतियों के लिए पूछें कि इंटरनेट की अनुमति कैसे दें।"
   response response_web_search_unavailable_zh
     intent web_search_unavailable
     language zh
-    text "`{query}` 没有可用的已捕获提供商响应。默认允许只读网络访问。请检查连接、提供商错误和显式离线或拒绝设置；询问如何启用互联网访问以查看工具权限设置。未执行的计划包括 DuckDuckGo、Internet Archive、Wikipedia、Wikidata、Wiktionary 和 Wikinews。"
+    text "`{query}` 没有可用的已捕获提供商响应。默认允许只读网络访问。请检查连接、提供商错误和显式离线或拒绝设置；询问如何启用互联网访问以查看工具权限设置。"
   response response_web_search_unavailable_es
     intent web_search_unavailable
     language es
-    text "No hay ninguna respuesta capturada del proveedor para `{query}`. La lectura de red está habilitada por defecto. Comprueba la conexión, los errores del proveedor y los bloqueos explícitos; pregunta cómo habilitar el acceso a internet para configurar los permisos de la herramienta. El plan no ejecutado incluye DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary y Wikinews."
+    text "No hay ninguna respuesta capturada del proveedor para `{query}`. La lectura de red está habilitada por defecto. Comprueba la conexión, los errores del proveedor y los bloqueos explícitos; pregunta cómo habilitar el acceso a internet para configurar los permisos de la herramienta."
   response response_search_fusion_header_en
     intent search_fusion_header
     language en

@@ -160,7 +160,10 @@ function askOrRender(toolNames, language, id, questionIntent, optionsIntent, mul
         id,
         question,
         options: options.map(([label, description]) => ({ label, description })),
+        // OpenCode's `question` reads `multiple`; Claude Code's AskUserQuestion
+        // reads `multiSelect` (issue #1632). Each client ignores the other's field.
         multiple,
+        multiSelect: multiple,
       }],
     }));
   }

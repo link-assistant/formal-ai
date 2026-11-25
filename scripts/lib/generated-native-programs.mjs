@@ -758,6 +758,14 @@ true,"sourceSpan":{"start":1705,"end":1772},"sourceWitnesses":[{"path":"rust/src
 "(constant CAPTURE-MANIFEST-FILE (exported) (type string) (value (string capture-manifest.lino)))",
 "maintainedJavaScript":"export const CAPTURE_MANIFEST_FILE = 'capture-manifest.lino';","maintainedTranslationSha256":
 "57ee23108431c456e6576adede576aad2ecbe394b765723cba7aef24215d28de"},{"path":
+"formal_ai::how_to_guide::PRIORITY_HOW_TO_SOURCE","canonicalPath":"formal_ai::how_to_guide::PRIORITY_HOW_TO_SOURCE",
+"kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"wikihow","nativeSourceQualified":true,
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":11888,"end":11939},"sourceWitnesses":[{"path":
+"rust/src/how_to_guide.rs","sha256":"645b4db9def3e0d19b69da9ad7bd7d97252cb01d3c36b3253d1237bde3849b66"},{"path":
+"rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
+"(constant PRIORITY-HOW-TO-SOURCE (exported) (type string) (value (string wikihow)))","maintainedJavaScript":
+"export const PRIORITY_HOW_TO_SOURCE = 'wikihow';","maintainedTranslationSha256":
+"990de8abee9a4b3beccb5b5f93bb3495b150656406696e1da8eb6e6fc6a65ee8"},{"path":
 "formal_ai::issue_report::SECTION_ENVIRONMENT","canonicalPath":"formal_ai::issue_report::SECTION_ENVIRONMENT","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"## Environment","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1159,"end":1214},"sourceWitnesses":[{"path":

@@ -314,7 +314,7 @@ test("publisher search recovers the reported article when MediaWiki search retur
   const run = (preferences) => answerRussian(context, preferences, "Как какать?");
   const answer = await run({});
   assert.deepEqual(requested.filter(url => new URL(url).hostname === "ru.wikihow.com"), [exact, fullText, search, article]);
-  assert.equal(answer.content, everydayMethodReply(article));
+  assert.equal(answer.content, everydayMethodReply(RUSSIAN_ARTICLE));
   assert.ok(answer.guide.steps.every(step => step.sourceUrl === article && step.depth === 2
     && step.sha256 === createHash("sha256").update(body).digest("hex")));
   const count = requested.length;
