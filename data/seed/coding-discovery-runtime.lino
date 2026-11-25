@@ -22,7 +22,7 @@ coding_discovery_runtime
     supports set_intersection
   template python_test_entrypoint
     text "\nif __name__ == '__main__':\n"
-  template python_memory_guard
+  template python-memory-guard
     text "{indent}try:\n{indent}    import resource as _guard\n{indent}    _soft, _hard = _guard.getrlimit(_guard.RLIMIT_AS)\n{indent}    _guard.setrlimit(_guard.RLIMIT_AS, ({bytes} if _hard == _guard.RLIM_INFINITY else min({bytes}, _hard), _hard))\n{indent}except (ImportError, AttributeError, ValueError, OSError):\n{indent}    pass\n"
     grounding "https://docs.python.org/3.12/library/resource.html#resource.setrlimit"
     license "PSF-2.0"

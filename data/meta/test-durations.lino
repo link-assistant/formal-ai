@@ -3,8 +3,8 @@ test_durations
   purpose "Assign parallel test shards longest-first, so a long test never lands last on a machine everything else has finished waiting for."
   source_run 37802763478
   recorded 2026-10-08
-  lower_bound_run 45636781871
-  lower_bound "Issue #1639: entries renamed by the agentic_coding module move follow their tests, entries naming no listed test are dropped, and every test the main run 45636781871 reported running past 60 seconds weighs at least the time from its start to its result or to the shard budget. Those are lower bounds under 4-thread contention, not single-test timings; regenerate replaces them."
+  lower-bound-run 45636781871
+  lower-bound "Issue #1639: entries renamed by the agentic_coding module move follow their tests, entries naming no listed test are dropped, and every test the main run 45636781871 reported running past 60 seconds weighs at least the time from its start to its result or to the shard budget. Those are lower bounds under 4-thread contention, not single-test timings; regenerate replaces them."
   unit seconds
   floor "Only tests at or above 1 second are recorded, at most 700; the rest weigh default-seconds each."
   default-seconds 0.092

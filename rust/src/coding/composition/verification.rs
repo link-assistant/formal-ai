@@ -49,7 +49,7 @@ pub(super) fn verify(
         let limit = VERIFICATION_ADDRESS_SPACE_BYTES.to_string();
         if let Ok(guard) = template(
             catalog,
-            "python_memory_guard",
+            "python-memory-guard",
             &[("indent", "    "), ("bytes", &limit)],
         ) {
             script.push_str(&guard);
