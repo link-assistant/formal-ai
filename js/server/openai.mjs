@@ -222,8 +222,8 @@ export function chatCompletionJson(completion) {
     out.derivation_id = completion.derivation_id;
     out.evidence_links = completion.evidence_links;
   }
-  if (completion.output_projection) out.output_projection = completion.output_projection;
   if (completion.learning_trace) out.learning_trace = completion.learning_trace;
+  if (completion.output_projection) out.output_projection = completion.output_projection;
   return out;
 }
 

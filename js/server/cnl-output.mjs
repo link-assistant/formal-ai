@@ -2,11 +2,21 @@
 // Native adapter: rust/src/cnl_output/configuration.rs and rust/src/protocol.rs.
 import {parseLino, readRepoFile} from './lino.mjs';
 import {formalizeOutput, outputConfiguration, outputDirective, outputSource, outputTurn, renderOutput, validateOutput} from '../agentic/crate/cnl_output.mjs';
-import {parseOutputPolicy} from '../agentic/crate/cnl_output.mjs';
+import {CNL_POLICY_PATH, parseOutputPolicy} from '../agentic/crate/cnl_output.mjs';
+import {CNL_LANGUAGE_PATH} from '../agentic/crate/cnl_grammar.mjs';
+
+/** Each language's grammar file, as rust/src/cnl_output.rs `cnl_policy` reads it. */
+function languageGrammar(language) {
+  try {
+    return readRepoFile(CNL_LANGUAGE_PATH.replace('{language}', language)) || null;
+  } catch {
+    return null;
+  }
+}
 
 let policy;
 export function serverOutputPolicy() {
-  return policy ??= parseOutputPolicy(readRepoFile('data/seed/cnl-output.lino'), parseLino);
+  return policy ??= parseOutputPolicy(readRepoFile(CNL_POLICY_PATH), parseLino, languageGrammar);
 }
 
 export function serverOutputConfiguration(value = {}) {
@@ -38,6 +48,17 @@ export function parseOutputOptions(object, optionalString) {
   return options;
 }
 
+/**
+ * Rust carries `output_projection` as a `serde_json::Value` built without
+ * `preserve_order` (rust/src/protocol/output.rs), so its object keys
+ * serialise sorted; emit the same canonical order on the wire.
+ */
+function canonicalKeys(value) {
+  if (Array.isArray(value)) return value.map(canonicalKeys);
+  if (value === null || typeof value !== 'object') return value;
+  return Object.fromEntries(Object.keys(value).sort().map(key => [key, canonicalKeys(value[key])]));
+}
+
 /** The protocol may preserve a body already composed under request constraints. */
 export async function projectServerAnswer(ctx, symbolic, configuration, {language: forcedLanguage, preserveAnswerBody = false, answerText} = {}) {
   const policy = serverOutputPolicy();
@@ -56,7 +77,7 @@ export async function projectServerAnswer(ctx, symbolic, configuration, {languag
       rendered.report = validateOutput(text, language, configuration, policy);
     }
   }
-  return {...symbolic, answer: rendered.content, output_projection: rendered};
+  return {...symbolic, answer: rendered.content, output_projection: canonicalKeys(rendered)};
 }
 
 export function hasOutputDirective(prompt) {
