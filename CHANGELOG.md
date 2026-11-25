@@ -21,6 +21,20 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.357.0] - 2026-11-25
+
+### Added
+
+- Claude Code runs in `--permission-mode auto` by default, and the server answers Claude Code's auto-mode security-monitor requests at once from the seed policy in `data/seed/auto-mode-classifier.lino`, so Bash calls are no longer refused with "temporarily unavailable (timed out)".
+- Claude Code's `AskUserQuestion` receives `multiSelect: true` for the multi-choice report-destination question.
+
+### Fixed
+
+- "How to X?" questions always probe wikiHow, the priority how-to source, even after a cached transient failure.
+- How-to citations name the human article page (for example `ru.wikihow.com/хорошо-покакать`) instead of the MediaWiki `api.php` capture URL.
+- The web-search-unavailable reply no longer lists unused sources.
+- Russian "Отправь отчёт об ошибке" and similar phrasings are recognised as a request to report an issue.
+
 ## [0.356.12] - 2026-11-24
 
 Update every workflow artifact consumer to verified raw transport and streaming extraction, preserve caller Python and empty pattern selections, and retain transfer timing for local adapters.
