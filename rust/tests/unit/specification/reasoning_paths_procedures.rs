@@ -11,7 +11,7 @@ mod fixtures;
 
 use fixtures::unverified_procedure;
 
-use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+use formal_ai::{ConversationTurn, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 #[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/documentation-method-fixture.rs"]
@@ -19,6 +19,26 @@ mod docs_fixture;
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
+}
+
+/// A solver with live source reads disabled.
+///
+/// Read access is default-on (`read_network_allowed`), so a default solver in
+/// CI asks the real publishers. Since 7a80e4f1a (#1632) wikiHow is re-probed
+/// even after a cached failure, and live wikiHow, Wikibooks and indexed
+/// publisher pages now return real guides for these topics. The tests below
+/// pin the deterministic contract instead: with no live read and no replayed
+/// capture for the topic, the handler plans its sources and reports that it
+/// could not verify steps.
+fn offline_solver() -> UniversalSolver {
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+}
+
+fn offline_answer(prompt: &str) -> SymbolicAnswer {
+    offline_solver().solve(prompt)
 }
 
 fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
@@ -122,7 +142,7 @@ fn pandas_join_method_docs_prompt_covers_supported_languages() {
 
 #[test]
 fn how_to_make_tea_uses_source_backed_procedure_plan() {
-    let response = answer("How to make tea?");
+    let response = offline_answer("How to make tea?");
     assert_eq!(response.answer, unverified_procedure("en", "make tea"));
     assert_eq!(
         response.intent, "procedural_how_to",
@@ -153,7 +173,7 @@ fn how_to_make_tea_uses_source_backed_procedure_plan() {
 
 #[test]
 fn how_to_prepare_fried_potatoes_falls_back_to_web_search() {
-    let response = answer("How to prepare fried potatoes?");
+    let response = offline_answer("How to prepare fried potatoes?");
     assert_eq!(
         response.answer,
         unverified_procedure("en", "prepare fried potatoes")
@@ -210,7 +230,7 @@ fn telegraphic_how_order_prompt_routes_to_procedural_plan() {
 #[test]
 fn telegraphic_install_prompts_use_official_docs_procedure_plan() {
     for case in fixtures::INSTALL_CASES {
-        let response = answer(case.prompt);
+        let response = offline_answer(case.prompt);
         assert_eq!(
             response.answer,
             unverified_procedure(case.language, case.task_fragment)
@@ -409,7 +429,7 @@ fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
 
 #[test]
 fn how_to_procedure_is_general_not_memoized_to_examples() {
-    let response = answer("How can I calibrate a torque wrench?");
+    let response = offline_answer("How can I calibrate a torque wrench?");
     assert_eq!(
         response.answer,
         unverified_procedure("en", "calibrate a torque wrench")
@@ -445,7 +465,7 @@ fn how_to_procedure_is_general_not_memoized_to_examples() {
 #[test]
 fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
     for case in fixtures::TYPO_CASES {
-        let response = answer(case.prompt);
+        let response = offline_answer(case.prompt);
         if case.language == "en" {
             assert_eq!(
                 response.answer,
@@ -501,7 +521,11 @@ fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
 
 #[test]
 fn procedural_elaboration_followup_rebinds_to_prior_how_to() {
-    let solver = UniversalSolver::default();
+    // Inline, so the JavaScript replay (procedural-runtime-parity) can parse it.
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
     let how_to_prompt = "how to publish to npm";
     let plan = solver.solve(how_to_prompt);
     assert_eq!(
@@ -712,7 +736,7 @@ fn procedural_elaboration_followup_covers_many_topics() {
     );
 
     for case in cases {
-        let solver = UniversalSolver::default();
+        let solver = offline_solver();
         let plan = solver.solve(case.how_to);
         assert_eq!(
             plan.intent, "procedural_how_to",

@@ -16,6 +16,7 @@ const canonicalCalls = new Map([
   ...GENERATED_NATIVE_PROGRAMS.map(binding => [binding.path, binding]),
   ['formal_ai::compile_natural_language_skill', { kind: 'compiler' }],
   ['formal_ai::UniversalSolver::default', { kind: 'solver' }],
+  ['formal_ai::UniversalSolver::offline', { kind: 'solver', offline: true }],
   ['formal_ai::solve_with_history', { kind: 'historySolver', signature: ['string', 'vec:turn'] }],
   ['formal_ai::ConversationTurn::user', { kind: 'user' }],
   ['formal_ai::ConversationTurn::assistant', { kind: 'assistant' }],
@@ -269,8 +270,26 @@ function bodyProgram(tokens, context) {
 
 const assertionCount = steps => steps.reduce((count, step) => count + (step.kind === 'assertion' ? 1 : step.kind === 'for' ? assertionCount(step.body) : 0), 0);
 
+// `UniversalSolver::new(SolverConfig { offline: true, ..SolverConfig::default() })`
+// reads as one offline solver call, which replays with the worker's `offline`
+// preference (issue #1637: native tests pin it to stay hermetic on CI).
+const OFFLINE_SOLVER = ['new', '(', 'SolverConfig', '{', 'offline', ':', 'true', ',', '.', '.',
+  'SolverConfig', ':', ':', 'default', '(', ')', '}', ')'];
+function offlineSolverCall(body) {
+  const out = [];
+  for (let index = 0; index < body.length; index += 1) {
+    const head = body[index - 3]?.text === 'UniversalSolver' && body[index - 2]?.text === ':' && body[index - 1]?.text === ':';
+    if (head && OFFLINE_SOLVER.every((text, offset) => body[index + offset]?.text === text)) {
+      out.push({ ...body[index], text: 'offline' }, { ...body[index + 1] }, { ...body.at(index + OFFLINE_SOLVER.length - 1) });
+      index += OFFLINE_SOLVER.length - 1;
+    } else out.push(body[index]);
+  }
+  return out;
+}
+
 /** Read all assertions, or return one complete-case rejection. */
-export function typedProgramOf(body, { source, file = '', root = '' }) {
+export function typedProgramOf(nativeBody, { source, file = '', root = '' }) {
+  const body = offlineSolverCall(nativeBody);
   try {
     if (file && readFileSync(file, 'utf8') !== source) throw new Error('native source identity mismatch');
     const context = contextOf(source, file, root);
