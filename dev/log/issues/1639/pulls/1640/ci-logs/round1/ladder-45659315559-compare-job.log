@@ -1,0 +1,577 @@
+﻿2026-11-25T17:28:22.8018793Z Current runner version: '2.338.2'
+2026-11-25T17:28:22.8054754Z ##[group]Runner Image Provisioner
+2026-11-25T17:28:22.8056101Z Hosted Compute Agent
+2026-11-25T17:28:22.8057283Z Version: 20261111.635
+2026-11-25T17:28:22.8058339Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+2026-11-25T17:28:22.8060061Z Build Date: 2026-11-11T01:49:01Z
+2026-11-25T17:28:22.8061376Z Worker ID: {9532dd1f-e11a-41cf-914e-2809dc47e2b8}
+2026-11-25T17:28:22.8062870Z Region: eastus
+2026-11-25T17:28:22.8064085Z Cloud: Azure
+2026-11-25T17:28:22.8064990Z ##[endgroup]
+2026-11-25T17:28:22.8067521Z ##[group]Operating System
+2026-11-25T17:28:22.8068583Z Ubuntu
+2026-11-25T17:28:22.8069469Z 24.04.5
+2026-11-25T17:28:22.8070466Z LTS
+2026-11-25T17:28:22.8071359Z ##[endgroup]
+2026-11-25T17:28:22.8072308Z ##[group]Runner Image
+2026-11-25T17:28:22.8073625Z Image: ubuntu-24.04
+2026-11-25T17:28:22.8074621Z Version: 20261116.376.1
+2026-11-25T17:28:22.8076872Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.376/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-25T17:28:22.8079726Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.376
+2026-11-25T17:28:22.8081497Z ##[endgroup]
+2026-11-25T17:28:22.8083748Z ##[group]GITHUB_TOKEN Permissions
+2026-11-25T17:28:22.8086727Z Contents: read
+2026-11-25T17:28:22.8087825Z Metadata: read
+2026-11-25T17:28:22.8088797Z ##[endgroup]
+2026-11-25T17:28:22.8091895Z Secret source: Actions
+2026-11-25T17:28:22.8093911Z Cache mode: write
+2026-11-25T17:28:22.8095422Z Prepare workflow directory
+2026-11-25T17:28:22.8880524Z Prepare all required actions
+2026-11-25T17:28:22.8930877Z Getting action download info
+2026-11-25T17:28:23.1256960Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-25T17:28:23.2861589Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-11-25T17:28:23.4627016Z Complete job name: Compare the measured ladder with the record
+2026-11-25T17:28:23.5547250Z ##[group]Run actions/checkout@v7
+2026-11-25T17:28:23.5548684Z with:
+2026-11-25T17:28:23.5549463Z   persist-credentials: false
+2026-11-25T17:28:23.5550439Z   repository: link-assistant/formal-ai
+2026-11-25T17:28:23.5558694Z   token: ***
+2026-11-25T17:28:23.5559518Z   ssh-strict: true
+2026-11-25T17:28:23.5560312Z   ssh-user: git
+2026-11-25T17:28:23.5561063Z   clean: true
+2026-11-25T17:28:23.5561882Z   sparse-checkout-cone-mode: true
+2026-11-25T17:28:23.5563190Z   fetch-depth: 1
+2026-11-25T17:28:23.5564020Z   fetch-tags: false
+2026-11-25T17:28:23.5564854Z   show-progress: true
+2026-11-25T17:28:23.5565663Z   lfs: false
+2026-11-25T17:28:23.5566437Z   submodules: false
+2026-11-25T17:28:23.5567273Z   set-safe-directory: true
+2026-11-25T17:28:23.5568196Z   allow-unsafe-pr-checkout: false
+2026-11-25T17:28:23.5569501Z env:
+2026-11-25T17:28:23.5570294Z   TREE_DEPTH: 5
+2026-11-25T17:28:23.5571101Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:28:23.5572732Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:28:23.5574181Z ##[endgroup]
+2026-11-25T17:28:23.8439001Z Syncing repository: link-assistant/formal-ai
+2026-11-25T17:28:23.8442865Z ##[group]Getting Git version info
+2026-11-25T17:28:23.8444188Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+2026-11-25T17:28:23.8446210Z [command]/usr/bin/git version
+2026-11-25T17:28:23.8581194Z git version 2.56.1
+2026-11-25T17:28:23.8614614Z ##[endgroup]
+2026-11-25T17:28:23.8625288Z Temporarily overriding HOME='/home/runner/work/_temp/258ee35c-4c13-4877-8ee7-1ada08b20159' before making global git config changes
+2026-11-25T17:28:23.8627396Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-25T17:28:23.8633598Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-11-25T17:28:23.8746844Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+2026-11-25T17:28:23.8756956Z ##[group]Determining repository object format
+2026-11-25T17:28:23.8759337Z ##[endgroup]
+2026-11-25T17:28:23.8761461Z ##[group]Initializing the repository
+2026-11-25T17:28:23.8764848Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+2026-11-25T17:28:23.8902082Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-25T17:28:23.8904283Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-25T17:28:23.8905664Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-25T17:28:23.8906518Z hint: call:
+2026-11-25T17:28:23.8906961Z hint:
+2026-11-25T17:28:23.8908121Z hint: 	git config --global init.defaultBranch <name>
+2026-11-25T17:28:23.8909354Z hint:
+2026-11-25T17:28:23.8910470Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-25T17:28:23.8912772Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-25T17:28:23.8914504Z hint:
+2026-11-25T17:28:23.8915523Z hint: 	git branch -m <name>
+2026-11-25T17:28:23.8916620Z hint:
+2026-11-25T17:28:23.8918022Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-25T17:28:23.8920467Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+2026-11-25T17:28:23.8927579Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+2026-11-25T17:28:23.9009504Z ##[endgroup]
+2026-11-25T17:28:23.9011527Z ##[group]Disabling automatic garbage collection
+2026-11-25T17:28:23.9014279Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-25T17:28:23.9075375Z ##[endgroup]
+2026-11-25T17:28:23.9076445Z ##[group]Setting up auth
+2026-11-25T17:28:23.9077045Z Removing SSH command configuration
+2026-11-25T17:28:23.9077872Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T17:28:23.9130540Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T17:28:23.9549435Z Removing HTTP extra header
+2026-11-25T17:28:23.9556450Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T17:28:23.9604811Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T17:28:23.9844368Z Removing includeIf entries pointing to credentials config files
+2026-11-25T17:28:23.9849687Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T17:28:23.9902872Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T17:28:24.0151537Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-25T17:28:24.0203593Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:28:24.0249940Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:28:24.0295429Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:28:24.0338894Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:28:24.0380297Z ##[endgroup]
+2026-11-25T17:28:24.0381131Z ##[group]Fetching the repository
+2026-11-25T17:28:24.0387517Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +3388db3489e92430ca195d67cfa3fd04093d0404:refs/remotes/origin/main
+2026-11-25T17:29:00.8716273Z From https://github.com/link-assistant/formal-ai
+2026-11-25T17:29:00.8718773Z  * [new ref]             3388db3489e92430ca195d67cfa3fd04093d0404 -> origin/main
+2026-11-25T17:29:00.8725215Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-25T17:29:00.8772749Z   origin/main
+2026-11-25T17:29:00.8783463Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-11-25T17:29:00.8820138Z 3388db3489e92430ca195d67cfa3fd04093d0404
+2026-11-25T17:29:00.8825085Z ##[endgroup]
+2026-11-25T17:29:00.8825697Z ##[group]Determining the checkout info
+2026-11-25T17:29:00.8826692Z ##[endgroup]
+2026-11-25T17:29:00.8831088Z [command]/usr/bin/git sparse-checkout disable
+2026-11-25T17:29:00.8894401Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-25T17:29:00.8952643Z ##[group]Checking out the ref
+2026-11-25T17:29:00.8957154Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-25T17:29:02.1189455Z Updating files:   6% (8261/133742)
+2026-11-25T17:29:03.0235130Z Updating files:   7% (9362/133742)
+2026-11-25T17:29:03.2970442Z Updating files:   7% (10406/133742)
+2026-11-25T17:29:03.7905064Z Updating files:   8% (10700/133742)
+2026-11-25T17:29:03.9400229Z Updating files:   9% (12037/133742)
+2026-11-25T17:29:04.0219199Z Updating files:  10% (13375/133742)
+2026-11-25T17:29:04.1070011Z Updating files:  10% (13890/133742)
+2026-11-25T17:29:04.2358698Z Updating files:  11% (14712/133742)
+2026-11-25T17:29:04.3947435Z Updating files:  12% (16050/133742)
+2026-11-25T17:29:04.7335829Z Updating files:  13% (17387/133742)
+2026-11-25T17:29:04.9154628Z Updating files:  14% (18724/133742)
+2026-11-25T17:29:05.0227630Z Updating files:  15% (20062/133742)
+2026-11-25T17:29:05.0583029Z Updating files:  15% (21144/133742)
+2026-11-25T17:29:05.2194215Z Updating files:  16% (21399/133742)
+2026-11-25T17:29:05.3606893Z Updating files:  17% (22737/133742)
+2026-11-25T17:29:05.4518004Z Updating files:  18% (24074/133742)
+2026-11-25T17:29:05.5334984Z Updating files:  19% (25411/133742)
+2026-11-25T17:29:05.6230040Z Updating files:  20% (26749/133742)
+2026-11-25T17:29:05.7320239Z Updating files:  21% (28086/133742)
+2026-11-25T17:29:05.8127841Z Updating files:  22% (29424/133742)
+2026-11-25T17:29:06.0198106Z Updating files:  23% (30761/133742)
+2026-11-25T17:29:06.0514963Z Updating files:  23% (31510/133742)
+2026-11-25T17:29:06.1200524Z Updating files:  24% (32099/133742)
+2026-11-25T17:29:06.2002071Z Updating files:  25% (33436/133742)
+2026-11-25T17:29:06.2718752Z Updating files:  26% (34773/133742)
+2026-11-25T17:29:06.4075811Z Updating files:  27% (36111/133742)
+2026-11-25T17:29:06.4797141Z Updating files:  28% (37448/133742)
+2026-11-25T17:29:06.5685629Z Updating files:  29% (38786/133742)
+2026-11-25T17:29:06.6258808Z Updating files:  30% (40123/133742)
+2026-11-25T17:29:06.7079354Z Updating files:  31% (41461/133742)
+2026-11-25T17:29:06.7952306Z Updating files:  32% (42798/133742)
+2026-11-25T17:29:06.8636018Z Updating files:  33% (44135/133742)
+2026-11-25T17:29:06.9719483Z Updating files:  34% (45473/133742)
+2026-11-25T17:29:07.0198103Z Updating files:  35% (46810/133742)
+2026-11-25T17:29:07.0651217Z Updating files:  35% (47470/133742)
+2026-11-25T17:29:07.1454324Z Updating files:  36% (48148/133742)
+2026-11-25T17:29:07.2679994Z Updating files:  37% (49485/133742)
+2026-11-25T17:29:07.3757609Z Updating files:  38% (50822/133742)
+2026-11-25T17:29:07.4556798Z Updating files:  39% (52160/133742)
+2026-11-25T17:29:07.5843662Z Updating files:  40% (53497/133742)
+2026-11-25T17:29:07.6348715Z Updating files:  41% (54835/133742)
+2026-11-25T17:29:07.6908175Z Updating files:  42% (56172/133742)
+2026-11-25T17:29:07.7450613Z Updating files:  43% (57510/133742)
+2026-11-25T17:29:07.8487147Z Updating files:  44% (58847/133742)
+2026-11-25T17:29:08.0692826Z Updating files:  45% (60184/133742)
+2026-11-25T17:29:08.0738511Z Updating files:  45% (61443/133742)
+2026-11-25T17:29:08.2599657Z Updating files:  46% (61522/133742)
+2026-11-25T17:29:08.4401339Z Updating files:  47% (62859/133742)
+2026-11-25T17:29:08.5633908Z Updating files:  48% (64197/133742)
+2026-11-25T17:29:08.7033466Z Updating files:  49% (65534/133742)
+2026-11-25T17:29:08.9433794Z Updating files:  50% (66871/133742)
+2026-11-25T17:29:09.0198473Z Updating files:  51% (68209/133742)
+2026-11-25T17:29:09.0747117Z Updating files:  51% (68884/133742)
+2026-11-25T17:29:09.1651879Z Updating files:  52% (69546/133742)
+2026-11-25T17:29:09.2324477Z Updating files:  53% (70884/133742)
+2026-11-25T17:29:09.2895269Z Updating files:  54% (72221/133742)
+2026-11-25T17:29:09.3628191Z Updating files:  55% (73559/133742)
+2026-11-25T17:29:09.4479441Z Updating files:  56% (74896/133742)
+2026-11-25T17:29:09.5340744Z Updating files:  57% (76233/133742)
+2026-11-25T17:29:09.6957789Z Updating files:  58% (77571/133742)
+2026-11-25T17:29:09.7858735Z Updating files:  59% (78908/133742)
+2026-11-25T17:29:09.8675573Z Updating files:  60% (80246/133742)
+2026-11-25T17:29:09.9415251Z Updating files:  61% (81583/133742)
+2026-11-25T17:29:10.0203103Z Updating files:  62% (82921/133742)
+2026-11-25T17:29:10.0506064Z Updating files:  62% (83866/133742)
+2026-11-25T17:29:10.1159565Z Updating files:  63% (84258/133742)
+2026-11-25T17:29:10.1971233Z Updating files:  64% (85595/133742)
+2026-11-25T17:29:10.2541319Z Updating files:  65% (86933/133742)
+2026-11-25T17:29:10.3337663Z Updating files:  66% (88270/133742)
+2026-11-25T17:29:10.3943661Z Updating files:  67% (89608/133742)
+2026-11-25T17:29:10.4498223Z Updating files:  68% (90945/133742)
+2026-11-25T17:29:10.5148918Z Updating files:  69% (92282/133742)
+2026-11-25T17:29:10.5831435Z Updating files:  70% (93620/133742)
+2026-11-25T17:29:10.6667730Z Updating files:  71% (94957/133742)
+2026-11-25T17:29:10.7157493Z Updating files:  72% (96295/133742)
+2026-11-25T17:29:10.8335797Z Updating files:  73% (97632/133742)
+2026-11-25T17:29:10.9628691Z Updating files:  74% (98970/133742)
+2026-11-25T17:29:11.0199529Z Updating files:  75% (100307/133742)
+2026-11-25T17:29:11.1547221Z Updating files:  75% (100626/133742)
+2026-11-25T17:29:11.2315088Z Updating files:  76% (101644/133742)
+2026-11-25T17:29:11.3385674Z Updating files:  77% (102982/133742)
+2026-11-25T17:29:11.4064297Z Updating files:  78% (104319/133742)
+2026-11-25T17:29:11.4663494Z Updating files:  79% (105657/133742)
+2026-11-25T17:29:11.5422170Z Updating files:  80% (106994/133742)
+2026-11-25T17:29:11.6059432Z Updating files:  81% (108332/133742)
+2026-11-25T17:29:11.6813363Z Updating files:  82% (109669/133742)
+2026-11-25T17:29:11.7534952Z Updating files:  83% (111006/133742)
+2026-11-25T17:29:11.8353027Z Updating files:  84% (112344/133742)
+2026-11-25T17:29:11.9045214Z Updating files:  85% (113681/133742)
+2026-11-25T17:29:11.9593019Z Updating files:  86% (115019/133742)
+2026-11-25T17:29:12.0122200Z Updating files:  87% (116356/133742)
+2026-11-25T17:29:12.0196772Z Updating files:  88% (117693/133742)
+2026-11-25T17:29:12.0673519Z Updating files:  88% (117884/133742)
+2026-11-25T17:29:12.1562591Z Updating files:  89% (119031/133742)
+2026-11-25T17:29:12.2259905Z Updating files:  90% (120368/133742)
+2026-11-25T17:29:12.2787249Z Updating files:  91% (121706/133742)
+2026-11-25T17:29:12.3390229Z Updating files:  92% (123043/133742)
+2026-11-25T17:29:12.4433792Z Updating files:  93% (124381/133742)
+2026-11-25T17:29:12.5579556Z Updating files:  94% (125718/133742)
+2026-11-25T17:29:12.6815531Z Updating files:  95% (127055/133742)
+2026-11-25T17:29:12.7950206Z Updating files:  96% (128393/133742)
+2026-11-25T17:29:12.8915948Z Updating files:  97% (129730/133742)
+2026-11-25T17:29:12.9867790Z Updating files:  98% (131068/133742)
+2026-11-25T17:29:13.0213459Z Updating files:  99% (132405/133742)
+2026-11-25T17:29:13.0955260Z Updating files:  99% (132819/133742)
+2026-11-25T17:29:13.0955812Z Updating files: 100% (133742/133742)
+2026-11-25T17:29:13.0956296Z Updating files: 100% (133742/133742), done.
+2026-11-25T17:29:13.2775415Z Switched to a new branch 'main'
+2026-11-25T17:29:13.2784711Z branch 'main' set up to track 'origin/main'.
+2026-11-25T17:29:13.3127042Z ##[endgroup]
+2026-11-25T17:29:13.3187602Z [command]/usr/bin/git log -1 --format=%H
+2026-11-25T17:29:13.3232022Z 3388db3489e92430ca195d67cfa3fd04093d0404
+2026-11-25T17:29:13.3246957Z ##[group]Removing auth
+2026-11-25T17:29:13.3247526Z Removing SSH command configuration
+2026-11-25T17:29:13.3254798Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T17:29:13.3306413Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T17:29:13.3805627Z Removing HTTP extra header
+2026-11-25T17:29:13.3833704Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T17:29:13.3872785Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T17:29:13.4358282Z Removing includeIf entries pointing to credentials config files
+2026-11-25T17:29:13.4361289Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T17:29:13.4418978Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-11-25T17:29:13.4419904Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-11-25T17:29:13.4420748Z includeif.gitdir:/github/workspace/.git.path
+2026-11-25T17:29:13.4421426Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-25T17:29:13.4442842Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-11-25T17:29:13.4468160Z /home/runner/work/_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:29:13.4483716Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-4fc98728\-5d57\-41f8\-a2a4\-068ef26c5a2d\.config
+2026-11-25T17:29:13.4686376Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-11-25T17:29:13.4711053Z /home/runner/work/_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:29:13.4721086Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-4fc98728\-5d57\-41f8\-a2a4\-068ef26c5a2d\.config
+2026-11-25T17:29:13.4800287Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-25T17:29:13.4837914Z /github/runner_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:29:13.4845901Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-4fc98728\-5d57\-41f8\-a2a4\-068ef26c5a2d\.config
+2026-11-25T17:29:13.5295561Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-25T17:29:13.5345677Z /github/runner_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config
+2026-11-25T17:29:13.5356476Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-4fc98728\-5d57\-41f8\-a2a4\-068ef26c5a2d\.config
+2026-11-25T17:29:13.6244612Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T17:29:13.6766999Z Removing credentials config '/home/runner/work/_temp/git-credentials-4fc98728-5d57-41f8-a2a4-068ef26c5a2d.config'
+2026-11-25T17:29:13.6768636Z ##[endgroup]
+2026-11-25T17:29:13.7539449Z Prepare all required actions
+2026-11-25T17:29:13.7540021Z Getting action download info
+2026-11-25T17:29:13.8545256Z Download action repository 'actions/cache@v6' (SHA:55cc8345863c7cc4c66a329aec7e433d2d1c52a9)
+2026-11-25T17:29:14.2242009Z ##[group]Run ./.github/actions/green-ledger
+2026-11-25T17:29:14.2242323Z with:
+2026-11-25T17:29:14.2242850Z   check: agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1
+2026-11-25T17:29:14.2243769Z   paths: rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
+2026-11-25T17:29:14.2244607Z   enabled: false
+2026-11-25T17:29:14.2244819Z   record: true
+2026-11-25T17:29:14.2245018Z env:
+2026-11-25T17:29:14.2245201Z   TREE_DEPTH: 5
+2026-11-25T17:29:14.2245411Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:14.2245811Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:14.2246303Z ##[endgroup]
+2026-11-25T17:29:14.2306570Z ##[start-action display=Key the check by the inputs that decide it;id=__self.key]
+2026-11-25T17:29:14.2348841Z ##[group]Run set -euo pipefail
+2026-11-25T17:29:14.2349222Z [36;1mset -euo pipefail[0m
+2026-11-25T17:29:14.2349484Z [36;1m# shellcheck disable=SC2086[0m
+2026-11-25T17:29:14.2349959Z [36;1mdigest=$(git ls-files -s -- $PATHS 2>/dev/null | git hash-object --stdin)[0m
+2026-11-25T17:29:14.2350444Z [36;1mecho "digest=$digest" >> "$GITHUB_OUTPUT"[0m
+2026-11-25T17:29:14.2350772Z [36;1mecho "$CHECK inputs digest: $digest"[0m
+2026-11-25T17:29:14.2378210Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T17:29:14.2378565Z env:
+2026-11-25T17:29:14.2378757Z   TREE_DEPTH: 5
+2026-11-25T17:29:14.2378973Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:14.2379390Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:14.2379937Z   CHECK: agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1
+2026-11-25T17:29:14.2380796Z   PATHS: rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
+2026-11-25T17:29:14.2381546Z ##[endgroup]
+2026-11-25T17:29:14.3138325Z agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1 inputs digest: 20717b39305f9035949702c2f0eee41b064a7825
+2026-11-25T17:29:14.3175144Z ##[end-action id=__self.key;outcome=success;conclusion=success;duration_ms=86]
+2026-11-25T17:29:14.3180648Z ##[start-action display=Look up a previous green result for these inputs;id=__self.cache]
+2026-11-25T17:29:14.3250612Z ##[group]Run actions/cache@v6
+2026-11-25T17:29:14.3251050Z with:
+2026-11-25T17:29:14.3251657Z   path: .green-ledger/agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1.txt
+2026-11-25T17:29:14.3253317Z   key: green-ledger-agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1-Linux-20717b39305f9035949702c2f0eee41b064a7825
+2026-11-25T17:29:14.3254500Z   enableCrossOsArchive: false
+2026-11-25T17:29:14.3254953Z   fail-on-cache-miss: false
+2026-11-25T17:29:14.3255355Z   lookup-only: false
+2026-11-25T17:29:14.3255716Z   save-always: false
+2026-11-25T17:29:14.3256055Z env:
+2026-11-25T17:29:14.3256366Z   TREE_DEPTH: 5
+2026-11-25T17:29:14.3256691Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:14.3257327Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:14.3257877Z ##[endgroup]
+2026-11-25T17:29:14.6277657Z Cache not found for input keys: green-ledger-agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1-Linux-20717b39305f9035949702c2f0eee41b064a7825
+2026-11-25T17:29:14.6696880Z ##[end-action id=__self.cache;outcome=success;conclusion=success;duration_ms=351]
+2026-11-25T17:29:14.6700028Z ##[start-action display=Look up a previous green result without recording one;id=__self.lookup]
+2026-11-25T17:29:14.6709575Z ##[end-action id=__self.lookup;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T17:29:14.6717969Z ##[start-action display=Decide, and say so;id=__self.decide]
+2026-11-25T17:29:14.6747168Z ##[group]Run set -euo pipefail
+2026-11-25T17:29:14.6747497Z [36;1mset -euo pipefail[0m
+2026-11-25T17:29:14.6747762Z [36;1mmarker=".green-ledger/$CHECK.txt"[0m
+2026-11-25T17:29:14.6748258Z [36;1mif [[ "$HIT" == 'true' && "$ENABLED" == 'true' ]]; then[0m
+2026-11-25T17:29:14.6748676Z [36;1m  previous=$(cat "$marker" 2>/dev/null || echo 'unknown run')[0m
+2026-11-25T17:29:14.6749088Z [36;1m  echo "already-green=true" >> "$GITHUB_OUTPUT"[0m
+2026-11-25T17:29:14.6749639Z [36;1m  echo "::notice title=$CHECK already green::identical inputs ($DIGEST) passed before: $previous"[0m
+2026-11-25T17:29:14.6750124Z [36;1m  {[0m
+2026-11-25T17:29:14.6750338Z [36;1m    echo "### $CHECK: already green"[0m
+2026-11-25T17:29:14.6750613Z [36;1m    echo[0m
+2026-11-25T17:29:14.6750901Z [36;1m    echo "Inputs digest \`$DIGEST\` passed before: $previous."[0m
+2026-11-25T17:29:14.6751390Z [36;1m    echo "Nothing in this check's inputs changed, so it did not run again."[0m
+2026-11-25T17:29:14.6751949Z [36;1m    echo "Edit the check's workflow file or run it by \`workflow_dispatch\` to force it."[0m
+2026-11-25T17:29:14.6752400Z [36;1m  } >> "$GITHUB_STEP_SUMMARY"[0m
+2026-11-25T17:29:14.6753041Z [36;1m  exit 0[0m
+2026-11-25T17:29:14.6753231Z [36;1mfi[0m
+2026-11-25T17:29:14.6753474Z [36;1mecho "already-green=false" >> "$GITHUB_OUTPUT"[0m
+2026-11-25T17:29:14.6753801Z [36;1mif [[ "$HIT" == 'true' ]]; then[0m
+2026-11-25T17:29:14.6754265Z [36;1m  echo "$CHECK: identical inputs passed before, but skipping is disabled on this ref; running"[0m
+2026-11-25T17:29:14.6754734Z [36;1melse[0m
+2026-11-25T17:29:14.6755196Z [36;1m  echo "$CHECK: no previous green result for these inputs; running"[0m
+2026-11-25T17:29:14.6755830Z [36;1mfi[0m
+2026-11-25T17:29:14.6756183Z [36;1mif [[ "$RECORD" == 'false' ]]; then[0m
+2026-11-25T17:29:14.6756813Z [36;1m  echo "$CHECK: a later job records the verdict for these inputs"[0m
+2026-11-25T17:29:14.6757447Z [36;1m  exit 0[0m
+2026-11-25T17:29:14.6757768Z [36;1mfi[0m
+2026-11-25T17:29:14.6758271Z [36;1m# Written now, saved by actions/cache's post step only if the job[0m
+2026-11-25T17:29:14.6759081Z [36;1m# succeeds (post-if: success()). A failing job leaves no marker.[0m
+2026-11-25T17:29:14.6759740Z [36;1mmkdir -p .green-ledger[0m
+2026-11-25T17:29:14.6760637Z [36;1mprintf '%s %s/%s/actions/runs/%s\n' "$GITHUB_SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" > "$marker"[0m
+2026-11-25T17:29:14.6783969Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T17:29:14.6784322Z env:
+2026-11-25T17:29:14.6784520Z   TREE_DEPTH: 5
+2026-11-25T17:29:14.6784728Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:14.6785129Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:14.6785684Z   CHECK: agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1
+2026-11-25T17:29:14.6786049Z   ENABLED: false
+2026-11-25T17:29:14.6786238Z   HIT: 
+2026-11-25T17:29:14.6786419Z   RECORD: true
+2026-11-25T17:29:14.6786638Z   DIGEST: 20717b39305f9035949702c2f0eee41b064a7825
+2026-11-25T17:29:14.6786924Z ##[endgroup]
+2026-11-25T17:29:14.7298691Z agent-ladder-1028-depth-5-rules-disabled-node-2.2.2.2.1: no previous green result for these inputs; running
+2026-11-25T17:29:14.7350059Z ##[end-action id=__self.decide;outcome=success;conclusion=success;duration_ms=63]
+2026-11-25T17:29:14.7444511Z ##[group]Run if [[ "$COMPOSITE_LEGS" != '[]' ]]; then
+2026-11-25T17:29:14.7444903Z [36;1mif [[ "$COMPOSITE_LEGS" != '[]' ]]; then[0m
+2026-11-25T17:29:14.7445253Z [36;1m  export JOBS="$JOBS leaf-evidence composites"[0m
+2026-11-25T17:29:14.7445558Z [36;1mfi[0m
+2026-11-25T17:29:14.7445777Z [36;1mbash scripts/check-shard-results.sh[0m
+2026-11-25T17:29:14.7468238Z shell: /usr/bin/bash -e {0}
+2026-11-25T17:29:14.7468475Z env:
+2026-11-25T17:29:14.7468666Z   TREE_DEPTH: 5
+2026-11-25T17:29:14.7468868Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:14.7469258Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:14.7470799Z   NEEDS_JSON: {
+  "plan": {
+    "result": "success",
+    "outputs": {
+      "already-green": "false",
+      "legs": "[{\"depth\":5,\"filter\":\"2.2.2.2.1\",\"id\":\"depth-5-2.2.2.2.1\",\"nodes\":[\"2.2.2.2.1\"]}]",
+      "leg-count": "1",
+      "composites": "[]"
+    }
+  },
+  "ladder": {
+    "result": "success",
+    "outputs": {}
+  },
+  "leaf-evidence": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "composites": {
+    "result": "skipped",
+    "outputs": {}
+  }
+}
+2026-11-25T17:29:14.7472271Z   JOBS: plan ladder
+2026-11-25T17:29:14.7472744Z   CHECK: Agent CLI ladder
+2026-11-25T17:29:14.7472978Z   COMPOSITE_LEGS: []
+2026-11-25T17:29:14.7473184Z ##[endgroup]
+2026-11-25T17:29:14.7925197Z Agent CLI ladder: every needed job succeeded (ladder, plan).
+2026-11-25T17:29:14.8143387Z Prepare all required actions
+2026-11-25T17:29:14.8143924Z Getting action download info
+2026-11-25T17:29:14.9072280Z Download action repository 'actions/setup-python@v7' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-11-25T17:29:15.0378168Z Download action repository 'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+2026-11-25T17:29:15.3277817Z ##[group]Run ./.github/actions/download-artifact
+2026-11-25T17:29:15.3278127Z with:
+2026-11-25T17:29:15.3278360Z   pattern: issue-1028-agent-cli-binary-tree-*
+2026-11-25T17:29:15.3278713Z   path: /home/runner/work/_temp/agent-tree-legs
+2026-11-25T17:29:15.3279015Z   merge-multiple: false
+2026-11-25T17:29:15.3279260Z   repository: link-assistant/formal-ai
+2026-11-25T17:29:15.3279515Z   run-id: 45659315559
+2026-11-25T17:29:15.3279712Z env:
+2026-11-25T17:29:15.3279884Z   TREE_DEPTH: 5
+2026-11-25T17:29:15.3280078Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:15.3280499Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:15.3280921Z ##[endgroup]
+2026-11-25T17:29:15.3289149Z ##[start-action display=Run actions/setup-python@v7;id=__self_2.python]
+2026-11-25T17:29:15.3653787Z ##[group]Run actions/setup-python@v7
+2026-11-25T17:29:15.3654050Z with:
+2026-11-25T17:29:15.3654245Z   update-environment: false
+2026-11-25T17:29:15.3654494Z   python-version: 3.14
+2026-11-25T17:29:15.3654713Z   check-latest: false
+2026-11-25T17:29:15.3657424Z   token: ***
+2026-11-25T17:29:15.3657749Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-11-25T17:29:15.3658150Z   allow-prereleases: false
+2026-11-25T17:29:15.3658385Z   freethreaded: false
+2026-11-25T17:29:15.3658589Z env:
+2026-11-25T17:29:15.3658775Z   TREE_DEPTH: 5
+2026-11-25T17:29:15.3658974Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:15.3659371Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:15.3659971Z ##[endgroup]
+2026-11-25T17:29:15.4982862Z ##[group]Installed versions
+2026-11-25T17:29:15.6292379Z Successfully set up CPython (3.14.10)
+2026-11-25T17:29:15.6318992Z ##[endgroup]
+2026-11-25T17:29:15.6355466Z ##[end-action id=__self_2.python;outcome=success;conclusion=success;duration_ms=306]
+2026-11-25T17:29:15.6359203Z ##[start-action display=Allocate raw archive directory;id=__self_2.temporary]
+2026-11-25T17:29:15.6785256Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+2026-11-25T17:29:15.6786448Z [36;1mecho "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"[0m
+2026-11-25T17:29:15.6815395Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T17:29:15.6815951Z env:
+2026-11-25T17:29:15.6816257Z   TREE_DEPTH: 5
+2026-11-25T17:29:15.6816589Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:15.6817263Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:15.6818041Z ##[endgroup]
+2026-11-25T17:29:15.6899611Z ##[end-action id=__self_2.temporary;outcome=success;conclusion=success;duration_ms=53]
+2026-11-25T17:29:15.6903876Z ##[start-action display=Prepare portable Node observation options;id=__self_2.observation_options]
+2026-11-25T17:29:15.6921233Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+2026-11-25T17:29:15.6921635Z [36;1maction_directory="${ACTION_DIRECTORY//\\//}"[0m
+2026-11-25T17:29:15.6923086Z [36;1mprintf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"[0m
+2026-11-25T17:29:15.6946970Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T17:29:15.6947327Z env:
+2026-11-25T17:29:15.6947520Z   TREE_DEPTH: 5
+2026-11-25T17:29:15.6947886Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:15.6948371Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:15.6949212Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+2026-11-25T17:29:15.6949677Z ##[endgroup]
+2026-11-25T17:29:15.7274606Z ##[end-action id=__self_2.observation_options;outcome=success;conclusion=success;duration_ms=36]
+2026-11-25T17:29:15.7279661Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self_2.download_first]
+2026-11-25T17:29:15.7341595Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+2026-11-25T17:29:15.7342017Z with:
+2026-11-25T17:29:15.7342241Z   pattern: issue-1028-agent-cli-binary-tree-*
+2026-11-25T17:29:15.7342865Z   repository: link-assistant/formal-ai
+2026-11-25T17:29:15.7343139Z   run-id: 45659315559
+2026-11-25T17:29:15.7343418Z   path: /home/runner/work/_temp/artifact-archives.5YKHUP
+2026-11-25T17:29:15.7343758Z   merge-multiple: false
+2026-11-25T17:29:15.7343983Z   skip-decompress: true
+2026-11-25T17:29:15.7344198Z   digest-mismatch: error
+2026-11-25T17:29:15.7344418Z env:
+2026-11-25T17:29:15.7344594Z   TREE_DEPTH: 5
+2026-11-25T17:29:15.7344809Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:15.7345185Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:15.7346002Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+2026-11-25T17:29:15.7346661Z   ARTIFACT_RETRY_ATTEMPT: 1
+2026-11-25T17:29:15.7346900Z ##[endgroup]
+2026-11-25T17:29:16.0212226Z Found 1 artifact(s)
+2026-11-25T17:29:16.0213818Z Filtering artifacts by pattern 'issue-1028-agent-cli-binary-tree-*'
+2026-11-25T17:29:16.0214857Z Preparing to download the following artifacts:
+2026-11-25T17:29:16.0216185Z - issue-1028-agent-cli-binary-tree-depth-5-2.2.2.2.1 (ID: 15046528285, Size: 26501, Expected Digest: sha256:e6773084fd658498f55baf70879345f3b00754598991e14fda7c8733f92bb38c)
+2026-11-25T17:29:16.1861480Z Redirecting to blob download url: https://productionresultssa1.blob.core.windows.net/actions-results/bcb2b9d8-10e0-444c-82e5-cf0e0bc62fb6/workflow-job-run-cec0fb02-6f8c-5328-b200-307a967b1fe3/artifacts/dc1515572f3197b204f5357aa7cbf79e8d9d459549264fe3ee3e8c0cd4110fe3.zip
+2026-11-25T17:29:16.1864402Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.5YKHUP
+2026-11-25T17:29:16.2187608Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.5YKHUP/issue-1028-agent-cli-binary-tree-depth-5-2.2.2.2.1.zip
+2026-11-25T17:29:16.2217420Z SHA256 digest of downloaded artifact is e6773084fd658498f55baf70879345f3b00754598991e14fda7c8733f92bb38c
+2026-11-25T17:29:16.2218484Z Artifact download completed successfully.
+2026-11-25T17:29:16.2219053Z Total of 1 artifact(s) downloaded
+2026-11-25T17:29:16.2224189Z Download artifact has finished successfully
+2026-11-25T17:29:16.2330737Z ##[end-action id=__self_2.download_first;outcome=success;conclusion=success;duration_ms=505]
+2026-11-25T17:29:16.2335640Z ##[start-action display=Discard partial archives before the second download;id=__self_2.retry_second]
+2026-11-25T17:29:16.2345423Z ##[end-action id=__self_2.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T17:29:16.2348553Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self_2.download_second]
+2026-11-25T17:29:16.2353407Z ##[end-action id=__self_2.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T17:29:16.2356482Z ##[start-action display=Discard partial archives before the third download;id=__self_2.retry_third]
+2026-11-25T17:29:16.2360549Z ##[end-action id=__self_2.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T17:29:16.2363698Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self_2.download_third]
+2026-11-25T17:29:16.2367948Z ##[end-action id=__self_2.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T17:29:16.2371764Z ##[start-action display=Extract verified archives;id=__self_2.extract]
+2026-11-25T17:29:16.2391885Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+2026-11-25T17:29:16.2393580Z [36;1m"$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"[0m
+2026-11-25T17:29:16.2414660Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T17:29:16.2415012Z env:
+2026-11-25T17:29:16.2415197Z   TREE_DEPTH: 5
+2026-11-25T17:29:16.2415404Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:16.2415799Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.2416357Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+2026-11-25T17:29:16.2416916Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+2026-11-25T17:29:16.2417477Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.5YKHUP
+2026-11-25T17:29:16.2417883Z   DESTINATION: /home/runner/work/_temp/agent-tree-legs
+2026-11-25T17:29:16.2418194Z   MERGE_MULTIPLE: false
+2026-11-25T17:29:16.2418424Z   ALLOW_EMPTY_SELECTION: true
+2026-11-25T17:29:16.2418665Z ##[endgroup]
+2026-11-25T17:29:16.3628647Z Artifact extraction destination: /home/runner/work/_temp/agent-tree-legs
+2026-11-25T17:29:16.3736182Z ##[end-action id=__self_2.extract;outcome=success;conclusion=success;duration_ms=136]
+2026-11-25T17:29:16.3740097Z ##[start-action display=Remove temporary raw archives;id=__self_2.__run]
+2026-11-25T17:29:16.3764761Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+2026-11-25T17:29:16.3765103Z [36;1mrm -rf -- "$RAW_DIRECTORY"[0m
+2026-11-25T17:29:16.3785750Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T17:29:16.3786103Z env:
+2026-11-25T17:29:16.3786299Z   TREE_DEPTH: 5
+2026-11-25T17:29:16.3786514Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:16.3786928Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.3787463Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.5YKHUP
+2026-11-25T17:29:16.3787826Z ##[endgroup]
+2026-11-25T17:29:16.3850192Z ##[end-action id=__self_2.__run;outcome=success;conclusion=success;duration_ms=10]
+2026-11-25T17:29:16.3881412Z ##[group]Run set -euo pipefail
+2026-11-25T17:29:16.3881761Z [36;1mset -euo pipefail[0m
+2026-11-25T17:29:16.3882005Z [36;1mrm -rf "$OUT"[0m
+2026-11-25T17:29:16.3882275Z [36;1mLADDER_SOURCE_COMMIT="$(git rev-parse HEAD)"[0m
+2026-11-25T17:29:16.3882990Z [36;1mLADDER_SOURCE_TREE="$(git rev-parse 'HEAD^{tree}')"[0m
+2026-11-25T17:29:16.3883390Z [36;1mexport LADDER_SOURCE_COMMIT LADDER_SOURCE_TREE[0m
+2026-11-25T17:29:16.3884030Z [36;1mpython3 experiments/issue_1028_agent_cli_ladder/plan-legs.py "$TREE_DEPTH" "$NODE_FILTER" > "$RUNNER_TEMP/ladder-plan.json"[0m
+2026-11-25T17:29:16.3884766Z [36;1mpython3 experiments/issue_1028_agent_cli_ladder/combine-shards.py \[0m
+2026-11-25T17:29:16.3885353Z [36;1m  "$RUNNER_TEMP/agent-tree-legs" "$OUT" "$LEG_COUNT" "$RUNNER_TEMP/ladder-plan.json"[0m
+2026-11-25T17:29:16.3905357Z shell: /usr/bin/bash -e {0}
+2026-11-25T17:29:16.3905606Z env:
+2026-11-25T17:29:16.3905793Z   TREE_DEPTH: 5
+2026-11-25T17:29:16.3906008Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:16.3906439Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.3907057Z   LEG_COUNT: 1
+2026-11-25T17:29:16.3907253Z ##[endgroup]
+2026-11-25T17:29:16.4811999Z ##[error]the plan has 1 shard(s), 0 wrote a result
+2026-11-25T17:29:16.4846897Z ##[error]Process completed with exit code 1.
+2026-11-25T17:29:16.4915832Z ##[group]Run scripts/dump-agent-cli-evidence.sh docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.4916596Z [36;1mscripts/dump-agent-cli-evidence.sh docs/case-studies/issue-1028/agent-tree-run[0m
+2026-11-25T17:29:16.4940696Z shell: /usr/bin/bash -e {0}
+2026-11-25T17:29:16.4941017Z env:
+2026-11-25T17:29:16.4941219Z   TREE_DEPTH: 5
+2026-11-25T17:29:16.4941431Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:16.4941958Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.4942618Z ##[endgroup]
+2026-11-25T17:29:16.5013717Z no Agent CLI evidence at docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.5014295Z no Agent CLI evidence files found; the harness may have failed before it wrote any
+2026-11-25T17:29:16.5066038Z ##[group]Run actions/upload-artifact@v7
+2026-11-25T17:29:16.5066348Z with:
+2026-11-25T17:29:16.5066587Z   name: issue-1028-agent-cli-binary-tree
+2026-11-25T17:29:16.5066918Z   path: docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.5067227Z   retention-days: 14
+2026-11-25T17:29:16.5067449Z   if-no-files-found: warn
+2026-11-25T17:29:16.5067688Z   compression-level: 6
+2026-11-25T17:29:16.5067902Z   overwrite: false
+2026-11-25T17:29:16.5068116Z   include-hidden-files: false
+2026-11-25T17:29:16.5068353Z   archive: true
+2026-11-25T17:29:16.5068552Z env:
+2026-11-25T17:29:16.5068727Z   TREE_DEPTH: 5
+2026-11-25T17:29:16.5068920Z   NODE_FILTER: 2.2.2.2.1
+2026-11-25T17:29:16.5069314Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+2026-11-25T17:29:16.5069743Z ##[endgroup]
+2026-11-25T17:29:16.6542201Z ##[warning]No files were found with the provided path: docs/case-studies/issue-1028/agent-tree-run. No artifacts will be uploaded.
+2026-11-25T17:29:16.6874928Z Post job cleanup.
+2026-11-25T17:29:16.6881055Z ##[start-action display=Run actions/setup-python@v7;id=__3a8a4623-4ab6-49e3-b264-337fa94d766c.python]
+2026-11-25T17:29:16.6885016Z ##[end-action id=__3a8a4623-4ab6-49e3-b264-337fa94d766c.python;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T17:29:16.7009951Z Post job cleanup.
+2026-11-25T17:29:16.7013676Z ##[start-action display=Look up a previous green result for these inputs;id=__ac281555-bb3b-444f-8495-5181eb18aedb.cache]
+2026-11-25T17:29:16.7016170Z ##[end-action id=__ac281555-bb3b-444f-8495-5181eb18aedb.cache;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T17:29:16.7086356Z Post job cleanup.
+2026-11-25T17:29:16.7981087Z [command]/usr/bin/git version
+2026-11-25T17:29:16.8035530Z git version 2.56.1
+2026-11-25T17:29:16.8094184Z Temporarily overriding HOME='/home/runner/work/_temp/cd1d8ddf-07be-4154-ba1d-c75d5a40adfe' before making global git config changes
+2026-11-25T17:29:16.8095628Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-25T17:29:16.8096771Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-11-25T17:29:16.8117718Z Removing SSH command configuration
+2026-11-25T17:29:16.8125096Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T17:29:16.8171319Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T17:29:16.8691970Z Removing HTTP extra header
+2026-11-25T17:29:16.8699503Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T17:29:16.8764688Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T17:29:16.9266190Z Removing includeIf entries pointing to credentials config files
+2026-11-25T17:29:16.9273634Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T17:29:16.9325801Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T17:29:16.9985633Z Cleaning up orphan processes
