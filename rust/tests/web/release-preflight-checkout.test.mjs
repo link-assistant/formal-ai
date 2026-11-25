@@ -54,18 +54,20 @@ test('broad checkout, lost transfer bounds, changed event source and bypassed pr
  for(const mutate of mutations){const changed=structuredClone(original);mutate(changed);assert.throws(()=>validatePreflight(changed));}
 });
 
-test('a stalled crate lookup is retried and all credential verdicts are reported', { timeout: 15_000 }, async (t) => {
+// Issue #1639: the crates.io check is a no-archive publish probe (PUT /crates/new),
+// not the public crate lookup that could only ever say `unknown`.
+test('a stalled crates.io publish probe is retried and all credential verdicts are reported', { timeout: 15_000 }, async (t) => {
   const requests = [];
   const server = createServer((request, response) => {
     const route = `${request.method} ${request.url.split('?')[0]}`;
     requests.push(route);
-    if (route === 'GET /crates/formal-ai' && requests.length === 1) {
+    if (route === 'PUT /crates/new' && requests.length === 1) {
       const timer = setTimeout(() => response.end('{}'), 7000);
       response.once('close', () => clearTimeout(timer));
       return;
     }
     const replies = {
-      'GET /crates/formal-ai': [503],
+      'PUT /crates/new': [503],
       'GET /ghcr-token': [200, {}, '{"token":"fixture-bearer"}'],
       'POST /v2/test/ghcr/blobs/uploads/': [202, { location: '/ghcr-upload' }],
       'DELETE /ghcr-upload': [204],
@@ -104,13 +106,13 @@ test('a stalled crate lookup is retried and all credential verdicts are reported
   }), (error) => {
     assert.equal(error.code, 1);
     assert.match(error.stdout, /Release preflight \(release mode\): 1 verified, 1 failed, 1 unknown/);
-    assert.match(error.stdout, /UNKNOWN: crates\.io publish token -- .*HTTP 503/);
+    assert.match(error.stdout, /UNKNOWN: crates\.io publish token -- the no-archive publish probe answered HTTP 503/);
     assert.match(error.stdout, /OK: GHCR push -- .*opened a blob upload session/);
     assert.match(error.stdout, /BLOCKED: Docker Hub push -- .*HTTP 403/);
     return true;
   });
   assert.deepEqual(requests, [
-    'GET /crates/formal-ai', 'GET /crates/formal-ai',
+    'PUT /crates/new', 'PUT /crates/new',
     'GET /ghcr-token', 'POST /v2/test/ghcr/blobs/uploads/', 'DELETE /ghcr-upload',
     'GET /docker-token', 'POST /v2/test/docker/blobs/uploads/',
   ]);
