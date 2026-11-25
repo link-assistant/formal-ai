@@ -610,9 +610,19 @@ fn try_capability_route(
             // rows share interrogatives ("how long", "是多少"), so they must
             // decline before source execution (issue #1138 calculator delegation;
             // issue #1589 calendar periods). Statistics likewise compute from the
-            // stated list (issue #1175 p273).
+            // stated list (issue #1175 p273). A conversion the unit handler
+            // derives declines too: the lexicon pair above misses units only
+            // the SI catalogue names (issue #1639: "how many days are in 2
+            // years?"). A refused pair keeps its lookup.
             let statistic = handle_statistics(prompt, &normal, &mut EventLog::default());
+            let mut conversion = EventLog::default();
+            let _ = crate::solver_handlers::handle_unit_conversion(
+                prompt,
+                &normalized,
+                &mut conversion,
+            );
             if crate::solver_handler_units::names_arithmetic_quantity(&normalized)
+                || conversion.last_of("unit_conversion:derivation").is_some()
                 || crate::solver_handlers::calendar::month::duration::request(prompt).is_some()
                 || statistic.is_some()
             {
