@@ -69,6 +69,10 @@ pub struct AnthropicMessagesRequest {
     /// as the real API surfaces extended thinking.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub thinking: Option<Value>,
+    /// Anthropic `stop_sequences`. Claude Code's auto-mode classifier sends
+    /// `["</block>"]` and expects the verdict cut there (issue #1632).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub stop_sequences: Vec<String>,
 }
 
 /// One inbound Anthropic message (`role` + `content`).
@@ -440,6 +444,65 @@ fn anthropic_message_from_chat_completion(
     }
 }
 
+/// Answer a Claude Code auto-mode classifier request directly (issue #1632).
+///
+/// `claude --permission-mode auto` sends a "security monitor" envelope before
+/// each shell or network action and waits at most 60 s for a verdict. The
+/// general solver cannot answer that rule book in time, so the request is
+/// recognised by the seed markers in `data/seed/auto-mode-classifier.lino` and
+/// answered in the documented `<block>…</block>` format straight away. Returns
+/// `None` for every other request.
+#[must_use]
+pub fn auto_mode_classifier_message(
+    request: &AnthropicMessagesRequest,
+) -> Option<AnthropicMessage> {
+    let system = request
+        .system
+        .as_ref()
+        .map(anthropic_content_to_text)
+        .unwrap_or_default();
+    let messages = request
+        .messages
+        .iter()
+        .map(|message| anthropic_content_to_text(&message.content))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let verdict = crate::auto_mode_classifier::classify(&system, &messages)?;
+    crate::diagnostic!(
+        "debug";
+        "[auto-mode-classifier] verdict={} rule={:?}",
+        if verdict.blocked_by.is_some() { "block" } else { "allow" },
+        verdict.blocked_by
+    );
+    let (text, stop_sequence) =
+        crate::auto_mode_classifier::apply_stop_sequences(&verdict.text, &request.stop_sequences);
+    let output_tokens = u32::try_from(text.chars().count().div_ceil(4)).unwrap_or(u32::MAX);
+    let input_tokens =
+        u32::try_from((system.len() + messages.len()).div_ceil(4)).unwrap_or(u32::MAX);
+    Some(AnthropicMessage {
+        id: stable_id("msg", &verdict.text),
+        kind: String::from("message"),
+        role: String::from("assistant"),
+        model: crate::seed::canonical_model_id().to_owned(),
+        content: vec![AnthropicContentBlock::text(text)],
+        stop_reason: String::from(if stop_sequence.is_some() {
+            "stop_sequence"
+        } else {
+            "end_turn"
+        }),
+        stop_sequence,
+        usage: AnthropicUsage {
+            input_tokens,
+            output_tokens,
+        },
+        context: json!(
+            ContextCapacity::current().unwrap_or_else(|_| {
+                ContextCapacity::from_bytes(0, 0, avg_utf8_bytes_per_char())
+            })
+        ),
+    })
+}
+
 /// Build the extended-thinking `thinking` content block from the solver's
 /// concrete reasoning trace (issue #488). Each step is rendered by its
 /// naturalized, human-readable `summary`; composite children are indented with a
@@ -492,7 +555,7 @@ pub fn anthropic_message_sse(message: &AnthropicMessage) -> String {
     });
     let message_delta = json!({
         "type": "message_delta",
-        "delta": {"stop_reason": message.stop_reason, "stop_sequence": Value::Null},
+        "delta": {"stop_reason": message.stop_reason, "stop_sequence": message.stop_sequence},
         "usage": {"output_tokens": message.usage.output_tokens}
     });
     let message_stop = json!({"type": "message_stop"});

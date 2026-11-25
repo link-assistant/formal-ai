@@ -16,6 +16,8 @@ pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =
     include_str!("../../embedded/data/seed/agentic-tool-capabilities.lino");
 pub const AGREEMENT_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/agreement-rules.lino");
+pub const AUTO_MODE_CLASSIFIER_LINO: &str =
+    include_str!("../../embedded/data/seed/auto-mode-classifier.lino");
 pub const BRAINSTORM_SEEDS_LINO: &str =
     include_str!("../../embedded/data/seed/brainstorm-seeds.lino");
 pub const CALLER_CONTEXT_LINO: &str = include_str!("../../embedded/data/seed/caller-context.lino");

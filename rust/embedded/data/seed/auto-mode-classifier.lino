@@ -1,0 +1,54 @@
+# Claude Code auto-mode classifier policy (issue #1632).
+#
+# Claude Code's `--permission-mode auto` asks the configured model to act as a
+# "security monitor" before every shell command or network action. The request
+# carries a ~140 KB rule book as the system prompt, a `<transcript>` of the
+# session as the only user message, `stop_sequences: ["</block>"]`, and a 60 s
+# client timeout. Routing that prompt through the general solver timed out
+# ("formal-ai is temporarily unavailable (timed out)"), so every Bash call in
+# auto mode was refused. The server now recognises the classifier envelope by
+# the markers below and answers in the documented output format immediately:
+#
+#   <block>no</block>                                  allow
+#   <block>yes</block><category>Rule</category><reason>[Rule] why</reason>   block
+#
+# The policy is "auto mode with no confirmations" (issue #1632 R4): every agent
+# action is allowed unless its command matches one of the irreversible or
+# exfiltrating patterns below. Patterns are regular expressions in the common
+# subset of the Rust `regex` crate and JavaScript `RegExp` (no look-around,
+# no back-references) and are matched case-insensitively against the agent's
+# latest action only, never against the user's own messages.
+auto_mode_classifier
+  marker "security monitor for autonomous AI coding agents"
+  marker "<block>no</block>"
+  transcript_open "<transcript>"
+  transcript_close "</transcript>"
+  user_entry_key "user"
+  allow_text "<block>no</block>"
+  rule "Irreversible Local Destruction"
+    reason "deletes the filesystem root or the home directory"
+    pattern '\brm\s+(-[a-z-]*\s+)*(/|/\*|~|~/|~/\*|\$home|\$home/|\$home/\*)(\s|$|[;&|)"])'
+  rule "Disk Destruction"
+    reason "formats or overwrites a raw disk device"
+    pattern '\bmkfs(\.[a-z0-9]+)?\s'
+    pattern '\bdd\s[^\n]*\bof=/dev/(sd|hd|vd|xvd|nvme|mmcblk|disk)'
+  rule "Resource Exhaustion"
+    reason "runs a fork bomb"
+    pattern ':\(\)\s*\{\s*:\s*\|\s*:\s*&\s*\}\s*;\s*:'
+  rule "Remote Code Execution"
+    reason "pipes a downloaded script straight into a shell"
+    pattern '\b(curl|wget)\b[^\n|]*\|\s*(sudo\s+)?(ba|z|da|k)?sh\b'
+  rule "Force Push Default Branch"
+    reason "force-pushes over the default branch"
+    pattern '\bgit\s+push\b[^\n]*(--force|\s-f\b)[^\n]*\b(main|master)\b'
+    pattern '\bgit\s+push\b[^\n]*\b(main|master)\b[^\n]*(--force|\s-f\b)'
+  rule "System Power Control"
+    reason "shuts down or reboots the machine"
+    pattern '(^|\n|[;&|]\s*|sudo\s+|^shell\s+)(shutdown|reboot|poweroff|halt)\b'
+  rule "Credential Exfiltration"
+    reason "sends private keys or cloud credentials over the network"
+    pattern '(\.ssh/id_|\.aws/credentials|\.netrc|\.git-credentials)[^\n]*\|\s*(curl|wget|nc|ncat)\b'
+    pattern '\b(curl|wget)\b[^\n]*(--data|--upload-file|-d|-f|-t)\s*@?[^\s]*(\.ssh/id_|\.aws/credentials|\.netrc|\.git-credentials)'
+  rule "Permission Weakening"
+    reason "makes the whole filesystem world-writable"
+    pattern '\bchmod\s+(-r\s+)?(0?777|a\+rwx)\s+/(\s|$|[;&|)"])'

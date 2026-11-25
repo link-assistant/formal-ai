@@ -22,9 +22,10 @@ import { sortedKeys, toCompactJson } from './json.mjs';
 import { jsonResponse, messageError, sseResponse } from './response.mjs';
 import { createChatCompletion, unsupportedModelResponse } from './openai.mjs';
 import { advertisedContextCapacity, contextJson } from './gemini.mjs';
-import { resolveModelId } from './seed.mjs';
+import { canonicalModelId, resolveModelId } from './seed.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
+import { applyStopSequences, classify } from './auto-mode-classifier.mjs';
 
 const U32_MAX = 0xffffffff;
 
@@ -92,6 +93,7 @@ export function parseAnthropicRequest(body) {
     tools: defaultArray(object, 'tools'),
     tool_choice: optionalValue(object, 'tool_choice'),
     thinking: optionalValue(object, 'thinking'),
+    stop_sequences: defaultArray(object, 'stop_sequences').filter((stop) => typeof stop === 'string'),
   };
 }
 
@@ -278,6 +280,32 @@ export function anthropicMessageFromChatCompletion(request, completion) {
   };
 }
 
+/**
+ * `auto_mode_classifier_message`: answer a Claude Code auto-mode classifier
+ * request directly (issue #1632), or null for every other request.
+ */
+export function autoModeClassifierMessage(request) {
+  const system = request.system === null || request.system === undefined ? '' : anthropicContentToText(request.system);
+  const messages = request.messages.map((message) => anthropicContentToText(message.content)).join('\n');
+  const verdict = classify(system, messages);
+  if (!verdict) return null;
+  const [text, stopSequence] = applyStopSequences(verdict.text, request.stop_sequences);
+  return {
+    id: stableId('msg', verdict.text),
+    type: 'message',
+    role: 'assistant',
+    model: canonicalModelId(),
+    content: [{ type: 'text', text }],
+    stop_reason: stopSequence === null ? 'end_turn' : 'stop_sequence',
+    ...(stopSequence === null ? {} : { stop_sequence: stopSequence }),
+    usage: {
+      input_tokens: Math.min(U32_MAX, Math.ceil((system.length + messages.length) / 4)),
+      output_tokens: Math.min(U32_MAX, Math.ceil([...text].length / 4)),
+    },
+    context: contextJson(advertisedContextCapacity()),
+  };
+}
+
 function sseEvent(event, data) {
   return `event: ${event}\ndata: ${toCompactJson(sortedKeys(data))}\n\n`;
 }
@@ -322,7 +350,7 @@ export function anthropicMessageSse(message) {
   });
   body += sseEvent('message_delta', {
     type: 'message_delta',
-    delta: { stop_reason: message.stop_reason, stop_sequence: null },
+    delta: { stop_reason: message.stop_reason, stop_sequence: message.stop_sequence ?? null },
     usage: { output_tokens: message.usage.output_tokens },
   });
   body += sseEvent('message_stop', { type: 'message_stop' });
@@ -338,6 +366,10 @@ export async function handleAnthropicMessages(ctx, request) {
     if (!(error instanceof RequestShapeError)) throw error;
     return messageError(400, 'invalid_messages_request', { error: error.message });
   }
+  // The auto-mode classifier is answered before the model check: Claude Code
+  // sends it on whichever tier it picked (e.g. `claude-sonnet-5`).
+  const verdict = autoModeClassifierMessage(parsed);
+  if (verdict) return parsed.stream ? sseResponse(anthropicMessageSse(verdict)) : jsonResponse(200, verdict);
   const unsupported = unsupportedModelResponse(parsed.model);
   if (unsupported) return unsupported;
   const chatRequest = anthropicToChatCompletionRequest(parsed);

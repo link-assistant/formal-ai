@@ -58,6 +58,10 @@ terminal_commands
     verb 跑下
   passthrough_prefixes
     language en
+      prefix "run the shell command"
+      prefix "run the bash command"
+      prefix "run shell command"
+      prefix "run bash command"
       prefix "run the command"
       prefix "run bash"
       prefix "run shell"
