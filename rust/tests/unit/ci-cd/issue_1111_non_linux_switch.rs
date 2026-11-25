@@ -80,17 +80,46 @@ fn the_skip_is_reported_rather_than_silent() {
 }
 
 /// The release path must accept the skip, and only the skip. A macOS job that
-/// actually fails still has to stop the build -- otherwise this switch would
-/// be a way to ship past a real defect.
+/// actually fails still has to turn the pipeline red -- otherwise this switch
+/// would be a way to ship past a real defect unnoticed.
+///
+/// Since 4c6d5653b ("Allow staged publication when diagnostic CI fails") the
+/// package `build` no longer waits on the test matrix at all; the macOS result
+/// is judged by the `pipeline-status` aggregate, which runs whatever happened
+/// and fails on a `failure` while accepting a legitimate `skipped`.
 #[test]
 fn the_build_accepts_a_skipped_macos_job_but_not_a_failed_one() {
-    let workflow = unwrapped(&release_workflow());
+    let raw = release_workflow();
+    let status_job = job_block(&raw, "pipeline-status");
     assert!(
-        workflow.contains(
-            "needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped'"
-        ),
-        "the build must treat a switched-off macOS job as acceptable"
+        unwrapped(status_job).contains("macos-core-tests"),
+        "the pipeline verdict must include the macOS job's result"
     );
+    assert!(
+        status_job.contains("if: always()"),
+        "the verdict must run when the macOS job was skipped or failed"
+    );
+    assert!(
+        status_job.contains("NEEDS_JSON: ${{ toJSON(needs) }}")
+            && status_job.contains("run: bash scripts/check-pipeline-status.sh"),
+        "the verdict must judge every needed job's result with the status script"
+    );
+
+    let script = std::fs::read_to_string(format!(
+        "{}/../scripts/check-pipeline-status.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("the pipeline status script should be readable");
+    assert!(
+        script.contains("failed=\"$(select_by_result failure)\""),
+        "a failed macOS job must still fail the pipeline"
+    );
+    assert!(
+        !script.contains("select_by_result skipped"),
+        "a switched-off macOS job is acceptable and must not be reported as a failure"
+    );
+
+    let workflow = unwrapped(&raw);
     assert!(
         !workflow.contains("needs.macos-core-tests.result != 'failure'"),
         "the gate must enumerate what it accepts rather than accept everything that is not a failure"

@@ -127,15 +127,25 @@ fn reviewed_dependency_warnings_are_narrowly_classified() {
     assert!(desktop.contains(r#"cp desktop/scripts/prefetch-windows-packaging.mjs desktop/scripts/prefetch-builder-toolsets.mjs scripts/install-node-dependencies.sh "$protocol_dir/""#));
     assert!(desktop.contains(r#"INSTALL_NODE_DEPENDENCIES_MODE: "${{ matrix.label == 'windows-arm64' && 'ci' || 'install' }}""#));
     assert!(desktop.contains(r#"run: if [ "${{ matrix.label }}" = windows-arm64 ]; then bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/install-node-dependencies.sh" "$GITHUB_WORKSPACE/desktop"; else scripts/install-node-dependencies.sh desktop; fi"#));
-    assert!(desktop.contains("NODE_OPTIONS: --disable-warning=DEP0005"));
-    assert!(
-        desktop.contains("actions/download-artifact/issues/484")
-            || contents.contains("actions/download-artifact/issues/484")
-    );
+    // The upstream deprecations that used to be suppressed step by step are
+    // no longer reached at all, so the suppressions are gone and deprecations
+    // are fatal instead. Issue #1580 (f400d7ab2) moved artifact downloads onto
+    // the workflow-owned adapter, which skips the extraction that emitted
+    // DEP0005 (actions/download-artifact#484); f8718c44e replaced
+    // actions/deploy-pages, whose punycode use emitted DEP0040 (#434).
+    assert!(!desktop.contains("--disable-warning=DEP0005"));
+    let adapter = fs::read_to_string(format!(
+        "{root}/.github/actions/download-artifact/action.yml"
+    ))
+    .expect("artifact download adapter");
+    assert!(adapter.contains("skip-decompress: true"));
+    assert!(adapter.contains("--throw-deprecation"));
+    assert!(!adapter.contains("DEP0005"));
 
     let release = workflow("release.yml");
-    assert!(release.contains("NODE_OPTIONS: --disable-warning=DEP0040"));
-    assert!(release.contains("upstream issue #434"));
+    assert!(!release.contains("--disable-warning=DEP0040"));
+    assert!(release.contains("uses: ./.formal-ai-pages-protocol/.github/actions/deploy-pages"));
+    assert!(release.contains("NODE_OPTIONS: --throw-deprecation"));
 
     let syntax = Command::new("bash").arg("-n").arg(script).status().unwrap();
     assert!(syntax.success());

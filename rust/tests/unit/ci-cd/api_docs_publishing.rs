@@ -60,7 +60,11 @@ fn generated_api_docs_are_published_below_the_site_docs_route() {
     assert!(workflow.contains("cp -R target/doc/. js/docs/api/"));
     assert!(workflow.contains("uses: actions/upload-pages-artifact@v5"));
     assert!(workflow.contains("path: js"));
-    assert!(workflow.contains("uses: actions/deploy-pages@v5"));
+    // Since #1580 (f8718c44e) the artifact is deployed by the repository's
+    // own action, which speaks the actions/deploy-pages@v5 REST protocol but
+    // binds retries to the exact uploaded artifact id.
+    assert!(workflow.contains("uses: ./.formal-ai-pages-protocol/.github/actions/deploy-pages"));
+    assert!(workflow.contains("artifact_id: ${{ needs.build-pages.outputs.artifact_id }}"));
 }
 
 #[test]

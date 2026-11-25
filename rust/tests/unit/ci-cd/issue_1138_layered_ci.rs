@@ -259,12 +259,30 @@ fn the_tier_predicates_live_in_the_classifier_not_the_workflow() {
         "let js_tier_input",
         "let ts_tier_input",
         "let rust_tier_input",
-        "fn tier_gates_are_cumulative_downward_and_never_upward",
-        "fn a_javascript_suite_change_reruns_the_tier_that_executes_it",
     ] {
         assert!(
             script.contains(pin),
             "the classifier carries the tier rule {pin}"
+        );
+    }
+    // 634eb760a moved the classifier's embedded tests into a sibling file
+    // that the script still includes as its own `tests` module.
+    assert!(
+        script.contains("#[path = \"detect-code-changes-tests.rs\"]\nmod tests;"),
+        "the classifier must still include its tier matrix tests"
+    );
+    let tests = fs::read_to_string(format!(
+        "{}/../scripts/detect-code-changes-tests.rs",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("the classifier's tests are readable");
+    for pin in [
+        "fn tier_gates_are_cumulative_downward_and_never_upward",
+        "fn a_javascript_suite_change_reruns_the_tier_that_executes_it",
+    ] {
+        assert!(
+            tests.contains(pin),
+            "the classifier's tests carry the tier rule {pin}"
         );
     }
 }
@@ -281,13 +299,41 @@ fn the_tier_predicates_live_in_the_classifier_not_the_workflow() {
 fn the_javascript_suites_run_in_budgeted_shards_that_cover_every_file() {
     let workflow = layered_workflow();
     let js = job_block(&workflow, "js");
-    assert!(js.contains("fromJSON("));
-    assert!(js.contains("&& '[1,2,3,4]' || '[1,2,3,4,5,6,7,8]'"));
-    assert!(js.contains("&& 4 || 8"));
-    // JavaScript evaluates both matrix branches and checks the exact coverage.
+    // 44da99110 (issue #1580) made pull requests, feature dispatches and
+    // `main` run the same complete suite over one measured shard plan, so the
+    // matrix is a literal list rather than a per-event `fromJSON` choice. The
+    // legs and the count the step divides by must still agree, or files
+    // would silently be dropped or repeated.
+    let legs: Vec<usize> = js
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("shard: ["))
+        .and_then(|list| list.strip_suffix(']'))
+        .expect("the js tier declares its shard legs as a literal list")
+        .split(',')
+        .map(|leg| leg.trim().parse().expect("a shard leg is a number"))
+        .collect();
+    let shards: usize = js
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("SHARDS: "))
+        .expect("the suites step declares how many shards it divides by")
+        .trim()
+        .parse()
+        .expect("the shard count is a number");
+    assert!(shards > 1, "the js suites must stay split into shards");
+    assert_eq!(
+        legs,
+        (1..=shards).collect::<Vec<_>>(),
+        "the matrix legs must be exactly 1..=SHARDS so every file runs once"
+    );
     assert!(
-        include_str!("../../web/default-branch-build-policy.test.mjs")
-            .contains("PRs split the fast JS inventory over four groups")
+        !js.contains("fromJSON("),
+        "pull requests and main share one shard plan"
+    );
+    // JavaScript evaluates the matrix per event and checks the exact coverage.
+    assert!(
+        include_str!("../../web/default-branch-build-policy.test.mjs").contains(
+            "PR and main use the same complete JavaScript inventory and measured shard plan"
+        )
     );
     for pin in [
         "SHARD: ${{ matrix.shard }}",

@@ -65,7 +65,15 @@ fn ignored_directories_are_authoritative_for_every_change_output() {
 
 #[test]
 fn excluded_only_change_matrix_is_covered_for_pushes_and_pull_requests() {
-    let detector = repository_file("scripts/detect-code-changes.rs");
+    // 634eb760a moved the detector's unit tests, including this fixture
+    // matrix, into the sibling `#[path]` module so the script stays under the
+    // source-size budget.
+    let detector = repository_file("scripts/detect-code-changes-tests.rs");
+    assert!(
+        repository_file("scripts/detect-code-changes.rs")
+            .contains("#[path = \"detect-code-changes-tests.rs\"]\nmod tests;"),
+        "the fixture matrix must stay compiled into the detector's tests"
+    );
 
     for path in [
         "experiments/repro.rs",

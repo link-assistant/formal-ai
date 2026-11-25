@@ -324,6 +324,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Check out workflow-owned artifact extraction
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         uses: actions/checkout@v7
         with:
           ref: ${{ github.workflow_sha }}

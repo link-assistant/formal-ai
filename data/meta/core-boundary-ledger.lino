@@ -364,7 +364,7 @@ core_boundary_ledger
     reason "Issue #1613 moves the program and list semantics to the shared coding interpreter. Both direct list requests and declarative callable rules use it."
   component numeric-list-program-interpreter
     file rust/src/coding/list_program.rs
-    kind "seed-driven coding interpreter"
+    kind "Generic interpreter"
     reason "Applies typed operations to caller values and interprets shared language idioms to produce a callable, its tests, or code that displays a result."
   source rust/src/solver_handlers/numeric_list/mod.rs
     disposition migrate
@@ -573,7 +573,7 @@ core_boundary_ledger
   note "Re-measured 2026-11-15 for issue #1487: user_intent.rs records the proof_binding evidence of the seeded theorem-claim binding, and its outcome-to-confidence match moved onto ProofOutcome::confidence in rust/src/proof_engine/types.rs, so the file falls from 239 to 237 lines; source_lines_max records 35660 and outside_core_lines_max 18601."
   component practical-goal-guidance
     file rust/src/solver_handler_how/practical_help.rs
-    kind "Publisher procedure interpreter"
+    kind "Generic interpreter"
     reason "Matches registered first-person goals and quotes the relevant section of a trusted captured page. Seed data defines goal forms, source selectors and localized attribution."
 
   note "Issue #1589, reviewed 2026-11-17: the existing calendar interpreter now composes bound month/year quantities and completed calendar anniversaries; the calculator performs checked exact-rational conversion over a dated official seed snapshot. Recognition vocabulary, quote provenance and five-language response prose remain seed data. Four existing files are remeasured with no new handler source; dispositions remain unchanged. The isolated calendar_currency CI target exercises native execution."

@@ -63,7 +63,12 @@ run_audit() {
   local attempt observed_status errors
   for attempt in 1 2 3; do
     observed_status=0
-    timeout 120 "$@" > "$audit_log_dir/output" 2>&1 || observed_status=$?
+    # A 120 s deadline without GNU `timeout`, which macOS does not ship: the
+    # alarm survives `exec`, so the audit itself receives SIGALRM (status 142),
+    # reported as 124 like `timeout` did.
+    perl -e 'alarm shift @ARGV; exec { $ARGV[0] } @ARGV or die "exec $ARGV[0]: $!\n"' 120 "$@" \
+      > "$audit_log_dir/output" 2>&1 || observed_status=$?
+    if [[ "$observed_status" -eq 142 ]]; then observed_status=124; fi
     cat "$audit_log_dir/output"
     sed -E $'s/\\x1b\\[[0-9;]*[[:alpha:]]//g' "$audit_log_dir/output" > "$audit_log_dir/plain"
     errors="$(grep -E '^[[:space:]]*error:' "$audit_log_dir/plain" || true)"
