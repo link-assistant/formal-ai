@@ -141,7 +141,7 @@ test("native offline chat discovers procedures from verified Wikibooks captures"
     const content = (await response.json()).choices[0].message.content;
     const firstStep = content.match(/^1\. (.+)$/mu)?.[1];
     assert.match(firstStep ?? "", book.firstStep);
-    assert.ok(content.includes(book.page), content);
+    assert.ok(content.includes(book.article), content);
     assert.doesNotMatch(content, /unrelated instruction/u);
   }
 });
@@ -199,7 +199,7 @@ async function startNativeProcedureReplay(t, { agentMode = false, publisherSearc
   return { cache, url: run.url, run };
 }
 
-async function askChatProcedure(url, messages, { source = RUSSIAN_API, tools } = {}) {
+async function askChatProcedure(url, messages, { source = RUSSIAN_ARTICLE, tools } = {}) {
   const response = await fetch(`${url}/v1/chat/completions`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -276,7 +276,8 @@ test("native chat recovers a matching article after discarding an unrelated one"
   storeCapture(cache, RUSSIAN_API, JSON.stringify(unrelated));
   storeCapture(cache, search, sourceResults(title));
   storeCapture(cache, matching, RUSSIAN_CAPTURE);
-  const recovered = await askChatProcedure(url, [{ role: "user", content: RUSSIAN_REQUEST }], { source: matching });
+  // The matching capture is cited by its article URL (issue #1632).
+  const recovered = await askChatProcedure(url, [{ role: "user", content: RUSSIAN_REQUEST }]);
   assert.ok(!recovered.includes(RUSSIAN_API), recovered);
 });
 
