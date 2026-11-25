@@ -268,6 +268,14 @@ fn response_parity_debt() -> ResponseParityDebt {
     }
 }
 
+/// Name this test for the replay child's `--exact` filter. The file is
+/// compiled into both the `unit` and the focused `reasoning_contracts` crates
+/// under different module paths, so the path is derived, not hard-coded.
+fn replay_name(test: &str) -> String {
+    let module = module_path!().split_once("::").map_or("", |(_, rest)| rest);
+    format!("{module}::{test}")
+}
+
 /// **Wave F observation, plan 01.** The held-out word `lipogram` occurs nowhere
 /// under `src/` or `data/seed/`, so a prompt that turns on its meaning cannot be
 /// answered from memory: plan 01 requires the loop to ask about the unresolved
@@ -286,9 +294,9 @@ fn response_parity_debt() -> ResponseParityDebt {
 fn an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description() {
     // The pinned consulted-source record is the empty-cache, network-denied
     // outcome; a runner's live network must not substitute its own statuses.
-    if crate::offline_replay::in_network_denied_child(
-        "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
-    ) {
+    if crate::offline_replay::in_network_denied_child(&replay_name(
+        "an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+    )) {
         return;
     }
     let mut offenders = Vec::new();
@@ -325,9 +333,9 @@ fn an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_descri
 /// Transcript: `docs/case-studies/issue-1138/self-use/lipogram/es/`.
 #[test]
 fn a_spanish_prompt_is_not_reported_as_an_unsupported_language() {
-    if crate::offline_replay::in_network_denied_child(
-        "solver::issue_1138_self_use_concept_lookup::a_spanish_prompt_is_not_reported_as_an_unsupported_language",
-    ) {
+    if crate::offline_replay::in_network_denied_child(&replay_name(
+        "a_spanish_prompt_is_not_reported_as_an_unsupported_language",
+    )) {
         return;
     }
     let case = family("spanish_reported_unsupported")
