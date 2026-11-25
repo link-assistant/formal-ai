@@ -146,7 +146,7 @@ test('gives up after a bounded number of transient failures', async () => {
 });
 
 test('adopts the deployment a lost response created instead of creating another', async () => {
-  for (const status of ['deployment_queued', 'deployment_in_progress', 'succeed']) {
+  for (const status of ['deployment_queued', 'deployment_in_progress']) {
     const api = mockApi({
       'POST /deployments': [httpError(502)],
       [`GET /deployments/${VERSION}`]: [{ status }, { status: 'succeed' }],
@@ -317,28 +317,22 @@ test('main publishes the artifact from INPUT_ARTIFACT_ID and writes page_url', a
 });
 
 
-test('deployment identity binds repository, immutable artifact and exact source', () => {
-  const version = deploymentVersion('owner/repo', '42', SHA);
-  assert.match(version, /^[a-f0-9]{64}$/);
-  assert.equal(deploymentVersion('OWNER/Repo', 42, SHA.toUpperCase()), version);
-  assert.notEqual(deploymentVersion('owner/repo', '41', SHA), version);
-  assert.notEqual(deploymentVersion('owner/other', '42', SHA), version);
-  assert.notEqual(deploymentVersion('owner/repo', '42', 'b'.repeat(40)), version);
+test('the build version is the source commit SHA, as actions/deploy-pages@v5 sends (issue #1637)', () => {
+  // A synthetic artifact-bound hash made POST /pages/deployments answer HTTP 404 on main.
+  assert.equal(VERSION, SHA);
+  assert.equal(deploymentVersion('OWNER/Repo', 42, SHA.toUpperCase()), SHA);
+  assert.equal(deploymentVersion('owner/repo', '42', 'c'.repeat(64)), 'c'.repeat(64));
 });
 
-test('new artifact of the same commit cannot adopt the previous successful artifact', async () => {
-  const oldVersion = deploymentVersion('owner/repo', '41', SHA);
+test('a retry does not adopt a finished deployment of the same commit from another artifact', async () => {
   const api = mockApi({
     'POST /deployments': [httpError(502), created],
-    [`GET /deployments/${oldVersion}`]: [{status: 'succeed'}],
     [`GET /deployments/${SHA}`]: [{status: 'succeed'}],
-    [`GET /deployments/${VERSION}`]: [httpError(404)],
     'GET /deployments/7': [{status: 'succeed'}],
   });
   assert.equal((await run(api).promise).id, 7);
   assert.equal(creations(api.calls).length, 2);
-  assert.equal(api.calls.some(call => call.url.endsWith('/'+SHA) || call.url.endsWith('/'+oldVersion)), false);
-  assert(creations(api.calls).every(call => call.body.artifact_id === 42 && call.body.pages_build_version === VERSION));
+  assert(creations(api.calls).every(call => call.body.artifact_id === 42 && call.body.pages_build_version === SHA));
 });
 
 test('invalid or imprecise artifact IDs, repository and source fail before API access', async () => {
