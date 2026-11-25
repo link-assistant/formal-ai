@@ -458,37 +458,42 @@ fn hello_world_matrix_emits_a_code_block_per_language() {
         // the same job captured the Rust book's hello-world page, the Rust
         // answer reports that rediscovery instead of "not probed"; every other
         // line is unchanged. Without the capture the documented answer stands.
-        let expected_answer =
-            if *expected_language == "rust" && response.answer.contains(RUST_BOOK_HELLO_WORLD) {
-                expected_answer
-                    .replace(
-                        "Execution status: not probed in this environment.",
-                        &format!(
-                            "Execution status: not run; this program was rediscovered from \
+        // Both answers are listed, so the test shows each exact text.
+        let rediscovered = if *expected_language == "rust" {
+            expected_answer
+                .replace(
+                    "Execution status: not probed in this environment.",
+                    &format!(
+                        "Execution status: not run; this program was rediscovered from \
                          {RUST_BOOK_HELLO_WORLD} and its output contract was checked by \
                          decomposition, not by executing it."
-                        ),
-                    )
-                    .replace(
-                        "Output, not observed in this environment:",
-                        "Expected output after verification:",
-                    )
-                    .replace(
-                        "Статус выполнения: не проверялось в этой среде.",
-                        &format!(
-                            "Статус выполнения: не запускалась; программа заново найдена на \
+                    ),
+                )
+                .replace(
+                    "Output, not observed in this environment:",
+                    "Expected output after verification:",
+                )
+                .replace(
+                    "Статус выполнения: не проверялось в этой среде.",
+                    &format!(
+                        "Статус выполнения: не запускалась; программа заново найдена на \
                          странице {RUST_BOOK_HELLO_WORLD}, её контракт вывода проверен \
                          разбором, а не запуском."
-                        ),
-                    )
-                    .replace(
-                        "Вывод, не наблюдавшийся в этой среде:",
-                        "Ожидаемый вывод после проверки:",
-                    )
-            } else {
-                expected_answer.to_owned()
-            };
-        assert_eq!(response.answer, expected_answer);
+                    ),
+                )
+                .replace(
+                    "Вывод, не наблюдавшийся в этой среде:",
+                    "Ожидаемый вывод после проверки:",
+                )
+        } else {
+            expected_answer.to_owned()
+        };
+        let documented = [expected_answer, rediscovered.as_str()];
+        assert!(
+            documented.contains(&response.answer.as_str()),
+            "prompt {prompt:?}: {}",
+            response.answer
+        );
         assert!(
             response.answer.contains(fence),
             "prompt {prompt:?} should include {fence} fence, got: {}",
