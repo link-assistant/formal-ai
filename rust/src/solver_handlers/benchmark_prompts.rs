@@ -90,9 +90,7 @@ pub fn try_brainstorming_request(
     }
     let category = seeds.pick_category(normalized)?;
     let language = detect_language(prompt).slug();
-    // The method dispatch passes the lowercased prompt; the topic is read from
-    // the normalized words so sentence punctuation ("helper.") and hyphens do
-    // not leak into the composed items (the browser twin reads normalized text).
+    // Normalized words keep punctuation and hyphens out of the topic, as in the browser twin.
     let folded = crate::engine::normalize_prompt(normalized);
     let topic = seeds
         .topic(&folded)

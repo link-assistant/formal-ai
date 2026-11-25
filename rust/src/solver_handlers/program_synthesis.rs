@@ -79,9 +79,7 @@ fn synthesize(
     recurrence_only: bool,
 ) -> Option<SymbolicAnswer> {
     let first_event = log.events().len();
-    // A bound-recurrence probe runs before ordinary dispatch and usually finds
-    // no recurrence; it must not leave a second builder trace behind when the
-    // general program-synthesis handler then constructs the answer.
+    // A recurrence probe records its builder only once it finds a recurrence.
     if !recurrence_only {
         MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
     }

@@ -586,10 +586,7 @@ fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTas
 }
 
 fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<ProceduralHowToTask> {
-    // An elided lead ("как …") only guesses a procedure from an
-    // infinitive-shaped word, and an opinion lead shares that word: "как ты
-    // думаешь, есть ли свобода воли" asks for an opinion, and "есть" merely
-    // ends like an infinitive. The seeded opinion lead outranks the guess.
+    // A seeded opinion lead ("как ты думаешь, есть ли …") outranks the infinitive guess.
     if crate::rule_interpreter::handler_matches("opinion_question", clean_prompt) {
         return None;
     }

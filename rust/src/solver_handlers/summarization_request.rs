@@ -45,9 +45,7 @@ pub fn handle_summarization_request(
     if !lexicon.mentions_role(ROLE_TEXT_SUMMARIZATION_ACTION, &folded) {
         return None;
     }
-    // A head that names the conversation ("Summarize conversation: …") is a
-    // conversation summary over the supplied turns, owned by
-    // `conversation_memory` (which keeps such explicit text for itself).
+    // "Summarize conversation: …" belongs to `conversation_memory`.
     if lexicon.mentions_role(seed::ROLE_CONVERSATION_REFERENCE, &folded)
         || lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &folded)
     {
