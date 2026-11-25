@@ -337,6 +337,7 @@ it off without a red main.
 | Draft | Template(s) | Filed? | Why |
 |---|---|---|---|
 | `../upstream-reports/all-templates-pr-ready-tier.md` | all 8 | **Not filed** | The current mains are verified (all 8 use `[opened, synchronize, reopened]` with no ready tier). However, this is a divergence from a best-practice rule, not a defect that produces a false positive or negative in the template itself. hive-mind already ships the patch for each template (`examples/ci-cd-pull-request-tiers/*.patch`), so filing 8 issues would duplicate upstream's own rollout. No duplicate exists: searches for `ready_for_review` and `tier` returned nothing in any of the 8 repositories. |
+| `../upstream-reports/rust-template-lone-pattern-match.md` | rust | **Filed**: link-foundation/rust-ai-driven-development-pipeline-template#274 | The rust template's download-artifact adapter, which formal-ai's adapter derives from, flattens a pattern selection that matches exactly one artifact. No consumer in the template breaks today, because they read recursively or merge, but formal-ai's ladder join did break. The python template's `actions/artifact` always nests a pattern match (`name \|\| merge ? destination : path.join(destination, artifact.name)`). The js, php, csharp, java, cpp and go templates do not use the wrapper. |
 
 No other defect found this round also exists on a template's current main:
 
