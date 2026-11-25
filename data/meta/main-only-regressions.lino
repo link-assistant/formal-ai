@@ -323,3 +323,10 @@ main-run 45636781871
       failed "native-response-observations: 28 capture cases selected, 27 accepted"
       check rust/tests/web/native-test-module-graph.test.mjs
       marker "no committed native capture case re-executes its body in a replay child (issue #1639)"
+main-run 45659315559
+  workflow-policy
+    regression lone-pattern-match-flattened
+      introduced-by "PR #1581, commit f400d7ab2"
+      failed "Issue 1028 ladder / Join the legs into one run: the plan has 1 shard(s), 0 wrote a result"
+      check rust/tests/web/native-test-artifact.test.mjs
+      marker "issue #1639: a lone pattern match extracts under its artifact name, as two matches do"

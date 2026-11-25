@@ -70,6 +70,23 @@ class Extraction(unittest.TestCase):
         self.assertEqual((merged / "first.txt").read_bytes(), b"one")
         self.assertEqual((merged / "second.txt").read_bytes(), b"two")
 
+    def test_lone_pattern_match_keeps_its_artifact_folder(self):
+        # Issue #1639: raw mode writes a lone match flat as `<name>.zip`; a
+        # pattern consumer must see the same `<name>/` folder as for two.
+        self.archive("leg-2.2.1.zip", [("ladder-result.lino", b"one")])
+        self.module.extract_artifacts(self.raw, self.destination, False, True, True)
+        self.assertEqual((self.destination / "leg-2.2.1/ladder-result.lino").read_bytes(), b"one")
+        flat = self.directory / "flat"
+        self.module.extract_artifacts(self.raw, flat, False)
+        self.assertEqual((flat / "ladder-result.lino").read_bytes(), b"one", "a name selection stays flat")
+        merged = self.directory / "merged"
+        self.module.extract_artifacts(self.raw, merged, True, True, True)
+        self.assertEqual((merged / "ladder-result.lino").read_bytes(), b"one", "merge-multiple stays flat")
+        (self.raw / "leg-2.2.1.zip").rename(self.raw / "artifact")
+        with self.assertRaisesRegex(ValueError, "carries no artifact name"):
+            self.module.extract_artifacts(self.raw, self.directory / "unnamed", False, True, True)
+        self.assertFalse((self.directory / "unnamed").exists())
+
     def test_unsafe_paths_reject_the_whole_member_plan(self):
         for member in ["../escape", "/absolute", "C:/drive", "nested/../../escape", "back\\slash", "a/./alias"]:
             with self.subTest(member=member):

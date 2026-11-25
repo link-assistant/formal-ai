@@ -62,7 +62,25 @@ def raw_archives(raw, allow_empty=False):
     return sources
 
 
-def extract_artifacts(raw, destination, merge_multiple=False, allow_empty_selection=False):
+def nest_single_match(sources):
+    """Give a lone pattern match the `<artifact-name>/` folder every other match count gets.
+
+    actions/download-artifact fff8c148a (v5) writes a selection that matches
+    exactly one artifact straight into `path`, so a pattern consumer saw
+    `<path>/<name>/...` for two legs and `<path>/...` for one (issue #1639: the
+    one-leaf ladder dispatch 45659315559 joined "0 results"). Raw mode names
+    that lone archive `<artifact-name>.zip`, which restores the folder.
+    """
+    if len(sources) != 1 or sources[0][0].parts:
+        return sources
+    archive = sources[0][1]
+    if not archive.name.endswith(".zip") or archive.name == ".zip":
+        raise ValueError(f"A single pattern match carries no artifact name: {archive.name!r}")
+    return [(member_path(archive.name[: -len(".zip")]), archive)]
+
+
+def extract_artifacts(raw, destination, merge_multiple=False, allow_empty_selection=False,
+                      nest_pattern_selection=False):
     root = Path(destination).expanduser().absolute()
     if root.is_symlink() or (root.exists() and not root.is_dir()):
         raise ValueError("Artifact destination is not a real directory")
@@ -70,6 +88,8 @@ def extract_artifacts(raw, destination, merge_multiple=False, allow_empty_select
     sources = raw_archives(Path(raw), allow_empty_selection)
     if not sources:
         return root  # The upstream pattern/all-artifact query matched nothing.
+    if nest_pattern_selection and not merge_multiple:
+        sources = nest_single_match(sources)
     planned, files, directories = [], set(), set()
     with ExitStack() as stack:
         for prefix, source in sources:
@@ -123,9 +143,11 @@ def main():
     parser.add_argument("destination", type=Path)
     parser.add_argument("--merge-multiple", choices=("true", "false"), default="false")
     parser.add_argument("--allow-empty-selection", choices=("true", "false"), default="false")
+    parser.add_argument("--nest-pattern-selection", choices=("true", "false"), default="false")
     options = parser.parse_args()
     destination = extract_artifacts(options.raw, options.destination, options.merge_multiple == "true",
-                                    options.allow_empty_selection == "true")
+                                    options.allow_empty_selection == "true",
+                                    options.nest_pattern_selection == "true")
     if os.environ.get("GITHUB_OUTPUT"):
         delimiter = "artifact_path_" + uuid.uuid4().hex
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
