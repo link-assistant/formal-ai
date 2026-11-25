@@ -1,0 +1,19 @@
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	﻿2026-11-25T15:58:09.4526489Z ##[group]Run bash scripts/check-shard-results.sh
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4527127Z ^[[36;1mbash scripts/check-shard-results.sh^[[0m
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4544745Z shell: /usr/bin/bash -e {0}
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4545201Z env:
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4545899Z   NEEDS_JSON: {
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	  "corpus-build": {
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	    "result": "success",
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	    "outputs": {}
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	  },
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	  "corpus-shard": {
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	    "result": "failure",
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	    "outputs": {}
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	  }
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	}
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4546628Z   JOBS: corpus-build corpus-shard
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4547020Z   CHECK: Benchmark corpus gate
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4547474Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4720404Z ##[error]not every shard succeeded (corpus-shard=failure). A failed, timed-out (cancelled) or skipped shard is a missing measurement, never a pass.
+no benchmark prompt reaches the unknown opener (all shards)	Every corpus shard answered its prompts	2026-11-25T15:58:09.4730809Z ##[error]Process completed with exit code 1.

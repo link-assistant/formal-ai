@@ -1,0 +1,34 @@
+== Test_ubuntu-24.04_full_.log
+== Test_ubuntu-24.04_full_shard_2_8.log
+---- issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures stdout ----
+thread 'issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures' (11156) panicked at tests/unit/issue_1588_intent_spans.rs:28:29:
+test result: FAILED. 555 passed; 1 failed; 1 ignored; 0 measured; 5129 filtered out; finished in 553.95s
+== Test_ubuntu-24.04_full_shard_3_8.log
+== Test_ubuntu-24.04_full_shard_4_8.log
+---- coding::catalog::lino_parity::lino_seed_mirrors_every_catalog_template stdout ----
+thread 'coding::catalog::lino_parity::lino_seed_mirrors_every_catalog_template' (15515) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/lino_parity.rs:73:9:
+test result: FAILED. 62 passed; 1 failed; 0 ignored; 0 measured; 446 filtered out; finished in 0.34s
+== Test_ubuntu-24.04_full_shard_6_8.log
+== Test_ubuntu-24.04_full_shard_7_8.log
+---- issue_1158_pull_request_steps::the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pull_request stdout ----
+thread 'issue_1158_pull_request_steps::the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pull_request' (16055) panicked at tests/unit/issue_1158_pull_request_steps.rs:24:5:
+---- minimal_core_and_seed_metadata::coding_path_has_complete_metadata_and_every_other_gap_is_data stdout ----
+thread 'minimal_core_and_seed_metadata::coding_path_has_complete_metadata_and_every_other_gap_is_data' (17783) panicked at tests/unit/minimal_core_and_seed_metadata.rs:693:5:
+test result: FAILED. 554 passed; 2 failed; 1 ignored; 0 measured; 5129 filtered out; finished in 743.94s
+== Test_ubuntu-24.04_full_shard_8_8.log
+---- docs_requirements::issues::full_range_coding_artifacts::every_test_the_traceability_rows_cite_exists stdout ----
+thread 'docs_requirements::issues::full_range_coding_artifacts::every_test_the_traceability_rows_cite_exists' (10516) panicked at tests/unit/docs_requirements/full_range_coding_artifacts.rs:324:13:
+---- solver::issue_938_meta_algorithm_builder::all_coding_surfaces_execute_one_trace_shape stdout ----
+thread 'solver::issue_938_meta_algorithm_builder::all_coding_surfaces_execute_one_trace_shape' (16621) panicked at tests/unit/solver/issue_938_meta_algorithm_builder.rs:9:5:
+test result: FAILED. 555 passed; 2 failed; 0 ignored; 0 measured; 5129 filtered out; finished in 593.49s
+---- coding::catalog::lino_parity::lino_seed_has_no_extra_templates stdout ----
+thread 'coding::catalog::lino_parity::lino_seed_has_no_extra_templates' (20614) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/lino_parity.rs:94:5:
+test result: FAILED. 62 passed; 1 failed; 0 ignored; 0 measured; 446 filtered out; finished in 0.28s
+== Test_ubuntu-24.04_specification_shard_2_4.log
+---- specification::code_generation::task_catalog::factorial_operand_excludes_the_number_of_requested_functions stdout ----
+thread 'specification::code_generation::task_catalog::factorial_operand_excludes_the_number_of_requested_functions' (4377) panicked at tests/unit/specification/code_generation/mod.rs:16:5:
+test result: FAILED. 301 passed; 1 failed; 2 ignored; 0 measured; 5382 filtered out; finished in 89.69s
+== Test_ubuntu-24.04_specification_shard_3_4.log
+---- specification::prompt_variations::hello_world_matrix_emits_a_code_block_per_language stdout ----
+thread 'specification::prompt_variations::hello_world_matrix_emits_a_code_block_per_language' (7420) panicked at tests/unit/specification/prompt_variations.rs:492:9:
+test result: FAILED. 296 passed; 1 failed; 0 ignored; 0 measured; 5389 filtered out; finished in 281.84s
