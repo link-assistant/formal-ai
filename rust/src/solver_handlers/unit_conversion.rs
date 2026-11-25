@@ -361,23 +361,15 @@ fn apply_formula(start: Decimal, steps: &[FormulaStep]) -> Option<(Decimal, bool
     ))
 }
 
-/// The SI catalogue unit whose length is a convention the calculator does not
-/// share: the catalogue's year is the Julian year (31557600 s), while the
-/// calculator counts a 365-day calendar year.
-const JULIAN_YEAR_UNIT: &str = "julian_year";
-
 fn derivation_log(prompt: &str, normalized: &str) -> EventLog {
     let mut scratch = EventLog::default();
     let _ = handle_unit_conversion(prompt, normalized, &mut scratch);
     scratch
 }
 
-/// Whether this handler derives an exact conversion for `prompt` (issue #1639).
-///
-/// A derived conversion is a computed quantity, so the routes that precede
-/// this handler without computing it leave it here: the measurement lookup
-/// and the relative-period web gap ("сколько часов в 22 днях" reads "в 22
-/// днях" as a period).
+/// Whether this handler derives an exact conversion for `prompt` (issue #1639):
+/// a computed quantity, so the measurement lookup and the relative-period web
+/// gap ("сколько часов в 22 днях") leave it here.
 #[must_use]
 pub fn derives_unit_conversion(prompt: &str, normalized: &str) -> bool {
     derivation_log(prompt, normalized)
@@ -385,23 +377,17 @@ pub fn derives_unit_conversion(prompt: &str, normalized: &str) -> bool {
         .is_some()
 }
 
-/// Whether this handler derives `prompt` through the Julian year (issue #1639).
-///
-/// The calculator answers "what is 2 years in days" with a 365-day year
-/// (730 days) where this handler's catalogue derivation gives 730.5 days,
-/// so arithmetic leaves exactly these conversions to this handler. Other
-/// conversions the calculator evaluates ("how much is 10 tons to kg") agree
-/// with the catalogue and stay with it.
+/// Whether the derivation runs through the catalogue's Julian year (issue
+/// #1639): the calculator's 365-day year gives 730 days for "2 years in days"
+/// where the catalogue gives 730.5, so arithmetic leaves only these here.
 #[must_use]
 pub fn derives_julian_year_conversion(prompt: &str, normalized: &str) -> bool {
     let log = derivation_log(prompt, normalized);
+    let julian = |path: &str| path.split(" -> ").any(|unit| unit.trim() == "julian_year");
     log.last_of("unit_conversion:derivation").is_some()
-        && log.last_of("unit_conversion:si_path").is_some_and(|event| {
-            event
-                .payload
-                .split(" -> ")
-                .any(|unit| unit.trim() == JULIAN_YEAR_UNIT)
-        })
+        && log
+            .last_of("unit_conversion:si_path")
+            .is_some_and(|event| julian(&event.payload))
 }
 
 /// Unit-conversion entry point (issue #1176): answer "how many X are N Y",
