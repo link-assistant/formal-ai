@@ -40,13 +40,33 @@ PUBLISHER_PID=""
 # shellcheck source=experiments/agent_cli_e2e/issue_707_fixture.sh
 source "$ROOT/experiments/agent_cli_e2e/issue_707_fixture.sh"
 
+# Issue #1639: a failure exits through this trap, which used to delete the
+# workdir before anything reached $EVIDENCE_DIR -- run 45636781871 failed in the
+# reference derivation and its upload step found no files. On a non-zero exit,
+# keep the logs and plans (not the corpus or memory stores) under failure/.
+preserve_failure_evidence() {
+  local target="$EVIDENCE_DIR/failure" file relative
+  mkdir -p "$target" || return 0
+  while IFS= read -r -d '' file; do
+    relative="${file#"$WORKDIR"/}"
+    mkdir -p "$target/$(dirname "$relative")" && cp -- "$file" "$target/$relative" || true
+  done < <(find "$WORKDIR" -type f \( -name '*.log' -o -name '*.err' -o -name '*.local.json' \
+    -o -name '*.txt' -o -name '*.jsonl' -o -name 'opencode.json' \) -print0 2>/dev/null)
+  echo "failure evidence kept in $target" >&2
+}
+
 cleanup() {
+  local status=$?
   if [[ -n "$SERVER_PID" ]]; then
     kill "$SERVER_PID" 2>/dev/null || true
+    wait "$SERVER_PID" 2>/dev/null || true
   fi
   if [[ -n "$PUBLISHER_PID" ]]; then
     kill "$PUBLISHER_PID" 2>/dev/null || true
     wait "$PUBLISHER_PID" 2>/dev/null || true
+  fi
+  if [[ "$status" -ne 0 && -d "$WORKDIR" ]]; then
+    preserve_failure_evidence
   fi
   rm -rf -- "$WORKDIR"
 }
@@ -99,9 +119,16 @@ for index in "${!CASE_IDS[@]}"; do
       throw new Error(caseId + " was recalled, not synthesized: " + outcome.plan.id);
     }
     const explicit = fs.readFileSync(explicitPath, "utf8").trimEnd().split("\n").at(-2);
-    const steps = JSON.parse(explicit).map((step) => step.primitive);
-    if (JSON.stringify(steps) !== JSON.stringify(outcome.plan.steps.map((step) => step.primitive))) {
+    // The explicit plan names primitives by their dotted wire name ("fs.write");
+    // the serde plan carries the enum variant ("FsWrite") the verifier maps back,
+    // and each executed step record carries the dotted name again (issue #1639).
+    const dotted = JSON.parse(explicit).map((step) => step.primitive);
+    if (JSON.stringify(dotted) !== JSON.stringify(outcome.steps.map((step) => step.primitive))) {
       throw new Error(caseId + " explicit plan differs from local synthesis");
+    }
+    const steps = outcome.plan.steps.map((step) => step.primitive);
+    if (steps.length !== dotted.length) {
+      throw new Error(caseId + " local plan and executed steps differ in length");
     }
     const digest = createHash("sha256").update(explicit).digest("hex");
     process.stdout.write(JSON.stringify({
