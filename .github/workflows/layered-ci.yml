@@ -219,6 +219,7 @@ jobs:
       js-changed: ${{ steps.changes.outputs.js-changed }}
       ts-changed: ${{ steps.changes.outputs.ts-changed }}
       rust-changed: ${{ steps.changes.outputs.rust-changed }}
+      admission-range: ${{ steps.changes.outputs.admission-range }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -309,7 +310,9 @@ jobs:
     needs: [changes]
     # Only this tier's own predicate and no `always()`: another tier's
     # folder changing alone must let this tier stand on its last green run.
-    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
+    # Issue #1637: a pull request push judged by its own range (the previous
+    # head passed) runs this tier only when that push changed code.
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' || (github.event_name == 'pull_request' && needs.changes.outputs.admission-range != 'push') || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
     runs-on: ubuntu-24.04
     # Issue #1017: `timeout-minutes` is a backstop, never the deadline. The
     # suites ran as one unbudgeted step that took 378s of this 600s cap

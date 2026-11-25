@@ -87,6 +87,7 @@ jobs:
       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
       native-type-check: ${{ steps.changes.outputs.native-type-check }}
+      pull-request-code-changed: ${{ steps.changes.outputs.pull-request-code-changed }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -133,7 +134,8 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-changelog${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes]
-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    # The fragment belongs to the whole pull request: a narrow push must not skip it (#1637).
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.pull-request-code-changed == 'true'
     steps:
       - {uses: actions/checkout@v7, timeout-minutes: 2,
          env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '30'},

@@ -6,7 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import YAML from 'yaml';
-import {admission, isInertPath, pushRangeCandidate, previousHeadPassed, selectChangedPaths}
+import {admission, detectOutputs, isInertPath, pushRangeCandidate, previousHeadPassed, selectChangedPaths}
   from '../../../../scripts/ci-pull-request-admission.mjs';
 
 const BASE = 'a'.repeat(40), BEFORE = 'b'.repeat(40), AFTER = 'c'.repeat(40), MERGE = 'd'.repeat(40);
@@ -130,4 +130,27 @@ test('every pull request admission job can read its own previous runs', () => {
     assert.equal(detect.env.GITHUB_EVENT_AFTER, '${{ github.event.after }}', file);
     assert.equal(detect.env.GITHUB_TOKEN, '${{ github.token }}', file);
   }
+});
+
+test('detect outputs keep whole-pull-request facts beside the narrowed range', async () => {
+  const narrowed = await detectOutputs({env: ENV, invoke: repository().invoke, fetcher: api(passed).fetcher, log: quiet});
+  assert.equal(narrowed['admission-range'], 'push');
+  assert.equal(narrowed['any-code-changed'], false);
+  assert.equal(narrowed['js-changed'], false);
+  assert.equal(narrowed['pull-request-code-changed'], true, 'the changelog fragment is still judged on the whole pull request');
+  const full = await detectOutputs({env: {...ENV, GITHUB_EVENT_ACTION: 'opened'}, invoke: repository().invoke,
+    fetcher: api(passed).fetcher, log: quiet});
+  assert.equal(full['admission-range'], 'full');
+  assert.equal(full['any-code-changed'], true);
+  assert.equal(full['pull-request-code-changed'], true);
+});
+
+test('narrowed pushes gate the JavaScript tier and never the changelog fragment', () => {
+  const layered = YAML.parse(readFileSync('.github/workflows/layered-ci.yml', 'utf8')).jobs;
+  assert.equal(layered.changes.outputs['admission-range'], '${{ steps.changes.outputs.admission-range }}');
+  assert.match(layered.js.if, /needs\.changes\.outputs\.js-changed == 'true' \|\| \(github\.event_name == 'pull_request' && needs\.changes\.outputs\.admission-range != 'push'\)/u);
+  const release = YAML.parse(readFileSync('.github/workflows/release.yml', 'utf8')).jobs;
+  assert.equal(release['detect-changes'].outputs['pull-request-code-changed'], '${{ steps.changes.outputs.pull-request-code-changed }}');
+  assert.match(release.changelog.if, /pull-request-code-changed == 'true'/u);
+  assert.doesNotMatch(release.changelog.if, /any-code-changed/u);
 });

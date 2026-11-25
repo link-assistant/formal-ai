@@ -391,6 +391,20 @@ export async function selectChangedPaths({env = process.env, invoke = git, fetch
   log('Comparing ' + before + ' to ' + after + ' (push range; the previous head passed ' + candidate.workflow + ').');
   return {range: 'push', paths: inventory(['diff', '--no-renames', '--name-only', '-z', before, after])};
 }
+/**
+ * Outputs of `detect`. Besides the admission keys:
+ * - `admission-range` says whether the push range or the full pull request was judged;
+ * - `pull-request-code-changed` always judges the full pull request, for checks of the
+ *   whole change such as the changelog fragment, which a narrow push must not skip.
+ */
+export async function detectOutputs({env = process.env, invoke = git, fetcher = globalThis.fetch,
+  log = message => console.error(message)} = {}) {
+  const {range, paths} = await selectChangedPaths({env, invoke, fetcher, log});
+  if (env.FORMAL_AI_CI_VERBOSE === 'true') console.error(JSON.stringify({admissionRange: {range, paths}}));
+  const result = admission(paths, {verifiedPushRange: range === 'push'});
+  const whole = range === 'push' ? admission(changedPaths(env.GITHUB_EVENT_NAME, env.GITHUB_EVENT_BEFORE, invoke)) : result;
+  return {...result, 'admission-range': range, 'pull-request-code-changed': whole['any-code-changed']};
+}
 function sourceIdentity(value, repository, suffix) {
   const url = new URL(value);
   assert(url.origin === 'https://api.github.com' && !url.username && !url.password
@@ -535,9 +549,7 @@ export async function readBaseManifest({repository,base,token,fetcher=globalThis
 
 async function main(mode) {
   if (mode === 'detect') {
-    const {range, paths} = await selectChangedPaths();
-    if (process.env.FORMAL_AI_CI_VERBOSE === 'true') console.error(JSON.stringify({admissionRange: {range, paths}}));
-    const result = admission(paths, {verifiedPushRange: range === 'push'});
+    const result = await detectOutputs();
     for (const [key, value] of Object.entries(result)) {
       const line = `${key}=${value}\n`;
       if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, line);

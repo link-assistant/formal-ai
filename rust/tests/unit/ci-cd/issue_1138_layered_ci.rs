@@ -79,8 +79,8 @@ fn every_tier_declares_its_path_predicate_and_needs_the_tiers_above() {
     let js = tier_condition(&workflow, "js");
     assert_eq!(
         js,
-        "(github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))",
-        "main retains path gating and every fast pull request runs coding regressions, while explicit source-only regeneration runs neither"
+        "(github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' || (github.event_name == 'pull_request' && needs.changes.outputs.admission-range != 'push') || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))",
+        "main retains path gating; a pull request runs coding regressions unless a push onto an already-green head changed no code (#1637); explicit source-only regeneration runs neither"
     );
 
     let ts = tier_condition(&workflow, "ts");

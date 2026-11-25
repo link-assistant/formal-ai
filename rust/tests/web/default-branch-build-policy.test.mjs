@@ -669,7 +669,8 @@ test('base source reads fail closed on transport, redirects, oversized bodies an
 test('changelog acquisition keeps complete Git history and only hydrates its checker closure', () => {
   const job=workflow('release.yml').jobs.changelog;
   assert.equal(job['timeout-minutes'],10);
-  assert.equal(job.if,"github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'");
+  // Issue #1637: the fragment is judged on the whole pull request, never on a narrow push.
+  assert.equal(job.if,"github.event_name == 'pull_request' && needs.detect-changes.outputs.pull-request-code-changed == 'true'");
   assert.deepEqual(job.needs,['detect-changes']);
   const checkout=job.steps.find(step=>step.uses==='actions/checkout@v7');
   assert.equal(checkout['timeout-minutes'],2);
