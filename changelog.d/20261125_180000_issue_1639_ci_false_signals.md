@@ -15,6 +15,7 @@ bump: patch
   - "how many days are in 2 years?" was routed to a concept lookup instead of a unit conversion; a bare duration now stays a unit conversion, and catalog construction records its trace;
   - several main-only Rust tests read live publishers or a shared source cache; they now use isolated caches and deny the network where they assert an answer;
   - the prebuilt full and specification test shards ran default solvers against live publishers (read access is on by default since #1582), which held shards past their budget; they now run with `FORMAL_AI_NETWORK=denied`, and the shard durations are refreshed;
+  - Russian duration prompts such as "сколько дней в 2 годах" fell through to the relative-period web search, and "2 years in days" was answered by the calculator with a 365-day year; a request the unit handler derives now stays with the unit handler, and a conversion through the Julian year is no longer claimed by arithmetic;
   - the intent-span and minimal-core tests now also run in the pull request native lane;
   - each of these main-only failures is listed in `data/meta/main-only-regressions.lino` with the pull request test that now catches it;
   - the evidence of every failing scheduled, dispatched and `main` run is kept under `dev/log/issues/1639/pulls/1640`, with a comparison against the eight pipeline templates.
