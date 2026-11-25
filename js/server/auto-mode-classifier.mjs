@@ -24,6 +24,7 @@ export function classifierPolicy() {
     transcriptClose: childValue(root, 'transcript_close'),
     userEntryKey: childValue(root, 'user_entry_key'),
     allowText: childValue(root, 'allow_text'),
+    blockTemplate: childValue(root, 'block_template'),
     rules: childrenNamed(root, 'rule').map((node) => ({
       name: node.value,
       reason: childValue(node, 'reason'),
@@ -73,14 +74,14 @@ export function agentActions(messages) {
 
 /** Judge the latest agent action: `{ blockedBy, text }`. */
 export function judge(messages) {
-  const { allowText, rules } = classifierPolicy();
+  const { allowText, blockTemplate, rules } = classifierPolicy();
   const latest = agentActions(messages).at(-1);
   if (latest === undefined) return { blockedBy: null, text: allowText };
   const rule = rules.find((candidate) => candidate.patterns.some((pattern) => pattern.test(latest)));
   if (!rule) return { blockedBy: null, text: allowText };
   return {
     blockedBy: rule.name,
-    text: `<block>yes</block><category>${rule.name}</category><reason>[${rule.name}] The action ${rule.reason}.</reason>`,
+    text: blockTemplate.split('{name}').join(rule.name).split('{reason}').join(rule.reason),
   };
 }
 

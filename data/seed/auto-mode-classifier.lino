@@ -25,6 +25,8 @@ auto_mode_classifier
   transcript_close "</transcript>"
   user_entry_key "user"
   allow_text "<block>no</block>"
+  # {name} is the matched rule name and {reason} its reason below.
+  block_template "<block>yes</block><category>{name}</category><reason>[{name}] The action {reason}.</reason>"
   rule "Irreversible Local Destruction"
     reason "deletes the filesystem root or the home directory"
     pattern '\brm\s+(-[a-z-]*\s+)*(/|/\*|~|~/|~/\*|\$home|\$home/|\$home/\*)(\s|$|[;&|)"])'

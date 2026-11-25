@@ -39,6 +39,7 @@ pub struct ClassifierPolicy {
     transcript_close: String,
     user_entry_key: String,
     allow_text: String,
+    block_template: String,
     rules: Vec<ClassifierRule>,
 }
 
@@ -93,6 +94,7 @@ fn parse_policy(text: &str) -> ClassifierPolicy {
         transcript_close: root.find_child_value("transcript_close").to_owned(),
         user_entry_key: root.find_child_value("user_entry_key").to_owned(),
         allow_text: root.find_child_value("allow_text").to_owned(),
+        block_template: root.find_child_value("block_template").to_owned(),
         rules,
     }
 }
@@ -169,11 +171,10 @@ impl ClassifierPolicy {
                 || self.allow(),
                 |rule| ClassifierVerdict {
                     blocked_by: Some(rule.name.clone()),
-                    text: format!(
-                        "<block>yes</block><category>{name}</category><reason>[{name}] The action {reason}.</reason>",
-                        name = rule.name,
-                        reason = rule.reason,
-                    ),
+                    text: self
+                        .block_template
+                        .replace("{name}", &rule.name)
+                        .replace("{reason}", &rule.reason),
                 },
             )
     }
