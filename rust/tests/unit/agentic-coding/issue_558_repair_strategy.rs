@@ -210,7 +210,15 @@ fn planner_walks_the_repair_strategy_recipe() {
     match plan_chat_step(&messages, &tools) {
         Some(AgenticPlan::Final(answer)) => {
             assert!(answer.contains(REPAIR_STRATEGY_PATH));
-            assert!(answer.contains("solver method, a data record, or a test"));
+            // The answer reports the classes observed in the supplied traces
+            // (289c28b88 replaced the fixed "a solver method, a data record,
+            // or a test" claim with the classified targets) and stays
+            // human-gated.
+            assert!(
+                answer.contains("(solver_method, data_record, test)"),
+                "{answer}"
+            );
+            assert!(answer.contains("requires human approval"), "{answer}");
         }
         other => panic!("expected a final answer, got {other:?}"),
     }

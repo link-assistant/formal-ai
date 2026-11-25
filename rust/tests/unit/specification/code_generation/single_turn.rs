@@ -26,11 +26,21 @@ fn rust_hello_world_composes_a_stdout_program() {
         response.answer.split("```").nth(1),
         Some("rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n")
     );
+    // Offline solves replay the shared source cache (`data/source-cache`). An
+    // online solve earlier in the same run may already have captured the Rust
+    // book page, and then the program is the one rediscovered from it (issue
+    // #1165, commit 10a6f2855). Either way the status must be one of the two
+    // honest lines, never a claimed run.
+    let composed = "Execution status: not probed in this environment.";
+    let rediscovered = "Execution status: not run; this program was rediscovered from \
+         https://doc.rust-lang.org/book/ch01-02-hello-world.html and its output contract \
+         was checked by decomposition, not by executing it.";
     assert!(
-        response
-            .answer
-            .contains("Execution status: not probed in this environment.")
+        response.answer.contains(composed) || response.answer.contains(rediscovered),
+        "Rust hello world status must be composed or rediscovered, got: {}",
+        response.answer
     );
+    assert!(!response.answer.contains("compiled and ran"));
     assert!(response.answer.contains("Check command: `rustc"));
     assert!(response.answer.contains("Run command: `./main`"));
     assert!(response.answer.contains("Hello, world!"));
@@ -402,10 +412,13 @@ fn russian_list_files_in_rust_returns_program() {
     // language framing (intro line and execution status) is localized while the
     // code stays canonical. The English status text still appears in the
     // language-independent Links Notation trace below.
+    // Commit 9adbb43f5 ("keep execution results tied to caller inputs"): a
+    // catalog program is no longer reported as run, because its output depends
+    // on the caller's directory, so the status is "not probed".
     assert!(
         response
             .answer
-            .contains("Статус выполнения: скомпилировано и запущено"),
+            .contains("Статус выполнения: не проверялось в этой среде."),
         "Russian request should yield a Russian execution status line, got: {}",
         response.answer
     );
@@ -419,7 +432,7 @@ fn russian_list_files_in_rust_returns_program() {
     assert!(
         response
             .links_notation
-            .contains("execution_status compiled and ran"),
+            .contains("execution_status not probed in this environment"),
         "Links Notation trace stays language-independent, got: {}",
         response.links_notation
     );
@@ -431,11 +444,14 @@ fn english_list_files_in_python_returns_program() {
     assert_write_program_parameters(&response, "python", "list_files");
     assert!(response.answer.contains("```python"));
     assert!(response.answer.contains("listdir"));
+    // Commit 9adbb43f5: the listing depends on the caller's directory, so the
+    // catalog program is not reported as run and shows no assumed output.
     assert!(
         response
             .answer
-            .contains("Execution status: compiled and ran")
+            .contains("Execution status: not probed in this environment.")
     );
+    assert!(!response.answer.contains("compiled and ran"));
 }
 
 #[test]
@@ -491,32 +507,41 @@ fn chinese_list_files_in_rust_returns_program() {
 
 #[test]
 fn russian_program_request_with_unknown_task_is_not_unknown() {
-    // The whole class: a Russian "write a program in <lang>" request whose task
-    // is not in the catalog must still be recognized as a (currently
-    // unsupported) write_program request instead of falling through to unknown.
+    // The whole class: a Russian "write a program in <lang>" request must be
+    // recognized as a write_program request instead of falling through to
+    // unknown. Since 9b1ab09ca ("Bind coding catalog operands and derive
+    // requested program output") factorial is a catalog task whose operand is
+    // bound from the request, so this request (which names no number) is no
+    // longer an uncatalogued skill gap: it resolves the (python, factorial)
+    // parameters and asks, in Russian, for the missing operand instead of
+    // writing a program with an invented one.
     let response = answer("Напиши программу на Python, которая вычисляет факториал числа");
     assert_eq!(
-        response.intent, "write_program_skill_gap",
+        response.intent, "write_program",
         "Russian program request should be recognized as write_program, got: {}",
         response.intent
     );
-    // Issue #324: the message is localized to Russian, so assert on the
-    // backtick-quoted parameter (stable across languages) rather than the
-    // English word "language".
+    for parameter in [
+        "program_parameter:language python",
+        "program_parameter:task factorial",
+    ] {
+        assert!(
+            response.links_notation.contains(parameter),
+            "Links Notation trace should include {parameter}, got: {}",
+            response.links_notation
+        );
+    }
+    // Issue #324: the clarification is localized to Russian.
     assert!(
         response
             .answer
-            .contains("Что должна делать программа на языке python?"),
-        "skill-gap answer should name the extracted python parameter, got: {}",
+            .contains("Факториал какого целого числа от 0 до 18 должна вычислить программа?"),
+        "clarification should ask for the factorial operand in Russian, got: {}",
         response.answer
     );
-    // Issue #699 batch 3: it names the routes that missed instead of the
-    // `write_program(language, task)` signature and the template catalogue.
     assert!(
-        response
-            .answer
-            .contains("входные данные и нужный результат"),
-        "clarification should ask for inputs and desired output: {}",
+        !response.answer.contains("```python"),
+        "an unbound operand must not produce a program, got: {}",
         response.answer
     );
 }

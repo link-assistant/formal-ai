@@ -201,6 +201,57 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         setup_hint: "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)",
         framework_of: None,
     },
+    // Mirrors rust/src/coding/catalog/languages.rs (commits 10a6f2855 and
+    // 289c28b88): Bash, Haskell and Lua are catalog languages whose seed
+    // aliases (`program_language_<slug>`) must name a catalog slug.
+    ProgramLanguage {
+        slug: "bash",
+        name: "Bash",
+        code_fence: "bash",
+        execution: ProgramExecution {
+            status: ExecutionStatus::Unavailable,
+            environment: "Bash interpreter is not configured in this repository runtime",
+            check_command: Some("bash -n main.sh"),
+            run_command: "bash main.sh",
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "main.sh",
+        setup_hint: "Bash from https://www.gnu.org/software/bash/",
+        framework_of: None,
+    },
+    ProgramLanguage {
+        slug: "haskell",
+        name: "Haskell",
+        code_fence: "haskell",
+        execution: ProgramExecution {
+            status: ExecutionStatus::Unavailable,
+            environment: "Haskell toolchain is not configured in this repository runtime",
+            check_command: None,
+            run_command: "runghc Main.hs",
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "Main.hs",
+        setup_hint: "GHC from https://www.haskell.org/ghcup/",
+        framework_of: None,
+    },
+    ProgramLanguage {
+        slug: "lua",
+        name: "Lua",
+        code_fence: "lua",
+        execution: ProgramExecution {
+            status: ExecutionStatus::Unavailable,
+            environment: "Lua interpreter is not configured in this repository runtime",
+            check_command: Some("luac -p main.lua"),
+            run_command: "lua main.lua",
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "main.lua",
+        setup_hint: "Lua from https://www.lua.org/download.html",
+        framework_of: None,
+    },
     // Issue #1167 (mirrors rust/src/coding/catalog/languages.rs): the Swift
     // and R grammars ship in the meta-language revision the seed names.
     ProgramLanguage {

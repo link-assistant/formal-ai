@@ -414,8 +414,12 @@ fn responses_shell_call_keeps_command_when_the_advertised_schema_uses_command() 
 #[test]
 fn responses_returns_final_message_once_recipe_is_exhausted() {
     // With only web_search advertised and its result already fed back, the planner
-    // has nothing left to call, so the Responses surface completes with the
-    // knowledge base inline as an assistant message and no function call.
+    // has nothing left to call, so the Responses surface completes with one
+    // assistant message and no function call. Without a fetch tool the publisher
+    // text is never verified, so that message reports the missing source instead
+    // of a knowledge base built from text it never read (89a674aa0, PR #1614) --
+    // the same contract the chat-completions surface pins in
+    // `server_reports_the_missing_publisher_text_when_fetch_is_unavailable`.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-ai",
         "input": [
@@ -439,10 +443,10 @@ fn responses_returns_final_message_once_recipe_is_exhausted() {
     assert_eq!(messages.len(), 1);
     let body = &messages[0].content[0].text;
     assert!(
-        body.contains("knowledge_base"),
-        "final answer should be the knowledge base"
+        body.contains("could not verify the requested text"),
+        "final answer should report the unverified source: {body}"
     );
-    assert!(body.contains("9 of 9 protocol primitives"), "{body}");
+    assert!(!body.contains("knowledge_base"), "{body}");
 }
 
 #[test]
@@ -474,8 +478,10 @@ fn responses_non_agentic_task_with_tools_falls_through_to_symbolic() {
     // Tools are advertised in agent mode, but the task is not a formalization task,
     // so the planner returns no step and the Responses surface answers symbolically
     // instead of emitting a tool call — agentic coding stays strictly opt-in.
+    // A locally answered request keeps this a fall-through: a capital lookup has
+    // no shipped capture since PR #1614 and is adopted by web research instead.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "input": "What is the capital of France?",
+        "input": "What is 731 plus 83?",
         "tools": [{"type": "function", "name": "web_search", "parameters": {"type": "object"}}]
     }))
     .unwrap();

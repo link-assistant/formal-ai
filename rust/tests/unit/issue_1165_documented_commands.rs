@@ -103,8 +103,12 @@ fn a_derived_command_is_the_catalog_command_of_every_task() {
             "java -jar Main.jar"
         ]
     );
-    let response =
-        formal_ai::UniversalSolver::default().solve("Write a Kotlin program that prints FizzBuzz");
+    // Since 9b1ab09ca (PR #1614) a catalog FizzBuzz binds the caller's range
+    // operands and asks for a range it was not given, so the request names
+    // one -- the same prompt as the JS twin
+    // (`rust/tests/web/issue-1165-documented-commands.test.mjs`).
+    let response = formal_ai::UniversalSolver::default()
+        .solve("Write a Kotlin program that prints FizzBuzz from 1 through 15");
     let recipe = response
         .execution_recipe
         .expect("a program answer carries its execution recipe");

@@ -515,7 +515,13 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // records, so 33 + 10 + 35 + 38 = 116; the gap contract remains unchanged.
     // The complete program-termination-clause adds role, precondition, effect,
     // unit, example and all registered languages: 116 + 1 = 117.
-    assert_eq!(coding_records, 117, "coding-path regression floor");
+    // PR #1614 then added four complete catalog records: 10a6f2855 the
+    // `program_language_bash`, `program_language_haskell` and
+    // `program_language_lua` surfaces of the publisher-composed languages, and
+    // 9b1ab09ca `program-reverse-operand-introducer`, the word that binds the
+    // literal a reverse request operates on. Each carries all five fields, so
+    // 117 + 3 + 1 = 121 and the gap contract is unchanged.
+    assert_eq!(coding_records, 121, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the

@@ -155,6 +155,7 @@ pub const WEB_APP_SOURCES: &str = concat!(
     include_str!("../../../../js/app/application-worker-hooks.jsx"),
     include_str!("../../../../js/app/application.jsx"),
     include_str!("../../../../js/app/attachments.jsx"),
+    include_str!("../../../../js/app/cnl-settings.jsx"),
     include_str!("../../../../js/app/conversations.jsx"),
     include_str!("../../../../js/app/debugger-view.jsx"),
     include_str!("../../../../js/app/demo-mode.jsx"),

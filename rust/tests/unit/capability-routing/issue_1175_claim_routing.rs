@@ -362,10 +362,13 @@ fn class_c_a_composer_without_its_specification_may_only_refuse() {
             "Write a SQL query",
             "Write a SQL query that selects every row of the users table",
         ),
+        // 847753b12 moved the planner onto supplied, cited destination
+        // observations (`destination_observations`), so a destination name
+        // alone no longer specifies a plan; the JS twin pins the same prompt.
         (
             "planning_request",
             "Plan a trip somewhere nice",
-            "Make a 3-day itinerary for a first visit to Rome.",
+            "Plan a trip.\n```json\n{\"planning\":{\"destination\":\"Somewhere\",\"places\":[{\"name\":\"Town Hall\",\"district\":\"Centre\",\"category\":\"museum\",\"hours\":\"10:00-16:00\",\"visit_minutes\":60,\"source_url\":\"https://example.org/hours\"}]}}\n```",
         ),
     ] {
         assert_eq!(

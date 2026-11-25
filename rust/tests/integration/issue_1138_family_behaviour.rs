@@ -11,6 +11,8 @@
 
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::FormalAiEngine;
 
@@ -131,8 +133,54 @@ fn every_retired_handler_prompt_still_answers_through_its_family() {
     );
 }
 
+/// Replay `test` in a child of this test binary with read access denied and an
+/// exclusive empty source cache; the parent returns `true` once the child
+/// passed, the child returns `false` and runs the assertions itself.
+///
+/// The documented answer is the *isolated* turn's ("this isolated turn contains
+/// no verified capture"). Read access became default-on in c0e480a36 (#1582),
+/// so on a networked runner the retrieval walk also fetched a dictionary gloss
+/// for the answer-shape word "paragraph" and the documented contract drifted
+/// with the runner's network. Environment overrides belong to a child process,
+/// never to concurrently executing test threads.
+fn in_network_denied_child(test: &str) -> bool {
+    const MARKER: &str = "FORMAL_AI_ISOLATED_OFFLINE_REPLAY";
+    if std::env::var(MARKER).as_deref() == Ok(test) {
+        return false;
+    }
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock is after the unix epoch")
+        .as_nanos();
+    let cache = std::env::temp_dir().join(format!(
+        "formal-ai-family-behaviour-replay-{}-{nonce}",
+        std::process::id()
+    ));
+    fs::create_dir(&cache).expect("create an exclusive empty source cache");
+    let result = Command::new(std::env::current_exe().expect("test binary path"))
+        .args(["--exact", test, "--nocapture"])
+        .env(MARKER, test)
+        .env("FORMAL_AI_NETWORK", "denied")
+        .env("FORMAL_AI_SOURCE_CACHE_DIR", &cache)
+        .output();
+    let _ = fs::remove_dir_all(&cache);
+    let result = result.expect("start the network-denied replay child");
+    assert!(
+        result.status.success(),
+        "network-denied replay {test} failed:\n{}\n{}",
+        String::from_utf8_lossy(&result.stdout),
+        String::from_utf8_lossy(&result.stderr)
+    );
+    true
+}
+
 #[test]
 fn no_family_answer_is_the_unknown_opener() {
+    if in_network_denied_child(
+        "issue_1138_family_behaviour::no_family_answer_is_the_unknown_opener",
+    ) {
+        return;
+    }
     let documented = FormalAiEngine.answer(DOCUMENTED_PROMPT).answer;
     assert_eq!(documented, DOCUMENTED_ANSWER);
     // A migration that turns an answered prompt into "I do not know" is a

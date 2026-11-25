@@ -85,12 +85,13 @@ fn quoted_string_lists_render_valid_cst_for_every_language() {
         // does with the target it resolved (issue #723).
         let language = language.base_language();
         let program = codegen::build(language, &items, operation, false);
-        // Swift and R joined the catalog for their grammars (issue #1167) and
-        // carry no list idioms in `data/seed/coding-idioms.lino` yet; every
-        // other catalog language must compose.
+        // Swift and R joined the catalog for their grammars (issue #1167), and
+        // Bash, Haskell and Lua joined it later; none of them carries list
+        // idioms in `data/seed/coding-idioms.lino` yet. Every other catalog
+        // language must compose.
         let Some(code) = program.render() else {
             assert!(
-                matches!(language.slug, "swift" | "r"),
+                matches!(language.slug, "swift" | "r" | "bash" | "haskell" | "lua"),
                 "{} must compose from coding idioms",
                 language.slug
             );

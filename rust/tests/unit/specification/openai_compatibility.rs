@@ -324,7 +324,21 @@ fn http_models_endpoint_advertises_only_formal_ai() {
         .iter()
         .map(|model| model["id"].as_str().unwrap())
         .collect();
-    assert_eq!(ids, vec!["formal-ai"]);
+    // Issue #1591 (ab89e8c5d) added the concept-link embeddings model to the
+    // listing; `formal-ai` stays the only chat model advertised.
+    assert_eq!(ids, vec!["formal-ai", "formal-ai-embeddings"]);
+    let chat_ids: Vec<&str> = json["data"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|model| {
+            !model["capabilities"]
+                .as_array()
+                .is_some_and(|capabilities| capabilities.iter().any(|c| c == "embeddings"))
+        })
+        .map(|model| model["id"].as_str().unwrap())
+        .collect();
+    assert_eq!(chat_ids, vec!["formal-ai"]);
     let retired_model_id = ["formal", "symbolic", "production"].join("-");
     assert!(!response.body.contains(&retired_model_id));
 }

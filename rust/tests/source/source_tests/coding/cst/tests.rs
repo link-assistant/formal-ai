@@ -26,15 +26,17 @@ fn grammar_languages() -> Vec<CstGrammar> {
 /// catalog language (asserted in `every_cst_metadata_entry_names_a_catalog_language`),
 /// and every catalog language must either declare one or be listed here as
 /// knowingly uncovered. Adding a grammar upstream is what should make this
-/// list shrink — it has, to nothing.
-const LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR: &[&str] = &[];
+/// list shrink. Bash and Haskell joined the catalog (mirroring
+/// `rust/src/coding/catalog/languages.rs`) without a grammar registered in
+/// `data/seed/program-cst-grammars.lino`, so they are the declared gaps.
+const LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR: &[&str] = &["bash", "haskell"];
 
 /// Grammars registered for a held-out language: the decomposer parses its
 /// documentation's examples, but the catalog carries no stored program for it
 /// on purpose, so the grammar names no catalog language. Free Pascal is the
-/// path of issue #1164 (R1164-9); Lua is rediscovered from lua.org's
-/// documentation instead of a snapshot (issue #1165, R1165-4).
-const HELD_OUT_GRAMMARS: &[&str] = &["pascal", "lua"];
+/// path of issue #1164 (R1164-9). Lua used to be held out too (issue #1165,
+/// R1165-4), but it is now a catalog language, so its grammar names one.
+const HELD_OUT_GRAMMARS: &[&str] = &["pascal"];
 
 #[test]
 fn every_catalog_language_has_cst_metadata_or_is_a_declared_gap() {

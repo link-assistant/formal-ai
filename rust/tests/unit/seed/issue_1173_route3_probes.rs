@@ -22,6 +22,15 @@ fn solved(prompt: &str) -> (String, String) {
 
 #[test]
 fn a_program_that_prints_a_greeting_binds_the_output_operand() {
+    // The offline renderer is the contract here. An offline solver still reads
+    // the shared source cache, so a publisher page another test fetched (read
+    // access is default-on since #1582) would turn the answer into a
+    // rediscovered documentation example; replay against an empty cache.
+    if crate::offline_replay::in_child(
+        "seed::issue_1173_route3_probes::a_program_that_prints_a_greeting_binds_the_output_operand",
+    ) {
+        return;
+    }
     let (intent, answer) = solved("Write a program in Rust that prints hello");
     assert_eq!(intent, "write_program", "{answer}");
     assert_eq!(

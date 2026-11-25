@@ -45,7 +45,7 @@ fn lino_seed_task_rows_mirror_every_catalog_task() {
             task.slug.starts_with("list_files") || task.slug == "copy_stdin_to_stdout";
         assert_eq!(
             child_value(row, "output"),
-            (!runtime_input).then_some(task.output),
+            (!runtime_input && !task.output.is_empty()).then_some(task.output),
             "{}",
             task.slug
         );
