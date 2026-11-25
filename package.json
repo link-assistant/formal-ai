@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@link-assistant/web-search": "0.11.1",
-    "@link-foundation/ui-links": "0.1.0",
+    "@link-foundation/ui-links": "0.1.2",
     "@chakra-ui/react": "^3.37.0",
     "@emotion/react": "^11.14.0",
     "dompurify": "3.4.17",

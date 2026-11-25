@@ -303,7 +303,7 @@ jobs:
             /scripts/extract-artifacts.py
             /experiments/issue-1580/artifact-transport-roundtrip.py
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.14'
       - name: Prepare a bounded artifact and cached destination
