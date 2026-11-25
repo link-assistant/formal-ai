@@ -777,7 +777,10 @@ const BLUEPRINT_CAPABILITIES = [
       "city",
       "cities",
       "аренда",
+      // Russian inflects: a stem for аренде/аренду and the genitive phrase.
+      "аренд",
       "стоимость жизни",
+      "стоимости жизни",
       "जीवन यापन",
       "लागत",
       "किराया",

@@ -111,6 +111,13 @@ function quotedMask(characters) {
   return mask;
 }
 
+// A character that continues a word: alphanumeric, or a combining mark. A
+// Devanagari virama is a mark but not alphabetic, so without the mark test
+// the connective "या" would match inside "क्या" ("what").
+function isWordCharacter(character) {
+  return isAlphanumeric(character) || /^\p{M}$/u.test(character);
+}
+
 function markerMatches(lowered, original, mask, at, marker, cjk) {
   const end = at + marker.length;
   if (end > lowered.length) return false;
@@ -118,9 +125,9 @@ function markerMatches(lowered, original, mask, at, marker, cjk) {
     if (mask[at + offset] || lowered[at + offset] !== marker[offset]) return false;
   }
   if (cjk) return true;
-  if (isAlphanumeric(marker[0]) && at > 0 && isAlphanumeric(original[at - 1])) return false;
-  if (isAlphanumeric(marker[marker.length - 1]) && end < original.length
-    && isAlphanumeric(original[end])) return false;
+  if (isWordCharacter(marker[0]) && at > 0 && isWordCharacter(original[at - 1])) return false;
+  if (isWordCharacter(marker[marker.length - 1]) && end < original.length
+    && isWordCharacter(original[end])) return false;
   return true;
 }
 

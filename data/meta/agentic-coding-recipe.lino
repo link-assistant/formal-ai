@@ -116,7 +116,7 @@ fn_plan_chat_step
 fn_classify_tool
   record_type "meta_function"
   function "classify_tool"
-  source_file "src/agentic_coding/capability_router.rs"
+  source_file "src/agentic_coding/capability_router/tool_classification.rs"
   kind "tool_classifier"
 fn_is_formalization_task
   record_type "meta_function"
@@ -222,7 +222,7 @@ bound_max_turns
 surface_cli_subcommand
   record_type "meta_surface"
   surface "cli_subcommand"
-  source_file "src/main.rs"
+  source_file "src/cli_solver.rs"
   needle "fn run_agent"
 surface_example
   record_type "meta_surface"

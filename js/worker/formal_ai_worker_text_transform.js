@@ -734,6 +734,8 @@ function trySummarizationText(prompt) {
   const text = String(prompt || "");
   const head = normalizePrompt(textTransformCommandHead(text));
   if (!lexiconMentionsRole(ROLE_TEXT_SUMMARIZATION_ACTION, head)) return null;
+  // A head naming the conversation is a conversation summary, owned by that handler.
+  if (lexiconMentionsRole(ROLE_CONVERSATION_REFERENCE, head) || lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_PHRASE, head)) return null;
   const payload = textTransformFreeTextPayload(text);
   if (payload === null) return null;
   const { summarizeFreeText } = crateModule(DEPENDENCY_SUMMARIZATION_MODULE);

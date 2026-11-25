@@ -6,6 +6,7 @@ import { invalidArguments } from '../agentic/crate/tool_call_validation.mjs';
 import { mentionsRole } from '../agentic/crate/seed_meanings.mjs';
 import { agenticMessage } from '../agentic/messages.mjs';
 import { jsonText } from '../agentic/plan.mjs';
+import { toolCapability } from '../agentic/planner.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
 
@@ -28,6 +29,8 @@ async function selectedFunctions(ctx, { tool_choice: choice, tools = [], functio
     const name = definition.name;
     if (typeof name !== 'string' || !/^[a-zA-Z0-9_-]{1,64}$/u.test(name) || (!required && name !== forcedName)) return [];
     if (names.get(name) !== 1 || computerPrimitiveFromToolName(name) || aliases.has(name.toLowerCase())) return [];
+    // A shell, file or web tool the permission gate classifies by name stays behind that gate.
+    if (toolCapability(name) !== null) return [];
     return [definition];
   });
 }

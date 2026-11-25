@@ -180,6 +180,20 @@ fn lower_char(character: char) -> String {
     character.to_lowercase().collect()
 }
 
+/// A character that continues a word: alphanumeric, or a combining mark.
+/// A Devanagari virama is a mark but not alphabetic, so without the mark
+/// test the connective `या` would match inside `क्या` ("what").
+fn word_character(character: char) -> bool {
+    use unicode_general_category::{GeneralCategory, get_general_category};
+    character.is_alphanumeric()
+        || matches!(
+            get_general_category(character),
+            GeneralCategory::NonspacingMark
+                | GeneralCategory::SpacingMark
+                | GeneralCategory::EnclosingMark
+        )
+}
+
 fn marker_matches(
     lowered: &[String],
     original: &[char],
@@ -200,16 +214,16 @@ fn marker_matches(
         return true;
     }
     let edge_alphanumeric =
-        |text: &String| text.chars().count() == 1 && text.chars().all(char::is_alphanumeric);
+        |text: &String| text.chars().count() == 1 && text.chars().all(word_character);
     if marker.chars.first().is_some_and(edge_alphanumeric)
         && at > 0
-        && original[at - 1].is_alphanumeric()
+        && word_character(original[at - 1])
     {
         return false;
     }
     if marker.chars.last().is_some_and(edge_alphanumeric)
         && end < original.len()
-        && original[end].is_alphanumeric()
+        && word_character(original[end])
     {
         return false;
     }

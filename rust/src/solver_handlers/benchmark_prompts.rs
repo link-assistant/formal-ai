@@ -90,8 +90,12 @@ pub fn try_brainstorming_request(
     }
     let category = seeds.pick_category(normalized)?;
     let language = detect_language(prompt).slug();
+    // The method dispatch passes the lowercased prompt; the topic is read from
+    // the normalized words so sentence punctuation ("helper.") and hyphens do
+    // not leak into the composed items (the browser twin reads normalized text).
+    let folded = crate::engine::normalize_prompt(normalized);
     let topic = seeds
-        .topic(normalized)
+        .topic(&folded)
         .filter(|topic| !super::creative_composition::topic_words(topic, language).is_empty());
     let (body, confidence) = match topic {
         Some(topic) if category.operations.is_empty() => {
