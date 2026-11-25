@@ -282,7 +282,7 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
                 "--model",
                 "formal-ai",
                 "--permission-mode",
-                "default",
+                "auto",
             ],
             vec![
                 "--allowedTools",
@@ -290,7 +290,7 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
                 "--model",
                 "formal-ai",
                 "--permission-mode",
-                "default",
+                "auto",
                 "--print",
                 "hi",
             ],
