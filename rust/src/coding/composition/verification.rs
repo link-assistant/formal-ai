@@ -9,6 +9,11 @@ use crate::coding::concept_discovery::ConceptMap;
 use crate::coding::fragment_catalog::FragmentCatalog;
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 
+/// The address space one verification run of a Python draft may map. The
+/// examples a draft is checked against are a handful of small literals; no
+/// plausible solution needs more than a fraction of this to answer them.
+const VERIFICATION_ADDRESS_SPACE_BYTES: u64 = 512 * 1024 * 1024;
+
 pub(super) fn verify(
     spec: &CodingTaskSpec,
     draft: &Draft,
@@ -36,6 +41,19 @@ pub(super) fn verify(
             return (false, "missing fragment:python_test_entrypoint".to_owned());
         };
         script.push_str(&entrypoint);
+        // Issue #1639: the address-space cap is set before any example calls
+        // the draft, so a candidate that materializes a combinatorial
+        // explosion fails with `MemoryError` instead of exhausting the host.
+        // Where the platform has no such limit the guard is a no-op and the
+        // search-level bound on self-amplifying fragments still applies.
+        let limit = VERIFICATION_ADDRESS_SPACE_BYTES.to_string();
+        if let Ok(guard) = template(
+            catalog,
+            "python_memory_guard",
+            &[("indent", "    "), ("bytes", &limit)],
+        ) {
+            script.push_str(&guard);
+        }
         for example in examples {
             let _ = writeln!(
                 script,

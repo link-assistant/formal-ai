@@ -173,3 +173,66 @@ fn bounded_search_delivers_unlowerable_candidates_to_the_failure_ledger() {
             .all(|attempt| !attempt.passed && attempt.detail.starts_with("lowering:"))
     );
 }
+
+/// Issue #1639: a draft whose examples need gigabytes fails inside its own
+/// address-space cap instead of exhausting the host.
+///
+/// Six nested pair enumerations over four numbers materialize 14.9 million
+/// pairs (about 1.15 GB in CPython) before the comparison runs; the benchmark
+/// corpus gate died on the seven-deep chain, which never finishes allocating.
+/// The verification run now sets `RLIMIT_AS` before any example calls the
+/// draft, so the attempt is a `MemoryError` at the cap. Without the guard it
+/// is an `AssertionError` reached only after the whole allocation.
+/// `RLIMIT_AS` is enforced on Linux only.
+#[cfg(target_os = "linux")]
+#[test]
+fn a_draft_that_outgrows_the_verification_memory_cap_fails_with_memory_error() {
+    let catalog = FragmentCatalog::bootstrap();
+    let pairs = catalog.get("pairwise_distinct").unwrap();
+    let mut body = IrNode::Parameter {
+        name: "numbers".to_owned(),
+        ty: IrType::Sequence(Box::new(IrType::Float)),
+    };
+    for _ in 0..6 {
+        body = IrNode::Apply {
+            fragment: pairs.id.clone(),
+            arguments: vec![body],
+        };
+    }
+    let ir = ProgramIr {
+        name: "near_pair".to_owned(),
+        parameters: vec![
+            (
+                "numbers".to_owned(),
+                IrType::Sequence(Box::new(IrType::Float)),
+            ),
+            ("threshold".to_owned(), IrType::Float),
+        ],
+        result: IrType::Boolean,
+        body,
+        fragments: vec![pairs.id.clone()],
+        source_urls: vec![pairs.grounding.clone()],
+        source_licenses: vec![pairs.license.clone()],
+        reuse: ReuseMode::ShapeOnly,
+    };
+    assert!(ir.type_check(&catalog).is_ok());
+    let identifier = ir.content_id();
+    let task = spec(
+        "near_pair",
+        vec![parameter("numbers", None), parameter("threshold", None)],
+        vec![example(&["[0.0, 1.0, 2.0, 3.0]", "1.5"], "True")],
+    );
+    let outcome = compose_with_ir(&task, &ConceptMap::default(), &catalog, [ir]);
+    assert!(outcome.selected.is_none());
+    let attempt = outcome
+        .attempts
+        .iter()
+        .find(|attempt| attempt.id == identifier)
+        .unwrap_or_else(|| panic!("the nested draft is executed: {outcome:#?}"));
+    assert!(!attempt.passed);
+    assert!(
+        attempt.detail.contains("MemoryError"),
+        "the draft must stop at the address-space cap: {}",
+        attempt.detail.chars().take(400).collect::<String>()
+    );
+}
