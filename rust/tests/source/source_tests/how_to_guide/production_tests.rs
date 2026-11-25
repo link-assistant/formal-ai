@@ -9,11 +9,11 @@
 
 use std::path::{Path, PathBuf};
 
-use formal_ai::how_to_guide::{
+use crate::how_to_guide::{
     GuideBounds, PRIORITY_HOW_TO_SOURCE, ServicePreferences, synthesize_how_to_guide,
 };
-use formal_ai::service_accessibility::{ServiceAccessibilityCache, ServiceStatus};
-use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport};
+use crate::service_accessibility::{ServiceAccessibilityCache, ServiceStatus};
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
 const FIXTURE_DIR: &str = "rust/tests/fixtures/issue-991";
 const DOCUMENTED_TASK: &str = "make pancakes";
@@ -97,7 +97,7 @@ fn a_cached_wikihow_failure_does_not_skip_the_priority_source() {
 /// not the MediaWiki `api.php` capture the steps were parsed from.
 #[test]
 fn how_to_citations_name_the_human_article() {
-    let wikihow = formal_ai::seed::source_record("wikihow").expect("wikiHow is registered");
+    let wikihow = crate::seed::source_record("wikihow").expect("wikiHow is registered");
     assert_eq!(
         wikihow
             .article_url(
@@ -109,7 +109,7 @@ fn how_to_citations_name_the_human_article() {
         ),
         "ru.wikihow.com/хорошо-покакать"
     );
-    let wikibooks = formal_ai::seed::source_record("wikibooks").expect("Wikibooks is registered");
+    let wikibooks = crate::seed::source_record("wikibooks").expect("Wikibooks is registered");
     assert_eq!(
         wikibooks
             .article_url("https://en.wikibooks.org/w/api.php?action=parse&page=Cookbook%3APancake&format=json")

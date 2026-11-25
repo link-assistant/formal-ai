@@ -21,7 +21,7 @@ use std::sync::OnceLock;
 use regex::{Regex, RegexBuilder};
 use serde_json::Value;
 
-use crate::seed::{AUTO_MODE_CLASSIFIER_LINO, parse_lino};
+use crate::seed::{AUTO_MODE_CLASSIFIER_LINO, parse_lino, parser::LinoNode};
 
 /// One blocking rule: its exact name, a short reason and its patterns.
 #[derive(Debug)]
@@ -84,7 +84,7 @@ fn parse_policy(text: &str) -> ClassifierPolicy {
                 .children
                 .iter()
                 .filter(|child| child.name == "pattern")
-                .map(|child| compile_pattern(&child.id))
+                .map(|child| compile_pattern(&expand_alternatives(&child.id, node)))
                 .collect(),
         })
         .collect();
@@ -97,6 +97,33 @@ fn parse_policy(text: &str) -> ClassifierPolicy {
         block_template: root.find_child_value("block-template").to_owned(),
         rules,
     }
+}
+
+/// Replace every `{name}` in a rule pattern with the alternation of the rule's
+/// `name` children, so the seed spells alternatives as separate values instead
+/// of packing them with `|` (issue #398).
+fn expand_alternatives(pattern: &str, rule: &LinoNode) -> String {
+    static PLACEHOLDER: OnceLock<Regex> = OnceLock::new();
+    let placeholder = PLACEHOLDER.get_or_init(|| {
+        Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}").expect("fixed placeholder grammar")
+    });
+    placeholder
+        .replace_all(pattern, |captures: &regex::Captures<'_>| {
+            let alternatives = rule
+                .children
+                .iter()
+                .filter(|child| child.name == captures[1])
+                .map(|child| child.id.as_str())
+                .collect::<Vec<_>>();
+            assert!(
+                !alternatives.is_empty(),
+                "auto-mode classifier rule `{}` has no `{}` alternatives",
+                rule.id,
+                &captures[1]
+            );
+            format!("(?:{})", alternatives.join("|"))
+        })
+        .into_owned()
 }
 
 fn compile_pattern(pattern: &str) -> Regex {
@@ -212,3 +239,7 @@ pub fn apply_stop_sequences(text: &str, stop_sequences: &[String]) -> (String, O
             |(index, stop)| (text[..index].to_owned(), Some(stop.clone())),
         )
 }
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/auto_mode_classifier/production_tests.rs"]
+mod tests;

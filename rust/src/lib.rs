@@ -14,7 +14,6 @@ pub mod agentic_coding;
 pub mod algorithm_discovery;
 pub mod anthropic;
 pub mod anticipation;
-pub mod auto_mode_classifier;
 pub mod arithmetic;
 pub mod associative_package;
 pub mod associative_packages;

@@ -878,3 +878,7 @@ fn order_steps(mut steps: Vec<GuideStep>, max_steps: usize) -> Vec<GuideStep> {
     steps.truncate(max_steps);
     steps
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/how_to_guide/production_tests.rs"]
+mod tests;

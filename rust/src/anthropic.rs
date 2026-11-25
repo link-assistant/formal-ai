@@ -26,6 +26,8 @@
 //! exactly as it drives `/v1/chat/completions`. When the planner asks for a tool,
 //! the response carries `tool_use` content blocks with `stop_reason: "tool_use"`.
 
+pub mod auto_mode_classifier;
+
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
@@ -467,7 +469,7 @@ pub fn auto_mode_classifier_message(
         .map(|message| anthropic_content_to_text(&message.content))
         .collect::<Vec<_>>()
         .join("\n");
-    let verdict = crate::auto_mode_classifier::classify(&system, &messages)?;
+    let verdict = auto_mode_classifier::classify(&system, &messages)?;
     crate::diagnostic!(
         "debug";
         "[auto-mode-classifier] verdict={} rule={:?}",
@@ -475,7 +477,7 @@ pub fn auto_mode_classifier_message(
         verdict.blocked_by
     );
     let (text, stop_sequence) =
-        crate::auto_mode_classifier::apply_stop_sequences(&verdict.text, &request.stop_sequences);
+        auto_mode_classifier::apply_stop_sequences(&verdict.text, &request.stop_sequences);
     let output_tokens = u32::try_from(text.chars().count().div_ceil(4)).unwrap_or(u32::MAX);
     let input_tokens =
         u32::try_from((system.len() + messages.len()).div_ceil(4)).unwrap_or(u32::MAX);

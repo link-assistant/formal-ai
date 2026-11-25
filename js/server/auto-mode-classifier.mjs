@@ -1,4 +1,4 @@
-// Claude Code auto-mode classifier fast path (rust/src/auto_mode_classifier.rs,
+// Claude Code auto-mode classifier fast path (rust/src/anthropic/auto_mode_classifier.rs,
 // issue #1632 R4).
 //
 // `claude --permission-mode auto` checks every shell command and network
@@ -14,6 +14,21 @@ import { childValue, childrenNamed, parseLino, readRepoFile } from './lino.mjs';
 
 let policy = null;
 
+/**
+ * Replace every `{name}` in a rule pattern with the alternation of the rule's
+ * `name` children, so the seed spells alternatives as separate values instead
+ * of packing them with `|` (issue #398).
+ */
+function expandAlternatives(pattern, rule) {
+  return pattern.replace(/\{([a-z]+(?:-[a-z]+)*)\}/gu, (_, name) => {
+    const alternatives = childrenNamed(rule, name).map((child) => child.value);
+    if (alternatives.length === 0) {
+      throw new Error(`auto-mode classifier rule \`${rule.value}\` has no \`${name}\` alternatives`);
+    }
+    return `(?:${alternatives.join('|')})`;
+  });
+}
+
 /** The seed-backed policy, parsed once. */
 export function classifierPolicy() {
   if (policy) return policy;
@@ -28,7 +43,7 @@ export function classifierPolicy() {
     rules: childrenNamed(root, 'rule').map((node) => ({
       name: node.value,
       reason: childValue(node, 'reason'),
-      patterns: childrenNamed(node, 'pattern').map((pattern) => new RegExp(pattern.value, 'i')),
+      patterns: childrenNamed(node, 'pattern').map((pattern) => new RegExp(expandAlternatives(pattern.value, node), 'i')),
     })),
   };
   return policy;

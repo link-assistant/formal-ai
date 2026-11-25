@@ -5,11 +5,11 @@
 //! before running `ls` (device and session ids redacted). Routed through the
 //! general solver it timed out, and auto mode refused every Bash call.
 
-use formal_ai::anthropic::{AnthropicMessagesRequest, auto_mode_classifier_message};
-use formal_ai::auto_mode_classifier::{apply_stop_sequences, classify};
+use crate::anthropic::auto_mode_classifier::{apply_stop_sequences, classify};
+use crate::anthropic::{AnthropicMessagesRequest, auto_mode_classifier_message};
 
 const FIXTURE: &str =
-    include_str!("../fixtures/issue-1632/claude-auto-mode-classifier-request.json");
+    include_str!("../../../fixtures/issue-1632/claude-auto-mode-classifier-request.json");
 
 fn request_with(action: &str, user: &str) -> AnthropicMessagesRequest {
     let text = FIXTURE

@@ -44,6 +44,18 @@ test('partitioning preserves every original seed record and every bundle, lexico
    let retained=before;
    for(const [record] of retired)retained=retained.replace(record,'');
    const current=parent+bodies.join('\n');
+   // Issue #1632 (R2) dropped the trailing "the unexecuted plan includes …"
+   // sentence that named sources whose data was never used; every other byte
+   // of those five records must still match the original fixture.
+   const unavailable=/^(  response response_web_search_unavailable_(\w+)\n    intent web_search_unavailable\n    language \w+\n    text ")([^\n]*)"\n/gmu;
+   const shortened=new Map([...current.matchAll(unavailable)].map(match=>[match[2],match[3]]));
+   assert.deepEqual([...shortened.keys()].sort(),[...retiredLanguages].sort());
+   retained=retained.replace(unavailable,(record,head,language,text)=>{
+    const kept=shortened.get(language);
+    assert.ok(kept!==text&&text.startsWith(kept)&&/^ ?\S/u.test(text.slice(kept.length)),'only the trailing unused-source sentence is removed: '+language);
+    assert.ok(!/DuckDuckGo/u.test(kept),'no unused source stays named: '+language);
+    return head+kept+'"\n';
+   });
    assert.ok(!current.includes('response_http_fetch_curated_project_'),'retired source-free summaries stay absent');
    assert.equal(current,retained,'all retained response source bytes are preserved');
   }

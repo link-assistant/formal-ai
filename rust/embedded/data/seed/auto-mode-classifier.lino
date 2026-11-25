@@ -17,7 +17,9 @@
 # exfiltrating patterns below. Patterns are regular expressions in the common
 # subset of the Rust `regex` crate and JavaScript `RegExp` (no look-around,
 # no back-references) and are matched case-insensitively against the agent's
-# latest action only, never against the user's own messages.
+# latest action only, never against the user's own messages. A `{name}` in a
+# pattern stands for the alternation of the rule's `name` values, so no value
+# packs alternatives with a pipe; a literal pipe is written `\x7c`.
 auto-mode-classifier
   marker "security monitor for autonomous AI coding agents"
   marker "<block>no</block>"
@@ -29,28 +31,81 @@ auto-mode-classifier
   block-template "<block>yes</block><category>{name}</category><reason>[{name}] The action {reason}.</reason>"
   rule "Irreversible Local Destruction"
     reason "deletes the filesystem root or the home directory"
-    pattern '\brm\s+(-[a-z-]*\s+)*(/|/\*|~|~/|~/\*|\$home|\$home/|\$home/\*)(\s|$|[;&|)"])'
+    pattern '\brm\s+(-[a-z-]*\s+)*{target}{boundary}'
+    target '/\*?'
+    target '~(/\*?)?'
+    target '\$home(/\*?)?'
+    boundary '\s'
+    boundary '$'
+    boundary '[;&\x7c)"]'
   rule "Disk Destruction"
     reason "formats or overwrites a raw disk device"
     pattern '\bmkfs(\.[a-z0-9]+)?\s'
-    pattern '\bdd\s[^\n]*\bof=/dev/(sd|hd|vd|xvd|nvme|mmcblk|disk)'
+    pattern '\bdd\s[^\n]*\bof=/dev/{device}'
+    device "sd"
+    device "hd"
+    device "vd"
+    device "xvd"
+    device "nvme"
+    device "mmcblk"
+    device "disk"
   rule "Resource Exhaustion"
     reason "runs a fork bomb"
-    pattern ':\(\)\s*\{\s*:\s*\|\s*:\s*&\s*\}\s*;\s*:'
+    pattern ':\(\)\s*\{\s*:\s*\x7c\s*:\s*&\s*\}\s*;\s*:'
   rule "Remote Code Execution"
     reason "pipes a downloaded script straight into a shell"
-    pattern '\b(curl|wget)\b[^\n|]*\|\s*(sudo\s+)?(ba|z|da|k)?sh\b'
+    pattern '\b{downloader}\b[^\n\x7c]*\x7c\s*(sudo\s+)?{shell}\b'
+    downloader "curl"
+    downloader "wget"
+    shell "sh"
+    shell "bash"
+    shell "zsh"
+    shell "dash"
+    shell "ksh"
   rule "Force Push Default Branch"
     reason "force-pushes over the default branch"
-    pattern '\bgit\s+push\b[^\n]*(--force|\s-f\b)[^\n]*\b(main|master)\b'
-    pattern '\bgit\s+push\b[^\n]*\b(main|master)\b[^\n]*(--force|\s-f\b)'
+    pattern '\bgit\s+push\b[^\n]*{force}[^\n]*\b{branch}\b'
+    pattern '\bgit\s+push\b[^\n]*\b{branch}\b[^\n]*{force}'
+    force "--force"
+    force '\s-f\b'
+    branch "main"
+    branch "master"
   rule "System Power Control"
     reason "shuts down or reboots the machine"
-    pattern '(^|\n|[;&|]\s*|sudo\s+|^shell\s+)(shutdown|reboot|poweroff|halt)\b'
+    pattern '{command-start}{power}\b'
+    command-start "^"
+    command-start '\n'
+    command-start '[;&\x7c]\s*'
+    command-start 'sudo\s+'
+    command-start '^shell\s+'
+    power "shutdown"
+    power "reboot"
+    power "poweroff"
+    power "halt"
   rule "Credential Exfiltration"
     reason "sends private keys or cloud credentials over the network"
-    pattern '(\.ssh/id_|\.aws/credentials|\.netrc|\.git-credentials)[^\n]*\|\s*(curl|wget|nc|ncat)\b'
-    pattern '\b(curl|wget)\b[^\n]*(--data|--upload-file|-d|-f|-t)\s*@?[^\s]*(\.ssh/id_|\.aws/credentials|\.netrc|\.git-credentials)'
+    pattern '{secret}[^\n]*\x7c\s*{sender}\b'
+    pattern '\b{downloader}\b[^\n]*{upload}\s*@?[^\s]*{secret}'
+    secret '\.ssh/id_'
+    secret '\.aws/credentials'
+    secret '\.netrc'
+    secret '\.git-credentials'
+    sender "curl"
+    sender "wget"
+    sender "nc"
+    sender "ncat"
+    downloader "curl"
+    downloader "wget"
+    upload "--data"
+    upload "--upload-file"
+    upload "-d"
+    upload "-f"
+    upload "-t"
   rule "Permission Weakening"
     reason "makes the whole filesystem world-writable"
-    pattern '\bchmod\s+(-r\s+)?(0?777|a\+rwx)\s+/(\s|$|[;&|)"])'
+    pattern '\bchmod\s+(-r\s+)?{mode}\s+/{boundary}'
+    mode '0?777'
+    mode 'a\+rwx'
+    boundary '\s'
+    boundary '$'
+    boundary '[;&\x7c)"]'

@@ -328,3 +328,56 @@ test("the English procedural answer presents a complete primary procedure with i
   assert.ok(fallback.evidence.some((line) => line.startsWith("how_to:insufficient_evidence")));
   assert.ok(fallback.evidence.includes("procedural_how_to:stage:recursive_fetch_check"));
 });
+
+// Issue #1632 (R1): a transient wikiHow failure must not silence the priority
+// how-to source for the seven-day accessibility TTL. Twin of
+// rust/tests/source/source_tests/how_to_guide/production_tests.rs.
+test("a cached wikiHow failure does not skip the priority how-to source", { timeout: 60_000 }, async () => {
+  const context = await bootWorker(loadCaptures());
+  const synthesize = async () => plain(await evaluate(context, 'synthesizeHowToGuide("make pancakes", {})'));
+  const baseline = await synthesize();
+  assert.equal(baseline.outcomes.find((outcome) => outcome.sourceId === "wikihow")?.status, "contributed");
+
+  const keys = plain(evaluate(context, "Array.from(sourceWalkAccessibility.keys())"));
+  assert.ok(keys.length > 0, "the walk records service accessibility");
+  for (const key of keys) {
+    context.__key = key;
+    evaluate(context, 'howToObserveService(__key, "unreachable", "curl: (28) Operation timed out", howToNowSeconds())');
+  }
+
+  const guide = await synthesize();
+  const wikihow = guide.outcomes.find((outcome) => outcome.sourceId === "wikihow");
+  assert.equal(wikihow.status, "contributed", JSON.stringify(wikihow));
+  assert.ok(guide.steps.length > 0, "the guide has real steps");
+  for (const key of keys) {
+    context.__key = key;
+    const unreachable = evaluate(context, "sourceWalkServiceKnownUnreachable(__key, howToNowSeconds())");
+    assert.equal(unreachable, !key.startsWith("wikihow"), `accessibility of ${key} after the retry`);
+  }
+});
+
+// Issue #1632 (R2): the degraded web-search reply names only what was used, so
+// it no longer lists the unexecuted provider plan in any supported language.
+const UNAVAILABLE_CASES = [
+  { language: "en", marker: "No captured provider response" },
+  { language: "ru", marker: "нет захваченного ответа провайдера" },
+  { language: "hi", marker: "प्रदाता प्रतिक्रिया" },
+  { language: "zh", marker: "已捕获提供商响应" },
+  { language: "es", marker: "respuesta capturada del proveedor" },
+];
+
+test("the web-search-unavailable reply lists no unused sources in any language", { timeout: 60_000 }, async () => {
+  const context = await bootWorker(new Map());
+  for (const { language, marker } of UNAVAILABLE_CASES) {
+    context.__language = language;
+    const answer = plain(evaluate(
+      context,
+      'guardCannedWebSearchAnswer({ content: "Web search requested", query: "как какать" }, __language)',
+    ));
+    assert.ok(answer.content.includes(marker), `${language}: ${answer.content}`);
+    assert.ok(answer.content.includes("как какать"), `${language} names the query`);
+    for (const unused of ["DuckDuckGo", "Internet Archive", "Wikidata", "Wiktionary", "Wikinews"]) {
+      assert.ok(!answer.content.includes(unused), `${language} lists unused source ${unused}: ${answer.content}`);
+    }
+  }
+});

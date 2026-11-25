@@ -211,10 +211,12 @@ fn latest_news_routes_to_wikinews_search_across_supported_languages() {
             "{language} latest-news prompt should include Wikinews in the search plan: {:?}",
             response.evidence_links,
         );
+        // Issue #1632 (R2): the plan stays in the evidence links above, but
+        // an answer that used no source data names no unexecuted source.
         assert!(
-            response.answer.to_lowercase().contains("wikinews")
-                || response.answer.to_lowercase().contains("викиновости"),
-            "{language} latest-news answer should direct the user to Wikinews, got: {}",
+            !response.answer.to_lowercase().contains("wikinews")
+                && !response.answer.to_lowercase().contains("викиновости"),
+            "{language} latest-news answer should not name the unused Wikinews source, got: {}",
             response.answer,
         );
         assert_ne!(response.intent, "unknown");
