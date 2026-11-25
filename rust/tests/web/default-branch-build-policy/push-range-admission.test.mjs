@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import YAML from 'yaml';
 import {admission, isInertPath, pushRangeCandidate, previousHeadPassed, selectChangedPaths}
-  from '../../../scripts/ci-pull-request-admission.mjs';
+  from '../../../../scripts/ci-pull-request-admission.mjs';
 
 const BASE = 'a'.repeat(40), BEFORE = 'b'.repeat(40), AFTER = 'c'.repeat(40), MERGE = 'd'.repeat(40);
 const ENV = Object.freeze({

@@ -1,5 +1,6 @@
 import '../../../experiments/issue-1580/native-rerun-concurrency.test.mjs';
 import '../../../experiments/issue-1580/large-change-admission.test.mjs';
+import './default-branch-build-policy/push-range-admission.test.mjs';
 import '../../../experiments/issue-1580/stage-source-capture.test.mjs';
 // Replays the recorded release/PR topology without compiling or publishing products.
 import test from 'node:test';
