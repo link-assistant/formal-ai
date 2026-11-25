@@ -1219,7 +1219,7 @@ meanings
     unit "not applicable"
     example "No tengo tiempo libre como una persona."
   requested-text-sentiment
-    defined-by conversational_act
+    defined-by message
     role client-function-sentiment
     precondition "a function and its enum describe the sentiment of user text"
     effect "enables lexical sentiment binding for the function"

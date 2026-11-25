@@ -1,0 +1,21 @@
+Q189248
+  aliases
+    en ("Bourne Again shell" BASH "Bash shell" "Bash (programming language)" "Bash (Unix shell)" shell)
+    es ("Bourne Again shell")
+    ru ("GNU Bash" "Бэш" "Баш" "ГНУ Бэш")
+    zh ("再次布恩壳" "布再壳" "角马重生壳")
+  descriptions
+    en "GNU Project implementation of the standard Unix shell"
+    es "shell y lenguaje de scripting de Unix"
+    hi "मानक यूनिक्स शेल का GNU प्रोजेक्ट कार्यान्वयन"
+    ru "усовершенствованная и модернизированная вариация командной оболочки Bourne shell"
+    zh "對布恩Shell程式的GNU替換"
+  id Q189248
+  labels
+    en "GNU Bash"
+    es Bash
+    hi "बैश (यूनिक्स शेल)"
+    ru bash
+    zh Bash
+  type item
+success 1

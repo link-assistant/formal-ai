@@ -1,0 +1,218 @@
+{
+  "entities": {
+    "P61": {
+      "type": "property",
+      "datatype": "wikibase-item",
+      "id": "P61",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "discoverer or inventor"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "первооткрыватель или изобретатель"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "खोजकर्ता या आविष्कारक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "發現者或發明者"
+        },
+        "es": {
+          "language": "es",
+          "value": "descubridor o inventor"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "subject who discovered, first described, invented, or developed this discovery or invention or scientific hypothesis or theory"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кем открыт или изобретён этот элемент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वह इकाई जिसने पहली बार इस खोज या आविष्कार का पता लगाया, उसका आविष्कार किया या उसका विकास किया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "发现、首先描述、发明或开发此发现或发明的主体"
+        },
+        "es": {
+          "language": "es",
+          "value": "descubierto o inventado por"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "inventor"
+          },
+          {
+            "language": "en",
+            "value": "discoverer"
+          },
+          {
+            "language": "en",
+            "value": "inventor or discoverer"
+          },
+          {
+            "language": "en",
+            "value": "developer"
+          },
+          {
+            "language": "en",
+            "value": "first described"
+          },
+          {
+            "language": "en",
+            "value": "invented by"
+          },
+          {
+            "language": "en",
+            "value": "created by"
+          },
+          {
+            "language": "en",
+            "value": "invented"
+          },
+          {
+            "language": "en",
+            "value": "discovered by"
+          },
+          {
+            "language": "en",
+            "value": "developed by"
+          },
+          {
+            "language": "en",
+            "value": "introduced by"
+          },
+          {
+            "language": "en",
+            "value": "devised by"
+          },
+          {
+            "language": "en",
+            "value": "first studied by"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "изобретатель"
+          },
+          {
+            "language": "ru",
+            "value": "первооткрыватель"
+          },
+          {
+            "language": "ru",
+            "value": "изобрёл"
+          },
+          {
+            "language": "ru",
+            "value": "изобрел"
+          },
+          {
+            "language": "ru",
+            "value": "изобрела"
+          },
+          {
+            "language": "ru",
+            "value": "открыл"
+          },
+          {
+            "language": "ru",
+            "value": "открыла"
+          },
+          {
+            "language": "ru",
+            "value": "первооткрывательница или изобретательница"
+          },
+          {
+            "language": "ru",
+            "value": "первооткрывательница"
+          },
+          {
+            "language": "ru",
+            "value": "изобретательница"
+          },
+          {
+            "language": "ru",
+            "value": "автор теории"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "आविष्कारक या खोजकर्ता"
+          },
+          {
+            "language": "hi",
+            "value": "आविष्कारक"
+          },
+          {
+            "language": "hi",
+            "value": "खोजकर्ता"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "發現者"
+          },
+          {
+            "language": "zh",
+            "value": "發明者"
+          },
+          {
+            "language": "zh",
+            "value": "发现者或发明者"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "descubridor"
+          },
+          {
+            "language": "es",
+            "value": "descubridora"
+          },
+          {
+            "language": "es",
+            "value": "inventor"
+          },
+          {
+            "language": "es",
+            "value": "inventora"
+          },
+          {
+            "language": "es",
+            "value": "creado por"
+          },
+          {
+            "language": "es",
+            "value": "inventado por"
+          },
+          {
+            "language": "es",
+            "value": "inventada por"
+          },
+          {
+            "language": "es",
+            "value": "creada por"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
