@@ -1,6 +1,265 @@
-# Changelog archive: 0.355.0 to 0.355.32
+# Changelog archive: 0.355.0 to 0.356.0
 
 Releases in this range, newest first. Newer releases are in [CHANGELOG.md](../../CHANGELOG.md).
+
+## [0.356.0] - 2026-11-21
+
+Record what blocks the vision (issue #1548): keep the issue verbatim as an architect note, correct the status sentences of README, ROADMAP, GOALS, VISION and the meta-algorithm page to what was measured, document the solver switches and the issue planning guideline, add the case study with both inventories of failed attempts on real issues, and add requirements R1548-1 to R1548-19 with the test that pins the published issue graph. No source file of Formal AI changes; the 12 capability rows stay Partial and are owned by the parent issue #1561.
+
+Answer an English issue in English (issue #1557): language markers of a script several languages share (Latin for Spanish and English) now match whole words only in the Rust detector, its JS twin and the browser worker fallback, so "formalization", "described" and "response" no longer read as the Spanish markers "formaliza", "escribe" and "responde". A repository work item's answer language is now decided by the user's own turn, then the proportion of prose in the issue body, then its title, with code, quotations, URLs and identifiers excluded, so a quoted Russian sentence no longer flips an English issue and English identifiers do not flip a Russian one. The 19 attempted issue bodies are kept as a regression fixture checked in both runtimes.
+
+### Fixed
+- Resolve file names named in a work item before reading them (issue #1558). Each name is tried as an exact path, then as a unique file-name match found with glob or `find`, then as at most three candidates ranked by path similarity to the words around the reference. A link to a file on GitHub resolves to its repository path, and a link to another repository becomes one unresolved item. Product names such as `Node.js` are recorded as terms. A `File not found` read now counts as a failure. A failed or completed read is never planned again: the planned path is compared with the read bound to the workspace, and the relative and absolute forms count as the same path. The remaining evidence is still read, and the report lists `unresolved` and `terms` next to the observations. JS and Rust share the behaviour and are tested with the five recorded issue texts and the hive-mind 4033 case.
+
+### Fixed
+- A work-item session no longer answers with a raw JSON record (issue #1560). It answers with a localized report. The report says what stopped the session, which files it read, and which requirement a refusal concerns. The record stays in the trace.
+- The read policy is evaluated over the user's own turn, not over fetched issue text. A Hive Mind session on issues 1486, 1489 and 1501 now reads repository files instead of refusing every read.
+- A fetched GitHub issue page keeps only its title and body. A page without an issue body, such as the sign-in page, is rejected and the `gh issue view`, REST and `gh api` reads run instead.
+- A Markdown link label that names a file is read at the path of the work item's own blob link, not at the repository root.
+
+### Fixed
+- The Rust crate compiles again on main. `ProofOutcome::confidence` (added for #1487) returned `f64`, but its only caller passes it to `finalize_simple`, which takes `f32`. Every Rust gate on main failed with `E0308 mismatched types` at `rust/src/solver_handlers/user_intent.rs:141`. It now returns `f32`, the type the replaced `match` used to infer.
+- `negated_theorem_request_is_refuted_never_proven` (`rust/tests/unit/proof_request.rs`) now shows the exact refutation it expects, as the tests-as-docs gate (R234-2) requires.
+- The JavaScript worker answers Euclid proof requests exactly as the native engine does (#1487). Before, the refutation of "Prove there are not infinitely many primes." embedded the positive theorem's "Proof (method: contradiction)." block, which the native test forbids. The affirmed proof was a hand-written per-language copy without step labels. Both are now rendered from the seeded theorem with the proof presenter helpers. The refutation is a `Disproof` with labelled steps and the native clarifying-question footer. `rust/tests/web/issue-1487-proposition-identity.test.mjs` pins both exact answers, and no refutation may carry a `Proof (` heading.
+
+### Added
+- `experiments/issue-1558/rust-module-harness/` compiles the unchanged `rust/src/agentic_coding/work_item_references.rs` and its unit tests on their own, without building the whole crate (#1558).
+- `experiments/plan-event-append-race/stress.sh` runs the generated plan-event append command as two simultaneous processes many times and counts duplicate records. It is used to investigate the intermittent failure of `simultaneous retries take the bounded lock and retain exactly one event` on main.
+
+### Fixed
+- Hive Mind issue drafts (#1484) now admit one attempt identity that binds the selected Formal AI source, the built binary's sha256 and the selected Hive Mind source and exact image. A retry keeps the identity and a new source gives a new one. Before any task effect the draft job checks that the downloaded binary and checkouts are the admitted ones; a missing artifact is `deferred-infrastructure` and a stale or same-version-but-different binary is `identity-mismatch`, both with zero capability credit. The workflow hands `FORMAL_AI_DRAFT_SOURCE_SHA` and the `live-current` mode to Hive Mind, then compares Hive Mind's serving record (executable digest, image digest, versions) with the admission. Receipts distinguish live-current, published-release and historical-replay attempts, and only a verified live-current attempt counts as current-source success.
+
+### Fixed
+- A system prompt of one agent session is no longer stored as a learned standing requirement and replayed in another repository's session (issue #1559). A prompt that configures a session is recorded with role `instruction` and never learned. A learned rule is one sentence of at most 240 characters (`rule-maximum-characters`) that names no single task. Its topic is the statement's subject, never a pronoun or function word in en/ru/hi/zh. Each amendment carries the scope it was learned in (user, or repository and session for agent sessions) and applies only there, unless it was stated in several scopes and generalized after replay verifies it. Agentic final answers list applied amendments in their trace (`thinking_steps`, `reasoning`, `evidence_links`) instead of their text. Agent sessions sharing one memory store, as on a Hive Mind sidecar, now see only their own requirements unless `FORMAL_AI_SHARE_STANDING_REQUIREMENTS=1` is set.
+
+### Security
+- Update `rustix` from 1.1.5 to 1.1.6 in `rust/Cargo.lock` for RUSTSEC-2026-0486 (unsound xattr functions with a zero-length buffer), which made the denied-warning `cargo audit` fail on `main` and on every pull request. Only the version and checksum change; every other locked dependency stays as it was.
+
+### Fixed
+- Hive original delivery no longer aborts unstarted clients when another CI run is still pending (#1485). An unclaimed client leg now rechecks a bounded number of times. If a prerequisite is still pending, the leg writes a `deferred-before-effects` receipt (`formal-ai-hive-client-outcome/v1`) with its identity, the blocking run IDs and statuses, a timestamp, proof that nothing was claimed, and zero execution and authorship credit, then exits without claiming anything.
+- Verification, ledger and acceptance jobs read that typed outcome instead of looking for claim or result artifacts that were never produced. A deferred-only run is reported as deferred and incomplete, never as accepted. A failed, cancelled, skipped or timed-out prerequisite, or a changed source, is a refusal. A claim held by this run is an interrupted leg, handled by the existing cleanup and never retried.
+- A published candidate resumes on the blocking run's completion event through a `hive-wakeup-<run>-<role>` artifact. The resumed run re-admits only the same immutable candidate and allows at most eight continuations. The existing claim ledger still decides which clients run, so a claimed leg is never executed again.
+
+### Added
+- Hive draft and three-client delivery runs are measured per phase (#1486): queue, checkout, install, compile, image preparation, transfer and load, solver, verification and publication, with bytes and useful-attempt counts. `ci-phase-timing.yml` checks them against numeric objectives in `data/benchmarks/ci-phase-timing/slo.json` and fails with `::error` when an objective is breached in every one of the latest runs.
+- Captured Hive draft failures replay offline. `extract-draft-replay.mjs` turns a session artifact into a fixture that runs with no Docker, release or Rust build, and `select-focused-tests.mjs` runs the tests that `focused-test-map.json` maps to the changed components or to the captured failure.
+- Hive drafts build the Formal AI binary at most once per source, toolchain, target, features and lockfile identity. Other drafts reuse the product only after checking its producer, identity and binary digest. Failed, stale or mismatched products are never reused.
+
+### Changed
+- The delivery task image travels as a delta over its digest-pinned runtime base. Each leg pulls the base by digest, verifies it and still requires the exact producer image ID. The full archive ships, with the reason recorded, whenever the delta cannot be proven.
+
+### Fixed
+- Statement identity keeps the operand order, ordered comparisons (`<` versus `<=`), the and/or shape, quantifier and negation scope, and explicit counts (`twice`) in both the JavaScript and native readers (issue #1487). `2 is less than 1.` no longer restates `1 is less than 2.`, `a - b` and `b - a` and `true or false` and `true and false` keep distinct identities and statement-merge signatures, and summarization drops a sentence only when a checked relation (equivalent or entailed) certifies it. Shared terms alone no longer certify a restatement. Checked paraphrases (`2 is greater than 1.`, `1 < 2`) and repeated mentions still unify.
+- A proof request binds to the exact theorem proposition. `Prove there are not infinitely many primes.` is refuted (`proof_binding:negated`, `proof_outcome:disproven`) instead of being answered with the positive proof, and a negation whose scope is not read gets an honest partial plan.
+- The intent-formalization cache answers only the request it was formalized from, so `a < b` and `a <= b` no longer share a cached formalization.
+- Program synthesis withholds a candidate when the requirement holds structure that no discovered coding part reads (`twice`, `not`, `or`, an operator). The requirement keeps an open `structure:` obligation (`synthesis:obligation:unresolved_structure=…`), so `Return twice the number of vowels` no longer receives the program for `Return the number of vowels`.
+
+### Fixed
+- A work-item session no longer stops after reading evidence (#1483). With a Run tool, a boundary repair or regression test is checked after its edit by running samples derived from the requested bound against the original signature, never against the candidate. A pass verifies the requirement; a source that contradicts the bound fails the check (`IndependentCheckFailed`). Running the same task again is a verified no-op.
+- A work item that names no repository file collects its leads: attachments become explicit unresolved evidence and are never described, linked documents are fetched as evidence only, and code identifiers in backticks are searched and the best match is read. A work item with no file and no lead is still left to the general planner.
+- The localized report states which files changed, every check outcome and every unresolved lead. A verified record that leaves requirements unverified is reported as partly done, never as done.
+- A documentation edit is accepted independently of the derivation that wrote it: claims in the task are judged against the observed manifests (a contradicted version is rejected, `ContradictedIntegrationClaim`), every derived fact must be anchored in its raw source and rendered in the artifact, the original guide must be preserved, and each requirement gets its own status. Consumer-search coverage records are not claims, and an accepted requirement set leaves only the work it does not cover (integration semantics, consumer coverage).
+- A completed evidence collection that still makes no change names the narrowest gap it leaves: `RequestedInterfaceAbsent` (a function the task asks for exists nowhere, `create-interface:<name>`), `NoChangeRecipe` (the evidence is read but no supported change recipe applies, `change-recipe-unavailable:<path>`), or `RelatedEvidenceUnread` (the task only links related pages). The ten planned-not-executed fixtures of #1483 each end with an edit and a check or with one of these named gaps; the replay is in `docs/case-studies/issue-1483/fixture-replay/`.
+- Through the Claude adapter, a Read listing that carries no completeness proof is read again through the registered file-IO program when a Run tool is offered, and an Anthropic Bash result without an exit status is read from the program's receipt, so the Claude and Codex adapters both reach an edit, an independent check and a verified no-op repeat. Without a Run tool the uncertified read stays an explicit gap (`IncompleteSourceObservation`) and nothing is written.
+- The qualification oracle classifies every evidence terminal (`NoRepositoryReference`, `AttachmentEvidenceUnavailable`, `ExternalEvidenceUnavailable`, `RelatedEvidenceUnread`) as a gap and carries its named gap, and the focused offline test map selects the evidence-gap and edit-and-check tests for these components.
+- The work-item report is written in the language the plan answers in: the body's prose, then the title's, then the whole text (the #1557 rule, `work_item_language` / `workItemLanguage` in `general_planner`). The reports of issues 1330 and 1396 were Russian although their bodies are English; they are now English.
+- A regression-test task over a source that already meets the requested bound writes a test that passes when plain `node --test` runs it, and a repeat is a verified no-op.
+
+### Fixed
+- Main pipelines no longer fail on Rust 1.100 test executables (#1569). Cargo now writes them under `target/release/build/<package>/<hash>/out/`. `collect-build-artifacts.sh` takes each executable from Cargo's JSON report and searches both layouts when there is no report. The native fixture runner accepts the new path, and the memory store recognises those binaries as tests.
+- `rust/src/agentic_coding/modules.rs` is in the canonical order the ordered-lists gate expects. The generated-version-literal gate treats the captured CI run records under `data/benchmarks/ci-phase-timing/baseline-runs/` as evidence.
+- The summarization ratchet, the bounded-subprocess anchors and the no-memorization source captures match the merged sources again.
+- The committed browser worker `js/formal_ai_worker.wasm` is rebuilt from the current sources with rustc 1.100.0. Three merged commits had edited its inputs without a rebuild, and the runners had moved from rustc 1.99.1, so `check-wasm-worker-current` failed on main.
+- The daily dependencies-latest update rebuilds the worker and stages it with its input record. It used to rebuild without staging, so its own wasm gate failed every day and the update never landed.
+- The hive draft-attempt and pre-effect deferral tests no longer print `::error`/`::notice` workflow commands. Those commands showed up as red annotations on passing jobs.
+- External Benchmarks runs every suite even when one fails. Each failure gets its own annotation and the step still fails. Before, a failing humaneval stopped the nine suites after it.
+- The agent ladder's composite legs start only after `leaf-evidence` succeeds. When it failed, all 16 legs used to fail too, on an artifact that had never been uploaded.
+- A failed sccache download no longer fails a job, in either the install step or its post step. The job builds with the real compiler and gets a warning. Two ladder leaves had failed on HTTP 502/503 from the sccache release download.
+- The agent ladder installs Bun through `.github/actions/setup-bun-verified`. If `oven-sh/setup-bun` reports success but installs nothing, the composite retries once, then checks that the pinned `bun` runs. Without this, a later step failed with "bun: command not found".
+- The Hive Mind draft no longer reports an attempt that ran solve as `deferred-infrastructure`, "Hive Mind ended the attempt before solve". It used to read the capture wrapper's own `attempt-outcome.json` as Hive Mind's verdict. Hive Mind's typed outcome is now read from `attempt-hive-outcome.json`, and a capture record is never taken for one.
+
+### Added
+- `data/meta/wasm-worker-inputs.lino` records the worker's compiler, its dependency closure and the digest of each input. It is generated by `node scripts/wasm-worker-inputs.mjs --write`.
+- `--check` needs no compiler and runs on pull requests, so an edited worker input that was not rebuilt now fails there instead of on main.
+- When the main gate fails, `--explain` reports whether the inputs or the compiler changed.
+
+### Changed
+- Several regressions failed only on main, after their pull requests had passed. Pull requests now run them in the fast JavaScript inventory:
+  - an ordered-declaration check;
+  - a JavaScript twin of the generated-version-literal gate;
+  - the build-artifact collection tests.
+- The fast pull-request JavaScript inventory runs in two longest-first groups instead of one. A single group had outgrown its 360-second budget and was being terminated.
+
+### Changed
+- Pull requests that change a Rust compile input now run one focused native check: main's clippy profile on the library and binaries (#1191). PR #1497 passed every PR check and then broke main with E0308 and, after that fix, with `clippy::manual_contains`, because no PR job ran the Rust compiler. The check builds and publishes nothing and is never native or release evidence. Docs-only, JavaScript-only, test-only and script-only pull requests skip it, and an unknown path selects it.
+- The tests-as-docs gate has a JavaScript twin, and it runs in the fast pull-request lint. Main run 43710854562 had failed on a loose-only test that its green pull request never checked.
+- Hive finalization skips its prepare step when the whole delivery was skipped, so a skipped run no longer fans out extra events.
+- Every workflow pins its runner label (`ubuntu-24.04` and the like) instead of a moving `-latest` alias, and `scripts/check-runner-labels.mjs` rejects `-latest` labels in the fast pull-request JavaScript tests (`runner-label-pinning.test.mjs`) and as a web-stage gate; a new test keeps the dependency-free fast lint job free of scripts that import installed packages (#1191).
+- The fast pull-request lane now replays every failure that reached main after a green pull request. `data/meta/main-only-regressions.lino` lists each one with the pre-merge check that now catches it: E0308 and `clippy::manual_contains` (the native check), the loose-only test, the module map, inline unit tests, the issue-1488 payload drift, the issue-698 planner expectation, the top-level example, the uutils `mkdir` lock race, the moving runner label and the two Self-development debt-ratchet failures (runs 41317019358 and 41804771645), 12 regressions from 5 main runs.
+- The tests-as-docs twin files are spelled in full words.
+- `AGENTS.md` and `CLAUDE.md` state one push gate, the same as CONTRIBUTING.md: drafting sub-agents never push, one agent pushes once after collecting every failure of the latest run, nobody pushes while a run is in progress, JavaScript checks run locally first, and native builds stay in CI. `scripts/prune-build-cache.sh` follows a shared `CARGO_TARGET_DIR`.
+- The weekly status job reports open pull requests with no update for 30 days, and on main it fails with the exact `gh api` command while the `main` ruleset does not require the JavaScript stage, the Rust stage and `Pipeline Status`.
+- The project-structure tree moved from CONTRIBUTING.md to `docs/development/project-structure.md`, so CONTRIBUTING.md stays under the 1,500-line limit.
+- `docs/case-studies/issue-1191` records the timeline, root causes and before/after numbers of #1188 against recent pull requests.
+
+### Fixed
+- Main's clippy gate passes again: two `iter().any(|x| *x == y)` loops from PR #1497 use `contains`.
+- The plan-event lock is claimed with an `O_EXCL` redirection instead of `mkdir`. On ubuntu-26.04 runners uutils `mkdir` could let two writers both claim the lock.
+
+### Fixed
+- Main's CI/CD Pipeline is green again after the regressions merged since 58a229dda (#1571):
+  - two `clippy::manual_contains` lints are cleared;
+  - `docs/architecture/module-map.md` now has the `standing_scope` row;
+  - the `work_item_leads` inline tests have moved to `rust/tests/unit/agentic-coding/`;
+  - the top-level `examples/` script has moved under `rust/examples/`.
+- The Rust `gh` work-item read now takes the body as an observed payload, as JS does, so a body quoting `exit 5` or `HTTP 403` (issue 1488) is no longer dropped (#1571).
+- The issue 698 driver test now expects the `read_file` step that #1560 made possible; the JS planner plans the same steps (#1571).
+- Layered CI js-tier suite groups are now planned from the per-file seconds CI actually observed (`ci-durations.mjs --javascript-ci-logs`). Group 7 no longer reaches its 360 s budget because of 0.1 s defaults for unrecorded files (#1571).
+- `ci-durations.mjs` reads job logs with `gh api --allow-escape-sequences` and reports jobs it skips. Newer `gh` refused the ANSI-coloured logs, and `--tests` and `--playwright-files` silently measured nothing (#1571).
+- `check-dependencies-latest.rs --apply` now writes Cargo and npm requirements without SemVer build metadata (`toml_edit = "0.25.19"`, not `"0.25.19+spec-1.1.0"`). Cargo had warned that the metadata "will be ignored" in every build of the daily dependency run (#1571).
+- The scheduled learning cycle now caches the `rust/` workspace and prints its captured stderr on every exit. Previously rust-cache ran `cargo metadata` at the root without a `Cargo.toml` and cached nothing, and a failed `cargo run` ended in a bare exit 101 that hid the error (#1571).
+- The Issue 1028 Agent CLI ladder now runs each depth-5 leaf as its own leg (32 legs, not 16 pairs), and keeps its 1200 s tree budget and 30-minute job cap. The weekly step-budget audit had failed because a two-leaf leg used 1196 s of the 1200 s budget: its first leaf compiled the crate cold while sccache rejected 706 of 877 writes (#1571).
+- The Hive Mind draft capture no longer writes `*.log` files into the mounted session directory (`attempt.capture.jsonl`, `attempt.stdout.txt`, `attempt.stderr.txt`). The shared runner explains a red draft from the newest `*.log` there, and the live capture was always newest, so run 43730396084 reported "docker run exited 5 without a session log error" instead of "Finished without changes".
+- Every workflow job now runs on a pinned runner image (`ubuntu-24.04`, `windows-2025`) instead of `ubuntu-latest` or `windows-latest`. GitHub had annotated every job of main run 7837d50 (95 notices) that `ubuntu-latest` will move to Ubuntu 26 from October 19, 2026 (actions/runner-images#14748). The release test matrix keeps `os: ubuntu-latest` as the leg's name for job names, duration data and `unit-tests-<os>` checks, and maps it to `ubuntu-24.04` in `runs-on` (#1571).
+- The daily dependency run no longer moves `@link-assistant/web-capture` to 2.x in the desktop and VS Code manifests. Since 2.0.0 it declares `engines.node >=26.10.0`, but Electron 44 embeds Node 24 and VS Code runs extensions on Node 24, so npm printed `EBADENGINE` twice and the move was only a warning. Both manifests now carry a blocked note naming link-assistant/web-capture#191, and a test fails when any runtime package in either lock requires a newer Node than Electron 44 embeds (#1571).
+- The Cargo audit now covers every committed `Cargo.lock`, not only `rust/Cargo.lock`. The issue #1017 reproducer's lock had rustls 0.23.43 (four Dependabot alerts), the yanked chacha20 0.10.1 and five more advisories (quinn-proto, quinn-udp, rustix, webpki-root-certs) while the Security workflow stayed green. Those crates are updated. Unshipped locks fail on vulnerabilities, unsound crates and yanked releases. An `unmaintained` notice with no fixed release (unsafe-libyaml under the pinned meta-language 0.58.1) is reported without failing (#1571).
+
+### Added
+- Every answer in both runtimes goes through one recursive procedure (#1550): `solve_recursively` with an in-process executor in Rust, and `solveRecursively` in the worker. At every level the procedure:
+  - splits the request by its task tree, by obligations and relations, not by English separators;
+  - derives a test for each task and runs it;
+  - drafts candidates from the methods;
+  - selects by least action and records the real reason;
+  - composes by the structure of the split;
+  - recurses within depth, breadth and budget bounds. The bounds are seed data, can be overridden through `RunOptions`, and are the first event of the trace.
+- The trace shows `meta_exec:*` events (bounds, task, test, draft, compose, select, unresolved, result). Rust and JavaScript emit the same sequence, checked by `rust/tests/fixtures/meta-executor-parity.json`. When a sub-task has no test, the procedure returns an explicit unresolved result instead of an answer.
+- A census fails when a specification-corpus answer skips the procedure or a new early return appears. It runs in `rust/tests/unit/meta_executor_census.rs`, `rust/tests/web/issue-1550-procedure-census.test.mjs` and `scripts/check-specification-in-javascript.mjs`.
+- README.md and `docs/meta-algorithm.md` carry the same stage and entry tables. `rust/tests/web/issue-1550-procedure-documentation.test.mjs` fails when the tables diverge from the code.
+
+### Changed
+- The candidate, validation and selection records hold only values derived from the turn. The fixed composition priors 1.15, 1.05 and 0.9 are removed.
+- Russian, Hindi and Chinese requests are split the same way as their English form.
+- The meta reasoner's declared ground-depth bound decides how deep glosses are grounded, in both runtimes.
+
+### Removed
+- The dead `meta_core::record_meta_core_execution`.
+
+### Fixed
+- Hello World issue-to-PR delivery (#1162) ends in one clean, ready pull request in both runtimes:
+  - The workflow takes the file name the request suggests ("a meaningful name like `test-hello-world.yml`"), in English and Russian. A literal path such as `ci/test-hello-world.yml` (#1450) still wins, and a suggestion that names a directory or sits in a quote falls back to `Main.yml`.
+  - A resumed delivery retires an earlier session's workflow for the same program, so it never ends with both `run.yml` and `Main.yml`. It never retires a workflow with uncommitted user edits, an untracked or symlinked copy, or a workflow for another program.
+  - The pull request completion reads the review feedback through a bounded `jq` filter. It sets the title from the issue and the description with `Resolves <issue>`, and edits only when they differ, so a second run is a no-op. It then marks the pull request ready.
+  - Every orchestrator status notice seen on the 2026-11 test pull requests (14 patterns) counts as the session's own bookkeeping, not as change requests. A real `CHANGES_REQUESTED` review or reviewer comment still counts as feedback.
+  - The exact successful stdout of a Codex `exec` envelope or a JSON tool envelope keeps the leading porcelain column, so ` M main.rs` is not read as `M main.rs`.
+  - Version provenance notes are written only for the pins the rendered workflow uses.
+
+### Added
+- Independent task acceptance (#1166), in Rust (`rust/src/agentic_coding/task_acceptance.rs`, `task_condition.rs`), JavaScript and generated TypeScript. It reads only the task text and the candidate's files and observed output:
+  - every clause gets a verdict (discharged, contradicted, unresolved, inapplicable) with a justification and its byte span;
+  - judgment clauses stay unresolved, and nothing is reported as a generic "style" pass;
+  - the workflow path (including #1450's `ci/` convention), triggers, file name, runtime and observed status are checked against the issue;
+  - conditional outputs in the supported subset become a truth table, so reversed comparisons, `and`/`or` and negation stay distinct, and unsupported grammar is a gap;
+  - each task gets a canonical meaning and an exact identity.
+- A finished recipe's answer lists the actionable verdicts and says the task is not complete while a required clause is contradicted or unresolved.
+- One shared fixture (`rust/tests/fixtures/issue-1166/acceptance.json`) for the native and JS tests. It includes executed Python candidates; one shares its generated test's misunderstanding and is still rejected.
+
+### Fixed
+- An expected output mentioned twice is printed once; an explicit `twice` prints it twice. Conditional outputs are no longer bound as unconditional literals.
+
+### Fixed
+- A work item that only cites a Hello World repository (a `test-hello-world-…` address) or a source file name no longer gets a stored Hello World program written, run, committed and reported as "Created and verified" (#1562). The native work-item route solved the whole fetched text, and `normalize_prompt` read `…/test-hello-world-019f…` as "test hello world". Now a recipe is kept only if the work item's obligation text selects the same file in the same language. The obligation text is the work item with every address, code span, link, table row, block quotation and fenced block blanked byte for byte (`rust/src/agentic_coding/work_item_citations.rs`, `js/agentic/work_item_citations.mjs`). A code span that is the operand of an obligation clause, such as the output in "print exactly: `Hello, World!`", is kept for this binding. So a work item whose only output literal is a code span keeps its program. An unbound recipe is dropped before the command reroute, so nothing is written, run, committed or marked ready. The evidence record names it (`unboundWrite`, remaining work `unbound-write:<path>`), and the summary says the file was not written because no obligation names it.
+- Requirement rows that only cite evidence (a table row, a fenced block) are marked `citation` in the work-item evidence record. They are no longer listed or counted as unverified requirements.
+
+### Added
+- The texts of hive-mind issues 4031, 4034 and 4035 are regression fixtures (`data/benchmarks/fixtures/issue-1562/`). Their recorded production requests are draft replays of family `work-item-cited-program`. Tests: `rust/tests/unit/agentic-coding/issue_1562_cited_programs.rs`, `rust/tests/web/issue-1562-cited-programs.test.mjs`. The case study is `docs/case-studies/issue-1562/`.
+
+### Fixed
+- An output literal is printed once (#1156): "print `Hello, World!` and the program outputs it" is one line, not two. A count ("twice", "3 times") or "again" still repeats it, and "outputs" now counts as an output verb.
+
+### Fixed
+- A repeated or resumed delivery is a success (#1157): when the verified files already match the last commit, the answer says so in a sentence ("Nothing to commit: … a repeated or resumed run is a success, not a failure") and the run makes no new commit and no pull request edit. The commit stages only the verified files by literal pathspec. `rust/tests/unit/issue_1157_idempotent_commit.rs` drives the Rust planner through two sessions against a real temporary repository.
+
+### Fixed
+- Hive Mind's formal-ai prompt now binds the delivery to the pull request (#1158): "Update the pull request at <url>." joins "Your prepared Pull Request: <url>" in `prepared-pull-request-patterns`, so the run reads the pull request feedback, sets the title and a description that names the verified artifact, the verification commands and `Resolves <issue>`, and marks the pull request ready. Before this the 2026-09-27 runs left a `[WIP]` draft. The final answer reports each of these steps.
+
+### Changed
+- A missing compiler without a workspace grant now stops with a "grant required" answer that names the program and the pinned publisher procedure a grant would run, the re-probe and the one retry (#1159), for example `scalac` and `https://api.github.com/repos/scala/scala3/releases/latest`.
+- A recovered missing compiler is now reported in the answer: the program, the pinned publisher procedure that ran, the re-probe and the retried command (#1159). A failed transaction is never reported as a recovery.
+- The delivered Scala workflow installs `scalac` from the same release feed as the recovery publisher record, pinned by a Rust test (#1159).
+
+### Added
+- Hive Mind prompt fixtures in `rust/tests/fixtures/hive-mind/` (#1160): the verbatim formal-ai prompt of the 2026-09-27 Kotlin run, the regular prompt and the auto-restart prompt after `?? Main.jar`, with the shared fake `gh` used by the offline delivery tests in both runtimes. With the regular or restart prompt, a stray `Main.jar` after a Kotlin delivery is ignored, committed and pushed, and the pull request stays ready.
+
+### Added
+- Configurable controlled natural language (CNL) output in English, Russian, Hindi, Chinese and Spanish. Independent output-standard (cnl-default, asd-ste100, ace, gellish, sbvr, plain-language, minimal-english, e-prime, basic-english, special-english, globish) and lexical-density (standard, primes, top-N, max-precision) settings are available in the CLI, OpenAI-compatible API, browser worker and desktop preferences, and can be switched during a dialogue. One declarative grammar per language (`data/seed/cnl-language-<id>.lino`) drives realization, parsing and validation, in both the JavaScript and Rust engines.
+- Whole-prompt controlled dialogue. Declared fact questions are answered in the selected standard. An ambiguous question gets a numbered CNL clarification, and a numbered reply picks one reading. A task paraphrase that the solver did not understand is solved through its canonical controlled prompt.
+- An exhaustive matrix over languages, standards, densities and meaning graphs, with a reviewed infeasibility ledger and per-language JavaScript/Rust parity fixtures.
+
+### Fixed
+
+- Keep duration facts in job descriptions from triggering unit conversions or calendar events (#1588). Conversion intent, number and source unit now belong to the same request span in JavaScript and Rust.
+- Recognize English and Russian year forms, render short exact decimals and reduced fractions, and agree Russian time units with the numeral.
+- Answer stated day offsets from validated Gregorian dates, including leap days and year rollover: 10 days after 25 December 2026 is 4 January 2027.
+
+### Fixed
+
+- Enable read-only source retrieval by default, preserve explicit offline/network denies, and explain harness permission controls in five languages. Recognize direct permission paraphrases without taking over quoted translation or programming tasks (#1582).
+- Keep routine wrapper/server diagnostics in log files by default and offer explicit terminal and nested formatting options (#1582).
+- Supply served context limits to Claude, Codex, Qwen, Aider and Grok configurations. Gemini's fixed input-context fallback is documented as an upstream limitation (#1582).
+
+### Fixed
+
+- Apply system and developer output constraints within the current Chat Completions or Responses request, including language, JSON format, allowed labels and word counts. Unsupported constraints are named explicitly in a refusal and recorded in `thinking_steps` (#1587).
+- Recall facts stated in earlier user turns without treating assistant text as user evidence or sharing request instructions across conversations.
+
+Fix English and Russian calendar-duration sums and completed months/years between stated dates. Preserve exact day offsets across year boundaries. Currency conversions disclose a captured historical rate, its official source and date, and round once to two decimal places in both runtimes.
+
+Use the repository's local picomatch security backport for desktop and VS Code development dependencies until upstream releases a fix for GHSA-fc5q-39xc-vjpf.
+
+### Fixed
+
+- Make full server dialog capture opt-in and keep default request diagnostics to metadata (#1592).
+
+### Added
+
+- Add `serve --ephemeral` and `FORMAL_AI_EPHEMERAL=1` for read-only memory with no server diagnostics, dialog capture, or stored derivations. Report the active memory and capture settings in `/health`.
+
+### Fixed
+
+- Remove standalone greetings, thanks, and sign-offs from free-text summaries. Keep the main clause and its reasons together with their original sentence case. (#1594)
+
+### Fixed
+
+- Honor forced client function calls in OpenAI-compatible Chat Completions and Responses, including streaming. Validate arguments before returning the call and expose underivable arguments as a structured refusal. Server tool permissions still apply to shell, file and web tools.
+
+### Added
+
+- Support structured JSON answers and machine-readable refusals on the OpenAI Chat Completions and Responses endpoints. Both runtimes validate answers against the requested schema before returning them and record the schema and result in the answer's derivation.
+
+### Fixed
+
+- Use localized wikiHow sources for general how-to requests. The browser can recover relevant steps from a matching archive or the web capture service. Ranked search excerpts no longer count as instructions.
+- Continue source-backed how-to answers on follow-up requests in the native solver.
+
+### Added
+
+- Store and run dynamic meta recipes and associative plugins, trace doublet substitutions across CRUD-triggered cycles, and review operator-controlled compilation and rule activation.
+
+### Fixed
+
+- Route procedural questions from Codex through Formal AI's source-backed solver when the client advertises web search.
+- Ask for issue-report destinations and log scope in chat when Codex advertises a Plan-only prompt tool. Keep confirmation before creating an issue.
+- Run the staged release after credential, secret and crate checks. Keep the broader diagnostic matrix visible in the pipeline status.
+
+## [0.355.34] - 2026-11-05
+
+Give the single public Pages smoke a bounded cold-CDN worker allowance while preserving real WASM and answer assertions, keeping local waits and the original full suite unchanged. Reduce its overall cap and record startup duration plus bounded pending-request diagnostics so a slow or failed worker has an actionable cause.
+
+## [0.355.33] - 2026-11-04
+
+Fix post-publication self-authoring when GitHub adds descendant jobs during pagination: discard the changing inventory and restart from page one at most three times, retaining the shared deadline, request limit, and exact publisher/source/attempt checks. Replay the observed 59-to-60 job-count race offline and refuse persistent churn or invalid job identities.
+
+Fix release freshness checks when GitHub reports a queued or waiting parent pipeline while its staged writer is running. Share nonterminal aggregate validation across all staged entry points while preserving exact current-job, runner, source, attempt and writer-group membership proof. Replay the observed failure and stale/foreign/missing-lease refusals in essential offline PR tests.
 
 ## [0.355.32] - 2026-11-04
 
