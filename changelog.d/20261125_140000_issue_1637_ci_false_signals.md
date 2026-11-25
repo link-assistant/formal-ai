@@ -20,3 +20,4 @@ bump: patch
   - solver, routing and handler regressions from main run 45549993600 are fixed in Rust and in the JS/TS twins, with the seed mirrors kept byte-equal;
   - network-dependent integration cases (issue 1138 family behaviour, issue 712 Hindi routing) run with read access denied, so their answers no longer change with the runner's network;
   - the issue 1157 delivery test prints the failed answer and the commands it ran.
+  - the secrets scan, its scripts and its tests pin the same locked secretlint version (14.1.0).

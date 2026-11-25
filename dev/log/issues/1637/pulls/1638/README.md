@@ -61,6 +61,8 @@ Evidence and analysis for PR #1638. Collected on 2026-11-25.
 | Procedural specification tests not replayable in JS | False negative | An offline `UniversalSolver` constructor that the JS reader could not parse, so the replay skipped the case | c6000fee9 (offline binding in the reader and worker host) |
 | `issue_1138` family behaviour and `issue_712` Hindi routing | Flaky (network-dependent) | Read access is on by default since #1582, so live fetches changed answers or used up the 30 s budget | 15ae736ab (these cases run with the network denied) |
 | `issue_1157` idempotent commit | Unknown root cause, fails on main only | Passes in isolation. Main reported only the unchanged `[WIP]` title | 4cc63096a (the assertion now prints the answer and commands; diagnosis continues on the next main failure) |
+| PR round 2 (run on 394a1bda7): secrets scan red | True positive introduced by this PR | 05f67352f bumped `.github/secretlint` to 14.1.0, but `check-secrets.sh`, `check-secrets-files.mjs` and their tests pinned 14.0.0 | 1a67d3cf3 (one pin; the lock test reads the manifest) |
+| PR round 2: tests-as-docs, notation, abbreviation, R999, translation and inventory gates | True positives on this PR's own changes | New names and worker lines from the regression fixes; twins not regenerated | 6398f7b31, b1d6b6a2f, 6fb036e94, 13614f864 (logs in `ci-logs/round2/`) |
 | Hive Mind draft | Upstream drift | hive-mind 45c85a4 reshaped `setEnv` | Already fixed on main by 1b538b39d |
 | Issue 1028 ladder budget | True positive | Three serial single-test `cargo test` calls on a cold cache | Already fixed on main by 971802a07 |
 | Work-item qualification `docker pull` timeout | Harness bug | 180 s timeout for an 8.1 GB image | Already fixed on main by 066cffea2 |
