@@ -18,6 +18,9 @@ issue #1637 / PR #1638 (`dev/log/issues/1637/pulls/1638/`), which merged green a
 | `analysis/e2e-native-package-pages.md` | E2E generalization, native observations, package verify (Aider), Pages deploy |
 | `analysis/ladder-lone-artifact.md` | Issue 1028 ladder joined a passing leg as "0 wrote a result" |
 | `analysis/external-benchmarks-regression.md` | External Benchmarks ratchet failure, bisected to PR #1139 |
+| `analysis/external-benchmarks-main-513e4d9/` | Per-suite offline and online scores of the 513e4d9 binary |
+| `analysis/rust-test-failures.md` | Each failing Rust test of the full and specification shards: reproduction, root cause, fix |
+| `analysis/corpus-and-shard-timeouts.md` | Benchmark Corpus Gate out-of-memory kills and full-test shard timeouts |
 | `analysis/test-failures-overview.txt`, `panics.txt`, `test-shard-durations.tsv` | Failing Rust tests on main and shard timings |
 | `analysis/githubstatus-incident-qn8mfv6q5hlx.json` | GitHub incident covering the Pages HTTP 500s |
 | `upstream-reports/` | Upstream issues (filed ones have a `.url` file) and an unfiled draft |
@@ -63,9 +66,15 @@ issue #1637 / PR #1638 (`dev/log/issues/1637/pulls/1638/`), which merged green a
 | Main-only regressions with no pre-merge replay | all of the above | Process gap | Not in the ledger | b6f43c490 (`data/meta/main-only-regressions.lino`, each with its narrowest PR check) |
 | Pages deploy HTTP 500 | 45636781871 | Infrastructure | GitHub incident `qn8mfv6q5hlx` (Pages degraded) | None needed; payload matches `actions/deploy-pages@v5`. Re-run the job |
 | Issue 1028 ladder: a passing leg joined as "0 wrote a result" | PR round 1, ladder dispatch | False negative | download-artifact v5+ extracts a lone pattern match flat; the join looked for `<name>/` | 342b5f05b (the shared download action keeps the artifact folder for every pattern selection; six consumers covered); filed upstream |
-| Failing Rust tests in the full and specification shards | 45636781871 | True positives and stale expectations | See `analysis/test-failures-overview.txt` | Background work, see "Still in progress" |
-| Benchmark Corpus Gate shards killed | 45636781444 | Runner shutdown | See "Still in progress" | |
+| `issue_1588_intent_spans`: "how many days are in 2 years?" routed to a concept lookup | 45636781871 | True positive, main-only | The source-composition gate checked only the lexicon unit list, so "years" fell through | c298edcfc (a bare duration stays a unit conversion); replayed in the PR lane through `reasoning_contracts` (de356b7d0) |
+| `minimal_core_and_seed_metadata` census pin | 45636781871 | Stale expectation, main-only | A new handler source reached `main` before the pin moved | 8339c40a0; replayed through `operational_contracts` (de356b7d0) |
+| `task_catalog`, `prompt_variations`, `lino_parity`, `issue_1158_pull_request_steps` | 45636781871 | Non-hermetic tests | Default solvers read live publishers since #1582, and one source cache serves a whole job | 8339c40a0 (isolated caches, network denied where an answer is asserted); c298edcfc (catalog construction trace); witness refresh c27df0c8a |
+| Docs citing a coding-framework test that does not exist | 45636781871 | Error | Stale citation | b9c564eb6 |
+| Full-test shards 1, 3 and 6 killed at the 1080 s budget | 45636781871 | False negative of the harness | Live publisher latency in default solvers (web-search paraphrases >400 s live, 7 s denied) and durations recorded before those tests grew | 13d08a486 (full and specification shards run with `FORMAL_AI_NETWORK: denied`); b17063b44 (durations refreshed from this run) |
+| Benchmark Corpus Gate shards 1, 2 and 6 killed (exit 143) | 45636781444 | True positive, runner out of memory | The `near_pair` composition search applied `pairwise_distinct` to its own output up to depth 8, and draft verification had no memory cap | 0e5ed502a (an amplifying fragment never takes its own output; verification capped at 512 MiB); replayed through `coding_contracts` |
+| Each of these main-only failures | — | Process gap | Not in the ledger | 0933472ad (`main-only-regressions.lino`, with the policy test that pins each replay) |
 | External Benchmarks ratchet | 45197910485 | True positive (capability) | PR #1139 deleted seven templates while its own L15 gate was unmet | See `analysis/external-benchmarks-regression.md` |
+| PR round 1: Changelog Fragment Check | 7f664bb80 CI/CD | True positive on this PR | The first push had no fragment | e363abe1e |
 | PR round 1: `release-preflight-checkout.test.mjs` | 7f664bb80 Layered CI | True positive on this PR | The test still expected the retired crate lookup | 2dbf99eef |
 | PR round 1: governed witness hash mismatch | 7f664bb80 Layered CI | True positive on this PR | The rustfmt fix moved a governed native source hash | Reviewed witness refresh (cases unchanged), as in #1637's 008402605 |
 
@@ -77,6 +86,9 @@ issue #1637 / PR #1638 (`dev/log/issues/1637/pulls/1638/`), which merged green a
 | Work-item qualification 41768761745 | Its fix (066cffea2, docker pull timeout) is already on main; verifying it needs a manual dispatch |
 | Pages deploy | Needs a re-run after the GitHub incident; no code change |
 | Ladder verification on `main` | Re-dispatch the Issue 1028 ladder after this PR merges |
+| External Benchmarks 45197910485 | A true capability fall since PR #1139 (seven templates deleted while its own plan 02 L15 gate was unmet). Lowering the ratchet would hide it; restoring HumanEval/MBPP capability is the open L15 work, outside a CI audit |
+| Full-lane verification of the Rust fixes | No local cargo build fits the 3 GB sandbox, and the full and specification shards run only on `main`. The PR native lane replays the intent-span, minimal-core and corpus tests; `lino_parity`, `task_catalog`, `prompt_variations`, `issue_938` and the docs citation stay main-only |
+| Live-answer tests under the denied network | A full-shard test that silently relied on a live answer would now fail on `main`. Tests that need the network opt in with `FORMAL_AI_LIVE_FETCH=1`; none could be checked before merge |
 
 ## Trade-offs chosen
 
