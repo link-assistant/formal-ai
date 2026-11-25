@@ -84,3 +84,8 @@ mod issue_1101_documentation_question_parity;
 
 #[path = "issue_1580_question_boundaries.rs"]
 mod issue_1580_question_boundaries;
+
+// Issue #1639: a bare duration ("2 years") stays a unit conversion, not a
+// concept lookup; this regression ran only in the main-only full shards.
+#[path = "issue_1588_intent_spans.rs"]
+mod issue_1588_intent_spans;
