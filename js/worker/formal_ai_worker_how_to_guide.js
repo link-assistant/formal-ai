@@ -596,6 +596,9 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
   return { items, follow, detail: items.length > 0 ? capture.url : detail };
 }
 
+/** The how-to source asked first and never skipped on a cached failure (issue #1632). */
+const HOW_TO_PRIORITY_SOURCE = "wikihow";
+
 /** Synthesise a guide for `task` from the enabled registry services. */
 async function synthesizeHowToGuide(task, preferences, bounds, now, language = "") {
   const limits = bounds || HOW_TO_GUIDE_BOUNDS;
@@ -607,6 +610,7 @@ async function synthesizeHowToGuide(task, preferences, bounds, now, language = "
     online: preferences?.offline !== true && preferences?.allowNetwork !== false,
     bounded: true,
     accessibilityKey: howToAccessibilityKey,
+    alwaysProbe: (record) => record.id === HOW_TO_PRIORITY_SOURCE,
     emptyStatus: "no_steps",
     fallbackEntryUrl: (record, url) => howToMediaWikiApi(record.api) && limits.maxDepth > 0
       ? howToSearchUrl({ api: url }, subject) : null,
