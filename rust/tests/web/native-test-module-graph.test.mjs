@@ -82,3 +82,19 @@ test('every committed native capture case binds to exactly one registered caller
  const {cases}=JSON.parse(readFileSync(join(root,'data/meta/native-response-capture-cases.json'),'utf8'));
  for(const id of cases)assert.doesNotThrow(()=>bindOriginalSourceCase(graph,id),id);
 });
+// Issue #1639: 15ae736ab moved one selected case's solver calls into an
+// `offline_replay::in_child*` re-execution. The capture harness binds records to
+// the PID it launched, so the child's `native-<child>.jsonl` left the parent's
+// file missing and main's native-response-observations job failed 27/28.
+test('no committed native capture case re-executes its body in a replay child (issue #1639)',()=>{
+ const root=join(dirname(new URL(import.meta.url).pathname),'../../..');
+ const {cases}=JSON.parse(readFileSync(join(root,'data/meta/native-response-capture-cases.json'),'utf8'));
+ for(const id of cases){
+  const [, path, name]=/^([^:]+)::([A-Za-z_]\w*)/u.exec(id);
+  const source=readFileSync(join(root,path),'utf8');
+  const start=source.search(new RegExp('\\bfn '+name+'\\s*\\('));
+  assert.ok(start>=0,id);
+  const end=source.indexOf('\n}\n',start);
+  assert.doesNotMatch(source.slice(start,end<0?undefined:end),/\boffline_replay::in_\w*\s*\(/u,id+' runs in a replay child whose PID the capture cannot bind');
+ }
+});
