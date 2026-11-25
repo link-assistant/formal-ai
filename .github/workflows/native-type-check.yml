@@ -129,7 +129,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         if: ${{ inputs.compile-inputs-changed }}
         with:
-          components: clippy
+          components: clippy, rustfmt
+      # Issue #1639: main's `check-formatting` gate (data/meta/ci-gates/
+      # check-formatting.lino) failed on a rustfmt diff that this lane never
+      # looked at, because formatting ran only on main. rustfmt compiles
+      # nothing, so it costs seconds and runs before clippy's build.
+      - name: Check Rust formatting
+        if: ${{ inputs.compile-inputs-changed }}
+        run: cargo fmt --manifest-path rust/Cargo.toml --all -- --check
       - uses: ./.github/actions/setup-sccache
         if: ${{ inputs.compile-inputs-changed }}
       - uses: ./.github/actions/cache-cargo-registry

@@ -166,6 +166,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then\n' +
     "  echo '::error::Native input checkout failed after two bounded attempts.' >&2\n" +
     '  exit 1\nfi\n',
+    // Issue #1639: formatting was main-only, so a rustfmt diff reached main.
+    'cargo fmt --manifest-path rust/Cargo.toml --all -- --check',
     'bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies\nmkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\n',
     'bash scripts/ci-native-regressions.sh core',
@@ -239,7 +241,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     assert.equal(step.if, step.run === gatewayReplay ? "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' && steps.bun.outcome == 'success' }}" : "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/setup-bun-verified').with,
     {'bun-version-file': '.bun-version', 'no-cache': true});
-  assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
+  assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy, rustfmt'});
   assert(!check.steps.some(step => /attest|cache@|cache\/save/u.test(step.uses ?? '')));
   const uploads = check.steps.filter(step => /upload-artifact/u.test(step.uses ?? ''));
   assert.equal(uploads.length, 1, 'only the exact fixture projection is retained');
