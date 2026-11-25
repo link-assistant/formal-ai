@@ -29,6 +29,7 @@ Evidence and analysis for PR #1638. Collected on 2026-11-25.
 | Run 45275490842 | Last green Pages deploy (`actions/deploy-pages@v5`, version = commit SHA) |
 | Runs 45490077033, 45549993600 | Pages deploy returns HTTP 404 for a synthetic 64-hex `pages_build_version` |
 | 2026-11-25 | Issue #1637 opened. This PR |
+| 2026-11-25, f6afdaed5 | The owner asks that commits like this `.gitkeep` revert, and docs-only changes, not trigger most checks (round 7) |
 
 ## Requirements and status
 
@@ -67,6 +68,7 @@ Evidence and analysis for PR #1638. Collected on 2026-11-25.
 | PR round 4 (run on 4bcdb5a35): `docs/status.md` stale | True positive on this PR's own change | The status page counts ledger lines, and the core-boundary note added one | Regenerated with `render-status.mjs --write`. Logs in `ci-logs/round4/` |
 | PR round 5 (run on 2271bfebf): native type check, `try_arithmetic` never used | True positive on this PR's own change | 2df34f2ae sent both arithmetic routes through `arithmetic_with_online`, so the public wrapper lost its last caller. The check had not run in earlier rounds because fast-pr-lint failed first | The wrapper is removed and the ledger re-measured. `experiments/issue-1637-unused-imports.py` scanned the changed files for other leftovers (none new). Logs in `ci-logs/round5/` |
 | PR round 6 (run on b2f0c5fc6): native type check E0433 `offline_replay` not in crate root; Layered group 10 "committed worker matches the inputs it records" | True positives on this PR's own changes | 15ae736ab routed the issue_1138 concept-lookup cases through `crate::offline_replay`, but the file is also compiled into the focused `reasoning_contracts` crate, which never declared that helper. Its hard-coded `--exact` name also only matched the `unit` crate's module path. The round-5 doc fix in `rust/src/arithmetic.rs` changed a recorded WASM worker input | `reasoning_contracts` declares `offline_replay`, and the replay name is derived from `module_path!()` (5ded37d57). The worker was rebuilt with the recorded rustc 1.100.0: the bytes are identical and only the input hash is re-recorded (6000ffbb7). Logs in `ci-logs/round6/` |
+| PR round 7 (owner feedback on f6afdaed5): a `.gitkeep`-only revert re-ran 9251 runner-seconds of checks (CI/CD Pipeline 6305 s, Layered CI 2447 s; `ci-logs/round7/f6afdaed5-executed-jobs.tsv`) | False positives: checks selected for changes that were already verified | On `pull_request` `synchronize`, both GitHub path filters and `scripts/ci-pull-request-admission.mjs` compare the whole pull request, not the push. The previous head b2c928ae8 had already passed every workflow. `.gitkeep` was also classified as code | `selectChangedPaths` compares `before..after` only when the merge commit is built from `after`, `before` is its ancestor, and the previous head has a successful run of the same workflow (the JS template's `previousHeadPassed`). Otherwise it uses the full diff. `.gitkeep` is inert in the JS admission and in `scripts/detect-code-changes.rs`. Covers release.yml, layered-ci.yml and coverage.yml. Test: `rust/tests/web/default-branch-build-policy/push-range-admission.test.mjs` |
 | Hive Mind draft | Upstream drift | hive-mind 45c85a4 reshaped `setEnv` | Already fixed on main by 1b538b39d |
 | Issue 1028 ladder budget | True positive | Three serial single-test `cargo test` calls on a cold cache | Already fixed on main by 971802a07 |
 | Work-item qualification `docker pull` timeout | Harness bug | 180 s timeout for an 8.1 GB image | Already fixed on main by 066cffea2 |
@@ -92,6 +94,9 @@ Evidence and analysis for PR #1638. Collected on 2026-11-25.
 ## Trade-offs chosen
 
 - `dtolnay/rust-toolchain@stable` stays floating. Pinning it would hide new lints until someone bumps the pin. Instead, new lint errors are fixed as they appear.
+- Per-push narrowing is applied only to the three workflows with an admission job (release.yml, layered-ci.yml, coverage.yml). They carry about 95% of the runner time measured on f6afdaed5. The remaining PR-triggered workflows run single short jobs, and a gate job would cost about as much as it saves.
+- GitHub path filters still see the whole pull request, so those workflows still start. Their heavy jobs skip inside the run.
+- A push onto a head whose run was cancelled, failed or is still running gets the full pull request diff. A force push or rebase also gets the full diff. The narrowing never relies on an unverified run.
 - PR clippy does not add `--tests`. Doing so would double PR build time. Test-target lints run on main.
 
 ## Upstream reports
@@ -99,6 +104,7 @@ Evidence and analysis for PR #1638. Collected on 2026-11-25.
 - https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/270
 - https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/271
 - https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/317
+- https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/272 (verified push range and inert `.gitkeep`; the JS template already has both)
 
 ## Existing components used
 
