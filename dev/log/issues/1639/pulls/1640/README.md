@@ -14,6 +14,7 @@ issue #1637 / PR #1638 (`dev/log/issues/1637/pulls/1638/`), which merged green a
 | `ci-logs/cicd-jobs/`, `ci-logs/corpus-jobs/` | Per-job logs of CI/CD Pipeline 45636781871 and Benchmark Corpus Gate 45636781444 |
 | `ci-logs/annotations/` | Raw check-run annotations (`<run>-<job>.json`) |
 | `ci-logs/round1/` | Logs of this PR's own first CI round (Layered CI, Issue 1028 ladder) |
+| `ci-logs/round2/` | Logs of this PR's second CI round (Layered CI groups 9, 10, 11; Native contracts reasoning-2) |
 | `analysis/template-comparison.md` | Comparison with the eight link-foundation pipeline templates and hive-mind `CI-CD-BEST-PRACTICES.md` |
 | `analysis/e2e-native-package-pages.md` | E2E generalization, native observations, package verify (Aider), Pages deploy |
 | `analysis/ladder-lone-artifact.md` | Issue 1028 ladder joined a passing leg as "0 wrote a result" |
@@ -40,6 +41,7 @@ issue #1637 / PR #1638 (`dev/log/issues/1637/pulls/1638/`), which merged green a
 | 2026-11-25 15:55–16:52Z | GitHub incident `qn8mfv6q5hlx`; all three Pages HTTP 500s fall inside it |
 | 2026-11-25 | Issue #1639 opened. This PR |
 | PR round 1 (7f664bb80) | Layered CI caught two regressions of this PR (crates.io probe test, governed witness); the dispatched ladder found the lone-pattern join defect |
+| PR round 2 (bfa2d6883) | reasoning-2 failed intent-span rows 12, 13 and 21; Layered CI caught the notation ratchet, a retained payload digest and the traceability partition fixture |
 
 ## Requirements and status
 
@@ -77,6 +79,11 @@ issue #1637 / PR #1638 (`dev/log/issues/1637/pulls/1638/`), which merged green a
 | PR round 1: Changelog Fragment Check | 7f664bb80 CI/CD | True positive on this PR | The first push had no fragment | e363abe1e |
 | PR round 1: `release-preflight-checkout.test.mjs` | 7f664bb80 Layered CI | True positive on this PR | The test still expected the retired crate lookup | 2dbf99eef |
 | PR round 1: governed witness hash mismatch | 7f664bb80 Layered CI | True positive on this PR | The rustfmt fix moved a governed native source hash | Reviewed witness refresh (cases unchanged), as in #1637's 008402605 |
+| PR round 2: `issue_1588_intent_spans` rows 12 and 13 ("сколько дней в 2 годах") | bfa2d6883 CI/CD reasoning-2 | True positive on this PR | Once the concept lookup declined, the Russian duration reached the relative-period web search gap | 85417f365: the web search declines a request the unit handler derives |
+| PR round 2: `issue_1588_intent_spans` row 21 ("2 years in days") | bfa2d6883 CI/CD reasoning-2 | True positive on this PR | Arithmetic (rank 440) precedes the unit handler (675); Rust's calculator converts with a 365-day year (730), the unit catalogue uses the Julian year (730.5). The JS calculator cannot evaluate units, so JS already fell through | 85417f365: arithmetic declines only a conversion whose SI path runs through `julian_year`, so `calculator_delegation` keeps "10 tons to kg" |
+| PR round 2: notation ratchet | bfa2d6883 Layered CI group 9 | True positive on this PR | Four new snake_case or abbreviated names in `data/meta` and `data/seed` | 051779a96 |
+| PR round 2: retained payload digest | bfa2d6883 Layered CI group 10 | True positive on this PR | The intended `FORMAL_AI_NETWORK: denied` edit moved release.yml/test's payload SHA-256 | 049286d7d |
+| PR round 2: traceability partition | bfa2d6883 Layered CI group 11 | True positive on this PR | b9c564eb6 corrected the R1021-8 citation but not the partition fixture | f6fbfc205, as 4e48b8b54 did for R1021-6 |
 
 ## Blocked or not fixed in this PR
 
