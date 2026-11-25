@@ -305,12 +305,12 @@ main-run 45636781871
     regression e2e-request-trace-below-log-level
       introduced-by "PR #1592, commit ec6ade5cd"
       failed "E2E Tests (agent CLI): expected ≥5 chat completions, got 0 (loop stalled?)"
-      check rust/tests/web/issue-1639-e2e-harness-contracts.test.mjs
+      check rust/tests/web/agent-cli-ladder-failure-evidence.test.mjs
       marker "issue #1639: every harness launch that traces requests also enables the trace level"
     regression issue-707-reference-naming-schemes
       introduced-by "PR #1614, commit 66169b8fa"
       failed "E2E Tests (computer-use-generalization): local reference rejected for notes_count_and_pack"
-      check rust/tests/web/issue-1639-e2e-harness-contracts.test.mjs
+      check rust/tests/web/agent-cli-ladder-failure-evidence.test.mjs
       marker "issue #1639: the #707 reference compares the explicit plan in one naming scheme"
     regression aider-report-menu-line-start
       introduced-by "PR #1581, merge 8711d61f2"

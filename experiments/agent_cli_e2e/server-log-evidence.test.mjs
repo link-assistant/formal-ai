@@ -62,4 +62,4 @@ test('all-endpoint reporting counts actual POST headers once across both APIs',(
 // completions, got 0"). A server launch that asks for the request trace must
 // also raise the level in the same environment block.
 // The repository-wide FORMAL_AI_LOG_LEVEL=trace scan runs before merge in
-// rust/tests/web/issue-1639-e2e-harness-contracts.test.mjs (issue #1639).
+// rust/tests/web/agent-cli-ladder-failure-evidence.test.mjs (issue #1639).
