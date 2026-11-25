@@ -114,6 +114,26 @@ fn report_destination_question_allows_multiple_selections() {
     assert_eq!(args["questions"][0]["multiple"], true, "{args}");
 }
 
+/// Claude Code's AskUserQuestion reads `multiSelect`, not OpenCode's
+/// `multiple`; without it the "Select one or more" question rendered as a
+/// single-choice picker (issue #1632).
+#[test]
+fn claude_report_destination_question_is_multi_select() {
+    let call = one_call(
+        &[ChatMessage::user("Report this problem")],
+        &["AskUserQuestion", "Bash"],
+    );
+    assert_eq!(call.tool, "AskUserQuestion");
+    let args = arguments(&call);
+    assert_eq!(args["questions"][0]["multiSelect"], true, "{args}");
+    assert!(
+        args["questions"][0]["options"]
+            .as_array()
+            .is_some_and(|options| options.len() >= 2),
+        "{args}"
+    );
+}
+
 /// Every selected destination is fulfilled, one executable step at a time.
 ///
 /// Until #839 all three were packed into one `set -eu` line sharing a single
