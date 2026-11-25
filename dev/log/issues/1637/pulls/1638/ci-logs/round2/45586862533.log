@@ -1,0 +1,243 @@
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	﻿2026-11-25T09:36:14.6651781Z ##[group]Run node scripts/check-readable-code.mjs
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6652214Z ^[[36;1mnode scripts/check-readable-code.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6652705Z ^[[36;1mnode scripts/check-file-size.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6652947Z ^[[36;1mnode scripts/check-ci-speed.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6653211Z ^[[36;1mnode scripts/check-hardcoded-language.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6653478Z ^[[36;1mnode scripts/check-js-literals.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6653724Z ^[[36;1mnode scripts/check-tests-as-docs.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6653975Z ^[[36;1mnode scripts/assemble-requirements.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6654253Z ^[[36;1mnode scripts/generate-requirement-status.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6654529Z ^[[36;1mnode scripts/check-requirement-status.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6654796Z ^[[36;1mnode scripts/render-status.mjs --check^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6655074Z ^[[36;1mnode scripts/render-progressive-plan.mjs --check^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6655358Z ^[[36;1mnode scripts/mirror-package-data.mjs --check^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6655680Z ^[[36;1mnode scripts/check-fast-governance.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6682820Z shell: /usr/bin/bash -e {0}
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6683062Z env:
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6683257Z   GIT_CONFIG_COUNT: 1
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6683460Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6683682Z   GIT_CONFIG_VALUE_0: main
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6683863Z   CARGO_NET_RETRY: 10
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6684045Z   CARGO_HTTP_MULTIPLEXING: false
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6684247Z   CARGO_TERM_COLOR: always
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6684429Z   FORMAL_AI_CI_VERBOSE: false
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6684624Z   FORMAL_AI_NON_LINUX_CI: run
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6684810Z   RUSTFLAGS: -Dwarnings
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6684987Z   RUST_BACKTRACE: full
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6685390Z   CARGO_REGISTRY_TOKEN: ***
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6685626Z   CARGO_TOKEN: ***
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6685831Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6686078Z   DOCKERHUB_IMAGE: konard/formal-ai
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:14.6686473Z ##[endgroup]
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:18.7251503Z readable code: 5830 code files are multi-line and readable (1 exemption(s) in use)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:18.7596221Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:18.7597504Z Checking file line limits: Rust 1000, every other maintained text format 1500...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:18.7597986Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:19.8557080Z All checked files are within their line limits
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:19.8557692Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:19.9574163Z CI speed: 204 of 212 jobs in 61 workflows meet the 30-minute limit and 8 carry a recorded exception; long jobs start first; test shards are planned longest-first.
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:19.9958374Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:19.9959443Z Checking rust/src/ for hardcoded user-facing natural language (R379)...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:19.9959861Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:20.5935897Z Detected prose literals: 611 | allowlisted: 611
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:20.5936286Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:20.5936781Z No new hardcoded natural language; allowlist is in sync (611 entries).
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:20.5937165Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:21.2531257Z natural-language literals (worker): 376 (ceiling 376)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:21.2531988Z natural-language literals (meta): 0 (ceiling 0)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:21.2532777Z natural-language literals (server): 0 (ceiling 0)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:21.2533529Z natural-language literals (agentic): 0 (ceiling 0)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0880210Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0881188Z Checking behavioural tests show exact example answers (R234-2)...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0881460Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0894253Z Behavioural tests asserting on an answer without showing it:
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0894567Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0895105Z   rust/tests/unit/specification/prompt_variations.rs::hello_world_matrix_emits_a_code_block_per_language
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0895610Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0896000Z Tests are documentation: show the exact answer, or the explicit list of answers it
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0896688Z must be one of, in addition to any contains/!contains assertions.
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0897467Z assert_eq!(response.answer, "…");
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0897882Z assert!(EXPECTED.contains(&response.answer.as_str()), "…");
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0898548Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T09:36:24.0987957Z ##[error]Process completed with exit code 1.
+Secrets Scan	Check for secrets	﻿2026-11-25T09:37:27.9448874Z ##[group]Run bash scripts/check-secrets.sh
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9449279Z ^[[36;1mbash scripts/check-secrets.sh^[[0m
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9475887Z shell: /usr/bin/bash -e {0}
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9476132Z env:
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9476323Z   GIT_CONFIG_COUNT: 1
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9476540Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9476983Z   GIT_CONFIG_VALUE_0: main
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9477176Z   CARGO_NET_RETRY: 10
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9477373Z   CARGO_HTTP_MULTIPLEXING: false
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9477597Z   CARGO_TERM_COLOR: always
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9477801Z   FORMAL_AI_CI_VERBOSE: false
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9478015Z   FORMAL_AI_NON_LINUX_CI: run
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9478210Z   RUSTFLAGS: -Dwarnings
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9478397Z   RUST_BACKTRACE: full
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9478770Z   CARGO_REGISTRY_TOKEN: ***
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9479015Z   CARGO_TOKEN: ***
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9479231Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9479492Z   DOCKERHUB_IMAGE: konard/formal-ai
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9479756Z   BASE_REF: main
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9479936Z ##[endgroup]
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9754222Z Scanning files changed in 7b9f98d48d8ccab667b65157f6ba96e824b6971f..HEAD
+Secrets Scan	Check for secrets	2026-11-25T09:37:27.9871719Z Scanning 265 file(s) for secrets...
+Secrets Scan	Check for secrets	2026-11-25T09:37:29.1368294Z 
+Secrets Scan	Check for secrets	2026-11-25T09:37:29.1369018Z added 27 packages in 1s
+Secrets Scan	Check for secrets	2026-11-25T09:37:29.1996890Z ::stop-commands::***
+Secrets Scan	Check for secrets	2026-11-25T09:37:29.2019697Z {"secretsScan":"failed","reason":"Pinned scanner package version mismatch: secretlint"}
+Secrets Scan	Check for secrets	2026-11-25T09:37:29.2020691Z ::***::
+Secrets Scan	Check for secrets	2026-11-25T09:37:29.2285233Z ##[error]Process completed with exit code 1.
+Pipeline Status	Fail the run when a required job was cancelled or failed	﻿2026-11-25T09:37:36.9538192Z ##[group]Run bash scripts/check-pipeline-status.sh
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9540282Z ^[[36;1mbash scripts/check-pipeline-status.sh^[[0m
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9571156Z shell: /usr/bin/bash -e {0}
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9572821Z env:
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9573954Z   GIT_CONFIG_COUNT: 1
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9575257Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9576753Z   GIT_CONFIG_VALUE_0: main
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9578355Z   CARGO_NET_RETRY: 10
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9579584Z   CARGO_HTTP_MULTIPLEXING: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9580917Z   CARGO_TERM_COLOR: always
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9582332Z   FORMAL_AI_CI_VERBOSE: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9583613Z   FORMAL_AI_NON_LINUX_CI: run
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9584882Z   RUSTFLAGS: -Dwarnings
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9586029Z   RUST_BACKTRACE: full
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9587672Z   CARGO_REGISTRY_TOKEN: ***
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9589087Z   CARGO_TOKEN: ***
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9590274Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9591920Z   DOCKERHUB_IMAGE: konard/formal-ai
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9620376Z   NEEDS_JSON: {
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "fast-pr-lint": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "failure",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-type-check": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "hive-source-provenance": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "detect-changes": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "agentic-routing-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "any-code-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "native-type-check": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "rs-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "toml-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "docs-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "workflow-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "pipeline-changed": "true"
+Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-build": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-slim": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "secrets-scan": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "failure",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "version-check": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "release-preflight": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "base": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "commit": "7b9f98d48d8ccab667b65157f6ba96e824b6971f"
+Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "lint": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "doc-tests": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "macos-core-tests": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "auto-release": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "manual-release": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-container-images": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog-pr": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-local": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-agent-cli-e2e": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build-artifacts": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-response-observations": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "box-language-projects": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "deploy-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "server-parity": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  }
+Pipeline Status	Fail the run when a required job was cancelled or failed	}
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9650472Z   IS_MAIN: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9651622Z ##[endgroup]
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9855069Z Failed jobs:    fast-pr-lint, secrets-scan
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9856652Z Cancelled jobs: <none>
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9886823Z ##[error]Pipeline failed. Failing jobs: fast-pr-lint, secrets-scan
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T09:37:36.9900231Z ##[error]Process completed with exit code 1.
