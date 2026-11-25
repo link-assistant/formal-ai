@@ -6,6 +6,7 @@
 
 use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/fact-claims/publisher_transport.rs"]
 mod publisher_transport;
 pub(super) use publisher_transport::fact_answer;

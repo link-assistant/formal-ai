@@ -7,6 +7,7 @@ use formal_ai::{
     try_coreference_with_client,
 };
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/fact-claims/publisher_transport.rs"]
 mod publisher_transport;
 use publisher_transport::{FactTransport, fact_answer};

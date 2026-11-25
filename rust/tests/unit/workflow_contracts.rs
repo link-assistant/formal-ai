@@ -15,6 +15,7 @@ mod codeql;
 #[path = "../../../scripts/changelog-fragment-file.rs"]
 pub mod changelog_fragment_file;
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../../scripts/github-output.rs"]
 pub mod github_output;
 

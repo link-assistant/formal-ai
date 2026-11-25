@@ -9,6 +9,7 @@
 //! serialises to valid Links Notation with a stable content id, and it is reachable
 //! through the agentic interface as the eighth recipe.
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/issue-558/repair_fixture.rs"]
 mod repair_fixture;
 use repair_fixture::LEDGER_TASK;

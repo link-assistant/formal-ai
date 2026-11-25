@@ -13,6 +13,7 @@ use fixtures::unverified_procedure;
 
 use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/documentation-method-fixture.rs"]
 mod docs_fixture;
 

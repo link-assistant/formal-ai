@@ -15,6 +15,7 @@
 //! 4. the recipe routes without colliding with the sibling recipes and the planner and
 //!    the in-repo Agent CLI driver walk it write → verify → final.
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/issue-558/repair_fixture.rs"]
 mod repair_fixture;
 use formal_ai::agentic_coding::{

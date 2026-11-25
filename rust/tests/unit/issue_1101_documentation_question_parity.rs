@@ -24,6 +24,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
 }
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../fixtures/documentation-method-fixture.rs"]
 mod docs_fixture;
 

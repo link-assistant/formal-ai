@@ -5,6 +5,7 @@ use formal_ai::discovery_production::{
     documented_language_commands_from, documented_pairs, documented_run_commands_from,
 };
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../fixtures/coding-discovery/documentation_replay.rs"]
 mod replay;
 

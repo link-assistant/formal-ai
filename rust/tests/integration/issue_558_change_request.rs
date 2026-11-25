@@ -1,3 +1,4 @@
+#[allow(clippy::duplicate_mod)]
 #[path = "../fixtures/issue-558/repair_fixture.rs"]
 mod repair_fixture;
 use repair_fixture::CHANGE_TASK;

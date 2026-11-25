@@ -10,6 +10,7 @@
 //! failure is answered from the ledger instead of re-derived; and the ledger
 //! serialises to valid Links Notation pinned byte-for-byte to a committed artifact.
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/issue-558/repair_fixture.rs"]
 mod repair_fixture;
 use repair_fixture::LEDGER_TASK;

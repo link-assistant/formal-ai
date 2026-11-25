@@ -100,8 +100,8 @@ fn parse_frontmatter(content: &str) -> Option<String> {
         let frontmatter = caps.get(1).unwrap().as_str();
 
         // Parse YAML-like frontmatter (simple key: value format)
+        let bump_re = Regex::new(r"^\s*bump\s*:\s*(.+?)\s*$").unwrap();
         for line in frontmatter.lines() {
-            let bump_re = Regex::new(r"^\s*bump\s*:\s*(.+?)\s*$").unwrap();
             if let Some(bump_caps) = bump_re.captures(line) {
                 return Some(bump_caps.get(1).unwrap().as_str().to_string());
             }

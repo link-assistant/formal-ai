@@ -10,6 +10,7 @@
 //! `data/meta/repair-strategies.lino` is byte-for-byte what the recipe renders, and the
 //! recipe is reachable through the agentic interface as the tenth recipe.
 
+#[allow(clippy::duplicate_mod)]
 #[path = "../../fixtures/issue-558/repair_fixture.rs"]
 mod repair_fixture;
 use repair_fixture::CHANGE_TASK;
