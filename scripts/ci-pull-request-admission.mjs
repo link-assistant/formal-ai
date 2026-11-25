@@ -153,6 +153,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'rust/tests/unit/issue_1157_idempotent_commit.rs',
   'rust/tests/unit/issue_1158_pull_request_steps.rs',
   'rust/tests/unit/issue_1588_intent_spans.rs',
+  'data/parity/issue-1588-intent-spans.json',
   'rust/tests/unit/minimal_core_and_seed_metadata.rs',
   'scripts/check-minimal-core-boundary.rs',
   'rust/tests/unit/issue_1160_regular_prompt.rs',

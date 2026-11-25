@@ -835,6 +835,41 @@ test('the unchanged shell and download contracts execute in the focused native l
     assert.equal(admission([path])['native-type-check'], false, path);
 });
 
+test('main-only Rust regressions replay in the focused native lane, and the full lane is hermetic', () => {
+  // Issue #1639: main-only Rust regressions now replay in the focused native lane.
+  // Both failed only in the full shards of main run 45636781871.
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
+  const lane = nativeRegressionSource(step);
+  for (const [target, module] of [['reasoning_contracts', 'issue_1588_intent_spans'],
+    ['operational_contracts', 'minimal_core_and_seed_metadata']]) {
+    assert.match(lane, new RegExp(`--test ${target}(?:\\s|$)`, 'u'), target);
+    assert.match(read(`rust/tests/unit/${target}.rs`), new RegExp(`#\\[path = "${module}[.]rs"\\]\\nmod ${module};`, 'u'));
+  }
+  // Issue #1639: the corpus runaway replays through the coding contracts.
+  // Benchmark Corpus Gate shards ran out of memory on main run 45636781444.
+  assert.match(lane, /--test coding_contracts(?:\s|$)/u);
+  assert.match(read('rust/tests/unit/coding_contracts.rs'), /mod composition;\n\s*mod composition_search;/u);
+  assert.match(read('rust/tests/unit/coding_discovery/composition_search.rs'),
+    /#\[test\]\nfn an_amplifying_fragment_is_never_applied_to_its_own_output\(\)/u);
+  assert.match(read('rust/tests/unit/coding_discovery/composition/rejected_ir.rs'),
+    /#\[test\]\nfn a_draft_that_outgrows_the_verification_memory_cap_fails_with_memory_error\(\)/u);
+  for (const path of ['rust/tests/unit/issue_1588_intent_spans.rs', 'rust/tests/unit/minimal_core_and_seed_metadata.rs',
+    'scripts/check-minimal-core-boundary.rs', 'data/parity/issue-1588-intent-spans.json'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  // Issue #1639: the full and specification shards deny live reads.
+  // Live publisher latency held shard tests past the budget and changed answers.
+  const steps = workflow('release.yml').jobs.test.steps;
+  for (const suite of ['full', 'specification']) {
+    const run = steps.find(step => step.env?.TEST_SUITE === suite);
+    assert.ok(run, suite);
+    assert.equal(run.env.FORMAL_AI_NETWORK, 'denied', suite);
+    assert.match(run.run, /run-prebuilt-tests[.]sh/u);
+  }
+  // The loopback computer-use suites need the network gate open; none of them is a prebuilt target.
+  const runner = read('scripts/run-prebuilt-tests.sh');
+  for (const target of runner.match(/targets=\(([^)]*)\)/gu)) assert.doesNotMatch(target, /issue_707/u);
+});
+
 test('native sparse checkout retains nested shell inputs without experiment payloads', {timeout:15000}, () => {
   const checkout = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.uses === 'actions/checkout@v7');
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-native-shell-inputs-'));
