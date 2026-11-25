@@ -46,3 +46,22 @@ referent-requirement-question
   cue "की बात कर रहे हैं"
   cue "你指的是"
   cue "te refieres"
+
+# Asking for the operation of an unnamed algorithm request or the topic of a
+# topicless brainstorm is a requirement: no memory, workspace or source can
+# supply what the caller has not chosen yet (`algorithm-operation-required` in
+# multilingual-responses-code-tasks.lino, `brainstorming_refusal` in
+# multilingual-responses-creative-tasks.lino).
+missing-choice-requirement-question
+  record_type "question_necessity_class"
+  class "requirement"
+  cue "what should the algorithm do"
+  cue "что должен делать алгоритм"
+  cue "एल्गोरिदम को क्या करना चाहिए"
+  cue "算法应该完成什么任务"
+  cue "qué debe hacer el algoritmo"
+  cue "what topic should the ideas or names be about"
+  cue "для какой темы нужны идеи или названия"
+  cue "आप किस विषय के लिए विचार या नाम चाहते हैं"
+  cue "你想为哪个主题构思想法或名称"
+  cue "para qué tema quieres ideas o nombres"

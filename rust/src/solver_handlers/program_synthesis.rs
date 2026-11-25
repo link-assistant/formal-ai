@@ -79,7 +79,12 @@ fn synthesize(
     recurrence_only: bool,
 ) -> Option<SymbolicAnswer> {
     let first_event = log.events().len();
-    MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
+    // A bound-recurrence probe runs before ordinary dispatch and usually finds
+    // no recurrence; it must not leave a second builder trace behind when the
+    // general program-synthesis handler then constructs the answer.
+    if !recurrence_only {
+        MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
+    }
     log.append("synthesis:spec", spec.to_links_notation());
     let procedure_ledger = procedure_ledger();
     let recalled = procedure_ledger
@@ -99,7 +104,9 @@ fn synthesize(
         );
     }
     let (concepts, outcome) = if recurrence_only {
-        discover_recurrence_and_compose(&spec, log, online)?
+        let discovered = discover_recurrence_and_compose(&spec, log, online)?;
+        MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
+        discovered
     } else {
         discover_and_compose(&spec, log, online)
     };

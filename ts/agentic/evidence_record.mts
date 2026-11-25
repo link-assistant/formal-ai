@@ -20,6 +20,7 @@ import { workspaceDiscoveryStep } from './workspace_discovery.mjs';
 import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { planNumberedSourceRequirements } from './numbered_source_requirements.mjs';
 import { instructionEnd } from './positional_edit.mjs';
+import { route as learningReportRoute } from './learning_report.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
 import { isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import { Progress } from './progress.mjs';
@@ -248,6 +249,9 @@ async function laterRouteDelivering(task, obligation, toolNames) {
   if (obligation.first_line !== null || obligation.field_lines.length) return null;
   const plan = composeGeneralChangePlan(task);
   if (plan !== null && plan.target === obligation.target) return 'declined_composed_target';
+  // A learning report is named by its artifact and owns it even on the turn it
+  // can only ask for the missing memory (issue #686).
+  if (learningReportRoute(task)?.path === obligation.target) return 'declined_learning_report';
   return (await settledRouteDelivers(task, obligation.target, toolNames)) ? 'declined_settled_route' : null;
 }
 

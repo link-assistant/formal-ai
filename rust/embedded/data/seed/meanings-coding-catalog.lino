@@ -444,7 +444,7 @@ meanings
     lexeme es "invierte una cadena" "invertir una cadena" "invierte la cadena" "invierte la palabra" "da la vuelta a una cadena"
   program-reverse-operand-introducer
     defined-by program_task_reverse_string
-    role program_task_alias
+    role program-reverse-operand-introducer
     precondition "a request to reverse text ends with an unquoted word"
     effect "the following word binds the literal text to reverse"
     unit "not applicable"

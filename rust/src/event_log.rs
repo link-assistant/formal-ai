@@ -801,6 +801,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "calendar:today" => format!("calendar:today:{}", event.payload),
             "calendar:weekday" => format!("calendar:weekday:{}", event.payload),
+            "calendar:result_date" => format!("calendar:result_date:{}", event.payload),
             "intent" => format!("intent:{}", event.payload),
             "program_parameter:language" => {
                 format!("program_parameter:language:{}", event.payload)

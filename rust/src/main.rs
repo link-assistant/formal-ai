@@ -77,7 +77,7 @@ const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и р
     about = "Formal symbolic AI implementation"
 )]
 struct Args {
-    /// Print verbose CLI output (wrapper diagnostics need this explicit flag).
+    /// Print verbose CLI output (enabled by default; wrapper diagnostics need this explicit flag).
     #[arg(long, global = true, default_value_t = true)]
     verbose: bool,
 

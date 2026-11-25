@@ -900,7 +900,7 @@ template_reverse_string_php
   language php
   task reverse_string
   code_fence php
-  code `<?php\n\n$text = {{text}};\necho implode("", array_reverse(preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY))), PHP_EOL;`
+  code `<?php\n\n$text = {{text}};\necho implode(\"\", array_reverse(preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY))), PHP_EOL;`
 template_sum_to_ten_rust
   intent write_program
   language rust

@@ -825,6 +825,8 @@ roles
     kind predicate
   program-file-obligation
     kind meaning
+  program-reverse-operand-introducer
+    kind meaning
   program-termination-clause
     kind meaning
   program_artifact

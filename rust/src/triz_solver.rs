@@ -114,12 +114,39 @@ fn demand(text: &str) -> Option<&str> {
     (trimmed.chars().any(char::is_alphanumeric)).then_some(trimmed)
 }
 
+/// A letter, digit or Devanagari sign of a script that separates words with spaces.
+fn is_spaced_word_char(character: char) -> bool {
+    let unspaced = matches!(
+        character,
+        '\u{3040}'..='\u{30ff}'
+            | '\u{3400}'..='\u{4dbf}'
+            | '\u{4e00}'..='\u{9fff}'
+            | '\u{f900}'..='\u{faff}'
+            | '\u{ac00}'..='\u{d7af}'
+    );
+    !unspaced && (character.is_alphanumeric() || matches!(character, '\u{0900}'..='\u{097f}'))
+}
+
 /// Extract the original two sides of a stated trade-off for the claim router.
 #[must_use]
 pub fn triz_demands(prompt: &str) -> Option<(&str, &str)> {
     let rules = triz_rules();
     let cue = rules.cue_pattern.find(prompt)?;
-    let tail = prompt[cue.end()..].trim_start();
+    // Stem cues ("противоречи", "contradiction") can stop inside a word, so the
+    // demands begin after the rest of that word ("противоречие: ..."), never
+    // inside it. Han and other unspaced scripts have no word end to skip to.
+    let rest = &prompt[cue.end()..];
+    let rest = if cue
+        .as_str()
+        .chars()
+        .next_back()
+        .is_some_and(is_spaced_word_char)
+    {
+        rest.trim_start_matches(is_spaced_word_char)
+    } else {
+        rest
+    };
+    let tail = rest.trim_start();
     let frame = tail.strip_prefix([':', '：']).map_or(tail, str::trim_start);
     let frame = rules
         .prefix_pattern

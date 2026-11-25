@@ -230,11 +230,31 @@ function releaseTimelineSeriesSubject(normalized, frame) {
   return [...subject].length <= 120 && subject.split(/\s+/u).length <= 12 ? subject : "";
 }
 
+// Whether a captured subject holds a word beyond the request's own frames and
+// the seeded function words (Rust `names_a_series`): "List films in release
+// order" fits "{subject} films in release order" with the directive "list" as
+// its subject, which names no series (issue #1175).
+function releaseTimelineNamesASeries(subject, frames) {
+  const frameWords = new Set(frames.flatMap(frame => frame.replace("{subject}", " ").split(/\s+/u)).filter(Boolean));
+  return subject.split(/\s+/u)
+    .map(word => word.replace(/^[!-/:-@[-`{-~]+|[!-/:-@[-`{-~]+$/gu, ""))
+    .filter(Boolean)
+    .some(word => {
+      const lowered = word.toLowerCase();
+      return !frameWords.has(lowered) && claimEvidenceContentBeyond(lowered, []);
+    });
+}
+
+function releaseTimelineOpenSubject(normalized, request) {
+  return request.frames.map(frame => releaseTimelineSeriesSubject(normalized, frame))
+    .find(subject => subject && releaseTimelineNamesASeries(subject, request.frames)) || "";
+}
+
 async function openReleaseTimeline(normalized, language, registry, options, trace) {
   const series = registry.openSeries;
   const request = series?.requests.find(entry => entry.language === language);
   if (!request) return null;
-  const subject = request.frames.map(frame => releaseTimelineSeriesSubject(normalized, frame)).find(Boolean);
+  const subject = releaseTimelineOpenSubject(normalized, request);
   if (!subject) return null;
   const captures = [];
   const query = request.search.replace("{subject}", subject);
