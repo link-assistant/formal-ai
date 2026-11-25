@@ -292,3 +292,12 @@ main-run 45549993600
       failed "deploy-pages: POST /pages/deployments responded HTTP 404 for a synthetic pages_build_version"
       check rust/tests/web/pages-deployment.test.mjs
       marker "the build version is the source commit SHA"
+
+main-run 45636781871
+  focused-native
+    regression rustfmt-diff-reached-main
+      introduced-by "PR #1638, commit 15ae736ab"
+      failed "check-formatting: cargo fmt --check diff in rust/tests/unit/specification/concept_lookup_meta_algorithm.rs"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Issue #1639: formatting was main-only"
