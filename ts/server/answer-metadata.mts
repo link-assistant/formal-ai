@@ -1,7 +1,9 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { isInconclusive } from '../agentic/crate/engine_answer.mjs';
+import { childrenNamed, parseLino, readRepoFile } from './lino.mjs';
 
 const retrieval = new AsyncLocalStorage();
+let capabilityRefusalKinds;
 const refusedIntents = new Set([
   'tool_call_refused', 'browser_code_execution_refused', 'policy_inappropriate_content',
   'policy_bounded_autonomy', 'policy_add_only_history', 'policy_cache_flush_requires_confirmation',
@@ -12,14 +14,18 @@ export function answerMetadata(status = 'answered') {
   return { status, provenance: ['local_rules'] };
 }
 
+export function hasCapabilityRefusal(evidence, events) {
+  capabilityRefusalKinds ??= childrenNamed(parseLino(readRepoFile('data/seed/capability-routing.lino')), 'claim')
+    .flatMap(row => childrenNamed(row, 'refusal_event').map(event => event.value));
+  return capabilityRefusalKinds.some(kind => events?.some(event => event.kind === kind)
+    || evidence?.some(link => link === kind || String(link).startsWith(`${kind}:`)));
+}
+
 export function symbolicAnswerMetadata(answer) {
   if (refusedIntents.has(answer.intent)) {
     return answerMetadata('refused');
   }
-  const summaryUnavailable = answer.intent === 'summarize_topic'
-    && (answer.unresolved_summary || answer.evidence_links?.some(link => link.startsWith('summarization:refusal:'))
-      || answer.solver_events?.some(event => event.kind === 'summarization:refusal'));
-  return answerMetadata(isInconclusive(answer) || summaryUnavailable ? 'unanswered' : 'answered');
+  return answerMetadata(isInconclusive(answer) || answer.capability_refusal ? 'unanswered' : 'answered');
 }
 
 /** Record a live HTTP attempt after the caller's network policy allows it. */

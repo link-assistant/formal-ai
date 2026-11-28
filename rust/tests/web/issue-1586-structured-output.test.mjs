@@ -436,6 +436,9 @@ test('both OpenAI endpoints distinguish unsupported replies from local answers',
     'Кратко перескажи в одном предложении: соискатель ответил на все вопросы и спросил про удалённую работу.',
     '用一句话总结：申请人回答了所有问题，并询问了远程工作。',
     'Resume en una frase: el solicitante respondió a todas las preguntas y preguntó por el trabajo remoto.',
+    'Brainstorm ideas',
+    'Refactor the code',
+    'Convert this to JSON',
   ];
   for (const chat of [true, false]) {
     for (const [prompt, status] of [...prompts.map(prompt => [prompt, 'unanswered']), ['2 + 2', 'answered']]) {

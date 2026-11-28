@@ -33,15 +33,16 @@ pub struct AnswerMetadata {
     pub rules: Option<BTreeMap<String, String>>,
 }
 
-fn has_summary_refusal(answer: &SymbolicAnswer) -> bool {
+fn has_capability_refusal(answer: &SymbolicAnswer) -> bool {
     claim_rows()
         .iter()
-        .filter(|row| row.handler == "summarization")
         .flat_map(|row| &row.refusal_events)
         .any(|kind| {
             answer.evidence_links.iter().any(|link| {
-                link.strip_prefix(kind.as_str())
-                    .is_some_and(|identifier| identifier.starts_with(':'))
+                link == kind
+                    || link
+                        .strip_prefix(kind.as_str())
+                        .is_some_and(|identifier| identifier.starts_with(':'))
             })
         })
 }
@@ -67,9 +68,7 @@ impl AnswerMetadata {
                 | "policy_agent_time_budget"
         ) {
             AnswerStatus::Refused
-        } else if answer.is_inconclusive()
-            || (answer.intent == "summarize_topic" && has_summary_refusal(answer))
-        {
+        } else if answer.is_inconclusive() || has_capability_refusal(answer) {
             AnswerStatus::Unanswered
         } else {
             AnswerStatus::Answered
