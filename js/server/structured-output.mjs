@@ -9,6 +9,7 @@ import { ensureNodeHost } from './node-host-install.mjs';
 import { stableId } from './ids.mjs';
 import { isMap } from './protocol-values.mjs';
 import { thinkingStep } from './thinking.mjs';
+import { stringArrayEvidence, stringArrayItems } from './structured-array.mjs';
 import { portableValue, schemaIssue, schemaReference, validOutput } from './structured-schema.mjs';
 
 const JSON_OBJECT = { type: 'object' };
@@ -111,19 +112,26 @@ function fillObject(schema, source, answer, number, supplied, suppliedRule) {
   const result = new Map();
   const fieldRules = new Map();
   const placeholders = [];
+  const noEvidence = [];
   for (const [name, field] of Object.entries(fields.properties ?? {})) {
     const resolved = schemaReference(schema, field?.$ref) ?? field;
     const description = typeof field?.description === 'string' ? field.description : resolved?.description;
-    const pointer = fieldPointer('', name);
+    const items = supplied ? undefined : stringArrayItems(resolved, schema);
     const fieldEvidence = supplied ? (Object.hasOwn(supplied, name) ? evidence(supplied[name], suppliedRule) : undefined)
-      : evidenceFor(name, resolved, description, source, answer, number, key);
+      : items ? evidence(stringArrayEvidence(source, name, description, items, normalizeKey), 'string_array')
+        : evidenceFor(name, resolved, description, source, answer, number, key);
     let value = fieldEvidence?.value;
     if (fieldEvidence) {
       fieldRules.set(name, fieldEvidence.rule);
-    } else if ((fields.required ?? []).includes(name)) {
-      if (validOutput(null, field, schema)) value = null;
-      else if (resolved?.enum?.includes(UNKNOWN) && validOutput(UNKNOWN, field, schema)) value = UNKNOWN;
-      if (value !== undefined) placeholders.push(pointer);
+    } else {
+      if (items && validOutput([], field, schema)) {
+        value = [];
+        noEvidence.push(name);
+      } else if ((fields.required ?? []).includes(name)) {
+        if (validOutput(null, field, schema)) value = null;
+        else if (resolved?.enum?.includes(UNKNOWN) && validOutput(UNKNOWN, field, schema)) value = UNKNOWN;
+      }
+      if (value !== undefined) placeholders.push(fieldPointer('', name));
     }
     if (value !== undefined) result.set(name, value);
   }
@@ -133,7 +141,7 @@ function fillObject(schema, source, answer, number, supplied, suppliedRule) {
     fieldRules.set(name, 'arithmetic');
   }
   const value = Object.fromEntries(result);
-  return result.size ? { value, placeholders, fieldRules } : undefined;
+  return result.size ? { value, placeholders, fieldRules, noEvidence } : undefined;
 }
 
 async function derive(ctx, schema, source, answer, supplied) {
@@ -145,7 +153,7 @@ async function derive(ctx, schema, source, answer, supplied) {
   if (satisfies(observed)) {
     const rules = new Map();
     recordRules(rules, '', observed, suppliedRule);
-    return { value: observed, placeholders: [], rules: Object.fromEntries(rules) };
+    return { value: observed, placeholders: [], rules: Object.fromEntries(rules), noEvidence: [] };
   }
   let result;
   if (isMap(observed)) {
@@ -164,11 +172,15 @@ async function derive(ctx, schema, source, answer, supplied) {
     result = fillObject(schema, source, answer, number);
   }
   if (!result || !satisfies(result.value)) return undefined;
-  const { value, placeholders, fieldRules } = result;
+  const { value, placeholders, fieldRules, noEvidence } = result;
   placeholders.sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)));
   const rules = new Map();
-  for (const [name, rule] of fieldRules) recordRules(rules, fieldPointer('', name), value[name], rule);
-  return { value, placeholders, rules: Object.fromEntries(rules) };
+  for (const [name, rule] of fieldRules) {
+    const pointer = fieldPointer('', name);
+    if (rule === 'string_array') rules.set(pointer, rule);
+    else recordRules(rules, pointer, value[name], rule);
+  }
+  return { value, placeholders, rules: Object.fromEntries(rules), noEvidence: noEvidence.sort() };
 }
 
 export async function structuredAnswerFromSource(ctx, format, chat, source) {
@@ -197,7 +209,13 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
     }
   }
   const content = derived ? jsonText(derived.value) : '';
-  const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : derived) });
+  const detail = jsonText({
+    format: obligation.format,
+    ...(derived ? {
+      value: derived.value, placeholders: derived.placeholders, rules: derived.rules,
+      ...(derived.noEvidence.length ? { no_evidence: derived.noEvidence } : {}),
+    } : { refusal }),
+  });
   const formal_ai = derived ? {
     status: derived.placeholders.length ? 'unanswered' : 'answered',
     provenance: ['structured_derivation'],

@@ -33,7 +33,7 @@ decide whether to use the answer, request clarification, or fall back.
 | Status | Meaning |
 | --- | --- |
 | `answered` | Formal AI produced an answer or a usable tool call. |
-| `unanswered` | Formal AI could not conclude the request or filled a required structured field without evidence. Plain replies put the explanation in the OpenAI refusal field or content item. |
+| `unanswered` | Formal AI could not conclude the request or filled a structured field without evidence. Plain replies put the explanation in the OpenAI refusal field or content item. |
 | `refused` | A request was declined by a policy or could not meet the requested output or function-argument constraints. |
 
 `formal_ai.provenance` lists `local_rules` for a solver reply and
@@ -68,6 +68,16 @@ PascalCase, snake_case, and kebab-case property names, including acronyms such
 as `HTTPStatus`. If the property name yields no evidence, an explicit source
 label can match the property's `description`. The output uses the original
 property names from the schema.
+
+String-array properties can extract comma-separated, coordinated, and
+bulleted lists in English and Russian. The server uses the property name and
+description to select the relevant list. It prefers recognized concepts
+among otherwise comparable lists and returns matching enum labels in source
+order. Extracted arrays report the `string_array` rule at the array's
+JSON Pointer. If no list can be established and the schema allows an empty
+array, the server returns an empty array, lists its pointer as a placeholder,
+and records the property name in the derivation's `no_evidence` array.
+An explicitly supplied empty JSON array is evidence.
 
 Formal AI validates both strict and non-strict requests. It can return a
 schema-allowed `null` or `"unknown"` for a missing required value. In that

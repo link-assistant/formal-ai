@@ -1,4 +1,6 @@
 //! Shared response-format obligation and projection for Chat and Responses.
+mod arrays;
+
 use super::{
     AnswerMetadata, AnswerProvenance, AnswerStatus, ChatCompletion, ChatCompletionRequest,
     MessageContent, ResponseObject, ResponseOutputContent, ResponseOutputItem, ResponsesRequest,
@@ -108,10 +110,13 @@ impl<'a> Obligation<'a> {
             })
         });
         let (content, detail, formal_ai) = if let Some(derived) = derived {
-            let detail = json!({
+            let mut detail = json!({
                 "format": self.format, "value": derived.value,
                 "placeholders": derived.placeholders, "rules": derived.rules,
             });
+            if !derived.no_evidence.is_empty() {
+                detail["no_evidence"] = json!(derived.no_evidence);
+            }
             let status = if derived.placeholders.is_empty() {
                 AnswerStatus::Answered
             } else {
@@ -322,6 +327,7 @@ struct StructuredDerivation {
     value: Value,
     placeholders: Vec<String>,
     rules: BTreeMap<String, String>,
+    no_evidence: Vec<String>,
 }
 
 fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDerivation> {
@@ -348,6 +354,7 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
             value: value.clone(),
             placeholders: Vec::new(),
             rules,
+            no_evidence: Vec::new(),
         });
     }
     if supplied.is_none() && source.len() > 8192 {
@@ -382,6 +389,7 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
     let mut output = Map::new();
     let mut field_rules = BTreeMap::new();
     let mut placeholders = Vec::new();
+    let mut no_evidence = Vec::new();
     if let Some(properties) = fields.get("properties").and_then(Value::as_object) {
         for (name, field) in properties {
             let is_required = fields
@@ -393,16 +401,24 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
                 .and_then(Value::as_str)
                 .and_then(|pointer| schema::reference(schema, pointer))
                 .unwrap_or(field);
+            let description = field
+                .get("description")
+                .and_then(Value::as_str)
+                .or_else(|| resolved.get("description").and_then(Value::as_str));
+            let items = if supplied.is_none() {
+                arrays::item_rule(resolved, schema)
+            } else {
+                None
+            };
             let field_evidence = if let Some(supplied) = &supplied {
                 supplied
                     .get(name)
                     .cloned()
                     .map(|value| (value, supplied_rule))
+            } else if let Some(items) = items {
+                arrays::evidence(text, name, description, items)
+                    .map(|values| (Value::Array(values), "string_array"))
             } else {
-                let description = field
-                    .get("description")
-                    .and_then(Value::as_str)
-                    .or_else(|| resolved.get("description").and_then(Value::as_str));
                 evidence(
                     name,
                     resolved,
@@ -417,17 +433,23 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
             if let Some((observed, rule)) = field_evidence {
                 field_rules.insert(name.clone(), rule);
                 value = Some(observed);
-            } else if is_required {
-                let unknown = Value::String(UNKNOWN.to_owned());
-                if schema::valid(&Value::Null, field, schema) {
-                    value = Some(Value::Null);
-                } else if resolved
-                    .get("enum")
-                    .and_then(Value::as_array)
-                    .is_some_and(|labels| labels.contains(&unknown))
-                    && schema::valid(&unknown, field, schema)
-                {
-                    value = Some(unknown);
+            } else {
+                let empty = Value::Array(Vec::new());
+                if items.is_some() && schema::valid(&empty, field, schema) {
+                    value = Some(empty);
+                    no_evidence.push(name.clone());
+                } else if is_required {
+                    let unknown = Value::String(UNKNOWN.to_owned());
+                    if schema::valid(&Value::Null, field, schema) {
+                        value = Some(Value::Null);
+                    } else if resolved
+                        .get("enum")
+                        .and_then(Value::as_array)
+                        .is_some_and(|labels| labels.contains(&unknown))
+                        && schema::valid(&unknown, field, schema)
+                    {
+                        value = Some(unknown);
+                    }
                 }
                 if value.is_some() {
                     placeholders.push(field_pointer("", name));
@@ -451,13 +473,20 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
     }
     let mut rules = BTreeMap::new();
     for (name, rule) in field_rules {
-        record_rules(&mut rules, field_pointer("", &name), &value[&name], rule);
+        let pointer = field_pointer("", &name);
+        if rule == "string_array" {
+            rules.insert(pointer, rule.to_owned());
+        } else {
+            record_rules(&mut rules, pointer, &value[&name], rule);
+        }
     }
     placeholders.sort_unstable();
+    no_evidence.sort_unstable();
     Some(StructuredDerivation {
         value,
         placeholders,
         rules,
+        no_evidence,
     })
 }
 

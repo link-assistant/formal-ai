@@ -24,6 +24,16 @@ agentic_messages
     text "^(?:(?:return|give|find|compute|calculate|what is)\s+(?:me\s+)?(?:the\s+)?|.*\b(?:equal to|is)\s+(?:the\s+)?)?sum of\s+({number})\s+and\s+({number})[.!?]?$"
   message structured-output-arithmetic-pattern
     text "^(?:(?:return|compute|calculate|what is)\s+)?({number}\s*[-+*/]\s*{number})[.!?]?$"
+  message structured-array-separator
+    text "[ \t]*,[ \t]*(?:(?:and|or|и|или)[ \t]+)?|[ \t]+(?:and|or|и|или)[ \t]+"
+  message structured-array-label
+    text "^([\p{L}\p{N}_-]+(?:[ \t]+[\p{L}\p{N}_-]+)*?)(?:[ \t]*[:=][ \t]*|[ \t]+(?:include[sd]?|are|is|включа(?:ет|ют|ли)|это)[ \t]+)(.*)$"
+  message structured-array-lead
+    text "(?:^|[ \t])(?:(?:with )?(?:experience|knowledge) (?:with|in|of)|proficien(?:t|cy) in|working with|with|using|uses?|с опытом(?: работы с| в)?|опыт работы с|навыки работы с|знани[ея]|использу(?:ет|ют|я)|владе(?:ет|ют))(?:[ \t]+|$)"
+  message structured-array-tail
+    text "[ \t]+(?:experience|skills|knowledge|proficiency|опыт|навыки|знания)$"
+  message structured-array-topics
+    text "skill|skills|experience|proficiency|навык|навыки|навыков|опыт|опытом|знание|знания;tool|tools|инструмент|инструменты|инструментов;language|languages|язык|языки|языков;requirement|requirements|требование|требования|требований"
   message shell-recovery-final-failure
     text "{failure}\n\n{recovery}"
   message shell_tool_missing
