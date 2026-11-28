@@ -21,6 +21,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.357.6] - 2026-11-28
+
+### Fixed
+
+- Recover procedural answers from canonical wikiHow articles when the structured endpoint is unavailable. Agentic clients receive a cited Markdown answer or simple plain text on request, with retrieval diagnostics in the logs.
+
 ## [0.357.5] - 2026-11-28
 
 ### Added
