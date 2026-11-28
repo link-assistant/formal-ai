@@ -22,6 +22,27 @@ Primary protocol namespaces are OpenAI `/api/openai/v1`, Anthropic
 `/api/anthropic/v1`, Gemini `/api/gemini/v1beta`, and Vertex `/api/vertex/v1`.
 Legacy `/v1` aliases remain available.
 
+## OpenAI answer status and provenance
+
+Chat Completions returns `choices[].message.formal_ai`. In a stream, the
+same object appears in `choices[].delta.formal_ai` on the chunk that carries
+the finish reason. Responses returns `formal_ai` at the top level, including
+in `response.completed.response` in a stream. Read `formal_ai.status` to
+decide whether to use the answer, request clarification, or fall back.
+
+| Status | Meaning |
+| --- | --- |
+| `answered` | Formal AI produced an answer or a usable tool call. |
+| `unanswered` | Formal AI could not conclude the request or filled a structured field without evidence. Plain replies put the explanation in the OpenAI refusal field or content item. |
+| `refused` | A request was declined by a policy or could not meet the requested output or function-argument constraints. |
+
+`formal_ai.provenance` lists `local_rules` for a solver reply and
+`structured_derivation` for a structured projection. It also includes
+`network_retrieval` if the server attempted a live HTTP retrieval during the
+request, even if the retrieval failed. Clients that need to exclude live
+network use can reject any response with that entry. Previously cached data
+and requests for a client-side tool involve no live server retrieval.
+
 ## OpenAI structured output
 
 `GET /v1/models` advertises the `json_schema` capability. To request a
@@ -52,10 +73,11 @@ String-array properties can extract comma-separated, coordinated, and
 bulleted lists in English and Russian. The server uses the property name and
 description to select the relevant list. It prefers recognized concepts
 among otherwise comparable lists and returns matching enum labels in source
-order. If no list can be established and the schema allows an empty array,
-the server returns an empty array and records the property name in
-the derivation's `no_evidence` array. An explicitly supplied empty JSON array
-needs no evidence marker.
+order. Extracted arrays report the `string_array` rule at the array's
+JSON Pointer. If no list can be established and the schema allows an empty
+array, the server returns an empty array, lists its pointer as a placeholder,
+and records the property name in the derivation's `no_evidence` array.
+An explicitly supplied empty JSON array is evidence.
 
 To evaluate a criterion, supply a `Criterion:` and a `Resume:`, `Text:`, or
 `Evidence:` section in the prompt. Russian labels include `Критерий:`,
@@ -78,9 +100,33 @@ schema property name. Each entry gives its `rule` and quotes the source in
 `evidence`. A duration comparison that uses a reference also includes
 `reference`. For example, the text `Go developer from 2018 to 2024`
 supports `"met"` for `at least 3 years of Go` under `minimum_duration`.
+Conclusive verdicts also name the rule in `formal_ai.rules`. Inconclusive
+verdicts are listed in `formal_ai.placeholders` and keep the reason and
+evidence in `verdicts`.
 
 Formal AI validates both strict and non-strict requests. It can return a
-schema-allowed `null` or `"unknown"` for a missing required value.
+schema-allowed `null` or `"unknown"` for a missing required value. In that
+case the valid JSON is returned with `status: "unanswered"` and
+`formal_ai.placeholders` lists the affected fields as JSON Pointers. The
+`formal_ai.rules` object maps the pointers for values with evidence to the
+rules that derived them. For example, `at least 3 years of experience` with
+a required `min_years_of_experience` field yields `{"min_years_of_experience":3}`
+and the following metadata.
+
+```json
+{
+  "status": "answered",
+  "provenance": ["structured_derivation"],
+  "placeholders": [],
+  "rules": { "/min_years_of_experience": "experience_years" }
+}
+```
+
+Other rule names include `labeled_clause`, `arithmetic`, `location_clause`,
+`enum_label`, `sentiment_label`, `input_json`, and `solver_json`. Explicit
+values such as `null` or `"unknown"` carry their derivation rule like other
+values.
+
 If the schema uses unsupported constraints or the result cannot be
 derived, Chat Completions returns `message.refusal` and Responses returns
 a `refusal` content item. Schema diagnostics name the keyword and give
@@ -89,10 +135,11 @@ the JSON Pointer of its containing schema, such as `unsupported keyword
 identifies the root schema. Streaming clients receive the corresponding
 refusal delta or events.
 
-The `structured_output` thinking step contains the format and the validated
-value or refusal. When derivation capture is enabled, pass the locator from
-the `derivation_record:` evidence link to `formal-ai explain` to read the
-same data from the stored derivation.
+The `structured_output` thinking step contains the format and either the
+validated value with its placeholder paths and field rules or the refusal.
+When derivation capture is enabled, pass the locator from the
+`derivation_record:` evidence link to `formal-ai explain` to read the same
+data from the stored derivation.
 
 ## OpenAI concept-link embeddings
 

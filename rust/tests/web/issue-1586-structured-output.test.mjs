@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { test } from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { installHost } from '../../../js/agentic/host.mjs';
+import { chatCompletionJson, chatCompletionSse } from '../../../js/server/openai.mjs';
 import { loadRuntimeDerivation } from '../../../js/server/runtime-cache.mjs';
 import { anchoredPattern } from '../../../js/server/structured-pattern.mjs';
 import { startCli } from './support/structured-log-fixture.mjs';
@@ -59,6 +61,8 @@ const verdictCases = [
 ].map(([name, criterion, text, verdict, rule, reference = '', evidence = text]) => ({
   name, prompt: `Criterion: ${criterion}. ${reference ? 'Today is ' + reference + '. ' : ''}Resume: ${text}.`,
   schema: object({ verdict: verdictField }), expected: { verdict },
+  placeholders: verdict === 'unknown' ? ['/verdict'] : [],
+  rules: verdict === 'unknown' ? {} : { '/verdict': rule },
   verdicts: { verdict: { rule, evidence, ...(reference ? { reference } : {}) } },
   stream: name === 'duration_met',
 }));
@@ -66,11 +70,13 @@ verdictCases.push(
   {
     name: 'duration_ru', prompt: 'Критерий: опыт продаж не менее 3 лет. Резюме: менеджер по продажам с 2015 по 2020 год.',
     schema: object({ verdict: verdictField }), expected: { verdict: 'met' },
+    placeholders: [], rules: { '/verdict': 'minimum_duration' },
     verdicts: { verdict: { rule: 'minimum_duration', evidence: 'менеджер по продажам с 2015 по 2020 год' } },
   },
   {
     name: 'skill_ru_negated', prompt: 'Критерий: опыт работы с PostgreSQL. Текст: Без опыта работы с PostgreSQL.',
     schema: object({ verdict: verdictField }), expected: { verdict: 'not_met' },
+    placeholders: [], rules: { '/verdict': 'skill_negation' },
     verdicts: { verdict: { rule: 'skill_negation', evidence: 'Без опыта работы с PostgreSQL' } },
   },
   ...[
@@ -81,6 +87,8 @@ verdictCases.push(
     name, prompt: `Criterion: has worked with Rust. Evidence: ${text}.`,
     schema: { ...object({ qualified: { $ref: '#/$defs/tri' } }), $defs: { tri: field } },
     expected: { qualified: verdict },
+    placeholders: verdict === null ? ['/qualified'] : [],
+    rules: verdict === null ? {} : { '/qualified': rule },
     verdicts: { qualified: { rule, evidence: text } },
     stream: verdict === null,
   })),
@@ -88,9 +96,49 @@ verdictCases.push(
 const cases = [
   ...verdictCases,
   {
+    name: 'verdict_placeholder', prompt: 'Criterion: at least 3 years of Go. Resume: Go developer since 2018.',
+    schema: object({ verdict: { type: 'string', enum: ['met', 'not_met', 'unknown'] } }),
+    expected: { verdict: 'unknown' }, placeholders: ['/verdict'], rules: {}, stream: true,
+    verdicts: { verdict: { rule: 'minimum_duration_missing_reference', evidence: 'Go developer since 2018' } },
+  },
+  {
+    name: 'seniority_placeholder', prompt: 'We are hiring a warehouse supervisor.',
+    schema: object({ seniority: nullableString }), expected: { seniority: null },
+    placeholders: ['/seniority'], rules: {}, stream: true,
+  },
+  {
+    name: 'experience_rule', prompt: 'at least 3 years of experience',
+    schema: object({ min_years_of_experience: integer }), expected: { min_years_of_experience: 3 },
+    placeholders: [], rules: { '/min_years_of_experience': 'experience_years' }, stream: true,
+  },
+  {
+    name: 'explicit_unknown_and_null', prompt: 'verdict: unknown; seniority: null',
+    schema: object({ verdict: { enum: ['met', 'unknown'] }, seniority: nullableString }),
+    expected: { verdict: 'unknown', seniority: null }, placeholders: [],
+    rules: { '/verdict': 'labeled_clause', '/seniority': 'labeled_clause' },
+  },
+  {
+    name: 'explicit_enum', prompt: 'unknown',
+    schema: object({ verdict: { enum: ['met', 'unknown'] } }), expected: { verdict: 'unknown' },
+    placeholders: [], rules: { '/verdict': 'enum_label' },
+  },
+  {
+    name: 'escaped_pointers', prompt: '{"a/b~c":[{"nested":null}],"verdict":"unknown"}',
+    schema: object({ 'a/b~c': { type: 'array' }, verdict: { enum: ['met', 'unknown'] } }),
+    expected: { 'a/b~c': [{ nested: null }], verdict: 'unknown' },
+    placeholders: [], rules: { '/a~1b~0c/0/nested': 'input_json', '/verdict': 'input_json' },
+  },
+  {
+    name: 'partial_input_json', prompt: '{"verdict":"unknown"}',
+    schema: object({ verdict: { enum: ['met', 'unknown'] }, seniority: nullableString }),
+    expected: { verdict: 'unknown', seniority: null },
+    placeholders: ['/seniority'], rules: { '/verdict': 'input_json' },
+  },
+  {
     name: 'job', prompt: 'Warehouse supervisor wanted in Springfield. At least 3 years of experience required.',
     instructions: 'Extract the city and the minimum years of experience. Reply with JSON only.',
     schema: object({ city, min_years: integer }), expected: { city: 'Springfield', min_years: 3 },
+    placeholders: [], rules: { '/city': 'location_clause', '/min_years': 'experience_years' },
   },
   {
     name: 'new_location', prompt: 'Office manager wanted in New York. Minimum of 7 years of experience.',
@@ -151,11 +199,12 @@ const cases = [
   {
     name: 'skills_en', prompt: 'We need a data engineer with Python, SQL and Apache Airflow experience.',
     strict: null, schema: { type: 'object', properties: { skills: stringArray }, required: ['skills'] },
-    expected: { skills }, stream: true,
+    expected: { skills }, placeholders: [], rules: { '/skills': 'string_array' }, stream: true,
   },
   {
     name: 'skills_ru', prompt: 'Нужен инженер данных с опытом Python, SQL и Apache Airflow.',
-    schema: object({ skills: stringArray }), expected: { skills }, stream: true,
+    schema: object({ skills: stringArray }), expected: { skills },
+    placeholders: [], rules: { '/skills': 'string_array' }, stream: true,
   },
   {
     name: 'list_topics',
@@ -166,15 +215,18 @@ const cases = [
       languages: stringArray,
     }),
     expected: { requirements: ['write reports', 'mentor teammates'], stack: ['Helm', 'Node.js'], languages: ['Go', 'Rust'] },
+    placeholders: [], rules: { '/requirements': 'string_array', '/stack': 'string_array', '/languages': 'string_array' },
   },
   {
     name: 'list_concepts',
     prompt: 'We work with vendor services and custom builds. We experiment with Links Notation and Wikipedia.',
     schema: object({ topics: stringArray }), expected: { topics: ['Links Notation', 'Wikipedia'] },
+    placeholders: [], rules: { '/topics': 'string_array' },
   },
   {
     name: 'list_concept_boundaries', prompt: 'They have experience in links notation, Wikipedia, and event log as examples.',
     schema: object({ skills: stringArray }), expected: { skills: ['links notation', 'Wikipedia', 'event log'] },
+    placeholders: [], rules: { '/skills': 'string_array' },
   },
   {
     name: 'list_enum', prompt: 'Tools: python, Rust, c++, or sql.',
@@ -183,18 +235,22 @@ const cases = [
       $defs: { tool: { enum: ['SQL', 'Python', 'C++', 'C#'] } },
     },
     expected: { tools: ['Python', 'C++', 'SQL'] },
+    placeholders: [], rules: { '/tools': 'string_array' },
   },
   {
     name: 'list_missing', prompt: 'We need a data engineer who communicates clearly and works independently.',
-    schema: object({ skills: stringArray }), expected: { skills: [] }, noEvidence: ['skills'], stream: true,
+    schema: object({ skills: stringArray }), expected: { skills: [] },
+    placeholders: ['/skills'], rules: {}, noEvidence: ['skills'], stream: true,
   },
   {
     name: 'list_missing_ru', prompt: 'Ищем инженера данных с опытом работы.',
-    schema: object({ skills: stringArray }), expected: { skills: [] }, noEvidence: ['skills'],
+    schema: object({ skills: stringArray }), expected: { skills: [] },
+    placeholders: ['/skills'], rules: {}, noEvidence: ['skills'],
   },
   {
     name: 'list_wrong_topic', prompt: 'Benefits: insurance and flexible hours.',
-    schema: object({ skills: stringArray }), expected: { skills: [] }, noEvidence: ['skills'],
+    schema: object({ skills: stringArray }), expected: { skills: [] },
+    placeholders: ['/skills'], rules: {}, noEvidence: ['skills'],
   },
   {
     name: 'list_min_items', prompt: 'An experienced data engineer is needed.',
@@ -203,14 +259,17 @@ const cases = [
   {
     name: 'list_explicit_empty', prompt: '{"skills":[]}',
     schema: object({ skills: stringArray }), expected: { skills: [] },
+    placeholders: [], rules: { '/skills': 'input_json' },
   },
   {
     name: 'list_labeled_json', prompt: 'Skills: ["C#", "C++", "Node.js", "Version 1. Beta"]',
     schema: object({ skills: stringArray }), expected: { skills: ['C#', 'C++', 'Node.js', 'Version 1. Beta'] },
+    placeholders: [], rules: { '/skills': 'string_array' },
   },
   {
     name: 'list_labeled_empty', prompt: 'Skills: []',
     schema: object({ skills: stringArray }), expected: { skills: [] },
+    placeholders: [], rules: { '/skills': 'string_array' },
   },
   {
     name: 'list_field_ref', prompt: 'Benefits: insurance and a pension. Skills: analysis, writing, and coaching.',
@@ -219,10 +278,12 @@ const cases = [
       $defs: { list: { ...stringArray, description: 'Benefits' } },
     },
     expected: { focus: ['analysis', 'writing', 'coaching'] },
+    placeholders: [], rules: { '/focus': 'string_array' },
   },
   {
     name: 'json_mode', prompt: 'Return a JSON object with key "answer" equal to the sum of 2 and 3.',
     chat: true, expected: { answer: 5 },
+    placeholders: [], rules: { '/answer': 'arithmetic' },
   },
   {
     name: 'calculation', prompt: 'Return the sum of 2 and 3.',
@@ -355,7 +416,7 @@ function assertSchema(value, schema, root = schema) {
   if (schema.type === 'integer') assert.ok(Number.isInteger(value));
   if (schema.type === 'array') {
     assert.ok(Array.isArray(value));
-    value.forEach(item => assertSchema(item, schema.items, root));
+    value.forEach(item => assertSchema(item, schema.items ?? {}, root));
   }
   if (schema.type !== 'object') return;
   assert.ok(value && typeof value === 'object' && !Array.isArray(value));
@@ -375,6 +436,13 @@ function formatFor(row, chat) {
 
 function checkResult(row, format, chat, envelope, content, refusal, steps, env) {
   assert.deepEqual(chat ? envelope.response_format : envelope.text.format, format);
+  const metadata = chat ? (envelope.choices[0].message ?? envelope.choices[0].delta).formal_ai : envelope.formal_ai;
+  assert.equal(metadata.status, row.expected ? (metadata.placeholders.length ? 'unanswered' : 'answered') : 'refused');
+  assert.deepEqual(metadata.provenance, ['structured_derivation']);
+  if (row.rules) {
+    assert.deepEqual(metadata.placeholders, row.placeholders);
+    assert.deepEqual(metadata.rules, row.rules);
+  }
   if (row.expected) {
     assert.equal(refusal, undefined);
     const value = JSON.parse(content);
@@ -389,7 +457,9 @@ function checkResult(row, format, chat, envelope, content, refusal, steps, env) 
   const detail = JSON.parse(step.detail);
   const noEvidence = row.noEvidence ? { no_evidence: row.noEvidence } : {};
   const verdicts = row.verdicts ? { verdicts: row.verdicts } : {};
-  assert.deepEqual(detail, row.expected ? { format, value: row.expected, ...noEvidence, ...verdicts } : { format, refusal });
+  assert.deepEqual(detail, row.expected
+    ? { format, value: row.expected, placeholders: metadata.placeholders, rules: metadata.rules, ...noEvidence, ...verdicts }
+    : { format, refusal });
   assert.match(envelope.derivation_id, /^answer_[a-f0-9]{16}$/u);
   const locator = envelope.evidence_links.find(link => link.startsWith('derivation_record:'));
   assert.ok(locator, JSON.stringify(envelope.evidence_links));
@@ -402,6 +472,17 @@ function events(text) {
   return text.split('\n').filter(line => line.startsWith('data: ') && line !== 'data: [DONE]')
     .map(line => JSON.parse(line.slice(6)));
 }
+
+test('Chat Completions preserves an empty refusal in JSON and SSE', () => {
+  const message = {
+    role: 'assistant', content: '', refusal: '',
+    formal_ai: { status: 'unanswered', provenance: ['local_rules'] },
+  };
+  const completion = { choices: [{ index: 0, message, finish_reason: 'stop' }] };
+  assert.equal(chatCompletionJson(completion).choices[0].message.refusal, '');
+  const deltas = events(chatCompletionSse(completion, false).body).map(frame => frame.choices[0].delta);
+  assert.equal(deltas.find(delta => typeof delta.refusal === 'string')?.refusal, '');
+});
 
 test('anchored structured patterns bound repetition without changing matches', () => {
   for (const source of ['^(?:a?)*b$', '^[ab]{2,}(?:ab+)?x?$', zodCurrentPattern, zodLegacyPattern]) {
@@ -417,6 +498,43 @@ test('anchored structured patterns bound repetition without changing matches', (
   assert.equal(anchoredPattern('^(?=abc)abc$'), null);
 });
 
+test('both OpenAI endpoints report network retrieval for the request that used it', { timeout: 40_000 }, async t => {
+  const paths = [];
+  const source = createServer((request, response) => {
+    paths.push(request.url);
+    response.writeHead(200, { 'content-type': 'text/plain' });
+    response.end('Fixture source body.');
+  });
+  await new Promise(resolve => source.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => source.close(resolve)));
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    env: { PATH: process.env.PATH, FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false' },
+    lifetime: 40_000,
+  });
+  await run.ready();
+  for (const [endpoint, chat] of [['chat/completions', true], ['responses', false]]) {
+    const path = '/' + endpoint;
+    for (const [prompt, provenance] of [
+      [`Fetch http://127.0.0.1:${source.address().port}${path}`, ['local_rules', 'network_retrieval']],
+      ['2 + 2', ['local_rules']],
+    ]) {
+      const body = chat ? { messages: [{ role: 'user', content: prompt }] } : { input: prompt };
+      const response = await fetch(run.url + '/api/openai/v1' + path, {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ...body, model: 'formal-ai' }),
+      });
+      assert.equal(response.status, 200);
+      const payload = await response.json();
+      const metadata = chat ? payload.choices[0].message.formal_ai : payload.formal_ai;
+      assert.deepEqual(metadata, { status: 'answered', provenance }, prompt);
+      const content = chat ? payload.choices[0].message.content : payload.output[0].content[0].text;
+      if (provenance.includes('network_retrieval')) assert.ok(content.includes('Fixture source body.'), prompt);
+    }
+  }
+  assert.deepEqual(paths, ['/chat/completions', '/responses']);
+});
+
 test('OpenAI requests constrain final JSON across endpoint and streaming shapes', { timeout: 120_000 }, async t => {
   const parserContext = { self: {} };
   for (const script of ['parser-cache-primordials.js', 'seed-record-readers.js', 'seed_loader.js']) {
@@ -425,7 +543,7 @@ test('OpenAI requests constrain final JSON across endpoint and streaming shapes'
   installHost({ parseLino: parserContext.self.FormalAiSeed.parse });
   const run = await startCli(t, {
     binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
-    env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false' },
+    env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false', FORMAL_AI_OFFLINE: '1', FORMAL_AI_NETWORK: 'denied' },
     lifetime: 120_000,
   });
   await run.ready();
@@ -475,6 +593,94 @@ test('OpenAI requests constrain final JSON across endpoint and streaming shapes'
   }
 });
 
+test('both OpenAI endpoints distinguish unsupported replies from local answers', { timeout: 60_000 }, async t => {
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false', FORMAL_AI_OFFLINE: '1', FORMAL_AI_NETWORK: 'denied' },
+    args: ['--ephemeral'],
+    lifetime: 60_000,
+  });
+  await run.ready();
+  const prompts = [
+    'Summarise in one sentence: the applicant answered every screening question and asked about remote work.',
+    'Кратко перескажи в одном предложении: соискатель ответил на все вопросы и спросил про удалённую работу.',
+    '用一句话总结：申请人回答了所有问题，并询问了远程工作。',
+    'Resume en una frase: el solicitante respondió a todas las preguntas y preguntó por el trabajo remoto.',
+    'Brainstorm ideas',
+    'Refactor the code',
+    'Convert this to JSON',
+  ];
+  for (const chat of [true, false]) {
+    for (const [prompt, status] of [...prompts.map(prompt => [prompt, 'unanswered']), ['2 + 2', 'answered']]) {
+      for (const stream of [false, true]) {
+        const body = chat ? { messages: [{ role: 'user', content: prompt }] } : { input: prompt };
+        const result = await fetch(run.url + (chat ? '/v1/chat/completions' : '/v1/responses'), {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ ...body, model: 'formal-ai', stream }),
+        });
+        assert.equal(result.status, 200);
+        let metadata, content, refusal;
+        if (!stream) {
+          const payload = await result.json();
+          if (chat) {
+            ({ formal_ai: metadata, content, refusal } = payload.choices[0].message);
+          } else {
+            metadata = payload.formal_ai;
+            ({ text: content, refusal } = payload.output.find(item => item.type === 'message').content[0]);
+          }
+        } else {
+          const frames = events(await result.text());
+          if (chat) {
+            const deltas = frames.map(frame => frame.choices[0].delta);
+            metadata = deltas.at(-1).formal_ai;
+            content = deltas.map(delta => delta.content).join('');
+            refusal = deltas.find(delta => typeof delta.refusal === 'string')?.refusal;
+          } else {
+            metadata = frames.at(-1).response.formal_ai;
+            content = frames.find(frame => frame.type === 'response.output_text.done')?.text;
+            refusal = frames.find(frame => frame.type === 'response.refusal.done')?.refusal;
+          }
+        }
+        assert.deepEqual(metadata, { status, provenance: ['local_rules'] }, prompt);
+        if (status === 'unanswered') {
+          assert.equal(typeof refusal, 'string', prompt);
+          assert.ok(!content, prompt);
+        } else {
+          assert.ok(content.includes('4'), prompt);
+          assert.equal(refusal, undefined, prompt);
+        }
+      }
+    }
+  }
+});
+
+test('unanswered replies retain the exchange in memory on both OpenAI endpoints', { timeout: 40_000 }, async t => {
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    env: { FORMAL_AI_OFFLINE: '1', FORMAL_AI_NETWORK: 'denied', FORMAL_AI_RECORD_CHAT: '1' },
+    lifetime: 40_000,
+  });
+  await run.ready();
+  const chatPrompt = 'Summarise in one sentence: the applicant asked about remote work.';
+  const responsesPrompt = 'Summarise in one sentence: the applicant asked about flexible hours.';
+  for (const [endpoint, body, prompt] of [
+    ['chat/completions', { messages: [{ role: 'user', content: chatPrompt }] }, chatPrompt],
+    ['responses', { input: responsesPrompt }, responsesPrompt],
+  ]) {
+    const http = await fetch(`${run.url}/v1/${endpoint}`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...body, model: 'formal-ai' }),
+    });
+    assert.equal(http.status, 200);
+    const payload = await http.json();
+    const metadata = payload.formal_ai ?? payload.choices[0].message.formal_ai;
+    assert.equal(metadata.status, 'unanswered', endpoint);
+    const memory = await fetch(`${run.url}/v1/memory`);
+    assert.equal(memory.status, 200);
+    assert.ok((await memory.text()).includes(prompt), endpoint);
+  }
+});
+
 test('Offline ephemeral Chat Completions extracts skills and derives criterion verdicts', { timeout: 120_000 }, async t => {
   const run = await startCli(t, {
     binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
@@ -502,6 +708,10 @@ test('Offline ephemeral Chat Completions extracts skills and derives criterion v
     const message = reply.choices[0].message;
     assert.equal(message.refusal, undefined, row.name);
     assert.deepEqual(JSON.parse(message.content), row.expected, row.name);
+    assert.deepEqual(message.formal_ai, {
+      status: row.placeholders.length ? 'unanswered' : 'answered',
+      provenance: ['structured_derivation'], placeholders: row.placeholders, rules: row.rules,
+    }, row.name);
     const step = message.thinking_steps.find(step => step.step === 'structured_output');
     assert.deepEqual(JSON.parse(step.detail).no_evidence, row.noEvidence, row.name);
     assert.deepEqual(JSON.parse(step.detail).verdicts, row.verdicts, row.name);

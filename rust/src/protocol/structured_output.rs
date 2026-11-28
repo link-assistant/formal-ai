@@ -3,15 +3,16 @@ mod arrays;
 mod verdict;
 
 use super::{
-    ChatCompletion, ChatCompletionRequest, MessageContent, ResponseObject, ResponseOutputContent,
-    ResponseOutputItem, ResponsesRequest, chat_prompt_and_history,
-    client_functions::sentiment_label, structured_schema as schema,
+    AnswerMetadata, AnswerProvenance, AnswerStatus, ChatCompletion, ChatCompletionRequest,
+    MessageContent, ResponseObject, ResponseOutputContent, ResponseOutputItem, ResponsesRequest,
+    chat_prompt_and_history, client_functions::sentiment_label, structured_schema as schema,
 };
 use crate::derivation::{Derivation, RECOMPOSE_BIND_KIND, RENDER_EMIT_KIND};
 use crate::engine::{SymbolicAnswer, ThinkingStep, estimate_tokens, stable_id};
 use crate::event_log::EventLog;
 use regex::Regex;
 use serde_json::{Map, Value, json};
+use std::collections::BTreeMap;
 use std::sync::LazyLock;
 
 const UNKNOWN: &str = "unknown";
@@ -94,9 +95,8 @@ impl<'a> Obligation<'a> {
                     .and_then(|schema| derive(schema, source, answer))
             })
             .flatten();
-        let value = derived.as_ref().map(|derived| &derived.value);
         let refusal = refusal.or_else(|| {
-            value.is_none().then(|| {
+            derived.is_none().then(|| {
                 let key = if self.schema.is_some() {
                     "structured-output-underivable"
                 } else {
@@ -110,25 +110,44 @@ impl<'a> Obligation<'a> {
                 }
             })
         });
-        let content = value.map_or_else(String::new, Value::to_string);
-        let no_evidence = self
-            .schema
-            .zip(value)
-            .map_or_else(Vec::new, |(schema, value)| {
-                missing_array_evidence(schema, source, value)
+        let (content, detail, formal_ai) = if let Some(derived) = derived {
+            let mut detail = json!({
+                "format": self.format, "value": derived.value,
+                "placeholders": derived.placeholders, "rules": derived.rules,
             });
-        let mut detail = if let Some(reason) = &refusal {
-            json!({"format": self.format, "refusal": reason})
-        } else if !no_evidence.is_empty() {
-            json!({"format": self.format, "value": value, "no_evidence": no_evidence})
+            if !derived.no_evidence.is_empty() {
+                detail["no_evidence"] = json!(derived.no_evidence);
+            }
+            if let Some(verdict) = derived.verdict {
+                detail["verdicts"] = json!({(verdict.name): verdict.trace});
+            }
+            let status = if derived.placeholders.is_empty() {
+                AnswerStatus::Answered
+            } else {
+                AnswerStatus::Unanswered
+            };
+            (
+                derived.value.to_string(),
+                detail,
+                AnswerMetadata {
+                    status,
+                    provenance: vec![AnswerProvenance::StructuredDerivation],
+                    placeholders: Some(derived.placeholders),
+                    rules: Some(derived.rules),
+                },
+            )
         } else {
-            json!({"format": self.format, "value": value})
+            (
+                String::new(),
+                json!({"format": self.format, "refusal": refusal}),
+                AnswerMetadata {
+                    status: AnswerStatus::Refused,
+                    provenance: vec![AnswerProvenance::StructuredDerivation],
+                    placeholders: None,
+                    rules: None,
+                },
+            )
         };
-        if let Some(derived) = derived
-            && let Some(verdict) = derived.verdict
-        {
-            detail["verdicts"] = json!({(verdict.name): verdict.trace});
-        }
         let detail = detail.to_string();
         let identifier = stable_id("answer", if refusal.is_some() { &detail } else { &content });
         let mut evidence = vec![format!("derivation:{identifier}")];
@@ -156,6 +175,7 @@ impl<'a> Obligation<'a> {
             detail,
             identifier,
             evidence,
+            formal_ai,
         }
     }
 }
@@ -166,6 +186,7 @@ struct Projection {
     detail: String,
     pub identifier: String,
     pub evidence: Vec<String>,
+    pub formal_ai: AnswerMetadata,
 }
 
 impl Projection {
@@ -222,10 +243,10 @@ fn evidence(
     answer: &str,
     number: Option<&Value>,
     key: Option<&str>,
-) -> Option<Value> {
+) -> Option<(Value, &'static str)> {
     let normalized = key_name(name);
     if let Some(value) = labeled_evidence(source, &normalized) {
-        return value;
+        return value.map(|item| (item, "labeled_clause"));
     }
     let described = || {
         let label = key_name(description?);
@@ -239,10 +260,10 @@ fn evidence(
             || (key.is_none()
                 && matches!(normalized.as_str(), "answer" | "result" | "sum" | "total")))
     {
-        return Some(number.clone());
+        return Some((number.clone(), "arithmetic"));
     }
     if normalized == "city" {
-        return unique(
+        let locations = unique(
             source
                 .split(['.', '!', '?', ';', '\n'])
                 .filter(|clause| LOCATION.is_match(clause))
@@ -250,33 +271,60 @@ fn evidence(
                     CITY.captures_iter(clause)
                         .map(|capture| Value::String(capture[1].to_owned()))
                 }),
-        )
-        .or_else(described)
-        .flatten();
+        );
+        return locations.map_or_else(
+            || described().flatten().map(|value| (value, "labeled_clause")),
+            |value| value.map(|value| (value, "location_clause")),
+        );
     }
     if let Some(kind) = normalized
         .strip_prefix("min ")
         .or_else(|| normalized.strip_prefix("minimum "))
         && matches!(kind, "years" | "years of experience" | "experience years")
     {
-        return unique(
+        let years = unique(
             YEARS
                 .captures_iter(source)
                 .filter_map(|capture| serde_json::from_str(&capture[1]).ok()),
-        )
-        .or_else(described)
-        .flatten();
+        );
+        return years.map_or_else(
+            || described().flatten().map(|value| (value, "labeled_clause")),
+            |value| value.map(|value| (value, "experience_years")),
+        );
     }
     if let Some(value) = described() {
-        return value;
+        return value.map(|item| (item, "labeled_clause"));
     }
     let labels = field.get("enum")?.as_array()?;
     for text in [answer.trim(), source.trim()] {
         if !text.is_empty() && labels.iter().any(|label| label == text) {
-            return Some(Value::String(text.to_owned()));
+            return Some((Value::String(text.to_owned()), "enum_label"));
         }
     }
-    sentiment_label(&Value::Null, name, field, source).map(|label| Value::String(label.to_owned()))
+    sentiment_label(&Value::Null, name, field, source)
+        .map(|label| (Value::String(label.to_owned()), "sentiment_label"))
+}
+
+fn field_pointer(parent: &str, key: &str) -> String {
+    format!("{parent}/{}", key.replace('~', "~0").replace('/', "~1"))
+}
+
+fn record_rules(rules: &mut BTreeMap<String, String>, pointer: String, value: &Value, rule: &str) {
+    match value {
+        Value::Object(fields) if !fields.is_empty() => {
+            for (key, item) in fields {
+                record_rules(rules, field_pointer(&pointer, key), item, rule);
+            }
+        }
+        Value::Array(items) if !items.is_empty() => {
+            for (index, item) in items.iter().enumerate() {
+                record_rules(rules, format!("{pointer}/{index}"), item, rule);
+            }
+        }
+        _ => {
+            rules.insert(pointer, rule.to_owned());
+        }
+    }
 }
 
 fn resolved_field<'a>(root: &'a Value, field: &'a Value) -> &'a Value {
@@ -295,47 +343,23 @@ fn object_fields(schema: &Value) -> &Value {
     }
 }
 
-fn field_description<'a>(field: &'a Value, resolved: &'a Value) -> Option<&'a str> {
-    field
-        .get("description")
-        .and_then(Value::as_str)
-        .or_else(|| resolved.get("description").and_then(Value::as_str))
-}
-
-fn missing_array_evidence<'a>(schema: &'a Value, source: &str, value: &Value) -> Vec<&'a str> {
-    if source.len() > 8192
-        || serde_json::from_str::<Value>(source).is_ok_and(|value| value.is_object())
-    {
-        return Vec::new();
-    }
-    let mut missing: Vec<_> = object_fields(schema)
-        .get("properties")
-        .and_then(Value::as_object)
-        .into_iter()
-        .flatten()
-        .filter_map(|(name, field)| {
-            if !value
-                .get(name)
-                .and_then(Value::as_array)
-                .is_some_and(Vec::is_empty)
-            {
-                return None;
-            }
-            let resolved = resolved_field(schema, field);
-            let items = arrays::item_rule(resolved, schema)?;
-            arrays::evidence(source, name, field_description(field, resolved), items)
-                .is_none()
-                .then_some(name.as_str())
-        })
-        .collect();
-    missing.sort_unstable();
-    missing
-}
-
 struct VerdictProjection<'a> {
     name: &'a str,
     value: Value,
     trace: verdict::Trace<'a>,
+    conclusive: bool,
+}
+
+impl VerdictProjection<'_> {
+    fn record(&self, rules: &mut BTreeMap<String, String>, placeholders: &mut Vec<String>) {
+        let pointer = field_pointer("", self.name);
+        if self.conclusive {
+            rules.insert(pointer, self.trace.rule.to_owned());
+        } else {
+            rules.remove(&pointer);
+            placeholders.push(pointer);
+        }
+    }
 }
 
 fn verdict_projection<'a>(
@@ -393,19 +417,34 @@ fn verdict_projection<'a>(
         name,
         value: choices[index].clone(),
         trace: verdict.trace,
+        conclusive: verdict.result.is_some(),
     })
 }
 
-struct Derived<'a> {
+struct StructuredDerivation<'a> {
     value: Value,
+    placeholders: Vec<String>,
+    rules: BTreeMap<String, String>,
+    no_evidence: Vec<String>,
     verdict: Option<VerdictProjection<'a>>,
 }
 
-fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derived<'a>> {
+fn derive<'a>(
+    schema: &'a Value,
+    source: &'a str,
+    answer: &str,
+) -> Option<StructuredDerivation<'a>> {
     let satisfies = |value: &Value| {
         value.is_object() && schema::portable(value, 0) && schema::valid(value, schema, schema)
     };
-    let formal = serde_json::from_str::<Value>(answer).ok();
+    let formal = serde_json::from_str::<Value>(answer)
+        .ok()
+        .filter(Value::is_object);
+    let supplied_rule = if formal.is_some() {
+        "solver_json"
+    } else {
+        "input_json"
+    };
     let source_object = serde_json::from_str::<Value>(source)
         .ok()
         .filter(Value::is_object);
@@ -415,13 +454,28 @@ fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derive
     } else {
         None
     };
-    let supplied = formal.filter(Value::is_object).or(source_object);
+    let supplied = formal.or(source_object);
     if supplied.as_ref().is_some_and(&satisfies) {
         let mut value = supplied?;
-        if let Some(verdict) = &verdict {
-            value[verdict.name] = verdict.value.clone();
+        if let Some(item) = &verdict {
+            value[item.name] = item.value.clone();
+            if !satisfies(&value) {
+                return None;
+            }
         }
-        return satisfies(&value).then_some(Derived { value, verdict });
+        let mut rules = BTreeMap::new();
+        let mut placeholders = Vec::new();
+        record_rules(&mut rules, String::new(), &value, supplied_rule);
+        if let Some(item) = &verdict {
+            item.record(&mut rules, &mut placeholders);
+        }
+        return Some(StructuredDerivation {
+            value,
+            placeholders,
+            rules,
+            no_evidence: Vec::new(),
+            verdict,
+        });
     }
     if supplied.is_none() && source.len() > 8192 {
         return None;
@@ -444,50 +498,72 @@ fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derive
         .and_then(|expression| crate::arithmetic::evaluate_fallback_formatted(&expression).ok())
         .and_then(|number| serde_json::from_str::<Value>(&number).ok());
     let mut output = Map::new();
+    let mut field_rules = BTreeMap::new();
+    let mut placeholders = Vec::new();
+    let mut no_evidence = Vec::new();
     if let Some(properties) = fields.get("properties").and_then(Value::as_object) {
         for (name, field) in properties {
+            if let Some(item) = verdict.as_ref().filter(|item| item.name == name) {
+                output.insert(name.clone(), item.value.clone());
+                continue;
+            }
             let is_required = fields
                 .get("required")
                 .and_then(Value::as_array)
                 .is_some_and(|keys| keys.iter().any(|key| key == name.as_str()));
             let resolved = resolved_field(schema, field);
-            let mut value = if let Some(verdict) = verdict.as_ref().filter(|item| item.name == name)
-            {
-                Some(verdict.value.clone())
-            } else if let Some(supplied) = &supplied {
-                supplied.get(name).cloned()
+            let description = field
+                .get("description")
+                .and_then(Value::as_str)
+                .or_else(|| resolved.get("description").and_then(Value::as_str));
+            let items = if supplied.is_none() {
+                arrays::item_rule(resolved, schema)
             } else {
-                let description = field_description(field, resolved);
-                if let Some(items) = arrays::item_rule(resolved, schema) {
-                    arrays::evidence(text, name, description, items)
-                        .map(Value::Array)
-                        .or_else(|| {
-                            let empty = Value::Array(Vec::new());
-                            schema::valid(&empty, field, schema).then_some(empty)
-                        })
-                } else {
-                    evidence(
-                        name,
-                        resolved,
-                        description,
-                        text,
-                        answer,
-                        number.as_ref(),
-                        key,
-                    )
-                }
+                None
             };
-            if value.is_none() && is_required {
-                let unknown = Value::String(UNKNOWN.to_owned());
-                if schema::valid(&Value::Null, field, schema) {
-                    value = Some(Value::Null);
-                } else if resolved
-                    .get("enum")
-                    .and_then(Value::as_array)
-                    .is_some_and(|labels| labels.contains(&unknown))
-                    && schema::valid(&unknown, field, schema)
-                {
-                    value = Some(unknown);
+            let field_evidence = if let Some(supplied) = &supplied {
+                supplied
+                    .get(name)
+                    .cloned()
+                    .map(|value| (value, supplied_rule))
+            } else if let Some(items) = items {
+                arrays::evidence(text, name, description, items)
+                    .map(|values| (Value::Array(values), "string_array"))
+            } else {
+                evidence(
+                    name,
+                    resolved,
+                    description,
+                    text,
+                    answer,
+                    number.as_ref(),
+                    key,
+                )
+            };
+            let mut value = None;
+            if let Some((observed, rule)) = field_evidence {
+                field_rules.insert(name.clone(), rule);
+                value = Some(observed);
+            } else {
+                let empty = Value::Array(Vec::new());
+                if items.is_some() && schema::valid(&empty, field, schema) {
+                    value = Some(empty);
+                    no_evidence.push(name.clone());
+                } else if is_required {
+                    let unknown = Value::String(UNKNOWN.to_owned());
+                    if schema::valid(&Value::Null, field, schema) {
+                        value = Some(Value::Null);
+                    } else if resolved
+                        .get("enum")
+                        .and_then(Value::as_array)
+                        .is_some_and(|labels| labels.contains(&unknown))
+                        && schema::valid(&unknown, field, schema)
+                    {
+                        value = Some(unknown);
+                    }
+                }
+                if value.is_some() {
+                    placeholders.push(field_pointer("", name));
                 }
             }
             if let Some(value) = value {
@@ -495,12 +571,38 @@ fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derive
             }
         }
     } else if let Some(number) = number {
-        output.insert(key.unwrap_or("answer").to_owned(), number);
+        let name = key.unwrap_or("answer").to_owned();
+        field_rules.insert(name.clone(), "arithmetic");
+        output.insert(name, number);
     }
-    (!output.is_empty())
-        .then_some(Value::Object(output))
-        .filter(satisfies)
-        .map(|value| Derived { value, verdict })
+    if output.is_empty() {
+        return None;
+    }
+    let value = Value::Object(output);
+    if !satisfies(&value) {
+        return None;
+    }
+    let mut rules = BTreeMap::new();
+    for (name, rule) in field_rules {
+        let pointer = field_pointer("", &name);
+        if rule == "string_array" {
+            rules.insert(pointer, rule.to_owned());
+        } else {
+            record_rules(&mut rules, pointer, &value[&name], rule);
+        }
+    }
+    if let Some(item) = &verdict {
+        item.record(&mut rules, &mut placeholders);
+    }
+    placeholders.sort_unstable();
+    no_evidence.sort_unstable();
+    Some(StructuredDerivation {
+        value,
+        placeholders,
+        rules,
+        no_evidence,
+        verdict,
+    })
 }
 
 pub(super) fn answer_from_source(
@@ -511,8 +613,7 @@ pub(super) fn answer_from_source(
     let obligation = Obligation::new(format, chat)?;
     let value = obligation
         .schema
-        .and_then(|schema| derive(schema, source, ""))
-        .map(|derived| derived.value);
+        .and_then(|schema| derive(schema, source, ""));
     if value.is_none()
         && obligation.schema.is_some()
         && !serde_json::from_str::<Value>(source).is_ok_and(|value| value.is_object())
@@ -521,7 +622,9 @@ pub(super) fn answer_from_source(
     }
     Some(SymbolicAnswer {
         intent: "structured_output".into(),
-        answer: value.map_or_else(String::new, |value| value.to_string()),
+        // The final projection reads the original source so inferred values
+        // cannot be mistaken for JSON supplied as evidence.
+        answer: String::new(),
         confidence: 1.0,
         execution_recipe: None,
         evidence_links: Vec::new(),
@@ -559,6 +662,7 @@ pub(super) fn project_chat(
                 .saturating_add(completion.usage.completion_tokens);
             message.content = MessageContent::Text(result.content);
             message.refusal = result.refusal;
+            message.formal_ai = Some(result.formal_ai);
             completion.derivation_identifier = Some(result.identifier);
             completion.evidence_links = result.evidence;
             completion.output_projection = None;
@@ -572,6 +676,16 @@ pub(super) fn project_response(request: &ResponsesRequest, response: &mut Respon
     let format = request.text.as_ref().and_then(|text| text.get("format"));
     if let Some(obligation) = Obligation::new(format, false) {
         response.text = Some(serde_json::json!({"format": obligation.format}));
+        if response.output.iter().any(|item| {
+            matches!(
+                item,
+                ResponseOutputItem::FunctionCall(_)
+                    | ResponseOutputItem::CustomToolCall(_)
+                    | ResponseOutputItem::WebSearchCall(_)
+            )
+        }) {
+            return;
+        }
         let source = chat_prompt_and_history(&request.to_chat_completion_request().messages).0;
         if let Some(ResponseOutputItem::Message(message)) = response
             .output
@@ -610,6 +724,7 @@ pub(super) fn project_response(request: &ResponsesRequest, response: &mut Respon
                 refusal: result.refusal,
             }];
             response.thinking_steps.clone_from(&message.thinking_steps);
+            response.formal_ai = result.formal_ai;
             response.derivation_id = Some(result.identifier);
             let mut evidence = result.evidence;
             evidence.append(&mut response.evidence_links);

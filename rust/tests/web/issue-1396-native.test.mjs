@@ -336,21 +336,25 @@ test("native HTTP documentation answers require a matching publisher capture", N
       }),
     });
     assert.ok(response.ok, await response.clone().text());
-    return (await response.json()).choices[0].message.content;
+    return (await response.json()).choices[0].message;
   }
   const prompt = "How does pandas Series.diff work?";
-  const missing = await ask(prompt);
+  const missingReply = await ask(prompt);
+  const missing = missingReply.refusal ?? missingReply.content;
   assert.doesNotMatch(missing, /First discrete difference/u);
   assert.doesNotMatch(missing, /`read_file` capability/u);
   assert.ok(!missing.includes(source), missing);
   storeCapture(cache, source, readFileSync(new URL("../fixtures/documentation-method/diff.html", import.meta.url), "utf8"));
   for (const question of [prompt, "How does pandas.Series.diff work?"]) {
-    const retrieved = await ask(question);
+    const { content: retrieved, formal_ai } = await ask(question);
+    assert.equal(formal_ai.status, "answered");
     assert.match(retrieved, /First discrete difference of Series elements/u);
     assert.ok(retrieved.includes(source), retrieved);
   }
   const file = await ask("Explain the file Series.diff in this workspace.");
-  assert.match(file, /`read_file` capability/u);
+  assert.equal(file.formal_ai.status, "unanswered");
+  assert.equal(file.content, "");
+  assert.match(file.refusal, /`read_file` capability/u);
 });
 
 test("native HTTP release timelines require publisher captures for registered and new film series", NATIVE_MULTI_TURN_CASE, async (t) => {

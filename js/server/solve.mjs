@@ -5,6 +5,7 @@
 // rust/src/protocol_policy.rs.
 
 import { issueFormForPrompt } from '../agentic/report_issue.mjs';
+import { hasCapabilityRefusal } from './answer-metadata.mjs';
 import { finalizeServerAnswer } from './derivation-store.mjs';
 import { beginTurn, endTurn, gateTurn } from './debug-session.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
@@ -93,6 +94,7 @@ export function symbolicFromWorker(result, history = [], { readOnly = false } = 
   return {
     ...(result?.outputProjection ? {output_projection:result.outputProjection} : {}),
     intent: String(result?.intent ?? 'unknown'),
+    ...(hasCapabilityRefusal(result?.evidence, result?.solverEvents) ? { capability_refusal: true } : {}),
     answer,
     confidence: Number(result?.confidence ?? 0),
     evidence_links: solverEvidenceLinks(result, history)

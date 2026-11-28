@@ -1,3 +1,5 @@
+import { observeNetworkRetrieval } from './answer-metadata.mjs';
+
 // Read-only network access is available by default (#1582). This grants no
 // command execution, filesystem writes, or permission to override a caller deny.
 const truth=value=>['1','true','yes','on'].includes(String(value).trim().toLowerCase());
@@ -20,6 +22,7 @@ export function createReadOnlyFetch({env=process.env,fetchImpl=globalThis.fetch,
     // timer cleared as soon as headers arrive. Caller cancellation still wins.
     const deadline=AbortSignal.timeout(timeoutMs);
     const signal=options.signal?AbortSignal.any([options.signal,deadline]):deadline;
+    observeNetworkRetrieval();
     return fetchImpl(url,{...options,signal});
   };
 }

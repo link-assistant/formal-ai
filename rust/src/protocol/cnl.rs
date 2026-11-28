@@ -27,7 +27,14 @@ pub fn create_chat_completion_with_solver_and_memory(
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
 ) -> ChatCompletion {
-    create_projected_chat_completion(request, solver, memory_events, true)
+    let before = crate::source_fetch::network_retrieval_count();
+    let mut completion = project_chat_completion(request, solver, memory_events, true);
+    for choice in &mut completion.choices {
+        if let Some(metadata) = &mut choice.message.formal_ai {
+            metadata.observe_retrieval_since(before);
+        }
+    }
+    completion
 }
 
 /// Anthropic and Gemini adapters skip forced client functions (issue #1590)
@@ -37,10 +44,10 @@ pub(crate) fn create_adapted_chat_completion(
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
 ) -> ChatCompletion {
-    create_projected_chat_completion(request, solver, memory_events, false)
+    project_chat_completion(request, solver, memory_events, false)
 }
 
-fn create_projected_chat_completion(
+fn project_chat_completion(
     request: &ChatCompletionRequest,
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
@@ -94,7 +101,30 @@ fn create_projected_chat_completion(
             forced_client_functions,
         )
     };
-    if structured_output::project_chat(request, &prompt, &mut completion) {
+    if let Some(choice) = completion.choices.first_mut() {
+        let message = &mut choice.message;
+        let status = if message.refusal.is_some() {
+            AnswerStatus::Refused
+        } else {
+            AnswerStatus::Answered
+        };
+        message
+            .formal_ai
+            .get_or_insert_with(|| AnswerMetadata::new(status));
+    }
+    if structured_output::project_chat(request, &turn.prompt, &mut completion) {
+        return completion;
+    }
+    if forced_client_functions
+        && let Some(choice) = completion.choices.first_mut()
+        && choice
+            .message
+            .formal_ai
+            .as_ref()
+            .is_some_and(|metadata| metadata.status == AnswerStatus::Unanswered)
+    {
+        choice.message.refusal = Some(std::mem::take(&mut choice.message.content).plain_text());
+        completion.output_projection = None;
         return completion;
     }
     if let Some(choice) = completion.choices.first_mut().filter(|choice| {

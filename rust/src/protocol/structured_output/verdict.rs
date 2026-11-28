@@ -212,7 +212,7 @@ fn duration_verdict(minimum: f64, start: Date, end: Date) -> Option<bool> {
 
 #[derive(Serialize)]
 pub(super) struct Trace<'a> {
-    rule: &'static str,
+    pub(super) rule: &'static str,
     evidence: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     reference: Option<&'a str>,

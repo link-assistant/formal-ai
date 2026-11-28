@@ -96,6 +96,7 @@ impl HttpClient for CurlClient {
         ];
         let mut command = Command::new("curl");
         command.args(args);
+        crate::source_fetch::note_network_retrieval();
         let output = crate::bounded_process::command_output(
             command,
             self.timeout,

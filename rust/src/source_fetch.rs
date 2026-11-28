@@ -4,6 +4,7 @@
 //! provenance calculated from those bytes; callers never construct `source:`
 //! or `cache_hit:` events from a request alone.
 
+use std::cell::Cell;
 use std::error::Error;
 use std::fmt::{Display, Formatter, Write as _};
 use std::fs;
@@ -37,6 +38,20 @@ const USER_AGENT: &str = concat!(
     env!("CARGO_PKG_VERSION"),
     " (https://github.com/link-assistant/formal-ai; source retrieval)"
 );
+
+thread_local! {
+    // Native protocol solving is synchronous on the request thread. Using a
+    // counter lets nested observers share the same transport observation.
+    static NETWORK_RETRIEVALS: Cell<u64> = const { Cell::new(0) };
+}
+
+pub(crate) fn network_retrieval_count() -> u64 {
+    NETWORK_RETRIEVALS.get()
+}
+
+pub(crate) fn note_network_retrieval() {
+    NETWORK_RETRIEVALS.set(network_retrieval_count().wrapping_add(1));
+}
 
 /// A transport capable of returning the exact response bytes.
 pub trait SourceTransport: Send + Sync {
@@ -345,6 +360,7 @@ impl<T: SourceTransport> CachedSourceClient<T> {
             return Err(FetchError::OfflineCacheMiss(url.to_owned()));
         }
 
+        note_network_retrieval();
         let bytes = self.transport.get(url)?;
         let capture = SourceCapture {
             source_url: url.to_owned(),

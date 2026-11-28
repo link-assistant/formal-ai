@@ -22,6 +22,8 @@ use crate::protocol_responses::{custom_response_tool_input, is_custom_response_t
 pub use crate::protocol_responses::{apply_patch_input, response_arguments_for_tool};
 use crate::solver::UniversalSolver;
 
+mod answer_metadata;
+pub use answer_metadata::{AnswerMetadata, AnswerProvenance, AnswerStatus};
 mod chat_message;
 pub use chat_message::{ChatMessage, FunctionCall, MessageContent, MessageContentPart, ToolCall};
 mod chat_request;
@@ -487,12 +489,14 @@ fn chat_completion_from_symbolic(
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
     let learning_trace =
         crate::self_improvement::learning_trace_from_symbolic_answer(prompt, &symbolic_answer);
+    let formal_ai = AnswerMetadata::from_symbolic(&symbolic_answer);
     let thinking_steps = symbolic_answer.thinking_steps;
     let reasoning = render_thinking_steps(&thinking_steps);
-    let refusal = (structured && symbolic_answer.intent == "tool_call_refused")
+    let refusal = (structured && formal_ai.status == AnswerStatus::Refused)
         .then(|| symbolic_answer.answer.clone());
     let mut message = ChatMessage::assistant(symbolic_answer.answer);
     message.refusal = refusal;
+    message.formal_ai = Some(formal_ai);
     message.thinking_steps = thinking_steps;
     message.reasoning_content.clone_from(&reasoning);
     message.reasoning = reasoning;
@@ -539,8 +543,10 @@ pub fn create_response_with_solver_and_memory(
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
 ) -> ResponseObject {
+    let before = crate::source_fetch::network_retrieval_count();
     let mut response = create_unstructured_response(request, solver, memory_events);
     structured_output::project_response(request, &mut response);
+    response.formal_ai.observe_retrieval_since(before);
     response
 }
 
@@ -739,6 +745,7 @@ fn response_from_plan(
         object: String::from("response"),
         created_at: response_timestamp(),
         status: String::from("completed"),
+        formal_ai: AnswerMetadata::default(),
         model,
         output,
         usage: ResponseUsage {
