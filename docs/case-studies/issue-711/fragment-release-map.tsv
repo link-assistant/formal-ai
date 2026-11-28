@@ -1106,6 +1106,7 @@ changelog.d/20261124_200000_issue_1634_ci_false_signals.md	0.356.12
 changelog.d/20261125_120000_issue_1632_auto_mode_howto_reports.md	0.357.0
 changelog.d/20261125_140000_issue_1637_ci_false_signals.md	0.357.1
 changelog.d/20261125_180000_issue_1639_ci_false_signals.md	0.357.2
+changelog.d/20261128_070000_issue_1619_structured_string_arrays.md	0.357.3
 changelog.d/ci-gate-citation-fixed.md	0.355.28
 changelog.d/desktop-package-source-boundary.md	0.355.17
 changelog.d/fast-pr-offline-e2e-admission.md	0.355.15
