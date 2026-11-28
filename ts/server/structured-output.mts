@@ -10,6 +10,7 @@ import { stableId } from './ids.mjs';
 import { isMap } from './protocol-values.mjs';
 import { thinkingStep } from './thinking.mjs';
 import { stringArrayEvidence, stringArrayItems } from './structured-array.mjs';
+import { criterionVerdict } from './structured-verdict.mjs';
 import { portableValue, schemaIssue, schemaReference, validOutput } from './structured-schema.mjs';
 
 const JSON_OBJECT = { type: 'object' };
@@ -98,7 +99,28 @@ function fieldDescription(field, resolved) {
   return typeof field?.description === 'string' ? field.description : resolved?.description;
 }
 
-function fillObject(schema, source, answer, number, supplied) {
+function verdictProjection(schema, fields, source) {
+  const candidates = [];
+  const labels = ['met', 'not_met', UNKNOWN];
+  for (const [name, field] of Object.entries(fields.properties ?? {})) {
+    const accepts = value => validOutput(value, field, schema);
+    const resolved = schemaReference(schema, field?.$ref) ?? field;
+    if (labels.every(label => resolved?.enum?.includes(label) && accepts(label))) {
+      candidates.push({ name, choices: labels });
+    } else if ([true, false, null].every(accepts) && !['', 0, [], {}].some(accepts)) {
+      candidates.push({ name, choices: [true, false, null] });
+    }
+  }
+  const named = candidates.filter(({ name }) => normalizeKey(name) === 'verdict');
+  const selected = candidates.length === 1 ? candidates[0] : named.length === 1 ? named[0] : undefined;
+  if (!selected) return undefined;
+  const verdict = criterionVerdict(source);
+  if (!verdict) return undefined;
+  const value = selected.choices[verdict.result === null ? 2 : verdict.result ? 0 : 1];
+  return { name: selected.name, value, trace: verdict.trace };
+}
+
+function fillObject(schema, source, answer, number, supplied, verdict) {
   const fields = objectFields(schema);
   const key = KEY.exec(source)?.[1];
   const result = new Map();
@@ -106,7 +128,8 @@ function fillObject(schema, source, answer, number, supplied) {
     const resolved = schemaReference(schema, field?.$ref) ?? field;
     const description = fieldDescription(field, resolved);
     const items = stringArrayItems(resolved, schema);
-    let value = supplied ? (Object.hasOwn(supplied, name) ? supplied[name] : undefined)
+    let value = verdict?.name === name ? verdict.value
+      : supplied ? (Object.hasOwn(supplied, name) ? supplied[name] : undefined)
       : items ? stringArrayEvidence(source, name, description, items, normalizeKey)
         : evidenceFor(name, resolved, description, source, answer, number, key);
     if (!supplied && items && value === undefined && validOutput([], field, schema)) value = [];
@@ -125,12 +148,18 @@ async function derive(ctx, schema, source, answer, supplied) {
   const satisfies = candidate => isMap(candidate) && portableValue(candidate) && validOutput(candidate, schema);
   const formal = parsed(answer);
   const observed = isMap(formal) ? formal : supplied;
-  if (satisfies(observed)) return observed;
-  let value;
-  if (isMap(observed)) {
-    value = fillObject(schema, '', '', undefined, observed);
-  } else if (Buffer.byteLength(source) <= 8192) {
+  const canReadText = !isMap(supplied) && Buffer.byteLength(source) <= 8192;
+  let verdict;
+  if (canReadText) {
     await ensureNodeHost(ctx);
+    verdict = verdictProjection(schema, objectFields(schema), source);
+  }
+  let value;
+  if (satisfies(observed)) {
+    value = verdict ? { ...observed, [verdict.name]: verdict.value } : observed;
+  } else if (isMap(observed)) {
+    value = fillObject(schema, '', '', undefined, observed, verdict);
+  } else if (canReadText) {
     const [sumPattern, arithmeticPattern] = cached('structured-output-arithmetic-patterns', () =>
       ['structured-output-sum-pattern', 'structured-output-arithmetic-pattern'].map(key =>
         new RegExp(agenticMessage(key, { number: NUMBER }), 'iu')));
@@ -140,16 +169,17 @@ async function derive(ctx, schema, source, answer, supplied) {
     if (expression && expression.length <= 80) {
       try { number = Number(realm().evaluateArithmetic(expression)); } catch { /* Underivable. */ }
     }
-    value = fillObject(schema, source, answer, number);
+    value = fillObject(schema, source, answer, number, undefined, verdict);
   }
-  return satisfies(value) ? value : undefined;
+  return satisfies(value) ? { value, verdict } : undefined;
 }
 
 export async function structuredAnswerFromSource(ctx, format, chat, source) {
   const obligation = outputObligation(format, chat);
   if (!obligation) return null;
   const supplied = parsed(source);
-  const value = obligation.schema && await derive(ctx, obligation.schema, source, '', supplied);
+  const derived = obligation.schema && await derive(ctx, obligation.schema, source, '', supplied);
+  const value = derived?.value;
   if (!value && obligation.schema && !isMap(supplied)) return null;
   return {
     intent: 'structured_output', answer: value ? jsonText(value) : '', confidence: 1,
@@ -160,7 +190,8 @@ export async function structuredAnswerFromSource(ctx, format, chat, source) {
 export async function projectStructuredOutput(ctx, obligation, source, answer, refusal) {
   const { schema, issue } = obligation;
   const supplied = parsed(source);
-  const value = !refusal && schema ? await derive(ctx, schema, source, answer, supplied) : undefined;
+  const derived = !refusal && schema ? await derive(ctx, schema, source, answer, supplied) : undefined;
+  const { value, verdict } = derived ?? {};
   if (!refusal && value === undefined) {
     await ensureNodeHost(ctx);
     refusal = agenticMessage(schema ? 'structured-output-underivable' : 'structured-output-schema-unsupported');
@@ -172,7 +203,8 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
   const content = refusal ? '' : jsonText(value);
   const noEvidence = value ? await missingArrayEvidence(ctx, schema, source, supplied, value) : [];
   const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : { value }),
-    ...(noEvidence.length ? { no_evidence: noEvidence } : {}) });
+    ...(noEvidence.length ? { no_evidence: noEvidence } : {}),
+    ...(verdict ? { verdicts: { [verdict.name]: verdict.trace } } : {}) });
   const identifier = stableId('answer', refusal ? detail : content);
   const events = [
     { kind: RECOMPOSE_BIND_KIND, payload: detail },

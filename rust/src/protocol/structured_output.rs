@@ -1,5 +1,6 @@
 //! Shared response-format obligation and projection for Chat and Responses.
 mod arrays;
+mod verdict;
 
 use super::{
     ChatCompletion, ChatCompletionRequest, MessageContent, ResponseObject, ResponseOutputContent,
@@ -86,13 +87,14 @@ impl<'a> Obligation<'a> {
     }
 
     pub fn project(&self, source: &str, answer: &str, refusal: Option<String>) -> Projection {
-        let value = refusal
+        let derived = refusal
             .is_none()
             .then(|| {
                 self.schema
                     .and_then(|schema| derive(schema, source, answer))
             })
             .flatten();
+        let value = derived.as_ref().map(|derived| &derived.value);
         let refusal = refusal.or_else(|| {
             value.is_none().then(|| {
                 let key = if self.schema.is_some() {
@@ -108,21 +110,26 @@ impl<'a> Obligation<'a> {
                 }
             })
         });
-        let content = value.as_ref().map_or_else(String::new, Value::to_string);
+        let content = value.map_or_else(String::new, Value::to_string);
         let no_evidence = self
             .schema
-            .zip(value.as_ref())
+            .zip(value)
             .map_or_else(Vec::new, |(schema, value)| {
                 missing_array_evidence(schema, source, value)
             });
-        let detail = if let Some(reason) = &refusal {
+        let mut detail = if let Some(reason) = &refusal {
             json!({"format": self.format, "refusal": reason})
         } else if !no_evidence.is_empty() {
             json!({"format": self.format, "value": value, "no_evidence": no_evidence})
         } else {
             json!({"format": self.format, "value": value})
+        };
+        if let Some(derived) = derived
+            && let Some(verdict) = derived.verdict
+        {
+            detail["verdicts"] = json!({(verdict.name): verdict.trace});
         }
-        .to_string();
+        let detail = detail.to_string();
         let identifier = stable_id("answer", if refusal.is_some() { &detail } else { &content });
         let mut evidence = vec![format!("derivation:{identifier}")];
         if !crate::solver_config::ephemeral_enabled() {
@@ -325,18 +332,96 @@ fn missing_array_evidence<'a>(schema: &'a Value, source: &str, value: &Value) ->
     missing
 }
 
-fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
+struct VerdictProjection<'a> {
+    name: &'a str,
+    value: Value,
+    trace: verdict::Trace<'a>,
+}
+
+fn verdict_projection<'a>(
+    schema: &'a Value,
+    fields: &'a Value,
+    source: &'a str,
+) -> Option<VerdictProjection<'a>> {
+    let labels = ["met", "not_met", UNKNOWN].map(|label| json!(label));
+    let binary = [Value::Bool(true), Value::Bool(false), Value::Null];
+    let mut candidates =
+        fields
+            .get("properties")?
+            .as_object()?
+            .iter()
+            .filter_map(|(name, field)| {
+                let accepts = |value: &Value| schema::valid(value, field, schema);
+                let resolved = resolved_field(schema, field);
+                if resolved
+                    .get("enum")
+                    .and_then(Value::as_array)
+                    .is_some_and(|choices| {
+                        labels
+                            .iter()
+                            .all(|label| choices.contains(label) && accepts(label))
+                    })
+                {
+                    return Some((name.as_str(), &labels));
+                }
+                (binary.iter().all(accepts)
+                    && ![json!(""), json!(0), json!([]), json!({})]
+                        .iter()
+                        .any(accepts))
+                .then_some((name.as_str(), &binary))
+            });
+    let first = candidates.next()?;
+    let second = candidates.next();
+    let (name, choices) = if let Some(second) = second {
+        unique(
+            std::iter::once(first)
+                .chain(std::iter::once(second))
+                .chain(candidates)
+                .filter(|(name, _)| key_name(name) == "verdict"),
+        )
+        .flatten()?
+    } else {
+        first
+    };
+    let verdict = verdict::criterion_verdict(source)?;
+    let index = match verdict.result {
+        Some(true) => 0,
+        Some(false) => 1,
+        None => 2,
+    };
+    Some(VerdictProjection {
+        name,
+        value: choices[index].clone(),
+        trace: verdict.trace,
+    })
+}
+
+struct Derived<'a> {
+    value: Value,
+    verdict: Option<VerdictProjection<'a>>,
+}
+
+fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derived<'a>> {
     let satisfies = |value: &Value| {
         value.is_object() && schema::portable(value, 0) && schema::valid(value, schema, schema)
     };
     let formal = serde_json::from_str::<Value>(answer).ok();
-    let supplied = formal.filter(Value::is_object).or_else(|| {
-        serde_json::from_str::<Value>(source)
-            .ok()
-            .filter(Value::is_object)
-    });
+    let source_object = serde_json::from_str::<Value>(source)
+        .ok()
+        .filter(Value::is_object);
+    let fields = object_fields(schema);
+    let verdict = if source_object.is_none() && source.len() <= 8192 {
+        verdict_projection(schema, fields, source)
+    } else {
+        None
+    };
+    let supplied = formal.filter(Value::is_object).or(source_object);
     if supplied.as_ref().is_some_and(&satisfies) {
-        return supplied;
+        let mut value = supplied?;
+        if let Some(verdict) = &verdict {
+            value[verdict.name] = verdict.value.clone();
+        }
+        return satisfies(&value).then_some(Derived { value, verdict });
     }
     if supplied.is_none() && source.len() > 8192 {
         return None;
@@ -358,7 +443,6 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
         .filter(|expression| expression.len() <= 80)
         .and_then(|expression| crate::arithmetic::evaluate_fallback_formatted(&expression).ok())
         .and_then(|number| serde_json::from_str::<Value>(&number).ok());
-    let fields = object_fields(schema);
     let mut output = Map::new();
     if let Some(properties) = fields.get("properties").and_then(Value::as_object) {
         for (name, field) in properties {
@@ -367,7 +451,10 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
                 .and_then(Value::as_array)
                 .is_some_and(|keys| keys.iter().any(|key| key == name.as_str()));
             let resolved = resolved_field(schema, field);
-            let mut value = if let Some(supplied) = &supplied {
+            let mut value = if let Some(verdict) = verdict.as_ref().filter(|item| item.name == name)
+            {
+                Some(verdict.value.clone())
+            } else if let Some(supplied) = &supplied {
                 supplied.get(name).cloned()
             } else {
                 let description = field_description(field, resolved);
@@ -413,6 +500,7 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
     (!output.is_empty())
         .then_some(Value::Object(output))
         .filter(satisfies)
+        .map(|value| Derived { value, verdict })
 }
 
 pub(super) fn answer_from_source(
@@ -423,7 +511,8 @@ pub(super) fn answer_from_source(
     let obligation = Obligation::new(format, chat)?;
     let value = obligation
         .schema
-        .and_then(|schema| derive(schema, source, ""));
+        .and_then(|schema| derive(schema, source, ""))
+        .map(|derived| derived.value);
     if value.is_none()
         && obligation.schema.is_some()
         && !serde_json::from_str::<Value>(source).is_ok_and(|value| value.is_object())
