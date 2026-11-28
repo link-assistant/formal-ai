@@ -1,0 +1,8 @@
+PASS check-closure-audit 5.3s
+PASS check-language-change-parity 1.0s
+PASS check-multilingual-intent-coverage 1.1s
+PASS check-notation 18.7s
+PASS check-package-self-containment 0.3s
+PASS check-runtime-feature-inventory 0.8s
+
+6/6 passed or skipped; failed: none

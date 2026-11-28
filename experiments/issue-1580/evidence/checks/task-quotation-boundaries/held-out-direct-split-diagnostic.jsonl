@@ -1,0 +1,17 @@
+file:///tmp/gh-issue-solver-1794900398048/js/agentic/host.mjs:48
+  if (!current) throw new Error('agentic_host_not_installed');
+                      ^
+
+Error: agentic_host_not_installed
+    at host (file:///tmp/gh-issue-solver-1794900398048/js/agentic/host.mjs:48:23)
+    at readText (file:///tmp/gh-issue-solver-1794900398048/js/agentic/host.mjs:89:10)
+    at file:///tmp/gh-issue-solver-1794900398048/js/agentic/crate/formalization_grammar.mjs:6:28
+    at cached (file:///tmp/gh-issue-solver-1794900398048/js/agentic/host.mjs:111:41)
+    at grammarRoot (file:///tmp/gh-issue-solver-1794900398048/js/agentic/crate/formalization_grammar.mjs:5:10)
+    at grammarVocabulary (file:///tmp/gh-issue-solver-1794900398048/js/agentic/crate/formalization_grammar.mjs:32:16)
+    at file:///tmp/gh-issue-solver-1794900398048/[eval1]:6:50
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:226:26
+    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:223:20)
+
+Node.js v26.13.0

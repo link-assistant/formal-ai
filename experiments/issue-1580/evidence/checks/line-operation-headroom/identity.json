@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "owner": "rust/src/agentic_coding/workspace_line_operation.rs",
+  "child": "rust/src/agentic_coding/workspace_line_operation/applied_changes.rs",
+  "beforeLines": 957,
+  "ownerAfterLines": 850,
+  "childLines": 112,
+  "completeImplementationBodySha256": "f13f307575da625f3c691e8aa3d72ccc02813d10ad2a3e91d2199890099a6c42",
+  "ownerExactInverseBeforeFormatting": true,
+  "allCompleteMethodBodiesAndCommentsUnchanged": true,
+  "visibilityAncestorPreserved": "original parent, agentic_coding",
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

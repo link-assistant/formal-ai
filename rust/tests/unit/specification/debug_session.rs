@@ -27,13 +27,13 @@ use serde_json::{Value, json};
 
 const TOKEN: &str = "debug-session-test-token";
 const BEARER: &str = "debug-session-bearer";
-const SOLVE_ENTRY: &str =
-    "rust/src/solver.rs:solve_with_history_probability_store_and_intent_cache";
+const SOLVE_ENTRY: &str = "rust/src/solver.rs:solve_inner";
 const EVENT_LOG: &str = "js/worker/formal_ai_worker_solver_events.js:solverEventLog";
-const ARITHMETIC: &str = "rust/src/solver_handlers/mod.rs:try_arithmetic";
+const ARITHMETIC: &str = "rust/src/solver_handlers/mod.rs:try_arithmetic_with_online";
 const CALCULATION_EVENTS: &str =
     "js/worker/formal_ai_worker_solver_events.js:solverCalculationEvents";
 const FINALIZE: &str = "rust/src/solver_handlers/mod.rs:finalize_simple";
+const ANSWER_TEST: &str = "rust/src/solver_helpers/mod.rs:record_answer_test";
 const INTENT_RECORD: (&str, &str) = (
     "rust/src/intent_formalization.rs:record_intent_formalization",
     "js/agentic/crate/intent_formalization.mjs:recordIntentFormalization",
@@ -50,7 +50,7 @@ const TWO_PLUS_TWO: [(&str, &str, &str); 10] = [
     ("compute_steps", ARITHMETIC, CALCULATION_EVENTS),
     ("dispatch_handler", FINALIZE, EVENT_LOG),
     // The browser solverEventLog emits the real validation event.
-    ("rule_verification", FINALIZE, EVENT_LOG),
+    ("rule_verification", ANSWER_TEST, EVENT_LOG),
     ("deformalize", FINALIZE, EVENT_LOG),
 ];
 
@@ -72,7 +72,7 @@ fn stages() -> Vec<ThinkingStep> {
 /// A turn routed to `arithmetic`, with a sub-stage under `compute`.
 fn routed() -> Vec<ThinkingStep> {
     let compute = ThinkingStep::new(2, "compute", "2 + 2 = 4", "high", "calculation");
-    let engine = ThinkingStep::new(
+    let mut engine = ThinkingStep::new(
         3,
         "compute_engine",
         "link-calculator",
@@ -80,6 +80,7 @@ fn routed() -> Vec<ThinkingStep> {
         "calculation:engine",
     )
     .with_parent(compute.id.clone());
+    engine.source_origin = Some("calculation:arithmetic:engine".to_owned());
     vec![
         ThinkingStep::new(0, "impulse", "What is 2 + 2?", "high", "impulse"),
         ThinkingStep::new(
@@ -218,6 +219,43 @@ fn paused_turn(session: &DebugSession) -> Value {
 fn error_message(response: &ApiHttpResponse) -> String {
     let body: Value = serde_json::from_str(&response.body).expect("json error body");
     body["error"]["message"].as_str().unwrap_or("").to_owned()
+}
+
+#[test]
+fn recorded_arithmetic_origins_distinguish_equally_reachable_emitters() {
+    for (origin, path, symbol) in [
+        (
+            "arithmetic",
+            "rust/src/solver_handlers/mod.rs",
+            "try_arithmetic_with_online",
+        ),
+        (
+            "quantity",
+            "rust/src/quantity_constraint.rs",
+            "record_calculation",
+        ),
+    ] {
+        for kind in ["engine", "lino", "steps"] {
+            let mut stages = routed();
+            stages.truncate(2);
+            let mut event = ThinkingStep::new(
+                2,
+                "compute_engine",
+                "fixture",
+                "high",
+                format!("calculation:{kind}"),
+            );
+            event.source_origin = Some(format!("calculation:{origin}:{kind}"));
+            stages.push(event);
+            let turn = describe_turn(&stages);
+            let stage = &turn.stages[2];
+            let rust = stage.rust.as_ref().expect("recorded native origin");
+            assert_eq!(rust.path, path);
+            assert_eq!(rust.symbol, symbol);
+            let js = stage.js.as_ref().expect("recorded browser origin");
+            assert_eq!(format!("{}:{}", js.path, js.symbol), CALCULATION_EVENTS);
+        }
+    }
 }
 
 #[test]
@@ -839,3 +877,6 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
     );
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[path = "debug_session/calculator_origins.rs"]
+mod calculator_origins;

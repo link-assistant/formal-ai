@@ -1,34 +1,7 @@
-//! Summarization-topic records loaded from `data/seed/summary-topics.lino`.
-//!
-//! Each `topic "<Name>"` entry lists multilingual `detection_keywords` and
-//! the canned one-paragraph body the summarization handler emits when the
-//! prompt picks that topic. The seed also encodes:
-//!
-//! - `trigger` — universal phrases that opt prompts into "summarize a topic"
-//!   mode (`summarize`, `summarise`, `резюме`, `概括`, …).
-//! - `reject_substring` — phrases that route to a different handler (e.g.
-//!   "summarize this *conversation*"), preventing this matcher from firing.
-//! - `reject_exact` — full normalized prompts that route elsewhere (the
-//!   single word "summarize" is handled by the conversation summarizer).
-//! - `constraint_marker` / `constraint_label` — substrings that surface a
-//!   structured constraint in the event log (e.g. "one paragraph" →
-//!   `summarization:constraint=one_paragraph`).
-//! - `fallback_body` — template used when no topic matched (uses `<topic>`).
-//!
-//! Adding a new summarization topic in any of the four supported languages
-//! therefore does not require touching Rust code.
+//! Routing cues and topic boundaries for summarization requests.
 
 use super::SUMMARY_TOPICS_LINO;
 use super::parser::{parse_lino, split_pipe_list};
-
-/// One summarization topic — the canonical display name, multilingual
-/// detection keywords, and the canned body the handler returns.
-#[derive(Debug, Clone, Default)]
-pub struct SummaryTopic {
-    pub display_name: String,
-    pub detection_keywords: Vec<String>,
-    pub body: String,
-}
 
 /// Top-level summary-topic bundle.
 #[derive(Debug, Clone, Default)]
@@ -38,8 +11,9 @@ pub struct SummaryTopicSeeds {
     pub reject_exact: Vec<String>,
     pub constraint_markers: Vec<String>,
     pub constraint_label: String,
-    pub fallback_body: String,
-    pub topics: Vec<SummaryTopic>,
+    pub fallback_response: String,
+    pub topic_leads: Vec<String>,
+    pub topic_tails: Vec<String>,
 }
 
 impl SummaryTopicSeeds {
@@ -73,15 +47,46 @@ impl SummaryTopicSeeds {
         true
     }
 
-    /// Pick the first topic whose detection keywords match the prompt.
+    /// Extract the named subject without using any registry record as a cue.
     #[must_use]
-    pub fn pick_topic(&self, normalized: &str) -> Option<&SummaryTopic> {
-        self.topics.iter().find(|topic| {
-            topic
-                .detection_keywords
-                .iter()
-                .any(|keyword| !keyword.is_empty() && normalized.contains(keyword.as_str()))
-        })
+    pub fn subject<'a>(&self, lower: &'a str) -> Option<&'a str> {
+        let (position, end) = self
+            .triggers
+            .iter()
+            .filter_map(|cue| {
+                lower
+                    .find(cue)
+                    .map(|position| (position, position + cue.len()))
+            })
+            .max_by_key(|(_, end)| *end)?;
+        let trim = |ch: char| {
+            ch.is_whitespace() || matches!(ch, '?' | '!' | '.' | ':' | '？' | '！' | '。' | '।')
+        };
+        let after = lower[end..].trim_matches(trim);
+        let subject = if after.is_empty() {
+            lower[..position].trim_matches(trim)
+        } else {
+            after
+        };
+        let start = self
+            .topic_leads
+            .iter()
+            .filter_map(|lead| {
+                subject
+                    .rfind(lead.as_str())
+                    .map(|position| position + lead.len())
+            })
+            .max()
+            .unwrap_or(0);
+        let subject = subject[start..].trim_matches(trim);
+        let end = self
+            .topic_tails
+            .iter()
+            .filter_map(|tail| subject.strip_suffix(tail.as_str()).map(str::len))
+            .min()
+            .unwrap_or(subject.len());
+        let subject = subject[..end].trim_matches(trim);
+        (!subject.is_empty()).then_some(subject)
     }
 
     /// Return `Some(label)` when any constraint marker fires in the prompt.
@@ -92,15 +97,6 @@ impl SummaryTopicSeeds {
             .iter()
             .any(|m| !m.is_empty() && normalized.contains(m.as_str()));
         hit.then_some(self.constraint_label.as_str())
-    }
-
-    /// Render the fallback body when no topic matched (`<topic>` substituted).
-    #[must_use]
-    pub fn render_fallback(&self, topic: &str) -> String {
-        if self.fallback_body.is_empty() {
-            return format!("{topic} summary recorded.");
-        }
-        self.fallback_body.replace("<topic>", topic)
     }
 }
 
@@ -125,26 +121,9 @@ pub fn summary_topic_seeds() -> SummaryTopicSeeds {
             "reject_exact" => seeds.reject_exact.push(child.id.to_lowercase()),
             "constraint_marker" => seeds.constraint_markers.push(child.id.to_lowercase()),
             "constraint_label" => seeds.constraint_label.clone_from(&child.id),
-            "fallback_body" => seeds.fallback_body.clone_from(&child.id),
-            "topic" => {
-                if child.id.is_empty() {
-                    continue;
-                }
-                let body = child.find_child_value("body").to_owned();
-                if body.is_empty() {
-                    continue;
-                }
-                seeds.topics.push(SummaryTopic {
-                    display_name: child.id.clone(),
-                    detection_keywords: split_pipe_list(
-                        child.find_child_value("detection_keywords"),
-                    )
-                    .into_iter()
-                    .map(|k| k.to_lowercase())
-                    .collect(),
-                    body,
-                });
-            }
+            "fallback_response" => seeds.fallback_response.clone_from(&child.id),
+            "topic_lead" => seeds.topic_leads.extend(split_pipe_list(&child.id)),
+            "topic_tail" => seeds.topic_tails.extend(split_pipe_list(&child.id)),
             _ => {}
         }
     }

@@ -14,17 +14,25 @@ const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const FIXTURE = path.join(REPO, 'rust/tests/fixtures/meta-executor-parity.json');
 await installNodeHost(new WorkerHost());
 const { replayCase } = await import('../../rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs');
-const { CASES } = await import('../../rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs');
+const { CASES, STATUS_CASES, CUE_CASES } = await import('../../rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs');
 
-const cases = [];
-for (const entry of CASES) cases.push({ ...entry, expected: await replayCase(entry) });
-const text = JSON.stringify({ schema: 'meta-executor-parity/v1', cases }, null, 2) + '\n';
-if (process.argv.includes('--write')) {
-  fs.writeFileSync(FIXTURE, text);
-  console.log(`wrote ${path.relative(REPO, FIXTURE)} with ${cases.length} cases`);
-} else if (fs.readFileSync(FIXTURE, 'utf8') !== text) {
-  console.error('meta-executor parity fixture is stale; run with --write');
-  process.exitCode = 1;
-} else {
-  console.log(`meta-executor parity fixture: ${cases.length} cases current`);
+const supplementalNames = new Set([...STATUS_CASES, ...CUE_CASES].map((entry) => entry.name));
+const fixtures = [
+  { path: FIXTURE, entries: CASES.filter((entry) => !supplementalNames.has(entry.name)) },
+  { path: path.join(REPO, 'rust/tests/fixtures/meta-executor-status-parity.json'), entries: STATUS_CASES },
+  { path: path.join(REPO, 'rust/tests/fixtures/meta-executor-cue-parity.json'), entries: CUE_CASES },
+];
+for (const fixture of fixtures) {
+  const cases = [];
+  for (const entry of fixture.entries) cases.push({ ...entry, expected: await replayCase(entry) });
+  const text = JSON.stringify({ schema: 'meta-executor-parity/v1', cases }, null, 2) + '\n';
+  if (process.argv.includes('--write')) {
+    fs.writeFileSync(fixture.path, text);
+    console.log(`wrote ${path.relative(REPO, fixture.path)} with ${cases.length} cases`);
+  } else if (fs.readFileSync(fixture.path, 'utf8') !== text) {
+    console.error(`${path.relative(REPO, fixture.path)} is stale; run with --write`);
+    process.exitCode = 1;
+  } else {
+    console.log(`${path.relative(REPO, fixture.path)}: ${cases.length} cases current`);
+  }
 }

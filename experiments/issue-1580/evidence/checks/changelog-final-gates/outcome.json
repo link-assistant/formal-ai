@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/formal_ai_subagent/local-gates.mjs"
+  ],
+  "exitCode": 0,
+  "finishedAt": "2026-11-22T05:39:25.246691+00:00",
+  "nativeExecutionClaim": false
+}

@@ -1,0 +1,194 @@
+{
+  "complete": true,
+  "observedAt": "2026-11-20T10:29:46.552379+00:00",
+  "sourceIdentitiesUnchanged": true,
+  "checks": [
+    {
+      "label": "hive-mind-draft-workflow.test.mjs",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/hive-mind-draft-workflow.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.88,
+      "file": "hive-mind-draft-workflow.test.mjs.log.gz",
+      "rawSha256": "3b7ff2a2e5a7005fae6fdc6faa32a38b3f54f097885aeaf975aaae061da7ebb9",
+      "archiveSha256": "d79b58586be5e8cf440c3ccb2eed4edd34f459fec8b974c819f4b7302a49d12d"
+    },
+    {
+      "label": "default-branch-build-policy.test.mjs",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 12.0,
+      "file": "default-branch-build-policy.test.mjs.log.gz",
+      "rawSha256": "8bf83e22762682acf3a02a80a2d2125c679ab9898cfb17c4659af7e979f6fc33",
+      "archiveSha256": "c0133a974195ae2730d18e93134c373862e1a6c664c081145e3e97f21eb13f3c"
+    },
+    {
+      "label": "fast-pull-request-production-profile.test.mjs",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.687,
+      "file": "fast-pull-request-production-profile.test.mjs.log.gz",
+      "rawSha256": "2bc5a5f004e44e58cef4103fbcf2d8dc5c5a4f14a8e0d160adabe85bdb819e15",
+      "archiveSha256": "ef0cfc485a8cc164c5cb2f8951d4627e6991dd5ab0602ec54db7fc12bca31c34"
+    },
+    {
+      "label": "documentation-only-ci-policy.test.mjs",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 3.146,
+      "file": "documentation-only-ci-policy.test.mjs.log.gz",
+      "rawSha256": "2f86be621728d570286555f397efc6f79a10fea9eb97d5817fd059b4c6ab2377",
+      "archiveSha256": "85d21adbfe49b928bbb4152df8ff5086ed724d6557ad016404fd3de64f5b191f"
+    },
+    {
+      "label": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 4.238,
+      "file": "check-abbreviations.log.gz",
+      "rawSha256": "ae7984b716ee3f2e1d62b3e701ecf2b5099b01b26211150941139cba3def9e27",
+      "archiveSha256": "38ca4ce65b9c680202799d2472e018f9c2c57069707fedb2484201876094a250"
+    },
+    {
+      "label": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 13.48,
+      "file": "check-file-size.log.gz",
+      "rawSha256": "55aac3fa56a40eae761380b4c57431ec4524efbc6e2d80a11afb28fb561f234d",
+      "archiveSha256": "215c0399638e663d2faf2531e1eb698b987a331639dbb059b4cc908ba1e34432"
+    },
+    {
+      "label": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 4.18,
+      "file": "check-file-size-js-twin.log.gz",
+      "rawSha256": "43e9f18e90da64ce5f02fb42f92209cd0e5832562a4f0b1bd43faa4b68c2dfa0",
+      "archiveSha256": "491e13bba78210769bb3edbfd4d1576f941bcf4c34b7f999e0f98ccc88e33205"
+    },
+    {
+      "label": "check-changelog-fragment-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 1.007,
+      "file": "check-changelog-fragment-js-twin.log.gz",
+      "rawSha256": "1927d8bf642f24daa2ad7ff6f553ac105f9f53f91deaf94b1818d405b44c098d",
+      "archiveSha256": "a00b138a325fc45302159aa60d791382f5ebf7c9acd278b460458deda5e573f6"
+    },
+    {
+      "label": "release#1",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "release#1"
+      ],
+      "exitCode": 0,
+      "seconds": 0.627,
+      "file": "release#1.log.gz",
+      "rawSha256": "dfcc146fa505ad601929180c7137637f063d14d56dcca91d415cb9b11221ed92",
+      "archiveSha256": "1cd224a9434931866f7a00ced3ead962f3d062916441ca1159799246748e452e"
+    },
+    {
+      "label": "release#2",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "release#2"
+      ],
+      "exitCode": 0,
+      "seconds": 257.004,
+      "file": "release#2.log.gz",
+      "rawSha256": "88f53e2860d81e62b1ac9f0ac32ae52d334152e6b5798c3b76aeb0184f9edb1c",
+      "archiveSha256": "9402ddb673afbe0a6541f1a3d99e90f0814fed9784782374ec95a75bea392de8"
+    },
+    {
+      "label": "staged-diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.134,
+      "file": "staged-diff-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "label": "working-diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.284,
+      "file": "working-diff-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "hostedCodeqlRepairVerified": false,
+  "fullIssueComplete": false
+}

@@ -1079,6 +1079,7 @@ for (const tool of tools) {
       localized.language,
       {
         ...localized,
+        name: localized.name ?? tool.name,
         description: localized.description ?? localized.note,
       },
     ]),

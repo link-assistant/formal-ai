@@ -1,0 +1,36 @@
+{
+  "head": "90b5159008da68c5c73534a5b5a4963b81deb04a",
+  "runId": 44804016891,
+  "producerFilesVerified": 124,
+  "reports": {
+    "rust.sarif": {
+      "sha256": "ed5672c718b0489adf14710661cd3c21b16c5e43ca6913ebac98eaee3b4c403b",
+      "results": 0,
+      "warningErrorNotifications": 0
+    },
+    "actions.sarif": {
+      "sha256": "5ef181eb347171cc5955c63da6ed2ef56441870ebb1c091a930036a00f74762f",
+      "results": 0,
+      "warningErrorNotifications": 0
+    }
+  },
+  "macroRows": 122534,
+  "macroSourceFiles": 2216,
+  "expansionStates": {
+    "expanded:outside-expansion": 42427,
+    "expanded:inside-expansion": 79476,
+    "unexpanded:outside-expansion": 631
+  },
+  "originalNotifications": 631,
+  "distinctOriginalPositions": 631,
+  "positionalCrosswalkCounts": {
+    "unexpanded-contexts": 631
+  },
+  "queryRuntimeWarnings": [
+    "WARNING: Not caching stages during query-loading, since max heap size is only 1800 MB."
+  ],
+  "queryCompiledAndExecuted": true,
+  "allMacroSemanticsQualified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

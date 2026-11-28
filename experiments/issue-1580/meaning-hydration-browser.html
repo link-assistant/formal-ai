@@ -1,0 +1,27 @@
+<!doctype html>
+<meta charset="utf-8"><title>Formal AI worker language regression</title>
+<style>body{font:17px/1.5 system-ui;background:#eef2f6;color:#182536;max-width:1000px;margin:32px auto;padding:0 24px}h1{font-size:28px}article{background:white;border:1px solid #c8d3df;border-radius:12px;padding:20px;margin:18px 0}pre{white-space:pre-wrap;font:15px/1.6 system-ui}.route{font:bold 17px monospace;color:#285ba4}small{color:#435368}</style>
+<h1>Formal AI — browser worker language regression</h1>
+<p id="version"></p><small>Real production JS worker and seed files. Diagnostic JS mode; native/WASM and external requests disabled. This is a regression harness, not the production app UI.</small>
+<div id="results">Loading the worker…</div>
+<script>
+const phase=location.port==='8048'?'Before: published 7f19154a':'After: registered meaning seeds + marker cache reset';
+document.querySelector('#version').textContent=phase;
+window.observed=[]; window.workerMessages=[];
+const prompts=['¿Qué es la fotosíntesis submarina de xyzzy?','¿Cómo funciona la fotosíntesis submarina de xyzzy?'];
+const worker=new Worker('/worker/formal_ai_worker.js?jsfallback=1');
+let started=false,index=0;
+worker.onerror=(event)=>{document.querySelector('#results').textContent=event.message;window.harnessError=event.message;worker.terminate()};
+worker.onmessage=({data})=>{
+ window.workerMessages.push(data);
+ if(data.kind==='ready'&&!started){started=true;document.querySelector('#results').replaceChildren();send();}
+ if(data.kind!=='message')return;
+ window.observed.push({prompt:prompts[index],...data});
+ const article=document.createElement('article'),h=document.createElement('h2'),route=document.createElement('p'),pre=document.createElement('pre');
+ h.textContent=prompts[index];h.style.fontSize='19px';route.className='route';route.textContent='intent: '+data.intent;pre.textContent=data.content;
+ article.append(h,route,pre);document.querySelector('#results').append(article);
+ if(++index<prompts.length)send();else {worker.terminate();window.harnessComplete=true;}
+};
+function send(){worker.postMessage({requestId:index+1,prompt:prompts[index],history:[],prefs:{offline:true,agentMode:false},userContext:{},memory:[],memoryEvents:[]})}
+setTimeout(()=>{if(!window.harnessComplete){worker.terminate();window.harnessError='The 45-second bounded worker experiment did not finish';document.querySelector('#results').append(window.harnessError)}},45000);
+</script>

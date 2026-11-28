@@ -39,7 +39,7 @@ test('a connection reset is a failure with no answer in it', () => {
   assert.match(unanswered[0].detail, /Connection reset by peer/);
 });
 
-test('a status code from the host is an answer and is never re-checked', () => {
+test('a permanent HTTP failure is final and is never re-checked', () => {
   const { answered, unanswered } = classifyFailures(
     extractFailures(MISSING_PAGE_REPORT)
   );
@@ -75,11 +75,11 @@ test('a timeout and an unknown outcome are also unanswered', () => {
 test('the accept list is read exactly as lychee reads it', () => {
   const ranges = parseAcceptList(ACCEPTED_STATUS);
 
-  for (const status of [200, 201, 204, 429, 500, 503, 599]) {
+  for (const status of [200, 201, 204]) {
     assert.ok(isAccepted(status, ranges), `${status} should be accepted`);
   }
   // The whole point of the gate: a page that is not there is not a link.
-  for (const status of [301, 400, 403, 404, 410, 418]) {
+  for (const status of [301, 400, 403, 404, 408, 410, 418, 429, 500, 503, 599]) {
     assert.ok(!isAccepted(status, ranges), `${status} must not be accepted`);
   }
   assert.deepEqual(parseAcceptList('200..204'), [{ from: 200, to: 203 }]);
@@ -322,4 +322,49 @@ test('end to end: a missing report claims nothing', async (t) => {
   }
 
   assert.match(readFileSync(outputs, 'utf-8'), /all_recovered=false/);
+});
+
+test('retry waits stop when no request would fit in the remaining budget', {timeout: 1000}, async () => {
+  let clock = 0;
+  const waits = [];
+  let calls = 0;
+  const results = await recheckAll(['https://reset.example/'], {
+    budgetMs: 30,
+    waitMs: 50,
+    now: () => clock,
+    sleep: async ms => { waits.push(ms); clock += ms; },
+    fetchImpl: async () => { calls += 1; throw new Error('reset'); },
+  });
+  assert.equal(calls, 1);
+  assert.deepEqual(waits, []);
+  assert.equal(results.get('https://reset.example/').outcome, 'unreachable');
+});
+
+test('a request uses only the remaining shared budget', {timeout: 1000}, async t => {
+  let fireTimeout;
+  const timer = Symbol('request deadline');
+  const cleared = [];
+  t.mock.method(globalThis, 'setTimeout', (callback, milliseconds) => {
+    assert.equal(milliseconds, 15, 'request timeout must use the remaining shared budget');
+    fireTimeout = callback;
+    return timer;
+  });
+  t.mock.method(globalThis, 'clearTimeout', handle => cleared.push(handle));
+  let requestSignal;
+  const pending = recheckAll(['https://silent.example/'], {
+    budgetMs: 15,
+    timeoutMs: 500,
+    attempts: 1,
+    now: () => 0,
+    fetchImpl: (_url, {signal}) => new Promise((_resolve, reject) => {
+      requestSignal = signal;
+      signal.addEventListener('abort', () => reject(new Error('deadline')));
+    }),
+  });
+  assert.equal(requestSignal.aborted, false);
+  fireTimeout();
+  assert.equal(requestSignal.aborted, true, 'per-request timeout exceeded the shared budget');
+  const result = await pending;
+  assert.equal(result.get('https://silent.example/').outcome, 'unreachable');
+  assert.deepEqual(cleared, [timer], 'the completed request releases its timer');
 });

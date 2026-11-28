@@ -1,0 +1,26 @@
+{
+  "oldSourceSha256": "238f5bc974ee634020989ae032b2a510baa377356dfcbec9c0ce45899b3907b2",
+  "newSourceSha256": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287",
+  "generatedRecords": [
+    {
+      "file": "js/server/worker-script-prerequisites.mjs",
+      "exactOneSourceIdentityChange": true,
+      "beforeSha256": "7a4566e13ff6b7315356c3041da2b605372e4cc89a81d8af1e0228cae5c56901",
+      "afterSha256": "c0965048ab511da7b5570afa1d479beefbda8ee7799bba996a658b8fd494002d"
+    },
+    {
+      "file": "js/worker-script-prerequisites.js",
+      "exactOneSourceIdentityChange": true,
+      "beforeSha256": "a84f907f2fe4358b7bf0f297b506580c14a1aaf81c216c0a178ee739c6fcf3f6",
+      "afterSha256": "a44a88e0e407b6bffae5199dc629da8790c74a0610078f7bd3e02f17dff7287e"
+    },
+    {
+      "file": "data/meta/runtime-feature-coverage.json",
+      "exactOneSourceIdentityChange": true,
+      "beforeSha256": "d4f2ea3841da300a1cfb6fe3e39207be6d8709dd95e40efdb3038f8e7a76228d",
+      "afterSha256": "f1364fe50708557c0f75eedb211f440a1ca18d2a330eb43e94a9818cab691b9a"
+    }
+  ],
+  "workerAndTypescriptByteIdentical": true,
+  "independentAuthorshipCredit": 0
+}

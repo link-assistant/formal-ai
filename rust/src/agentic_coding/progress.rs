@@ -15,8 +15,13 @@ mod source_fetch_observation;
 mod source_freshness;
 pub use source_freshness::owned_creation_readback_command;
 pub(super) use source_freshness::read_only_capability;
+mod fetch_read_receipt;
 mod work_item_read_receipt;
-use work_item_read_receipt::{without_exit_sentinel, work_item_read_failure_reason};
+use fetch_read_receipt::{legacy_fetch_notice, standalone_http_failure};
+use work_item_read_receipt::{
+    is_work_item_read_command, issue_view_command_url, rest_read_url, without_exit_sentinel,
+    work_item_read_failure_reason, work_item_read_url,
+};
 
 /// One observed client-owned tool execution in transcript order.
 #[derive(Debug)]
@@ -885,116 +890,4 @@ fn run_attempt_matches(attempt: &ToolAttempt, command: &str) -> bool {
             .as_deref()
             .and_then(super::tool_result::command_argument)
             .is_some_and(|attempted| attempted == command)
-}
-
-fn is_issue_view_command(command: &str) -> bool {
-    let mut words = command.split_whitespace();
-    words.next() == Some("gh")
-        && matches!(words.next(), Some("issue" | "pr"))
-        && words.next() == Some("view")
-}
-
-/// Whether a shell command is one of the reads this planner plans for a work
-/// item: the `gh` view read, or a REST fallback of issue #1155.
-fn is_work_item_read_command(command: &str) -> bool {
-    is_issue_view_command(command)
-        || (command.starts_with("gh api ") || command.starts_with("curl "))
-            && rest_read_url(command).is_some()
-}
-
-/// The GitHub work-item URL a shell read command targets, normalized to its `github.com` form.
-fn work_item_read_url(command: &str) -> Option<String> {
-    issue_view_command_url(command).or_else(|| rest_read_url(command))
-}
-
-/// The work-item URL of a `gh issue|pr view <url> …` command, when it is one.
-fn issue_view_command_url(command: &str) -> Option<String> {
-    let mut words = command.split_whitespace();
-    if words.next()? != "gh" {
-        return None;
-    }
-    if !matches!(words.next()?, "issue" | "pr") || words.next()? != "view" {
-        return None;
-    }
-    words
-        .next()
-        .and_then(super::general_planner::repository_work_reference)
-}
-
-/// The work-item URL a `repos/{owner}/{repo}/{kind}/{number}` API path reads.
-fn rest_read_url(command: &str) -> Option<String> {
-    let start = command.find("repos/")? + "repos/".len();
-    let mut segments = command[start..].split('/');
-    let owner = segments.next().filter(|owner| !owner.is_empty())?;
-    let repo = segments.next().filter(|repo| !repo.is_empty())?;
-    let kind = match segments.next()? {
-        "issues" => "issues",
-        "pulls" => "pulls",
-        _ => return None,
-    };
-    // The number segment runs into the `; printf` sentinel the read commands
-    // carry, so only its leading digits are the number.
-    let number: String = segments
-        .next()?
-        .chars()
-        .take_while(char::is_ascii_digit)
-        .collect();
-    if number.is_empty() {
-        return None;
-    }
-    // GitHub prints an issue as `/issues/{n}` and a pull request as
-    // `/pull/{n}`; folding `issues` onto a singular `issue` named a page no
-    // plan targets, so the REST reads were never matched to their work item.
-    let kind = if kind == "pulls" { "pull" } else { "issues" };
-    Some(format!("https://github.com/{owner}/{repo}/{kind}/{number}"))
-}
-
-// Only a leading seeded provider notice supplies legacy status-less Fetch failure evidence.
-// JSON and source text mentioning failure later in its body retain their source bytes.
-fn legacy_fetch_notice(raw: &str) -> bool {
-    let normalized = crate::engine::normalize_prompt(raw);
-    crate::seed::lexicon()
-        .bare_literals_for_role("tool_result_failure_signal")
-        .iter()
-        .any(|surface| {
-            normalized
-                .strip_prefix(crate::engine::normalize_prompt(surface).as_str())
-                .is_some_and(|tail| {
-                    tail.chars()
-                        .next()
-                        .is_none_or(|character| !character.is_alphanumeric())
-                })
-        })
-}
-
-// Whole single-line protocol failures are transport status, not article quotations.
-fn standalone_http_failure(raw: &str) -> bool {
-    let line = raw.trim_matches([' ', '\t', '\r', '\n']);
-    if line.chars().any(|character| {
-        matches!(character, '\u{85}' | '\u{2028}' | '\u{2029}' | '\u{feff}')
-            || (character.is_ascii_control() && character != '\t')
-    }) {
-        return false;
-    }
-    let Some((protocol, tail)) = line.split_once([' ', '\t']) else {
-        return false;
-    };
-    let Some(version) = protocol.strip_prefix("HTTP/") else {
-        return false;
-    };
-    let mut parts = version.split('.');
-    let digits = |part: &str| !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit());
-    if !parts.next().is_some_and(digits)
-        || parts.next().is_some_and(|part| !digits(part))
-        || parts.next().is_some()
-    {
-        return false;
-    }
-    let Some(code) = tail.split([' ', '\t']).find(|part| !part.is_empty()) else {
-        return false;
-    };
-    let code = code.strip_suffix(':').unwrap_or(code);
-    code.len() == 3
-        && code.bytes().all(|byte| byte.is_ascii_digit())
-        && matches!(code.as_bytes()[0], b'4' | b'5')
 }

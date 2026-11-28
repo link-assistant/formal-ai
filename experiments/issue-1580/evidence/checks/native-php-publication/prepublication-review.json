@@ -1,0 +1,33 @@
+{
+  "observedAt": "2026-11-18T13:00:31.785905+00:00",
+  "head": "471816d4e0458527343be2783d939a7b308971bf",
+  "fullGateRunHead": "c9e9eb3ff3d60c7ff290b28e4fadc1b214441174",
+  "postGateChange": "Correct one new Rust test evidence-format assertion; exact arithmetic answer and raw trace assertions retained. Rustfmt edition 2024 and whitespace pass.",
+  "postGatePatchLiterallyRead": true,
+  "postGatePatchSha256": "8a930f4545dc60ed124bd6efeb140c434678063b791f318a2927d519804e9725",
+  "sourceDeltaLiterallyRead": true,
+  "sourceDeltaSha256": "3aabdc08a257a87ee517b6f75bbc2e034b158e43dab90503a60f763e1f5cb285",
+  "sourceDeltaReadRanges": [
+    [
+      1,
+      250
+    ],
+    [
+      251,
+      394
+    ]
+  ],
+  "unchangedWorkflowSeparatelyRead": true,
+  "governedWitnessSeparatelyReviewed": true,
+  "aggregateLiterallyRead": true,
+  "aggregateSha256": "d279265e22feffa38e82b6e1c4bf059147bbf8516678f80aed9f83de7506fca7",
+  "allGatePayloadHashesVerified": true,
+  "allDetailedGatePayloadsLiterallyRead": false,
+  "counts": {
+    "PASS": 86,
+    "SKIP": 52,
+    "FAIL": 0
+  },
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

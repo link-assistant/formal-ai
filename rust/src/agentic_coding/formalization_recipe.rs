@@ -1,17 +1,15 @@
 //! The issue-#468 text → Links Notation formalization recipe.
 //!
-//! State machine: discover missing terms when necessary → bind the requested
-//! source → `write_file(formalize)` → `run_command(verify)` → final. The
-//! canonical task may still use its historical source as a last-resort fixture;
-//! every other task formalizes its own bytes rather than substituting that tale.
+//! Bind caller text or acquire a registered publication, then formalize,
+//! write, and verify the resulting knowledge base.
 
 use serde_json::json;
 
 use super::formalize::{
-    CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, FormalizedKnowledgeBase, PRIMITIVE_KINDS,
-    coverage_line, formalize_text_to_links,
+    FISHERMAN_DOC_ID, FormalizedKnowledgeBase, PRIMITIVE_KINDS, coverage_line,
+    formalize_text_to_links,
 };
-use super::lexicon::Lexicon;
+use super::lexicon::{Lexicon, Work};
 use super::planner::{
     AgenticPlan, Capability, Progress, fetch_arguments, plan_one, tool_for, trace_route,
     write_arguments,
@@ -24,13 +22,6 @@ use crate::service_accessibility::ServiceAccessibilityCache;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use crate::source_walk::LookupBounds;
 
-/// The Russian web-search query the planner issues when a search tool exists.
-pub const SEARCH_QUERY: &str = "Пушкин Сказка о рыбаке и рыбке полный текст";
-
-/// The source URL the planner fetches when a fetch tool exists.
-pub const CANONICAL_SOURCE_URL: &str =
-    "https://ru.wikisource.org/wiki/Сказка_о_рыбаке_и_рыбке_(Пушкин)";
-
 /// The path the planner writes the knowledge base to.
 pub const KB_PATH: &str = "knowledge-base.lino";
 
@@ -40,40 +31,51 @@ pub(super) fn is_formalization_task(prompt: &str) -> bool {
     crate::seed::lexicon().mentions_role(crate::seed::ROLE_AGENT_ACTION_FORMALIZE_VERB, &normalized)
 }
 
-/// The source text a formalization task carries inline, when it quotes one.
-///
-/// `formal-ai agent --task "Formalize «The cat sat on the mat» …"` names its
-/// own document, so the recipe must formalize that text instead of silently
-/// substituting the canonical tale (issue #956). A quoted *title* of the
-/// canonical tale — the canonical task's own phrasing — still selects the full
-/// tale rather than its five-word name.
-fn inline_formalization_source(task: &str) -> Option<String> {
-    let segment = crate::normal_markov::quoted_segment_spans(task)
-        .into_iter()
-        .find(|segment| !segment.text.trim().is_empty())?;
-    let source = segment.text.trim();
-    // Identity is not topic overlap. Only this legacy recipe's supported work
-    // may select its cached resource; other catalogue entries stay literal.
-    // Once the first source is bound, a later quoted label cannot replace it.
-    let is_supported_reference = Lexicon::standard()
-        .work_for_title(source)
-        .is_some_and(|work| work.doc_id == FISHERMAN_DOC_ID);
-    (!is_supported_reference).then(|| source.to_owned())
-}
-
-/// Bind an unquoted request to the document it actually asks us to formalize.
-///
-/// A recognised catalogue work remains a reference that may be fetched. Every
-/// other request is itself the only authoritative source available: when it
-/// uses the conventional `instruction: document` shape, the right-hand side is
-/// the document; otherwise the full request is preserved.
-fn requested_formalization_source(task: &str) -> Option<String> {
-    if Lexicon::standard()
-        .best_work_for(task)
-        .is_some_and(|work| work.doc_id == FISHERMAN_DOC_ID)
-    {
+/// Build the publisher request from a registered MediaWiki work.
+#[must_use]
+pub fn publication_url(work: &Work) -> Option<String> {
+    let mut url = url::Url::parse(work.publisher_api.as_deref()?).ok()?;
+    if url.scheme() != "https" || url.query().is_some() {
         return None;
     }
+    url.query_pairs_mut()
+        .append_pair("action", "parse")
+        .append_pair("page", work.publisher_title.as_deref()?)
+        .append_pair("prop", "text")
+        .append_pair("formatversion", "2")
+        .append_pair("format", "json");
+    Some(url.into())
+}
+
+pub(super) fn publication_text(work: &Work, capture: &str) -> Option<String> {
+    if capture.len() > 1_048_576 {
+        return None;
+    }
+    let parsed: serde_json::Value = serde_json::from_str(capture).ok()?;
+    if parsed.pointer("/parse/title")?.as_str()? != work.publisher_title.as_deref()? {
+        return None;
+    }
+    let html = parsed.pointer("/parse/text")?.as_str()?;
+    let class = work.publisher_content_class.as_deref()?;
+    let opening = html.split("<div class=\"").skip(1).find_map(|element| {
+        let (classes, after_classes) = element.split_once('"')?;
+        if !classes.split_ascii_whitespace().any(|token| token == class) {
+            return None;
+        }
+        after_classes.split_once('>').map(|(_, body)| body)
+    })?;
+    let (main, _) = opening.split_once("</div>")?;
+    let mut body = main.to_owned();
+    for tag in ["<br />", "<br/>", "<br>"] {
+        body = body.replace(&format!("{tag}\n"), "\n").replace(tag, "\n");
+    }
+    let body = crate::web_formalize::strip_tags_keep_lines(&body);
+    let text = super::work_item_page::decode_entities(&body);
+    (!text.trim().is_empty()).then_some(text)
+}
+
+/// Resolve the source in a task that does not quote a registered title.
+fn caller_document(task: &str) -> Option<String> {
     let source = task
         .split_once(':')
         .map_or(task, |(_, document)| document)
@@ -154,54 +156,72 @@ pub(super) fn plan_formalization_step(
 
     let progress = Progress::scan(messages);
 
-    // A task that quotes its own source text carries the document inline, so
-    // searching or fetching the canonical tale would formalize the wrong text.
-    // Before this route existed the custom `--task` was silently discarded in
-    // favour of the seeded fairy tale (issue #956).
-    let inline_source = inline_formalization_source(task);
-    let requested_source = inline_source
-        .clone()
-        .or_else(|| requested_formalization_source(task));
+    let lexicon = Lexicon::standard();
+    let inline = crate::normal_markov::quoted_segment_spans(task)
+        .into_iter()
+        .find(|segment| !segment.text.trim().is_empty());
+    let work = match &inline {
+        Some(segment) => lexicon.work_for_title(segment.text.trim()),
+        None => lexicon.best_work_for(task),
+    };
+    let publication = work.and_then(|work| publication_url(work).map(|url| (work, url)));
+    let requested_source = if publication.is_some() {
+        None
+    } else if let Some(segment) = &inline {
+        Some(segment.text.trim().to_owned())
+    } else {
+        caller_document(task)
+    };
     trace_route(
         "formalization_source",
-        requested_source.as_deref().unwrap_or(FISHERMAN_DOC_ID),
+        requested_source
+            .as_deref()
+            .or_else(|| work.map(|work| work.doc_id.as_str()))
+            .unwrap_or(""),
     );
 
-    if inline_source.is_none() {
-        // An unfamiliar document searches for what it does not understand;
-        // the recognised catalogue work alone retains its source-text fetch as
-        // a compatibility fallback.
-        //
-        // Step 1: search for what the task itself does not understand — the
-        // query is the source's first unresolved surface, never a pinned one.
-        if let Some(tool) = tool_for(tool_names, Capability::Search)
-            && !progress.done(Capability::Search)
-        {
-            let query = requested_source
-                .as_deref()
-                .and_then(discovery_query)
-                .unwrap_or_else(|| SEARCH_QUERY.to_owned());
+    // Step 1: discover the publisher title or an unresolved surface.
+    if (inline.is_none() || publication.is_some())
+        && let Some(tool) = tool_for(tool_names, Capability::Search)
+        && !progress.done(Capability::Search)
+    {
+        let query = publication
+            .as_ref()
+            .and_then(|(work, _)| work.publisher_title.clone())
+            .or_else(|| requested_source.as_deref().and_then(discovery_query));
+        if let Some(query) = query {
             return plan_one(tool, json!({ "query": query }).to_string());
         }
-        // Step 2: fetch the source the task names. Only the recognised
-        // catalogue work — no requested source of its own — still fetches the
-        // canonical tale URL, as its regression fixture.
-        if requested_source.is_none()
-            && let Some(tool) = tool_for(tool_names, Capability::Fetch)
+    }
+    // Step 2: bind the actual publisher response or the caller text.
+    let source = if let Some((work, url)) = publication {
+        if let Some(tool) = tool_for(tool_names, Capability::Fetch)
             && !progress.done(Capability::Fetch)
         {
-            return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
+            return plan_one(tool, fetch_arguments(&url));
         }
-    }
-
-    // The source text for the knowledge base: the text quoted in the task if
-    // there is one, else the latest non-errored fetch result, else the
-    // canonical synopsis (the determinism fallback).
-    let source = requested_source
-        .as_deref()
-        .or(progress.fetched_text.as_deref())
-        .unwrap_or(CANONICAL_FISHERMAN_SYNOPSIS);
-    let (formalized, grounding) = formalize_with_grounding(source);
+        let captured = progress
+            .fetched_pages
+            .iter()
+            .rev()
+            .find(|(source_url, _)| source_url == &url)
+            .and_then(|(_, body)| publication_text(work, body));
+        let Some(captured) = captured else {
+            return AgenticPlan::Final(crate::seed::agentic_message(
+                "formalization_recipe_source_unavailable",
+                &[("source", &url)],
+            ));
+        };
+        captured
+    } else if let Some(source) = requested_source {
+        source
+    } else {
+        return AgenticPlan::Final(crate::seed::agentic_message(
+            "formalization_recipe_source_required",
+            &[],
+        ));
+    };
+    let (formalized, grounding) = formalize_with_grounding(&source);
     // The written knowledge base carries the deep grounding too: the graph's
     // concept records with their provenance, and every need row — satisfied or
     // reported unsatisfiable (issue #1138, plan 04 L11/L16).

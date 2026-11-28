@@ -1,0 +1,32 @@
+{
+  "format": "partitioned-producer-inventory",
+  "records": 124,
+  "parts": [
+    {
+      "file": "producer-files-part-1.json",
+      "records": 40,
+      "sha256": "7bae7d58aa1f4fc30bbe2162fa4aaa5a80c3a1bb788d4c2daa442f38bbb121ba"
+    },
+    {
+      "file": "producer-files-part-2.json",
+      "records": 40,
+      "sha256": "4ee096164bd3a80c8d43b068406d736dd9011a8e4888be773ba82ffecc677a81"
+    },
+    {
+      "file": "producer-files-part-3.json",
+      "records": 40,
+      "sha256": "e8d6b823141e7fa1d1894bd60170ff9ea3122c06a92775d0aed47045e70a747b"
+    },
+    {
+      "file": "producer-files-part-4.json",
+      "records": 4,
+      "sha256": "c1fb22600b51d1dd35fef7a68e7bf69a59a52388dc70a4e8cc2efd40c0b3c728"
+    }
+  ],
+  "originalInventory": {
+    "file": "original-producer-inventory.json.gz",
+    "rawSha256": "bb427b46beda5cb7b9687525516fac86b4178b4fda42684a8db28c74c4692a94",
+    "bytes": 160652,
+    "lines": 3474
+  }
+}

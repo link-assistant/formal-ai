@@ -1,0 +1,288 @@
+{
+  "files": [
+    {
+      "file": "draft-pages-release-failure-tests.log",
+      "bytes": 293,
+      "sha256": "bdad3fd8372c71a0e886bda729e9d5359aa39768d5e0281569dfbdff98c0e013"
+    },
+    {
+      "file": "draft-pages-release-failure-tests.py",
+      "bytes": 6242,
+      "sha256": "14d08094eb07398d20a0e6df5c78097b2f174878d6932b0db93939abc5778e42"
+    },
+    {
+      "file": "implement-pages-release-failure.log",
+      "bytes": 278,
+      "sha256": "ce63329afba518e33ffdf6d86a5acc745346095bbc5570c08b00032ac4bc737a"
+    },
+    {
+      "file": "implement-pages-release-failure.py",
+      "bytes": 4513,
+      "sha256": "4f38187a017a08ea319926ce3fac520c9a51f18ee98eadd05c70a0027dc447ac"
+    },
+    {
+      "file": "pages-release-failure/before.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure/before.stdout",
+      "bytes": 7017,
+      "sha256": "1ce60f6bfe6d5a0733317e83228de3c9a98a27250367c76f9b057ca2f96d1f9f"
+    },
+    {
+      "file": "pages-release-failure/generation.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure/generation.stdout",
+      "bytes": 45,
+      "sha256": "1aedc82279e647569290e9f7dbacf9f5bf61672a16a29e5884d275203d5bc72b"
+    },
+    {
+      "file": "pages-release-failure/negative-control.json",
+      "bytes": 129,
+      "sha256": "7dd334270a357bbe58348cb9ea1d93552bdb8095e7a97b29c2417d8c5af88351"
+    },
+    {
+      "file": "pages-release-failure-recheck/admission.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-recheck/admission.stdout",
+      "bytes": 14681,
+      "sha256": "fc546255d6376a1cbb217080e54b57cc6974a726d33e7cc6d6779b60bb9282b7"
+    },
+    {
+      "file": "pages-release-failure-recheck/check-abbreviations.log",
+      "bytes": 169,
+      "sha256": "9d706e09ccc0e2ed635bd9d6afc31dda7ecccbc5c7033a67d1cb2abd63a79cdc"
+    },
+    {
+      "file": "pages-release-failure-recheck/check-ci-speed.log",
+      "bytes": 5439,
+      "sha256": "bf6f2e746f80e75d3af96dfa2e7e59b3e0ed91a984ddee0d1b2d736923b2f990"
+    },
+    {
+      "file": "pages-release-failure-recheck/check-file-size-js-twin.log",
+      "bytes": 139,
+      "sha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9"
+    },
+    {
+      "file": "pages-release-failure-recheck/check-file-size.log",
+      "bytes": 47545,
+      "sha256": "941deca2018bf9247aadecbb387d17970458330d4261afff3541d1cb43635bbe"
+    },
+    {
+      "file": "pages-release-failure-recheck/check-readable-code.log",
+      "bytes": 122,
+      "sha256": "5affe010fd8e6c7042b3296f02ebe52417752d62048d14b0375be35afd2860c7"
+    },
+    {
+      "file": "pages-release-failure-recheck/check-runner-labels.log",
+      "bytes": 188,
+      "sha256": "459e4bb7ba32ebfbc740d7bf239d62a8b71fa0ac03b438cefc773a24660bff7f"
+    },
+    {
+      "file": "pages-release-failure-recheck/check-tests-as-documentation.log",
+      "bytes": 227,
+      "sha256": "4c41d72c51bbe463871ad0778b35e99b4f75ff10bcbbd0578dc223ffc2b13939"
+    },
+    {
+      "file": "pages-release-failure-recheck/gates.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-recheck/gates.stdout",
+      "bytes": 243,
+      "sha256": "a9d9819b2070fa21e0ff254c0097ffb2d4b44700a8a73e9f8c6bb8e07720a632"
+    },
+    {
+      "file": "pages-release-failure-recheck/outcome.json",
+      "bytes": 71,
+      "sha256": "70eeb7ea6fbbc5e0ea55f0406c1a8df4ac6c3be54ff650d014b1be6dfe8a08ca"
+    },
+    {
+      "file": "pages-release-failure-recheck/records.json",
+      "bytes": 1008,
+      "sha256": "6af79b08dd246ba32a947c2dcef8c0aaf5c8a572d4d6b6990a17cac4b989e7e3"
+    },
+    {
+      "file": "pages-release-failure-recheck/trust.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-recheck/trust.stdout",
+      "bytes": 1296,
+      "sha256": "1c9c7d8141ae48d0a2212f77bd66c84f55055e221aec98179e8422bab3e938ee"
+    },
+    {
+      "file": "pages-release-failure-recheck/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-recheck/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/focused.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/focused.stdout",
+      "bytes": 2788,
+      "sha256": "b73f1eed137afdd0e65a8fd044a0e0ea2dbe743b2d45e1829b12477123600f32"
+    },
+    {
+      "file": "pages-release-failure-validation/gate-list.txt",
+      "bytes": 17851,
+      "sha256": "a2261f7178ebd5f67b64afbcebc4933e7eaa5e35b83671d6d792a4184f5c6050"
+    },
+    {
+      "file": "pages-release-failure-validation/generated-deployed.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/generated-deployed.stdout",
+      "bytes": 135,
+      "sha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce"
+    },
+    {
+      "file": "pages-release-failure-validation/native-operation-view.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/native-operation-view.stdout",
+      "bytes": 3149,
+      "sha256": "3104a140e8b6120a5fc40e8a3af19765f83e4bc8fc36d8fc98f3b9187c4d3b33"
+    },
+    {
+      "file": "pages-release-failure-validation/outcome.json",
+      "bytes": 116,
+      "sha256": "84ad8705362d1e68187e44fc26d50177811d31648b7a109cf64727f68ad72921"
+    },
+    {
+      "file": "pages-release-failure-validation/pages-admission.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/pages-admission.stdout",
+      "bytes": 15509,
+      "sha256": "2b203dcd38bf151f7034961fa9e6a0249f3df390d14cd9738e9eb9c25974d9f4"
+    },
+    {
+      "file": "pages-release-failure-validation/production-profile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/production-profile.stdout",
+      "bytes": 4617,
+      "sha256": "d3dfbc3a58c491e26f9170e9e0cf909cf14c62e47f3dc9e66614d243a7ec6455"
+    },
+    {
+      "file": "pages-release-failure-validation/records.json",
+      "bytes": 2422,
+      "sha256": "5a723745aeaab63719026bd9f27bad6b0e766fb5ec646d5a1453c91a47367a0e"
+    },
+    {
+      "file": "pages-release-failure-validation/staged-activation.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/staged-activation.stdout",
+      "bytes": 858,
+      "sha256": "a2e6860af41b6ce43b123ca1e46da1f7404aabfbc8432b7215d6bd803349b4aa"
+    },
+    {
+      "file": "pages-release-failure-validation/staged-authority.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/staged-authority.stdout",
+      "bytes": 1793,
+      "sha256": "da8fa3ad6e853cd7c60169293cb5c3ed9ff37fdbaeeb2cdad6ea53e0cbb13874"
+    },
+    {
+      "file": "pages-release-failure-validation/touched-gates.stderr",
+      "bytes": 101,
+      "sha256": "70b8e4edd0474e5654d5744644c76301b3b4b093983d3ea8987494ac8deea9d4"
+    },
+    {
+      "file": "pages-release-failure-validation/touched-gates.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "pages-release-failure-validation/worker.log",
+      "bytes": 266,
+      "sha256": "49a2b79cb86f01f31231961eb06da6071fed41aa63d3ce7bbfa97cc09c7214b0"
+    },
+    {
+      "file": "recheck-pages-release-failure.log",
+      "bytes": 181,
+      "sha256": "df0ee076f89533ec5b942554c594108728ed8d37c355a444740b46d591a509ad"
+    },
+    {
+      "file": "recheck-pages-release-failure.py",
+      "bytes": 1543,
+      "sha256": "b908f205f29dc014977e3108eb034a8aca12ac6bdbdc87f90dc40675e83d4296"
+    },
+    {
+      "file": "record-pages-release-failure-checkpoint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "record-pages-release-failure-checkpoint.py",
+      "bytes": 7693,
+      "sha256": "3427cbb8ee0932d6fe507fae99c3f4c94eca4d2818b443fb8dc464a8d91da4dc"
+    },
+    {
+      "file": "repair-pages-shell-extraction.log",
+      "bytes": 275,
+      "sha256": "4ed5b0a2ef3c27e2940ae9d6f365a5de3c33890f2b9195c5bef4edaa3d957c2e"
+    },
+    {
+      "file": "repair-pages-shell-extraction.py",
+      "bytes": 785,
+      "sha256": "c29e7a7622ddb423c397183c0a320b487a05eee76ea0a1d5d794473b54532cb5"
+    },
+    {
+      "file": "validate-pages-release-failure.log",
+      "bytes": 221,
+      "sha256": "99f130e12bac0c66b692b70582546b075b5ffaff924bcf82ff488918bc4f1028"
+    },
+    {
+      "file": "validate-pages-release-failure.py",
+      "bytes": 2688,
+      "sha256": "a9d1628370626517fb4a63ab67bb8a52c7e7de37b977748d67cd4c0d7a3ed89c"
+    }
+  ],
+  "rawSha256": "819b3e7928b65a60c3f5fc2376f8322f6946b80e98f6d68b0f06672ee303ed55",
+  "archiveSha256": "cc908515fc527a3f5eb211d1e5811413efbe377f0241f284bb2a3381908fd6ba",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

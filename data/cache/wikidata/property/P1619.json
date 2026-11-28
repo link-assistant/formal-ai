@@ -1,0 +1,160 @@
+{
+  "entities": {
+    "P1619": {
+      "type": "property",
+      "datatype": "time",
+      "id": "P1619",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "date of official opening"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дата официального открытия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आधिकारिक उद्घाटन की तिथि"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "正式開放日期"
+        },
+        "es": {
+          "language": "es",
+          "value": "fecha de inauguración oficial"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "date or point in time a place, organization, or event officially opened"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дата или момент времени, когда музей, театр и т.д. был официально открыт"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "场所、组织或活动正式开业的日期或时间点"
+        },
+        "es": {
+          "language": "es",
+          "value": "fecha o punto temporal en la que un evento, museo, teatro, etc. es oficialmente abierto"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "opening date"
+          },
+          {
+            "language": "en",
+            "value": "opened"
+          },
+          {
+            "language": "en",
+            "value": "date opened"
+          },
+          {
+            "language": "en",
+            "value": "officially opened on"
+          },
+          {
+            "language": "en",
+            "value": "inaugurated"
+          },
+          {
+            "language": "en",
+            "value": "launch date"
+          },
+          {
+            "language": "en",
+            "value": "official opening"
+          },
+          {
+            "language": "en",
+            "value": "grand opening"
+          },
+          {
+            "language": "en",
+            "value": "date of opening"
+          },
+          {
+            "language": "en",
+            "value": "launched"
+          },
+          {
+            "language": "en",
+            "value": "inauguration"
+          },
+          {
+            "language": "en",
+            "value": "inauguration date"
+          },
+          {
+            "language": "en",
+            "value": "official opening time"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "дата открытия"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "正式开放日期"
+          },
+          {
+            "language": "zh",
+            "value": "正式开业日期"
+          },
+          {
+            "language": "zh",
+            "value": "开业日期"
+          },
+          {
+            "language": "zh",
+            "value": "正式开业"
+          },
+          {
+            "language": "zh",
+            "value": "盛大开业"
+          },
+          {
+            "language": "zh",
+            "value": "落成"
+          },
+          {
+            "language": "zh",
+            "value": "落成日期"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "inaugurado en"
+          },
+          {
+            "language": "es",
+            "value": "inaugurada en"
+          },
+          {
+            "language": "es",
+            "value": "fecha de inauguración"
+          },
+          {
+            "language": "es",
+            "value": "fecha de apertura"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

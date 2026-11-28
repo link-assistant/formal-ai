@@ -1,0 +1,286 @@
+{
+  "draftedFromHead": "2f1fc2875f7928a996f5411465d50104fafc69bb",
+  "focused": {
+    "records": [
+      {
+        "label": "source-placement",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/source-test-placement-twin.test.mjs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 1.709
+      },
+      {
+        "label": "fast-pr-profile",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 5.384
+      },
+      {
+        "label": "hive-complete",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/hive-work-item-consumer.test.mjs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 161.191
+      },
+      {
+        "label": "practical-help",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/issue-1395-practical-help.test.mjs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 81.07
+      },
+      {
+        "label": "rustfmt",
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "scripts/release-changelog.rs",
+          "rust/src/solver_helpers/code.rs",
+          "rust/tests/fixtures/practical-help-tests.rs",
+          "rust/tests/unit/reasoning_contracts.rs",
+          "rust/tests/unit/specification/prompt_variations_facts.rs",
+          "rust/tests/unit/specification/pronoun_topic_follow_up.rs",
+          "rust/tests/unit/specification/synthesis.rs",
+          "rust/tests/fixtures/fact-claims/publisher_transport.rs",
+          "rust/tests/unit/solver/javascript_program.rs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.259
+      }
+    ],
+    "failed": 0,
+    "rustExecuted": false,
+    "completedAt": "2026-11-22T21:30:13.835777+00:00"
+  },
+  "touchedGates": {
+    "records": [
+      {
+        "label": "native-policy",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "experiments/issue-1580/native-regression-groups.test.mjs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 16.403
+      },
+      {
+        "label": "check-file-size",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-file-size"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 10.479
+      },
+      {
+        "label": "check-file-size-js-twin",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-file-size-js-twin"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 3.439
+      },
+      {
+        "label": "check-tests-as-docs",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-tests-as-docs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 5.946
+      },
+      {
+        "label": "check-tests-as-documentation-javascript-twin",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-tests-as-documentation-javascript-twin"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 6.363
+      },
+      {
+        "label": "check_js_rust_translation",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check_js_rust_translation"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 2.605
+      },
+      {
+        "label": "check-wasm-worker-current",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-wasm-worker-current"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.4
+      },
+      {
+        "label": "check-minimal-core-boundary",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-minimal-core-boundary"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.533
+      },
+      {
+        "label": "check-minimal-core-boundary-js-twin",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-minimal-core-boundary-js-twin"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.329
+      },
+      {
+        "label": "check-generate-module-map-js-twin",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-generate-module-map-js-twin"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.35
+      },
+      {
+        "label": "check-required-documentation",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-required-documentation"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.221
+      }
+    ],
+    "failed": 0,
+    "rustExecuted": false,
+    "completedAt": "2026-11-22T21:31:27.140597+00:00"
+  },
+  "controlledCacheChange": {
+    "before": "recipe-source-epoch-invalidated",
+    "after": "pass",
+    "productionFreshnessChecksChanged": false
+  },
+  "sources": [
+    {
+      "path": "docs/case-studies/issue-1580/current-ci-regressions.md",
+      "sha256": "832faf90c16a76d053f474c670c51d7d636f6942c161afdba61b116a3e2f5393"
+    },
+    {
+      "path": "docs/case-studies/issue-1580/templates/java-historical-review-index.json",
+      "sha256": "aca49ec1ad0ccd54377f2bf8fe68453a706d80456bed8f15fd98edf162932928"
+    },
+    {
+      "path": "experiments/issue-1580/native-hive-fixture-probe.mjs",
+      "sha256": "222850101abef8d621835542e941de282bbc4620a95b5136d96f200bb68dc695"
+    },
+    {
+      "path": "experiments/issue-1580/work-plan.md",
+      "sha256": "c724ff16f8a9a31c421ceee03126c31e7af4ee9e1059090d2f1b9fedb346809a"
+    },
+    {
+      "path": "rust/src/solver_helpers/code.rs",
+      "sha256": "771e42ea51f73e76146606a6a7bc40265f86f95974bc1a836bc1acd75fa8dacb"
+    },
+    {
+      "path": "rust/tests/fixtures/practical-help-tests.rs",
+      "sha256": "c86115bdf098cf66f127c88d08e8906c302f55ba508350a6ac290812e2c0b345"
+    },
+    {
+      "path": "rust/tests/unit/reasoning_contracts.rs",
+      "sha256": "f51031ef173a32af8f63faae1638f6995db71fcedb98a3e6c877bb0005595e84"
+    },
+    {
+      "path": "rust/tests/unit/specification/prompt_variations_facts.rs",
+      "sha256": "e727bba32aba887a47cda501a929ea1797ecbb7db3c1eb57482ef5838c356244"
+    },
+    {
+      "path": "rust/tests/unit/specification/pronoun_topic_follow_up.rs",
+      "sha256": "953866dba2523fbb90dea3d0dc602904b671b9b4fca1fe144a83c7a2a6264bc9"
+    },
+    {
+      "path": "rust/tests/unit/specification/synthesis.rs",
+      "sha256": "e4c2209c736d707951dee2c040d1e14decf00c32e0d5485539a4b9693ffc998b"
+    },
+    {
+      "path": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "sha256": "2ba63908a096e1eabefe4a6cb80bb49a948e8168989dc76cd8288c5f42495150"
+    },
+    {
+      "path": "rust/tests/web/hive-work-item-consumer.test.mjs",
+      "sha256": "e3ca0b542f28f7c7b0ce467f847b50391f86aafe9e9845722b3f26b125855215"
+    },
+    {
+      "path": "scripts/release-changelog.rs",
+      "sha256": "1a7feead3ca3114e4cbd32bc3f1c7ea8a6aa3b49dccb3cea5ec9083eae9648e9"
+    },
+    {
+      "path": "rust/tests/fixtures/fact-claims/publisher_transport.rs",
+      "sha256": "194a8dbdb015047f98459ac17b0a62254dba992d8e71c7680ddb8198af6d74b3"
+    },
+    {
+      "path": "rust/tests/unit/solver/javascript_program.rs",
+      "sha256": "07c7d6cd43611eea839b16ca0c337575aec0e648d943eb675079f916e30cd018"
+    }
+  ],
+  "payloadCount": 58,
+  "archiveSha256": "f4b25f88499fe24a9488d668ff3f74a9bb9140ce2d6e97c9e58f2bf5b1c7f429",
+  "roundTripVerified": true,
+  "nativeCompilationOrExecutionLocal": false,
+  "hostedNativeChecks": "pending",
+  "independentAuthorshipCredit": 0,
+  "broaderIssueAcceptance": "unfinished"
+}

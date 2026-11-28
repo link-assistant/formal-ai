@@ -1,0 +1,143 @@
+{
+  "snapshots": [
+    {
+      "observedAt": "2026-11-18T13:31:39.495995+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 20,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:32:10.924224+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:32:42.166317+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:33:13.120938+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:33:44.160640+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:34:15.495745+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:34:46.491556+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:35:18.140094+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:35:49.194537+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:36:20.525156+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:36:51.721765+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:37:22.940987+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:37:53.976166+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:38:25.007914+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:38:56.365210+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:39:27.384567+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:39:58.520313+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:40:29.962906+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:41:02.162054+00:00",
+      "head": "73da561d993cee3506e9f77dba353255888c4acc",
+      "workflowCount": 23,
+      "completed": 23,
+      "failed": [
+        {
+          "id": 44314403386,
+          "name": "Layered CI",
+          "conclusion": "failure"
+        }
+      ]
+    }
+  ]
+}

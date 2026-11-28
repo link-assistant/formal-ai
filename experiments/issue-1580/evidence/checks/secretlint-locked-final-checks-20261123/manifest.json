@@ -1,0 +1,19 @@
+{
+  "purpose": "Actual secret scan and syntax verification after committing the complete locked scanner closure",
+  "sourceHead": "48a0e3e6f903cac2ebdcc98e47d7915901031245",
+  "allCommandsPassed": true,
+  "commands": 3,
+  "comparedBase": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "fullLiteralLogRead": true,
+  "hostedNode22ExecutionVerified": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1686,
+    "sha256": "083377b7dcf550de9e539e6516225c898f7b09a5f37b9d4546273f4f8180fa7c"
+  },
+  "members": 8,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T14:20:53.920736+00:00"
+}

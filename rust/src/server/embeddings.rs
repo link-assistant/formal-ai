@@ -13,6 +13,7 @@ use crate::engine::estimate_tokens;
 use crate::seed::{lexicon, parser::parse_lino, try_resolve_model_id};
 
 pub(super) const MODEL: &str = "formal-ai-embeddings";
+pub(super) const MINIMUM_DIMENSIONS: u16 = 1;
 pub(super) const DIMENSIONS: u16 = 4096;
 const MAXIMUM_INPUTS: usize = 128;
 const MAXIMUM_INPUT_TOKENS: u32 = 8192;
@@ -29,7 +30,7 @@ fn words(text: &str) -> impl Iterator<Item = &str> {
 }
 
 struct ConceptIndex {
-    surfaces: BTreeMap<String, Vec<usize>>,
+    surfaces: BTreeMap<String, Vec<u16>>,
     maximum_words: usize,
 }
 
@@ -68,11 +69,7 @@ impl ConceptIndex {
             return None;
         }
         // Byte order is shared with the JavaScript endpoint.
-        let coordinates: BTreeMap<_, _> = concepts
-            .into_iter()
-            .enumerate()
-            .map(|(index, concept)| (concept, index))
-            .collect();
+        let coordinates: BTreeMap<_, _> = concepts.into_iter().zip(0..DIMENSIONS).collect();
         let surfaces = surfaces
             .into_iter()
             .map(|(surface, links)| {
@@ -86,10 +83,10 @@ impl ConceptIndex {
         })
     }
 
-    fn vector(&self, text: &str) -> Vec<u8> {
+    fn matches(&self, text: &str) -> BTreeSet<u16> {
         let normalized = normalize(text);
         let tokens: Vec<_> = words(&normalized).collect();
-        let mut vector = vec![0; usize::from(DIMENSIONS)];
+        let mut coordinates = BTreeSet::new();
         let mut start = 0;
         while start < tokens.len() {
             let mut surface = String::new();
@@ -111,13 +108,11 @@ impl ConceptIndex {
                 }
             }
             if let Some(positions) = matched {
-                for &position in positions {
-                    vector[position] = 1;
-                }
+                coordinates.extend(positions);
             }
             start = next;
         }
-        vector
+        coordinates
     }
 }
 
@@ -149,12 +144,82 @@ fn invalid(field: &str) -> ApiHttpResponse {
     )
 }
 
-fn encode_base64(vector: Vec<u8>) -> String {
-    let bytes: Vec<_> = vector
-        .into_iter()
-        .flat_map(|weight| f32::from(weight).to_le_bytes())
+fn encode_base64(vector: impl IntoIterator<Item = f32>) -> Value {
+    let bytes: Vec<_> = vector.into_iter().flat_map(f32::to_le_bytes).collect();
+    json!(STANDARD.encode(bytes))
+}
+
+fn projection_sign(source: u16, target: u16) -> i32 {
+    // Give each source/target pair its own word before mixing with the fixed seed.
+    let mut word = u32::from(source) * u32::from(DIMENSIONS) + u32::from(target);
+    word = word.wrapping_add(0x9e37_79b9);
+    word = (word ^ (word >> 16)).wrapping_mul(0x7feb_352d);
+    word = (word ^ (word >> 15)).wrapping_mul(0x846c_a68b);
+    word ^= word >> 16;
+    if word >> 31 == 0 { 1 } else { -1 }
+}
+
+#[allow(clippy::cast_possible_truncation)]
+fn project(coordinates: &BTreeSet<u16>, dimensions: u16) -> Vec<f32> {
+    let mut weights: Vec<i32> = (0..dimensions)
+        .map(|target| {
+            coordinates
+                .iter()
+                .map(|&source| projection_sign(source, target))
+                .sum()
+        })
         .collect();
-    STANDARD.encode(bytes)
+    // Very small projections can cancel. Use the first active concept's row in that case.
+    if weights.iter().all(|&weight| weight == 0) {
+        let source = *coordinates.first().expect("at least one matched concept");
+        for (target, weight) in (0..dimensions).zip(&mut weights) {
+            *weight = projection_sign(source, target);
+        }
+    }
+    let norm = weights
+        .iter()
+        .map(|&weight| f64::from(weight * weight))
+        .sum::<f64>()
+        .sqrt();
+    weights
+        .into_iter()
+        .map(|weight| (f64::from(weight) / norm) as f32)
+        .collect()
+}
+
+fn embedding(coordinates: &BTreeSet<u16>, dimensions: u16, base64: bool) -> Value {
+    if dimensions == DIMENSIONS {
+        let mut weights = vec![0u8; usize::from(DIMENSIONS)];
+        for &coordinate in coordinates {
+            weights[usize::from(coordinate)] = 1;
+        }
+        if base64 {
+            encode_base64(weights.into_iter().map(f32::from))
+        } else {
+            json!(weights)
+        }
+    } else {
+        let weights = project(coordinates, dimensions);
+        if base64 {
+            encode_base64(weights)
+        } else {
+            json!(weights)
+        }
+    }
+}
+
+#[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+fn request_dimensions(request: &serde_json::Map<String, Value>) -> Option<u16> {
+    match request.get("dimensions") {
+        None => Some(DIMENSIONS),
+        Some(value) => value
+            .as_f64()
+            .filter(|value| {
+                value.fract() == 0.0
+                    && (f64::from(MINIMUM_DIMENSIONS)..=f64::from(DIMENSIONS)).contains(value)
+            })
+            .map(|value| value as u16),
+    }
 }
 
 pub(super) fn handle(body: &str) -> ApiHttpResponse {
@@ -175,12 +240,9 @@ pub(super) fn handle(body: &str) -> ApiHttpResponse {
             .replace("{model}", model);
         return error_response(400, &error);
     }
-    if request
-        .get("dimensions")
-        .is_some_and(|value| value.as_f64() != Some(f64::from(DIMENSIONS)))
-    {
+    let Some(dimensions) = request_dimensions(&request) else {
         return invalid("dimensions");
-    }
+    };
     let base64 = match request.get("encoding_format") {
         None => false,
         Some(value) => match value.as_str() {
@@ -211,19 +273,25 @@ pub(super) fn handle(body: &str) -> ApiHttpResponse {
     let Some(catalog) = CONCEPT_INDEX.get_or_init(ConceptIndex::build) else {
         return error_response(500, message("embeddings-catalog-capacity"));
     };
-    let data: Vec<_> = inputs
-        .iter()
-        .enumerate()
-        .map(|(index, text)| {
-            let vector = catalog.vector(text);
-            let embedding = if base64 {
-                json!(encode_base64(vector))
-            } else {
-                json!(vector)
-            };
-            json!({ "embedding": embedding, "index": index, "object": "embedding" })
-        })
-        .collect();
+    let mut data = Vec::with_capacity(inputs.len());
+    for (index, text) in inputs.into_iter().enumerate() {
+        let coordinates = catalog.matches(text);
+        if coordinates.is_empty() {
+            return json_response(
+                400,
+                &json!({
+                    "error": {
+                        "code": "no_concepts",
+                        "input_index": index,
+                        "message": message("embeddings-no-concepts"),
+                        "type": "formal_ai_error"
+                    }
+                }),
+            );
+        }
+        let vector = embedding(&coordinates, dimensions, base64);
+        data.push(json!({ "embedding": vector, "index": index, "object": "embedding" }));
+    }
     json_response(
         200,
         &json!({

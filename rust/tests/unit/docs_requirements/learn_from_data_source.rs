@@ -85,7 +85,7 @@ fn issue_499_learn_from_source_documents_are_traceable() {
         "docs/case-studies/issue-499/agent-cli-session-learn-from-source.json",
         "docs/case-studies/issue-499/agent-cli-e2e-run-learn-from-source.log",
         "data/seed/learning-sources.lino",
-        "data/meta/google-trends-learning.lino",
+        "docs/case-studies/issue-498/replay/google-trends-learning.lino",
     ] {
         assert!(
             root.join(relative).is_file(),

@@ -159,26 +159,6 @@ multilingual_responses
     intent memory_root_links_empty
     language es
     text "(ninguno)"
-  response response_http_fetch_curated_project_en
-    intent http_fetch_curated_project
-    language en
-    text "HTTP fetch requested for `{url}`.\n\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): {summary}\n\nSource: [{url}]({url})"
-  response response_http_fetch_curated_project_ru
-    intent http_fetch_curated_project
-    language ru
-    text "HTTP-запрос на `{url}`.\n\nЭтот URL соответствует курируемому продвигаемому проекту. Резюме README (через formalize → summarize → deformalize): {summary}\n\nSource: [{url}]({url})"
-  response response_http_fetch_curated_project_hi
-    intent http_fetch_curated_project
-    language hi
-    text "HTTP अनुरोध `{url}` के लिए किया गया।\n\nयह URL स्थानीय रूप से क्यूरेट की गई परियोजना से मेल खाता है। README सारांश: {summary}\n\nस्रोत: [{url}]({url})"
-  response response_http_fetch_curated_project_zh
-    intent http_fetch_curated_project
-    language zh
-    text "已请求获取 `{url}`。\n\n此 URL 与本地精选项目匹配。README 摘要：{summary}\n\n来源：[{url}]({url})"
-  response response_http_fetch_curated_project_es
-    intent http_fetch_curated_project
-    language es
-    text "Solicitud HTTP para `{url}`.\n\nEsta URL corresponde a un proyecto promovido y curado. Resumen del README (mediante la canalización formalize → summarize → deformalize): {summary}\n\nFuente: [{url}]({url})"
   response response_web_search_live_results_en
     intent web_search_live_results
     language en
@@ -202,23 +182,23 @@ multilingual_responses
   response response_web_search_unavailable_en
     intent web_search_unavailable
     language en
-    text "No captured provider response is available for `{query}`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+    text "No captured provider response is available for `{query}`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls."
   response response_web_search_unavailable_ru
     intent web_search_unavailable
     language ru
-    text "Для `{query}` нет захваченного ответа провайдера. Чтение из сети включено по умолчанию. Проверьте соединение, ошибки провайдера и явные запреты; спросите, как включить доступ к интернету, для настройки разрешений оболочки. Невыполненный план включает DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary и Wikinews."
+    text "Для `{query}` нет захваченного ответа провайдера. Чтение из сети включено по умолчанию. Проверьте соединение, ошибки провайдера и явные запреты; спросите, как включить доступ к интернету, для настройки разрешений оболочки."
   response response_web_search_unavailable_hi
     intent web_search_unavailable
     language hi
-    text "`{query}` के लिए कोई कैप्चर की गई प्रदाता प्रतिक्रिया उपलब्ध नहीं है। नेटवर्क से पढ़ना डिफ़ॉल्ट रूप से चालू है। कनेक्शन, प्रदाता की त्रुटियाँ और स्पष्ट ऑफ़लाइन प्रतिबंध जाँचें; हार्नेस अनुमतियों के लिए पूछें कि इंटरनेट की अनुमति कैसे दें। निष्पादित न की गई योजना में DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary और Wikinews शामिल हैं।"
+    text "`{query}` के लिए कोई कैप्चर की गई प्रदाता प्रतिक्रिया उपलब्ध नहीं है। नेटवर्क से पढ़ना डिफ़ॉल्ट रूप से चालू है। कनेक्शन, प्रदाता की त्रुटियाँ और स्पष्ट ऑफ़लाइन प्रतिबंध जाँचें; हार्नेस अनुमतियों के लिए पूछें कि इंटरनेट की अनुमति कैसे दें।"
   response response_web_search_unavailable_zh
     intent web_search_unavailable
     language zh
-    text "`{query}` 没有可用的已捕获提供商响应。默认允许只读网络访问。请检查连接、提供商错误和显式离线或拒绝设置；询问如何启用互联网访问以查看工具权限设置。未执行的计划包括 DuckDuckGo、Internet Archive、Wikipedia、Wikidata、Wiktionary 和 Wikinews。"
+    text "`{query}` 没有可用的已捕获提供商响应。默认允许只读网络访问。请检查连接、提供商错误和显式离线或拒绝设置；询问如何启用互联网访问以查看工具权限设置。"
   response response_web_search_unavailable_es
     intent web_search_unavailable
     language es
-    text "No hay ninguna respuesta capturada del proveedor para `{query}`. La lectura de red está habilitada por defecto. Comprueba la conexión, los errores del proveedor y los bloqueos explícitos; pregunta cómo habilitar el acceso a internet para configurar los permisos de la herramienta. El plan no ejecutado incluye DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary y Wikinews."
+    text "No hay ninguna respuesta capturada del proveedor para `{query}`. La lectura de red está habilitada por defecto. Comprueba la conexión, los errores del proveedor y los bloqueos explícitos; pregunta cómo habilitar el acceso a internet para configurar los permisos de la herramienta."
   response response_search_fusion_header_en
     intent search_fusion_header
     language en
@@ -1347,125 +1327,3 @@ multilingual_responses
     intent coding_source_module_registration
     language rust
     text "pub mod {module};\n"
-  response response_compose_boundary_note_en
-    intent compose_boundary_note
-    language en
-    text "Every statement below is carried by a cited source; nothing was added beyond them."
-  response response_compose_boundary_note_ru
-    intent compose_boundary_note
-    language ru
-    text "Каждое утверждение ниже подтверждено источником; ничего сверх этого не добавлено."
-  response response_compose_boundary_note_hi
-    intent compose_boundary_note
-    language hi
-    text "नीचे का हर कथन एक उद्धृत स्रोत से है; उसके अतिरिक्त कुछ नहीं जोड़ा गया।"
-  response response_compose_boundary_note_zh
-    intent compose_boundary_note
-    language zh
-    text "以下每一条陈述都有引用来源；未添加来源之外的任何内容。"
-  response response_compose_boundary_note_es
-    intent compose_boundary_note
-    language es
-    text "Cada afirmación de abajo está respaldada por una fuente citada; no se añadió nada más allá de ellas."
-  response response_compose_sources_heading_en
-    intent compose_sources_heading
-    language en
-    text "Sources"
-  response response_compose_sources_heading_ru
-    intent compose_sources_heading
-    language ru
-    text "Источники"
-  response response_compose_sources_heading_hi
-    intent compose_sources_heading
-    language hi
-    text "स्रोत"
-  response response_compose_sources_heading_zh
-    intent compose_sources_heading
-    language zh
-    text "来源"
-  response response_compose_sources_heading_es
-    intent compose_sources_heading
-    language es
-    text "Fuentes"
-  response response_compose_no_verified_capture_en
-    intent compose_no_verified_capture
-    language en
-    text "No verified source statement was captured for this request, so nothing was composed."
-  response response_compose_no_verified_capture_ru
-    intent compose_no_verified_capture
-    language ru
-    text "Для этого запроса не получено ни одного подтверждённого источником утверждения, поэтому ничего не составлено."
-  response response_compose_no_verified_capture_hi
-    intent compose_no_verified_capture
-    language hi
-    text "इस अनुरोध के लिए कोई सत्यापित स्रोत-कथन प्राप्त नहीं हुआ, इसलिए कुछ भी नहीं लिखा गया।"
-  response response_compose_no_verified_capture_zh
-    intent compose_no_verified_capture
-    language zh
-    text "没有为该请求捕获任何经来源验证的陈述，因此未作任何撰写。"
-  response response_compose_no_verified_capture_es
-    intent compose_no_verified_capture
-    language es
-    text "No se capturó ninguna afirmación verificada por una fuente para esta solicitud, así que no se compuso nada."
-
-  response quantity-constraint-within-en
-    intent quantity-constraint-within
-    language en
-    text "Yes. The explicit sum is {total} {unit}, which is at most {bound} {unit}."
-  response quantity-constraint-exceeds-en
-    intent quantity-constraint-exceeds
-    language en
-    text "No. The explicit sum is {total} {unit}, which exceeds {bound} {unit}."
-  response quantity-constraint-unknown-en
-    intent quantity-constraint-unknown
-    language en
-    text "I cannot determine this comparison from the fully stated quantities and bound."
-
-  response quantity-constraint-within-ru
-    intent quantity-constraint-within
-    language ru
-    text "Да. Явно запрошенная сумма равна {total} {unit} и не превышает {bound} {unit}."
-  response quantity-constraint-within-hi
-    intent quantity-constraint-within
-    language hi
-    text "हाँ। स्पष्ट रूप से माँगा गया योग {total} {unit} है, जो {bound} {unit} से अधिक नहीं है।"
-  response quantity-constraint-within-zh
-    intent quantity-constraint-within
-    language zh
-    text "是。明确要求的总和为{total} {unit}，不超过{bound} {unit}。"
-  response quantity-constraint-within-es
-    intent quantity-constraint-within
-    language es
-    text "Sí. La suma solicitada explícitamente es {total} {unit} y no supera {bound} {unit}."
-  response quantity-constraint-exceeds-ru
-    intent quantity-constraint-exceeds
-    language ru
-    text "Нет. Явно запрошенная сумма равна {total} {unit} и превышает {bound} {unit}."
-  response quantity-constraint-exceeds-hi
-    intent quantity-constraint-exceeds
-    language hi
-    text "नहीं। स्पष्ट रूप से माँगा गया योग {total} {unit} है, जो {bound} {unit} से अधिक है।"
-  response quantity-constraint-exceeds-zh
-    intent quantity-constraint-exceeds
-    language zh
-    text "否。明确要求的总和为{total} {unit}，超过{bound} {unit}。"
-  response quantity-constraint-exceeds-es
-    intent quantity-constraint-exceeds
-    language es
-    text "No. La suma solicitada explícitamente es {total} {unit} y supera {bound} {unit}."
-  response quantity-constraint-unknown-ru
-    intent quantity-constraint-unknown
-    language ru
-    text "Я не могу определить результат этого сравнения по полностью указанным величинам и границе."
-  response quantity-constraint-unknown-hi
-    intent quantity-constraint-unknown
-    language hi
-    text "पूरी तरह बताई गई राशियों और सीमा से इस तुलना का परिणाम निर्धारित नहीं किया जा सकता।"
-  response quantity-constraint-unknown-zh
-    intent quantity-constraint-unknown
-    language zh
-    text "无法根据完整给出的数量和界限确定这个比较的结果。"
-  response quantity-constraint-unknown-es
-    intent quantity-constraint-unknown
-    language es
-    text "No puedo determinar esta comparación a partir de las cantidades y el límite completamente especificados."

@@ -1,0 +1,64 @@
+{
+  "sourceRun": 45240466225,
+  "priorFloorFixture": "experiments/issue-1580/fixtures/hosted-javascript-e46254ac/prior-scheduling-floor.lino",
+  "formula": "ceil((priorFamilyFloor + observedOwnerSeconds * allowanceFactor) * 10) / 10",
+  "candidateLimit": 66,
+  "allowanceFactor": 0.32,
+  "scope": [
+    "rust/tests/web/cnl-solver-dialogue.test.mjs",
+    "rust/tests/web/cnl-solver-dialogue-b.test.mjs",
+    "rust/tests/web/cnl-solver-dialogue-c.test.mjs"
+  ],
+  "constraints": {
+    "exactPartition": true,
+    "longestFirst": true,
+    "deterministic": true,
+    "fullBeforeFresh": true,
+    "fullFirst": true,
+    "fullSeparate": true,
+    "memoryObserved": true,
+    "reasonerFirst": true,
+    "reasonerSeparate": true,
+    "reasonerObserved": true,
+    "behaviorFirstWave": true,
+    "behaviorObserved": true,
+    "originalQueueBudget": true,
+    "distinctDialogueOwners": true,
+    "retainedCohorts": true
+  },
+  "conservativeQueues": [
+    359.1999999999998,
+    359.0999999999999,
+    359.0999999999998,
+    359.09999999999985,
+    359.1154565029998,
+    359.1999999999998,
+    359.0999999999998,
+    359.0999999999999,
+    359.0999999999999
+  ],
+  "cohortMaximumSeconds": {
+    "hosted-javascript-2809ce65": 224.491954921,
+    "hosted-javascript-53816c9e-partial": 261.82829702000004,
+    "hosted-javascript-754fd314": 237.23686102300002,
+    "hosted-javascript-79a024bf": 242.848774521,
+    "hosted-javascript-8d8": 261.051126073,
+    "hosted-javascript-9e945": 267.049706496,
+    "hosted-javascript-a558f834": 239.035575143,
+    "hosted-javascript-bbc0ac4d": 269.317165196,
+    "hosted-javascript-c55a5f9c": 237.15638529,
+    "hosted-javascript-c90f94ca": 221.48991686200003,
+    "hosted-javascript-de79e6ec": 216.56392196099995,
+    "hosted-javascript-e46254ac": 264.920880627
+  },
+  "modeledSourceChanges": [
+    {
+      "file": "rust/tests/web/meta-reasoner.test.mjs",
+      "model": "maximum of the two original case-group sums, retained setup residual, plus five seconds for the independent process",
+      "observation": "experiments/issue-1580/fixtures/meta-reasoner-owner-split/observation.json",
+      "executionProof": false
+    }
+  ],
+  "executionProof": false,
+  "autonomousAuthorshipCredit": 0
+}

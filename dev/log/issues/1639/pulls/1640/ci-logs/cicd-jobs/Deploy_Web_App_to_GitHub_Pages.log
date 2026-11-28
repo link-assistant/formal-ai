@@ -1,0 +1,27 @@
+Deploy Web App to GitHub Pages	Deploy Pages artifact	﻿2026-11-25T16:15:21.8593876Z ##[group]Run ./.formal-ai-pages-protocol/.github/actions/deploy-pages
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8594315Z with:
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8594576Z   artifact_id: 15040052161
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8594955Z   source_sha: 513e4d9542a181cc4925105f44ad6e3648974e27
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8595276Z   timeout: 600000
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8597773Z   token: ***
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8598029Z env:
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8598664Z   GIT_CONFIG_COUNT: 1
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8598986Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8599490Z   GIT_CONFIG_VALUE_0: main
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8599785Z   CARGO_NET_RETRY: 10
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8600061Z   CARGO_HTTP_MULTIPLEXING: false
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8600377Z   CARGO_TERM_COLOR: always
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8600720Z   FORMAL_AI_CI_VERBOSE: false
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8601004Z   FORMAL_AI_NON_LINUX_CI: run
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8601330Z   RUSTFLAGS: -Dwarnings
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8601633Z   RUST_BACKTRACE: full
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8601977Z   CARGO_REGISTRY_TOKEN: ***
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8602369Z   CARGO_TOKEN: ***
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8602774Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8603114Z   DOCKERHUB_IMAGE: konard/formal-ai
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8603431Z   GITHUB_PAGES: true
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8603726Z   NODE_OPTIONS: --throw-deprecation
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:21.8604020Z ##[endgroup]
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:23.5537809Z Transient failure to create the deployment (POST /repos/link-assistant/formal-ai/pages/deployments responded HTTP 500 Internal Server Error; request ID 0849:365FDC:701366A:16013FAD:6B07099A); retry 2/3 in 10s.
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:15:35.2996629Z Transient failure to create the deployment (POST /repos/link-assistant/formal-ai/pages/deployments responded HTTP 500 Internal Server Error; request ID 0848:183DA4:52DE51B:103920E0:6B0709A5); retry 3/3 in 20s.
+Deploy Web App to GitHub Pages	Deploy Pages artifact	2026-11-25T16:16:00.2237277Z ##[error]Failed to create the Pages deployment of 513e4d9542a181cc4925105f44ad6e3648974e27 after 3 attempts: POST /repos/link-assistant/formal-ai/pages/deployments responded HTTP 500 Internal Server Error; request ID 0848:183DA4:52E9190:103B35C0:6B0709BB. Server error, is githubstatus.com reporting a Pages outage? Re-run the deployment later.

@@ -248,19 +248,17 @@ pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Opt
     (!url.contains('{')).then_some(url)
 }
 pub(crate) fn wiki_how_title(subject: &str, language: &str) -> String {
-    let words = procedural_source_task(subject)
+    let words = subject
         .split(|character| !is_topic_character(character))
         .filter(|word| !word.is_empty());
-    if language.is_empty() || language == "en" {
-        words.map(capitalize).collect::<Vec<_>>().join("-")
-    } else {
+    // Preserve localized lowercase slugs without applying that convention to
+    // Hindi/Chinese candidates containing Latin words. Their established title
+    // form still capitalizes each word and keeps combining marks intact.
+    if matches!(language, "ru" | "es") {
         words.collect::<Vec<_>>().join("-").to_lowercase()
+    } else {
+        words.map(capitalize).collect::<Vec<_>>().join("-")
     }
-}
-
-pub(crate) fn procedural_source_task(task: &str) -> &str {
-    crate::rule_interpreter::handler_table_value("procedural-source-task-aliases", task)
-        .unwrap_or(task)
 }
 
 /// Keep the marks used by scripts such as Devanagari inside their words.
@@ -433,6 +431,9 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
                     queue.push_front((fallback, depth));
                     continue;
                 }
+                if url != entry_url && !error.speaks_for_the_service() {
+                    continue;
+                }
                 break;
             }
         };
@@ -454,7 +455,9 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
             );
         }
         let read = extractor.read(record, &capture, depth, items.len(), bounds);
-        if let Some(detail) = read.detail {
+        if let Some(detail) = read.detail
+            && (read.items.is_empty() || age <= bounds.max_capture_age_seconds)
+        {
             outcome.detail = detail;
         }
         items.extend(read.items);

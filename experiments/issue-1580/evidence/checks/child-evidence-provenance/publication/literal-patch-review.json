@@ -1,0 +1,23 @@
+{
+  "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+  "sourceHead": "eff5c7623f780060adb8b83e57bd2ab5b0cb57d2",
+  "files": 11,
+  "patchLines": 453,
+  "rawSha256": "73b8d0d786c2a1711642f843f7ccad1ac7d75a8f46232f10edafb1ed12fb4169",
+  "literalReadRanges": [
+    [
+      1,
+      230
+    ],
+    [
+      231,
+      453
+    ]
+  ],
+  "incrementalSourcePatchLiterallyReviewed": true,
+  "completePullRequestDiffReviewed": false,
+  "completePullRequestDiffLimitation": "GitHub HTTP 406: maximum number of files (300)",
+  "originalVerificationPreserved": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

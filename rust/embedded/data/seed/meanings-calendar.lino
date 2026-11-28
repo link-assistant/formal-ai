@@ -333,7 +333,7 @@ meanings
     unit "calendar year"
     example "2 years = 24 months"
     grounding "data/seed/handler-rules.lino"
-  calendar-duration-sum
+  calendar-duration-addition-cue
     defined-by time
     role handler-table
     precondition "a request starts with a seeded addition verb"

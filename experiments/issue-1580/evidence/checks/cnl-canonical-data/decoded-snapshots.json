@@ -1,0 +1,18 @@
+{
+  "completeObjectsEqual": true,
+  "records": [
+    {
+      "file": "decoded-before.json.gz",
+      "rawSha256": "72354cd47b1981f67059737c6c4620c1c5a3979dd46e6f30b7cef636381d4c1d",
+      "archiveSha256": "a71c7b41e9730f2365d8c60de5674294cd2657a4d99c1807fba6c8799641f6b4",
+      "lines": 14438
+    },
+    {
+      "file": "decoded-after.json.gz",
+      "rawSha256": "72354cd47b1981f67059737c6c4620c1c5a3979dd46e6f30b7cef636381d4c1d",
+      "archiveSha256": "a71c7b41e9730f2365d8c60de5674294cd2657a4d99c1807fba6c8799641f6b4",
+      "lines": 14438
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

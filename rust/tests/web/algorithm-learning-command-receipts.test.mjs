@@ -141,7 +141,8 @@ test('original structured source insertion retains exact bytes and independently
       if (call.tool === 'read') raw = source;
       else if (call.tool === 'write') source = args.content;
       else { commands.push(args.command); assert.equal(args.command, 'sha256sum -- f.rs'); raw = receipt(args.command, sha256Hex(source) + '  f.rs\n'); }
-      append(messages, call, raw);
+      const evidence = call.tool === 'read' ? { source_read: { path: args.path, success: true, complete: true, format: 'raw' } } : {};
+      append(messages, call, raw, evidence);
     }
   }
   assert.equal(source, expected); assert.deepEqual(commands, ['sha256sum -- f.rs']); assert.equal(finalResult(result).disposition, 'finding');

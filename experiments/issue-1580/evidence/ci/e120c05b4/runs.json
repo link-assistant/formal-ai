@@ -1,0 +1,194 @@
+[
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040292,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "container-images"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040396,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Stock Rust Install"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040343,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "External Benchmarks"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040566,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Verify full readable source content"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040501,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Guarded staged release authority refusal"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040355,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Broken Link Checker"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040596,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Benchmark Corpus Gate"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040455,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Source scanner qualification and debt inventory"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:32Z",
+    "databaseId": 44112040570,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "CI/CD Pipeline"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040274,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Self-hosting evidence"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040175,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Agentic CLI Matrix"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040069,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Publish browser engine"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040193,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Self-development status"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112039932,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Question necessity ratchet"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112039919,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Publish source networks"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112039862,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Publish VS Code extension"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040150,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Desktop Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040071,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Regenerate native session projections"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112039885,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Workflows"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040055,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Coverage"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040245,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Documentation policy"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112039879,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Security"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040257,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Proactive failure report Agent CLI E2E"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-17T15:14:31Z",
+    "databaseId": 44112040276,
+    "headSha": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+    "status": "completed",
+    "workflowName": "Layered CI"
+  }
+]

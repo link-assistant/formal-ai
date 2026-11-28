@@ -1,0 +1,83 @@
+{
+  "entries": [
+    {
+      "file": "partition-retained-gate-summary.log.gz",
+      "rawSha256": "3becd8ba6ada54e47a6318e2dcb5ad24072ad8921c3d6cb05f4ea15eb876cf23",
+      "archiveSha256": "5550ae7f161e528afda7d9b002c1662f62545c1e7944bcbdc63256642394037b",
+      "bytes": 587,
+      "lines": 4
+    },
+    {
+      "file": "partition-retained-gate-summary.py.gz",
+      "rawSha256": "5c5bf742f40f96bcc39a0ddd4b26628a5655ded3ce32f82b8c23c7884180dcfc",
+      "archiveSha256": "c59597b3e24590fff685aaef7a6693bb9d6bd83023096b4f6e74d69e9457b9d3",
+      "bytes": 3500,
+      "lines": 49
+    },
+    {
+      "file": "branch.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "branch.stdout.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+      "bytes": 24,
+      "lines": 1
+    },
+    {
+      "file": "commands.json.gz",
+      "rawSha256": "0e5e9e5d86a563f1f1e0bf1cdf794576e43ea490d0ea34965dfc738ab3ee6dd6",
+      "archiveSha256": "09a257f4c47b9ca9c89638b0e26c64a1fc2f1da114ac89e6ef25ceb091d1e6e2",
+      "bytes": 694,
+      "lines": 33
+    },
+    {
+      "file": "gates.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "gates.stdout.gz",
+      "rawSha256": "91e2182d282ffce7e2ca42f309fdb4a9a5eb61f578a626cf5d15f5d365d760e0",
+      "archiveSha256": "3c0356a840948764f1b9c0f68130df56c5ae3c962f3a0f65955749b293dd68b1",
+      "bytes": 158,
+      "lines": 6
+    },
+    {
+      "file": "inverse-proof.json.gz",
+      "rawSha256": "af2a17963e497ce982b82cd56f0ef72b8d2698e4e6c7c04f57134d18c8d4553e",
+      "archiveSha256": "3a0adfdd2147215c3fb02c29c4a0669666e7545043ae5d66076d79327d552107",
+      "bytes": 534,
+      "lines": 22
+    },
+    {
+      "file": "stage-partition.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "stage-partition.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "seal-retained-gate-summary-partition.py.gz",
+      "rawSha256": "7c2d2750710c4363b7c4d09e73507536ad45453d8aab351933d39bad30538bb2",
+      "archiveSha256": "9eb34b12f3bc7735bffecfc85d341a8eb6315aa1e98cfb3328b2c61389f10ba4",
+      "bytes": 4073,
+      "lines": 50
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

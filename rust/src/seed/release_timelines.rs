@@ -1,19 +1,7 @@
-//! Release-timeline registry loaded from seed data.
+//! Publisher query, selector, and wording for release timelines.
 //!
-//! Issue #892 replaced the frozen "Spider-Man films in release order" sentence
-//! with a timeline that is *computed* from a source-backed snapshot: every work
-//! carries its Wikidata id, its checked-in localized titles, and the publication
-//! date the Wikidata Query Service returned. The renderer
-//! ([`crate::release_timeline`]) sorts the released works by that date and keeps
-//! the announced ones apart, so a title that has not come out yet can never be
-//! listed as released, and a title that came out after the snapshot cannot be
-//! silently missing — the snapshot stamp travels with the answer.
-//!
-//! The registry is general: any subject with a dated list of works can be
-//! declared in `data/seed/release-timelines.lino`, and the wording of the answer
-//! lives in the per-language `phrasing` blocks of that same file, never in Rust
-//! (R379). `scripts/ground-release-timelines.py` regenerates the entries from
-//! the checked-in cache, so no title or date in the file is hand-typed.
+//! A timeline record in the installed registry carries no release entries.
+//! Explicit test registries can also include captured entries for offline replay.
 
 use std::sync::OnceLock;
 
@@ -38,7 +26,7 @@ pub struct ReleaseTimelinePhrasing {
 /// One work in a timeline: its grounding id, localized titles, and release date.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ReleaseTimelineEntry {
-    /// Wikidata entity id of the work, e.g. `Q484442`.
+    /// Wikidata entity identifier of the work.
     pub qid: String,
     /// Earliest publication date as `YYYY-MM-DD`, empty when none is announced.
     pub release_date: String,
@@ -107,9 +95,35 @@ impl ReleaseTimeline {
     }
 }
 
+/// Request frames and source wording for release timelines in one language.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReleaseSeriesRequest {
+    /// Language code shared by the frames and the presentation wording.
+    pub language: String,
+    /// Normalized question shapes with exactly one `{subject}` slot.
+    pub frames: Vec<String>,
+    /// Publisher search string with a slot for the named subject.
+    pub search: String,
+    /// Localized heading text with a slot for the publisher's subject label.
+    pub subject: String,
+}
+
+/// A publisher query for timelines with an unregistered subject.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OpenReleaseSeries {
+    /// Endpoint and rendering settings used after the subject is discovered.
+    pub timeline: ReleaseTimeline,
+    /// Localized request and search grammar.
+    pub requests: Vec<ReleaseSeriesRequest>,
+}
+
 /// The parsed registry: wording per language plus every declared timeline.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ReleaseTimelines {
+    /// Publisher query with `{subject}` and `{language}` placeholders.
+    pub query: String,
+    /// Grammar for identifying a series from a new request.
+    pub open_series: Option<OpenReleaseSeries>,
     pub phrasings: Vec<ReleaseTimelinePhrasing>,
     pub timelines: Vec<ReleaseTimeline>,
 }
@@ -154,6 +168,30 @@ pub fn parse_release_timelines(text: &str) -> ReleaseTimelines {
         return ReleaseTimelines::default();
     };
     ReleaseTimelines {
+        query: root.find_child_value("query").to_owned(),
+        open_series: root
+            .children
+            .iter()
+            .find(|node| node.name == "open-series")
+            .map(|node| OpenReleaseSeries {
+                timeline: parse_timeline(node),
+                requests: node
+                    .children
+                    .iter()
+                    .filter(|child| child.name == "request")
+                    .map(|request| ReleaseSeriesRequest {
+                        language: request.id.clone(),
+                        frames: request
+                            .children
+                            .iter()
+                            .filter(|field| field.name == "frame")
+                            .map(|field| field.id.clone())
+                            .collect(),
+                        search: request.find_child_value("search").to_owned(),
+                        subject: request.find_child_value("subject").to_owned(),
+                    })
+                    .collect(),
+            }),
         phrasings: root
             .children
             .iter()
@@ -186,7 +224,11 @@ fn parse_phrasing(node: &LinoNode) -> ReleaseTimelinePhrasing {
 
 fn parse_timeline(node: &LinoNode) -> ReleaseTimeline {
     ReleaseTimeline {
-        slug: node.id.clone(),
+        slug: if node.id.is_empty() {
+            node.name.clone()
+        } else {
+            node.id.clone()
+        },
         subject_qid: node.find_child_value("subject-qid").to_owned(),
         source_label: node.find_child_value("source-label").to_owned(),
         source_url: node.find_child_value("source-url").to_owned(),

@@ -1,0 +1,46 @@
+{
+  "publishedHead": "3e7056756ed57e4899780913eae2f0fb07723e5f",
+  "terminalWorkflows": 27,
+  "success": 25,
+  "skip": 1,
+  "failure": 1,
+  "failedRun": 44836234464,
+  "verifiedNativeStreams": 304,
+  "rustPasses": 573,
+  "registryCliPasses": 8,
+  "originalProducerFiles": 126,
+  "macroContexts": 122553,
+  "unexpandedOriginalPositions": 631,
+  "macroSemanticsQualified": false,
+  "fullLocalGateCounts": {
+    "PASS": 88,
+    "SKIP": 53,
+    "FAIL": 0
+  },
+  "seedExtractionAfterFullReplay": true,
+  "seedFocusedGatesPassed": 8,
+  "sourceWarnings": 97,
+  "reviewedSourceDiff": {
+    "bytes": 33527,
+    "lines": 752,
+    "sha256": "401cfa259c1b70003653de12eee93c4c8e36ce2032c846eb4cf24cd370df5f8f",
+    "paths": [
+      ".github/workflows/security.yml",
+      "experiments/issue-1580/codeql-macro-contexts/observe.py",
+      "experiments/issue-1580/codeql-macro-contexts/IncludedStringPayloads.ql",
+      "experiments/issue-1580/codeql-included-string-observation.test.mjs",
+      "rust/tests/web/security-codeql-results.test.mjs",
+      "rust/tests/web/issue-1580-template-observations.test.mjs",
+      "rust/src/protocol.rs",
+      "rust/src/protocol/chat_message.rs"
+    ],
+    "wholePullRequestDiffReviewed": false,
+    "independentAuthorshipCredit": 0
+  },
+  "reviewedSourceDiffLines": 752,
+  "wholePullRequestDiffReviewed": false,
+  "localRustExecution": false,
+  "hostedValidationOfNewCodePending": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

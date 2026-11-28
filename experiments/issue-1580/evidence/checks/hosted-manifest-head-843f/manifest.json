@@ -1,0 +1,43 @@
+{
+  "source": "843fa303dca9d6b0b1c763b09abcec9d840bd01a",
+  "complete": true,
+  "workflowCounts": {
+    "skipped": 1,
+    "success": 31,
+    "failure": 1
+  },
+  "pipeline": {
+    "run": 45114824433,
+    "conclusion": "success",
+    "nativeGroups": 10,
+    "workflowContractTestsPassed": 291,
+    "wholeLogLines": 78643,
+    "wholeLogSha256": "2ef0435bd58d6e3dcd17ec494c75f7195c3b6f87ef8e7637447ee6252d04b66b"
+  },
+  "layered": {
+    "run": 45114823928,
+    "conclusion": "failure",
+    "rootCause": "Stale exact native-checkout assertion duplicated in two JavaScript jobs",
+    "localRepairCommit": "07376d152",
+    "localFullPolicyFileTestsPassed": 168
+  },
+  "sourceSizeWarnings": 11,
+  "credentialPreflight": {
+    "verified": 2,
+    "failed": 0,
+    "unknown": 1,
+    "publicationVerified": false
+  },
+  "nativeRerunsIssued": false,
+  "nativeRerunStop": "The qualifier rejected the non-passing overall cohort before requesting any rerun.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2404253,
+    "sha256": "13fa70006d68da0b1e6457bbeb27f3689e00eb98434bba9e57c797e4d201540d"
+  },
+  "members": 205,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "recordedAt": "2026-11-23T05:51:39.652298+00:00"
+}

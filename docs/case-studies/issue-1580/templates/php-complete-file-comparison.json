@@ -1,0 +1,30 @@
+{
+  "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "pinnedHead": "b61e334703d93a15e08bf1a278e0df0a9d6e98a8",
+  "files": 608,
+  "roles": {
+    "active-template-source": 114,
+    "retained-historical-evidence": 265,
+    "captured-current-ci-input": 229
+  },
+  "methods": {
+    "exact-content-retained-literal-review": 162,
+    "current-delta-literal-source-comparison": 19,
+    "complete-structured-historical-content-comparison": 242,
+    "complete-structured-captured-source-comparison": 180,
+    "binary-identity-and-artifact-role-comparison": 5
+  },
+  "activeFilesWithRetainedCompleteLiteralReview": 114,
+  "allGitBlobIdentitiesReverified": true,
+  "allFilesHaveApplicabilityComparison": true,
+  "allComparisonPathsExist": true,
+  "literalAndStructuredMethodsDistinct": true,
+  "capturedTemplatesAreCurrentCIInputs": true,
+  "allApplicablePracticesImplementedAndVerified": false,
+  "completeRuntimeQualification": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "scope": "Complete pinned per-file source applicability map. Exact retained literal reviews, current source deltas and whole structured captures remain separate methods; the complete map does not certify current execution or every practice.",
+  "filesReceipt": "php-complete-files.jsonl",
+  "structuredReceipt": "php-structured-file-practices.jsonl.gz"
+}

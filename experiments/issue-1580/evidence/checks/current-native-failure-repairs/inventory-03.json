@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-42-25.900Z.json",
+    "file": "071-evidence.gz",
+    "bytes": 29003,
+    "lines": 11,
+    "rawSha256": "8914564398abe4b4584d51c1f3b29962601199408c07671e0984c809cbbc57f9",
+    "archiveSha256": "cccfd61107a01334a9b72251eb29abf186e301bfba2deec93079f19e3a2b37e5"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-43-04.003Z.json",
+    "file": "072-evidence.gz",
+    "bytes": 8166,
+    "lines": 11,
+    "rawSha256": "aece624860514532c4fed586719545600a4f223f9e31bfbec5f0cb88c7504c50",
+    "archiveSha256": "d0b54bf0a391fff6340647bc0878e7bd28e5b6566a8687a5c069a400f83e3417"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-43-24.106Z.json",
+    "file": "073-evidence.gz",
+    "bytes": 33248,
+    "lines": 11,
+    "rawSha256": "a16d19d58f96c935bf16ebb610d1fde82422296474c8c00acd5e29bf92872167",
+    "archiveSha256": "01f1a8ede440168a075a52014b69d250ed458e93c8e7ac613b9341c9668da53c"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-44-20.287Z.json",
+    "file": "074-evidence.gz",
+    "bytes": 23290,
+    "lines": 11,
+    "rawSha256": "e97a381dacf3576895f60197a578cc6462bcd98f8e4142fde6e2b6cb196c1c3a",
+    "archiveSha256": "82ec26088e1ecca7c3f34cc53e5de4869958a6d582a39b210a20a4f1214b7400"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-45-06.855Z.json",
+    "file": "075-evidence.gz",
+    "bytes": 69084,
+    "lines": 11,
+    "rawSha256": "6713d1e85a9131b99aed39d3f022c882b3a0d2a9fe2f77803684c92357e7dec6",
+    "archiveSha256": "910867ad878b2a8167bec464d8b56792047c0420817c664c3003740eee71930b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/bd6-collection-controller-sources/collect-bd6-repaired-head-ci.py",
+    "file": "076-evidence.gz",
+    "bytes": 6271,
+    "lines": 85,
+    "rawSha256": "82b5f96b9df12ee4c17508605a9837e7535df5ff0902e1aa789eadc256653576",
+    "archiveSha256": "94ebdb106be77fed9dbfb32b3c1073fccf048bc70513006a7752c156d6c86d7c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cancellation-consumers-and-index-error.log",
+    "file": "077-evidence.gz",
+    "bytes": 1936,
+    "lines": 26,
+    "rawSha256": "f7ff76639979be6ee080de63006ea7d939d9ec06d95e43653c8c32013b0f63e6",
+    "archiveSha256": "b52a93b1d59b19b3d7e6f09880da9abc543d3eb4005b2f0739afe2de5dbb49a8"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-codeql-thread-candidate.log",
+    "file": "078-evidence.gz",
+    "bytes": 1368,
+    "lines": 9,
+    "rawSha256": "0d5abd180906213d2c116e8c2b3e83dad7102d00f681e4bf399bc9c65462f562",
+    "archiveSha256": "ab244f2d42327d1eb3eba9b1ff4e323feff4350c2338dbf7bf103b31a64b936a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-codeql-thread-candidate.py",
+    "file": "079-evidence.gz",
+    "bytes": 2114,
+    "lines": 27,
+    "rawSha256": "97294eecfbeb302f12926e94c5ef079983808f16ce32d97943f465654786032c",
+    "archiveSha256": "caf44503df4cb78cf795dae9b95403991f9f4e6d7b12671fdae190925623b1d9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-process-and-pipeline-repairs.log",
+    "file": "080-evidence.gz",
+    "bytes": 2158,
+    "lines": 11,
+    "rawSha256": "d8dc65f83c4e7b53698db3517c8dd86b8841db0deeb38d9a5d5232e729df9102",
+    "archiveSha256": "065f5790576464df539eb668b8fc7cfa6a0d3e268e98dc23de980257fa07be2b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-process-and-pipeline-repairs.py",
+    "file": "081-evidence.gz",
+    "bytes": 2583,
+    "lines": 46,
+    "rawSha256": "1b096079b3ca2f411589a190eb6a62734ba44e337b5936a4dcc2f6b9c933ab3d",
+    "archiveSha256": "e799f9dcf6bd8176ffb9849500add1b061bdc6772482f6e3b9db2bd79eae70e7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-version-fetch-failure.log",
+    "file": "082-evidence.gz",
+    "bytes": 673,
+    "lines": 4,
+    "rawSha256": "07c9b09b695abc8d3f864f0e94fd69fe44461572bd6e94a33067a4da2e2505c0",
+    "archiveSha256": "eaf264d66a5ffbf54efbc41818e5c3a80a525a833ae145efe67e2ada7058f55f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-version-fetch-failure.py",
+    "file": "083-evidence.gz",
+    "bytes": 1876,
+    "lines": 30,
+    "rawSha256": "babf78f89092cd78b832c9961ce3bec7c69e895333c4ae488b7b0297d786da9c",
+    "archiveSha256": "07123a0caeaa6918ed56a626ef7aed4666861c3ae538abce79cb8e8aabbe67fa"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-pipeline-result-repairs-final.log",
+    "file": "084-evidence.gz",
+    "bytes": 1244,
+    "lines": 4,
+    "rawSha256": "66e9f0d45d313881aa0e03b80600f4399848a1030bb19b2d5cac5e2ff7702b51",
+    "archiveSha256": "d545bb5ff50296d525b8dea2d87e634ddf2354f3792d93adf3d7217b347843d7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-pipeline-result-repairs.log",
+    "file": "085-evidence.gz",
+    "bytes": 426,
+    "lines": 9,
+    "rawSha256": "de965b7c85122c01fa659f869683612c69b0d9b82beb404615a6b4a1e0ffa905",
+    "archiveSha256": "9a6547ef50a41ab7ffe3f42ca2e6f08be134e402ae2dc55ce7a3f903b43ab5b3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-pipeline-result-repairs.py",
+    "file": "086-evidence.gz",
+    "bytes": 1620,
+    "lines": 23,
+    "rawSha256": "3415c9ffa8027cf7406b68757e5a0a9cd181448766630ee271575306bb44ca77",
+    "archiveSha256": "23db27d819b9fab0e1ca65bdd685c01114411cef2ae24c92555dbf1ee0ff27a2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/artifacts.json",
+    "file": "087-evidence.gz",
+    "bytes": 2229,
+    "lines": 1,
+    "rawSha256": "a21f3eaf94d8596ac8ee8a1bbe1d3d7915ed8eaed44e26e24cda853536856ce3",
+    "archiveSha256": "53b8e7d15db47cf5bed9f486a0812c3343346f661c455ad22572307446499433"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CachedStages.json",
+    "file": "088-evidence.gz",
+    "bytes": 7418,
+    "lines": 1,
+    "rawSha256": "2f957c6676b99a4e7ec7011eace7dbf906b45a360aedabac451bc8409dd57639",
+    "archiveSha256": "437ff77699444f3e6dd66ca934c4ac219cc21c2012d54fb4b3ca6192122ffdf9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CachedStages.qll",
+    "file": "089-evidence.gz",
+    "bytes": 4542,
+    "lines": 170,
+    "rawSha256": "e9ec32dedd08185b23787efb12879032dc7a7c0cc59db2b48dd49202d54b5754",
+    "archiveSha256": "f88feb6683f31a9e0a40fe607f6b236452b531ca3dcb76852dece80e5722d3bf"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CachedStages.stderr",
+    "file": "090-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CallExprCfgNodeImpl.response",
+    "file": "091-evidence.gz",
+    "bytes": 127,
+    "lines": 1,
+    "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+    "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CallExprCfgNodeImpl.stderr",
+    "file": "092-evidence.gz",
+    "bytes": 25,
+    "lines": 1,
+    "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+    "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CfgNodes.json",
+    "file": "093-evidence.gz",
+    "bytes": 13774,
+    "lines": 1,
+    "rawSha256": "7d4b6a9fbb78ce4bd37f0f2ab5a324ae3a5b3f786e8847cd3fdaef30bec1989c",
+    "archiveSha256": "e1070bc81e68eb83320004d9dae406d1b430a964731c0d795034292516a90d8d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CfgNodes.qll",
+    "file": "094-evidence.gz",
+    "bytes": 9161,
+    "lines": 361,
+    "rawSha256": "eb655ddebf32c27854edcee644021cd4b9e967b65ce8115e6b480b89ae4778b8",
+    "archiveSha256": "a7f943440fad9958844e167ba86d9f61a591e8480810622de73cfc89c85e1d85"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/CfgNodes.stderr",
+    "file": "095-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/Completion.json",
+    "file": "096-evidence.gz",
+    "bytes": 11448,
+    "lines": 1,
+    "rawSha256": "fb3a05aed8e2cd754a0534fd1494a8d5adf7d65b568e1eb26df0ec5664c8ee64",
+    "archiveSha256": "a201e7aed88914eb1242818af64a45a9ff00145686fa121f7913a404e52058d5"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/Completion.qll",
+    "file": "097-evidence.gz",
+    "bytes": 7424,
+    "lines": 229,
+    "rawSha256": "321d6516c18317a75a96546fdc8429282a3c1d4e91a3e13210028b5ded137bb2",
+    "archiveSha256": "5601d66bc3b4d41c3776f13715fcd1bad55b8a8c2eaea3f10d9ffb1251490a41"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/Completion.stderr",
+    "file": "098-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/ControlFlowGraph.json",
+    "file": "099-evidence.gz",
+    "bytes": 1561,
+    "lines": 1,
+    "rawSha256": "f5bef45243be9896091965ad185a64df062815e5339f82a5c0f9904b2fc0608b",
+    "archiveSha256": "5fc73e5f8327f84a0310b596adfa51a45a84173d0e6c3a9660da4f2e53ffbbaa"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/ControlFlowGraph.qll",
+    "file": "100-evidence.gz",
+    "bytes": 256,
+    "lines": 9,
+    "rawSha256": "80e4e2797d71242dcea7c9cbabe8209e78885b4cc9f2ea0504b2beb45f1952b7",
+    "archiveSha256": "aa9653847ea43e6f8085e3fafd4004ae7540ee13ec62615efa9e090759b2d610"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/ControlFlowGraph.stderr",
+    "file": "101-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/ControlFlowGraphImpl.json",
+    "file": "102-evidence.gz",
+    "bytes": 32575,
+    "lines": 1,
+    "rawSha256": "4833b9cbd31945e6279827a2218a1b29bc436b51e27421a6154f2891f64548fb",
+    "archiveSha256": "c84d90404ddace2aeff7691ccd84cecce6190fa21daf502499f5bdcca63ded8f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/ControlFlowGraphImpl.qll",
+    "file": "103-evidence.gz",
+    "bytes": 22705,
+    "lines": 681,
+    "rawSha256": "8059a3400ecc1f7311cb409101cb7f1505c521a071740ab603ef3721de31c18f",
+    "archiveSha256": "3229f2d1b68356e9812475d310cf5f2804e9ec70995f03d8d31415da69e7ee17"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/ControlFlowGraphImpl.stderr",
+    "file": "104-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/cfg-source/Splitting.json",
+    "file": "105-evidence.gz",
+    "bytes": 6507,
+    "lines": 1,
+    "rawSha256": "ec1b884b3cd027e5f74d12f6da6833fbeaf7dc34c227e6ab50fdcb1365c9352e",
+    "archiveSha256": "bcabe8911ad56a27937858155972ca7ec91e4b3c005c8a39b6c8a6c2ebc76bc9"
+  }
+]

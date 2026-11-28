@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: 'nested_context_runtime_and_parity_fixtures_pass',
   path: CONTEXT_HIERARCHY_LEARNING_PATH,
   taskValue: CONTEXT_HIERARCHY_LEARNING_PATH,
-  memoryPath: 'data/meta/issue-702-context-hierarchy-learning.lino',
   subjectMessage: 'learning_report_subject_context_hierarchy_learning',
 }, 'isContextHierarchyLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const CONTEXT_HIERARCHY_LEARNING_TASK = CONTEXT_HIERARCHY_LEARNING_PATH;
 
 /** Mirrors `fn is_context_hierarchy_learning_task` in rust/src/agentic_coding/learning_report/context_hierarchy_learning.rs. @param {string} prompt */
 export const isContextHierarchyLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/learning_report/context_hierarchy_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/learning_report/context_hierarchy_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

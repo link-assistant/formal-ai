@@ -40,14 +40,6 @@ struct HelloWorldSeed {
     code: &'static str,
 }
 
-struct DemoDialogSeed {
-    id: &'static str,
-    greeting: &'static str,
-    request: &'static str,
-    language: &'static str,
-    expected_intent: &'static str,
-}
-
 const DATASET_SOURCES: &[DatasetSource] = &[
     DatasetSource {
         id: "issue_1",
@@ -303,51 +295,6 @@ const HELLO_WORLD_SEEDS: &[HelloWorldSeed] = &[
     },
 ];
 
-const DEMO_DIALOG_SEEDS: &[DemoDialogSeed] = &[
-    DemoDialogSeed {
-        id: "dialog_rust",
-        greeting: "Hi",
-        request: "Write me hello world program in Rust",
-        language: "Rust",
-        expected_intent: "hello_world_rust",
-    },
-    DemoDialogSeed {
-        id: "dialog_python",
-        greeting: "Hello",
-        request: "Create a hello world example in Python",
-        language: "Python",
-        expected_intent: "hello_world_python",
-    },
-    DemoDialogSeed {
-        id: "dialog_javascript",
-        greeting: "Hi",
-        request: "Write hello world in JavaScript",
-        language: "JavaScript",
-        expected_intent: "hello_world_javascript",
-    },
-    DemoDialogSeed {
-        id: "dialog_go",
-        greeting: "Hello",
-        request: "Show hello world in Go",
-        language: "Go",
-        expected_intent: "hello_world_go",
-    },
-    DemoDialogSeed {
-        id: "dialog_typescript",
-        greeting: "Hi",
-        request: "Write hello world in TypeScript",
-        language: "TypeScript",
-        expected_intent: "hello_world_typescript",
-    },
-    DemoDialogSeed {
-        id: "dialog_c",
-        greeting: "Hello",
-        request: "Show hello world in C",
-        language: "C",
-        expected_intent: "hello_world_c",
-    },
-];
-
 fn main() -> Result<(), Box<dyn Error>> {
     let data_dir = output_dir();
     fs::create_dir_all(&data_dir)?;
@@ -364,10 +311,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     write_lino_file(
         &data_dir.join("seed/hello-world-programs.lino"),
         hello_world_records()?.join("\n\n"),
-    )?;
-    write_lino_file(
-        &data_dir.join("seed/demo-dialogs.lino"),
-        demo_dialog_records()?.join("\n\n"),
     )?;
 
     println!("wrote Links Notation datasets to {}", data_dir.display());
@@ -433,24 +376,6 @@ fn hello_world_records() -> Result<Vec<String>, Box<dyn Error>> {
                         "source",
                         "local public-domain seed inspired by hello-world corpora",
                     ),
-                ],
-            )
-        })
-        .collect()
-}
-
-fn demo_dialog_records() -> Result<Vec<String>, Box<dyn Error>> {
-    DEMO_DIALOG_SEEDS
-        .iter()
-        .map(|seed| {
-            record(
-                seed.id,
-                &[
-                    ("greeting", seed.greeting),
-                    ("request", seed.request),
-                    ("language", seed.language),
-                    ("expected_intent", seed.expected_intent),
-                    ("cycle_wait_seconds", "10-20"),
                 ],
             )
         })

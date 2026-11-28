@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "allPassedAfterFix": true,
+  "regressionReproduced": true,
+  "sources": [
+    "rust/tests/web/default-branch-build-policy.test.mjs",
+    "scripts/ci-pull-request-admission.mjs",
+    "changelog.d/issue-1580-localized-native-admission.md"
+  ],
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

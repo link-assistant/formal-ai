@@ -1,0 +1,19 @@
+{
+  "supersedingOlderHeadDeclared": true,
+  "olderHead": "6672bfc98bf02cb8db124421a75b118e30abd349",
+  "activeOlderRunIds": [
+    44894111634,
+    44894111674,
+    44894111701,
+    44894111698,
+    44894111649,
+    44894111612,
+    44894111613,
+    44894111540,
+    44894111554
+  ],
+  "olderHeadFullyQualified": false,
+  "completedFailures": [],
+  "reason": "Publish the complete local coverage and headroom batch; unexecuted older work is not passing evidence.",
+  "fullIssueComplete": false
+}

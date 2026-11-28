@@ -1,0 +1,60 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "records": 15,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "completedAt": "2026-11-18T22:30:47.331003+00:00",
+  "focusedCounts": {
+    "tests": 123,
+    "pass": 123,
+    "fail": 0,
+    "skipped": 0
+  },
+  "gateCounts": {
+    "PASS": 87,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "fullRunGateCounts": {
+    "PASS": 86,
+    "FAIL": 1,
+    "SKIP": 52
+  },
+  "resolvedGateFollowups": [
+    "check-abbreviations"
+  ],
+  "completeRunRemainsUnmodified": true,
+  "sourceHashes": {
+    "data/seed/browser-handler-precedence.lino": "f7f96bf0a461949f1fc6945f3eb1a4e67547fdd1e236e0cc31f9efd01ae6cb44",
+    "data/seed/handler-promotions.lino": "8913405b3a5c273b08437de2fd4db4a064035a867c3841da05f9c7de955da82d",
+    "rust/embedded/data/seed/handler-promotions.lino": "8913405b3a5c273b08437de2fd4db4a064035a867c3841da05f9c7de955da82d",
+    "rust/tests/web/calendar-act-paraphrases.test.mjs": "c1b45ab78eb5ebe2498286ee47886c911d5f771b357c706304a4b1a3963888c4",
+    "changelog.d/issue-1580-worker-calendar-dispatch.md": "f3d76b516424b0ed16eccf8a99c3325cdcbb253191cdd2ac57c6dbeb7e5f71d3",
+    ".github/workflows/native-type-check.yml": "d64b62486cd27a0d7b13e7392420ba0ada7642c2a4c2b75cbc8a0bd1b512106f",
+    "rust/Cargo.toml": "b5a752a16ec22c16b211040b99adae87b51f52262925214a48217cc08f134777",
+    "scripts/ci-pull-request-admission.mjs": "c3ca3ee3dca367293b449a5eeb83c433431d9cee5ac03dfa9b043683e5430f41",
+    "rust/tests/unit/operational_contracts.rs": "207e9f08b2ad04824fb916ab374037f3ea616f344d67de229998c7d72bca61d3",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "97b80fe103aae2dead19031480b083bdf039cc43d191fe1a2c5edc29364da8bd",
+    "changelog.d/issue-1580-operational-native-replay.md": "a32246d0431d9c0996acb053eb67893b3bd4a0b502eca360e86952aa5f143a9b",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8": "e20d28ad0164645074336969e9dff3cb02142578865b0a5043cf8ca598c3f7c4",
+    "data/meta/closure-audit.lino": "bdad0a3fec79ab4c803bb0c8c48cf09ea3f7d7f4e590648ee006cc4cd17a0488",
+    "data/meta/runtime-feature-coverage.json": "70bdeb44b51a51948e9ea1838d7c34d2c9188c26cd9e3e2521859de3fc2fb50c",
+    "data/meta/shared-lexeme-fields-schema.lino": "34e67eb675a71bec504b61dc9979f611d28ff67dc6582b2797d89ae7f47508e6",
+    "docs/diagrams/solver-handlers.md": "7eb67b48992ee22c3fc97a1777927f9613dd5d0441f3f131e017fc0f19f0e1c2",
+    "js/seed_loader.js": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666",
+    "js/server/worker-script-prerequisites.mjs": "414f0a7f03d0b5017cee6f3cd6be3e1606411fb2be2301430ac39127bdfd5739",
+    "js/worker-script-prerequisites.js": "ee9255a09ea413140a45a57dc708b8fc8d99ecd6be95610113cca38d2749bb86",
+    "rust/tests/web/handler-registry.test.mjs": "f1a8d2fea0490eaa4bbfd7eaafd88fda15f705fe58fab576516f909d131836f2",
+    "ts/seed_loader.ts": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666",
+    "ts/server/worker-script-prerequisites.mts": "414f0a7f03d0b5017cee6f3cd6be3e1606411fb2be2301430ac39127bdfd5739",
+    "ts/worker-script-prerequisites.ts": "ee9255a09ea413140a45a57dc708b8fc8d99ecd6be95610113cca38d2749bb86",
+    "data/meta/abbreviation-ratchet.lino": "55096b12fccdaaf3ffb36daee07ff41b093f5a7b99d2b978aa4f562152148a0e"
+  },
+  "sourceHead": "b98a1007345b8946d238819a630a2a160cbd106e",
+  "allCheckPayloadHashesVerified": 17,
+  "detailedGatePayloadHashesVerified": 87,
+  "focusedAndAggregateLogsLiterallyRead": true,
+  "detailedGatePayloadsLiterallyRead": false,
+  "fullIssueComplete": false
+}

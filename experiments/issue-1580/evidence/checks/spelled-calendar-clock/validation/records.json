@@ -1,0 +1,274 @@
+[
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "rust/src/solver_handlers/calendar_create.rs",
+      "rust/src/verifiable_task/quantities.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.158,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "worker-prerequisites",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/generate-worker-prerequisites.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 1.314,
+    "file": "worker-prerequisites.log.gz",
+    "rawSha256": "9df5b390c39c86943b34abe5059de06dfc5ed530aea602d5660699776efa698c",
+    "archiveSha256": "50aeaa2b27cd55b16e0f081b573abf32b00918d4757fa459ad3bdcdbc3fec189",
+    "lines": 1
+  },
+  {
+    "name": "typescript-projections",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-es.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 2.702,
+    "file": "typescript-projections.log.gz",
+    "rawSha256": "41e84f847f73e047367e0ab0b1daea4c0b3cc926af87300f0ae3c605af45a07b",
+    "archiveSha256": "5b1e27b287a8fa684e7d7b4fb39e27412437de191c5ddee5e239429c92d1cf26",
+    "lines": 1
+  },
+  {
+    "name": "package-mirrors",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 0.34,
+    "file": "package-mirrors.log.gz",
+    "rawSha256": "3bb39c1fd33700d78d3349f199b4991c70839c69603ed22528329c0a1871f9e7",
+    "archiveSha256": "2cd7a1fb428789100787cfc48c1565dedb7b7a5ad72c79e48e44d53d2ba8e0ca",
+    "lines": 1
+  },
+  {
+    "name": "native-registry",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/lib/generate-native-specification-programs.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 14.664,
+    "file": "native-registry.log.gz",
+    "rawSha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746",
+    "archiveSha256": "8617531febebb95f8c91bc47261d1892b82dbd44a577f97b2467507e37815a3d",
+    "lines": 1
+  },
+  {
+    "name": "runtime-inventory",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/generate-runtime-feature-inventory.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 0.78,
+    "file": "runtime-inventory.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "system-diagrams",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/generate-system-diagrams.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 0.556,
+    "file": "system-diagrams.log.gz",
+    "rawSha256": "67011aa14982ad17358d3c7b2fa7ff0a39a3d71bd4cf233fc02ed66b0cf45498",
+    "archiveSha256": "0bce3798de54d14880b2859ac8d2945519909a969d849d61d459a9139aea9849",
+    "lines": 1
+  },
+  {
+    "name": "projection-currency",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-js-rust.mjs",
+      "--verify"
+    ],
+    "exitCode": 0,
+    "seconds": 2.342,
+    "file": "projection-currency.log.gz",
+    "rawSha256": "90aed8bda8b21c7aa680e4a45bd86a1a9b72fcd87d27782ec19d86d8dfcb40c4",
+    "archiveSha256": "e49d5aae5ac9baef68b9660805d75bc20ab1dfb914063e838009a00740af9463",
+    "lines": 1
+  },
+  {
+    "name": "rust-format-check",
+    "argv": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2024",
+      "rust/src/solver_handlers/calendar_create.rs",
+      "rust/src/verifiable_task/quantities.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.109,
+    "file": "rust-format-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "shared-lexical-closure",
+    "argv": [
+      "python3",
+      "scripts/test-shared-lexeme-closure.py"
+    ],
+    "exitCode": 0,
+    "seconds": 0.189,
+    "file": "shared-lexical-closure.log.gz",
+    "rawSha256": "dc2fb9ae6d8e1abc1cdf16f59b03357f4375abb1135bcfd58dc87cb01fef6bea",
+    "archiveSha256": "1411239debdb1907d3d20eeea519ceaa98b56f168816fca49a993dd71fab4abb",
+    "lines": 2
+  },
+  {
+    "name": "default-branch-build-policy.test",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 7.443,
+    "file": "default-branch-build-policy.test.log.gz",
+    "rawSha256": "2b84ceff59ac378d42284a2f20601765b9b4fae6d40fc8d0090043c037231eee",
+    "archiveSha256": "8c0970207b9b0639e5d1f830a4615002c54bed3fb66a841edffe9c5cae2028c7",
+    "lines": 38
+  },
+  {
+    "name": "calendar-act-paraphrases.test",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-act-paraphrases.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 7.335,
+    "file": "calendar-act-paraphrases.test.log.gz",
+    "rawSha256": "42f7f8ed704b00dd9ddd76163d10f01532c55b4245fabb20f5e05768d2ed31d8",
+    "archiveSha256": "96feb802bca88bb1955142342130f965efa270f4d7371f93ce87828abaebf5ad",
+    "lines": 38
+  },
+  {
+    "name": "issue-1176-calendar-offset-parity.test",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1176-calendar-offset-parity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 9.247,
+    "file": "issue-1176-calendar-offset-parity.test.log.gz",
+    "rawSha256": "00fc1edf58d8644124f488777fa28cdefde96aa33c69c78e5fadf628b53f9e15",
+    "archiveSha256": "28eeb74158db98d9d04dcad9c852434846842de9b4c26d7ce7e5e261debcaaec",
+    "lines": 19
+  },
+  {
+    "name": "quantity-aggregate-comparison.test",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/quantity-aggregate-comparison.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 14.623,
+    "file": "quantity-aggregate-comparison.test.log.gz",
+    "rawSha256": "69527cf7e2105390de43e790f0c94671f794a3caab892750a372cba48db545f2",
+    "archiveSha256": "9a52a655a21b801b988af5149671f96d0b082a106975b7b1a3dc2d60a91c5c16",
+    "lines": 39
+  },
+  {
+    "name": "rust-specification-generated-programs.test",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-generated-programs.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 16.028,
+    "file": "rust-specification-generated-programs.test.log.gz",
+    "rawSha256": "68ef7ce99ee45eb41bb7d496ab9ecb90ab13a6c5522a3a5b7c667499db196270",
+    "archiveSha256": "455e10f7d75e633c8f6e7d63a7ea58c796e1dadc6ce140a845295803079b5be8",
+    "lines": 13
+  },
+  {
+    "name": "rust-specification-unicode-identifiers.test",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 10.431,
+    "file": "rust-specification-unicode-identifiers.test.log.gz",
+    "rawSha256": "70b617bb2b804fe3bd213e18fec7c5eac949e2a598085767b8e22c7e0b858b38",
+    "archiveSha256": "54f64b4e35a74e92be0b9ceeb6814691934aef3a0566868b509cd88e62aa1027",
+    "lines": 42
+  },
+  {
+    "name": "complete-local-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 693.116,
+    "file": "complete-local-gates.log.gz",
+    "rawSha256": "3bd9969d7e08960c2bdedad668c7635856b8996266b68c1a910e6d6a601e5ad7",
+    "archiveSha256": "572b58fd462f0376ab22073d1fd7ad113c80f0e4b2215c43743ea3d55bf5baaa",
+    "lines": 141
+  }
+]

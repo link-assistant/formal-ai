@@ -1,0 +1,33 @@
+{
+  "baselineCommit": "0b74d3b102290b98d8ad3632e8b00e944b742d03",
+  "originalHostedRun": 45206750111,
+  "originalHostedNode": "22.23.5",
+  "originalHostedNpm": "10.9.9",
+  "originalHostedControlsPassed": 6,
+  "originalHostedFailure": "mismatched-lock: ENOTCACHED before semantic validation",
+  "originalArtifact": 14833947419,
+  "originalArtifactDigestVerified": true,
+  "originalHostedJobLogLiterallyRead": true,
+  "genuineColdCacheRegressionFailedBefore": true,
+  "failedHarnessDraftsRetainedSeparately": true,
+  "localActualEngineControlsPassed": 7,
+  "localNode": "26.13.0",
+  "localNpm": "11.20.0",
+  "maintainedScannerTestsPassed": 10,
+  "maintainedBoundaryTestsPassed": 49,
+  "neighborSecurityTestsPassed": 22,
+  "neighborFastProfileTestsPassed": 29,
+  "stagedGatesPassed": 8,
+  "correctedHostedNode22Qualified": false,
+  "scope": "Cold-cache semantic lock mismatch only; invalid-path repair remains an independent local change in shared verification logs.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 50485,
+    "sha256": "3bdb97ebd02c57d279cb0eaa7f4e2b7b97ccd9d08366e7ae1ba838e2224a259c"
+  },
+  "members": 81,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T15:53:47.430404+00:00"
+}

@@ -19,7 +19,7 @@ function solverPrimeIntervalValidation(prompt) {
       if (candidate % divisor === 0) passed = false;
     }
     events.push({ kind: "candidate", payload: String(candidate) });
-    events.push({ kind: "validation", payload: `${NUMBER_PROPERTY_PRIME_SLUG}(${candidate})=${passed}` });
+    events.push(solverEvent("validation", `${NUMBER_PROPERTY_PRIME_SLUG}(${candidate})=${passed}`, "validation:candidate"));
     if (passed) return { answer: String(candidate), events };
   }
   return { answer: null, events };

@@ -1,0 +1,11 @@
+✔ a work-item body that quotes errors is observed, not normalized away (issue 1488 fixture) (1046.974606ms)
+✔ the Rust gh work-item read uses observed_payload like js/agentic/progress.mjs (0.982553ms)
+✔ replay of the issue-698 driver plans run_command, web_fetch, read_file as the Rust test expects (1363.63683ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6411.119207

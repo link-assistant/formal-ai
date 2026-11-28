@@ -1,0 +1,18 @@
+{
+  "head": "bfc2e11749e48e65f65c37d9850fa847cfc1950a",
+  "exitCode": 0,
+  "seconds": 668.481,
+  "finishedAt": "2026-11-22T18:33:21.983038+00:00",
+  "command": "node experiments/formal_ai_subagent/local-gates.mjs",
+  "nativeExecutedLocally": false,
+  "statusAfter": "",
+  "autonomousAuthorshipCredit": 0,
+  "counts": {
+    "PASS": 89,
+    "SKIP": 54
+  },
+  "archiveSha256": "716c0ba9cb15bdd1c5214b045956494c713c16f8c8df40e4415755b6347cdb5d",
+  "payloadCount": 4,
+  "roundTripVerified": true,
+  "allIssueAcceptanceComplete": false
+}

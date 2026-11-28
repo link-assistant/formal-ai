@@ -50,14 +50,14 @@ mod memory_query_worker;
 mod proof_translation_worker;
 
 use web_engine_core::{
-    assess_arithmetic_claim, detect_language, evaluate_arithmetic_expression,
-    matches_intent_route_payload, normalize_prompt, select_unknown_opener, stable_id,
-    ArithmeticClaimAssessment, ArithmeticClaimOutcome,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome, assess_arithmetic_claim, detect_language,
+    evaluate_arithmetic_expression, matches_intent_route_payload, normalize_prompt,
+    select_unknown_opener, stable_id,
 };
 use web_search_core::{
-    build_request_evidence, default_search_plan_ids, parse_rrf_input, reciprocal_rank_fusion,
-    serialize_rrf_output, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT,
-    WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
+    WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY,
+    WEB_SEARCH_RRF_K, build_request_evidence, default_search_plan_ids, parse_rrf_input,
+    reciprocal_rank_fusion, serialize_rrf_output,
 };
 use web_search_fusion_core::fuse_statement_search_payload;
 
@@ -251,11 +251,7 @@ const fn to_ascii_lower(byte: u8) -> u8 {
 }
 
 const fn min(left: usize, right: usize) -> usize {
-    if left < right {
-        left
-    } else {
-        right
-    }
+    if left < right { left } else { right }
 }
 
 // === Web search core exports ===
@@ -592,11 +588,7 @@ pub extern "C" fn engine_handler_precedence(input_length: usize) -> usize {
             )
         })
         .collect();
-    ranked.sort_by(|left, right| {
-        left.0
-            .cmp(&right.0)
-            .then_with(|| left.1.cmp(right.1))
-    });
+    ranked.sort_by(|left, right| left.0.cmp(&right.0).then_with(|| left.1.cmp(right.1)));
     let mut names = String::new();
     for (_, name) in ranked {
         if !names.is_empty() {
@@ -624,46 +616,9 @@ struct DialogueStatement {
     counterexample: String,
 }
 
-fn build_dialogue_fact_check(turns: &[String], templates: FactCheckTemplates<'_>) -> String {
-    let mut statements = Vec::new();
-    for text in turns
-        .iter()
-        .map(|turn| turn.trim())
-        .filter(|turn| !turn.is_empty())
-    {
-        if !looks_declarative(text) {
-            continue;
-        }
-        let id = stable_id("world_statement", text);
-        if statements
-            .iter()
-            .any(|item: &DialogueStatement| item.id == id)
-        {
-            continue;
-        }
-        statements.push(assess_dialogue_statement(id, text, &templates));
-    }
-    statements.sort_by(|left, right| left.id.cmp(&right.id));
-
-    let summary = if statements.is_empty() {
-        templates.no_statements.to_string()
-    } else {
-        statements
-            .iter()
-            .map(|statement| render_dialogue_statement(statement, &templates))
-            .collect::<Vec<_>>()
-            .join("\n")
-    };
-    let content = fill_template(
-        templates.audit,
-        &[
-            ("count", statements.len().to_string()),
-            ("formal_system", String::from("current")),
-            ("summary", summary),
-        ],
-    );
-    serialize_dialogue_answer(&content, &statements)
-}
+#[path = "dialogue_rendering.rs"]
+mod dialogue_rendering;
+use dialogue_rendering::build_dialogue_fact_check;
 
 fn looks_declarative(text: &str) -> bool {
     let normalized = normalize_prompt(text);
@@ -741,66 +696,6 @@ fn fill_template(template: &str, replacements: &[(&str, String)]) -> String {
         rendered = rendered.replace(&format!("{{{name}}}"), value);
     }
     rendered
-}
-
-fn serialize_dialogue_answer(content: &str, statements: &[DialogueStatement]) -> String {
-    let mut output = String::from("{\"intent\":\"fact_check_current_dialogue\",\"content\":");
-    push_json_string(&mut output, content);
-    output.push_str(",\"confidence\":1,\"evidence\":[");
-    for (index, statement) in statements.iter().enumerate() {
-        if index > 0 {
-            output.push(',');
-        }
-        let mut evidence = format!("fact_check:statement:{}", statement.id);
-        evidence.push(' ');
-        evidence.push_str(statement.probability);
-        evidence.push(' ');
-        evidence.push_str(statement.basis);
-        push_json_string(
-            &mut output,
-            &evidence,
-        );
-    }
-    if !statements.is_empty() {
-        output.push(',');
-    }
-    for (index, evidence) in [
-        format!(
-            "fact_check:audit:scope=current_dialogue;statements={}",
-            statements.len()
-        ),
-        String::from("fact_check:scope:current_dialogue"),
-        format!(
-            "fact_check:formal_system:{}",
-            stable_id(
-                "formal_system",
-                "name:current;universe:;interpretation:;"
-            )
-        ),
-    ]
-    .iter()
-    .enumerate()
-    {
-        if index > 0 {
-            output.push(',');
-        }
-        push_json_string(&mut output, evidence);
-    }
-    output.push_str("],\"trace\":[");
-    for (index, statement) in statements.iter().enumerate() {
-        if index > 0 {
-            output.push(',');
-        }
-        push_json_string(
-            &mut output,
-            &format!(
-                "fact_check:refutation:{}:disprove_statement:{}",
-                statement.id, statement.outcome
-            ),
-        );
-    }
-    output.push_str("]}");
-    output
 }
 
 fn decode_uri_component(value: &str) -> String {

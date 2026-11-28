@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: 'protocol_matrix_presentation_variations_and_agent_cli_e2e_pass',
   path: EXECUTION_LEARNING_PATH,
   taskMessage: 'learning_report_task_client_execution_learning',
-  memoryPath: 'data/meta/issue-716-execution-learning.lino',
   subjectMessage: 'learning_report_subject_client_execution_learning',
 }, 'isExecutionLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const task = reportApi.task;
 
 /** Mirrors `fn is_execution_learning_task` in rust/src/agentic_coding/execution_learning.rs. @param {string} prompt */
 export const isExecutionLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/execution_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/execution_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

@@ -1,0 +1,21 @@
+P1619
+  aliases
+    en ("opening date" opened "date opened" "officially opened on" inaugurated "launch date" "official opening" "grand opening" "date of opening" launched inauguration "inauguration date" "official opening time")
+    es ("inaugurado en" "inaugurada en" "fecha de inauguración" "fecha de apertura")
+    ru ("дата открытия")
+    zh ("正式开放日期" "正式开业日期" "开业日期" "正式开业" "盛大开业" "落成" "落成日期")
+  datatype time
+  descriptions
+    en "date or point in time a place, organization, or event officially opened"
+    es "fecha o punto temporal en la que un evento, museo, teatro, etc. es oficialmente abierto"
+    ru "дата или момент времени, когда музей, театр и т.д. был официально открыт"
+    zh "场所、组织或活动正式开业的日期或时间点"
+  id P1619
+  labels
+    en "date of official opening"
+    es "fecha de inauguración oficial"
+    hi "आधिकारिक उद्घाटन की तिथि"
+    ru "дата официального открытия"
+    zh "正式開放日期"
+  type property
+success 1

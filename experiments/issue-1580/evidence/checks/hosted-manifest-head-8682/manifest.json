@@ -1,0 +1,31 @@
+{
+  "source": "8682a89a84d391d987a967b5764a27c8d1d0c457",
+  "completedAt": "2026-11-23T04:51:50.236489+00:00",
+  "runCount": 33,
+  "runConclusions": {
+    "skipped": 1,
+    "success": 31,
+    "failure": 1
+  },
+  "pipelineJobs": 43,
+  "pipelineJobConclusions": {
+    "success": 20,
+    "skipped": 21,
+    "failure": 2
+  },
+  "nativeBehaviorGroupsPassed": 10,
+  "actionableAdmissionFailures": 2,
+  "diagnosticCandidates": 585,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 4006375,
+    "sha256": "485b981c4befa1c3d5b6a1b0f776a48a5cd98b88942a860b02c628da7793a144"
+  },
+  "members": 223,
+  "roundTripVerified": true,
+  "artifactRerunsRequested": false,
+  "nativeFixVerificationPending": true,
+  "warningCleanupComplete": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

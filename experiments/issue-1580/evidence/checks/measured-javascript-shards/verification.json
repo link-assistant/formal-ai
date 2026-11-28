@@ -1,0 +1,218 @@
+{
+  "records": [
+    {
+      "name": "before",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=measured fast JavaScript plans",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before.log.gz",
+      "rawSha256": "2c178785a0208492bb1b1461188adfd13c33d883a826da3a18de773dcb65ba48",
+      "archiveSha256": "c3232343eadf6e195386688a667df58b9ecca8ff1ae67c6121056e374b3e079f"
+    },
+    {
+      "name": "import-hosted-timings",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/ci-durations.mjs",
+        "--javascript-ci-logs",
+        "--run",
+        "44679541559",
+        "--write"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "import-hosted-timings.log.gz",
+      "rawSha256": "aaa60a3721908f8d1f70d9de14ad718c06c52e22909d45ac5e7b3e0e7394f804",
+      "archiveSha256": "8ce9797379285f1a4b024eec8fbf5f84c7a5e3f11d05d9f96e3e8c8a60626e65"
+    },
+    {
+      "name": "fast-profile",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "fast-profile.log.gz",
+      "rawSha256": "15acb5dd39ad2b187bd7d6f196fb0e7ecbb7572fb42234e57698bc64e5034596",
+      "archiveSha256": "98ad886c4e02fe219e2816e5eff01fbfb8d1ebda2113d656440f8fb8d7dc1ebf"
+    },
+    {
+      "name": "ci-speed",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/ci-speed.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 0,
+      "log": "ci-speed.log.gz",
+      "rawSha256": "59b96b3dc54897e0de63be2121842cb21724a1752e4a75f06721751d8073b430",
+      "archiveSha256": "2fc6a7c658a1a9998433a9cbb83db5bf254a9a47d00706b7a82f0afd4fb8df11",
+      "resolvedBy": "ci-speed-cohort-repaired",
+      "failure": "A fast-PR import lowered full-provenance cost below its main-cohort sibling; preserve existing measured maxima when importing a different cohort."
+    },
+    {
+      "name": "before-cohort-preservation",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=a fast-cohort import",
+        "rust/tests/web/ci-speed.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before-cohort-preservation.log.gz",
+      "rawSha256": "8a07d86b0255e3f8ba97822cb660a7a0ef5869c99db7b48389a4064f7e0608f2",
+      "archiveSha256": "d5fdcf7f917c83f1af64046da6941284061ece6c9e16deef12dead1189579ffa"
+    },
+    {
+      "name": "import-hosted-timings-raise-only",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/ci-durations.mjs",
+        "--javascript-ci-logs",
+        "--run",
+        "44679541559",
+        "--raise-only",
+        "--write"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "import-hosted-timings-raise-only.log.gz",
+      "rawSha256": "aaa60a3721908f8d1f70d9de14ad718c06c52e22909d45ac5e7b3e0e7394f804",
+      "archiveSha256": "8ce9797379285f1a4b024eec8fbf5f84c7a5e3f11d05d9f96e3e8c8a60626e65"
+    },
+    {
+      "name": "fast-profile-cohort-repaired",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "fast-profile-cohort-repaired.log.gz",
+      "rawSha256": "3c9c559dc7891d703394d20cea735d9485a3bb4e9c13e0dc573ca77c9c0519be",
+      "archiveSha256": "6548a64ffb0463fa4e619271c8290d6349accd7dccc5e9aa81eeaac302706054"
+    },
+    {
+      "name": "ci-speed-cohort-repaired",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/ci-speed.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "ci-speed-cohort-repaired.log.gz",
+      "rawSha256": "7059b65cff8440df2f62a140ff9a890571a76f17cad562bbe772874a0c760df9",
+      "archiveSha256": "90d422fc9967d9d2452a5b3ded3a5ee0e84dfc09e46dac7ac08d6f62283343d3"
+    },
+    {
+      "name": "documentation-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "documentation-policy.log.gz",
+      "rawSha256": "ed1669f7f23957379eaf589e498b54a096ca7ea82300ea8ee48f27da0628d7db",
+      "archiveSha256": "58bffdce07d2446b463295e2be0f63a3d1427b46d2fca33df2b5da9ea4e8beb7"
+    },
+    {
+      "name": "all-local-gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "all-local-gates.log.gz",
+      "rawSha256": "d8ff22d88888c964477883c65ae080c0ec1cfba3a06dceb428e524a4891eeea2",
+      "archiveSha256": "460ab4d90cce9de55ab0fd001951565e9fb553eb8923acb4f66031f1b40ab9c9"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false,
+  "durationSource": {
+    "head": "5bbbd91e39761a8e7163148b72a890b97c3d64b3",
+    "run": 44679541559,
+    "beforeSha256": "27c5a6af5bed92b8c32d30ab2230a52634fbb0afd1619fb8787403339826142d",
+    "behavioralExecutionCredit": false,
+    "afterSha256": "1c7db8941680de2036446370fb06c6ab772f27ca4dcbfde189e279b246e6a848",
+    "recordedAt": "2026-11-20T05:29:55.057629+00:00",
+    "raiseOnly": true
+  },
+  "sourceIdentities": [
+    {
+      "path": ".github/workflows/layered-ci.yml",
+      "sha256": "3ec336ca827d798bb65a05f8c9729bff75ae959e6cad37470c5942c67577c490"
+    },
+    {
+      "path": "data/meta/javascript-test-durations.lino",
+      "sha256": "1c7db8941680de2036446370fb06c6ab772f27ca4dcbfde189e279b246e6a848"
+    },
+    {
+      "path": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "sha256": "560dec6124dd39f187d76cedd906ad39abb05b4d1b5a655ca9e792011bb6a7a8"
+    },
+    {
+      "path": "rust/tests/web/ci-speed.test.mjs",
+      "sha256": "b0057755ea5ac33cd7b6f8980e974d73e5027d98a7e8a909c93df2c897434435"
+    },
+    {
+      "path": "scripts/lib/ci-speed-durations.mjs",
+      "sha256": "9d4ee9ab64cc97285c0b8d0fb7dc8b3663dcb6ee9c2416be775355337a5f4c85"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/ci-durations.mjs",
+      "sha256": "2cbcc242cf56e24e72e175c2863b8853142fc9ccd0ef24c726baf678952c391f"
+    }
+  ],
+  "complete": true,
+  "executionNote": "Timing import and planner checks establish conservative scheduling inputs and inventory preservation; repaired hosted shard execution remains pending."
+}

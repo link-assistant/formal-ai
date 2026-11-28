@@ -1,7 +1,12 @@
+#[allow(clippy::duplicate_mod)]
+#[path = "../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::REBUILD_TASK;
+
 use std::time::Duration;
 
 use crate::http_server::{
-    http_post_json_with_read_timeout, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+    http_post_json_with_read_timeout, reserve_loopback_port, spawn_formal_ai_server_with_args,
 };
 
 /// End-to-end proof that issue #558's *rebuild-and-reattach loop* — recompiling Formal AI
@@ -15,13 +20,38 @@ use crate::http_server::{
 #[test]
 fn agent_mode_routes_rebuild_to_a_write() {
     let port = reserve_loopback_port();
-    let _server = spawn_formal_ai_server_agent_mode(port);
+    let request = repair_fixture::canonical_change_request();
+    let report = formal_ai::BenchmarkGateReport::issue_362_from_counts(4, 0);
+    let receipt = request
+        .review(
+            &report,
+            &formal_ai::HumanApproval::granted("integration-reviewer"),
+        )
+        .unwrap();
+    let temporary = std::env::temp_dir().join(format!(
+        "formal-ai-issue-558-rebuild-{}-{port}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&temporary).unwrap();
+    let path = temporary.join("accepted-changes.json");
+    std::fs::write(&path, serde_json::to_vec(&[&receipt]).unwrap()).unwrap();
+    let _server = spawn_formal_ai_server_with_args(
+        port,
+        &["--agent-mode"],
+        &[("FORMAL_AI_ACCEPTED_CHANGES", path.to_str().unwrap())],
+    );
 
     for prompt in [
-        formal_ai::agentic_coding::rebuild_plan::REBUILD_TASK,
+        REBUILD_TASK,
         "An improvement was accepted — reattach the improved worker to the UI and give me the steps.",
         "Rebuild the wasm worker and hot-swap the local server so the UI uses the accepted version.",
     ] {
+        let prompt = repair_fixture::task_with_json(
+            prompt,
+            serde_json::json!({
+                "change_id": receipt.change_id,
+            }),
+        );
         let response = http_post_json_with_read_timeout(
             port,
             "/api/openai/v1/chat/completions",
@@ -85,7 +115,9 @@ fn agent_mode_routes_rebuild_to_a_write() {
         let content = arguments["content"].as_str().unwrap();
         assert_eq!(
             content,
-            formal_ai::agentic_coding::rebuild_plan::render_document(),
+            formal_ai::agentic_coding::rebuild_plan::render_document(
+                &formal_ai::RebuildPlan::for_accepted_change(&receipt)
+            ),
             "{prompt}"
         );
         assert!(content.contains("rebuild_plan"), "{prompt}");
@@ -95,5 +127,7 @@ fn agent_mode_routes_rebuild_to_a_write() {
             "{prompt}"
         );
         assert!(content.contains("reversible"), "{prompt}");
+        assert!(content.contains("integration-reviewer"), "{prompt}");
     }
+    let _ = std::fs::remove_dir_all(&temporary);
 }

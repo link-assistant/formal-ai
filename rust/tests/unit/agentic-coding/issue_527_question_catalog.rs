@@ -15,6 +15,9 @@
 //! 4. the recipe routes without colliding with the sibling recipes and the planner and
 //!    the in-repo Agent CLI driver walk it write → verify → final.
 
+#[allow(clippy::duplicate_mod)]
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
 use formal_ai::agentic_coding::{
     AgenticPlan, DRIVER_TOOLS, PlannedToolCall, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
     is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,
@@ -22,6 +25,9 @@ use formal_ai::agentic_coding::{
 };
 use formal_ai::{ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;
+use repair_fixture::LEDGER_TASK;
+use repair_fixture::REPAIR_STRATEGY_TASK;
+use repair_fixture::SELF_HEAL_TASK;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
     match plan_chat_step(messages, tools) {
@@ -161,15 +167,9 @@ fn recognises_the_catalog_task_without_colliding_with_the_sibling_recipes() {
     // Unrelated and sibling requests do not route here.
     assert!(!is_question_catalog_task("what files are in this folder?"));
     assert!(!is_question_catalog_task("what is formal ai?"));
-    assert!(!is_question_catalog_task(
-        formal_ai::agentic_coding::REPAIR_STRATEGY_TASK
-    ));
-    assert!(!is_question_catalog_task(
-        formal_ai::agentic_coding::LEDGER_TASK
-    ));
-    assert!(!is_question_catalog_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
+    assert!(!is_question_catalog_task(REPAIR_STRATEGY_TASK));
+    assert!(!is_question_catalog_task(LEDGER_TASK));
+    assert!(!is_question_catalog_task(SELF_HEAL_TASK));
 
     // The catalog task itself must not trip the sibling routers.
     assert!(!formal_ai::agentic_coding::is_repair_strategy_task(

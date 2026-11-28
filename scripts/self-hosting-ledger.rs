@@ -7,7 +7,8 @@ use std::io::Write;
 use std::path::Path;
 
 pub const PARTS: &str = "data/meta/self-hosting-ledger-parts";
-const LIMIT: usize = 1_500;
+const READ_LIMIT: usize = 1_500;
+const WRITE_LIMIT: usize = 1_400;
 const MAX_PARTS: usize = 128;
 const PREFIX: &str = "  archive \"self-hosting-ledger-parts/";
 
@@ -57,7 +58,7 @@ pub fn read(ledger: &Path) -> Result<String, String> {
         let part = read_text(&directory.join(name))?;
         if !part.starts_with("self-hosting-ledger-archive\n")
             || !parts(&part)?.is_empty()
-            || part.lines().count() > LIMIT
+            || part.lines().count() > READ_LIMIT
         {
             return Err("invalid or nested ledger archive".to_owned());
         }
@@ -73,7 +74,7 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
     let text = read_text(ledger)?;
     let mut pending = text.clone();
     pending.push_str(record);
-    if pending.lines().count() <= LIMIT {
+    if pending.lines().count() <= WRITE_LIMIT {
         return OpenOptions::new()
             .append(true)
             .open(ledger)
@@ -99,10 +100,10 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
     let latest = rows.pop().ok_or("ledger has no release record")?;
     for row in rows {
         let row = format!("  release\n{row}");
-        if row.lines().count() + archive_header.lines().count() > LIMIT {
+        if row.lines().count() + archive_header.lines().count() > WRITE_LIMIT {
             return Err("single release record exceeds ledger limit".to_owned());
         }
-        if chunk.lines().count() + row.lines().count() > LIMIT {
+        if chunk.lines().count() + row.lines().count() > WRITE_LIMIT {
             chunks.push(std::mem::replace(&mut chunk, archive_header.clone()));
         }
         chunk.push_str(&row);
@@ -121,7 +122,7 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
     next.push_str("  release\n");
     next.push_str(latest);
     next.push_str(record);
-    if next.lines().count() > LIMIT {
+    if next.lines().count() > WRITE_LIMIT {
         return Err("release or archive index exceeds ledger limit".to_owned());
     }
     let directory = ledger.parent().unwrap_or_else(|| Path::new("."));
@@ -212,11 +213,11 @@ mod tests {
                 .unwrap()
                 .contains("tag \"v330\"")
         );
-        assert!(fs::read_to_string(&ledger).unwrap().lines().count() <= LIMIT);
+        assert!(fs::read_to_string(&ledger).unwrap().lines().count() <= WRITE_LIMIT);
         let entries = fs::read_dir(fixture.0.join("self-hosting-ledger-parts")).unwrap();
         let mut count = 0;
         for entry in entries {
-            assert!(read_text(&entry.unwrap().path()).unwrap().lines().count() <= LIMIT);
+            assert!(read_text(&entry.unwrap().path()).unwrap().lines().count() <= WRITE_LIMIT);
             count += 1;
         }
         assert!(count >= 3);
@@ -290,5 +291,36 @@ mod tests {
         assert!(append(&fixture.ledger(), "").is_err());
         assert_eq!(fs::read_to_string(fixture.ledger()).unwrap(), text);
         assert_eq!(fs::read_to_string(part).unwrap(), "interrupted write\n");
+    }
+}
+
+#[cfg(test)]
+mod headroom_tests {
+    use super::*;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    #[test]
+    fn new_writes_retain_headroom_and_old_archives_remain_readable() {
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let directory = std::env::temp_dir().join(format!(
+            "formal-ledger-headroom-{}-{nonce}",
+            std::process::id()
+        ));
+        fs::create_dir(&directory).unwrap();
+        let ledger = directory.join("self-hosting-ledger.lino");
+        let row = "  release\n    tag \"retained\"\n";
+        fs::write(&ledger, format!("self_hosting_ledger\n{}", row.repeat(699))).unwrap();
+        append(&ledger, row).unwrap();
+        assert!(fs::read_to_string(&ledger).unwrap().lines().count() <= WRITE_LIMIT);
+        let part = directory.join("self-hosting-ledger-parts/0001.lino");
+        assert!(read_text(&part).unwrap().lines().count() <= WRITE_LIMIT);
+        let legacy = format!("self-hosting-ledger-archive\n{}", row.repeat(749));
+        assert_eq!(legacy.lines().count(), 1499);
+        fs::write(&part, &legacy).unwrap();
+        assert!(read(&ledger).unwrap().starts_with(&legacy));
+        fs::remove_dir_all(&directory).unwrap();
     }
 }

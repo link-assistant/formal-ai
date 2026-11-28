@@ -485,14 +485,28 @@ describe('web_research (rust/tests/unit/grounded_local_action.rs)', () => {
 
 describe('report_issue (rust/tests/unit/grounded_local_action.rs, report_context_collection.rs)', () => {
   it('report intent is meanings-driven for the reported Russian phrase', () => {
-    for (const prompt of ['Зарепорти баг', 'Сообщи об ошибке', 'Report a bug']) {
+    // Issue #1632: "Отправь отчёт об ошибке" got a research reply instead.
+    for (const prompt of ['Зарепорти баг', 'Сообщи об ошибке', 'Report a bug',
+      'Отправь отчёт об ошибке', 'Отправь отчет об ошибке', 'Отправить отчёт об ошибке']) {
       assert.equal(isReportIntent(prompt), true, prompt);
       const call = single(planReportFlow([user(prompt)], ['bash', 'websearch', 'webfetch', 'request_user_input']));
       assert.equal(call.tool, 'request_user_input', prompt);
     }
   });
 
+  it('Claude Code AskUserQuestion receives multiSelect (issue #1632)', () => {
+    const call = single(planReportFlow([user('Отправь отчёт об ошибке')], ['Bash', 'AskUserQuestion']));
+    assert.equal(call.tool, 'AskUserQuestion');
+    const question = args(call).questions[0];
+    assert.equal(question.multiSelect, true, JSON.stringify(question));
+    assert.equal(question.multiple, true, JSON.stringify(question));
+    assert.ok(question.options.length >= 2, JSON.stringify(question));
+  });
+
   it('an unrelated request is not a report intent', () => {
+    for (const prompt of ['Отправь письмо маме', 'Отправь отчёт начальнику']) {
+      assert.equal(isReportIntent(prompt), false, prompt);
+    }
     assert.equal(isReportIntent('read the file alpha.txt'), false);
     assert.equal(planReportFlow([user('read the file alpha.txt')], ['bash']), null);
   });

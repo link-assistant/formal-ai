@@ -1,0 +1,149 @@
+[
+  {
+    "name": "retained-producer-inverse",
+    "argv": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import fs from 'node:fs';import assert from 'node:assert/strict';import YAML from 'yaml';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';\nconst file='data/benchmarks/fast-pull-request-retained-jobs.json';\nconst old=YAML.parse(execFileSync('git',['show','HEAD:.github/workflows/security.yml'],{encoding:'utf8'})).jobs.codeql;\nconst current=YAML.parse(fs.readFileSync('.github/workflows/security.yml','utf8')).jobs.codeql;\nconst payload=job=>({steps:job.steps,uses:job.uses,with:job.with,strategy:job.strategy});\nconst reverted=structuredClone(current), steps=reverted.steps.filter(step=>step.name==='Observe included Rust string payloads');assert.equal(steps.length,1);\nassert.equal(steps[0]['timeout-minutes'],4);assert.equal(steps[0].if,\"${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts }}\");\nsteps[0].run=steps[0].run.replace(' --trace-evaluation','');assert.deepEqual(reverted,old);\nconst manifest=JSON.parse(fs.readFileSync(file,'utf8')), rows=manifest.jobs.filter(row=>row.file==='security.yml'&&row.id==='codeql');assert.equal(rows.length,1);\nconst hash=job=>createHash('sha256').update(JSON.stringify(payload(job))).digest('hex');assert.equal(rows[0].payloadSha256,hash(old));rows[0].payloadSha256=hash(current);\nfs.writeFileSync(file,JSON.stringify(manifest,null,2)+'\\n');console.log(JSON.stringify({onlyInvestigationTraceArgumentAdded:true,timeoutUnchanged:true,productionAdmissionUnchanged:true,payloadSha256:rows[0].payloadSha256}));"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "retained-producer-inverse.stdout.gz",
+      "rawSha256": "5153607ea1d24f0a6cc8181ec062e9bf31414cc52ed36aa116e0c913ab9e8a89",
+      "archiveSha256": "e8e1b4263afa7a5fd7d426a969972cf06593df7f7f9d0da97df5c51e738e36d9",
+      "bytes": 188,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "retained-producer-inverse.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "adapter",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "experiments/issue-1580/codeql-included-string-observation.test.mjs"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "adapter.stdout.gz",
+      "rawSha256": "e0a7892af36c3558431ccd471dfc9acb6b37309918367920e04a94d7e987d9f4",
+      "archiveSha256": "8a823b4693574d72f548bdf650318f47e5c606b6e4357c2563b7677964fa11b8",
+      "bytes": 2807,
+      "lines": 64
+    },
+    "stderr": {
+      "file": "adapter.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "adapter-corrected",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "experiments/issue-1580/codeql-included-string-observation.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "adapter-corrected.stdout.gz",
+      "rawSha256": "453401ed62ba834d3eda5577bb1288e013347506581f8a724f99b7d529f29d8f",
+      "archiveSha256": "8e269923230675e8db47e9f3e849096ece067df4735e8607961c89024df11a03",
+      "bytes": 646,
+      "lines": 22
+    },
+    "stderr": {
+      "file": "adapter-corrected.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "profile",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "profile.stdout.gz",
+      "rawSha256": "b3fa515ff93133644c633966cc848f85082fffaa0c66ec852a40309d9673d11f",
+      "archiveSha256": "5ce97f4f8e14c50abec37d07004ddfca89aac397a7254946b830a03a9500fb3a",
+      "bytes": 4612,
+      "lines": 118
+    },
+    "stderr": {
+      "file": "profile.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "security",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "security.stdout.gz",
+      "rawSha256": "a6c9029c9e948ea40188d78deaccbe2715e79d7cf0c3e84c3c82cc96c51f6dbb",
+      "archiveSha256": "ff2360b2e35988501f8b32a0b16480c3149eef6c6c2089055472df87ab8c1566",
+      "bytes": 5310,
+      "lines": 136
+    },
+    "stderr": {
+      "file": "security.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

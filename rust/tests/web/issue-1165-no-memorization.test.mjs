@@ -3,11 +3,8 @@
 // as a code string, in every quote spelling a stored program uses, exactly as
 // `data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet` in
 // rust/tests/unit/coding_discovery/no_memorization.rs does; both ratchets fall
-// together. The one stored program left is Laravel's (no documentation page
-// shows a Laravel Hello World command), so the gate is a ratchet at 1 and
-// becomes a hard gate at 0. Source captures (the documentation captures seed,
-// page content re-derived from SHA-pinned fixtures, and the issue bodies of
-// the requirement-extraction corpus) are counted each on its own ratchet.
+// together. Publisher and oracle replays live in explicit test fixtures.
+// Captured issue requirements and tool schema examples have separate ceilings.
 
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -19,13 +16,12 @@ import { expandConciseLexemes } from '../../../js/server/lino.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 /** Mirrors `HELLO_WORLD_PROGRAM_LITERALS_MAX`. */
-const HELLO_WORLD_PROGRAM_LITERALS_MAX = 1;
+const HELLO_WORLD_PROGRAM_LITERALS_MAX = 0;
 /**
  * Mirrors `SOURCE_CAPTURES`: data captured from a source, each with the Hello
  * World literals it may hold. A path ending in `/` names a directory.
  */
 const SOURCE_CAPTURES = [
-  ['data/seed/coding-documentation-captures.lino', 23],
   ['data/benchmarks/issue-requirements/', 5],
   ['data/benchmarks/fixtures/issue-1558/agent-cli-request.json', 4],
 ];
@@ -112,5 +108,4 @@ test('R1165-8: data/ stores no more verbatim Hello World programs than the ratch
   // The ratchet only goes down: a count below the ceiling means the ceiling
   // must fall with it, in both roots.
   assert.equal(total, HELLO_WORLD_PROGRAM_LITERALS_MAX, `lower the ratchet to ${total}: ${offenders.join(', ')}`);
-  assert.deepEqual(offenders, ['data/seed/hello-world-programs.lino (1)']);
 });

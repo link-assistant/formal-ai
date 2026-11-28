@@ -1,0 +1,47 @@
+{
+  "source": "d5b64675ef55ff5437bb73d9a43fc971e0d1f3c9",
+  "run": "45068095941",
+  "attempt": "1",
+  "artifactId": 14771458725,
+  "transfer": {
+    "artifactId": 14771458725,
+    "zipSha256": "7835057d3bbf56948fb44d261907321546a4e4823f689a4ba05f805bb3219f25",
+    "files": 3
+  },
+  "receiptSha256": "310c3e1713252095cc4a7c327f4d8d9784b4f8a1df464a161236d847ff00215e",
+  "compiler": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5\n",
+  "compilerCommit": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+  "compilerInputs": 27,
+  "output": {
+    "path": "formal_ai_worker.wasm",
+    "bytes": 311893,
+    "sha256": "ec8186543a701ccad0f8f7faa8bdf2a21b513359717230748954c6707a8b4ff2"
+  },
+  "imported": [
+    {
+      "path": "js/formal_ai_worker.wasm",
+      "beforeSha256": "754cfedad4bc0c6a8811cae8b1ca201e25308b1a49acab3261a1eeea9b844ba1",
+      "afterSha256": "ec8186543a701ccad0f8f7faa8bdf2a21b513359717230748954c6707a8b4ff2"
+    },
+    {
+      "path": "js/formal_ai_worker.receipt.json",
+      "beforeSha256": "9ef4dfd5af30f21c2bff5d323fc6e09e5f11623a913438a8f650447ff3c0a5f7",
+      "afterSha256": "310c3e1713252095cc4a7c327f4d8d9784b4f8a1df464a161236d847ff00215e"
+    },
+    {
+      "path": "data/meta/wasm-worker-inputs.lino",
+      "beforeSha256": "b4cb7f7ff7f2e4e3637863f8271b4eb44d599c9314f728b4cc6b1fe17c348e84",
+      "afterSha256": "8d9c9a45b09f48d3ae1873d6985bbc7f1571157edb2850b8cc02090fd924b7fd"
+    }
+  ],
+  "nativeCompilationEvidence": true,
+  "verifiedBeforeImport": true,
+  "nativeExecutedLocal": false,
+  "independentAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false,
+  "archiveSha256": "edaf858ee17c91dd7524918de1a61746ffca416d2560fc9b161663b0c9bfb6db",
+  "payloadCount": 20,
+  "roundTripVerified": true,
+  "allCombinedLocalGates": "pending",
+  "combinedHeadHostedChecks": "pending"
+}

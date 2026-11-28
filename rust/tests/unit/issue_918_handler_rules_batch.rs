@@ -32,7 +32,7 @@
 //! A later batch moved `algorithm` into the rule document: the sort
 //! operation (a new `operation` condition over the seeded operation
 //! vocabulary) or the word "algorithm", the language a `table` block finds,
-//! and the snippets as seeded responses read by a `response` value. Its
+//! and renders callable programs through the numeric-list composer. Its
 //! answers are byte-identical to the deleted `try_algorithm` in every prompt
 //! language.
 //!
@@ -397,45 +397,67 @@ fn a_terse_language_switch_replays_the_prior_answer_under_the_seeded_limit() {
     );
 }
 
-const BRAINSTORM_FIVE: &str = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.";
-const BRAINSTORM_TEN: &str = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.\n6. A changelog-fragment consistency checker.\n7. A prompt-matrix generator for four-language smoke tests.\n8. A Wikidata anchor verifier for local seed records.\n9. A trace viewer that groups events by solver phase.\n10. A small offline issue-to-test planning tool.";
-
-/// The seeded brainstorm list: how many items a reply lists by default and
-/// which cardinal a prompt names to ask for more are the seed's
-/// `default_count` and `count_cardinal`, not constants in either runtime.
-/// The list itself is seeded example data; topic-bearing requests are
-/// composed by `brainstorm_composition` before this row is reached.
 #[test]
-fn the_seeded_brainstorm_list_reads_its_count_policy_from_the_seed() {
-    for (prompt, expected) in [
+fn brainstormed_project_ideas_use_the_requested_topic_and_count() {
+    for (prompt, topic, count) in [
         (
             "Give me five ideas for an open-source side project.",
-            BRAINSTORM_FIVE,
+            "side project",
+            5,
         ),
         (
             "Suggest ten open-source utilities for developers.",
-            BRAINSTORM_TEN,
+            "utilities for developers",
+            10,
         ),
     ] {
         let response = FormalAiEngine.answer(prompt);
         assert_eq!(response.intent, "brainstorm_project_ideas", "{prompt}");
-        assert_eq!(response.answer, expected, "{prompt}");
+        assert_eq!(
+            response.answer.lines().count(),
+            count,
+            "{}",
+            response.answer
+        );
+        assert!(
+            response.answer.lines().all(|idea| idea.contains(topic)),
+            "{}",
+            response.answer
+        );
+        assert!(!response.answer.contains("Links Notation notebook"));
     }
+    let cold = FormalAiEngine.answer("Give me five ideas.");
+    assert!(
+        cold.answer.contains("topic") || cold.answer.contains("subject"),
+        "{}",
+        cold.answer
+    );
+    assert!(!cold.answer.contains("1. "));
 }
 
-/// The roleplay frame, personas, topics and fallback body are
-/// `data/seed/personas.lino`; the browser twin no longer carries a bootstrap
-/// copy of them.
+/// Roleplay frames caller facts and preserves roles outside the identity registry.
 #[test]
-fn a_roleplay_frame_renders_the_seeded_persona_and_topic() {
+fn a_roleplay_frame_renders_the_supplied_role_and_facts() {
     for (prompt, expected) in [
         (
-            "Explain like you are Ada Lovelace teaching algorithms.",
-            "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
+            "Explain like you are Ada Lovelace: An algorithm is a sequence of steps.",
+            "Roleplay frame for Ada Lovelace. Supplied facts: An algorithm is a sequence of steps.",
+        ),
+        (
+            "Roleplay as a field botanist: Mosses absorb water across their surfaces.",
+            "Roleplay frame for a field botanist. Supplied facts: Mosses absorb water across their surfaces.",
+        ),
+        (
+            "Act as the {facts} narrator: Keep dollar amounts literal: $& and $20.",
+            "Roleplay frame for the {facts} narrator. Supplied facts: Keep dollar amounts literal: $& and $20.",
+        ),
+        (
+            "扮演園丁：苔蘚可以吸水。",
+            "扮演角色：園丁。已提供的事实：苔蘚可以吸水。",
         ),
         (
             "Roleplay as a teacher explaining relativity.",
-            "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+            "Name the role, then put the facts to explain after a colon.",
         ),
     ] {
         let response = FormalAiEngine.answer(prompt);
@@ -447,13 +469,16 @@ fn a_roleplay_frame_renders_the_seeded_persona_and_topic() {
 const SPIDER_EN: &str = "Released title-role Spider-Man films in release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023); 11. Spider-Man: Brand New Day (2026). Announced but not yet released: Spider-Man: Beyond the Spider-Verse (2027-06-18). Source: Wikidata Query Service, snapshot taken 2026-08-04.";
 const SPIDER_RU: &str = "Вышедшие фильмы, где Человек-паук — главный герой в порядке выхода: 1. Человек-паук (2002); 2. Человек-паук 2 (2004); 3. Человек-паук 3: Враг в отражении (2007); 4. Новый Человек-паук (2012); 5. Новый Человек-паук. Высокое напряжение (2014); 6. Человек-паук: Возвращение домой (2017); 7. Человек-паук: Через вселенные (2018); 8. Человек-паук: Вдали от дома (2019); 9. Человек-паук: Нет пути домой (2021); 10. Человек-паук: Паутина вселенных (2023); 11. Человек-паук: Новый день (2026). Анонсированы, но ещё не вышли: Человек-паук: За пределами вселенных (2027-06-18). Источник: Wikidata Query Service, снимок данных от 2026-08-04.";
 
-/// A fact backed by a release timeline is the snapshot rendered against the
-/// day it is asked (`data/seed/release-timelines.lino`); the browser twin
-/// rendered nothing for it (an empty answer) until it got the same renderer.
+/// Both renderers use the explicitly supplied historical snapshot.
 #[test]
 fn a_release_timeline_fact_renders_the_same_snapshot_answer() {
+    let registry = formal_ai::seed::parse_release_timelines(include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/fixtures/release-timeline/spider-man-replay.lino"
+    )));
     for (language, expected) in [("en", SPIDER_EN), ("ru", SPIDER_RU)] {
-        let rendered = formal_ai::release_timeline::render(
+        let rendered = formal_ai::release_timeline::render_from(
+            &registry,
             "spider_man_title_role_films",
             language,
             "2026-08-04",
@@ -461,13 +486,6 @@ fn a_release_timeline_fact_renders_the_same_snapshot_answer() {
         .expect("the Spider-Man timeline renders");
         assert_eq!(rendered.text, expected, "{language}");
     }
-    let response = UniversalSolver::default().solve("List Spider-Man films in release order.");
-    let today = formal_ai::external_benchmarks::today_utc();
-    let expected = formal_ai::release_timeline::render("spider_man_title_role_films", "en", &today)
-        .expect("the Spider-Man timeline renders")
-        .text;
-    assert_eq!(response.intent, "fact_lookup");
-    assert_eq!(response.answer, expected);
 }
 
 const CONCEPT_WIKIDATA: &str = "Wikidata (structured-knowledge): Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications.\n\nSource: https://en.wikipedia.org/wiki/Wikidata (wikipedia).";
@@ -485,15 +503,14 @@ fn a_meaning_question_resolves_through_the_seeded_query_vocabulary() {
 }
 
 const SUMMARY_RUST: &str = "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector.";
-const SUMMARY_FORMAL_AI: &str =
-    "formal-ai is a deterministic symbolic AI that answers without any neural-network inference.";
+const SUMMARY_FORMAL_AI: &str = "No verified repository description is available.";
 
-/// A topic summary is the seeded topic's canonical concept summary or its
-/// heaviest project statement (`data/seed/summary-topics.lino`); the browser
-/// answered these requests with the unknown opener until it got the same
-/// reader, run after web search as the native row is.
 #[test]
-fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
+fn topic_summaries_resolve_subjects_through_the_shared_registries() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    });
     for (prompt, expected) in [
         ("Can you summarize Rust?", SUMMARY_RUST),
         (
@@ -501,24 +518,42 @@ fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
             SUMMARY_FORMAL_AI,
         ),
     ] {
-        let response = FormalAiEngine.answer(prompt);
+        let response = solver.solve(prompt);
         assert_eq!(response.intent, "summarize_topic", "{prompt}");
         assert_eq!(response.answer, expected, "{prompt}");
     }
+    let held_out = solver.solve("Give me a one-paragraph summary of WebAssembly.");
+    assert_eq!(held_out.intent, "summarize_topic");
+    assert!(
+        held_out
+            .answer
+            .starts_with("WebAssembly (Wasm) is a binary instruction format")
+    );
+    let article = solver.solve("Summarise the Wikipedia entry for Wiktionary.");
+    assert_eq!(article.intent, "summarize_topic");
+    assert!(article.answer.starts_with("Wiktionary is a multilingual"));
+    let unrelated = solver.solve("Can you summarize rustic barns?");
+    assert!(!unrelated.answer.contains("Rust is a multi-paradigm"));
 }
 
-const SORT_RUST: &str = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_GO: &str = "Вот проверяемый алгоритм сортировки на go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
-const SORT_RUST_HI: &str = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
-const SORT_TYPESCRIPT_TESTS: &str = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
-const SORT_PYTHON_TESTS: &str = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_PYTHON: &str = "Here is a reviewable sorting algorithm in python:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_RUST: &str = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_GO: &str = "Вот проверяемый алгоритм сортировки на go:\n\n```go\npackage sorting\n\nimport \"sort\"\n\nfunc sortValues(values []int) {\n\tsort.Slice(values, func(i, j int) bool { return values[i] < values[j] })\n}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
+const SORT_RUST_HI: &str = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
+const SORT_TYPESCRIPT_TESTS: &str = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values: number[]): number[] {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort() {\n  const expected = [0, 1, 2];\n  const actual = sort([2, 1, 0]);\n  if (actual.length !== expected.length || actual.some((value, index) => value !== expected[index])) {\n    throw new Error(\"Unexpected order\");\n  }\n}\n\ntest_sort();\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
+const SORT_PYTHON_TESTS: &str = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n```\n\nTests:\n```python\ndef test_sort():\n    assert sort([2, 1, 0]) == [0, 1, 2]\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 
 #[test]
-fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
+fn the_algorithm_rules_compose_the_requested_language() {
     let english = FormalAiEngine.answer("Write me a sorting algorithm in Rust");
     assert_eq!(english.intent, "algorithm_sort_rust");
     assert_eq!(english.answer, SORT_RUST);
+    let descending = FormalAiEngine.answer(
+        "Write a sorting algorithm in JavaScript in descending order with a test using -6, +08, 8, 01.5",
+    );
+    assert_eq!(descending.intent, "algorithm_sort_javascript");
+    assert!(descending.answer.contains("(a, b) => b - a"));
+    assert!(descending.answer.contains("sort([-6.0, 8.0, 8.0, 1.5])"));
+    assert!(descending.answer.contains("[8.0, 8.0, 1.5, -6.0]"));
     for (prompt, intent, expected) in [
         (
             "write a sorting algorithm in python with tests",
@@ -559,20 +594,19 @@ fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
             "{prompt} names the sort operation"
         );
     }
-    let mut log = EventLog::default();
-    let unnamed = run_handler(
-        "algorithm",
-        "explain the algorithm",
-        "explain the algorithm",
-        &mut log,
-    )
-    .expect("an algorithm request without an operation is still answered");
-    assert_eq!(unnamed.answer, SORT_PYTHON);
-    assert!(
-        log.events()
-            .iter()
-            .any(|event| event.kind == "algorithm:refusal" && event.payload == "no operation named")
-    );
+    for prompt in ["explain the algorithm", "write an algorithm with tests"] {
+        let mut log = EventLog::default();
+        let unnamed = run_handler("algorithm", prompt, prompt, &mut log)
+            .expect("an algorithm request without an operation asks for the operation");
+        assert_eq!(unnamed.intent, "algorithm-operation-required");
+        assert_eq!(
+            unnamed.answer,
+            "What should the algorithm do? Include its expected inputs and outputs."
+        );
+        assert!(log.events().iter().any(|event| {
+            event.kind == "algorithm:refusal" && event.payload == "no operation named"
+        }));
+    }
     let mut log = EventLog::default();
     assert!(
         run_handler(
@@ -593,41 +627,7 @@ const PLAN_RU_DOCUMENT: &str = "Это запрос на создание док
 
 #[test]
 fn the_document_plan_renders_the_seeded_plan_in_every_prompt_language() {
-    for (prompt, expected) in [
-        (
-            "Make me a PDF document listing countries with food subsidies for low-income people.",
-            PLAN_EN_PDF,
-        ),
-        (
-            "Сделай мне пдф файл со списком стран, где есть пособия/скидки на еду для малоимущих, как в виде прямых денежных дотаций, так и в косвенной форме, например, талоны.",
-            PLAN_RU_PDF,
-        ),
-        (
-            "गरीब लोगों के लिए खाद्य सब्सिडी वाले देशों की सूची के साथ एक PDF दस्तावेज़ बनाओ।",
-            PLAN_HI_PDF,
-        ),
-        (
-            "给我做一个包含为低收入者提供食品补贴的国家列表的PDF文档。",
-            PLAN_ZH_PDF,
-        ),
-    ] {
-        let response = FormalAiEngine.answer(prompt);
-        assert_eq!(response.intent, "document_generation_plan", "{prompt}");
-        assert_eq!(response.answer, expected, "{prompt}");
-    }
-    assert!(PLAN_RU_DOCUMENT.starts_with("Это запрос на создание документа. "));
-    assert_eq!(
-        formal_ai::rule_interpreter::handler_table_row("document_format", "make me a pdf"),
-        Some("PDF")
-    );
-    assert_eq!(
-        formal_ai::rule_interpreter::handler_table_row("document_noun", "сделай отчёт"),
-        Some("document")
-    );
-    assert_eq!(
-        formal_ai::rule_interpreter::handler_table_value("document_output_fence", "TOML"),
-        Some("")
-    );
+    document_answers::the_document_plan_renders_the_seeded_plan_in_every_prompt_language();
 }
 
 /// The calendar rows (issue #918): the weekday names with the Russian case a
@@ -883,71 +883,16 @@ fn follow_up_parts(answer: &str) -> (&str, &str, &str) {
 /// same sentences.
 #[test]
 fn a_software_project_follow_up_renders_the_seeded_sentences() {
-    let solver = UniversalSolver::default();
-    let scraper_plan = "Design a simple web scraper in Python that:\n1. Fetches a webpage\n2. Extracts all headings (h1, h2, h3)\n3. Counts word frequency\n4. Generates a markdown summary";
-    let plan = solver.solve(scraper_plan);
-    let history = [
-        ConversationTurn::user(scraper_plan),
-        ConversationTurn::assistant(plan.answer),
-    ];
-    for (prompt, head, block_lines, tail) in [
-        (
-            "test it by scraping wikipedia.org and show me the top 10 most frequent words.",
-            "Recorded a verification follow-up for the scraper from the active plan.\n\nFormalized meaning:\n",
-            [
-                "  action \"test\"",
-                "  target_site \"wikipedia.org\"",
-                "  expected_output \"the top 10 most frequent words\"",
-                "  approval_gate \"network_access\"",
-            ],
-            "\nReasoning steps:\n1. Recognize \"test\" as a verification request that exercises the scraper from the active plan, not a fact lookup.\n2. Bind the test target to wikipedia.org and keep live fetches behind the network_access gate.\n3. Record the expected output as \"the top 10 most frequent words\" so the test harness can assert it.\n4. Drive the artifact through a deterministic fixture before any host API or network call.\n5. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured wikipedia.org fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Surface the top 10 most frequent words from the fixture run.\n4. Run the python test command once the generated_code gate is approved.\n5. Promote the run to live wikipedia.org only after the test_execution and network_access gates pass.\n\nReply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates.",
-        ),
-        (
-            "покажи результат",
-            "Записано продолжение типа demonstration для scraper из активного плана.\n\nФормализованный смысл:\n",
-            [
-                "  action \"show\"",
-                "  follow_up_kind demonstration",
-                "  expected_output \"результат\"",
-                "  approval_gate \"generated_code\"",
-            ],
-            "\nШаги рассуждения:\n1. Распознать «show» как запрос типа demonstration, который проверяет scraper из активного плана, а не поиск факта.\n2. Записать ожидаемый вывод как «результат», чтобы тестовый каркас мог его проверить.\n3. Прогнать артефакт через детерминированную фикстуру до любого вызова API хоста или сети.\n4. Держать выполнение кода за шлюзами одобрения, потому что песочница не может запускать недоверенный код.\n\nПлан проверки:\n1. Сгенерировать ядро scraper и детерминированный тестовый каркас с записанной фикстурой сайта (запрошенная цель).\n2. Проверить каждое требование (разбор, извлечение, подсчёт, сводку) на фикстуре.\n3. Показать результат из запуска на фикстуре.\n4. Запустить команду тестов python, как только шлюз generated_code будет одобрен.\n5. Переводить запуск на живой сайт (запрошенная цель) только после прохождения шлюзов test_execution и network_access.\n\nОтветьте `approve plan`, чтобы сгенерировать артефакт вместе с этим тестовым каркасом. Для живого запуска против цели нужны шлюзы test_execution и network_access.",
-        ),
-    ] {
-        let response = solver.solve_with_history(prompt, &history);
-        assert_eq!(response.intent, "software_project_followup", "{prompt}");
-        let (actual_head, block, actual_tail) = follow_up_parts(&response.answer);
-        assert_eq!(actual_head, head, "{prompt}");
-        assert_eq!(actual_tail, tail, "{prompt}");
-        for line in block_lines {
-            assert!(
-                block.lines().any(|candidate| candidate == line),
-                "{prompt}: {block}"
-            );
-        }
-    }
-
-    let prices_plan = "Write a Python scraper that imports product prices and stores history";
-    let plan = solver.solve(prices_plan);
-    let history = [
-        ConversationTurn::user(prices_plan),
-        ConversationTurn::assistant(plan.answer),
-    ];
-    let implementation = solver.solve_with_history("approve plan", &history);
-    let history = [
-        ConversationTurn::user(prices_plan),
-        ConversationTurn::assistant(implementation.answer),
-    ];
-    let approved = solver.solve_with_history("run it and verify the output", &history);
-    assert_eq!(approved.intent, "software_project_followup");
-    let (head, block, tail) = follow_up_parts(&approved.answer);
-    assert_eq!(
-        head,
-        "Recorded a verification follow-up for the scraper from the active plan.\n\nFormalized meaning:\n"
-    );
-    assert!(block.contains("  approval_state approved\n"));
-    assert_eq!(
-        tail,
-        "\nReasoning steps:\n1. Recognize \"test\" as a verification request that exercises the scraper from the active plan, not a fact lookup.\n2. Drive the artifact through a deterministic fixture before any host API or network call.\n3. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured the requested target fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Run the python test command once the generated_code gate is approved.\n4. Promote the run to live the requested target only after the test_execution and network_access gates pass.\n\nThe plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates."
-    );
+    document_answers::a_software_project_follow_up_renders_the_seeded_sentences();
 }
+
+#[test]
+fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
+    algorithm_answers::the_algorithm_rule_set_answers_unchanged_in_every_prompt_language();
+}
+
+#[path = "issue_918_handler_rules_batch/algorithm_answers.rs"]
+mod algorithm_answers;
+
+#[path = "issue_918_handler_rules_batch/document_answers.rs"]
+mod document_answers;

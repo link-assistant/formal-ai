@@ -1,0 +1,81 @@
+{
+  "files": [
+    {
+      "path": "before-regression-outcome.json.gz",
+      "bytes": 155,
+      "sha256": "da0269fbc7063847af6481be56dcab9e69c415f3d29166808e1089c7f3da7f41"
+    },
+    {
+      "path": "before-regression.log.gz",
+      "bytes": 4573,
+      "sha256": "4b2d3a91c80652e12ed03716c8ca577b87b630abdb6cb6f6ddb59b9d7bc3d6be"
+    },
+    {
+      "path": "final-partition-outcome.json.gz",
+      "bytes": 156,
+      "sha256": "61f843f44662ee284282fc33687639b835f6098969aafcd36d23cf72a168b302"
+    },
+    {
+      "path": "mirror-after.log.gz",
+      "bytes": 84,
+      "sha256": "7db58a2ba691e576f5aaa8bd5002b00f321cfa36e240e2e707d037ea25d58afd"
+    },
+    {
+      "path": "mirror-final.log.gz",
+      "bytes": 83,
+      "sha256": "910f8b827f9af8cf8e74fdb41d6cec401061502767677d1d246f48b46112dee2"
+    },
+    {
+      "path": "owners.log.gz",
+      "bytes": 1431,
+      "sha256": "76cc26c3905b471a4cad75fa242e947aa2ccd94273c4fd0583bc7f390289ff46"
+    },
+    {
+      "path": "post-repair-statistics.log.gz",
+      "bytes": 1053,
+      "sha256": "4caee009255ced6bde83ea27da29e2adc15ae66c51dc22c80aa47f6d8943b458"
+    },
+    {
+      "path": "post-repair-status.log.gz",
+      "bytes": 1717,
+      "sha256": "2259baad91630f8321077a2397d910ae4ff35645b9472818c6fefa8f2b907d9c"
+    },
+    {
+      "path": "registry-after.log.gz",
+      "bytes": 331,
+      "sha256": "438fb8d2a335780723886446aef448fb8a22d2209d2e2c59085be73b66bf0577"
+    },
+    {
+      "path": "registry-final.log.gz",
+      "bytes": 331,
+      "sha256": "2c27e27a34b20288438b3ede21e87bd20d444ed7662c79db1b342ff857dad07f"
+    },
+    {
+      "path": "regression-after.log.gz",
+      "bytes": 1927,
+      "sha256": "1c1f7771c40e4eea5720a9eb425b037a6c0e45be6311235de0ab67355b86a3c6"
+    },
+    {
+      "path": "regression-final.log.gz",
+      "bytes": 425,
+      "sha256": "513cc467e5568b396b91ef541f4152e3af3a8ace5d31ea3a7fa0fe28daed0169"
+    },
+    {
+      "path": "release-after.log.gz",
+      "bytes": 116,
+      "sha256": "ce6c9d2c9cb5a2501b0f79f643483281d8039661b3de100c7296fcfe8904c287"
+    },
+    {
+      "path": "repair-outcome.json.gz",
+      "bytes": 206,
+      "sha256": "ae6216066ab0b45318c6b8b784a591cf7bc03b3ff036283970e373ff3640dd32"
+    },
+    {
+      "path": "test-paths-filtered.log.gz",
+      "bytes": 1774,
+      "sha256": "3a17d4bd4c5e7457a3eaab0ea313b8228b58c082f0c117a8ddc20bd849a3466c"
+    }
+  ],
+  "sourceCommit": "de79e6ece67142fe8c6012059e6eb2bc0300e7bd",
+  "authorshipCredit": 0
+}

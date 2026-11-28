@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "source_commit": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "source_tree": "d178524eed9e374d4198f3cf2f8e479119f3d0dc",
+  "selected_head": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "pinned_base": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "release_tag": "v0.356.4",
+  "producer_run": "45001543202",
+  "cargo_lock_sha256": "7616bc661833c26bdf078ae672f988a25911de91a092884493b3c56a947d2741",
+  "native_inputs_sha256": "71b538dd03435115030ed60151566959f79c69cf0410478ea785ee9c49681b07",
+  "native_input_files": 1455,
+  "package_version": "0.356.4",
+  "requested_features": "default",
+  "root_default_features": [
+    "doublets-native",
+    "equality-saturation",
+    "meta-language"
+  ],
+  "profile": "release",
+  "rust_flags": "-Dwarnings",
+  "compiler_release": "1.100.0",
+  "compiler_commit": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+  "bundle": null
+}

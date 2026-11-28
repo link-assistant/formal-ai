@@ -1,0 +1,322 @@
+[
+  {
+    "source": "bd6-native-format-commit/commit.stderr",
+    "file": "081-commit.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "bd6-native-format-commit/commit.stdout",
+    "file": "082-commit.stdout.gz",
+    "rawSha256": "2c6835cdecd4697e5cd8b4b06e5597e2daf7b94081d869f685e95ba720331cb6",
+    "archiveSha256": "3fb885f79b66ec6567eeb27bceedfe54db9b5eea13e45fd4f2f82432ac09f0fb",
+    "bytes": 122,
+    "lines": 2
+  },
+  {
+    "source": "bd6-native-format-commit/format.stderr",
+    "file": "083-format.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "bd6-native-format-commit/format.stdout",
+    "file": "084-format.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "bd6-native-format-commit/outcome.json",
+    "file": "085-outcome.json.gz",
+    "rawSha256": "cebe2964d91c00930d72cd91714586b1e4e346604b2150b27996c171cc6d0ebd",
+    "archiveSha256": "b59efe3517e88b1905d7285a209364d5251529262e5ae30a1c8bb61ac7869d9f",
+    "bytes": 704,
+    "lines": 39
+  },
+  {
+    "source": "bd6-native-format-commit/stage.stderr",
+    "file": "086-stage.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "bd6-native-format-commit/stage.stdout",
+    "file": "087-stage.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "bd6-planner-parity-repair/edits.json",
+    "file": "088-edits.json.gz",
+    "rawSha256": "15248218121ba8117846224182c2b99c6603cbc481cbd88e9423fafa0fd98ec9",
+    "archiveSha256": "c13bb4e28408e08f7cdfd8f023f7cde0f029e27ce3e74f8da7faf8ca0a9c2a47",
+    "bytes": 1263,
+    "lines": 18
+  },
+  {
+    "source": "bd6-planner-twins.log",
+    "file": "089-bd6-planner-twins.log.gz",
+    "rawSha256": "e89f80d5f92dd877a4b9a90da5fab81704fb3d506446f0abcda849cd98c3fa42",
+    "archiveSha256": "25e0cad068908656db6519ff90b93ee0d8f0edc1a498f910c1e5461efe5d776f",
+    "bytes": 500,
+    "lines": 8
+  },
+  {
+    "source": "cache-warning-producer-original-reports/failure.json",
+    "file": "090-failure.json.gz",
+    "rawSha256": "2ed7677942dfc9e6ec95e802b3dcdc2919d178a457df0afefc4edac0ca879cd1",
+    "archiveSha256": "fae5aab1c73b78eb30cc44af3ed12404796d36c7556e78ebdc0a12ef249f76ec",
+    "bytes": 190,
+    "lines": 1
+  },
+  {
+    "source": "cache-warning-producer-original-reports/recovered-outcome.json",
+    "file": "091-recovered-outcome.json.gz",
+    "rawSha256": "c5a133f7fea8266022e9f23645cbbe077ed85558978564d08dfe4e94d4ca9961",
+    "archiveSha256": "77f1cbccb5b83480f0b68c6b567751f64724759be1760fc54fecd0e62126b3c7",
+    "bytes": 630,
+    "lines": 18
+  },
+  {
+    "source": "cache-warning-producer-original-reports/worker.log",
+    "file": "092-worker.log.gz",
+    "rawSha256": "c45437000137ce8ff6492d50a81ed02cc77111ad72678f0272b01fdf2a083e74",
+    "archiveSha256": "110c813346c730f2c6c9058438217bc01257a2103608a3b41c8671e89e263b44",
+    "bytes": 148,
+    "lines": 3
+  },
+  {
+    "source": "check-repository-qa-source-navigation.log",
+    "file": "093-check-repository-qa-source-navigation.log.gz",
+    "rawSha256": "ef6ff89a262130a1976917b02679cd9c47e7e2eaed28f67ab7a2618820c3849d",
+    "archiveSha256": "f90dd4da5493b1bbdc2840a3cf0b09c8a7296fe8b43d60665e55be0b12157c65",
+    "bytes": 1287,
+    "lines": 7
+  },
+  {
+    "source": "check-repository-qa-source-navigation.py",
+    "file": "094-check-repository-qa-source-navigation.py.gz",
+    "rawSha256": "fc1e92cfd4733d52288bc12ed0648d4e506eadd64f2726d5ed149a96ec2cca48",
+    "archiveSha256": "c799ca38b11ec9dd8899f25b90e4d8fe93b3b9c03d901b45045a9cca45c41fdc",
+    "bytes": 1052,
+    "lines": 18
+  },
+  {
+    "source": "collect-bd6-repaired-head-ci.py",
+    "file": "095-collect-bd6-repaired-head-ci.py.gz",
+    "rawSha256": "10b17f557c971433af02f4b8cb4874bdc50e247b51ef5f75caf6b6307a99fe30",
+    "archiveSha256": "7aaa0841e5c69df103b829fb80cf4c59333be46caf48e21a43da76f2054d1e56",
+    "bytes": 399,
+    "lines": 6
+  },
+  {
+    "source": "collect-bd6-repaired-producer.py",
+    "file": "096-collect-bd6-repaired-producer.py.gz",
+    "rawSha256": "133ea9674b35751ca263e543e3f9e919cfef52d14f0be3d865cb36d7cd9f9c79",
+    "archiveSha256": "df58bc0617a7bffa0876eba2a99eb4c30934054b13c71a4d606d73ef48ab208d",
+    "bytes": 2118,
+    "lines": 27
+  },
+  {
+    "source": "commit-bd6-native-format-import.log",
+    "file": "097-commit-bd6-native-format-import.log.gz",
+    "rawSha256": "37f360a870fdf65af0b81014196c23f28b20d1574ae6247e76ba9ab8b14c859f",
+    "archiveSha256": "e2d38a0da92fbd0179b3995ce07c74410e49550a9f5ed02d060d6427067adacb",
+    "bytes": 174,
+    "lines": 4
+  },
+  {
+    "source": "commit-bd6-native-format-import.py",
+    "file": "098-commit-bd6-native-format-import.py.gz",
+    "rawSha256": "0e68d35331c3a8ce0621f631feee6f591f829d88e49228238b5ac8f9f58c46fd",
+    "archiveSha256": "a013090b24de4003f595f7b451e83e10a312ad5c91d045668c7391d0d5f81498",
+    "bytes": 1178,
+    "lines": 15
+  },
+  {
+    "source": "finalize-bd6-producer-capture.log",
+    "file": "099-finalize-bd6-producer-capture.log.gz",
+    "rawSha256": "cc1f838f871a40383e744b70ebfb191f03feb833da70aa7c776057358cdcce88",
+    "archiveSha256": "9e4f3985147a102f093499b85fafac02519a9c7a905d9471f6a5cd4ad9c09555",
+    "bytes": 812,
+    "lines": 21
+  },
+  {
+    "source": "finalize-bd6-producer-capture.py",
+    "file": "100-finalize-bd6-producer-capture.py.gz",
+    "rawSha256": "f02497c72b64a9e35bffb42d90831484c3fca0664b108411e0a44ae39f78bb1c",
+    "archiveSha256": "054212f78edb5cc5c8991eea5872dcfae50e8ac70f73f9eec76c063efe8c3166",
+    "bytes": 2681,
+    "lines": 32
+  },
+  {
+    "source": "freeze-bd6-collection-controllers.log",
+    "file": "101-freeze-bd6-collection-controllers.log.gz",
+    "rawSha256": "4b0255009ba2288f30a0e3a35290943bd980003a93e9a442bec1f280441a8ebc",
+    "archiveSha256": "ee106ad7f25b93c9d59fd1e3c245f25f4294344185e61aa1f7692af3190ac852",
+    "bytes": 483,
+    "lines": 4
+  },
+  {
+    "source": "freeze-bd6-collection-controllers.py",
+    "file": "102-freeze-bd6-collection-controllers.py.gz",
+    "rawSha256": "d3a355fbf4046bd71523bc852f5528e5536257a668c7b979aac35bf4d6b8dc58",
+    "archiveSha256": "cfaa30e0eb6a5bbce7bc34c3cae54742f2d0d7ef00d36f6bd7a26cfa523d1b90",
+    "bytes": 859,
+    "lines": 12
+  },
+  {
+    "source": "include-native-repository-qa-contract.log",
+    "file": "103-include-native-repository-qa-contract.log.gz",
+    "rawSha256": "610109645c9f1cad9abf754550bff2d9cf7e9d3318c929599cf7cd7a6f5a59b0",
+    "archiveSha256": "4b713c6a6fb308271e21e6d807dc13137b29ac0c2604e61ccd927b46ac31b0b5",
+    "bytes": 959,
+    "lines": 14
+  },
+  {
+    "source": "include-native-repository-qa-contract.py",
+    "file": "104-include-native-repository-qa-contract.py.gz",
+    "rawSha256": "9ec71645009afe7c1c1740af00dddd88a7984dc452dc2121f2d378031756c377",
+    "archiveSha256": "b22c1f94f6dd048b78600028ebc5c48d7547ec4ca30038d9a2b5338bfd7c27af",
+    "bytes": 871,
+    "lines": 10
+  },
+  {
+    "source": "include-native-repository-qa-contract.retry.log",
+    "file": "105-include-native-repository-qa-contract.retry.log.gz",
+    "rawSha256": "ed78ae62a32958643c3f11831046ed2c7f421c5e9a8b49eb0df8a5f351706b2a",
+    "archiveSha256": "a98b3392200b6029e3039dde755073cff0046d19ec873e21d1e4757378104d06",
+    "bytes": 237,
+    "lines": 4
+  },
+  {
+    "source": "inspect-bd6-three-root-causes.log",
+    "file": "106-inspect-bd6-three-root-causes.log.gz",
+    "rawSha256": "150cc79f56b0b20ac6e60ea59d6a11b4fe6b43a2cf24326e5e60ca437679e740",
+    "archiveSha256": "a464f4dc797be55ef58108f5356a938a2d3b852d5b8937b008346d673a596269",
+    "bytes": 103162,
+    "lines": 437
+  },
+  {
+    "source": "inspect-bd6-three-root-causes.py",
+    "file": "107-inspect-bd6-three-root-causes.py.gz",
+    "rawSha256": "c5184ee1d575f47f919fd307c43099ccf81e7d4fb49efa351db87b99cb82a70c",
+    "archiveSha256": "1ef9515a315dee327d6c672717060f0a65a58eabde30ee3677a3420b3a5becb7",
+    "bytes": 1027,
+    "lines": 18
+  },
+  {
+    "source": "inspect-planner-parity-options.py",
+    "file": "108-inspect-planner-parity-options.py.gz",
+    "rawSha256": "0903177db483bb5e574b0e55139b6ad1c64c206514e0ead19807829e034e6778",
+    "archiveSha256": "0de589be974f62a4672136e7a43f7b9518819f32ba081cc41f9170833ed4a352",
+    "bytes": 560,
+    "lines": 11
+  },
+  {
+    "source": "planner-parity-options-retry.log",
+    "file": "109-planner-parity-options-retry.log.gz",
+    "rawSha256": "58e0dada6c9be0888784c8a2f061c0a5639c68b32904513d567e7528e90a2617",
+    "archiveSha256": "c36a50e263f285771a34f0ae1ca18102bf7fc35b94d036b68a92eef686a938b2",
+    "bytes": 27888,
+    "lines": 627
+  },
+  {
+    "source": "planner-parity-options.log",
+    "file": "110-planner-parity-options.log.gz",
+    "rawSha256": "cbeb8a52c3fa344a909f6ba4beb545b8b8e4d42c7ce2874b0bd3ad0c2acbf4f3",
+    "archiveSha256": "0510f654983f2dbe3e823693cfc6b0b319e27a88e46d568b1e45caf36c88fe56",
+    "bytes": 303,
+    "lines": 5
+  },
+  {
+    "source": "preflight-bd6-repair-publication.log",
+    "file": "111-preflight-bd6-repair-publication.log.gz",
+    "rawSha256": "b17a4d5d5eb94cf94f2e9e21631376a91e601b9d71b657fc84e1b9ec8fa2443c",
+    "archiveSha256": "baf2f8d8b06866797c0a724e2dc8498f4f2b8173d5b55eaa00a100816028f186",
+    "bytes": 587,
+    "lines": 4
+  },
+  {
+    "source": "preflight-bd6-repair-publication.py",
+    "file": "112-preflight-bd6-repair-publication.py.gz",
+    "rawSha256": "72bb385249926cf50b246bc34a7238e0cd9b63ee779a84001eba83bf29bcd5d5",
+    "archiveSha256": "a39bf56db830e8ff9ea9b833ced9d3b79d4b554cc1916ef78b6fa2943a7cc16b",
+    "bytes": 3529,
+    "lines": 34
+  },
+  {
+    "source": "publish-bd6-ci-repair.py",
+    "file": "113-publish-bd6-ci-repair.py.gz",
+    "rawSha256": "ff84144dbe15c3367eb0d284f80e80bfd2ddcab898f133f9e5f14bbc2ad6919c",
+    "archiveSha256": "defbaec32733f5860319b5ed20072e5c9716aab8521fd45d5b287165d9e3d3d2",
+    "bytes": 3750,
+    "lines": 40
+  },
+  {
+    "source": "read-bd6-actionable-failure.log",
+    "file": "114-read-bd6-actionable-failure.log.gz",
+    "rawSha256": "cdb86260b11835dbde0699f839908a99e0d63b5bd3eaaae1c0d803607dc1e2c8",
+    "archiveSha256": "df26dab902b49204490a1ba28f5fceba7b78592c67df90b1bcd6ca9e5200db74",
+    "bytes": 16724,
+    "lines": 90
+  },
+  {
+    "source": "read-bd6-actionable-failure.py",
+    "file": "115-read-bd6-actionable-failure.py.gz",
+    "rawSha256": "91e384df8fcc4bd44025f903606c758d1c96c072136eba3d46695cae0ecd5ac1",
+    "archiveSha256": "29744bb16fd6f369961b0829035801f78373ea554b557427976b73b7042ddbf5",
+    "bytes": 1264,
+    "lines": 24
+  },
+  {
+    "source": "read-bd6-publication-inputs.log",
+    "file": "116-read-bd6-publication-inputs.log.gz",
+    "rawSha256": "575c9403b8852b857b645b74e0875dc995d6420a2fd340c733f84fa032b942c1",
+    "archiveSha256": "57858a393d6db918fcbf78287636f464bf370df44777b6a4aec14171e05e3f50",
+    "bytes": 22546,
+    "lines": 21
+  },
+  {
+    "source": "read-bd6-publication-inputs.py",
+    "file": "117-read-bd6-publication-inputs.py.gz",
+    "rawSha256": "0c9533726631a7f0eca671e7f342bb5621bd7e77745cc76ce163869cdb18d1ed",
+    "archiveSha256": "72415a089061fd8c49367ae7ff4f86cddd4f37d4943bb9f7184ac272f9a16b01",
+    "bytes": 1480,
+    "lines": 20
+  },
+  {
+    "source": "read-bd6-terminal-failures.log",
+    "file": "118-read-bd6-terminal-failures.log.gz",
+    "rawSha256": "57f0e8fcd749b71881ebb8dc0de6c6a092c3c3205121bfd22b4eedfc04105b7d",
+    "archiveSha256": "d57df43e887c6faffe98e43451ac6533d0d1729e0e0e5ecbbb5611454302b2a0",
+    "bytes": 32459,
+    "lines": 225
+  },
+  {
+    "source": "read-bd6-terminal-failures.py",
+    "file": "119-read-bd6-terminal-failures.py.gz",
+    "rawSha256": "f12e243259e0947eb3f9d14b26b2fd91f09f45b0e9654342d247cbf419a43d35",
+    "archiveSha256": "f7ff1a79404d2fce0dd15b7d21c4b766026d495c1153e9228b4551d8cd55883c",
+    "bytes": 1207,
+    "lines": 22
+  },
+  {
+    "source": "record-rust-registry-latest-review.log",
+    "file": "120-record-rust-registry-latest-review.log.gz",
+    "rawSha256": "1d7b4e29cc3274e7d533d3541022b68b38439018735dd89dacb50b6034fb80d5",
+    "archiveSha256": "5fe03bd96fb3d53fb8b35488dca616f43748e1d19927effa00f8706af9eed0e0",
+    "bytes": 305,
+    "lines": 4
+  }
+]

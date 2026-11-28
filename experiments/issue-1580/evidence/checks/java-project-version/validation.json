@@ -1,0 +1,205 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "records": [
+    {
+      "name": "candidate-disabled-control",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-java-project-version.test.mjs"
+      ],
+      "environmentOverrides": {
+        "ISSUE_1580_JAVA_DISABLE_PROJECT_VERSION_CANDIDATE": "1"
+      },
+      "exitCode": 1,
+      "file": "candidate-disabled-control.log.gz",
+      "rawSha256": "05d96f51e559a9665ca4ecaa25161430494f366fc56079f70490a74758e87dfc",
+      "archiveSha256": "d2be1ee1990977ec9409e70a6f18894804f4f494d4b98440a32cc48f7b922c74",
+      "lines": 44,
+      "tapSummary": {
+        "tests": 2,
+        "pass": 1,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "candidate-preservation",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-java-project-version.test.mjs"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "file": "candidate-preservation.log.gz",
+      "rawSha256": "cee28088cf7e73da79e565c9015af1efa34d234926a386e91fc96248ac1d057c",
+      "archiveSha256": "e705d5292902baa14351f1cf8d7c40de2646d2c1fa2821bbb696f290f3f9a327",
+      "lines": 22,
+      "tapSummary": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "maintained-entrypoint",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "file": "maintained-entrypoint.log.gz",
+      "rawSha256": "d5104a98b76b9a3d1bf8c689fd27def9e4b181ac101e4397d0516d76fb81354b",
+      "archiveSha256": "fd68b5537b0daf66295632ccc9ada46acd42d2b09d24e3202bcaf6dfc8392137",
+      "lines": 334,
+      "tapSummary": {
+        "tests": 54,
+        "pass": 54,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "original-probe",
+      "argv": [
+        "node",
+        "experiments/issue-1580/probe-java-project-version.mjs",
+        "/tmp/issue-1580-research/java-project-version-validation/original.json"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "file": "original-probe.log.gz",
+      "rawSha256": "0ab3a93ed576d55510bf7e3f3959c06c03f237ca7bd8837ee87b730d64eb6cd2",
+      "archiveSha256": "6ef08db17e2bfe4cbee5e1f133b5cd41ef036c0971cd56ca5e1ce860930dbe07",
+      "lines": 1,
+      "tapSummary": {}
+    },
+    {
+      "name": "candidate-probe",
+      "argv": [
+        "node",
+        "experiments/issue-1580/probe-java-project-version.mjs",
+        "/tmp/issue-1580-research/java-project-version-validation/candidate.json",
+        "--candidate"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "file": "candidate-probe.log.gz",
+      "rawSha256": "11106c27d4e7a724e7a879c9ba1d3455b67b3384bf70b2699a54f2ddbdd8b32c",
+      "archiveSha256": "68a34490c3531bd81184b1f1e98474a52aa284559a70b2fc8f4243ba6b0ad15d",
+      "lines": 1,
+      "tapSummary": {}
+    }
+  ],
+  "sourceSha256": {
+    "experiments/issue-1580/probe-java-project-version.mjs": "89f10a342eebb411aa694b058f40c74f63567c8dae2644a2c32041866979b418",
+    "experiments/issue-1580/template-java-project-version.test.mjs": "ea0e4ce4a8bd7ec6c9a36647c920ffe9d609587557b1f0d35474a042dd279f04",
+    "rust/tests/web/issue-1580-template-observations.test.mjs": "442b2bb5726b29195ac36696337dbfd8851773d10dcc645695c6a5d0f3469c2e"
+  },
+  "independentXmlObservations": {
+    "original": [
+      {
+        "case": "plain-project",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.4",
+        "oldParentVersion": null,
+        "newParentVersion": null,
+        "javaVersionUpdated": true
+      },
+      {
+        "case": "different-parent-version",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.3",
+        "oldParentVersion": "9.8.7",
+        "newParentVersion": "9.8.7",
+        "javaVersionUpdated": true
+      },
+      {
+        "case": "equal-parent-version",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.3",
+        "oldParentVersion": "1.2.3",
+        "newParentVersion": "1.2.4",
+        "javaVersionUpdated": true
+      },
+      {
+        "case": "comment-before-project-version",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.3",
+        "oldParentVersion": null,
+        "newParentVersion": null,
+        "javaVersionUpdated": true
+      }
+    ],
+    "candidate": [
+      {
+        "case": "plain-project",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.4",
+        "oldParentVersion": null,
+        "newParentVersion": null,
+        "javaVersionUpdated": true
+      },
+      {
+        "case": "different-parent-version",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.4",
+        "oldParentVersion": "9.8.7",
+        "newParentVersion": "9.8.7",
+        "javaVersionUpdated": true
+      },
+      {
+        "case": "equal-parent-version",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.4",
+        "oldParentVersion": "1.2.3",
+        "newParentVersion": "1.2.3",
+        "javaVersionUpdated": true
+      },
+      {
+        "case": "comment-before-project-version",
+        "exitCode": 0,
+        "released": true,
+        "projectVersion": "1.2.4",
+        "oldParentVersion": null,
+        "newParentVersion": null,
+        "javaVersionUpdated": true
+      }
+    ]
+  },
+  "fullIssueComplete": false,
+  "upstreamRepairApplied": false,
+  "mavenExecuted": false,
+  "nativeExecutionObserved": false,
+  "independentAuthorshipCredit": 0
+}

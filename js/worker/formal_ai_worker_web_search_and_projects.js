@@ -191,11 +191,11 @@ function hasGroundedUnresolvedBareTermResult(query, results) {
   );
 }
 
-async function tryWebSearch(prompt, language) {
+async function tryWebSearch(prompt, language, preferences) {
   const normalized = normalizePrompt(prompt);
   const request = extractWebSearchRequest(prompt, normalized);
   if (!request || !request.query) return null;
-  return runWebSearchQuery(request.query, language, request.kind);
+  return runWebSearchQuery(request.query, language, request.kind, preferences);
 }
 
 const UNKNOWN_RESEARCH_STOPWORDS = new Set([
@@ -219,7 +219,7 @@ function unknownResearchResultIsRelevant(query, entry) {
 
 async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   query = String(query || "").trim();
-  if (!query) return null;
+  if (!query || preferences.offline === true || preferences.allowNetwork === false) return null;
   const rrfK = webSearchRrfK();
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();
@@ -470,6 +470,73 @@ function projectByAlias(term) {
   const normalizedTerm = normalizeProjectTerm(term);
   if (!normalizedTerm) return null;
   return PROJECTS.find((project) => projectMatchesAlias(project, normalizedTerm)) || null;
+}
+
+// Publisher-backed project creator claims. Rust twin: solver_handlers/project_origin.rs.
+function originProject(prompt) {
+  const question = factLiveQuestions(prompt).find(({ relation }) => relation === "inventor");
+  if (!question) return null;
+  const { subjectTerm } = question;
+  const selfReferences = factualQaSurfaces("assistant_self_reference");
+  const project = selfReferences.includes(subjectTerm)
+    ? PROJECTS.find((entry) => entry.assistantProject)
+    : projectByAlias(subjectTerm);
+  return project?.originDeclaration ? project : null;
+}
+
+function originCreatorStatement(project, data) {
+  if (!["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"].includes(data.author_association)) return null;
+  const author = data.user?.login;
+  if (!/^[a-z0-9-]{1,100}$/i.test(author ?? "")) return null;
+  const statement = typeof data.body === "string" ? data.body.trim() : "";
+  const match = /^(.+?) was created by github\.com\/([A-Za-z0-9-]{1,100})(?: using (github\.com\/[A-Za-z0-9-]{1,100}\/[A-Za-z0-9_.-]{1,100}))?\.$/.exec(statement);
+  if (!match) return null;
+  const [, subject, assertedAuthor, tool = ""] = match;
+  if (!projectMatchesAlias(project, normalizeProjectTerm(subject)) ||
+      assertedAuthor.toLowerCase() !== author.toLowerCase()) return null;
+  return { subject, author: `github.com/${author}`, tool };
+}
+
+async function tryProjectOrigin(prompt, preferences, trace) {
+  if (!externalServiceEnabled(preferences, "externalServiceGithub")) return null;
+  const project = originProject(prompt);
+  if (!project) return null;
+  const source = project.originDeclaration;
+  const tail = source.startsWith(project.url) ? source.slice(project.url.length) : "";
+  const match = /^\/issues\/(\d+)#issuecomment-(\d+)$/.exec(tail);
+  if (!match) return null;
+  const [, issue, comment] = match;
+  const prefix = githubApiRepositoryUrl({ owner: project.org, name: project.name });
+  const url = `${prefix}/issues/comments/${comment}`;
+  trace.push(`project_origin:request:${url}`);
+  const captures = [];
+  const data = await factCaptureJson(url, {
+    online: preferences?.offline !== true && preferences?.allowNetwork !== false,
+    bounded: true,
+  }, captures);
+  if (!data) {
+    trace.push("project_origin:unavailable");
+    return null;
+  }
+  if (String(data.id) !== comment || data.html_url !== source || data.issue_url !== `${prefix}/issues/${issue}`) {
+    trace.push("project_origin:rejected:publisher_identity");
+    return null;
+  }
+  const slots = originCreatorStatement(project, data);
+  if (!slots) {
+    trace.push("project_origin:rejected:creator_statement");
+    return null;
+  }
+  const template = slots.tool ? "project-origin-author-and-tool" : "project-origin-author";
+  const content = factualQaRender(template, detectLanguage(prompt), slots);
+  if (!content) return null;
+  return {
+    intent: "fact_lookup", content, confidence: 0.88,
+    evidence: [
+      `response:${template}`, `source:${source}`,
+      ...captures.map((capture) => `source:http:${capture.url} sha256=${capture.sha256}`),
+    ],
+  };
 }
 
 function isPromotedProject(project) {
@@ -873,13 +940,14 @@ function genericProjectLookupAnswer(prompt, language, repo, promotionEnabled) {
   return { intent: "project_lookup", content, confidence: 0.72, evidence };
 }
 
-async function renderPromotedProjectLookup(prompt, language, project) {
+async function renderPromotedProjectLookup(prompt, language, project, preferences) {
   const displayName = projectDisplayName(project, language);
   const repository = projectRepoSlug(project);
   const url = project.url || `https://github.com/${repository}`;
-  const description = describeProjectRecord(project, language, "short");
   const providers = WEB_SEARCH_PROVIDERS.map((provider) => provider.id);
   const fusionConstant = webSearchRrfK();
+  const evidence = [`project:promoted:${repository}`];
+  const description = await summarizeCapturedProject(project, language, preferences, evidence);
   const body = projectSummaryResponse("project-lookup-promoted", language, {
     "promoted-orgs": PROMOTED_PROJECT_ORGS.join(", "),
     "display-name": displayName,
@@ -889,15 +957,13 @@ async function renderPromotedProjectLookup(prompt, language, project) {
     "provider-summary": providers.join(", "),
     "reciprocal-rank-constant": fusionConstant,
   });
-  const search = await runWebSearchQuery(displayName, language);
-  const evidence = [
-    `project:promoted:${repository}`, `source:${url}`,
-    "summarization:mode:short", `summarization:language:${language}`,
+  const search = await runWebSearchQuery(displayName, language, undefined, preferences);
+  evidence.push(
     `web_search:request:${displayName}`,
     ...providers.map((provider) => `web_search:provider_planned:${provider}`),
     `web_search:fusion_planned:rrf:k=${fusionConstant}`,
     ...(search && Array.isArray(search.evidence) ? search.evidence : []),
-  ];
+  );
   const grounded = search && search.diagnostics &&
     Array.isArray(search.diagnostics.fused) && search.diagnostics.fused.length > 0;
   return {
@@ -958,7 +1024,7 @@ async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, prefere
       ? promotedProjectByRepo(repo.owner, repo.name)
       : null;
     if (promoted) {
-      return renderPromotedProjectLookup(prompt, language, promoted);
+      return renderPromotedProjectLookup(prompt, language, promoted, preferences);
     }
     return genericProjectLookupAnswer(prompt, language, repo, promotionEnabled);
   }
@@ -968,7 +1034,7 @@ async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, prefere
   const project = projectByAlias(query.termOriginal || query.term);
   if (!project) return null;
   if (promotionEnabled && isPromotedProject(project)) {
-    return renderPromotedProjectLookup(prompt, language, project);
+    return renderPromotedProjectLookup(prompt, language, project, preferences);
   }
   return genericProjectLookupAnswer(prompt, language, null, promotionEnabled);
 }

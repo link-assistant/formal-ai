@@ -187,3 +187,15 @@ test("a declared resource fallback preserves both actual attempts and the genuin
   assert.ok(source.detail.includes("http_404"));
   assert.ok(source.detail.includes(endpoints[0]) && source.detail.includes(endpoints[1]));
 });
+
+test("empty offline WordNet outcomes retain the declared English language boundary", async () => {
+  const context = await bootWorker(new Map());
+  for (const language of ["en", "ru", "hi", "zh", "es"]) {
+    const result = await lookup(context, HELD_OUT_WORD, language, { offline: true });
+    const wordnet = result.outcomes.find(row => row.sourceId === "wordnet");
+    assert.ok(wordnet, language + " must retain every consulted source");
+    assert.equal(wordnet.status, language === "en" ? "offline_cache_miss" : "unbound_template", language);
+    if (language === "en") assert.ok(wordnet.detail.includes("https://en-word.net/api/lemma/isogram"), wordnet.detail);
+    assert.equal(wordnet.items, 0);
+  }
+});

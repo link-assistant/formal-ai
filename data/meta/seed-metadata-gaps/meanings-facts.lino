@@ -17,6 +17,13 @@ seed-metadata-gaps
     record "fact_comparison_joiner"
   gap seed-metadata-gap-e55f9369d5a3cbd3
     record "fact_comparison_request"
+  gap seed-metadata-gap-a5cf70fadc35fc3c
+    record "fact_subject_connector"
+  gap seed-metadata-gap-499e486974541880
+    record "inception"
+    missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-038ab086e628b860
+    record "inventor"
   gap seed-metadata-gap-c075bf64987c3b0c
     record "knowledge_relation"
   gap seed-metadata-gap-4f30b950ed6d8cb0
@@ -25,6 +32,8 @@ seed-metadata-gaps
     record "knowledge_value"
   gap seed-metadata-gap-5cdf308063bd7087
     record "official_language"
+  gap seed-metadata-gap-160087c45eb6d186
+    record "opening-date"
   gap seed-metadata-gap-c72274864fb8e771
     record "painter_of_painting"
   gap seed-metadata-gap-996687952747f5d1
@@ -33,3 +42,6 @@ seed-metadata-gaps
     record "population"
   gap seed-metadata-gap-357613103778719c
     record "prompt_text_question_cue"
+  gap seed-metadata-gap-9429d8cead2e4c5b
+    record "start"
+    missing "role,precondition,effect,unit,example"

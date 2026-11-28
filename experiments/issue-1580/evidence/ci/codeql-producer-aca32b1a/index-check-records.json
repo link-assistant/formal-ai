@@ -1,0 +1,20 @@
+[
+  {
+    "file": "index-check--finish-artifact-consumer-commit-second.log.gz",
+    "rawSha256": "9c07ac56334d80618c6101d3e38f099688cf061c36ee285fad30ce93e936e816",
+    "archiveSha256": "5f7f564ff561b8448e0ec6d7991d5bfc889172b17d5c20aa977381c394f241d7",
+    "bytes": 1497
+  },
+  {
+    "file": "index-check--check-file-size.log.gz",
+    "rawSha256": "0f150fd9fee3b4f528038b0b2ec248bd17eaa04d5af069a2668d573f337e7f44",
+    "archiveSha256": "db83d3ff37bf7accf873466f6a77fc70628fbd3537af96131dbf11c29a827fb4",
+    "bytes": 48775
+  },
+  {
+    "file": "index-check--compact-completed-codeql-index.py.gz",
+    "rawSha256": "debcc2a1196eebffb043af422171504167e7117027b0071dd42253072488bec0",
+    "archiveSha256": "93b116f482f2e69da7d57dd3b32b086d20ef18b5bb7b5e6b2535f25e3596a743",
+    "bytes": 1178
+  }
+]

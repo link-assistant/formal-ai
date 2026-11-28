@@ -1,0 +1,20 @@
+Q207316
+  aliases
+    en ("Lua language")
+    ru ("Луа")
+    zh ("Lua语言" "脚本语言")
+  descriptions
+    en "lightweight programming language"
+    es "Lenguaje de programación interpretado"
+    hi "प्रोग्रामिंग भाषा"
+    ru "язык программирования"
+    zh "轻量级脚本语言"
+  id Q207316
+  labels
+    en Lua
+    es Lua
+    hi "लुआ"
+    ru Lua
+    zh Lua
+  type item
+success 1

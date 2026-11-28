@@ -1,0 +1,11 @@
+{
+  "suppliedScripts": 1105,
+  "compressedScriptBytes": 586227,
+  "sealedCommandRecords": 2393,
+  "newCommandHashesVerified": 79,
+  "sourceHashesVerified": 7,
+  "noRunningWorkers": true,
+  "whitespace": "pass",
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

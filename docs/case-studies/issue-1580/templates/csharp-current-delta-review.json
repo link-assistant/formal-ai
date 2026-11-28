@@ -1,0 +1,140 @@
+{
+  "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+  "commit": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+  "scope": "Only the eight changed files, completely read in pages 26-37; no claim to have completed the remaining current tree or historical files.",
+  "completeChangedFileComparison": true,
+  "completeCurrentSourceComparison": false,
+  "completeTemplateAcceptance": false,
+  "files": [
+    {
+      "path": ".changeset/require-codecov-and-preserve-merged-changesets.md",
+      "gitBlob": "d08045990e572f14c38facfa89928ba0682ec9b8",
+      "sha256": "4c70897c94e2920161053e2f8ac433527229df59ca22cc445c7f709e176214f6",
+      "bytes": 229,
+      "completeSourceRead": true,
+      "readPages": [
+        26
+      ],
+      "formalAiComparison": [
+        "changelog.d"
+      ],
+      "decision": "The patch fragment records required Codecov eligibility and collision-safe changeset merging. Preserve its historical meaning; it is not a Formal AI release fragment."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "bb3d1c61fa3ca49172cfedeab0fddaa9763da22a",
+      "sha256": "823a86444a37f391d0019084705b6d690a04d04465596859895aa95b9817c40c",
+      "bytes": 39812,
+      "completeSourceRead": true,
+      "readPages": [
+        27,
+        28,
+        29
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml",
+        ".github/workflows/coverage.yml",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Same-repository PRs and main explicitly classify Codecov eligibility; fork PRs skip credential use. Main fails a missing token even when automatic release is skipped. The pipeline gate receives the complete needs graph, known event and detector output. The changed workflow, including publication and manual branches, was read completely. This comparison does not establish that every applicable preflight and skip policy has been adopted in Formal AI; live release qualification remains open."
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "be6478c7b305c13e51ce3f77aefeb0c1525f5a74",
+      "sha256": "81e775907ac1675b81b3eaa19a90fa4e96c2d82d8142110e692d00f47f858d4c",
+      "bytes": 19351,
+      "completeSourceRead": true,
+      "readPages": [
+        30,
+        31
+      ],
+      "formalAiComparison": [
+        "CONTRIBUTING.md",
+        ".github/workflows/coverage.yml"
+      ],
+      "decision": "Read the current release, token and setup instructions completely. Badge/runtime and hosted-runner wording must be kept consistent with executable workflows. Template-specific .NET and NuGet setup does not require adding those tools to Formal AI. Broad documentation and release adoption remain unfinished."
+    },
+    {
+      "path": "scripts/merge-changesets.mjs",
+      "gitBlob": "7efdc178d1aa61ce3dc371c712911295812e4ae1",
+      "sha256": "ade38ea7f4d394fd14271abc52b6a43d03a3729027e2c3e8a68fd367f3027dee",
+      "bytes": 6538,
+      "completeSourceRead": true,
+      "readPages": [
+        32
+      ],
+      "formalAiComparison": [
+        "scripts/create-changelog-fragment.rs",
+        "scripts/collect-changelog.rs"
+      ],
+      "decision": "Current source reserves output exclusively with wx, retries ten occupied random names, writes the full merged content before deleting inputs, and preserves the highest version bump. This repairs the overwritten-input pattern retained by the earlier fixture. The exact current two tests pass; no concurrency guarantee beyond the tested exclusive reservation is claimed. Formal AI uses Rust changelog fragments; equivalence of every failure path remains to be established."
+    },
+    {
+      "path": "scripts/merge-changesets.test.mjs",
+      "gitBlob": "655b4ba43de1842aa0f89d9324d08a84f94a28e6",
+      "sha256": "6f4f416826f6ae450767df73b490cc97d59a6b647b6abf0436123c2e272f043b",
+      "bytes": 2466,
+      "completeSourceRead": true,
+      "readPages": [
+        33
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Both actual upstream tests passed using Bun: occupied names preserve descriptions and the highest bump; exhaustion preserves all original bytes. The first local attempt omitted a computed-URL dependency and failed because of that harness defect. Its streams are retained and are not counted as upstream failures."
+    },
+    {
+      "path": "scripts/pipeline-gate.mjs",
+      "gitBlob": "f3a77aaeb6d2d9f0afbf87806d4d882317b91ffb",
+      "sha256": "4d060e2e8ffea34131a60639c4ab43efa495094e20e3639006f91a240f017833",
+      "bytes": 4721,
+      "completeSourceRead": true,
+      "readPages": [
+        34
+      ],
+      "formalAiComparison": [
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Current gate rejects malformed or unknown job results, distinguishes expected and inapplicable work, and makes token/preflight failures block main. Formal AI has its own strict needs schema and separate source-detection contract. Passing one gate implementation does not prove all event-specific workflow paths equivalent."
+    },
+    {
+      "path": "scripts/pipeline-gate.test.mjs",
+      "gitBlob": "b5f8c7a8c1f909453b7848b96f94496fa53b436a",
+      "sha256": "7accaaed0dde28b42635a124253f0a78c9fd1b124d56bacf94536d52bc71cc48",
+      "bytes": 3846,
+      "completeSourceRead": true,
+      "readPages": [
+        35
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "decision": "The exact current sixteen tests passed for push, PR and dispatch; missing, failed, cancelled and skipped required work; Codecov eligibility; malformed detection; and release preflight. These are pure helper checks, not hosted workflow or publication evidence."
+    },
+    {
+      "path": "scripts/release-workflow-policy.test.mjs",
+      "gitBlob": "b0c9e3930d25c65b2d450925315bff30de54d6a6",
+      "sha256": "a55bb479059ddc85c25ab45a56e0996c223fd0494a178edb6e6c8681adfb2c1f",
+      "bytes": 20301,
+      "completeSourceRead": true,
+      "readPages": [
+        36,
+        37
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs",
+        ".github/workflows/release.yml"
+      ],
+      "decision": "Read all current policy tests, including runner/action identity, timeouts, status functions, Codecov/main eligibility and changeset input preservation. This file has not been executed in the narrow eighteen-test check; do not convert source inspection into a passing-suite claim."
+    }
+  ],
+  "verification": {
+    "actualUpstreamTestsPassed": 18,
+    "mergedChangesetTests": 2,
+    "pipelineGateTests": 16,
+    "sourceFilesVerified": 9,
+    "firstHarnessFailureRetained": true,
+    "releaseWorkflowPolicySuiteExecuted": false
+  },
+  "independentAuthorshipCredit": 0
+}

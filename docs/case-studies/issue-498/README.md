@@ -5,11 +5,10 @@ Issue [#498](https://github.com/link-assistant/formal-ai/issues/498) asks Formal
 AI to learn from popular Google searches visible in Google Trends, especially the
 top requests for the U.S. Trends page in Russian UI mode.
 
-The implemented slice turns a Google Trends RSS snapshot into a deterministic
-test catalog: the top 10 topics, two prompt variations in every supported
-language, and one Formal AI answer for every generated prompt. The live fetch is
-kept in the refresh tool path; tests consume the checked-in seed so CI remains
-offline and reproducible.
+The recipe turns a regional RSS response into a catalog of the top 10 topics,
+two prompt variations in every supported language, and one Formal AI answer
+for each generated prompt. Issue #1613 moved response acquisition into the
+verified source client. Tests replay the archived RSS explicitly.
 
 ## Source material
 
@@ -28,11 +27,11 @@ offline and reproducible.
 - Captured learning-frontier Agent CLI run:
   [`agent-cli-e2e-run-google-trends-learning.log`](agent-cli-e2e-run-google-trends-learning.log)
 - Generated catalog artifact:
-  [`../../../data/meta/google-trends-catalog.lino`](../../../data/meta/google-trends-catalog.lino)
+  [Historical catalog](replay/google-trends-catalog.lino)
 - Generated learning-frontier artifact:
-  [`../../../data/meta/google-trends-learning.lino`](../../../data/meta/google-trends-learning.lino)
-- Deterministic Trends seed:
-  [`../../../data/seed/google-trends-snapshot.lino`](../../../data/seed/google-trends-snapshot.lino)
+  [Historical learning report](replay/google-trends-learning.lino)
+- Historical parsed capture:
+  [google-trends-snapshot.lino](replay/google-trends-snapshot.lino)
 
 ## 1. Collected Data
 
@@ -57,15 +56,15 @@ download or verify.
 | ID | Requirement | Implementation |
 | --- | --- | --- |
 | R498-1 | Preserve issue data, PR data, online research, requirements, solution plans, and raw Trends evidence under `docs/case-studies/issue-498`. | This directory stores all raw GitHub snapshots, the raw Trends RSS XML, this README, requirements, solution plans, research notes, and the Agent CLI transcript/session. |
-| R498-2 | Convert the Google Trends top 10 searches into a durable Formal AI training/test artifact. | `src/google_trends_catalog.rs` parses a checked-in Trends snapshot and caps the catalog with `GOOGLE_TRENDS_TOP_LIMIT = 10`; `data/meta/google-trends-catalog.lino` is the reviewable artifact. |
+| R498-2 | Convert the Google Trends top 10 searches into a durable Formal AI training/test artifact. | `rust/src/google_trends_catalog.rs` parses the publisher RSS and caps the catalog at 10. The original output is archived at `docs/case-studies/issue-498/replay/google-trends-catalog.lino`. |
 | R498-3 | Generate variations in every supported language. | The catalog expands each topic across `supported_languages()` (`en`, `ru`, `hi`, `zh`) with two prompt variants per language. |
 | R498-4 | Answer every generated prompt through Formal AI rather than only storing prompts. | `google_trends_catalog()` delegates each prompt to `FormalAiEngine::answer` and records intent, confidence, answer text, and evidence links. |
-| R498-5 | Keep live Google Trends access reproducible and safe for CI. | The RSS parser and refresh examples can update `data/seed/google-trends-snapshot.lino`; tests use the checked-in seed without network access. |
+| R498-5 | Keep live Google Trends access reproducible and safe for CI. | CI supplies the captured RSS explicitly through a test transport. The runtime uses the registered publisher and the local source cache. |
 | R498-6 | Drive the solution through Formal AI's own Agent CLI. | The `google_trends_catalog` agentic recipe writes the catalog, verifies it with a sandboxed compact read, and returns the generated document. |
-| R498-7 | Pin the Agent CLI session byte-for-byte. | `tests/unit/issue_498_google_trends_catalog.rs` compares a fresh `run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK)` session with `agent-cli-session-google-trends.json`. |
+| R498-7 | Pin the Agent CLI session byte-for-byte. | The original session is preserved for comparison. The current test replays the source and verifies the write, readback, and final response. |
 | R498-8 | Keep the documentation and implementation contract test-covered. | `tests/unit/docs_requirements_issue_498.rs` protects this case-study evidence, and the issue-specific tests protect parser, catalog, recipe routing, and artifact freshness. |
-| R498-9 | Route the trending prompts the engine cannot yet resolve into the human-gated auto-learning loop. | `src/google_trends_learning.rs::trending_learning_report` re-answers every catalog prompt, hands the `unknown`-intent frontier to the issue-#558 learner (`learn_rules_from_unknown_traces`), and records the proposal-only result at `data/meta/google-trends-learning.lino`; nothing is auto-adopted. |
-| R498-10 | Drive and pin the learning-frontier report through a differently worded Agent CLI session. | `GOOGLE_TRENDS_LEARNING_TASK` drives the `google_trends_learning` recipe; `tests/unit/issue_498_google_trends_learning.rs` compares a fresh run with `agent-cli-session-google-trends-learning.json`. |
+| R498-9 | Route the trending prompts the engine cannot yet resolve into the human-gated auto-learning loop. | The report submits the unknown-intent frontier to the issue-#558 learner and records a source-backed proposal-only run. |
+| R498-10 | Drive and pin the learning-frontier report through a differently worded Agent CLI session. | The learning task exercises the same held-out source pipeline with a differently worded agentic request. |
 
 ## 3. Root Cause
 
@@ -78,8 +77,8 @@ cases across all supported languages.
 The missing abstraction was a catalog boundary:
 
 - collect the top searches from Google Trends;
-- store the live snapshot as a small seed instead of relying on a changing
-  network feed in CI;
+- pass archived RSS explicitly to the test transport and use the live feed
+  as a runtime source;
 - expand each trend into multilingual prompt variants;
 - answer every prompt through the normal symbolic engine; and
 - commit the generated artifact and Agent CLI session so future changes are
@@ -91,9 +90,9 @@ The missing abstraction was a catalog boundary:
 
 - `parse_google_trends_rss` parses the RSS feed shape used by
   `https://trends.google.com/trending/rss?geo=US&hl=ru`.
-- `render_google_trends_snapshot_lino` renders a parsed feed as
-  `data/seed/google-trends-snapshot.lino`.
-- `google_trends_catalog()` loads that seed, keeps the top 10 topics, generates
+- `render_google_trends_snapshot_lino` renders a parsed feed as Links Notation.
+- `google_trends_catalog()` obtains the feed through the source client, keeps
+  the top 10 topics, generates
   two prompts per supported language, and answers each prompt through
   `FormalAiEngine`.
 
@@ -114,7 +113,7 @@ that frontier to the same human-gated issue-#558 learner
 (`learn_rules_from_unknown_traces`) the rest of the system uses. Trending
 searches are open-domain factual questions, not program-plan modifiers, so the
 rule-synthesis learner correctly *declines* to fabricate a seed rule for them:
-of the 80 generated prompts, 20 are already routed and 60 land on the frontier,
+in the original run, 20 of the 80 generated prompts were already routed and 60 landed on the frontier,
 every frontier trace is rejected with `no rule_synthesis_candidate event`, and
 **nothing is auto-adopted**. Reporting that honest rejection — rather than
 manufacturing a rule — is exactly the faithful, proposal-only behaviour issue
@@ -163,44 +162,41 @@ After the implementation, focused coverage verifies:
 - RSS parsing into ranked topics with traffic, pub date, and news references;
 - checked-in catalog coverage for the top 10 topics, all supported languages,
   two variations per language, and one answer per prompt;
-- byte-for-byte freshness of `data/meta/google-trends-catalog.lino`;
+- catalog provenance and content from an explicitly supplied RSS response;
 - recipe routing and planner behavior without colliding with the question
   catalog;
-- a fresh Agent CLI run matching the committed
-  `agent-cli-session-google-trends.json`;
-- byte-for-byte freshness of `data/meta/google-trends-learning.lino`, the honest
-  20-routed / 60-frontier split, and the proposal-only learning run (nothing
-  auto-adopted);
-- a fresh learning-frontier Agent CLI run matching the committed
-  `agent-cli-session-google-trends-learning.json`; and
+- the historical tool sequence and source-bound runtime write and readback;
+- the observed routed/frontier split and proposal-only learning record;
+- a learning-frontier Agent CLI run with the capture digest in its write and
+  final response; and
 - this documentation/evidence contract.
 
-To refresh the Trends seed from the live feed:
+To capture a current parsed feed:
 
 ```sh
 curl -sL 'https://trends.google.com/trending/rss?geo=US&hl=ru' \
   | cargo run --example issue_498_parse_google_trends_rss \
-  > data/seed/google-trends-snapshot.lino
+  > /tmp/google-trends-snapshot.lino
 ```
 
-Then regenerate the catalog and Agent CLI session:
+Generate a catalog and an Agent CLI session from the current feed:
 
 ```sh
-cargo run --example dump_google_trends_catalog > data/meta/google-trends-catalog.lino
+cargo run --example dump_google_trends_catalog > /tmp/google-trends-catalog.lino
 cargo run --bin formal-ai -- agent \
   --task "Convert the Google Trends top 10 searches into multilingual Formal AI test prompts, include two request variations in every supported language, answer each request, and record the Google Trends catalog in Links Notation." \
   --transcript \
-  --session-json docs/case-studies/issue-498/agent-cli-session-google-trends.json \
-  > docs/case-studies/issue-498/agent-cli-e2e-run.log
+  --session-json /tmp/agent-cli-session-google-trends.json \
+  > /tmp/agent-cli-e2e-run.log
 ```
 
 To regenerate the learning-frontier report and its Agent CLI session:
 
 ```sh
-cargo run --example dump_google_trends_learning > data/meta/google-trends-learning.lino
+cargo run --example dump_google_trends_learning > /tmp/google-trends-learning.lino
 cargo run --bin formal-ai -- agent \
   --task "Collect the Google Trends learning frontier — the trending searches Formal AI cannot yet resolve — route them through the human-gated self-improvement loop, and record the learning report in Links Notation." \
   --transcript \
-  --session-json docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json \
-  > docs/case-studies/issue-498/agent-cli-e2e-run-google-trends-learning.log
+  --session-json /tmp/agent-cli-session-google-trends-learning.json \
+  > /tmp/agent-cli-e2e-run-google-trends-learning.log
 ```

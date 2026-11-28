@@ -1,0 +1,19 @@
+{
+  "phase": "before",
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "rust/tests/web/cargo-audit-blocked-proof.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 2.59,
+  "rawSha256": "1ef869ec9af0bf341b6df911612a36a1bca924a6436d9263afe1ffae3c960f6c",
+  "archiveSha256": "828ab0dbdebddd07553084023d40bd45c9f978f42f9c1c7b5de7367525d0e7c8",
+  "lines": 103,
+  "nativeExecutionObserved": false,
+  "independentAuthorshipCredit": 0
+}

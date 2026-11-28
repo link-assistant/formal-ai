@@ -38,6 +38,10 @@ use std::path::Path;
 use std::process::exit;
 use walkdir::WalkDir;
 
+#[path = "lib/github-actions-log.rs"]
+mod github_actions_log;
+use github_actions_log::safe_log_text;
+
 /// Relative path of the committed allowlist, from the repository root.
 #[cfg_attr(test, allow(dead_code))]
 const ALLOWLIST_PATH: &str = "scripts/hardcoded-language-allowlist.txt";
@@ -336,7 +340,10 @@ fn heuristic_view(text: &str) -> String {
             if let Some(length) = close {
                 let inner = &chars[i + 1..i + 1 + length];
                 let name_end = inner.iter().position(|c| *c == ':').unwrap_or(inner.len());
-                if inner[..name_end].iter().all(|c| c.is_ascii_alphanumeric() || *c == '_') {
+                if inner[..name_end]
+                    .iter()
+                    .all(|c| c.is_ascii_alphanumeric() || *c == '_')
+                {
                     out.push_str("{}");
                     i += length + 2;
                     continue;
@@ -462,7 +469,13 @@ fn scan(root: &Path) -> BTreeSet<Entry> {
         let content = match fs::read_to_string(path) {
             Ok(content) => content,
             Err(error) => {
-                eprintln!("Warning: could not read {}: {error}", path.display());
+                eprintln!(
+                    "{}",
+                    safe_log_text(&format!(
+                        "Warning: could not read {}: {error}",
+                        path.display()
+                    ))
+                );
                 continue;
             }
         };
@@ -578,12 +591,14 @@ fn check_mode(root: &Path) {
     }
 
     if !result.new_violations.is_empty() {
-        println!(
-            "New hardcoded user-facing strings found in rust/src/ (not in the allowlist):\n"
-        );
+        println!("New hardcoded user-facing strings found in rust/src/ (not in the allowlist):\n");
         for entry in &result.new_violations {
             println!("{}", annotation(entry));
-            println!("  {}: \"{}\"", entry.file, entry.text);
+            println!(
+                "  {}: \"{}\"",
+                safe_log_text(&entry.file),
+                safe_log_text(&entry.text)
+            );
         }
         println!(
             "\nMove each string into grounded meanings under data/seed/ and look it\n\
@@ -593,11 +608,13 @@ fn check_mode(root: &Path) {
     }
 
     if !result.stale_entries.is_empty() {
-        println!(
-            "Stale allowlist rows (no longer present in rust/src/ — prune them):\n"
-        );
+        println!("Stale allowlist rows (no longer present in rust/src/ — prune them):\n");
         for entry in &result.stale_entries {
-            println!("  {}: \"{}\"", entry.file, entry.text);
+            println!(
+                "  {}: \"{}\"",
+                safe_log_text(&entry.file),
+                safe_log_text(&entry.text)
+            );
         }
         println!(
             "\nThese strings were migrated or changed. Regenerate the allowlist with:\n\

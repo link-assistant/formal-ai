@@ -34,6 +34,10 @@ fn the_composed_program_is_executed_and_its_output_is_the_answer() {
         let response = FormalAiEngine.answer(&paraphrase.prompt);
 
         assert_eq!(response.answer, "3", "{language}: exact computed answer");
+        assert!(
+            !response.is_inconclusive(),
+            "{language}: observed execution"
+        );
 
         assert!(
             response
@@ -74,6 +78,10 @@ fn an_unavailable_derivation_yields_a_localized_gap() {
             "{language}: exact honest-gap answer"
         );
 
+        assert!(
+            response.is_inconclusive(),
+            "{language}: no observed execution"
+        );
         assert!(
             trailing_number(&response.answer).is_none(),
             "{language}: an uncorroborated derivation may not present a number: {}",

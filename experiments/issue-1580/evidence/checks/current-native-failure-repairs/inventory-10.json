@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/after-focused.log",
+    "file": "316-evidence.gz",
+    "bytes": 1259,
+    "lines": 22,
+    "rawSha256": "7ddb574fb8d2aa3b30d2d370cbe6c2481a7f6a4924da25100c753e5f044b8fee",
+    "archiveSha256": "49861b9ef37579ec133d20ed602592a3803bef5d2af25a2aee09496d2321c531"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/before-semantic-status.log",
+    "file": "317-evidence.gz",
+    "bytes": 9325,
+    "lines": 213,
+    "rawSha256": "6bed2248d98d194d3ec286ccd23edec25edf20d46ac1978c3e14022a6b69ebdd",
+    "archiveSha256": "2d7d41abac5422cbc5df67a87d801eac7ae494691be34c7e97b2d4bef1b5058e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/before.json",
+    "file": "318-evidence.gz",
+    "bytes": 275,
+    "lines": 12,
+    "rawSha256": "7e71b9fb783ef64a8f78026eb39213afc561de04b3c6d688eb7317ce9d2f6f6c",
+    "archiveSha256": "b0cf3db22f25679346662aec65a60e2e53b2750360bd3c0320892bd400797501"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/before.log",
+    "file": "319-evidence.gz",
+    "bytes": 10038,
+    "lines": 234,
+    "rawSha256": "bd65c894c294e498ee27bee51451ea2cadea46dc7ba1a672aec32633fc24005a",
+    "archiveSha256": "9efed8725cbafe4a404fc9606baab04fc14181b8765028e14968b04c4c2b4cc6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/repair.json",
+    "file": "320-evidence.gz",
+    "bytes": 851,
+    "lines": 45,
+    "rawSha256": "29bc154c0a30e9eb75db602b519c9bcb0bbc850629f852748af024efef04cfa9",
+    "archiveSha256": "b269ce47efbfccca33bcbd864d7414db52fcecb0788478620fba9d75bf1faee6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/script.before",
+    "file": "321-evidence.gz",
+    "bytes": 2738,
+    "lines": 69,
+    "rawSha256": "38293cbdfa6d894e17db8bb3c510d0f6d4c8941e2747bb11a9fc98cdd768f352",
+    "archiveSha256": "d5840b9c570761f14f851599e89e648c6c5273e09fd779c6c94ecfdfb1fedb7c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/shell-syntax.log",
+    "file": "322-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/shellcheck.log",
+    "file": "323-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/test.before",
+    "file": "324-evidence.gz",
+    "bytes": 80209,
+    "lines": 1212,
+    "rawSha256": "c93b7937ceb390a9002957177c4c4c2671593addfa592e52ee4d80f34fc27e60",
+    "archiveSha256": "4f891828ca53a2f3488eb1365f402392525f5d707fac0db6c9ecbaba34f52806"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-result-schema/whitespace.log",
+    "file": "325-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-status-test-locations.log",
+    "file": "326-evidence.gz",
+    "bytes": 88784,
+    "lines": 31,
+    "rawSha256": "bda1e00ce5b88010591e7a78bc1bfe4e4ff400eef343a2d3c89e99fc425cc891",
+    "archiveSha256": "6c09a2965292eaec9c38153a16229198f37506892bef9370fb1cceb5c930f096"
+  },
+  {
+    "source": "/tmp/issue-1580-research/prepare-current-repair-evidence.log",
+    "file": "327-evidence.gz",
+    "bytes": 34001,
+    "lines": 383,
+    "rawSha256": "101665496143985422bff5a27deaf864399c63f1f806e3807d5098bb8baf6e94",
+    "archiveSha256": "8faccdcf1ef8ce0d893af29195c0361bd7c9b92c8bc797fa82158142767ce5d1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/prepare-current-repair-evidence.py",
+    "file": "328-evidence.gz",
+    "bytes": 1261,
+    "lines": 20,
+    "rawSha256": "2303bc25e9e13ce18a1bd27310f391afda59f9a3fe067c9819f98d17565e8085",
+    "archiveSha256": "6fb39e5351293e2a599349d8648a27eb247100f0d6c1b3bc366c037d6099a5b9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/gates.log",
+    "file": "329-evidence.gz",
+    "bytes": 124,
+    "lines": 5,
+    "rawSha256": "079b213c1614faa31c103c4bcc2a10f3b849e6f428230086c052ca5402fef9a2",
+    "archiveSha256": "d6bfe6569294451404a05bf8bc9386584b6649263739829dc5bc71b994b62d1e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/outcome.json",
+    "file": "330-evidence.gz",
+    "bytes": 2783,
+    "lines": 104,
+    "rawSha256": "28100adca9655c06240cc8ee6f329ee6789979ccdc012eee59a79dfc64520b93",
+    "archiveSha256": "ef682e018755b579ef67cf1141aa771633765b1fb01df0d32765179fe8359b30"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/pipeline-commit.log",
+    "file": "331-evidence.gz",
+    "bytes": 388,
+    "lines": 5,
+    "rawSha256": "c109f7ff43a1b3f273d11df9238d86228dcb1f7d92c85ed9dfc093b0ceab02ca",
+    "archiveSha256": "b763fb4db8662a94d5a2c889e36fe6465983391c0c4af1cf2ba6f31e5bdcb1d0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/pipeline-stage.log",
+    "file": "332-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/process-commit.log",
+    "file": "333-evidence.gz",
+    "bytes": 145,
+    "lines": 2,
+    "rawSha256": "582ed05c2dd71bc24bf5ade83ba14ed53f5c0738f2f48edd08ff51d00bbaa06e",
+    "archiveSha256": "e83f2dc73617315810d725f7eb16e1951bb32cd526357ec55428f961bc5d5736"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/process-stage.log",
+    "file": "334-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/run-with-budget-warning-syntax.log",
+    "file": "335-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/run-with-deadline-syntax.log",
+    "file": "336-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-checks/whitespace.log",
+    "file": "337-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/process-and-pipeline-review/repairs.diff",
+    "file": "338-evidence.gz",
+    "bytes": 10091,
+    "lines": 183,
+    "rawSha256": "f0c7f33a8d2a5eb2499997d3b4f2f4c3ece2e66e5a2728fd6c165cf87ae098ed",
+    "archiveSha256": "ac8b536065933e816b731121ac1fa7e442ff4a952fcb2241a1ee265b6f0b2c48"
+  },
+  {
+    "source": "/tmp/issue-1580-research/project-included-evaluation-summary.log",
+    "file": "339-evidence.gz",
+    "bytes": 9266,
+    "lines": 227,
+    "rawSha256": "ec9d8db3badc4466cb31b27e2e6b7baff14575d5fdbce0cdc1c62aa48cb219b9",
+    "archiveSha256": "bdacddd42acf70e12a908d0086ebf40d026833d60a864f4c92943ba763b70d37"
+  },
+  {
+    "source": "/tmp/issue-1580-research/project-included-evaluation-summary.py",
+    "file": "340-evidence.gz",
+    "bytes": 865,
+    "lines": 14,
+    "rawSha256": "14208be1e8d9534c92f85149b134c9f268e893939a9a1aa959e4e5b00ab839d2",
+    "archiveSha256": "c07b2c99eb0b6329cffa850ce03af4f4387c4bff9a1c9bd87224e89733eda4c7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/publish-version-parser-batch.log",
+    "file": "341-evidence.gz",
+    "bytes": 371,
+    "lines": 4,
+    "rawSha256": "4616051c712182832f988f4226227e76f4ec2217ce2baf47ab2da9b8b709d2fe",
+    "archiveSha256": "fe2a6a74e7123ca594de279e66d9b935d3e9524b5d76d4f26e708107443dd97d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/publish-version-parser-batch.py",
+    "file": "342-evidence.gz",
+    "bytes": 3771,
+    "lines": 40,
+    "rawSha256": "d3ad04819b89e62de3c291e8f82af093a0c9c61ef596ac455070806ffe4f5a5c",
+    "archiveSha256": "58723307d6e2943d5d648ca481debe554f811281425c1aa99553d0db2c877e18"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-cfg-completion.log",
+    "file": "343-evidence.gz",
+    "bytes": 139562,
+    "lines": 1273,
+    "rawSha256": "70bb8a6c947aab0c4c39d038f9b373b38b27fd3a7cd97df327ef8906658b5ed7",
+    "archiveSha256": "101696d45c3810607da61158944326c9a698fbfe4e2e8338e5f21fbfc2b4caa1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-cfg-completion.py",
+    "file": "344-evidence.gz",
+    "bytes": 1389,
+    "lines": 28,
+    "rawSha256": "ad07db3cad5627b3464fd64f4236a0529ef4718519e7db2bf5f8ff3f48042791",
+    "archiveSha256": "fd3395769303893e85472062ccb9e648f8ed1c3ff1d8079827eeac24abdc0a6e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-cfg-node-and-runner.log",
+    "file": "345-evidence.gz",
+    "bytes": 38160,
+    "lines": 790,
+    "rawSha256": "12cda9c3397d8ee42dc41b2a780b84cec9f9e391dcddefe015d8b1cbe7704fca",
+    "archiveSha256": "a1a1212027bebfe0f314ca5709c2c4051445cc0b11ad2ad3a904ae4c49bf374c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-cfg-node-and-runner.py",
+    "file": "346-evidence.gz",
+    "bytes": 1117,
+    "lines": 22,
+    "rawSha256": "b17518543eb1fcc437634a4fe197ccae1960bad706feb3b025737b67bf6ef544",
+    "archiveSha256": "8a7738a67b7d4da65fbcb3791f88fa882689c4a1f2f80d249d3e8cc724d07ca1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-controlflow-dependencies.log",
+    "file": "347-evidence.gz",
+    "bytes": 28311,
+    "lines": 687,
+    "rawSha256": "99bf257114b306dff5213bfc7189fa82ebf9950129e9d1665ded7e19257c689f",
+    "archiveSha256": "6530814a26595d5405be0c50f3027e47429926d1673dff6e311a557dc072ad37"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-controlflow-dependencies.py",
+    "file": "348-evidence.gz",
+    "bytes": 1094,
+    "lines": 24,
+    "rawSha256": "fc95ba01cc221a2332512728abf080f217b781849b70307830271f2934554cbb",
+    "archiveSha256": "3fd6982e662bf5a6e6a231882ae3905e0269fd4b15a1ba90a25c29a7617b6b5f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-observer-source.log",
+    "file": "349-evidence.gz",
+    "bytes": 10337,
+    "lines": 160,
+    "rawSha256": "54cc6b5414850f7effc966f63516d69ee225c945fd02567d93990e05edaa83a5",
+    "archiveSha256": "5b8689eea85bb2251e83747aa4da76d0a292b76c27d88e231eff7d67811f9b77"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-observer-source.py",
+    "file": "350-evidence.gz",
+    "bytes": 478,
+    "lines": 11,
+    "rawSha256": "87526762b798a4446d66cb41a74334bf6f6f7ea4b22bb63d31f9910f55b629d2",
+    "archiveSha256": "7fc9f9bb44df17d84c59d9905249982d267172f7efb268be51ee59eb6272f0ab"
+  }
+]

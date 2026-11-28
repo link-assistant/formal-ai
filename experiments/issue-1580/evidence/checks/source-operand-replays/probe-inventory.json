@@ -1,0 +1,22 @@
+[
+  {
+    "name": "outcome.json",
+    "rawSha256": "b5be040d44ffe0305e9350cd9f547f713398e228ca0749a7880f626ccb8eb4f1",
+    "archiveSha256": "01d56ac1331d788ccfa35c0f061c471a5277ba799848cbeeb677916ac9e78cf2"
+  },
+  {
+    "name": "worker.log",
+    "rawSha256": "059bbf9c3b1fb0e317c6662c3fbec2425f1e577b9ffdda4f24af7f8707bc8ad6",
+    "archiveSha256": "e40fdac86e7211b66997e689ee3a7750e9a78c0ca909770bd0edd720f813ea7f"
+  },
+  {
+    "name": "responses.jsonl",
+    "rawSha256": "dd75b4b9cfa737cea1512aa2999a0a8812eda3aa479ffa93df303821fffa99bd",
+    "archiveSha256": "b8cc92313cafac7452cfac39c73a32fa3b2ebb140540beac7625ee19e029f57a"
+  },
+  {
+    "name": "stderr.log",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

@@ -1,0 +1,122 @@
+{
+  "publishedHead": "a0523f676efdeae358dc473e8b8b3ecf721201ba",
+  "hostedCohort": {
+    "success": 30,
+    "skipped": 1,
+    "failure": 2
+  },
+  "allHostedRunsTerminal": true,
+  "localVerification": {
+    "complete": true,
+    "allPassed": true,
+    "checks": [
+      {
+        "name": "rustfmt",
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "rust/src/calculation/currency.rs",
+          "rust/src/how_to_guide/extract.rs",
+          "rust/src/how_to_guide.rs",
+          "rust/src/solver_handlers/documentation_method.rs",
+          "rust/src/rule_interpreter/parser.rs",
+          "rust/tests/unit/rule_interpreter_reference_lists.rs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "typescript-projection",
+        "command": [
+          "node",
+          "scripts/translate-es.mjs",
+          "--check"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "workflow-policy",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "--test-reporter=tap",
+          "rust/tests/web/default-branch-build-policy.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "source-test-placement",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "--test-reporter=tap",
+          "rust/tests/web/source-test-placement-twin.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "native-seed-data",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "--test-reporter=tap",
+          "rust/tests/web/issue-1580-native-seed-data.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "native-group-registration",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "--test-reporter=tap",
+          "experiments/issue-1580/native-regression-groups.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "typescript-runtime",
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "--test-reporter=tap",
+          "rust/tests/web/typescript-runtime.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "diff-check",
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exitCode": 0
+      }
+    ],
+    "localNativeCompilation": false,
+    "independentAuthorshipCredit": 0
+  },
+  "payloadCount": 186,
+  "archiveSha256": "9de631f54a2b7dae9bac348b5ece075720f8eb29b7a8f1d41ad9cf9295ea801c",
+  "roundTripVerified": true,
+  "repairedNativeHostedCompilation": "pending next head",
+  "completeIssueAcceptance": false,
+  "independentAuthorshipCredit": 0
+}

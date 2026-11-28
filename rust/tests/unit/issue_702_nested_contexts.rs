@@ -29,6 +29,9 @@ fn context(id: &str, links: &[(&str, &str)]) -> Context {
     context
 }
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../data/meta/issue-702-context-hierarchy-learning.lino");
+
 #[test]
 fn reference_resolution_has_no_fixed_context_depth_limit_and_is_lazy() {
     let mut hierarchy = ContextHierarchy::new();
@@ -301,7 +304,7 @@ fn runtime_coreference_searches_nearest_relevant_ancestor_turn() {
 
 #[test]
 fn rust_and_browser_coding_inheritance_are_cycle_safe_not_depth_capped() {
-    let rust = include_str!("../../src/solver_handlers/numeric_list/codegen.rs");
+    let rust = include_str!("../../src/coding/list_program.rs");
     let browser =
         include_str!("../../../js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js");
 
@@ -330,7 +333,10 @@ fn nested_context_auto_learning_is_derived_and_review_gated() {
 #[test]
 fn formal_ai_executes_the_nested_context_learning_task() {
     assert!(REAL_AGENT_CLI_TASK.contains(CONTEXT_HIERARCHY_LEARNING_TASK));
-    let outcome = run_agentic_task(REAL_AGENT_CLI_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{REAL_AGENT_CLI_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
@@ -341,7 +347,7 @@ fn formal_ai_executes_the_nested_context_learning_task() {
     assert_eq!(arguments["path"], CONTEXT_HIERARCHY_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        context_hierarchy_learning::render_document()
+        context_hierarchy_learning::render_document_from(REPORT_MEMORY)
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));
@@ -352,5 +358,8 @@ fn real_agent_cli_learning_artifact_is_byte_reproducible() {
     let committed = include_str!(
         "../../../dev/log/issues/702/pulls/818/agent-cli/context-hierarchy-learning-report.lino"
     );
-    assert_eq!(committed, context_hierarchy_learning::render_document());
+    assert_eq!(
+        committed,
+        context_hierarchy_learning::render_document_from(REPORT_MEMORY)
+    );
 }

@@ -1,0 +1,62 @@
+{
+  "complete": false,
+  "checks": [
+    {
+      "name": "package-mirror-writer",
+      "argv": [
+        "node",
+        "scripts/mirror-package-data.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 1.32,
+      "rawLines": 1,
+      "rawSha256": "925de6842f97cd1bb2732d34b8ea4c9ef55cf960bb84d0fffe4c618e2f2fbeb2",
+      "archiveSha256": "ef3db304f795863228ce0c4b2852b1fde34fa913a61e60ec1b8dcfdeeb6879f2"
+    },
+    {
+      "name": "status-surface-writer",
+      "argv": [
+        "node",
+        "scripts/render-status.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 1.799,
+      "rawLines": 1,
+      "rawSha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436",
+      "archiveSha256": "850bfb24000723ccc55317848ae384514875ad715f5c019406514232cea51a5f"
+    },
+    {
+      "name": "corrected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-notation,check-package-self-containment,check-status-render,check-render-status-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 48.451,
+      "rawLines": 6,
+      "rawSha256": "bd76d9fd55782e36f7cde98ec33118aea9111a6726f5e1da70cbceece4daddb5",
+      "archiveSha256": "eb5d1b4bf1dfacaf7bf781e19412278c236b7d49a82d24a0fb9175ad2d50390f"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 2,
+      "seconds": 0.513,
+      "rawLines": 2,
+      "rawSha256": "abfde16f947de89ecb5488f3d61f9b74f58c888e9c1b2b93c015215a9e4fe235",
+      "archiveSha256": "73a2ee72067c8bbd9ff9c1e5d758304d2f16b2284a7369fb11af9cb001ddd71e"
+    }
+  ],
+  "observedAt": "2026-11-18T10:23:30.552049+00:00",
+  "nativeExecuted": false,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 158528\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

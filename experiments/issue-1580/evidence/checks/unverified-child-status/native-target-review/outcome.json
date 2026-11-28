@@ -1,0 +1,222 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "branch",
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "rawBytes": 24,
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195"
+    },
+    {
+      "name": "parent",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "rawBytes": 41,
+      "rawSha256": "95834daffbf9791c36c1b679b9ad2b5fac9b72a5dce725bab178c177937d2e5a"
+    },
+    {
+      "name": "initial-index",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "stage",
+      "command": [
+        "git",
+        "add",
+        "--",
+        ".github/workflows/native-type-check.yml",
+        "rust/Cargo.toml",
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        "docs/ci-cd/default-branch-builds.md",
+        "changelog.d/20261117_120000_issue-1580-ci-regressions.md",
+        "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8"
+      ],
+      "exitCode": 0,
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "staged-names",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "rawBytes": 318,
+      "rawSha256": "9482fa31dacbab10b30141bf59d106ec121b07fb2a97bc2bd51bbce0166e2066"
+    },
+    {
+      "name": "affected-gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "rawBytes": 170,
+      "rawSha256": "76ceb9647a30eb9767aa5eec5769addfac5385758ff62ecc26edf0ff2efadba4"
+    },
+    {
+      "name": "staged-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "staged-diff",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--",
+        ".github/workflows/native-type-check.yml",
+        "rust/Cargo.toml",
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        "docs/ci-cd/default-branch-builds.md",
+        "changelog.d/20261117_120000_issue-1580-ci-regressions.md",
+        "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8"
+      ],
+      "exitCode": 0,
+      "rawBytes": 7501,
+      "rawSha256": "1d722c5099810cbaa2eb70abb73d3a69ac3879dd4bb7c713690e96194a2c5192"
+    },
+    {
+      "name": "commit",
+      "command": [
+        "git",
+        "-c",
+        "gc.auto=0",
+        "commit",
+        "-m",
+        "Replay shared executor regressions in focused native CI"
+      ],
+      "exitCode": 0,
+      "rawBytes": 144,
+      "rawSha256": "cd42b0f03b486b49dbc05e5b595a0113942829f55ed52408f0db21a7b6a6743a"
+    },
+    {
+      "name": "head",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "rawBytes": 41,
+      "rawSha256": "b33b232c26b5e042363156a8cac5e357c5a8e91c47755c49ff2070f1575a2550"
+    },
+    {
+      "name": "committed-parent",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD^"
+      ],
+      "exitCode": 0,
+      "rawBytes": 41,
+      "rawSha256": "95834daffbf9791c36c1b679b9ad2b5fac9b72a5dce725bab178c177937d2e5a"
+    },
+    {
+      "name": "final-index",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "archives": [
+    {
+      "archive": "affected-gates.log.gz",
+      "rawSha256": "76ceb9647a30eb9767aa5eec5769addfac5385758ff62ecc26edf0ff2efadba4",
+      "archiveSha256": "5ce7fcbbcb69154b912ed33712f7ad796f6bf17627e637495948658bc51b863f"
+    },
+    {
+      "archive": "branch.log.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+    },
+    {
+      "archive": "commit.log.gz",
+      "rawSha256": "cd42b0f03b486b49dbc05e5b595a0113942829f55ed52408f0db21a7b6a6743a",
+      "archiveSha256": "6e40c91af9558fbcb2c0824b42731407ecca5615f5c4e686c7d6ebf63092e3e7"
+    },
+    {
+      "archive": "committed-parent.log.gz",
+      "rawSha256": "95834daffbf9791c36c1b679b9ad2b5fac9b72a5dce725bab178c177937d2e5a",
+      "archiveSha256": "ec48ccda23631e7b477cdabb6b8f585415a8a7f83a25f1e46fd01263cf11ff0c"
+    },
+    {
+      "archive": "final-index.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "archive": "head.log.gz",
+      "rawSha256": "b33b232c26b5e042363156a8cac5e357c5a8e91c47755c49ff2070f1575a2550",
+      "archiveSha256": "7fb7d6ec21b7b9dbf86005c51b54e124b0000764ffd6861ffd0b26b21d54149b"
+    },
+    {
+      "archive": "initial-index.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "archive": "parent.log.gz",
+      "rawSha256": "95834daffbf9791c36c1b679b9ad2b5fac9b72a5dce725bab178c177937d2e5a",
+      "archiveSha256": "ec48ccda23631e7b477cdabb6b8f585415a8a7f83a25f1e46fd01263cf11ff0c"
+    },
+    {
+      "archive": "stage.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "archive": "staged-diff.log.gz",
+      "rawSha256": "1d722c5099810cbaa2eb70abb73d3a69ac3879dd4bb7c713690e96194a2c5192",
+      "archiveSha256": "e5f409b2a02c61050e3f746a3428cddccdec4948991626ac4eb94ea35b1ebcec"
+    },
+    {
+      "archive": "staged-names.log.gz",
+      "rawSha256": "9482fa31dacbab10b30141bf59d106ec121b07fb2a97bc2bd51bbce0166e2066",
+      "archiveSha256": "dadbf4822d844c44aa92e82591695c65c93d417d2275e3b71f5355f60a143d1d"
+    },
+    {
+      "archive": "staged-whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

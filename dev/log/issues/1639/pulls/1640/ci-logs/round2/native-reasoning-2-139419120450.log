@@ -1,0 +1,1019 @@
+﻿2026-11-25T18:23:59.5834157Z Current runner version: '2.338.2'
+2026-11-25T18:23:59.5853565Z ##[group]Runner Image Provisioner
+2026-11-25T18:23:59.5854238Z Hosted Compute Agent
+2026-11-25T18:23:59.5854775Z Version: 20261111.635
+2026-11-25T18:23:59.5855210Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+2026-11-25T18:23:59.5855743Z Build Date: 2026-11-11T01:49:01Z
+2026-11-25T18:23:59.5856219Z Worker ID: {ae26422d-85ed-475a-8308-e6ef84b641a8}
+2026-11-25T18:23:59.5856719Z Region: us-west-2
+2026-11-25T18:23:59.5857119Z Cloud: AWS
+2026-11-25T18:23:59.5857484Z ##[endgroup]
+2026-11-25T18:23:59.5858368Z ##[group]Operating System
+2026-11-25T18:23:59.5858797Z Ubuntu
+2026-11-25T18:23:59.5859182Z 24.04.5
+2026-11-25T18:23:59.5859565Z LTS
+2026-11-25T18:23:59.5859917Z ##[endgroup]
+2026-11-25T18:23:59.5860289Z ##[group]Runner Image
+2026-11-25T18:23:59.5860715Z Image: ubuntu-24.04
+2026-11-25T18:23:59.5861123Z Version: 20261116.133.1
+2026-11-25T18:23:59.5862091Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.133/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-25T18:23:59.5863385Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.133
+2026-11-25T18:23:59.5864076Z ##[endgroup]
+2026-11-25T18:23:59.5864893Z ##[group]GITHUB_TOKEN Permissions
+2026-11-25T18:23:59.5866464Z Contents: read
+2026-11-25T18:23:59.5866857Z Metadata: read
+2026-11-25T18:23:59.5867258Z ##[endgroup]
+2026-11-25T18:23:59.5869029Z Secret source: Actions
+2026-11-25T18:23:59.5869706Z Cache mode: write
+2026-11-25T18:23:59.5870196Z Prepare workflow directory
+2026-11-25T18:23:59.6235652Z Prepare all required actions
+2026-11-25T18:23:59.6283920Z Getting action download info
+2026-11-25T18:24:00.0045688Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-25T18:24:02.2532787Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:39008827e6b4319a349e9a42dfc90579dd25f1ca)
+2026-11-25T18:24:02.4700249Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-11-25T18:24:02.7282997Z Uses: link-assistant/formal-ai/.github/workflows/native-type-check.yml@refs/pull/1640/merge (e237198de69bab9ceb97eafc44b720c230033dee)
+2026-11-25T18:24:02.7286543Z ##[group] Inputs
+2026-11-25T18:24:02.7287191Z   compile-inputs-changed: true
+2026-11-25T18:24:02.7287493Z ##[endgroup]
+2026-11-25T18:24:02.7287873Z Complete job name: Native type and lint check / Native contracts (reasoning-2)
+2026-11-25T18:24:02.7855807Z ##[group]Run actions/checkout@v7
+2026-11-25T18:24:02.7856313Z with:
+2026-11-25T18:24:02.7856584Z   persist-credentials: false
+2026-11-25T18:24:02.7856884Z   fetch-depth: 1
+2026-11-25T18:24:02.7857137Z   filter: blob:none
+2026-11-25T18:24:02.7860469Z   sparse-checkout: /*
+/.github/actions/download-artifact/
+/scripts/extract-artifacts.py
+!/dev/log/
+!/experiments/**
+/experiments/**/*.sh
+/experiments/issue-1580/release-registry/
+/experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-1.txt
+/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-2.txt
+/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+
+2026-11-25T18:24:02.7863618Z   sparse-checkout-cone-mode: false
+2026-11-25T18:24:02.7863958Z   repository: link-assistant/formal-ai
+2026-11-25T18:24:02.7866211Z   token: ***
+2026-11-25T18:24:02.7866463Z   ssh-strict: true
+2026-11-25T18:24:02.7866753Z   ssh-user: git
+2026-11-25T18:24:02.7866996Z   clean: true
+2026-11-25T18:24:02.7867240Z   fetch-tags: false
+2026-11-25T18:24:02.7867662Z   show-progress: true
+2026-11-25T18:24:02.7867941Z   lfs: false
+2026-11-25T18:24:02.7868216Z   submodules: false
+2026-11-25T18:24:02.7868470Z   set-safe-directory: true
+2026-11-25T18:24:02.7868760Z   allow-unsafe-pr-checkout: false
+2026-11-25T18:24:02.7869251Z env:
+2026-11-25T18:24:02.7869514Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:02.7869799Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:02.7870073Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:02.7870350Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:02.7870656Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:02.7870969Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:02.7871263Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:02.7871515Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:02.7871795Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:02.7872445Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:02.7872792Z   GIT_HTTP_LOW_SPEED_LIMIT: 1024
+2026-11-25T18:24:02.7873079Z   GIT_HTTP_LOW_SPEED_TIME: 20
+2026-11-25T18:24:02.7873365Z ##[endgroup]
+2026-11-25T18:24:06.6154268Z Syncing repository: link-assistant/formal-ai
+2026-11-25T18:24:06.6155534Z ##[group]Getting Git version info
+2026-11-25T18:24:06.6155970Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+2026-11-25T18:24:06.6156513Z [command]/usr/bin/git version
+2026-11-25T18:24:06.8594598Z git version 2.56.1
+2026-11-25T18:24:06.8615594Z ##[endgroup]
+2026-11-25T18:24:06.8623646Z Temporarily overriding HOME='/home/runner/work/_temp/4f9f7ba8-d2ef-4bf0-aef7-0e1c7118844d' before making global git config changes
+2026-11-25T18:24:06.8624383Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-25T18:24:06.8627999Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-11-25T18:24:06.9078834Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+2026-11-25T18:24:06.9081388Z ##[group]Determining repository object format
+2026-11-25T18:24:06.9082862Z ##[endgroup]
+2026-11-25T18:24:06.9083356Z ##[group]Initializing the repository
+2026-11-25T18:24:06.9086838Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+2026-11-25T18:24:07.0297732Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-25T18:24:07.0298489Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-25T18:24:07.0299345Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-25T18:24:07.0299718Z hint: call:
+2026-11-25T18:24:07.0299941Z hint:
+2026-11-25T18:24:07.0300270Z hint: 	git config --global init.defaultBranch <name>
+2026-11-25T18:24:07.0300557Z hint:
+2026-11-25T18:24:07.0300877Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-25T18:24:07.0301315Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-25T18:24:07.0301661Z hint:
+2026-11-25T18:24:07.0301886Z hint: 	git branch -m <name>
+2026-11-25T18:24:07.0302121Z hint:
+2026-11-25T18:24:07.0302639Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-25T18:24:07.0304987Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+2026-11-25T18:24:07.0314584Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+2026-11-25T18:24:07.0389682Z ##[endgroup]
+2026-11-25T18:24:07.0390382Z ##[group]Disabling automatic garbage collection
+2026-11-25T18:24:07.0393028Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-25T18:24:07.0418039Z ##[endgroup]
+2026-11-25T18:24:07.0418409Z ##[group]Setting up auth
+2026-11-25T18:24:07.0418750Z Removing SSH command configuration
+2026-11-25T18:24:07.0422359Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T18:24:07.0450868Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T18:24:07.4046852Z Removing HTTP extra header
+2026-11-25T18:24:07.4053026Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T18:24:07.4090423Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T18:24:07.4245871Z Removing includeIf entries pointing to credentials config files
+2026-11-25T18:24:07.4251211Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T18:24:07.4277691Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T18:24:07.4431229Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-25T18:24:07.4461970Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:07.4484350Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:07.4506663Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:07.4528399Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:07.4549268Z ##[endgroup]
+2026-11-25T18:24:07.4549889Z ##[group]Fetching the repository
+2026-11-25T18:24:07.4555735Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin +e237198de69bab9ceb97eafc44b720c230033dee:refs/remotes/pull/1640/merge
+2026-11-25T18:24:08.1522148Z From https://github.com/link-assistant/formal-ai
+2026-11-25T18:24:08.1522838Z  * [new ref]         e237198de69bab9ceb97eafc44b720c230033dee -> pull/1640/merge
+2026-11-25T18:24:08.1535564Z ##[endgroup]
+2026-11-25T18:24:08.1536141Z ##[group]Determining the checkout info
+2026-11-25T18:24:08.1536690Z ##[endgroup]
+2026-11-25T18:24:08.1537526Z ##[group]Setting up sparse checkout
+2026-11-25T18:24:08.1537979Z [command]/usr/bin/git config core.sparseCheckout true
+2026-11-25T18:24:08.1588213Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+2026-11-25T18:24:08.1592624Z .git/info/sparse-checkout
+2026-11-25T18:24:08.1599785Z ##[endgroup]
+2026-11-25T18:24:08.1600249Z ##[group]Checking out the ref
+2026-11-25T18:24:08.1604224Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1640/merge
+2026-11-25T18:24:24.7770115Z Updating files:   0% (1/23212)
+2026-11-25T18:24:24.7854882Z Updating files:   1% (233/23212)
+2026-11-25T18:24:24.7907011Z Updating files:   2% (465/23212)
+2026-11-25T18:24:24.7958962Z Updating files:   3% (697/23212)
+2026-11-25T18:24:24.8009720Z Updating files:   4% (929/23212)
+2026-11-25T18:24:24.8075777Z Updating files:   5% (1161/23212)
+2026-11-25T18:24:24.8136475Z Updating files:   6% (1393/23212)
+2026-11-25T18:24:24.9078487Z Updating files:   7% (1625/23212)
+2026-11-25T18:24:24.9138454Z Updating files:   8% (1857/23212)
+2026-11-25T18:24:24.9193008Z Updating files:   9% (2090/23212)
+2026-11-25T18:24:24.9249134Z Updating files:  10% (2322/23212)
+2026-11-25T18:24:24.9299570Z Updating files:  11% (2554/23212)
+2026-11-25T18:24:24.9350792Z Updating files:  12% (2786/23212)
+2026-11-25T18:24:24.9402849Z Updating files:  13% (3018/23212)
+2026-11-25T18:24:24.9469211Z Updating files:  14% (3250/23212)
+2026-11-25T18:24:24.9521015Z Updating files:  15% (3482/23212)
+2026-11-25T18:24:24.9572684Z Updating files:  16% (3714/23212)
+2026-11-25T18:24:24.9613146Z Updating files:  17% (3947/23212)
+2026-11-25T18:24:24.9656496Z Updating files:  18% (4179/23212)
+2026-11-25T18:24:24.9704577Z Updating files:  19% (4411/23212)
+2026-11-25T18:24:24.9758903Z Updating files:  20% (4643/23212)
+2026-11-25T18:24:24.9899011Z Updating files:  21% (4875/23212)
+2026-11-25T18:24:24.9952172Z Updating files:  22% (5107/23212)
+2026-11-25T18:24:24.9999727Z Updating files:  23% (5339/23212)
+2026-11-25T18:24:25.0043688Z Updating files:  24% (5571/23212)
+2026-11-25T18:24:25.0089759Z Updating files:  25% (5803/23212)
+2026-11-25T18:24:25.0297825Z Updating files:  26% (6036/23212)
+2026-11-25T18:24:25.0475335Z Updating files:  27% (6268/23212)
+2026-11-25T18:24:25.0598058Z Updating files:  28% (6500/23212)
+2026-11-25T18:24:25.1174667Z Updating files:  29% (6732/23212)
+2026-11-25T18:24:25.1370158Z Updating files:  30% (6964/23212)
+2026-11-25T18:24:25.1500566Z Updating files:  31% (7196/23212)
+2026-11-25T18:24:25.1573133Z Updating files:  32% (7428/23212)
+2026-11-25T18:24:25.1808304Z Updating files:  33% (7660/23212)
+2026-11-25T18:24:25.2129838Z Updating files:  34% (7893/23212)
+2026-11-25T18:24:25.2410324Z Updating files:  35% (8125/23212)
+2026-11-25T18:24:25.2674982Z Updating files:  36% (8357/23212)
+2026-11-25T18:24:25.2893212Z Updating files:  37% (8589/23212)
+2026-11-25T18:24:25.2968648Z Updating files:  38% (8821/23212)
+2026-11-25T18:24:25.3033831Z Updating files:  39% (9053/23212)
+2026-11-25T18:24:25.3058284Z Updating files:  40% (9285/23212)
+2026-11-25T18:24:25.3083460Z Updating files:  41% (9517/23212)
+2026-11-25T18:24:25.3125689Z Updating files:  42% (9750/23212)
+2026-11-25T18:24:25.3977014Z Updating files:  43% (9982/23212)
+2026-11-25T18:24:25.4036777Z Updating files:  44% (10214/23212)
+2026-11-25T18:24:25.4070405Z Updating files:  45% (10446/23212)
+2026-11-25T18:24:25.4114273Z Updating files:  45% (10589/23212)
+2026-11-25T18:24:25.4767288Z Updating files:  46% (10678/23212)
+2026-11-25T18:24:25.4872682Z Updating files:  47% (10910/23212)
+2026-11-25T18:24:25.5132747Z Updating files:  48% (11142/23212)
+2026-11-25T18:24:25.5228306Z Updating files:  49% (11374/23212)
+2026-11-25T18:24:25.5859689Z Updating files:  50% (11606/23212)
+2026-11-25T18:24:25.6122565Z Updating files:  51% (11839/23212)
+2026-11-25T18:24:25.6676906Z Updating files:  52% (12071/23212)
+2026-11-25T18:24:25.7280828Z Updating files:  53% (12303/23212)
+2026-11-25T18:24:25.7905321Z Updating files:  54% (12535/23212)
+2026-11-25T18:24:25.8138305Z Updating files:  55% (12767/23212)
+2026-11-25T18:24:25.8590475Z Updating files:  56% (12999/23212)
+2026-11-25T18:24:25.8747993Z Updating files:  57% (13231/23212)
+2026-11-25T18:24:25.8873263Z Updating files:  58% (13463/23212)
+2026-11-25T18:24:25.9085409Z Updating files:  59% (13696/23212)
+2026-11-25T18:24:25.9235106Z Updating files:  60% (13928/23212)
+2026-11-25T18:24:25.9472968Z Updating files:  61% (14160/23212)
+2026-11-25T18:24:25.9519020Z Updating files:  62% (14392/23212)
+2026-11-25T18:24:25.9624466Z Updating files:  63% (14624/23212)
+2026-11-25T18:24:25.9924601Z Updating files:  64% (14856/23212)
+2026-11-25T18:24:26.0023779Z Updating files:  65% (15088/23212)
+2026-11-25T18:24:26.0299466Z Updating files:  66% (15320/23212)
+2026-11-25T18:24:26.0539711Z Updating files:  67% (15553/23212)
+2026-11-25T18:24:26.0719564Z Updating files:  68% (15785/23212)
+2026-11-25T18:24:26.1198708Z Updating files:  69% (16017/23212)
+2026-11-25T18:24:26.1257212Z Updating files:  70% (16249/23212)
+2026-11-25T18:24:26.1351011Z Updating files:  71% (16481/23212)
+2026-11-25T18:24:26.1549170Z Updating files:  72% (16713/23212)
+2026-11-25T18:24:26.1693037Z Updating files:  73% (16945/23212)
+2026-11-25T18:24:26.1820675Z Updating files:  74% (17177/23212)
+2026-11-25T18:24:26.1958751Z Updating files:  75% (17409/23212)
+2026-11-25T18:24:26.2026497Z Updating files:  76% (17642/23212)
+2026-11-25T18:24:26.2152683Z Updating files:  77% (17874/23212)
+2026-11-25T18:24:26.2278184Z Updating files:  78% (18106/23212)
+2026-11-25T18:24:26.2416740Z Updating files:  79% (18338/23212)
+2026-11-25T18:24:26.2556274Z Updating files:  80% (18570/23212)
+2026-11-25T18:24:26.2667597Z Updating files:  81% (18802/23212)
+2026-11-25T18:24:26.2767396Z Updating files:  82% (19034/23212)
+2026-11-25T18:24:26.2844815Z Updating files:  83% (19266/23212)
+2026-11-25T18:24:26.2928592Z Updating files:  84% (19499/23212)
+2026-11-25T18:24:26.3053828Z Updating files:  85% (19731/23212)
+2026-11-25T18:24:26.3157277Z Updating files:  86% (19963/23212)
+2026-11-25T18:24:26.3274213Z Updating files:  87% (20195/23212)
+2026-11-25T18:24:26.3388601Z Updating files:  88% (20427/23212)
+2026-11-25T18:24:26.3501715Z Updating files:  89% (20659/23212)
+2026-11-25T18:24:26.3598975Z Updating files:  90% (20891/23212)
+2026-11-25T18:24:26.3709489Z Updating files:  91% (21123/23212)
+2026-11-25T18:24:26.3803581Z Updating files:  92% (21356/23212)
+2026-11-25T18:24:26.3895315Z Updating files:  93% (21588/23212)
+2026-11-25T18:24:26.4008049Z Updating files:  94% (21820/23212)
+2026-11-25T18:24:26.4070736Z Updating files:  95% (22052/23212)
+2026-11-25T18:24:26.4117498Z Updating files:  95% (22182/23212)
+2026-11-25T18:24:26.4218363Z Updating files:  96% (22284/23212)
+2026-11-25T18:24:26.4314077Z Updating files:  97% (22516/23212)
+2026-11-25T18:24:26.4415165Z Updating files:  98% (22748/23212)
+2026-11-25T18:24:26.4565145Z Updating files:  99% (22980/23212)
+2026-11-25T18:24:26.4565531Z Updating files: 100% (23212/23212)
+2026-11-25T18:24:26.4565942Z Updating files: 100% (23212/23212), done.
+2026-11-25T18:24:26.5589153Z Note: switching to 'refs/remotes/pull/1640/merge'.
+2026-11-25T18:24:26.5589469Z 
+2026-11-25T18:24:26.5589626Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-25T18:24:26.5590333Z changes and commit them, and you can discard any commits you make in this
+2026-11-25T18:24:26.5590735Z state without impacting any branches by switching back to a branch.
+2026-11-25T18:24:26.5590957Z 
+2026-11-25T18:24:26.5591164Z If you want to create a new branch to retain commits you create, you may
+2026-11-25T18:24:26.5591547Z do so (now or later) by using -c with the switch command. Example:
+2026-11-25T18:24:26.5591757Z 
+2026-11-25T18:24:26.5591879Z   git switch -c <new-branch-name>
+2026-11-25T18:24:26.5592097Z 
+2026-11-25T18:24:26.5592391Z Or undo this operation with:
+2026-11-25T18:24:26.5592592Z 
+2026-11-25T18:24:26.5592676Z   git switch -
+2026-11-25T18:24:26.5592802Z 
+2026-11-25T18:24:26.5592990Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-25T18:24:26.5593255Z 
+2026-11-25T18:24:26.5593778Z HEAD is now at e237198d Merge bfa2d68830f721c3a3990a18f9f744ec839751be into 3388db3489e92430ca195d67cfa3fd04093d0404
+2026-11-25T18:24:26.5648017Z ##[endgroup]
+2026-11-25T18:24:26.5692576Z [command]/usr/bin/git log -1 --format=%H
+2026-11-25T18:24:26.5714470Z e237198de69bab9ceb97eafc44b720c230033dee
+2026-11-25T18:24:26.5721387Z ##[group]Removing auth
+2026-11-25T18:24:26.5721731Z Removing SSH command configuration
+2026-11-25T18:24:26.5724864Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T18:24:26.5749544Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T18:24:26.6077443Z Removing HTTP extra header
+2026-11-25T18:24:26.6080465Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T18:24:26.6108027Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T18:24:26.6434217Z Removing includeIf entries pointing to credentials config files
+2026-11-25T18:24:26.6437600Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T18:24:26.6466331Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-11-25T18:24:26.6467046Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-11-25T18:24:26.6467933Z includeif.gitdir:/github/workspace/.git.path
+2026-11-25T18:24:26.6468384Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-25T18:24:26.6473248Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-11-25T18:24:26.6493020Z /home/runner/work/_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:26.6505677Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-5a2295de\-1c12\-428b\-887f\-11abc2883399\.config
+2026-11-25T18:24:26.6532644Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-11-25T18:24:26.6551563Z /home/runner/work/_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:26.6557137Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-5a2295de\-1c12\-428b\-887f\-11abc2883399\.config
+2026-11-25T18:24:26.6583979Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-25T18:24:26.6608960Z /github/runner_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:26.6615169Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-5a2295de\-1c12\-428b\-887f\-11abc2883399\.config
+2026-11-25T18:24:26.6643929Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-25T18:24:26.6660239Z /github/runner_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config
+2026-11-25T18:24:26.6665166Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-5a2295de\-1c12\-428b\-887f\-11abc2883399\.config
+2026-11-25T18:24:26.6689548Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T18:24:26.7010652Z Removing credentials config '/home/runner/work/_temp/git-credentials-5a2295de-1c12-428b-887f-11abc2883399.config'
+2026-11-25T18:24:26.7018775Z ##[endgroup]
+2026-11-25T18:24:26.7212823Z ##[group]Run if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+2026-11-25T18:24:26.7213363Z if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+2026-11-25T18:24:26.7213835Z   echo '::error::Native input checkout failed after two bounded attempts.' >&2
+2026-11-25T18:24:26.7214190Z   exit 1
+2026-11-25T18:24:26.7214396Z fi
+2026-11-25T18:24:27.1117511Z shell: /usr/bin/bash -e {0}
+2026-11-25T18:24:27.1118145Z env:
+2026-11-25T18:24:27.1118403Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:27.1118648Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:27.1118926Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:27.1119177Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:27.1119407Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:27.1119666Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:27.1119888Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:27.1120105Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:27.1120512Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:27.1120870Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:27.1121185Z   INITIAL_OUTCOME: success
+2026-11-25T18:24:27.1121401Z   RETRY_OUTCOME: skipped
+2026-11-25T18:24:27.1121647Z ##[endgroup]
+2026-11-25T18:24:27.1343767Z ##[group]Run dtolnay/rust-toolchain@stable
+2026-11-25T18:24:27.1344062Z with:
+2026-11-25T18:24:27.1344273Z   toolchain: stable
+2026-11-25T18:24:27.1344567Z env:
+2026-11-25T18:24:27.1344776Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:27.1345015Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:27.1345248Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:27.1345486Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:27.1345871Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:27.1346105Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:27.1346316Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:27.1346555Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:27.1346845Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:27.1347160Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:27.1347422Z ##[endgroup]
+2026-11-25T18:24:27.1408285Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+2026-11-25T18:24:27.1451605Z ##[group]Run if [[ -z $toolchain ]]; then
+2026-11-25T18:24:27.1452076Z if [[ -z $toolchain ]]; then
+2026-11-25T18:24:27.1452785Z   # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070
+2026-11-25T18:24:27.1453269Z   echo "'toolchain' is a required input" >&2
+2026-11-25T18:24:27.1453555Z   exit 1
+2026-11-25T18:24:27.1453905Z elif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then
+2026-11-25T18:24:27.1454270Z   if [[ Linux == macOS ]]; then
+2026-11-25T18:24:27.1454742Z     echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT
+2026-11-25T18:24:27.1455193Z   else
+2026-11-25T18:24:27.1455549Z     echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT
+2026-11-25T18:24:27.1455948Z   fi
+2026-11-25T18:24:27.1456239Z elif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then
+2026-11-25T18:24:27.1456774Z   echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT
+2026-11-25T18:24:27.1457196Z elif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then
+2026-11-25T18:24:27.1457641Z   echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT
+2026-11-25T18:24:27.1458062Z else
+2026-11-25T18:24:27.1458270Z   delimiter=EOF
+2026-11-25T18:24:27.1458564Z   while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done
+2026-11-25T18:24:27.1459028Z   printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT
+2026-11-25T18:24:27.1459377Z fi
+2026-11-25T18:24:27.1486334Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:27.1486734Z env:
+2026-11-25T18:24:27.1486997Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:27.1487324Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:27.1487619Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:27.1487923Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:27.1488182Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:27.1488414Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:27.1488624Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:27.1488888Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:27.1489152Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:27.1489471Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:27.1489732Z   toolchain: stable
+2026-11-25T18:24:27.1489925Z ##[endgroup]
+2026-11-25T18:24:27.1545788Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=13]
+2026-11-25T18:24:27.1548195Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+2026-11-25T18:24:27.1569831Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-11-25T18:24:27.1570364Z echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-11-25T18:24:27.1592998Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:27.1593417Z env:
+2026-11-25T18:24:27.1593631Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:27.1593902Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:27.1594132Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:27.1594360Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:27.1594600Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:27.1594925Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:27.1595162Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:27.1595387Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:27.1595633Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:27.1595983Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:27.1596250Z ##[endgroup]
+2026-11-25T18:24:27.1642890Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=9]
+2026-11-25T18:24:27.1645225Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+2026-11-25T18:24:27.1669894Z ##[group]Run if ! command -v rustup &>/dev/null; then
+2026-11-25T18:24:27.1670275Z if ! command -v rustup &>/dev/null; then
+2026-11-25T18:24:27.1670867Z   curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y
+2026-11-25T18:24:27.1671472Z   echo "$CARGO_HOME/bin" >> $GITHUB_PATH
+2026-11-25T18:24:27.1671747Z fi
+2026-11-25T18:24:27.1692708Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:27.1693052Z env:
+2026-11-25T18:24:27.1693276Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:27.1693522Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:27.1693755Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:27.1694041Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:27.1694283Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:27.1694517Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:27.1694744Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:27.1694965Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:27.1695218Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:27.1695532Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:27.1695801Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:27.1696063Z ##[endgroup]
+2026-11-25T18:24:27.1738890Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=9]
+2026-11-25T18:24:27.1741059Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+2026-11-25T18:24:27.1746239Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T18:24:27.1756730Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+2026-11-25T18:24:27.1776666Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-11-25T18:24:27.1777243Z set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-11-25T18:24:27.1777628Z flags=()
+2026-11-25T18:24:27.1777907Z for t in ${targets//,/ }; do flags+=(--target "$t"); done
+2026-11-25T18:24:27.1778246Z for c in ${components//,/ }; do flags+=(--component "$c"); done
+2026-11-25T18:24:27.1778679Z if [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi
+2026-11-25T18:24:27.1779046Z log=$(mktemp)
+2026-11-25T18:24:27.1779279Z trap 'rm -f "$log"' EXIT
+2026-11-25T18:24:27.1779577Z for attempt in 1 2 3 4 5; do
+2026-11-25T18:24:27.1780026Z   if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then
+2026-11-25T18:24:27.1780497Z     break
+2026-11-25T18:24:27.1780703Z   else
+2026-11-25T18:24:27.1780949Z     status=$?
+2026-11-25T18:24:27.1781189Z   fi
+2026-11-25T18:24:27.1781592Z   if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \
+2026-11-25T18:24:27.1782111Z       || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then
+2026-11-25T18:24:27.1782711Z     exit "$status"
+2026-11-25T18:24:27.1782957Z   fi
+2026-11-25T18:24:27.1783283Z   echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2
+2026-11-25T18:24:27.1783709Z   sleep 30
+2026-11-25T18:24:27.1783928Z done
+2026-11-25T18:24:27.1804590Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:27.1804905Z env:
+2026-11-25T18:24:27.1805119Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:27.1805366Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:27.1805594Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:27.1805877Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:27.1806197Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:27.1806434Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:27.1806676Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:27.1806902Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:27.1807448Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:27.1807781Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:27.1808061Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:27.1808310Z   toolchain: stable
+2026-11-25T18:24:27.1808572Z   targets: 
+2026-11-25T18:24:27.1808767Z   components: 
+2026-11-25T18:24:27.1809011Z   RUSTUP_PERMIT_COPY_RENAME: 1
+2026-11-25T18:24:27.1809240Z ##[endgroup]
+2026-11-25T18:24:32.3053352Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+2026-11-25T18:24:32.6937646Z 
+2026-11-25T18:24:32.7004473Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.100.0 (0ef1bc386 2026-11-09)
+2026-11-25T18:24:32.7004940Z 
+2026-11-25T18:24:32.7035321Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=5527]
+2026-11-25T18:24:32.7040338Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+2026-11-25T18:24:32.7059371Z ##[group]Run rustup default "$toolchain" --force-non-host
+2026-11-25T18:24:32.7059738Z rustup default "$toolchain" --force-non-host
+2026-11-25T18:24:32.7086662Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:32.7087004Z env:
+2026-11-25T18:24:32.7087371Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.7087625Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.7087901Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.7088167Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.7088400Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.7088649Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.7088889Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.7089116Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.7089397Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.7089736Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.7090029Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.7090272Z   toolchain: stable
+2026-11-25T18:24:32.7090489Z ##[endgroup]
+2026-11-25T18:24:32.7168617Z info: using existing install for stable-x86_64-unknown-linux-gnu
+2026-11-25T18:24:32.7177122Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+2026-11-25T18:24:32.7177375Z 
+2026-11-25T18:24:32.7239293Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.100.0 (0ef1bc386 2026-11-09)
+2026-11-25T18:24:32.7239647Z 
+2026-11-25T18:24:32.7251722Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=21]
+2026-11-25T18:24:32.7255818Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+2026-11-25T18:24:32.7274345Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-11-25T18:24:32.7275047Z DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-11-25T18:24:32.7275821Z HASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')
+2026-11-25T18:24:32.7276259Z echo "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT
+2026-11-25T18:24:32.7302754Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:32.7303158Z env:
+2026-11-25T18:24:32.7303396Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.7303650Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.7303890Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.7304244Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.7304498Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.7304745Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.7304965Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.7305187Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.7305441Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.7305798Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.7306079Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.7306316Z   toolchain: stable
+2026-11-25T18:24:32.7306527Z ##[endgroup]
+2026-11-25T18:24:32.7974533Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=71]
+2026-11-25T18:24:32.7976924Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+2026-11-25T18:24:32.7995468Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-11-25T18:24:32.7995846Z if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-11-25T18:24:32.7996164Z   echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV
+2026-11-25T18:24:32.7996443Z fi
+2026-11-25T18:24:32.8022072Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:32.8022623Z env:
+2026-11-25T18:24:32.8022860Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.8023131Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.8023377Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.8023622Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.8023832Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.8024112Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.8024364Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.8024587Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.8024834Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.8025124Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.8025420Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.8025669Z ##[endgroup]
+2026-11-25T18:24:32.8070676Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=9]
+2026-11-25T18:24:32.8073030Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+2026-11-25T18:24:32.8091260Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-11-25T18:24:32.8091658Z if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-11-25T18:24:32.8091971Z   echo CARGO_TERM_COLOR=always >> $GITHUB_ENV
+2026-11-25T18:24:32.8092727Z fi
+2026-11-25T18:24:32.8114679Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:32.8115004Z env:
+2026-11-25T18:24:32.8115262Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.8115533Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.8115773Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.8116055Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.8116281Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.8116530Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.8116763Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.8116982Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.8117249Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.8117552Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.8117827Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.8118086Z ##[endgroup]
+2026-11-25T18:24:32.8162100Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=8]
+2026-11-25T18:24:32.8165375Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+2026-11-25T18:24:32.8184225Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-11-25T18:24:32.8184692Z # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-11-25T18:24:32.8185270Z if [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then
+2026-11-25T18:24:32.8185903Z   if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then
+2026-11-25T18:24:32.8186467Z     touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true
+2026-11-25T18:24:32.8186918Z     echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV
+2026-11-25T18:24:32.8187344Z   elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then
+2026-11-25T18:24:32.8187811Z     touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true
+2026-11-25T18:24:32.8188238Z     echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV
+2026-11-25T18:24:32.8188549Z   fi
+2026-11-25T18:24:32.8188794Z fi
+2026-11-25T18:24:32.8209220Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:32.8209614Z env:
+2026-11-25T18:24:32.8209862Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.8210110Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.8210351Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.8210592Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.8210831Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.8211072Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.8211283Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.8211515Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.8211792Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.8212102Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.8212570Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.8212810Z   toolchain: stable
+2026-11-25T18:24:32.8213054Z ##[endgroup]
+2026-11-25T18:24:32.8453547Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=28]
+2026-11-25T18:24:32.8456772Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-11-25T18:24:32.8475212Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-11-25T18:24:32.8475826Z # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-11-25T18:24:32.8476382Z if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then
+2026-11-25T18:24:32.8476813Z   echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV
+2026-11-25T18:24:32.8477100Z fi
+2026-11-25T18:24:32.8503929Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:32.8504288Z env:
+2026-11-25T18:24:32.8504542Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.8504787Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.8505026Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.8505280Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.8505494Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.8505761Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.8506009Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.8506230Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.8506651Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.8506945Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.8507305Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.8507548Z   toolchain: stable
+2026-11-25T18:24:32.8507762Z ##[endgroup]
+2026-11-25T18:24:32.8650735Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=19]
+2026-11-25T18:24:32.8655430Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+2026-11-25T18:24:32.8673231Z ##[group]Run rustc +"$toolchain" --version --verbose
+2026-11-25T18:24:32.8673609Z rustc +"$toolchain" --version --verbose
+2026-11-25T18:24:32.8698196Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:32.8698507Z env:
+2026-11-25T18:24:32.8698789Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.8699032Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.8699292Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.8699549Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.8699778Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.8700020Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.8700328Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.8700594Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.8700853Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.8701154Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.8701442Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.8701680Z   toolchain: stable
+2026-11-25T18:24:32.8701889Z ##[endgroup]
+2026-11-25T18:24:32.8827534Z rustc 1.100.0 (0ef1bc386 2026-11-09)
+2026-11-25T18:24:32.8827925Z binary: rustc
+2026-11-25T18:24:32.8828245Z commit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a
+2026-11-25T18:24:32.8828624Z commit-date: 2026-11-09
+2026-11-25T18:24:32.8828889Z host: x86_64-unknown-linux-gnu
+2026-11-25T18:24:32.8829150Z release: 1.100.0
+2026-11-25T18:24:32.8829360Z LLVM version: 23.1.5
+2026-11-25T18:24:32.8843679Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=18]
+2026-11-25T18:24:32.8935193Z ##[group]Run actions/setup-node@v7
+2026-11-25T18:24:32.8935487Z with:
+2026-11-25T18:24:32.8935694Z   node-version: 22
+2026-11-25T18:24:32.8935921Z   check-latest: false
+2026-11-25T18:24:32.8937992Z   token: ***
+2026-11-25T18:24:32.8938247Z   package-manager-cache: true
+2026-11-25T18:24:32.8938500Z env:
+2026-11-25T18:24:32.8938707Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:32.8938958Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:32.8939191Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:32.8939451Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:32.8939706Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:32.8939944Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:32.8940179Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:32.8940430Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:32.8940691Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:32.8941023Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:32.8941307Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:32.8941633Z ##[endgroup]
+2026-11-25T18:24:33.1439235Z Found in cache @ /opt/hostedtoolcache/node/22.23.5/x64
+2026-11-25T18:24:33.9157152Z ##[group]Environment details
+2026-11-25T18:24:35.8715977Z node: v22.23.5
+2026-11-25T18:24:35.8716398Z npm: 10.9.9
+2026-11-25T18:24:35.8716663Z yarn: 1.22.22
+2026-11-25T18:24:35.8717376Z ##[endgroup]
+2026-11-25T18:24:35.8811902Z ##[group]Run node scripts/native-contract-artifact.mjs selection
+2026-11-25T18:24:35.8812567Z node scripts/native-contract-artifact.mjs selection
+2026-11-25T18:24:35.9158709Z shell: /usr/bin/bash -e {0}
+2026-11-25T18:24:35.9159043Z env:
+2026-11-25T18:24:35.9159276Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:35.9159548Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:35.9159820Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:35.9160058Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:35.9160340Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:35.9160577Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:35.9160816Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:35.9161045Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:35.9161291Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:35.9161648Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:35.9161932Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:35.9162316Z ##[endgroup]
+2026-11-25T18:24:35.9481427Z {"artifactId":"15051795467","attempt":"1"}
+2026-11-25T18:24:35.9773479Z Prepare all required actions
+2026-11-25T18:24:35.9774020Z Getting action download info
+2026-11-25T18:24:36.1760367Z Download action repository 'actions/setup-python@v7' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-11-25T18:24:36.3621742Z Download action repository 'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+2026-11-25T18:24:36.8075714Z ##[group]Run ./.github/actions/download-artifact
+2026-11-25T18:24:36.8075936Z with:
+2026-11-25T18:24:36.8076085Z   artifact-ids: 15051795467
+2026-11-25T18:24:36.8076288Z   path: /home/runner/work/_temp/native-contracts
+2026-11-25T18:24:36.8076502Z   merge-multiple: false
+2026-11-25T18:24:36.8076679Z   repository: link-assistant/formal-ai
+2026-11-25T18:24:36.8077042Z   run-id: 45673125925
+2026-11-25T18:24:36.8077188Z env:
+2026-11-25T18:24:36.8077330Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:36.8077499Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:36.8077696Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:36.8077877Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:36.8078038Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:36.8078207Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:36.8078366Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:36.8078515Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:36.8078693Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:36.8078928Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:36.8079142Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:36.8079315Z ##[endgroup]
+2026-11-25T18:24:36.8085579Z ##[start-action display=Run actions/setup-python@v7;id=__self.python]
+2026-11-25T18:24:36.8120973Z ##[group]Run actions/setup-python@v7
+2026-11-25T18:24:36.8121185Z with:
+2026-11-25T18:24:36.8121359Z   update-environment: false
+2026-11-25T18:24:36.8121541Z   python-version: 3.14
+2026-11-25T18:24:36.8121706Z   check-latest: false
+2026-11-25T18:24:36.8123789Z   token: ***
+2026-11-25T18:24:36.8124052Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-11-25T18:24:36.8124353Z   allow-prereleases: false
+2026-11-25T18:24:36.8124526Z   freethreaded: false
+2026-11-25T18:24:36.8124679Z env:
+2026-11-25T18:24:36.8124822Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:36.8124996Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:36.8125161Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:36.8125350Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:36.8125508Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:36.8125682Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:36.8125842Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:36.8125995Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:36.8126279Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:36.8126530Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:36.8126765Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:36.8126954Z ##[endgroup]
+2026-11-25T18:24:36.9065381Z ##[group]Installed versions
+2026-11-25T18:24:37.0572495Z Successfully set up CPython (3.14.10)
+2026-11-25T18:24:37.0573080Z ##[endgroup]
+2026-11-25T18:24:37.0613422Z ##[end-action id=__self.python;outcome=success;conclusion=success;duration_ms=252]
+2026-11-25T18:24:37.0615304Z ##[start-action display=Allocate raw archive directory;id=__self.temporary]
+2026-11-25T18:24:37.0630784Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+2026-11-25T18:24:37.0631262Z echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+2026-11-25T18:24:37.0658806Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:37.0659067Z env:
+2026-11-25T18:24:37.0659227Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:37.0659404Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:37.0659575Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:37.0659775Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:37.0659938Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:37.0660143Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:37.0660305Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:37.0660626Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:37.0660820Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:37.0661062Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:37.0661299Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:37.0661484Z ##[endgroup]
+2026-11-25T18:24:37.0722563Z ##[end-action id=__self.temporary;outcome=success;conclusion=success;duration_ms=10]
+2026-11-25T18:24:37.0725285Z ##[start-action display=Prepare portable Node observation options;id=__self.observation_options]
+2026-11-25T18:24:37.0736969Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+2026-11-25T18:24:37.0737280Z action_directory="${ACTION_DIRECTORY//\\//}"
+2026-11-25T18:24:37.0737726Z printf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"
+2026-11-25T18:24:37.0761326Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:24:37.0761565Z env:
+2026-11-25T18:24:37.0761725Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:37.0761898Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:37.0762062Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:37.0762409Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:37.0762580Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:37.0762747Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:37.0762906Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:37.0763056Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:37.0763237Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:37.0763477Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:37.0763691Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:37.0763999Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+2026-11-25T18:24:37.0764327Z ##[endgroup]
+2026-11-25T18:24:37.0809025Z ##[end-action id=__self.observation_options;outcome=success;conclusion=success;duration_ms=8]
+2026-11-25T18:24:37.0811529Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_first]
+2026-11-25T18:24:37.0838977Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+2026-11-25T18:24:37.0839292Z with:
+2026-11-25T18:24:37.0839448Z   artifact-ids: 15051795467
+2026-11-25T18:24:37.0839645Z   repository: link-assistant/formal-ai
+2026-11-25T18:24:37.0839850Z   run-id: 45673125925
+2026-11-25T18:24:37.0840058Z   path: /home/runner/work/_temp/artifact-archives.OsXHkc
+2026-11-25T18:24:37.0840311Z   merge-multiple: false
+2026-11-25T18:24:37.0840475Z   skip-decompress: true
+2026-11-25T18:24:37.0840639Z   digest-mismatch: error
+2026-11-25T18:24:37.0840798Z env:
+2026-11-25T18:24:37.0840941Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:24:37.0841114Z   CARGO_NET_RETRY: 10
+2026-11-25T18:24:37.0841292Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:24:37.0841471Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:24:37.0841629Z   CARGO_TERM_COLOR: always
+2026-11-25T18:24:37.0841810Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:24:37.0841967Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:24:37.0842150Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:24:37.0842610Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:24:37.0842921Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:24:37.0843216Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:24:37.0843678Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+2026-11-25T18:24:37.0844145Z   ARTIFACT_RETRY_ATTEMPT: 1
+2026-11-25T18:24:37.0844317Z ##[endgroup]
+2026-11-25T18:24:37.1979229Z Downloading artifacts by ID
+2026-11-25T18:24:37.5324587Z Found 2 artifact(s)
+2026-11-25T18:24:37.5325192Z Preparing to download the following artifacts:
+2026-11-25T18:24:37.5326494Z - native-contracts-45673125925-1-e237198de69bab9ceb97eafc44b720c230033dee (ID: 15051795467, Size: 1127991108, Expected Digest: sha256:134988c271bc20021a1df2c1f6ffaeec61b7d1f7c8f9b5121918fdca870c9694)
+2026-11-25T18:24:38.1431432Z Redirecting to blob download url: https://productionresultssa19.blob.core.windows.net/actions-results/12d811fd-04c1-82e3-a8a7-01a713a5765c/workflow-job-run-3b672be6-c11f-5fce-a6e4-140043a11774/artifacts/9e1d096f2b212ea95e700ba8cd64de6575838bc011c9e7849ef2c916ea494c9f.zip
+2026-11-25T18:24:38.1433067Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.OsXHkc
+2026-11-25T18:24:38.5582907Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.OsXHkc/native-contracts-45673125925-1-e237198de69bab9ceb97eafc44b720c230033dee.zip
+2026-11-25T18:25:58.7245405Z SHA256 digest of downloaded artifact is 134988c271bc20021a1df2c1f6ffaeec61b7d1f7c8f9b5121918fdca870c9694
+2026-11-25T18:25:58.7247894Z Artifact download completed successfully.
+2026-11-25T18:25:58.7248560Z Total of 1 artifact(s) downloaded
+2026-11-25T18:25:58.7250855Z Download artifact has finished successfully
+2026-11-25T18:25:58.7317154Z ##[end-action id=__self.download_first;outcome=success;conclusion=success;duration_ms=81650]
+2026-11-25T18:25:58.7319681Z ##[start-action display=Discard partial archives before the second download;id=__self.retry_second]
+2026-11-25T18:25:58.7323650Z ##[end-action id=__self.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T18:25:58.7325531Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_second]
+2026-11-25T18:25:58.7329245Z ##[end-action id=__self.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T18:25:58.7330947Z ##[start-action display=Discard partial archives before the third download;id=__self.retry_third]
+2026-11-25T18:25:58.7333860Z ##[end-action id=__self.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T18:25:58.7335518Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_third]
+2026-11-25T18:25:58.7338555Z ##[end-action id=__self.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T18:25:58.7341761Z ##[start-action display=Extract verified archives;id=__self.extract]
+2026-11-25T18:25:58.7355466Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION" --nest-pattern-selection "$NEST_PATTERN_SELECTION"
+2026-11-25T18:25:58.7356722Z "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION" --nest-pattern-selection "$NEST_PATTERN_SELECTION"
+2026-11-25T18:25:58.7383864Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:25:58.7384111Z env:
+2026-11-25T18:25:58.7384293Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:25:58.7384472Z   CARGO_NET_RETRY: 10
+2026-11-25T18:25:58.7384642Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:25:58.7384826Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:25:58.7385004Z   CARGO_TERM_COLOR: always
+2026-11-25T18:25:58.7385174Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:25:58.7385337Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:25:58.7385488Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:25:58.7385676Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:25:58.7385920Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:25:58.7386138Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:25:58.7386392Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+2026-11-25T18:25:58.7386790Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+2026-11-25T18:25:58.7387176Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.OsXHkc
+2026-11-25T18:25:58.7387471Z   DESTINATION: /home/runner/work/_temp/native-contracts
+2026-11-25T18:25:58.7387702Z   MERGE_MULTIPLE: false
+2026-11-25T18:25:58.7387882Z   ALLOW_EMPTY_SELECTION: false
+2026-11-25T18:25:58.7388069Z   NEST_PATTERN_SELECTION: false
+2026-11-25T18:25:58.7388247Z ##[endgroup]
+2026-11-25T18:26:00.7416889Z Artifact extraction destination: /home/runner/work/_temp/native-contracts
+2026-11-25T18:26:00.7507092Z ##[end-action id=__self.extract;outcome=success;conclusion=success;duration_ms=2016]
+2026-11-25T18:26:00.7509984Z ##[start-action display=Remove temporary raw archives;id=__self.__run]
+2026-11-25T18:26:00.7526442Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+2026-11-25T18:26:00.7526692Z rm -rf -- "$RAW_DIRECTORY"
+2026-11-25T18:26:00.7553305Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-25T18:26:00.7553563Z env:
+2026-11-25T18:26:00.7553721Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:26:00.7553901Z   CARGO_NET_RETRY: 10
+2026-11-25T18:26:00.7554074Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:26:00.7554406Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:26:00.7554582Z   CARGO_TERM_COLOR: always
+2026-11-25T18:26:00.7554754Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:26:00.7554918Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:26:00.7555067Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:26:00.7555269Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:26:00.7555514Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:26:00.7555728Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:26:00.7555976Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.OsXHkc
+2026-11-25T18:26:00.7556235Z ##[endgroup]
+2026-11-25T18:26:00.8095016Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=58]
+2026-11-25T18:26:00.8118857Z ##[group]Run bash scripts/run-with-budget-warning.sh 900 "Native contracts reasoning-2" bash scripts/ci-native-regressions.sh "reasoning-2"
+2026-11-25T18:26:00.8119588Z bash scripts/run-with-budget-warning.sh 900 "Native contracts reasoning-2" bash scripts/ci-native-regressions.sh "reasoning-2"
+2026-11-25T18:26:00.8147988Z shell: /usr/bin/bash -e {0}
+2026-11-25T18:26:00.8148200Z env:
+2026-11-25T18:26:00.8148364Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-25T18:26:00.8148553Z   CARGO_NET_RETRY: 10
+2026-11-25T18:26:00.8148737Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-25T18:26:00.8148929Z   CARGO_INCREMENTAL: 0
+2026-11-25T18:26:00.8149128Z   CARGO_TERM_COLOR: always
+2026-11-25T18:26:00.8149303Z   RUSTFLAGS: -Dwarnings
+2026-11-25T18:26:00.8149476Z   CARGO_BUILD_JOBS: 2
+2026-11-25T18:26:00.8149634Z   FORMAL_AI_OFFLINE: 1
+2026-11-25T18:26:00.8149828Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: 15051795467
+2026-11-25T18:26:00.8150083Z   FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: 1
+2026-11-25T18:26:00.8150361Z   CARGO_HOME: /home/runner/.cargo
+2026-11-25T18:26:00.8150556Z   TEST_WARN_RATIO_PERCENT: 75
+2026-11-25T18:26:00.8150826Z   FORMAL_AI_NATIVE_CONTRACT_ARTIFACT: /home/runner/work/_temp/native-contracts
+2026-11-25T18:26:00.8151118Z ##[endgroup]
+2026-11-25T18:26:03.1765199Z 249 test(s) in 2 shard(s), each exactly once, longest first
+2026-11-25T18:26:05.4376825Z 
+2026-11-25T18:26:05.4377456Z running 123 tests
+2026-11-25T18:26:06.3361033Z test behavior_rules::behavior_rule_detail_answer_is_localized_for_russian ... ok
+2026-11-25T18:26:07.6250124Z test behavior_rules::behavior_rules_count_followup_answers_reported_russian_prompt ... ok
+2026-11-25T18:26:07.7189429Z test behavior_rules::behavior_rules_count_includes_dialog_local_runtime_rules ... ok
+2026-11-25T18:26:12.5193639Z test behavior_rules::behavior_rules_list_answer_is_localized_for_supported_languages ... ok
+2026-11-25T18:26:17.4454568Z test behavior_rules::behavior_rules_short_list_phrase_covers_supported_languages ... ok
+2026-11-25T18:26:17.7094292Z test chat_surface::answers_are_deterministic_for_identical_prompts ... ok
+2026-11-25T18:26:18.2507078Z test chat_surface::behavior_rule_detail_can_be_read_in_russian ... ok
+2026-11-25T18:26:18.6103996Z test chat_surface::behavior_rule_grammar::behavior_rule_detail_includes_topic_and_when_then_in_links ... ok
+2026-11-25T18:26:19.7911438Z test chat_surface::behavior_rule_grammar::behavior_rule_listing_invites_when_x_then_y_teaching_form ... ok
+2026-11-25T18:26:21.0341374Z test chat_surface::behavior_rule_grammar::behavior_rule_listing_shows_dialog_local_runtime_rule_as_when_then ... ok
+2026-11-25T18:26:21.2161153Z test chat_surface::behavior_rule_grammar::behavior_rule_teach_supports_chinese_dang_shi_grammar ... ok
+2026-11-25T18:26:21.3944146Z test chat_surface::behavior_rule_grammar::behavior_rule_teach_supports_english_when_x_do_y_grammar ... ok
+2026-11-25T18:26:21.5698435Z test chat_surface::behavior_rule_grammar::behavior_rule_teach_supports_hindi_jab_tab_grammar ... ok
+2026-11-25T18:26:21.7441379Z test chat_surface::behavior_rule_grammar::behavior_rule_teach_supports_russian_kogda_togda_grammar ... ok
+2026-11-25T18:26:21.9225938Z test chat_surface::behavior_rule_teach_supports_english_if_i_ask_grammar ... ok
+2026-11-25T18:26:23.6504870Z test chat_surface::behavior_rules_can_be_listed_and_read_through_chat ... ok
+2026-11-25T18:26:24.8403671Z test chat_surface::behavior_rules_list_works_for_chinese_speakers ... ok
+2026-11-25T18:26:30.8050301Z test chat_surface::behavior_rules_list_works_for_russian_speakers ... ok
+2026-11-25T18:26:30.8981904Z test chat_surface::capabilities_answer_advertises_behavior_rule_commands ... ok
+2026-11-25T18:26:30.9863288Z test chat_surface::capabilities_answer_in_hindi_advertises_behavior_rule_commands ... ok
+2026-11-25T18:26:31.1053121Z test chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ok
+2026-11-25T18:26:31.2344132Z test chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ok
+2026-11-25T18:26:31.3585722Z test chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+2026-11-25T18:26:31.4870499Z test chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ok
+2026-11-25T18:26:31.6168187Z test chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
+2026-11-25T18:26:31.7463701Z test chat_surface::greeting_matching_is_case_insensitive ... ok
+2026-11-25T18:26:32.6468209Z test chat_surface::identity_examples_cover_known_phrasings ... ok
+2026-11-25T18:26:32.8148922Z test chat_surface::links_notation_trace_is_present_for_every_answer ... ok
+2026-11-25T18:26:32.8424160Z test chat_surface::opener_pools_have_distinct_first_entries_per_language ... ok
+2026-11-25T18:26:33.0581906Z test chat_surface::physical_action_question_reply_is_factual_no ... ok
+2026-11-25T18:26:33.6558099Z test chat_surface::rule_details::behavior_rule_detail_uses_read_rule_prefix ... ok
+2026-11-25T18:26:33.8612964Z test chat_surface::russian_vulgar_prompt_is_refused_with_policy_intent ... ok
+2026-11-25T18:26:33.9830698Z test chat_surface::self_facts_query_works_for_chinese_speakers ... ok
+2026-11-25T18:26:34.0681254Z test chat_surface::self_facts_query_works_for_russian_speakers ... ok
+2026-11-25T18:26:34.0683383Z test chat_surface::unknown_answer_is_strict_superset_of_seed_opener ... ok
+2026-11-25T18:26:34.8268491Z test chat_surface::unknown_answer_mentions_report_issue_and_export_memory ... ok
+2026-11-25T18:26:34.8270287Z test chat_surface::unknown_answer_uses_different_opener_for_different_prompts ... ok
+2026-11-25T18:26:35.1436187Z test chat_surface::unknown_prompt_explains_how_to_teach_a_behavior_rule ... ok
+2026-11-25T18:26:35.3311873Z test chat_surface::user_messages_are_recorded_as_impulse_events ... ok
+2026-11-25T18:26:35.3314521Z test component_boundaries::native_search_reports_both_component_and_fallback_failures ... ok
+2026-11-25T18:26:35.3315413Z test component_boundaries::published_web_search_merger_remains_available_without_the_server_feature ... ok
+2026-11-25T18:26:44.2478385Z test concept_lookup_self_use::an_honest_refusal_names_every_source_it_consulted ... ok
+2026-11-25T18:26:44.4599630Z test debug_session::a_disconnect_or_a_release_frees_a_paused_turn ... ok
+2026-11-25T18:26:44.7784000Z test debug_session::a_served_chat_turn_answers_only_after_its_last_stage ... ok
+2026-11-25T18:26:44.7786459Z test debug_session::calculator_origins::calculator_folding_retains_each_origin_and_clears_it_between_clusters ... ok
+2026-11-25T18:26:44.7787065Z test debug_session::debug_requests_answer_the_twin_errors ... ok
+2026-11-25T18:26:44.7891345Z test debug_session::each_advance_reveals_exactly_one_stage_and_a_repeat_records_nothing ... ok
+2026-11-25T18:26:44.7892168Z test debug_session::stepping_off_never_holds_a_turn ... ok
+2026-11-25T18:26:44.7892878Z test event_source_origin::append_origin_preserves_raw_event_and_thinking_identity ... ok
+2026-11-25T18:26:44.7893593Z test event_source_origin::unknown_origin_does_not_fall_back_to_a_considered_appender ... ok
+2026-11-25T18:26:44.8472133Z test external_search_fallback::executed_search_answers_from_captured_sources_with_citations ... ok
+2026-11-25T18:26:44.9264192Z test external_search_fallback::offline_cache_miss_answers_unavailable_not_a_description ... ok
+2026-11-25T18:26:44.9265318Z test formalization::arbitrary_statement_maps_predicate_and_nouns_to_wikidata_ids ... ok
+2026-11-25T18:26:45.1096221Z test formalization::low_rigor_ambiguous_prompt_guesses_and_records_policy ... ok
+2026-11-25T18:26:45.3730771Z test formalization::same_prompt_and_config_produce_same_interpretation_choice ... ok
+2026-11-25T18:26:45.3731433Z test formalization::temperature_selection_is_deterministic_for_fixed_config ... ok
+2026-11-25T18:26:45.3753327Z test formalization::unmodeled_dictionary_terms_fall_back_to_wiktionary_surfaces ... ok
+2026-11-25T18:26:59.2434148Z test google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages ... ok
+2026-11-25T18:26:59.2441078Z test google_trends::google_trends_rss_is_converted_to_ranked_topics ... ok
+2026-11-25T18:26:59.2497392Z test google_trends::the_regional_feed_comes_from_verified_source_bytes ... ok
+2026-11-25T18:27:13.1221022Z test google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe ... ok
+2026-11-25T18:27:41.0242802Z test google_trends_catalog::driver_drives_the_google_trends_recipe_to_a_write ... ok
+2026-11-25T18:27:41.0244865Z test google_trends_catalog::recognises_the_google_trends_catalog_task_without_colliding_with_siblings ... ok
+2026-11-25T18:27:41.0281629Z test hive_delivery_prerequisites::full_delivery_replays_have_their_required_toolchains ... ok
+2026-11-25T18:27:41.2453505Z test issue_1101_documentation_question_parity::a_bare_documentation_question_answers_the_same_in_every_language ... ok
+2026-11-25T18:27:41.7950097Z test issue_1101_documentation_question_parity::an_explicit_search_imperative_still_reaches_web_search_in_every_language ... ok
+2026-11-25T18:27:41.9336586Z test issue_1101_documentation_question_parity::the_fallback_still_claims_a_question_no_documentation_rule_answers ... ok
+2026-11-25T18:29:46.8424689Z test issue_1158_pull_request_steps::the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pull_request ... ok
+2026-11-25T18:32:52.5371532Z test issue_1160_regular_prompt::the_restart_prompt_ignores_a_stray_kotlin_jar_commits_pushes_and_keeps_the_pull_request_ready ... ok
+2026-11-25T18:32:52.5380082Z skip: shallow clone has no searchable history
+2026-11-25T18:32:52.5380639Z test issue_1180_repository_qa::chat_answers_what_a_function_does_from_the_census ... ok
+2026-11-25T18:32:52.5389025Z test issue_1180_repository_qa::source_edits_moves_and_deletion_supersede_stale_census_positions ... ok
+2026-11-25T18:32:52.5391621Z test issue_1180_repository_qa::the_documentation_comment_above_the_item_is_quoted ... ok
+2026-11-25T18:32:52.5393982Z test issue_1580_question_boundaries::selecting_an_ambiguous_referent_is_a_requirement_question ... ok
+2026-11-25T18:32:56.3306670Z 
+2026-11-25T18:32:56.3308094Z thread 'issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures' (4071) panicked at tests/unit/issue_1588_intent_spans.rs:28:29:
+2026-11-25T18:32:56.3416972Z assertion `left == right` failed: Сколько часов в 22 днях?: SymbolicAnswer { intent: "capability_gap", answer: "This request routes to the `web_search` capability, but this chat surface does not expose the required `web_search` tool. Use an agent client that advertises it.", confidence: 1.0, evidence_links: ["prompt:prompt_1044024873692c00", "impulse:impulse_d012429cdcf0635f", "language:ru", "candidate:candidate_7537785773b89178", "statement_weight:formalization:0 weight=1.000000 empty", "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc", "intent_formalization_cache:miss:impulse_24cfcf36d0b97eb2", "intent_formalization:intent_formalization_4dc87aff6c64d517", "intent_formalization:kind:question", "problem_frame:problem_frame_22cd3fc45ac2ccdd", "problem_frame:need_count:problem_frame:need_count_cc74c16552fb6b9c", "problem_frame:need:problem_frame:need_3951169262382e78", "work_unit:work_unit_0471884949a49db5", "work_unit:count:work_unit:count_762362a27e759c02", "work_unit:leaf_count:work_unit:leaf_count_d923e8582af04c32", "work_unit:enter:work_unit:enter_5cba81ff4d31d8e7", "work_unit:exit:work_unit:exit_587cb8bbfac7f04a", "need_ledger:need_ledger_2bf6aa976f31ba96", "need_ledger:accounted_for:need_ledger:accounted_for_12ddab1dcd64b6df", "need:status:need:status_54a0995adb3d27cf", "method_registry:method_registry_24ed38752f2bc4bc", "method_registry:count:method_registry:count_141e01085bf9bfba", "work_unit_reasoning:work_unit_reasoning_7381cf9e72daccd7", "work_unit_reasoning:steps:work_unit_reasoning:steps_51182456637d2d68", "upward_construction:upward_construction_c9276802557a17cb", "upward_construction:steps:upward_construction:steps_a96702fda1dee150", "solution_evidence:solution_evidence_e11aa2fdb3c8585c", "solution_evidence:accounted_for:solution_evidence:accounted_for_5294c918179763fa", "selection:selection_0400812de5632ba9", "skill_ledger:skill_ledger_31de1111907dd975", "skill_ledger:promotable:skill_ledger:promotable_dce72b63f303aa52", "reasoning_standard:reasoning_standard_8956b00311b14aa4", "reasoning_standard:gates:reasoning_standard:gates_91332ff14e3b66ac", "reasoning_standard:verdict:reasoning_standard:verdict_720452484ec81978", "obligation_ledger:obligation_ledger_24659fa92f2b40e7", "obligation_ledger:discharged:obligation_ledger:discharged_4be549e14f53a0fd", "need_ledger:executed:need_ledger:executed_ea51322d3dc16a4e", "need_ledger:executed_satisfied:need_ledger:executed_satisfied_79a6aaa5ff1672a6", "search:local:search:local_d7230c74fcf9e965", "selected_rule:selected_rule_1e0067891b886375", "capability_route:capability_route_cc672e921663f597", "capability_gap:capability_gap_304697c171597011", "intent:capability_gap", "validation:validation_4a2645ad5f83525e", "response:capability_gap", "trace:simplification:trace:simplification_6a91f6ea11ee54ba", "trace:trace_89525c305a738f26", "derivation:answer_f2d632396ee4242a", "/home/runner/.cache/formal-ai/derivations/answer_f2d632396ee4242a/787bf69d6ad6790683c26cb5a2a76f25780ca8bcde3ad5f5990421a8e62c9b34.lino", "derivation_record:answer_f2d632396ee4242a@787bf69d6ad6790683c26cb5a2a76f25780ca8bcde3ad5f5990421a8e62c9b34"], thinking_steps: [ThinkingStep { id: "thinking_step_913a8d16c972e082", order: 0, step: "impulse", detail: "Сколько часов в 22 днях?", summary: "Прочитать запрос: «Сколько часов в 22 днях?».", level: "high", source_event: "impulse", source_origin: None, parent_id: None }, ThinkingStep { id: "thinking_step_440e4cb2121902ed", order: 1, step: "detect_language", detail: "ru", summary: "Определить язык запроса: русский.", level: "high", source_event: "language", source_origin: None, parent_id: None }, ThinkingStep { id: "thinking_step_8d24865d349bc1dd", order: 2, step: "dispatch_handler", detail: "capability_gap", summary: "Направить к обработчику «capability gap».", level: "high", source_event: "intent", source_origin: None, parent_id: None }, ThinkingStep { id: "thinking_step_9f6ba835cd396e75", order: 3, step: "rule_verification", detail: "", summary: "Проверить результат по правилам.", level: "detailed", source_event: "validation", source_origin: Some("validation:answer"), parent_id: None }, ThinkingStep { id: "thinking_step_190dd4554588c90f", order: 4, step: "deformalize", detail: "This request routes to the `web_search` capability, but this chat surface does not expose the required `web_search` tool. Use an agent client that advertises it.", summary: "Составить ответ: «This request routes to the `web_search` capability, but this chat surface does not expose the required `web_search` tool. Use an agent client that advertises it.».", level: "high", source_event: "response", source_origin: None, parent_id: None }], links_notation: "answer_prompt_1044024873692c00\n  prompt \"Сколько часов в 22 днях?\"\n  intent \"capability_gap\"\n  answer \"This request routes to the `web_search` capability, but this chat surface does not expose the required `web_search` tool. Use an agent client that advertises it.\"\n  trace \"trace_89525c305a738f26\"\n  steps 'step_0 impulse Сколько часов в 22 днях?; step_1 language ru; step_2 candidate formalization:0 score=0 probability=1.000000 empty; step_3 statement_weight formalization:0 weight=1.000000 empty; step_4 policy:temperature_selection selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate; step_5 intent_formalization_cache miss impulse_24cfcf36d0b97eb2; step_6 intent_formalization intent_formalization impulse_24cfcf36d0b97eb2\\\\n  impulse_id \"impulse_24cfcf36d0b97eb2\"\\\\n  source_text \"Сколько часов в 22 днях?\"\\\\n  normalized_text \"сколько часов в 22 днях\"\\\\n  language \"ru\"\\\\n  kind \"question\"\\\\n  known \"impulse:impulse_24cfcf36d0b97eb2\"\\\\n  known \"language:ru\"\\\\n; step_7 intent_formalization:kind question; step_8 problem_frame problem_frame_e791bdf8babcbbd7\\\\n  record_type \"problem_frame\"\\\\n  frame_id \"problem_frame_e791bdf8babcbbd7\"\\\\n  impulse_id \"impulse_24cfcf36d0b97eb2\"\\\\n  language \"ru\"\\\\n  kind \"question\"\\\\n  need_count \"1\"\\\\n  need \"problem_need_d4335046096a172d\"\\\\nproblem_need_d4335046096a172d\\\\n  record_type \"problem_need\"\\\\n  need_id \"problem_need_d4335046096a172d\"\\\\n  source_span \"Сколько часов в 22 днях?\"\\\\n  kind \"question\"\\\\n  status \"pending\"; step_9 problem_frame:need_count 1; step_10 problem_frame:need question Сколько часов в 22 днях?; step_11 work_unit work_unit_6f54704601709fcc\\\\n  record_type \"work_unit\"\\\\n  unit_id \"work_unit_6f54704601709fcc\"\\\\n  source_span \"Сколько часов в 22 днях?\"\\\\n  depth \"0\"\\\\n  atomic \"true\"\\\\n  atomicity_reason \"single_need\"; step_12 work_unit:count 1; step_13 work_unit:leaf_count 1; step_14 work_unit:enter 0 Сколько часов в 22 днях?; step_15 work_unit:exit 0 single_need; step_16 need_ledger need_ledger_203a6ecf370877ae\\\\n  record_type \"need_ledger\"\\\\n  frame_id \"problem_frame_e791bdf8babcbbd7\"\\\\n  row_count \"1\"\\\\n  planned \"0\"\\\\n  satisfied \"0\"\\\\n  blocked \"1\"\\\\n  row \"problem_need_d4335046096a172d\"\\\\nneed_ledger_row_9860c7910c2b8bf1\\\\n  record_type \"need_ledger_row\"\\\\n  need_id \"problem_need_d4335046096a172d\"\\\\n  source_span \"Сколько часов в 22 днях?\"\\\\n  status \"blocked\"\\\\n  leaf_reason \"single_need\"\\\\n  unit_id \"work_unit_6f54704601709fcc\"; step_17 need_ledger:accounted_for true; step_18 need:status blocked Сколько часов в 22 днях?; step_19 method_registry method_registry\\\\n  record_type \"method_registry\"\\\\n  method_count \"106\"\\\\n  prelude_count \"5\"\\\\n  specialized_count \"83\"\\\\n  contextual_count \"18\"\\\\n  learned_count \"1\"\\\\n  heuristic_count \"5\"\\\\n  method \"diagnostic\"\\\\n  method \"nl_tool\"\\\\n  method \"behavior_rules\"\\\\n  method \"feature_capability\"\\\\n  method \"playwright_script\"\\\\n  method \"conversation_control\"\\\\n  method \"agentic_continuation\"\\\\n  method \"legality_warning\"\\\\n  method \"page_query_text\"\\\\n  method \"http_fetch\"\\\\n  method \"url_navigate\"\\\\n  method \"github_repository_traffic\"\\\\n  method \"document_originality_check\"\\\\n  method \"repository_lineage\"\\\\n  method \"formalization_request\"\\\\n  method \"product_search\"\\\\n  method \"requirement_listing\"\\\\n  method \"web_search\"\\\\n  method \"learn_from_source\"\\\\n  method \"research_comparison_table\"\\\\n  method \"research_result_followup\"\\\\n  method \"docs_method_explanation\"\\\\n  method \"procedural_how_to\"\\\\n  method \"procedural_how_to_followup\"\\\\n  method \"conversation_memory\"\\\\n  method \"software_project_followup\"\\\\n  method \"summarization_text\"\\\\n  method \"summarization\"\\\\n  method \"verifiable_task\"\\\\n  method \"text_manipulation\"\\\\n  method \"brainstorm_composition\"\\\\n  method \"brainstorming\"\\\\n  method \"conversation_topic\"\\\\n  method \"advice_request\"\\\\n  method \"fact_lookup\"\\\\n  method \"coreference\"\\\\n  method \"roleplay\"\\\\n  method \"creative_writing\"\\\\n  method \"translation\"\\\\n  method \"text_rewrite\"\\\\n  method \"response_language_followup\"\\\\n  method \"capabilities\"\\\\n  method \"planning_request\"\\\\n  method \"calendar_reasoning\"\\\\n  method \"calendar_create_event\"\\\\n  method \"compound_interest\"\\\\n  method \"word_problem\"\\\\n  method \"numeric_list\"\\\\n  method \"shell_command_transform\"\\\\n  method \"code_debugging\"\\\\n  method \"regex_synthesis\"\\\\n  method \"sql_synthesis\"\\\\n  method \"shell_command_compose\"\\\\n  method \"number_constraint_reasoning\"\\\\n  method \"code_explanation\"\\\\n  method \"code_review\"\\\\n  method \"test_generation\"\\\\n  method \"code_refactoring\"\\\\n  method \"format_conversion\"\\\\n  method \"program_synthesis\"\\\\n  method \"arithmetic\"\\\\n  method \"statistics\"\\\\n  method \"javascript_execution\"\\\\n  method \"definition_merge\"\\\\n  method \"triz_resolution\"\\\\n  method \"concept_lookup\"\\\\n  method \"who_is\"\\\\n  method \"how_it_works\"\\\\n  method \"meta_explanation\"\\\\n  method \"network_query\"\\\\n  method \"execution_failure\"\\\\n  method \"installation_conversion\"\\\\n  method \"write_script\"\\\\n  method \"document_generation_plan\"\\\\n  method \"software_project\"\\\\n  method \"algorithm\"\\\\n  method \"source_refresh\"\\\\n  method \"source_conflict\"\\\\n  method \"clarification\"\\\\n  method \"punctuation_only_prompt\"\\\\n  method \"ill_formed\"\\\\n  method \"physical_action_question\"\\\\n  method \"kupi_slona\"\\\\n  method \"shell_refusal\"\\\\n  method \"proof_request\"\\\\n  method \"opinion_question\"\\\\n  method \"unit_conversion\"\\\\n  method \"incompatible_units\"\\\\n  method \"http_fetch\"\\\\n  method \"proof_request\"\\\\n  method \"meta_explanation\"\\\\n  method \"numeric_list\"\\\\n  method \"program_synthesis\"\\\\n  method \"shell_command_transform\"\\\\n  method \"text_manipulation\"\\\\n  method \"task_decomposition\"\\\\n  method \"response_language_followup\"\\\\n  method \"fact_checking\"\\\\n  method \"world_state\"\\\\n  method \"web_search\"\\\\n  method \"docs_method_explanation\"\\\\n  method \"procedural_how_to\"\\\\n  method \"procedural_how_to_followup\"\\\\n  method \"summarization\"\\\\n  method \"fact_lookup\"\\\\n  method \"coreference\"\\\\n  heuristic \"heuristic_least_action\"\\\\n  heuristic \"heuristic_resource_least_action\"\\\\n  heuristic \"heuristic_triz\"\\\\n  heuristic \"heuristic_balanced_split\"\\\\n  heuristic \"heuristic_refutation_search\"\\\\ndiagnostic\\\\n  record_type \"method\"\\\\n  name \"diagnostic\"\\\\n  order \"0\"\\\\n  surface \"prelude\"\\\\n  runtime \"diagnostic\"\\\\nnl_tool\\\\n  record_type \"method\"\\\\n  name \"nl_tool\"\\\\n  order \"1\"\\\\n  surface \"prelude\"\\\\n  runtime \"natural_language_tool\"\\\\nbehavior_rules\\\\n  record_type \"method\"\\\\n  name \"behavior_rules\"\\\\n  order \"2\"\\\\n  surface \"prelude\"\\\\n  runtime \"behavior_rules\"\\\\nfeature_capability\\\\n  record_type \"method\"\\\\n  name \"feature_capability\"\\\\n  order \"3\"\\\\n  surface \"prelude\"\\\\n  runtime \"feature_capability\"\\\\n  project_lookup \"before_runtime\"\\\\nplaywright_script\\\\n  record_type \"method\"\\\\n  name \"playwright_script\"\\\\n  order \"4\"\\\\n  surface \"prelude\"\\\\n  runtime \"playwright_script\"\\\\nconversation_control\\\\n  record_type \"method\"\\\\n  name \"conversation_control\"\\\\n  order \"0\"\\\\n  surface \"specialized\"\\\\nagentic_continuation\\\\n  record_type \"method\"\\\\n  name \"agentic_continuation\"\\\\n  order \"1\"\\\\n  surface \"specialized\"\\\\nlegality_warning\\\\n  record_type \"method\"\\\\n  name \"legality_warning\"\\\\n  order \"2\"\\\\n  surface \"specialized\"\\\\npage_query_text\\\\n  record_type \"method\"\\\\n  name \"page_query_text\"\\\\n  order \"3\"\\\\n  surface \"specialized\"\\\\nhttp_fetch\\\\n  record_type \"method\"\\\\n  name \"http_fetch\"\\\\n  order \"4\"\\\\n  surface \"specialized\"\\\\nurl_navigate\\\\n  record_type \"method\"\\\\n  name \"url_navigate\"\\\\n  order \"5\"\\\\n  surface \"specialized\"\\\\ngithub_repository_traffic\\\\n  record_type \"method\"\\\\n  name \"github_repository_traffic\"\\\\n  order \"6\"\\\\n  surface \"specialized\"\\\\ndocument_originality_check\\\\n  record_type \"method\"\\\\n  name \"document_originality_check\"\\\\n  order \"7\"\\\\n  surface \"specialized\"\\\\nrepository_lineage\\\\n  record_type \"method\"\\\\n  name \"repository_lineage\"\\\\n  order \"8\"\\\\n  surface \"specialized\"\\\\nformalization_request\\\\n  record_type \"method\"\\\\n  name \"formalization_request\"\\\\n  order \"9\"\\\\n  surface \"specialized\"\\\\nproduct_search\\\\n  record_type \"method\"\\\\n  name \"product_search\"\\\\n  order \"10\"\\\\n  surface \"specialized\"\\\\nrequirement_listing\\\\n  record_type \"method\"\\\\n  name \"requirement_listing\"\\\\n  order \"11\"\\\\n  surface \"specialized\"\\\\nweb_search\\\\n  record_type \"method\"\\\\n  name \"web_search\"\\\\n  order \"12\"\\\\n  surface \"specialized\"\\\\nlearn_from_source\\\\n  record_type \"method\"\\\\n  name \"learn_from_source\"\\\\n  order \"13\"\\\\n  surface \"specialized\"\\\\nresearch_comparison_table\\\\n  record_type \"method\"\\\\n  name \"research_comparison_table\"\\\\n  order \"14\"\\\\n  surface \"specialized\"\\\\nresearch_result_followup\\\\n  record_type \"method\"\\\\n  name \"research_result_followup\"\\\\n  order \"15\"\\\\n  surface \"specialized\"\\\\ndocs_method_explanation\\\\n  record_type \"method\"\\\\n  name \"docs_method_explanation\"\\\\n  order \"16\"\\\\n  surface \"specialized\"\\\\nprocedural_how_to\\\\n  record_type \"method\"\\\\n  name \"procedural_how_to\"\\\\n  order \"17\"\\\\n  surface \"specialized\"\\\\nprocedural_how_to_followup\\\\n  record_type \"method\"\\\\n  name \"procedural_how_to_followup\"\\\\n  order \"18\"\\\\n  surface \"specialized\"\\\\nconversation_memory\\\\n  record_type \"method\"\\\\n  name \"conversation_memory\"\\\\n  order \"19\"\\\\n  surface \"specialized\"\\\\nsoftware_project_followup\\\\n  record_type \"method\"\\\\n  name \"software_project_followup\"\\\\n  order \"20\"\\\\n  surface \"specialized\"\\\\nsummarization_text\\\\n  record_type \"method\"\\\\n  name \"summarization_text\"\\\\n  order \"21\"\\\\n  surface \"specialized\"\\\\nsummarization\\\\n  record_type \"method\"\\\\n  name \"summarization\"\\\\n  order \"22\"\\\\n  surface \"specialized\"\\\\nverifiable_task\\\\n  record_type \"method\"\\\\n  name \"verifiable_task\"\\\\n  order \"23\"\\\\n  surface \"specialized\"\\\\ntext_manipulation\\\\n  record_type \"method\"\\\\n  name \"text_manipulation\"\\\\n  order \"24\"\\\\n  surface \"specialized\"\\\\nbrainstorm_composition\\\\n  record_type \"method\"\\\\n  name \"brainstorm_composition\"\\\\n  order \"25\"\\\\n  surface \"specialized\"\\\\nbrainstorming\\\\n  record_type \"method\"\\\\n  name \"brainstorming\"\\\\n  order \"26\"\\\\n  surface \"specialized\"\\\\nconversation_topic\\\\n  record_type \"method\"\\\\n  name \"conversation_topic\"\\\\n  order \"27\"\\\\n  surface \"specialized\"\\\\nadvice_request\\\\n  record_type \"method\"\\\\n  name \"advice_request\"\\\\n  order \"28\"\\\\n  surface \"specialized\"\\\\nfact_lookup\\\\n  record_type \"method\"\\\\n  name \"fact_lookup\"\\\\n  order \"29\"\\\\n  surface \"specialized\"\\\\ncoreference\\\\n  record_type \"method\"\\\\n  name \"coreference\"\\\\n  order \"30\"\\\\n  surface \"specialized\"\\\\nroleplay\\\\n  record_type \"method\"\\\\n  name \"roleplay\"\\\\n  order \"31\"\\\\n  surface \"specialized\"\\\\ncreative_writing\\\\n  record_type \"method\"\\\\n  name \"creative_writing\"\\\\n  order \"32\"\\\\n  surface \"specialized\"\\\\ntranslation\\\\n  record_type \"method\"\\\\n  name \"translation\"\\\\n  order \"33\"\\\\n  surface \"specialized\"\\\\ntext_rewrite\\\\n  record_type \"method\"\\\\n  name \"text_rewrite\"\\\\n  order \"34\"\\\\n  surface \"specialized\"\\\\nresponse_language_followup\\\\n  record_type \"method\"\\\\n  name \"response_language_followup\"\\\\n  order \"35\"\\\\n  surface \"specialized\"\\\\ncapabilities\\\\n  record_type \"method\"\\\\n  name \"capabilities\"\\\\n  order \"36\"\\\\n  surface \"specialized\"\\\\n  project_lookup \"before_runtime\"\\\\nplanning_request\\\\n  record_type \"method\"\\\\n  name \"planning_request\"\\\\n  order \"37\"\\\\n  surface \"specialized\"\\\\ncalendar_reasoning\\\\n  record_type \"method\"\\\\n  name \"calendar_reasoning\"\\\\n  order \"38\"\\\\n  surface \"specialized\"\\\\ncalendar_create_event\\\\n  record_type \"method\"\\\\n  name \"calendar_create_event\"\\\\n  order \"39\"\\\\n  surface \"specialized\"\\\\ncompound_interest\\\\n  record_type \"method\"\\\\n  name \"compound_interest\"\\\\n  order \"40\"\\\\n  surface \"specialized\"\\\\nword_problem\\\\n  record_type \"method\"\\\\n  name \"word_problem\"\\\\n  order \"41\"\\\\n  surface \"specialized\"\\\\nnumeric_list\\\\n  record_type \"method\"\\\\n  name \"numeric_list\"\\\\n  order \"42\"\\\\n  surface \"specialized\"\\\\nshell_command_transform\\\\n  record_type \"method\"\\\\n  name \"shell_command_transform\"\\\\n  order \"43\"\\\\n  surface \"specialized\"\\\\ncode_debugging\\\\n  record_type \"method\"\\\\n  name \"code_debugging\"\\\\n  order \"44\"\\\\n  surface \"specialized\"\\\\nregex_synthesis\\\\n  record_type \"method\"\\\\n  name \"regex_synthesis\"\\\\n  order \"45\"\\\\n  surface \"specialized\"\\\\nsql_synthesis\\\\n  record_type \"method\"\\\\n  name \"sql_synthesis\"\\\\n  order \"46\"\\\\n  surface \"specialized\"\\\\nshell_command_compose\\\\n  record_type \"method\"\\\\n  name \"shell_command_compose\"\\\\n  order \"47\"\\\\n  surface \"specialized\"\\\\nnumber_constraint_reasoning\\\\n  record_type \"method\"\\\\n  name \"number_constraint_reasoning\"\\\\n  order \"48\"\\\\n  surface \"specialized\"\\\\ncode_explanation\\\\n  record_type \"method\"\\\\n  name \"code_explanation\"\\\\n  order \"49\"\\\\n  surface \"specialized\"\\\\ncode_review\\\\n  record_type \"method\"\\\\n  name \"code_review\"\\\\n  order \"50\"\\\\n  surface \"specialized\"\\\\ntest_generation\\\\n  record_type \"method\"\\\\n  name \"test_generation\"\\\\n  order \"51\"\\\\n  surface \"specialized\"\\\\ncode_refactoring\\\\n  record_type \"method\"\\\\n  name \"code_refactoring\"\\\\n  order \"52\"\\\\n  surface \"specialized\"\\\\nformat_conversion\\\\n  record_type \"method\"\\\\n  name \"format_conversion\"\\\\n  order \"53\"\\\\n  surface \"specialized\"\\\\nprogram_synthesis\\\\n  record_type \"method\"\\\\n  name \"program_synthesis\"\\\\n  order \"54\"\\\\n  surface \"specialized\"\\\\narithmetic\\\\n  record_type \"method\"\\\\n  name \"arithmetic\"\\\\n  order \"55\"\\\\n  surface \"specialized\"\\\\nstatistics\\\\n  record_type \"method\"\\\\n  name \"statistics\"\\\\n  order \"56\"\\\\n  surface \"specialized\"\\\\njavascript_execution\\\\n  record_type \"method\"\\\\n  name \"javascript_execution\"\\\\n  order \"57\"\\\\n  surface \"specialized\"\\\\ndefinition_merge\\\\n  record_type \"method\"\\\\n  name \"definition_merge\"\\\\n  order \"58\"\\\\n  surface \"specialized\"\\\\ntriz_resolution\\\\n  record_type \"method\"\\\\n  name \"triz_resolution\"\\\\n  order \"59\"\\\\n  surface \"specialized\"\\\\nconcept_lookup\\\\n  record_type \"method\"\\\\n  name \"concept_lookup\"\\\\n  order \"60\"\\\\n  surface \"specialized\"\\\\n  response_language \"concept_lookup\"\\\\n  project_lookup \"fallback\"\\\\n  definition_fusion \"true\"\\\\nwho_is\\\\n  record_type \"method\"\\\\n  name \"who_is\"\\\\n  order \"61\"\\\\n  surface \"specialized\"\\\\nhow_it_works\\\\n  record_type \"method\"\\\\n  name \"how_it_works\"\\\\n  order \"62\"\\\\n  surface \"specialized\"\\\\nmeta_explanation\\\\n  record_type \"method\"\\\\n  name \"meta_explanation\"\\\\n  order \"63\"\\\\n  surface \"specialized\"\\\\nnetwork_query\\\\n  record_type \"method\"\\\\n  name \"network_query\"\\\\n  order \"64\"\\\\n  surface \"specialized\"\\\\nexecution_failure\\\\n  record_type \"method\"\\\\n  name \"execution_failure\"\\\\n  order \"65\"\\\\n  surface \"specialized\"\\\\ninstallation_conversion\\\\n  record_type \"method\"\\\\n  name \"installation_conversion\"\\\\n  order \"66\"\\\\n  surface \"specialized\"\\\\nwrite_script\\\\n  record_type \"method\"\\\\n  name \"write_script\"\\\\n  order \"67\"\\\\n  surface \"specialized\"\\\\ndocument_generation_plan\\\\n  record_type \"method\"\\\\n  name \"document_generation_plan\"\\\\n  order \"68\"\\\\n  surface \"specialized\"\\\\nsoftware_project\\\\n  record_type \"method\"\\\\n  name \"software_project\"\\\\n  order \"69\"\\\\n  surface \"specialized\"\\\\nalgorithm\\\\n  record_type \"method\"\\\\n  name \"algorithm\"\\\\n  order \"70\"\\\\n  surface \"specialized\"\\\\nsource_refresh\\\\n  record_type \"method\"\\\\n  name \"source_refresh\"\\\\n  order \"71\"\\\\n  surface \"specialized\"\\\\nsource_conflict\\\\n  record_type \"method\"\\\\n  name \"source_conflict\"\\\\n  order \"72\"\\\\n  surface \"specialized\"\\\\nclarification\\\\n  record_type \"method\"\\\\n  name \"clarification\"\\\\n  order \"73\"\\\\n  surface \"specialized\"\\\\npunctuation_only_prompt\\\\n  record_type \"method\"\\\\n  name \"punctuation_only_prompt\"\\\\n  order \"74\"\\\\n  surface \"specialized\"\\\\nill_formed\\\\n  record_type \"method\"\\\\n  name \"ill_formed\"\\\\n  order \"75\"\\\\n  surface \"specialized\"\\\\nphysical_action_question\\\\n  record_type \"method\"\\\\n  name \"physical_action_question\"\\\\n  order \"76\"\\\\n  surface \"specialized\"\\\\nkupi_slona\\\\n  record_type \"method\"\\\\n  name \"kupi_slona\"\\\\n  order \"77\"\\\\n  surface \"specialized\"\\\\nshell_refusal\\\\n  record_type \"method\"\\\\n  name \"shell_refusal\"\\\\n  order \"78\"\\\\n  surface \"specialized\"\\\\nproof_request\\\\n  record_type \"method\"\\\\n  name \"proof_request\"\\\\n  order \"79\"\\\\n  surface \"specialized\"\\\\nopinion_question\\\\n  record_type \"method\"\\\\n  name \"opinion_question\"\\\\n  order \"80\"\\\\n  surface \"specialized\"\\\\nunit_conversion\\\\n  record_type \"method\"\\\\n  name \"unit_conversion\"\\\\n  order \"81\"\\\\n  surface \"specialized\"\\\\nincompatible_units\\\\n  record_type \"method\"\\\\n  name \"incompatible_units\"\\\\n  order \"82\"\\\\n  surface \"specialized\"\\\\nhttp_fetch\\\\n  record_type \"method\"\\\\n  name \"http_fetch\"\\\\n  order \"0\"\\\\n  surface \"contextual\"\\\\nproof_request\\\\n  record_type \"method\"\\\\n  name \"proof_request\"\\\\n  order \"1\"\\\\n  surface \"contextual\"\\\\nmeta_explanation\\\\n  record_type \"method\"\\\\n  name \"meta_explanation\"\\\\n  order \"2\"\\\\n  surface \"contextual\"\\\\nnumeric_list\\\\n  record_type \"method\"\\\\n  name \"numeric_list\"\\\\n  order \"3\"\\\\n  surface \"contextual\"\\\\nprogram_synthesis\\\\n  record_type \"method\"\\\\n  name \"program_synthesis\"\\\\n  order \"4\"\\\\n  surface \"contextual\"\\\\nshell_command_transform\\\\n  record_type \"method\"\\\\n  name \"shell_command_transform\"\\\\n  order \"5\"\\\\n  surface \"contextual\"\\\\ntext_manipulation\\\\n  record_type \"method\"\\\\n  name \"text_manipulation\"\\\\n  order \"6\"\\\\n  surface \"contextual\"\\\\ntask_decomposition\\\\n  record_type \"method\"\\\\n  name \"task_decomposition\"\\\\n  order \"7\"\\\\n  surface \"contextual\"\\\\nresponse_language_followup\\\\n  record_type \"method\"\\\\n  name \"response_language_followup\"\\\\n  order \"8\"\\\\n  surface \"contextual\"\\\\nfact_checking\\\\n  record_type \"method\"\\\\n  name \"fact_checking\"\\\\n  order \"9\"\\\\n  surface \"contextual\"\\\\nworld_state\\\\n  record_type \"method\"\\\\n  name \"world_state\"\\\\n  order \"10\"\\\\n  surface \"contextual\"\\\\nweb_search\\\\n  record_type \"method\"\\\\n  name \"web_search\"\\\\n  order \"11\"\\\\n  surface \"contextual\"\\\\ndocs_method_explanation\\\\n  record_type \"method\"\\\\n  name \"docs_method_explanation\"\\\\n  order \"12\"\\\\n  surface \"contextual\"\\\\nprocedural_how_to\\\\n  record_type \"method\"\\\\n  name \"procedural_how_to\"\\\\n  order \"13\"\\\\n  surface \"contextual\"\\\\nprocedural_how_to_followup\\\\n  record_type \"method\"\\\\n  name \"procedural_how_to_followup\"\\\\n  order \"14\"\\\\n  surface \"contextual\"\\\\nsummarization\\\\n  record_type \"method\"\\\\n  name \"summarization\"\\\\n  order \"15\"\\\\n  surface \"contextual\"\\\\nfact_lookup\\\\n  record_type \"method\"\\\\n  name \"fact_lookup\"\\\\n  order \"16\"\\\\n  surface \"contextual\"\\\\ncoreference\\\\n  record_type \"method\"\\\\n  name \"coreference\"\\\\n  order \"17\"\\\\n  surface \"contextual\"\\\\nlearned_recursive_core_d21ca03aaabaf13d\\\\n  record_type \"learned_method\"\\\\n  name \"learned_recursive_core_d21ca03aaabaf13d\"\\\\n  status \"adopted\"\\\\n  algorithm_id \"algorithm_d21ca03aaabaf13d\"\\\\n  evidence_id \"algorithm_evidence_8f3f9af548f1e888\"\\\\n  operation \"need:status\"\\\\n  operation \"method_registry\"\\\\n  operation \"method_registry:count\"\\\\n  operation \"work_unit_reasoning\"\\\\n  operation \"work_unit_reasoning:steps\"\\\\n  operation \"upward_construction\"\\\\n  operation \"upward_construction:steps\"\\\\n  operation \"solution_evidence\"\\\\n  operation \"solution_evidence:accounted_for\"\\\\n  operation \"selection\"\\\\n  operation \"skill_ledger\"\\\\n  operation \"skill_ledger:promotable\"\\\\n  operation \"reasoning_standard\"\\\\n  operation \"reasoning_standard:gates\"\\\\n  operation \"reasoning_standard:verdict\"\\\\n  operation \"obligation_ledger\"\\\\n  operation \"obligation_ledger:discharged\"\\\\n  operation \"need_ledger:executed\"\\\\n  operation \"need_ledger:executed_satisfied\"\\\\n  trace_event \"method:learned:learned_recursive_core_d21ca03aaabaf13d\"\\\\n  bound_steps \"11\"\\\\nheuristic_least_action\\\\n  record_type \"selection_heuristic\"\\\\n  role \"rank\"\\\\n  order \"1\"\\\\n  slug \"least_action\"\\\\n  issue \"491\"\\\\n  key_order \"code_size,steps,candidate_index\"\\\\n  correctness_first \"true\"\\\\n  rationale \"Shorter reasoning or code must retain the full required behavior and input range (R491-C2); cost is compared only among candidates that already satisfy every declared check.\"\\\\nheuristic_resource_least_action\\\\n  record_type \"selection_heuristic\"\\\\n  role \"rank\"\\\\n  order \"2\"\\\\n  applies_when \"execution_measured\"\\\\n  slug \"least_resources\"\\\\n  issue \"491\"\\\\n  key_order \"resource_units,steps,code_size,candidate_index\"\\\\n  rationale \"When an execution record supplied measured resource units (plan 05), rank by work actually done before ranking by artifact size.\"\\\\nheuristic_triz\\\\n  record_type \"selection_heuristic\"\\\\n  role \"rank\"\\\\n  order \"3\"\\\\n  applies_when \"contradiction_detected\"\\\\n  slug \"triz\"\\\\n  issue \"901\"\\\\n  rationale \"When two satisfying candidates each win on a different cost dimension, that is a technical contradiction; resolve it by the selection value derived from the requirement''s own clauses rather than by the arbitrary index tie-break.\"\\\\nheuristic_balanced_split\\\\n  record_type \"selection_heuristic\"\\\\n  role \"split\"\\\\n  order \"1\"\\\\n  slug \"balanced_split\"\\\\n  issue \"453\"\\\\n  key_order \"imbalance,left_span_start\"\\\\n  rationale \"Cut at the boundary that minimizes the imbalance, so a non-leaf work unit has exactly two children and every segment survives on exactly one side (R710-R9).\"\\\\nheuristic_refutation_search\\\\n  record_type \"selection_heuristic\"\\\\n  role \"experiment\"\\\\n  order \"1\"\\\\n  slug \"refutation_search\"\\\\n  issue \"802\"\\\\n  key_order \"worst_case_survivors,attempts_refutation,experiment_id\"\\\\n  rationale \"Each try should reduce the number of live possibilities ideally in half or less, and a probe that attempts to disprove the leading hypothesis is preferred over one that would only confirm it.\"; step_20 method_registry:count 106; step_21 work_unit_reasoning work_unit_6f54704601709fcc\\\\n  record_type \"work_unit_reasoning\"\\\\n  unit_id \"work_unit_6f54704601709fcc\"\\\\n  depth \"0\"\\\\n  observation \"At depth 0, observed a span of 24 characters; no route was recognized.\"\\\\n  decision \"single_need\"\\\\n  downward_rationale \"The span cannot be split further and matches no known route, so it is an irreducible single need. Record it for an honest blocked status instead of forcing an answer.\"\\\\n  upward_rationale \"Return a blocked marker upward: this leaf has no resolving method, so there is nothing to compose.\"; step_22 work_unit_reasoning:steps 1; step_23 upward_construction upward_construction\\\\n  record_type \"upward_construction\"\\\\n  root_id \"work_unit_6f54704601709fcc\"\\\\n  step_count \"1\"\\\\nwork_unit_6f54704601709fcc\\\\n  record_type \"construction_step\"\\\\n  unit_id \"work_unit_6f54704601709fcc\"\\\\n  depth \"0\"\\\\n  order \"1\"\\\\n  kind \"leaf_method\"\\\\n  rationale \"Base case: no method resolves this leaf, so its answer is a blocked marker — nothing is constructed.\"; step_24 upward_construction:steps 1; step_25 solution_evidence solution_evidence\\\\n  record_type \"solution_evidence\"\\\\n  frame_id \"problem_frame_e791bdf8babcbbd7\"\\\\n  trail_count \"1\"\\\\n  accounted_for \"true\"\\\\n  fully_resolved \"false\"\\\\n  resolved_to_method \"0\"\\\\n  trail \"problem_need_d4335046096a172d\"\\\\nproblem_need_d4335046096a172d\\\\n  record_type \"evidence_trail\"\\\\n  need_id \"problem_need_d4335046096a172d\"\\\\n  source_span \"Сколько часов в 22 днях?\"\\\\n  status \"blocked\"\\\\n  connected \"true\"\\\\n  work_unit \"work_unit_6f54704601709fcc\"; step_26 solution_evidence:accounted_for true; step_27 selection selection\\\\n  record_type \"selection\"\\\\n  root_id \"work_unit_6f54704601709fcc\"\\\\n  leaf_count \"1\"\\\\n  resolved_count \"0\"\\\\n  unresolved_count \"1\"\\\\nwork_unit_6f54704601709fcc\\\\n  record_type \"leaf_selection\"\\\\n  unit_id \"work_unit_6f54704601709fcc\"\\\\n  depth \"0\"\\\\n  method \"unresolved\"; step_28 skill_ledger skill_ledger_203a6ecf370877ae\\\\n  record_type \"skill_ledger\"\\\\n  frame_id \"problem_frame_e791bdf8babcbbd7\"\\\\n  skill_count \"0\"\\\\n  proposed \"0\"\\\\n  stable \"0\"\\\\n  promotable \"0\"\\\\n  curriculum_count \"1\"\\\\n  curriculum \"curriculum_item_dcc00c55731e405f\"\\\\ncurriculum_item_dcc00c55731e405f\\\\n  record_type \"curriculum_item\"\\\\n  item_id \"curriculum_item_dcc00c55731e405f\"\\\\n  need_id \"problem_need_d4335046096a172d\"\\\\n  source_span \"Сколько часов в 22 днях?\"\\\\n  status \"blocked\"\\\\n  reason \"No catalogued method resolves this need; recorded as a gap to close.\"; step_29 skill_ledger:promotable 0; step_30 reasoning_standard reasoning_standard_audit \"impulse_24cfcf36d0b97eb2\"\\\\n  record_type \"reasoning_standard_audit\"\\\\n  verdict \"not_confirmed_not_refuted\"\\\\n  gate \"evidence_before_claim\"\\\\n    order \"1\"\\\\n    trigger \"world_claim_present\"\\\\n    status \"not_triggered\"\\\\n  gate \"documentation_default\"\\\\n    order \"2\"\\\\n    trigger \"source_consultation_present\"\\\\n    status \"not_triggered\"\\\\n  gate \"instruction_formalization\"\\\\n    order \"3\"\\\\n    trigger \"instruction_need_present\"\\\\n    status \"violated\"\\\\n    finding \"question:no_instructions_gathered\"\\\\n    finding \"instruction_sources:0:required:2\"\\\\n  gate \"computed_source_trust\"\\\\n    order \"4\"\\\\n    trigger \"source_assessment_present\"\\\\n    status \"not_triggered\"\\\\n  gate \"refutation_variety\"\\\\n    order \"5\"\\\\n    trigger \"conclusion_present\"\\\\n    status \"not_triggered\"\\\\n  gate \"verify_after_act\"\\\\n    order \"6\"\\\\n    trigger \"mutating_action_present\"\\\\n    status \"not_triggered\"\\\\n  gate \"honest_failure_report\"\\\\n    order \"7\"\\\\n    trigger \"action_failure_present\"\\\\n    status \"not_triggered\"\\\\n  blocker \"instruction_formalization:question:no_instructions_gathered\"\\\\n  blocker \"instruction_formalization:instruction_sources:0:required:2\"\\\\n  blocker \"impulse_24cfcf36d0b97eb2:no_conclusion_recorded\"\\\\n; step_31 reasoning_standard:gates 7; step_32 reasoning_standard:verdict not_confirmed_not_refuted; step_33 obligation_ledger obligation_ledger_203a6ecf370877ae\\\\n  record_type \"obligation_ledger\"\\\\n  frame_id \"problem_frame_e791bdf8babcbbd7\"\\\\n  node_count \"1\"\\\\n  satisfied \"0\"\\\\n  refuted \"0\"\\\\n  unsatisfiable \"0\"\\\\n  unattempted \"1\"\\\\n  discharged \"false\"\\\\nobligation_6f54704601709fcc\\\\n  record_type \"obligation_node\"\\\\n  node_id \"obligation_6f54704601709fcc\"\\\\n  clause \"Сколько часов в 22 днях?\"\\\\n  span_start \"0\"\\\\n  span_end \"41\"\\\\n  need_id \"problem_need_d4335046096a172d\"\\\\n  depth \"0\"\\\\n  expectation \"underivable\"\\\\n  outcome \"unattempted\"\\\\n  underivable_reason \"no_artifact_in_clause\"\\\\nobligation_expectation_abe7ffbef3c118fa\\\\n  record_type \"obligation_expectation\"\\\\n  shape \"underivable\"\\\\n  reason \"no_artifact_in_clause\"\\\\nobligation_outcome_c6a6295bb160dcb6\\\\n  record_type \"obligation_outcome\"\\\\n  outcome \"unattempted\"; step_34 obligation_ledger:discharged false; step_35 need_ledger:executed need_ledger_203a6ecf370877ae\\\\n  record_type \"need_ledger\"\\\\n  frame_id \"problem_frame_e791bdf8babcbbd7\"\\\\n  row_count \"1\"\\\\n  planned \"0\"\\\\n  satisfied \"0\"\\\\n  blocked \"1\"\\\\n  row \"problem_need_d4335046096a172d\"\\\\nneed_ledger_row_9860c7910c2b8bf1\\\\n  record_type \"need_ledger_row\"\\\\n  need_id \"problem_need_d4335046096a172d\"\\\\n  source_span \"Сколько часов в 22 днях?\"\\\\n  status \"blocked\"\\\\n  leaf_reason \"single_need\"\\\\n  unit_id \"work_unit_6f54704601709fcc\"; step_36 need_ledger:executed_satisfied 0; step_37 search:local Сколько часов в 22 днях?; step_38 selected_rule initial unknown reason no_seed_route next try_rule_synthesis; step_39 capability_route object=relative_period act=retrieve locus=dialogue capability=web_search; step_40 capability_gap needed=web_search missing=web_search; step_41 intent capability_gap; step_42 validation answered(capability_gap)=true; step_43 response response:capability_gap; step_44 trace:simplification capability_gap=1/1; step_45 trace capability_gap'\n  thinking_steps \"step_0 impulse high impulse Сколько часов в 22 днях?; step_1 detect_language high language ru; step_2 dispatch_handler high intent capability_gap; step_3 rule_verification detailed validation ; step_4 deformalize high response response:capability_gap\"\nderivation\n  answer_id \"answer_f2d632396ee4242a\"\n  rendering \"answer_id=answer_f2d632396ee4242a;format=text\"\n", execution_recipe: None }
+2026-11-25T18:32:56.3629773Z   left: "capability_gap"
+2026-11-25T18:32:56.3630015Z  right: "unit_conversion"
+2026-11-25T18:32:56.3630351Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-11-25T18:32:56.3630896Z test issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures ... FAILED
+2026-11-25T18:32:56.5042743Z test live_fact_answer::comparison_aligns_publisher_claims_and_discloses_missing_evidence ... ok
+2026-11-25T18:32:56.5059320Z test live_fact_answer::explanation_concept_follows_the_seeded_cue ... ok
+2026-11-25T18:32:56.5060182Z test live_fact_answer::installed_facts_contain_no_captured_publisher_records ... ok
+2026-11-25T18:32:56.5342826Z test live_fact_answer::offline_cache_miss_falls_through ... ok
+2026-11-25T18:32:56.6436342Z test live_fact_answer::unseeded_capital_is_answered_live_with_its_reference ... ok
+2026-11-25T18:32:58.5591549Z test offline_instruction_research::action_word_substrings_and_nominal_phrases_keep_the_unknown_guide ... ok
+2026-11-25T18:33:00.8414704Z test offline_instruction_research::seeded_action_requests_check_offline_sources_in_both_word_orders ... ok
+2026-11-25T18:33:00.8681432Z test page_formalization_route::a_refused_fetch_says_so_and_formalizes_nothing ... ok
+2026-11-25T18:33:00.8682004Z test page_formalization_route::a_request_without_a_url_or_a_formalize_cue_is_not_this_route ... ok
+2026-11-25T18:33:01.0653486Z test page_formalization_route::offline_a_cached_capture_is_formalized ... ok
+2026-11-25T18:33:01.5440600Z test procedures::greeting_prefixed_russian_connect_how_to_composes_procedure ... ok
+2026-11-25T18:33:01.8568781Z test procedures::how_to_procedure_is_general_not_memoized_to_examples ... ok
+2026-11-25T18:33:02.0708736Z test procedures::pandas_join_method_docs_prompt_covers_supported_languages ... ok
+2026-11-25T18:33:04.6219057Z test procedures::procedural_elaboration_followup_covers_supported_languages ... ok
+2026-11-25T18:33:05.8873791Z test procedures::procedural_request_surfaces_stay_multilingual_after_elided_gate ... ok
+2026-11-25T18:33:07.7403097Z test procedures::spec_driven_typo_how_to_prompts_cover_supported_languages ... ok
+2026-11-25T18:33:08.1605937Z test procedures::telegraphic_how_requires_a_known_procedural_action ... ok
+2026-11-25T18:33:09.6416327Z test procedures::telegraphic_install_prompts_use_official_docs_procedure_plan ... ok
+2026-11-25T18:33:09.6418079Z test pronoun_topic_follow_up::seeded_antecedents_reject_embedded_alias_words ... ok
+2026-11-25T18:33:11.2647673Z test pronoun_topic_follow_up::seeded_coreference_contexts_reject_embedded_word_surfaces ... ok
+2026-11-25T18:33:11.3943763Z test reasoning_loop::answers_expose_their_intent_explicitly ... ok
+2026-11-25T18:33:11.9174218Z test reasoning_loop::confidence_reflects_corroborating_evidence ... ok
+2026-11-25T18:33:11.9740179Z test reasoning_loop::specialized_handlers_still_publish_loop_events ... ok
+2026-11-25T18:33:12.3985770Z test reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ok
+2026-11-25T18:33:13.3416877Z test reasoning_loop::step_4_complex_requests_get_decomposed ... ok
+2026-11-25T18:33:13.4528769Z test reasoning_loop::step_5_multiple_candidates_are_generated ... ok
+2026-11-25T18:33:13.5812009Z test reasoning_loop::step_8_full_trace_is_stored_and_linked ... ok
+2026-11-25T18:33:13.7090442Z test reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ok
+2026-11-25T18:33:13.7893086Z test retrieval_method::a_capture_is_rendered_beside_its_provenance ... ok
+2026-11-25T18:33:13.9190867Z test retrieval_method::an_empty_walk_renders_the_seeded_no_capture_response_verbatim ... ok
+2026-11-25T18:33:14.2374936Z test retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline ... ok
+2026-11-25T18:33:14.2518806Z test tool_workspace::process_observation_tests::nonzero_exit_marks_failure_and_preserves_both_streams ... ok
+2026-11-25T18:33:14.2519772Z test tool_workspace::process_observation_tests::unsupported_tool_is_explicitly_a_failed_observation ... ok
+2026-11-25T18:33:14.3593893Z test unknown_reasoning::seed_backed_bare_terms_still_use_public_knowledge_cache ... ok
+2026-11-25T18:33:15.0184304Z test unknown_reasoning::unknown_reasoning_answers_from_link_memory ... ok
+2026-11-25T18:33:15.1398686Z test unknown_reasoning::unknown_reasoning_records_last_resort_fallback ... ok
+2026-11-25T18:33:15.8139946Z test unknown_reasoning::unknown_reasoning_researches_facts_and_only_asks_for_report_consent ... ok
+2026-11-25T18:33:15.9166480Z test unknown_reasoning::unknown_reasoning_retries_public_knowledge_cache ... ok
+2026-11-25T18:33:16.4743359Z test web_requests::current_event_questions_route_to_web_search_handler ... ok
+2026-11-25T18:33:17.0059325Z test web_requests::extended::enumeration_research_request_routes_to_web_search_handler ... ok
+2026-11-25T18:33:17.1993788Z test web_requests::extended::term_information_request_preserves_seeded_concept_lookup ... ok
+2026-11-25T18:33:17.2976449Z test web_requests::generic_navigation_uses_same_frame_policy_path_as_github ... ok
+2026-11-25T18:33:17.5722433Z test web_requests::issue_507_russian_hackathon_dialog_routes_to_web_search ... ok
+2026-11-25T18:33:18.1175575Z test web_requests::latest_news_routes_to_wikinews_search_across_supported_languages ... ok
+2026-11-25T18:33:18.2046691Z test web_requests::research_result_followup_reports_prior_search_failure_instead_of_defining_result ... ok
+2026-11-25T18:33:18.7326619Z test web_requests::source_search_prompts_still_cover_supported_languages ... ok
+2026-11-25T18:33:18.7327215Z test web_requests::web_search_event_listing_cases_cover_every_supported_language ... ok
+2026-11-25T18:33:18.7329084Z test web_requests::web_search_source_marker_cases_cover_every_supported_language ... ok
+2026-11-25T18:33:19.2671097Z test web_requests::web_search_source_marker_prompts_extract_query_without_source_marker ... ok
+2026-11-25T18:33:19.2671435Z 
+2026-11-25T18:33:19.2671551Z failures:
+2026-11-25T18:33:19.2671648Z 
+2026-11-25T18:33:19.2671717Z failures:
+2026-11-25T18:33:19.2672021Z     issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures
+2026-11-25T18:33:19.2672859Z 
+2026-11-25T18:33:19.2673582Z test result: FAILED. 122 passed; 1 failed; 0 ignored; 0 measured; 177 filtered out; finished in 433.83s
+2026-11-25T18:33:19.2674350Z 
+2026-11-25T18:33:19.4817719Z 
+2026-11-25T18:33:19.4818826Z Native contracts reasoning-2 took 439s of its 900s execution budget.
+2026-11-25T18:33:19.4833286Z ##[error]Process completed with exit code 101.
+2026-11-25T18:33:19.4981049Z Post job cleanup.
+2026-11-25T18:33:19.4983814Z ##[start-action display=Run actions/setup-python@v7;id=__22c28c27-8822-405f-b989-536fc324d4a0.python]
+2026-11-25T18:33:19.4985328Z ##[end-action id=__22c28c27-8822-405f-b989-536fc324d4a0.python;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-25T18:33:19.5032840Z Post job cleanup.
+2026-11-25T18:33:19.5692962Z [command]/usr/bin/git version
+2026-11-25T18:33:19.5724940Z git version 2.56.1
+2026-11-25T18:33:19.5749123Z Temporarily overriding HOME='/home/runner/work/_temp/b495d0d0-dcca-4946-8488-03d3c16920a2' before making global git config changes
+2026-11-25T18:33:19.5750079Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-25T18:33:19.5753776Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-11-25T18:33:19.5779763Z Removing SSH command configuration
+2026-11-25T18:33:19.5784680Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-25T18:33:19.5810951Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-25T18:33:19.6163286Z Removing HTTP extra header
+2026-11-25T18:33:19.6168197Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-25T18:33:19.6198019Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-25T18:33:19.6545705Z Removing includeIf entries pointing to credentials config files
+2026-11-25T18:33:19.6551881Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-25T18:33:19.6582398Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-25T18:33:19.7057363Z Cleaning up orphan processes

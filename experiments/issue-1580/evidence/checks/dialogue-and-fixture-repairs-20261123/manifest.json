@@ -1,0 +1,76 @@
+{
+  "parentCommit": "ab9a33cda8d3cb79f1e61bc23cb340cedfee5d3a",
+  "publishedBaseline": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+  "sourceSha256": {
+    "data/meta/javascript-test-durations.lino": "b735dcbadbdce0f5d8217d2b761d7d9d90db4271fef6442de1dfedbe27773f12",
+    "experiments/issue-1580/hosted-javascript-scheduling.test.mjs": "b1fff454bb8ab663a1313648b34044538eb9fb7de0e13f60bc935a77baaad8ae",
+    "experiments/issue-1580/cnl-dialogue-partition.test.mjs": "c72cab596fe50908b6694e9122275d1e4c81b5b35648732a3d822324dc14e678",
+    "rust/tests/web/cnl-solver-dialogue.test.mjs": "ba16bc133c0effbe28686d08f4542ff255fabfa593abd673af586fed7f44f3f6",
+    "rust/tests/web/cnl-solver-dialogue-b.test.mjs": "dd8300700687ce167755e3f095068c68d3d582875fe2089ebebafc989613e276",
+    "rust/tests/web/cnl-solver-dialogue-c.test.mjs": "97b846449a0c8a2362f6ffd47ad9487732edfbc36a4a8a3ef485f5ca8424aab6",
+    "rust/tests/web/helpers/cnl-dialogue-partition.mjs": "16d2bf414307834767a678687b6dd55060c80f0f99bef666518839e30ce13868",
+    "rust/tests/web/helpers/cnl-solver-dialogue.mjs": "f07933e9f811bde03c0f85ce94afa082635d4fe11d1ad467e900e095d9dcfd76",
+    "experiments/issue-1580/probe-budget-process-lifetime.py": "5031342e84954f9e2810031e71babb8e66674d9b46a59a948b436693430a1f06",
+    "experiments/issue-1580/full-default-javascript-profile.test.mjs": "31aac3c4e050fae4da068785c5556e57d585f1cfd2a33f80d11ceb2d23c0eb83",
+    "experiments/issue-1580/process-fixture-shell-startup.test.mjs": "6b0b52b0ccc8c0674116b1db2b237f8073f6ee14e62dc7b79ea65837c049370b",
+    "experiments/issue-1580/probe-process-fixture-startup.py": "c0b60cb134f1feffa7fc8f042445099bbcb39c4c640726e00d729d1bae7b9b3b",
+    "experiments/issue-1580/probe-process-fixture-startup.mjs": "d6bc04fb1a66317daa17cf4d96bb8f2cde9546ae0c7e432c58a5f1c673fbfb37",
+    "rust/tests/web/issue-1580-template-observations.test.mjs": "3ef208839c840bba8d89ef5d07e9f7bbcfe283d7401388e86911a50f84eff2c3",
+    "scripts/install-agentic-search-tools.sh": "14deaa5572096ce55dfe8fdfcb5e40a09964933593e5c94f3bcadcfdc0e363d2"
+  },
+  "completeJavaScriptGates": {
+    "pass": 89,
+    "skip": 54,
+    "fail": 0
+  },
+  "finalAffectedGatesPassed": 10,
+  "maintainedObservationEntry": {
+    "before": {
+      "pass": 419,
+      "fail": 10,
+      "total": 429
+    },
+    "after": {
+      "pass": 432,
+      "fail": 0,
+      "total": 432
+    }
+  },
+  "realDialogueOwners": {
+    "passed": 7,
+    "localSeconds": [
+      89.280039495,
+      74.086212362,
+      169.454953844
+    ],
+    "hostedNewOwnerDurationsVerified": false
+  },
+  "installerBehaviorTestsPassed": 18,
+  "processStartupBefore": {
+    "pass": 1,
+    "fail": 2
+  },
+  "plannerStartupBefore": {
+    "pass": 1,
+    "fail": 1
+  },
+  "focusedProcessAfter": {
+    "startup": 3,
+    "profile": 2,
+    "budget": 9,
+    "deadline": 8
+  },
+  "localRustBuild": false,
+  "fullAggregateReviewComplete": false,
+  "allOriginalCriteriaVerified": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 943857,
+    "sha256": "9e7460343fb593b152da716962cabad0d52655f41dce6993d0f608669f0ae137"
+  },
+  "members": 324,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T18:34:50.245307+00:00"
+}

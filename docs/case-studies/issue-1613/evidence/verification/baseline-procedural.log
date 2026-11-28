@@ -1,0 +1,43 @@
+✖ the browser uses a matching archival capture for the short Russian question after a live request fails (4289.932025ms)
+✖ publisher search discovers a held-out Russian title while preserving the requested topic (2685.412295ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8288.337337
+
+✖ failing tests:
+
+test at rust/tests/web/procedural-runtime-parity.test.mjs:183:1
+✖ the browser uses a matching archival capture for the short Russian question after a live request fails (4289.932025ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    [
+  -   'https://ru.wikihow.com/api.php?action=parse&page=%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*',
+  -   'https://ru.wikihow.com/api.php?action=query&list=search&srsearch=%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C&srlimit=5&format=json&origin=*',
+  -   'https://ru.wikihow.com/api.php?action=parse&page=%D1%85%D0%BE%D1%80%D0%BE%D1%88%D0%BE%20%D0%BF%D0%BE%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*',
+      'https://archive.org/wayback/available?url=https%3A%2F%2Fru.wikihow.com%2F%25D1%2585%25D0%25BE%25D1%2580%25D0%25BE%25D1%2588%25D0%25BE-%25D0%25BF%25D0%25BE%25D0%25BA%25D0%25B0%25D0%25BA%25D0%25B0%25D1%2582%25D1%258C',
+      'https://web.archive.org/web/20241222160007id_/https://ru.wikihow.com/%D1%85%D0%BE%D1%80%D0%BE%D1%88%D0%BE-%D0%BF%D0%BE%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C'
+    ]
+
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/procedural-runtime-parity.test.mjs:192:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'https://archive.org/wayback/available?url=https%3A%2F%2Fru.wikihow.com%2F%25D1%2585%25D0%25BE%25D1%2580%25D0%25BE%25D1%2588%25D0%25BE-%25D0%25BF%25D0%25BE%25D0%25BA%25D0%25B0%25D0%25BA%25D0%25B0%25D1%2582%25D1%258C', 'https://web.archive.org/web/20241222160007id_/https://ru.wikihow.com/%D1%85%D0%BE%D1%80%D0%BE%D1%88%D0%BE-%D0%BF%D0%BE%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C' ],
+    expected: [ 'https://ru.wikihow.com/api.php?action=parse&page=%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*', 'https://ru.wikihow.com/api.php?action=query&list=search&srsearch=%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C&srlimit=5&format=json&origin=*', 'https://ru.wikihow.com/api.php?action=parse&page=%D1%85%D0%BE%D1%80%D0%BE%D1%88%D0%BE%20%D0%BF%D0%BE%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*', 'https://archive.org/wayback/available?url=https%3A%2F%2Fru.wikihow.com%2F%25D1%2585%25D0%25BE%25D1%2580%25D0%25BE%25D1%2588%25D0%25BE-%25D0%25BF%25D0%25BE%25D0%25BA%25D0%25B0%25D0%25BA%25D0%25B0%25D1%2582%25D1%258C', 'https://web.archive.org/web/20241222160007id_/https://ru.wikihow.com/%D1%85%D0%BE%D1%80%D0%BE%D1%88%D0%BE-%D0%BF%D0%BE%D0%BA%D0%B0%D0%BA%D0%B0%D1%82%D1%8C' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at rust/tests/web/procedural-runtime-parity.test.mjs:205:1
+✖ publisher search discovers a held-out Russian title while preserving the requested topic (2685.412295ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'task')
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/procedural-runtime-parity.test.mjs:217:29)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

@@ -1,0 +1,28 @@
+[
+  {
+    "name": "formal-original",
+    "argv": [
+      "python3",
+      "experiments/issue-1580/probe-budget-process-lifetime.py",
+      "scripts/run-with-budget-warning.sh",
+      "experiments/issue-1580/evidence/checks/budget-process-lifetime/formal-original.json"
+    ],
+    "exitCode": 0,
+    "file": "formal-original.log.gz",
+    "rawSha256": "0d0417bd58b100778e34841c7b1e9743f3cf4ab5e26e05d8fc7440a6ddff0936",
+    "archiveSha256": "c43bf2dd85dc57efd899d26e46f68c8d13c85722786735996102f97b103a375a"
+  },
+  {
+    "name": "template-original",
+    "argv": [
+      "python3",
+      "experiments/issue-1580/probe-budget-process-lifetime.py",
+      "/tmp/issue-1580-research/templates/rust-complete/scripts/run-with-budget-warning.sh",
+      "experiments/issue-1580/evidence/checks/budget-process-lifetime/template-original.json"
+    ],
+    "exitCode": 0,
+    "file": "template-original.log.gz",
+    "rawSha256": "d2da47137ac09cbf5503db5c67a0db91354ec7d387602d682729fb5b8a728dd5",
+    "archiveSha256": "fbedd9324e73ded88e8349335a337389c6e33fe1ddfe3dda97e88789e4b4ffae"
+  }
+]

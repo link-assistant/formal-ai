@@ -1,0 +1,85 @@
+{
+  "files": [
+    {
+      "file": "001-after-missing-documentation.log.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/after-missing-documentation.log",
+      "bytes": 182,
+      "sha256": "a55f60598f63874494d252c97f71bf17e12fe623510a590d97391554ef41f093",
+      "compressedSha256": "e6ad565234e184342abb446f72046422daf1140a40e18507454f8b81538b3bbd"
+    },
+    {
+      "file": "002-before-after.json.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/before-after.json",
+      "bytes": 355,
+      "sha256": "ff5bb8f85302892d163d670100350baaf37e7f5e5794324de66b0f6446e47f45",
+      "compressedSha256": "f5fd57504908345afe57177d8f354ffdcd2f5b29bda22209a880e6fc4f41d5ec"
+    },
+    {
+      "file": "003-before-missing-documentation.log.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/before-missing-documentation.log",
+      "bytes": 3,
+      "sha256": "2115cdb6bfcfb008eb2bab2bb79347cb064a48e4e7c4115ccbe4469c787bb6c4",
+      "compressedSha256": "3795e167e123cce1bfe953053f7da39f279fd25c4964ed564844992820788e36"
+    },
+    {
+      "file": "004-documentation-policy.log.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/documentation-policy.log",
+      "bytes": 57,
+      "sha256": "5e28b23fec9dfa0c0f71bfa519cd41e0973ddfc24c17a661d6e395083855689b",
+      "compressedSha256": "1be7d6fb05e4ec415e3fd09d687994bed3ec338fc953950b09f7b704f7a16266"
+    },
+    {
+      "file": "005-documentation-regressions.log.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/documentation-regressions.log",
+      "bytes": 3827,
+      "sha256": "886ca4f8bca40962d30f0d89809b131f69f9314a490177421881087efcad16fc",
+      "compressedSha256": "bd28a9ebfe78adbcb9505263d2c109e35c96e9f0fe7d0fab3481302b9fdcb794"
+    },
+    {
+      "file": "006-outcome.json.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/outcome.json",
+      "bytes": 320,
+      "sha256": "ca6aa62fa2ecd8da85ed061a480d3b6a97fc1f619321009630bb723b3ef12b38",
+      "compressedSha256": "8f49f466132fa752e6bb8741cb2b2bc3eca4d87897d1ec0363ec4d1934a39a32"
+    },
+    {
+      "file": "007-required-documentation.log.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/required-documentation.log",
+      "bytes": 76,
+      "sha256": "1d27069ed4034048883f8697e5e5e6de7b486d827f46b2657a9a845edebdf9e6",
+      "compressedSha256": "b0ba5d4f45360ecb78ab80ad82171ab929638fe11fa5fda4bd714accf0580796"
+    },
+    {
+      "file": "008-whitespace.log.gz",
+      "source": "/tmp/issue-1580-research/required-documentation-validation/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "009-install-required-documentation-gate.py.gz",
+      "source": "/tmp/issue-1580-research/install-required-documentation-gate.py",
+      "bytes": 3891,
+      "sha256": "754e186c8fb15bd81b4e41e134aeddde976ce97b1142bde50a74e0c2b4106461",
+      "compressedSha256": "da08e71653f79533b2d8a36ac96bbfabcf6eea0ae060a239102a367fce9357d8"
+    },
+    {
+      "file": "010-validate-required-documentation-draft.py.gz",
+      "source": "/tmp/issue-1580-research/validate-required-documentation-draft.py",
+      "bytes": 936,
+      "sha256": "5f32b60ac05561e15bbd84a9371a693a25420cc596580fe9d9bd35ddd2e913f0",
+      "compressedSha256": "4d4e59795784eb81a6516a6eb99e58d3c0ea50a7e600334f8481240c36b8774b"
+    },
+    {
+      "file": "011-qualify-required-documentation-gap.py.gz",
+      "source": "/tmp/issue-1580-research/qualify-required-documentation-gap.py",
+      "bytes": 1554,
+      "sha256": "2ce5776e2319c21fff218056f037cb6d84e271778d8ccaa66b5b088a293b62d1",
+      "compressedSha256": "a00609b6be131f84491ba9c0707e12d63bc673df0bc4cf53f1c10e3d18056da9"
+    }
+  ],
+  "localRegressionTests": 35,
+  "hostedQualificationPending": true,
+  "issueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,15 @@
+{
+  "head": "26f3f332aeffb7ced6985e58e682b209a71346c7",
+  "parent": "510c24983e5bbacb0e5ab21d2de491af56902055",
+  "sourceFiles": [
+    ".github/workflows/native-type-check.yml",
+    "rust/Cargo.toml",
+    "rust/tests/web/default-branch-build-policy.test.mjs",
+    "docs/ci-cd/default-branch-builds.md",
+    "changelog.d/20261117_120000_issue-1580-ci-regressions.md",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8"
+  ],
+  "observedAt": "2026-11-18T07:53:22.372852+00:00",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "head": "5bbbd91e39761a8e7163148b72a890b97c3d64b3",
+  "workflowCount": 23,
+  "success": 21,
+  "failed": [
+    {
+      "id": 44679541169,
+      "name": "Documentation policy",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44679541169"
+    },
+    {
+      "id": 44679541559,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44679541559"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

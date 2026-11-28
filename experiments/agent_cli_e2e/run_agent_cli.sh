@@ -100,6 +100,29 @@ AGENT_SETUP_LOG="/tmp/agent-setup-$PORT.log"
 AGENT_FOLLOW_UP_LOG="/tmp/agent-follow-up-$PORT.log"
 WORKDIR="$(mktemp -d)"
 SERVER_STATE="$(mktemp -d)"
+source_capture_env=()
+if [ -n "${SOURCE_CAPTURE_FIXTURE:-}" ]; then
+  if ! node --input-type=module - "$ROOT" "$SERVER_STATE" "$SOURCE_CAPTURE_FIXTURE" "${SOURCE_CAPTURE_URL:?set the fixture source URL}" <<'NODE'
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+const [root, cacheDir, fixture, sourceUrl] = process.argv.slice(2);
+const fromRoot = (relative) => import(pathToFileURL(resolve(root, relative)));
+const { cachedSourceFetch } = await fromRoot('js/agentic/crate/source_cache.mjs');
+const { boundedSourceCacheIo } = await fromRoot('js/provenance/source-cache-budget.mjs');
+const bytes = readFileSync(resolve(root, fixture));
+const io = boundedSourceCacheIo((url) => url === sourceUrl ? bytes : null);
+if (!cachedSourceFetch({ cacheDir, online: true, io })(sourceUrl)) {
+  throw Error(`Failed to install test capture for ${sourceUrl}`);
+}
+NODE
+  then
+    rm -rf "$WORKDIR" "$SERVER_STATE"
+    exit 1
+  fi
+  source_capture_env=("FORMAL_AI_SOURCE_CACHE_DIR=$SERVER_STATE" FORMAL_AI_OFFLINE=1)
+fi
 
 echo "== workdir: $WORKDIR =="
 cd "$WORKDIR" || exit 1
@@ -152,16 +175,18 @@ fi
 # FORMAL_AI_AGENT_MODE=1 flips the permission gate on for tool-call execution
 # (see AssociativePackage / permission_for_capability). FORMAL_AI_TRACE_REQUESTS=1
 # adds a request trace to the server log so a failed run has visible planner
-# state to diagnose.
+# state to diagnose. Since ec6ade5cd (#1592) that trace is a `trace`-level event,
+# so FORMAL_AI_LOG_LEVEL=trace is required too: without it the default `debug`
+# level drops every `[trace] POST` header and MIN_POSTS sees 0 (issue #1639).
 # Private, empty memory per run so the chat handler's memory-fed planning and the
 # `POST /v1/chat/completions` round count stay deterministic and independent of
 # what earlier E2E scripts recorded into the shared ~/.formal-ai/memory.lino
 # (issue #828). Keep server-owned state outside WORKDIR: link-cli writes a binary
 # sidecar beside the LiNo file, and Agent must not mistake either file for an
 # authored workspace effect. FORMAL_AI_DREAMING=0 stops background compaction.
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$SERVER_STATE/memory.lino" FORMAL_AI_DREAMING=0 \
-  "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
+  env "${source_capture_env[@]}" "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!
 trap 'kill $SRV 2>/dev/null; retain_server_log_evidence; rm -rf "$WORKDIR" "$SERVER_STATE"' EXIT
 

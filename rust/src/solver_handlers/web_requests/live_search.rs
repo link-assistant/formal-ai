@@ -36,6 +36,7 @@ pub fn execute_web_search_answer<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> SymbolicAnswer {
+    log.append_search_request("web_search", query);
     log.append("web_search:request", query.to_owned());
     log.append("web_search:query_kind", query_kind.as_str());
     let language = detect_language(prompt).slug();
@@ -103,8 +104,7 @@ pub fn try_web_search_with_client<T: SourceTransport>(
     ))
 }
 
-/// Use the process source cache, enabling transport only after the runtime has
-/// explicitly opted into live fetches. Offline mode still reads valid captures.
+/// Use process captures and read-only transport unless explicitly offline.
 pub fn try_web_search_with_offline(
     prompt: &str,
     normalized: &str,

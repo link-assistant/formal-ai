@@ -1,0 +1,40 @@
+{
+  "files": [
+    {
+      "file": "advisory.json.gz",
+      "rawSha256": "0000b056d2a82d33bf2effe4b0aa7fbe43e2279df0b8bf78dee3216d87dababc",
+      "rawBytes": 4027
+    },
+    {
+      "file": "cpp-all-issues.json.gz",
+      "rawSha256": "ff6ee8b004dbce1bbddc67fdb53e7ec811dc0133e145d951510cd7ba62fde453",
+      "rawBytes": 473352
+    },
+    {
+      "file": "initial-summary-inventory-hash-label-error.json.gz",
+      "rawSha256": "7cd925a6196e1020a3e38c8fca2be234e4e03ca15a8a3e3c293a3a868b3c1d22",
+      "rawBytes": 1414
+    },
+    {
+      "file": "js-all-issues.json.gz",
+      "rawSha256": "449e3b7af704743dacd6b03362ef21415b087479e6d99d0a3ef66c91f24d996d",
+      "rawBytes": 2267998
+    },
+    {
+      "file": "python-all-issues.json.gz",
+      "rawSha256": "8ef7e75d19bdb1f11fe6a89d04da362034557c66befa635e3dcaf5b6f2f4abf8",
+      "rawBytes": 1209565
+    },
+    {
+      "file": "registry-version.json.gz",
+      "rawSha256": "a96504fa4e59d6b9b947cb6904abf83042e36c9efbc1f783f99929b83c90aa37",
+      "rawBytes": 8
+    },
+    {
+      "file": "summary.json.gz",
+      "rawSha256": "39f40ee95df4e8875a3ee086c02dc71b05457ec09e44ad627a75bc425c53de59",
+      "rawBytes": 2454
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

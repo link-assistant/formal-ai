@@ -1,0 +1,27 @@
+{
+  "sourceHead": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "baselineOnly": true,
+  "wholeProducerRerunComplete": false,
+  "allCurrentLocalRepairsHostedQualified": false,
+  "conclusions": {
+    "success": 32,
+    "skipped": 1
+  },
+  "warningCandidates": 14,
+  "runtimeWarnings": 3,
+  "nativeGroups": 10,
+  "nativeTestsPassed": 441,
+  "allWorkflowLogsPreserved": true,
+  "fullLiteralLogRead": false,
+  "allOriginalAcceptanceCriteriaVerified": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 3753161,
+    "sha256": "f61fc9b8cfa712871a1a4db9eb327ddbab48286f4d9c5f4d4e0c0812af339ce7"
+  },
+  "members": 638,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T13:33:32.010284+00:00"
+}

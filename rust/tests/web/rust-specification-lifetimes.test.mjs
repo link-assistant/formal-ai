@@ -59,10 +59,15 @@ test('undeclared, unused, duplicate, bounded and type generic lifetime forms rej
  }
 });
 test('declared lifetime parsing never permits effects or substitutes unknown engine profiles',()=>{
- for(const operation of ['mutate_repository();','let solver=UniversalSolver::offline();']) {
+ for(const operation of ['mutate_repository();','let solver=UniversalSolver::with_profile("unreviewed");']) {
   const parsed=inline(`use formal_ai::UniversalSolver; #[test] fn heldout() { struct Borrow<'a> { text: &'a str } let row=Borrow {text:"x"};assert_eq!(row.text,"x");${operation} }`);
   assert.equal(parsed.program,undefined);assert.ok(parsed.reason);
  }
+ // `UniversalSolver::offline()` is a reviewed profile (issue #1637): it binds an
+ // offline solver, never the default engine in its place.
+ const offline=inline(`use formal_ai::UniversalSolver; #[test] fn heldout() { struct Borrow<'a> { text: &'a str } let row=Borrow {text:"x"};assert_eq!(row.text,"x");let solver=UniversalSolver::offline(); }`);
+ assert.ok(offline.program,offline.reason);
+ assert.match(JSON.stringify(offline.program),/"offline":true/u);
 });
 test('source identity remains enforced before lifetime history replay',async t=>{
  const directory=mkdtempSync(join(tmpdir(),'native-lifetime-'));t.after(()=>rmSync(directory,{recursive:true,force:true}));

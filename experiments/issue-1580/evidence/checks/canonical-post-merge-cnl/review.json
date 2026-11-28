@@ -1,0 +1,13 @@
+{
+  "head": "5af5dfd773bb294216eb028efd62a220535e9f77",
+  "allCheckPayloadHashesVerified": 2,
+  "allFocusedPayloadsLiterallyRead": true,
+  "counts": {
+    "tests": 22,
+    "pass": 22,
+    "fail": 0,
+    "skipped": 0
+  },
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

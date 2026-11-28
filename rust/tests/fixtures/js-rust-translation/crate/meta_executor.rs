@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5de8cf7793187a4fcacbca9eeac56d197454399a7e4146c651f481d057e90513 bytes=21067
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=41d49060818e09fb563e5812f9f866d8f22913a31aea40a56bc1fa51bf6f964c bytes=22454
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=5
+// formal-ai:workarounds import-pruning items=0 carried=6
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -74,11 +78,15 @@ pub static META_EXEC_EVENT_KINDS: std::sync::LazyLock<Vec<String>> = std::sync::
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers Array.from | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | method call .find() | method call .map() | method call .push() | method call .some() | null | throw of a non-error value
+// formal-ai:blockers Array.from | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | global call Boolean() | method call .find() | method call .map() | method call .push() | method call .some() | null | nullish coalescing | throw of a non-error value
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal regular expression
+// formal-ai:blockers call of an imported function | method call .test() | regular expression
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
-// formal-ai:blockers call of an imported function
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .join()
@@ -122,15 +130,15 @@ pub static META_EXEC_EVENT_KINDS: std::sync::LazyLock<Vec<String>> = std::sync::
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .filter()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | field access | method call .filter() | method call .join() | method call .map() | method call .reduce() | null | nullish coalescing | object without a $ tag
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | field access | method call .filter() | method call .flatMap() | method call .join() | method call .map() | method call .reduce() | new Set | null | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers field access | global call String() | null | nullish coalescing | object without a $ tag
+// formal-ai:blockers Array.isArray | field access | global call String() | method call .slice() | null | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal nullish coalescing
-// formal-ai:blockers Array.from | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | assignment of a field or element | async function | call of a sibling function | call of an imported function | field access | method call .cached() | method call .draft() | method call .filter() | method call .find() | method call .get() | method call .has() | method call .join() | method call .map() | method call .push() | method call .set() | null | nullish coalescing | object without a $ tag
+// formal-ai:blockers Array.from | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | assignment of a field or element | async function | call of a sibling function | call of an imported function | field access | method call .cached() | method call .draft() | method call .filter() | method call .find() | method call .get() | method call .has() | method call .join() | method call .map() | method call .push() | method call .set() | null | nullish coalescing | object without a $ tag | optional chaining
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: @param needs a type and a name

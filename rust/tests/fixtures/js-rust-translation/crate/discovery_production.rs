@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=342e1796f30e3c44c49a3a7a27db84f655c16d0e08bb36a4804b0687c2df400b bytes=16870
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=877ee64fc294cc9c02a388db3b233062695cb757165db57d1f78fe0a65e2b4f1 bytes=16841
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2; string-methods items=1
 
@@ -396,8 +396,8 @@ pub static U64_MASK: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock::
 // formal-ai:blockers arrow callback of .filter() | arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | method call .filter() | method call .some() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .codingOracleKnowsLanguage()
-// formal-ai:blockers call of a sibling function | call of an imported function | global call Boolean() | method call .codingOracleKnowsLanguage()
+// formal-ai:refusal optional chaining
+// formal-ai:blockers call of an imported function | field access | global call Boolean() | optional chaining
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
@@ -428,8 +428,8 @@ pub static U64_MASK: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock::
 // formal-ai:blockers JSDoc type {…} | call of a sibling function | field access | imported value | null | nullish coalescing | object without a $ tag | try statement | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal object without a $ tag
-// formal-ai:blockers JSDoc type {…} | call of a sibling function | object without a $ tag
+// formal-ai:refusal optional chaining
+// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | field access | null | nullish coalescing | object without a $ tag | optional chaining
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
@@ -487,13 +487,13 @@ pub static U64_MASK: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock::
 // formal-ai:refusal method call .linksNotation()
 // formal-ai:blockers method call .linksNotation() | method call .replace() | method call .slice() | method call .split() | regular expression
 
-// meta-language:translated JavaScript export_statement items=1 sha256=8c889c5bbe8c700eacdb30670d84141d581761f6880f874c9b17c95906c0e84e
-// | /** Mirrors `fn default_cache_path` (repository-relative; see the module note). */
-// | export function defaultCachePath() {
-// |   return DEFAULT_CACHE_FILE;
+// meta-language:translated JavaScript export_statement items=1 sha256=d53e683f2b3bdf615905ffeec57cada14eb298304378a9f8538a06a5da79a115
+// | /** Basename of the reviewed cache. The installed host selects the cache directory. */
+// | export function procedureCacheFilename() {
+// |   return 'coding-procedure-cache.lino';
 // | }
-pub fn default_cache_path() -> String {
-    String::from(DEFAULT_CACHE_FILE)
+pub fn procedure_cache_filename() -> String {
+    String::from("coding-procedure-cache.lino")
 }
 
 // formal-ai:workaround string-methods JavaScript export_statement items=1 sha256=fa4d353f399922b8c186a017470daf18840a920de7ab719d9645039284a8f977

@@ -1,4 +1,4 @@
-// The JavaScript twin of rust/tests/unit/cnl_parity.rs (issue #1584): every
+// The JavaScript twin of rust/tests/standalone/cnl_parity.rs (issue #1584): every
 // committed per-language cross-runtime fixture must equal what the JavaScript
 // engine produces now, so the Rust digests and dialogue turns it pins are the
 // current behavior. Regenerate with `node experiments/issue-1584/parity-fixture.mjs --write`.

@@ -1,0 +1,390 @@
+{
+  "base": {
+    "file": "java-historical-partial-review.json",
+    "sha256": "39b09d830a5943f12270706260c56fb0081790c418a613986bb549bbad594d8c",
+    "pages": [
+      1,
+      100
+    ]
+  },
+  "forwardParts": [
+    {
+      "file": "java-historical-forward-review-001.json",
+      "sha256": "8b56d59477d8eaa52b77794a8a80fb240915f11d89645ccb6292c5be80a9fd9d",
+      "pages": [
+        101,
+        108
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-002.json",
+      "sha256": "1f52afbe69d14ce7076405e7f4f99dbde4b54211181e8c90d960e6b610d56a2c",
+      "pages": [
+        109,
+        109
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-003.json",
+      "sha256": "d488571eaf5ab32901acba35968da1c2118c3cce70a08e6b949e0bf92f90cc43",
+      "pages": [
+        110,
+        111
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-004.json",
+      "sha256": "821db0cb450a555596ab7019e5cab8f387abf9777bf94cd96c1b632adddabcf2",
+      "pages": [
+        112,
+        113
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-005.json",
+      "sha256": "0ef9e7f2602fabe4f207af1aca73f1b78bb331b9f648e9ba2151a1953bd8ea69",
+      "pages": [
+        114,
+        115
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-006.json",
+      "sha256": "f5734b4f1045e8110f9027020bda8b03a8f863c29d9640943e7ea1e7e31e230d",
+      "pages": [
+        116,
+        117
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-007.json",
+      "sha256": "e00c1d087bd278ded91d3d34b09f5d36a7b6a25cdd5180b37c9381d43df45f6d",
+      "pages": [
+        118,
+        119
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-008.json",
+      "sha256": "106d0815054f8e43cae8b8d4e712aa90bbeb07ac97074754060adb9b9bb51e63",
+      "pages": [
+        120,
+        121
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-009.json",
+      "sha256": "e24f6bdcb9327d96cc23db1b73fbf86aa13ac500c8aa0072f9a321f0c15092dc",
+      "pages": [
+        122,
+        122
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-010.json",
+      "sha256": "6b901bd62363fe7bb8ac36966664b13a4c236347e976f034f69c9cfe7dd4c51e",
+      "pages": [
+        123,
+        124
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-011.json",
+      "sha256": "3e168265ed7c09e7d88ef11768b6db17d4104767c12604273103ae23bbb651cb",
+      "pages": [
+        125,
+        126
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-012.json",
+      "sha256": "2ea80090be31b9cdcf9eca08b28e8cc3ffa41ab0fb14490630eb76635d944562",
+      "pages": [
+        127,
+        128
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-013.json",
+      "sha256": "9e87fca47b473ede7f5ae6f1a45ad6af55d313fb14e6c065e34d3c514437aa23",
+      "pages": [
+        129,
+        130
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-014.json",
+      "sha256": "8ca9824469ff158d3d33c6bf2536a9a13b4aa9435605873c9944428d6c5abbe3",
+      "pages": [
+        131,
+        132
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-015.json",
+      "sha256": "21406ed736894d5247d91546e540b8725ff2798681d733eda3a694fe554b8218",
+      "pages": [
+        133,
+        134
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-016.json",
+      "sha256": "e50a3c11814dac17c6006fdafee28d8c2ed8d5eb2f89478874db80767575572c",
+      "pages": [
+        135,
+        136
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-017.json",
+      "sha256": "e405a61c089d0c33e4d762ede66f19c28096e3efe9fa1331b0ee8484e81b9416",
+      "pages": [
+        137,
+        138,
+        139
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-018.json",
+      "sha256": "8d5e4138ea98ca689931c24d3501fa029926cfe4dd1720295df4d06a38733f8d",
+      "pages": [
+        140,
+        141,
+        142
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-019.json",
+      "sha256": "24adc8e6418d70454dcfbc43cdd0610e5598ee49e4a26e9014c5effa96ca27b1",
+      "pages": [
+        143,
+        144,
+        145
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-020.json",
+      "sha256": "b051b38bee6a14484ea35e07803163eb21e7f471d52971d69604dfc1e12c03e4",
+      "pages": [
+        146,
+        147,
+        148
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-021.json",
+      "sha256": "1adfeeac9743254f04af9deec9af1cae88809e8f27d812e773efcfb669608368",
+      "pages": [
+        149,
+        150,
+        151,
+        152,
+        153
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-022.json",
+      "sha256": "fa2915497c7100b86506828ec6a0acc470b0aff850d0c6e18f8c02bb16321f36",
+      "pages": [
+        154,
+        155,
+        156,
+        157
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-023.json",
+      "sha256": "09f498e1b696902eb7eaa2e6ee4a618d1a6be1cac00396afffbd4a64a34adc0e",
+      "pages": [
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-024.json",
+      "sha256": "e2298109724ae2578b1ba1c37d010bf58249af03fcb66a2f3dbc8eb7e9358518",
+      "pages": [
+        165,
+        166
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-025.json",
+      "sha256": "f3ee72f5cc3fd0197d5a580200b213916a6c697f0a5e81e39687b276e2bf170b",
+      "pages": [
+        167,
+        168,
+        169,
+        170,
+        171,
+        172
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-026.json",
+      "sha256": "6df18a8dc6628cc5af533885a0b6d07dc704e4d70017ea6ea62ac2af0bc3f97d",
+      "pages": [
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-027.json",
+      "sha256": "aae546d0956a424b7108f93456b416279b7380341b01b9ea37c60b007c9e9c1b",
+      "pages": [
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-028.json",
+      "sha256": "7f3184b8ac0617bd4723871846c20b98782a6e0ebfd42d61d6797ddd01e6e500",
+      "pages": [
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-029.json",
+      "sha256": "288ceef809cf9a6c4ab856103749a708fda6f394e982224f5a9b947b93038a73",
+      "pages": [
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-030.json",
+      "sha256": "3ecb5d09e1e7bd14f21454229d91870d05ad776c284224b819931e206fc334cb",
+      "pages": [
+        209,
+        210,
+        211,
+        212,
+        213,
+        214
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-031.json",
+      "sha256": "e127669413f21792bf9d2a0ff8427f19a1d2f97b4a9f70caf574f3df6705878e",
+      "pages": [
+        215,
+        216,
+        217,
+        218
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-032.json",
+      "sha256": "e99f751b7dd1fabea29047f0bd2bddc84dd77b4f42600f74a908f68eae60c7fb",
+      "pages": [
+        219
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-033.json",
+      "sha256": "e16a739dc65d400a2c0cab1d8a00258b0c76849fb1cf0c2e952be037d10fd00e",
+      "pages": [
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-034.json",
+      "sha256": "ccde6154bc671928929a94f9396fb72eca0ffce02f3ba1cf5e1dac867d549be8",
+      "pages": [
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-035.json",
+      "sha256": "e30a0231b9c30eea4e77002715d12f579f89457ba4cfa9291957795bb79375e7",
+      "pages": [
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254
+      ]
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 254,
+    "totalPages": 254,
+    "completeFiles": 143,
+    "partialFiles": 0,
+    "literalLines": 14205,
+    "nextForwardPage": null,
+    "remainingPages": 0,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "baseReviewUnchanged": true,
+  "historicalContentCoverage": {
+    "file": "java-historical-content-coverage.json",
+    "sha256": "3f600047111dd9647215168d4d8798715ff0c1e2c13d719bccc5bd3e38d3a496",
+    "completeContentAccounted": 145,
+    "fullRepositorySemanticComparisonComplete": false
+  }
+}

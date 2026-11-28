@@ -161,7 +161,11 @@ fn the_ladder_compiles_tests_merges_and_verifies_requirement_levels() {
         fs::read_to_string(root().join(LADDER).join("verify-node.sh")).expect("verifier");
     for needle in [
         "cargo check --lib",
-        "cargo test --test unit",
+        // The verifier runs the registered cases for their declared Cargo
+        // target (`--test <target>`, 971802a07) rather than a literal
+        // `cargo test --test unit` line.
+        "target_args=(--test \"$target\")",
+        "cargo test \"${target_args[@]}\" -- --exact",
         "unmergeable_child_diffs",
         "uncompilable_composite_change",
         "node_kind=requirement",

@@ -1,0 +1,51 @@
+# Dependency updater Rust validation
+
+The [23 November dependencies-latest run](https://github.com/link-assistant/formal-ai/actions/runs/45212862106) resolved its dependency edits, then failed ten Rust-stage gates at full-log line 5933. It ran on main at `03a636334975cd7ca5cedff119e2dd0efbc8579f`. The workflow stops before opening an update PR when validation fails.
+
+| Full-log lines | Failure | Repair and verification |
+| --- | --- | --- |
+| 2096–2098 | The terminology gate rejects the new private CNL module declaration and file named `graph`. | Rename both to `meaning_links`. The CNL types and their re-export paths stay stable. The existing controlled-language output and multilingual parity suites check the observed behavior. |
+| 2950–3037 | Four errors prevent the aggregate Rust unit test from compiling. Its inheritance witness names a removed source file, two callers import the private seed parser module, and the TRIZ integration test imports the private engine normalizer. | Inspect the current list compiler, call the existing public seed parser re-export, and normalize TRIZ test inputs with the public text normalizer. The test still checks the original demands, responses, evidence events and decline cases. The aggregate target requires hosted execution. |
+| 3940–4003 | The docs.rs profile turns off `meta-language`, while captured document acquisition, practical help and method documentation still need the page parser. | Parse the existing structure once and let feature-gated link construction consume those blocks. Extraction reads the parsed blocks in document order. The `check-docs-rs-dependency-profile` gate remains the executable regression for the no-default-features profile. |
+| 4721–4730 | The exact declaration list detects four test files in the module directory that are already explicit standalone Cargo targets. | Move the files to `rust/tests/standalone`, update their Cargo paths and preserve test-only admission for each target and its fixtures. Cargo metadata and the native admission test check the new locations. |
+
+The diagnostic commands are `cargo test --manifest-path rust/Cargo.toml --locked --test unit --no-run` and `DOCS_RS=1 RUSTDOCFLAGS="-D warnings" cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features`. The complete resolved-dependency run requires the default branch under the [build policy](../../ci-cd/default-branch-builds.md). The fast PR inventory runs the cache-budget replay and publisher-capture regressions through the maintenance workflow test. The production-only regression ledger binds the replay to run `45212862106`.
+
+The same run reports unreferenced cache entries at lines 3074–3121 and a route count of 60 against a ceiling of 58 at lines 3144–3150. The route checker now reads both dispatch functions after the extraction of `planner/request_routes.rs`. It also counts conditions that rustfmt wraps after `if` and fails when a dispatch function is missing. The source replay measures 61 conditions across the two functions before the change and 50 afterward. The planner dispatches its twelve self-referential document recipes through the ordered family already used by the JavaScript planner. The replay checks every predicate and step in order. A native regression covers a request matching both Google Trends recipes and expects the learning frontier to take precedence.
+
+[CI/CD Pipeline](https://github.com/link-assistant/formal-ai/actions/runs/45337569346) caught a one-line drop in the documentation interpreter at full-log lines 380–383. The measured core boundary and the interpreter's reviewed baseline both drop by one line. [Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/45337568892) rejected the stale `rust/Cargo.toml` fingerprint in groups 2, 8 and 11 after the test moves. The complete object comparison found only four fixture hash changes. The maintained writer refreshed them and preserved all 223 supported cases, 970 unsupported cases and 141 native source identities. The fixture and Unicode suites pass all 36 checks locally.
+
+## Publisher captures and lexical views
+
+The inventory reproduces the 42 unreferenced records at lines 3074–3121. The historical release replay still used eleven of the flagged Wikidata entities, plus a twelfth entity mentioned only by a source comment. All twelve JSON/LiNo pairs now live beside the capture that consumes them. Every pair retains its original bytes. The offline replay verifies each date and localized title and canonicalizes all 13 JSON/LiNo pairs, including the SPARQL answer. A missing entity fails before any network call.
+
+The remaining 25 Wikidata records were orphaned label snapshots. The factual and coding replay suites already use their own publisher captures. Those fixtures remain in place. Six WordNet sources still provide publisher evidence for shipped lexical views. The authored view coverage requires those six sources on both rebuild and verification, including when a Wiktionary fallback exists. Regeneration also adds the previously absent view derived from the committed `functions` dictionary record.
+
+The same bounded inventory now reports zero unreferenced records. The independent closure audit holds at 1,012 against its reviewed baseline. The view check verifies all 953 views, and the codec check re-encodes all 468 remaining Wikidata pairs without drift. The complete governed witness changes only the historical Rust test's source hash. The comparison verifies all 223 supported cases, 970 unsupported cases and 140 other source hashes.
+
+Run `node --test --test-concurrency=1 rust/tests/web/dependencies-maintenance-workflow.test.mjs` for the cache and publisher-capture replays. Run `node --test experiments/issue-1580/planner-route-measurement.test.mjs` with the archived PR head available locally for the route measurements.
+
+The latest source already renames `MAX_CAPTURE_BYTES`, the source of the historical Clippy error at line 5618. The scheduled default-branch publication still requires a hosted run.
+
+## Hosted pull request checkpoint
+
+All twelve JavaScript groups and 441 selected native contract cases pass on
+`ec03bde97ede61bbdf74ba5fad8e4283978539c0`. The branch finishes 32 workflows
+successfully with one scope skip. The original eight-step Scala compiler-failure
+control passes in native Hive group 3 at full Pipeline log line 77151.
+[Pipeline](https://github.com/link-assistant/formal-ai/actions/runs/45342732810) ·
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/45342732009)
+
+The overlapping Trends recipe case had been placed in the aggregate learning
+module. The focused reasoning target already runs the sibling catalog module
+with the same replay helper. Move the entire new case there so it runs in
+focused CI, preserving every predicate and assertion. Its next hosted
+execution remains to be observed.
+
+The Pipeline emits the crates.io token-authority warning at full-log line
+1052. The Security log reports OpenSSF scores of 2.8 for `debug` and 2.3 for
+`require-from-string` at lines 218–219. These are dependency-maintenance scores;
+the logs show no advisory for either dependency.
+[Security](https://github.com/link-assistant/formal-ai/actions/runs/45342732171)
+
+Related pull request [#1581](https://github.com/link-assistant/formal-ai/pull/1581).

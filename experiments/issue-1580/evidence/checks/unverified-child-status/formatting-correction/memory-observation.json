@@ -1,0 +1,28 @@
+{
+  "currentBytes": 3134849024,
+  "limitBytes": 3135369216,
+  "categories": {
+    "anon": 1572679680,
+    "file": 1376047104,
+    "kernel": 185700352,
+    "slab": 143128560,
+    "file_dirty": 81920,
+    "file_writeback": 0
+  },
+  "events": "low 0\nhigh 0\nmax 138417\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "largestProcesses": [
+    "    PID    PPID   RSS COMMAND",
+    "      1       0 467444 node-MainThread",
+    "1112338 1112323 275096 node-MainThread",
+    "1112351 1112324 273532 node-MainThread",
+    "1112360 1112325 269508 node-MainThread",
+    "   2773    2770 188112 codex",
+    "   2891    2773 123256 npm exec @playw",
+    "1112695 1086093 105892 node-MainThread",
+    "   3515    3514 97084 node-MainThread",
+    "1086093 1085996 58752 node-MainThread",
+    "1112325    2773 50552 node-MainThread",
+    "1112324    2773 50488 node-MainThread",
+    "1112323    2773 50468 node-MainThread"
+  ]
+}

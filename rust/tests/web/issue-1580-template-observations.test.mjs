@@ -1,0 +1,96 @@
+// Keep content-addressed reproductions and CI warning regressions in the maintained JS CI suite.
+import '../../../experiments/issue-1580/template-go-result-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-go-current-pipeline.test.mjs';
+import '../../../experiments/issue-1580/template-inventory-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-shared-git-observation.test.mjs';
+import '../../../experiments/issue-1580/template-java-release-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-java-project-version.test.mjs';
+import '../../../experiments/issue-1580/template-reference-graph.test.mjs';
+import '../../../experiments/issue-1580/template-csharp-changeset-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-python-fragment-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-python-runtime.test.mjs';
+import '../../../experiments/issue-1580/template-python-audit-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-python-release-formatting.test.mjs';
+import '../../../experiments/issue-1580/template-php-release-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-php-push-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-rust-desktop-checksums.test.mjs';
+import '../../../experiments/issue-1580/budget-clock-boundary.test.mjs';
+import '../../../experiments/issue-1580/budget-process-lifetime.test.mjs';
+import '../../../experiments/issue-1580/deadline-process-lifetime.test.mjs';
+import '../../../experiments/issue-1580/template-pages-adoption.test.mjs';
+import '../../../experiments/issue-1580/template-php-input-integrity.test.mjs';
+import '../../../experiments/issue-1580/budget-annotation-boundaries.test.mjs';
+import '../../../experiments/issue-1580/template-php-pipe-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-python-scriv-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-python-javascript-detection.test.mjs';
+import '../../../experiments/issue-1580/worker-notation.test.mjs';
+import '../../../experiments/issue-1580/worker-code-tasks.test.mjs';
+import '../../../experiments/issue-1580/template-rust-timeout-documentation.test.mjs';
+import '../../../experiments/issue-1580/template-source-identities.test.mjs';
+import '../../../experiments/issue-1580/native-test-headroom.test.mjs';
+import '../../../experiments/issue-1580/template-rust-runner-annotations.test.mjs';
+import '../../../experiments/issue-1580/documentation-headroom.test.mjs';
+import '../../../experiments/issue-1580/full-default-javascript-profile.test.mjs';
+
+import '../../../experiments/issue-1580/procedure-extraction-parity.test.mjs';
+
+import '../../../experiments/issue-1580/runner-acquisition-recovery.test.mjs';
+
+import '../../../experiments/issue-1580/readable-json-headroom.test.mjs';
+
+import '../../../experiments/issue-1580/untrusted-scanner-logs.test.mjs';
+
+import '../../../experiments/issue-1580/layered-fixture-custody.test.mjs';
+
+import '../../../experiments/issue-1580/hosted-javascript-scheduling.test.mjs';
+
+import '../../../experiments/issue-1580/native-capability-trace.test.mjs';
+
+import './rust-specification-fixture-integrity.test.mjs';
+
+import './rust-specification-unicode-identifiers.test.mjs';
+
+import '../../../experiments/issue-1580/metadata-storage-headroom.test.mjs';
+
+import './self-hosting-ledger-storage.test.mjs';
+
+import '../../../experiments/issue-1580/desktop-manifest-headroom.test.mjs';
+
+import '../../../experiments/issue-1580/runtime-module-headroom.test.mjs';
+
+import '../../../experiments/issue-1580/final-native-headroom.test.mjs';
+
+import '../../../experiments/issue-1580/seed-record-readers.test.mjs';
+
+import '../../../experiments/issue-1580/application-conversation-list.test.mjs';
+
+import '../../../experiments/issue-1580/ci-source-transport.test.mjs';
+
+import '../../../experiments/issue-1580/traceability-partition.test.mjs';
+import '../../../experiments/issue-1580/immutable-source-captures.test.mjs';
+import '../../../experiments/issue-1580/native-contract-artifact.test.mjs';
+import '../../../experiments/issue-1580/canonical-release-source.test.mjs';
+import '../../../experiments/issue-1580/worker-receipt-regeneration.test.mjs';
+import '../../../experiments/issue-1580/local-worker-currency.test.mjs';
+
+import '../../../experiments/issue-1580/javascript-runtime-warnings.test.mjs';
+
+import '../../../experiments/issue-1580/buildkit-image-identity.test.mjs';
+
+import '../../../experiments/issue-1580/provenance-scenario-partition.test.mjs';
+
+import '../../../experiments/issue-1580/zizmor-transport.test.mjs';
+
+import '../../../experiments/issue-1580/template-shared-runner-pagination.test.mjs';
+
+import '../../../experiments/issue-1580/environment-command-routing.test.mjs';
+
+import '../../../experiments/issue-1580/template-java-boundary-controls.test.mjs';
+
+import '../../../experiments/issue-1580/link-observation-boundaries.test.mjs';
+import '../../../experiments/issue-1580/link-transport-reset.test.mjs';
+
+import '../../../experiments/issue-1580/formal-command.test.mjs';
+import '../../../experiments/issue-1580/cnl-dialogue-partition.test.mjs';
+import '../../../experiments/issue-1580/process-fixture-shell-startup.test.mjs';
+import '../../../experiments/issue-1580/meta-reasoner-partition.test.mjs';

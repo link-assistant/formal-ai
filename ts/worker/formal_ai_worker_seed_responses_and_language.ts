@@ -16,14 +16,7 @@ let PROJECTS = [];
 // the seed loads (issue #918: the bootstrap copies of their lists, items and
 // templates are gone, so the seed is the only place those words live).
 let BRAINSTORM_SEEDS = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
-let PERSONA_SEEDS = {
-  triggers: [],
-  defaultPersona: "",
-  bodyTemplate: "",
-  fallbackBody: "",
-  personas: [],
-  topics: [],
-};
+let PERSONA_SEEDS = { triggers: [], personas: [] };
 let COREFERENCE_SEEDS = { pronouns: [], antecedents: [] };
 let TOOLS = [];
 let SEED_RAW = {};
@@ -85,9 +78,10 @@ function hydrateLinoSeedText(raw) {
   }
   cachedKnownEntityNames = null;
   cachedTimezonePlaces = null;
+  const meaningSeedFiles = new Set((self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((stem) => stem + ".lino"));
   MEANINGS_LINO = seedRawTexts(
     raw,
-    (fileName) => fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),
+    (fileName) => meaningSeedFiles.has(fileName) || fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),
   ).join("\n");
 
   cachedNumericListOntology = null;
@@ -97,9 +91,9 @@ function hydrateLinoSeedText(raw) {
   cachedOperationVocabulary = null;
   cachedProgramPlanRules = null;
   cachedMeaningLexicon = null;
+  if (typeof WEB_SEARCH_MARKERS_CACHE !== "undefined") WEB_SEARCH_MARKERS_CACHE = null;
   cachedMarketPriceReferences = null;
   if (typeof installSeedProgramTasks === "function") installSeedProgramTasks(raw); // R1021-6, formal_ai_worker_program_requests.js
-  if (typeof installDocumentedLanguageCommands === "function") installDocumentedLanguageCommands(raw); // R1165-6, formal_ai_worker_documented_commands.js
 }
 // Intent routing rules loaded from `seed/intent-routing.lino` at init time.
 // `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser
@@ -237,6 +231,8 @@ function unknownOpenersFor(language) {
 }
 
 function selectUnknownOpener(prompt, language) {
+  // Keep the localized seed intact when only a different language's pool exists.
+  if (!unknownOpenerRegistry().pools.some((pool) => pool.language === language)) return "";
   const fromWasm = wasmSelectUnknownOpener(prompt, language);
   if (fromWasm) return fromWasm;
   const pool = unknownOpenersFor(language);

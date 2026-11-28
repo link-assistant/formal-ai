@@ -1,0 +1,194 @@
+[
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-40-18.797Z.json",
+    "file": "command-2026-11-21T02-40-18.797Z.json.gz",
+    "rawSha256": "eee1861e6dc05f43a8ae151329a90f11a09b2a2bc08bec38b09cd33a41bd85e6",
+    "archiveSha256": "97b7b700fea4939001ca352543e5dfdfd07f40c9e52a563d450251a10b36f258",
+    "bytes": 2147,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-40-32.511Z.json",
+    "file": "command-2026-11-21T02-40-32.511Z.json.gz",
+    "rawSha256": "86d3319424adbba6779433e4053d5682ba2d86d728745cd3167646d3c8891929",
+    "archiveSha256": "8ed4122c75a76249036eaeb599cbb4423d25fd59e2c6300e071699f51ebb5d6c",
+    "bytes": 66141,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-40-55.911Z.json",
+    "file": "command-2026-11-21T02-40-55.911Z.json.gz",
+    "rawSha256": "5673da73e58492850b562f4e864333902ef3ea40d085ddfbc3068d142119be4c",
+    "archiveSha256": "61aa31816cf7057ce93490884810bb8e0a2a28be7ae730fd3dda1e202daa8c6e",
+    "bytes": 207520,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-41-11.408Z.json",
+    "file": "command-2026-11-21T02-41-11.408Z.json.gz",
+    "rawSha256": "5c46358fe57daa6263820211e1870670ba2f87601d9fdee6bf914269b189c04f",
+    "archiveSha256": "29bda963650e86f10230db56cbc7491883f396bd43c9b54542a8c8485630f15c",
+    "bytes": 3086,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-42-47.612Z.json",
+    "file": "command-2026-11-21T02-42-47.612Z.json.gz",
+    "rawSha256": "221edb25eb8dd235d4cf3ce61e2313a45bd9ed08f9528a7ffc97ff476fe95d23",
+    "archiveSha256": "1f883f60436c351cfb20fbbff9714f1735f5bd6988b21dba4d8e268f16e0a624",
+    "bytes": 848,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-43-33.443Z.json",
+    "file": "command-2026-11-21T02-43-33.443Z.json.gz",
+    "rawSha256": "907250ffdfeacaac97a6417a5ca19bc2e1c465518028b63f8914617a2e6fefa6",
+    "archiveSha256": "0136f71814bb504468b46828973bacd1f147e92e41ac3e6017639829362c4d61",
+    "bytes": 756,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-43-58.891Z.json",
+    "file": "command-2026-11-21T02-43-58.891Z.json.gz",
+    "rawSha256": "df8316d7408971d11bf90dff61cc6fc0d840938a1cf2c22131658dd2b1cf7166",
+    "archiveSha256": "a6ec1441b10a4a7e7b1201381506208cfc5690e72c1a3a4c7c17bfb075f5c271",
+    "bytes": 2026,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-44-22.136Z.json",
+    "file": "command-2026-11-21T02-44-22.136Z.json.gz",
+    "rawSha256": "0f2faa94f14ce1bfd2e8eded3113320b3a80cecbf72a48adb7984a5d0af53264",
+    "archiveSha256": "7a8a62d0722b71b0adc9d5998a2dc3506c2c626cbfb0f9f55f0ccae8ec6563e9",
+    "bytes": 768,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-44-42.991Z.json",
+    "file": "command-2026-11-21T02-44-42.991Z.json.gz",
+    "rawSha256": "15428723eb469c36a1cf691bacdb07f9be915aafa84bbec188a086f2112a3db1",
+    "archiveSha256": "fbc435dd065560e150348b49f080a8d4ffecef12474702c07dfe50501600b2d3",
+    "bytes": 961,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-46-22.909Z.json",
+    "file": "command-2026-11-21T02-46-22.909Z.json.gz",
+    "rawSha256": "c544e1040713d22d231aac4193bd3dad74bab78e93160f69d6899ee069a6e811",
+    "archiveSha256": "6e4840209ad5a007c8866d1c01b992d64c31aa52ff5e63d63887f2feb076d3fe",
+    "bytes": 2271,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-46-39.883Z.json",
+    "file": "command-2026-11-21T02-46-39.883Z.json.gz",
+    "rawSha256": "8552b7d5e78b6e0e2670e81e5dadf86fc0ab8774ec4830c8ae2948343d4f2ab0",
+    "archiveSha256": "d3cd1d6d59170ea25ced6384411aa9fc4abfeb050bb73447066caee5e889a741",
+    "bytes": 825,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-47-02.156Z.json",
+    "file": "command-2026-11-21T02-47-02.156Z.json.gz",
+    "rawSha256": "4f1937a20293df7efb160088c15f21ec6680450e6fd88a0df4573f7e1b903992",
+    "archiveSha256": "6444f3dfe23346f7180c18fb72d3fde05179b9238e07902408ebf00a1df77c70",
+    "bytes": 789,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-48-01.774Z.json",
+    "file": "command-2026-11-21T02-48-01.774Z.json.gz",
+    "rawSha256": "6c68234ed76ebf2a7033e6b0582e4840886971d5637ccde0ead7719a4a90641d",
+    "archiveSha256": "3e9b149417575d8292910cbd7ac038cfc4af9b3588a4b839e9b230df84304d5f",
+    "bytes": 7432,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-50-55.139Z.json",
+    "file": "command-2026-11-21T02-50-55.139Z.json.gz",
+    "rawSha256": "2c628db01036dee317f5e2941bb1eefeaa8fd9e6b32d6aee3b50aa36a5e3e3d1",
+    "archiveSha256": "ccbb3b62e51bedfe788c6e60fa450b6775c453030bc480866083f0c52e3562f9",
+    "bytes": 949,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-51-10.611Z.json",
+    "file": "command-2026-11-21T02-51-10.611Z.json.gz",
+    "rawSha256": "215db8415dd678a3280dd91435fa217c181abaa58373b2701bd9febcdb3f5301",
+    "archiveSha256": "938726b0cb20c09e01b269154f94bb8adc968b85881df53176c9851afde2806f",
+    "bytes": 55673,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-52-06.576Z.json",
+    "file": "command-2026-11-21T02-52-06.576Z.json.gz",
+    "rawSha256": "e9849ca953b3ef7a12d438e7c1a1c12f1418a6529f20cca3226bae01fe96f608",
+    "archiveSha256": "958b8d59f0bebbfa1376ce9b4ae05daac2699229b1bd916f703016e087279e25",
+    "bytes": 801,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-53-02.548Z.json",
+    "file": "command-2026-11-21T02-53-02.548Z.json.gz",
+    "rawSha256": "51a4c5befa4fd44da187279d26d9ac645202899722c5fba57685e56da054be33",
+    "archiveSha256": "603321ef2808dce3dab4054dd50883aedc19b6304f89c1a5c1a0305514f8f605",
+    "bytes": 46448,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-53-52.658Z.json",
+    "file": "command-2026-11-21T02-53-52.658Z.json.gz",
+    "rawSha256": "0cab605a651e3e0bf1854fab6670fd10aeae8d2d636ed8dee850456b7dbffb9a",
+    "archiveSha256": "36a1b5a5c539e8e60596918a5b17c62111723900bcf4a074b4394b6a609e7110",
+    "bytes": 775,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-55-45.082Z.json",
+    "file": "command-2026-11-21T02-55-45.082Z.json.gz",
+    "rawSha256": "ed94bee4bae190024ead62b02ec6de63916c140b5656265b19997c012968f08d",
+    "archiveSha256": "c320af5ce0584a6b208b662af705099881e26a8f96376ecb53ab3a9c63d2725e",
+    "bytes": 921,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-58-34.176Z.json",
+    "file": "command-2026-11-21T02-58-34.176Z.json.gz",
+    "rawSha256": "854f6270d3c5bdb7637174248c828724e5029ce87fd008dfe641abf101591157",
+    "archiveSha256": "d80d12351e08857d60ef7c1abdaf6cf0735879c392d90c3c8de9de972fc17f2e",
+    "bytes": 693,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T03-00-46.932Z.json",
+    "file": "command-2026-11-21T03-00-46.932Z.json.gz",
+    "rawSha256": "c266f9ff22ea87e356de68001f7e2aeee716d96b7586b7e09cbea9f760bc1800",
+    "archiveSha256": "9e0cef29183c838d52f29f77c335d00b1a4c22cc298cce6ec15966c252a6538c",
+    "bytes": 1653,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T03-02-59.863Z.json",
+    "file": "command-2026-11-21T03-02-59.863Z.json.gz",
+    "rawSha256": "da9611da23182fb2b3fff273636441c3479e1bd36575744ee433d6ecd2039709",
+    "archiveSha256": "3dddd0254bf96d175412439da4fc6fa678c19a00c3a06fda96e71f76b3811571",
+    "bytes": 1420,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T03-09-46.070Z.json",
+    "file": "command-2026-11-21T03-09-46.070Z.json.gz",
+    "rawSha256": "26d739ebef2ef0d6be917d1a9ab6b61bbf2a170ff783f859ef4075e3b95a9ec5",
+    "archiveSha256": "47980bb2f66863f519e747d99bf881e1cc5e0d05b25a5adfd00f07aaf6baccbb",
+    "bytes": 1006,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T03-09-54.212Z.json",
+    "file": "command-2026-11-21T03-09-54.212Z.json.gz",
+    "rawSha256": "ffe3518801807b00edefda0c68ddba02dd76f1a3d611ca1dc08ab2e55992f463",
+    "archiveSha256": "03e7a9473ddae95d712180b876c68de979c88d9dcfe5ec7755c6f70619893276",
+    "bytes": 1003,
+    "lines": 11
+  }
+]

@@ -1,0 +1,348 @@
+{
+  "head": "3e7056756ed57e4899780913eae2f0fb07723e5f",
+  "observedAt": "2026-11-21T00:14:42.383921+00:00",
+  "verifiedStreams": 304,
+  "terminalWorkflows": 27,
+  "successfulWorkflows": 25,
+  "skippedWorkflows": 1,
+  "failedWorkflows": [
+    {
+      "id": 44836234464,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44836234464"
+    }
+  ],
+  "failedPipelineJobs": [],
+  "nativeJobs": [
+    {
+      "name": "Native type and lint check / Release registry scripts",
+      "job": 136633565179,
+      "log": "job-136633565179.stdout.gz",
+      "lines": 735,
+      "passed": 48,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 650,
+          "passed": 3,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T23:23:13.0786413Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+        },
+        {
+          "line": 677,
+          "passed": 22,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T23:23:13.0814530Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+        },
+        {
+          "line": 702,
+          "passed": 19,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T23:23:13.0880933Z test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+        },
+        {
+          "line": 712,
+          "passed": 4,
+          "failed": 0,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T23:23:13.2984232Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s"
+        }
+      ],
+      "cliObservations": [
+        {
+          "line": 22,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T23:22:44.2433743Z ##[group]GITHUB_TOKEN Permissions"
+        },
+        {
+          "line": 716,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T23:23:15.5509888Z Ran 8 tests in 2.174s"
+        },
+        {
+          "line": 718,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T23:23:15.5510126Z OK"
+        }
+      ],
+      "startedAt": "2026-11-20T23:22:43Z",
+      "completedAt": "2026-11-20T23:23:17Z",
+      "seconds": 34.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "job": 136633565198,
+      "log": "job-136633565198.stdout.gz",
+      "lines": 2696,
+      "passed": 219,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1753,
+          "passed": 1,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:30:27.0396715Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 19.41s"
+        },
+        {
+          "line": 1768,
+          "passed": 9,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:30:28.5049157Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.46s"
+        },
+        {
+          "line": 1776,
+          "passed": 2,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:30:40.4161618Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.90s"
+        },
+        {
+          "line": 1804,
+          "passed": 22,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:30:41.6964598Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.28s"
+        },
+        {
+          "line": 1818,
+          "passed": 8,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:30:59.9350087Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.24s"
+        },
+        {
+          "line": 1825,
+          "passed": 1,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:31:00.1713198Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s"
+        },
+        {
+          "line": 1835,
+          "passed": 4,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:31:00.7001312Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s"
+        },
+        {
+          "line": 1859,
+          "passed": 18,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:31:10.7391251Z test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.03s"
+        },
+        {
+          "line": 1877,
+          "passed": 12,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:31:56.1058541Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 45.36s"
+        },
+        {
+          "line": 1892,
+          "passed": 9,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:32:04.6608476Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.54s"
+        },
+        {
+          "line": 2030,
+          "passed": 119,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:32:06.5730484Z test result: ok. 119 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.90s"
+        },
+        {
+          "line": 2073,
+          "passed": 13,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:34:56.3119949Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 0.98s"
+        },
+        {
+          "line": 2082,
+          "passed": 1,
+          "failed": 0,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T23:35:03.0963539Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 5.48s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:22:43Z",
+      "completedAt": "2026-11-20T23:38:17Z",
+      "seconds": 934.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (reasoning-1)",
+      "job": 136633565203,
+      "log": "job-136633565203.stdout.gz",
+      "lines": 1520,
+      "passed": 74,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1411,
+          "passed": 74,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-20T23:34:57.8637215Z test result: ok. 74 passed; 0 failed; 0 ignored; 0 measured; 122 filtered out; finished in 353.12s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:22:44Z",
+      "completedAt": "2026-11-20T23:35:02Z",
+      "seconds": 738.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (coding)",
+      "job": 136633565213,
+      "log": "job-136633565213.stdout.gz",
+      "lines": 1474,
+      "passed": 32,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1365,
+          "passed": 32,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-20T23:35:41.8315040Z test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 489.57s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:22:43Z",
+      "completedAt": "2026-11-20T23:35:45Z",
+      "seconds": 782.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (reasoning-2)",
+      "job": 136633565221,
+      "log": "job-136633565221.stdout.gz",
+      "lines": 1518,
+      "passed": 74,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1411,
+          "passed": 74,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-20T23:46:25.5327722Z test result: ok. 74 passed; 0 failed; 0 ignored; 0 measured; 122 filtered out; finished in 500.44s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:35:03Z",
+      "completedAt": "2026-11-20T23:46:27Z",
+      "seconds": 684.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-1)",
+      "job": 136633565255,
+      "log": "job-136633565255.stdout.gz",
+      "lines": 1446,
+      "passed": 1,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1339,
+          "passed": 1,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-20T23:58:35.9821143Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 195 filtered out; finished in 493.63s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:46:30Z",
+      "completedAt": "2026-11-20T23:58:40Z",
+      "seconds": 730.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-3)",
+      "job": 136633565267,
+      "log": "job-136633565267.stdout.gz",
+      "lines": 1466,
+      "passed": 20,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1359,
+          "passed": 20,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:10:50.3918707Z test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 176 filtered out; finished in 495.84s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:58:43Z",
+      "completedAt": "2026-11-21T00:10:55Z",
+      "seconds": 732.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (benchmarks)",
+      "job": 136633565290,
+      "log": "job-136633565290.stdout.gz",
+      "lines": 1456,
+      "passed": 11,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1349,
+          "passed": 11,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-20T23:46:08.5698670Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 185 filtered out; finished in 392.72s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:35:47Z",
+      "completedAt": "2026-11-20T23:46:13Z",
+      "seconds": 626.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-2)",
+      "job": 136633565469,
+      "log": "job-136633565469.stdout.gz",
+      "lines": 1462,
+      "passed": 16,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1355,
+          "passed": 16,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:06:09.0736176Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 180 filtered out; finished in 461.24s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:54:43Z",
+      "completedAt": "2026-11-21T00:06:13Z",
+      "seconds": 690.0,
+      "conclusion": "success"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (interfaces)",
+      "job": 136633565518,
+      "log": "job-136633565518.stdout.gz",
+      "lines": 1521,
+      "passed": 78,
+      "failed": 0,
+      "summaries": [
+        {
+          "line": 1414,
+          "passed": 78,
+          "failed": 0,
+          "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-20T23:54:36.4784457Z test result: ok. 78 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 280.13s"
+        }
+      ],
+      "cliObservations": [],
+      "startedAt": "2026-11-20T23:46:15Z",
+      "completedAt": "2026-11-20T23:54:41Z",
+      "seconds": 506.0,
+      "conclusion": "success"
+    }
+  ],
+  "nativeRustPassingTests": 573,
+  "nativeRustFailingTests": 0,
+  "pullRequestCheckBuckets": {
+    "pass": 54,
+    "skipping": 87,
+    "fail": 2
+  },
+  "annotationCounts": {
+    "error:emitted": 3,
+    "warning:emitted": 100
+  },
+  "allAggregateLinesLiterallyRead": false,
+  "allWarningsResolved": false,
+  "strictOriginalNativeSourceAcceptance": "31/53 strict whole-file identity; 22 separate scoped assertion reviews; historical budgets and live acceptance open",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

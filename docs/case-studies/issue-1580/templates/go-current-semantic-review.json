@@ -1,0 +1,578 @@
+{
+  "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+  "commit": "065985538e6d1ede54116e11b70f5a2f1f6ad7b3",
+  "previousCommit": "65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+  "scope": "All 39 current repository blobs compared: 18 changed files fully read in 19 bounded pages, 21 unchanged blobs carried from verified complete prior source reads, and five removals explicitly accounted for.",
+  "completeCurrentSourceComparison": true,
+  "completeTemplateAcceptance": false,
+  "limits": [
+    "No hosted upstream workflow, publishing operation, Go native build, or full upstream suite execution is claimed.",
+    "This source comparison does not complete all applicable runtime practices or the other seven template reviews.",
+    "Malformed PR result inputs remain an upstream defect; a local disposable candidate is not an upstream repair.",
+    "Externally supplied analysis, code and review receive zero independent Formal AI reasoning/authorship credit."
+  ],
+  "currentRegression": "experiments/issue-1580/template-go-current-pipeline.test.mjs",
+  "currentRegressionOutcome": "18 cases pass; disabling the candidate guard fails all ten malformed-input controls while the other eight controls pass.",
+  "files": [
+    {
+      "path": ".changeset/README.md",
+      "gitBlob": "e2acfe234784e2dd4dc536801ac4a7cbb37d9bf4",
+      "bytes": 1393,
+      "sha256": "47c78135845368cf4917bea4401c2cfb0977b3f1db85ccacf1a90cc3b3fbca05",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": ".changeset/config.json",
+      "gitBlob": "17a8556c2ae963b8607b666e2472863990db82a1",
+      "bytes": 137,
+      "sha256": "592cb5e935b6119f9c0802dfcdb95424f984d7985212cec91eb5a56e3c1d8bbd",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "gitBlob": "9b5ab57dcb59c83f6777a6d7121a3c99fd310517",
+      "bytes": 728,
+      "sha256": "2ce33634245d2a10be94226ce2bd89ec839fa5d443599515fdc2cc225b041cf0",
+      "completeSourceRead": true,
+      "role": "dependency update proposals",
+      "formalAiComparison": [
+        ".github/workflows/dependencies-latest.yml",
+        "scripts/check-dependencies-latest.rs"
+      ],
+      "decision": "The Go template uses weekly grouped Dependabot proposals; Formal AI instead has its own dependency workflow, with publication controls. A freshness warning must never suppress integrity checks; the new offline probe demonstrates the Go early-continue defect. Formal AI retains strict findings/unverifiable receipts.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "b1c99594103e30f1923009a9393a50adca24cdee",
+      "bytes": 17039,
+      "sha256": "61c6d83a7920784f68a6e6359141e4b132f33a722cff618667aa17cfa24e8a5a",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 1,2",
+      "formalAiComparison": [
+        ".github/workflows/release.yml",
+        "scripts/check-pipeline-status.sh",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "decision": "Explicit dispatch admission, direct successful prerequisites, bounded jobs, serialized release writers and post-publish identity checks match the maintained policies. Go toolchain, proxy and changeset commands stay language-specific. The current upstream gate still accepts malformed PR needs; the new current-source regression records that separate defect."
+    },
+    {
+      "path": ".github/workflows/rerun-unacquired.yml",
+      "gitBlob": "2a44e6c3661bc52d0a81590bb563b435194c98c4",
+      "bytes": 2324,
+      "sha256": "20e9e508c9ab4de6a22754cc38aa15d7b98e111e6e3db3b5e3e154733de2c0f5",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 3",
+      "formalAiComparison": [
+        ".github/workflows/rerun-unacquired.yml",
+        "scripts/rerun-unacquired-jobs.mjs",
+        "experiments/issue-1580/runner-acquisition-recovery.test.mjs"
+      ],
+      "decision": "Adopted in published e1b9a937b: trusted default-branch observer, complete job/annotation pagination, exact acquisition evidence, immutable same-repository identity, finite attempts/deadline and no retry of code failures. All 27 mocked API/actual CLI controls pass. Real hosted acquisition recovery requires default-branch installation and remains unexecuted.",
+      "previousDecision": "The upstream observer admits only same-repository default-branch workflow runs, bounded attempts and jobs with absent runner evidence. Formal AI has a strict terminal gate but no corresponding dedicated rerun-unacquired workflow; automatic infrastructure recovery remains an adoption gap. No hosted runner-capacity failure was exercised.",
+      "followupAt": "2026-11-21"
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "gitBlob": "ec12a434ffd2a16f5d64ec494f4217cdd27f0230",
+      "bytes": 1760,
+      "sha256": "199e59d97fdd3ef0addb80ea495a90d548f42b93fb6097327df6912ab7af6a7b",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 4",
+      "formalAiComparison": [
+        ".github/workflows/workflows.yml",
+        "scripts/check-workflow-concurrency.mjs"
+      ],
+      "decision": "Keep pinned linter/container integrity and runner checks. Formal AI also validates concurrency.queue literals independently; the upstream broad queue suppression is not adopted."
+    },
+    {
+      "path": ".gitignore",
+      "gitBlob": "06ca9f7e9b339c0b747156a65e4925e06c26569a",
+      "bytes": 659,
+      "sha256": "4a94928d2441e7f2fd53d207c07f837926b4f85611e6bf5af0ceb90acd17892a",
+      "completeSourceRead": true,
+      "role": "workspace exclusions",
+      "formalAiComparison": [
+        ".gitignore"
+      ],
+      "decision": "Go binaries/vendor/coverage exclusions are ecosystem-specific. Preserve Formal AI scratch exclusions and do not commit agent state.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "gitBlob": "c9b9fdc87d7d731edb0ee0466a2ac0e60341fc90",
+      "bytes": 941,
+      "sha256": "b8310abb4d278d80cea4779aef4c3e7b505834173dc3196df560ebdcde5b3d19",
+      "completeSourceRead": true,
+      "role": "contributor and consumer workflow",
+      "formalAiComparison": [
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Read complete setup/test/release guidance. Go format/vet/race/build hooks describe that repository. Retain Formal AI focused JavaScript checks, rustfmt-only local validation, and CI native policy rather than importing expensive local hooks.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "9e2731ca79168b4e18a9bd25702d121dbbac0b70",
+      "bytes": 3021,
+      "sha256": "cf712ceb4f3fd882bde0c713339f7a31759975c8cb9505e5905e613cd49f2a20",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 5",
+      "formalAiComparison": [
+        "changelog.d"
+      ],
+      "decision": "Retain as upstream release history, including the 0.2.0 description; descriptions do not establish execution evidence or require changing Formal AI release format."
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "gitBlob": "5900d8e442410e4df4ffe31f679230232815c549",
+      "bytes": 6445,
+      "sha256": "04a3cc1b434f7583562fdfc544a6995d2c7c3716e9eba6fec3cb38c20e7860a8",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 6",
+      "formalAiComparison": [
+        "CONTRIBUTING.md",
+        "AGENTS.md"
+      ],
+      "decision": "Retain local focused JavaScript checks and hosted native coverage under this repository resource policy. Go race detection, gofmt and staticcheck instructions are specific to the Go package."
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "bytes": 1211,
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "completeSourceRead": true,
+      "role": "source redistribution",
+      "formalAiComparison": [
+        "LICENSE"
+      ],
+      "decision": "Read the Unlicense; retain the original LICENSE with every copied Go fixture and immutable source hashes.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "6e61b4706e06c1d8cccf5b2aef6ffc6074c7a43b",
+      "bytes": 9687,
+      "sha256": "664a0d78aec85475311de33bb79b19ee11535112da4be6077475a619584d4332",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 7",
+      "formalAiComparison": [
+        "docs/case-studies/issue-1580/README.md",
+        "scripts/check-release-needed.rs"
+      ],
+      "decision": "Use the documented release-observation and pin-integrity responsibilities as comparisons. Do not adopt optional failed release legs or treating failed remote release lookups as successful absence; Formal AI keeps explicit observation failures."
+    },
+    {
+      "path": "examples/basic_usage.go",
+      "gitBlob": "fb3f878cca63d5802604fc8cfb12a29608257ee1",
+      "bytes": 1491,
+      "sha256": "d94d902eaec0cade3e07ac1a3c67594e10a0aa37e524403f97579a09ed89c8a3",
+      "completeSourceRead": true,
+      "role": "consumer example, module metadata and demonstration application",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/examples"
+      ],
+      "decision": "Read all source and tests. Go module minimum 1.21 differs intentionally from pinned CI 1.27.3. Addition/greeting/context-delay examples are demonstration application behavior, not reusable CI logic. No Go application build was run or imported.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "experiments/issue-14-live-dry-run.sh",
+      "gitBlob": "741562ca7d0fc8e617b8156a98631011ed93e9dd",
+      "bytes": 691,
+      "sha256": "73397c57af735e057782a2cd7e700d0190ac2818a35bc48570eeb1a8640d0d82",
+      "completeSourceRead": true,
+      "role": "live diagnostic example",
+      "formalAiComparison": [
+        "experiments/issue-1580"
+      ],
+      "decision": "Read bounded read-only job/annotation inspection and --dry-run rerun invocation. It does not prove an actual workflow rerun. Preserve distinction between modeled observations and hosted execution.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "go.mod",
+      "gitBlob": "8ac673484105f30a12e799c6aa9c2c9240da9416",
+      "bytes": 86,
+      "sha256": "ef3b6229e5141a227c2ed3bc484500e771bc8eea92223c4419984d35ef889b3d",
+      "completeSourceRead": true,
+      "role": "consumer example, module metadata and demonstration application",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/examples"
+      ],
+      "decision": "Read all source and tests. Go module minimum 1.21 differs intentionally from pinned CI 1.27.3. Addition/greeting/context-delay examples are demonstration application behavior, not reusable CI logic. No Go application build was run or imported.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "pkg/mypackage/mypackage.go",
+      "gitBlob": "70749fc937b26fa95cea6040cf0f8932623812d2",
+      "bytes": 1209,
+      "sha256": "d0c13a791584060b56f5884634ef97cb56b34afb87ed81a638c023e7bd26d1a1",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 8",
+      "formalAiComparison": [
+        "rust/Cargo.toml"
+      ],
+      "decision": "Arithmetic and context-aware delay examples and the 0.2.0 version are Go package content. They add no applicable Formal AI workflow mechanism."
+    },
+    {
+      "path": "pkg/mypackage/mypackage_test.go",
+      "gitBlob": "acf8d42a4a2e6696fbdb417f57de475470086c18",
+      "bytes": 3109,
+      "sha256": "bad454aa533caa8e8739c6e3f4b3c6ced3baec43f2b7a062e45acfa8260c6769",
+      "completeSourceRead": true,
+      "role": "consumer example, module metadata and demonstration application",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/examples"
+      ],
+      "decision": "Read all source and tests. Go module minimum 1.21 differs intentionally from pinned CI 1.27.3. Addition/greeting/context-delay examples are demonstration application behavior, not reusable CI logic. No Go application build was run or imported.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/check-file-size.mjs",
+      "gitBlob": "d5ef1f947e1940b8380871e24a99facba0d55370",
+      "bytes": 2326,
+      "sha256": "175c78af5ff661e83b182f1c5ca22949c41bf83ac5fb3ea2b9ec148127333cc0",
+      "completeSourceRead": true,
+      "role": "size policy",
+      "formalAiComparison": [
+        "scripts/check-file-size.rs",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "decision": "Recursive Go-only size check retains a 1,000-line default. Formal AI keeps its existing language-wide thresholds and real gate selection. Invalid custom numeric input is an unexecuted review concern; no new defect report or fix is claimed for it.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/check-release-needed.mjs",
+      "gitBlob": "24be5f0c67a68361fca1c7ce03519e883fe1b3ff",
+      "bytes": 2189,
+      "sha256": "0f943d703bffa24b177de0d9bd5b7f38d201e784a0c607bc16b6c5a869c93ea4",
+      "completeSourceRead": true,
+      "role": "missing release recovery",
+      "formalAiComparison": [
+        "scripts/check-release-needed.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Distinguishes exact missing-release response from API/auth/network errors and requires a tag. Unknown lookup warns and suppresses recovery. Formal AI preserves richer unknown/failed receipts and immutable source identity; do not reduce these to a successful publication claim. Read real-Git mocked-GitHub recovery tests; not executed here.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/check-release-needed.test.mjs",
+      "gitBlob": "cf23279979742bbd37234cbd3c6ae01429875ae5",
+      "bytes": 5629,
+      "sha256": "a4e824eec26a0caf2c589047b96b747b0c03b1ebc44ac078ac4115e957eadc2d",
+      "completeSourceRead": true,
+      "role": "missing release recovery",
+      "formalAiComparison": [
+        "scripts/check-release-needed.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Distinguishes exact missing-release response from API/auth/network errors and requires a tag. Unknown lookup warns and suppresses recovery. Formal AI preserves richer unknown/failed receipts and immutable source identity; do not reduce these to a successful publication claim. Read real-Git mocked-GitHub recovery tests; not executed here.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/ci/check-dependencies.mjs",
+      "gitBlob": "3ad234064749f45f9a969b3f12730d78cc2dd5ba",
+      "bytes": 9566,
+      "sha256": "b8608d6422ec803c6a99d5db412545fd33cbdfde5ac12dc897e58596d72e0a34",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 9",
+      "formalAiComparison": [
+        ".github/workflows/workflows.yml",
+        "scripts/check-javascript-dependencies.sh",
+        "experiments/issue-1580/template-go-result-integrity.test.mjs"
+      ],
+      "decision": "Current/stale versions now receive independent immutable pin verification, and cache keys include declared versions. Formal AI pins container images and audits actions in workflows.yml; its trusted-namespace action-version policy is not equivalent to universally immutable action pins. Preserve the distinction as an adoption question, and do not claim remote registry verification."
+    },
+    {
+      "path": "scripts/ci/check-dependencies.test.mjs",
+      "gitBlob": "e6d6973c7b86b6c338bd5e941501563e19eaeecd",
+      "bytes": 7986,
+      "sha256": "f9c3682ffcd08b2804e414849fdc3100d253a2eabb9587a0d638c2214cabd07e",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 10",
+      "formalAiComparison": [
+        "experiments/issue-1580/template-go-result-integrity.test.mjs"
+      ],
+      "decision": "Keep the old actual-source negative control as historical evidence. New upstream tests cover both action and container pin integrity on every event, stale/current combinations and declared-version cache identity; no complete upstream test run is claimed."
+    },
+    {
+      "path": "scripts/ci/check-pipeline-status.mjs",
+      "gitBlob": "735af75ee15c212cec98a9f192587c4eabac436e",
+      "bytes": 5706,
+      "sha256": "e414d0a8f96a51d8be9b3f702e01fdf8c7f008ccf977557184c66edbdbc32b49",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 11",
+      "formalAiComparison": [
+        "scripts/check-pipeline-status.sh",
+        "experiments/issue-1580/template-go-current-pipeline.test.mjs"
+      ],
+      "decision": "Release events now require their successful direct checks and selected writer, fixing the previous source shape. The PR path still admits empty, nonobject, incomplete and unknown-result inputs; ten actual-source false-success cases and a disposable schema candidate preserve the finding."
+    },
+    {
+      "path": "scripts/ci/rerun-unacquired.mjs",
+      "gitBlob": "921ed8ac7debdad9bf774535387a936e6dffe9b7",
+      "bytes": 5233,
+      "sha256": "8273220d5388d38ba1d939bd1b61bfa959fb7b7a2cc2f78e3faaaa88171626e3",
+      "completeSourceRead": true,
+      "role": "runner acquisition classification and bounded retry",
+      "formalAiComparison": [
+        ".github/workflows/rerun-unacquired.yml",
+        "scripts/rerun-unacquired-jobs.mjs",
+        "experiments/issue-1580/runner-acquisition-recovery.test.mjs"
+      ],
+      "decision": "Adopted in published e1b9a937b: trusted default-branch observer, complete job/annotation pagination, exact acquisition evidence, immutable same-repository identity, finite attempts/deadline and no retry of code failures. All 27 mocked API/actual CLI controls pass. Real hosted acquisition recovery requires default-branch installation and remains unexecuted.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+      "previousDecision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here.",
+      "followupAt": "2026-11-21"
+    },
+    {
+      "path": "scripts/ci/runner-acquisition.mjs",
+      "gitBlob": "6dfec1d449f69d31c256f44712217a6235042cdf",
+      "bytes": 3602,
+      "sha256": "de9903c89fae9e10ac0743916f9f0964a8db7fa3d50e44bd987c321c25f55a86",
+      "completeSourceRead": true,
+      "role": "runner acquisition classification and bounded retry",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/ci/runner-acquisition.test.mjs",
+      "gitBlob": "082fc7b9e82fed04140c6211cac187448ba590fd",
+      "bytes": 9664,
+      "sha256": "a2f8ef435405ad9a7e95a10048ec8ab5258d2729a64cc8a105e79fe9a56b65bd",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 12",
+      "formalAiComparison": [
+        "experiments/issue-1580/template-go-current-pipeline.test.mjs",
+        "experiments/issue-1580/fixtures/go-current-pipeline/scripts/ci/runner-acquisition.mjs"
+      ],
+      "decision": "Upstream tests distinguish failed work, absent runner evidence, bounded rerun attempts and release-required job results. New current-source controls preserve successful, skipped, failed and cancelled outcomes plus both dispatch modes."
+    },
+    {
+      "path": "scripts/create-github-release.mjs",
+      "gitBlob": "86b63802976a0253fe98a7704957174a2a96ba25",
+      "bytes": 3121,
+      "sha256": "1a13992e928fa8d7f0751e36af151662c7baf143e8953981384d1dbcbfefd28c",
+      "completeSourceRead": true,
+      "role": "release announcement",
+      "formalAiComparison": [
+        "scripts/create-github-release.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Requires strict numeric version and existing tag, supplies notes through stdin, and treats already-exists as recovery. Retain Formal AI source-freshness and publication observation contracts; the Go helper alone does not establish tag target or consumed-artifact identity. Upstream source/tests read, not executed.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/create-github-release.test.mjs",
+      "gitBlob": "6d33c93ca7fddf7a7377b354d4585a48616b88d7",
+      "bytes": 2002,
+      "sha256": "44e7ec5095a4a56c99749a1bb40c5f96f5b9c19bed6110da4d06ed0085338f91",
+      "completeSourceRead": true,
+      "role": "release announcement",
+      "formalAiComparison": [
+        "scripts/create-github-release.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Requires strict numeric version and existing tag, supplies notes through stdin, and treats already-exists as recovery. Retain Formal AI source-freshness and publication observation contracts; the Go helper alone does not establish tag target or consumed-artifact identity. Upstream source/tests read, not executed.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/detect-code-changes.mjs",
+      "gitBlob": "d76e0d20145459c5377fffad839af814525a8ce1",
+      "bytes": 5398,
+      "sha256": "ba6cff0c4afaf99a5f9f6be30a2fac40b5129375b58e7fcf1a1079aa7075e45d",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 13",
+      "formalAiComparison": [
+        "scripts/detect-code-changes.rs"
+      ],
+      "decision": "Full PR merge-base and push event ranges replace swallowed Git errors; output flags follow successful observation. Formal AI retains its own language/path outputs and failed-fetch regression instead of importing Go-specific flags."
+    },
+    {
+      "path": "scripts/git-comparison.mjs",
+      "gitBlob": "84291ff44659b7df41bebb95981c73bffb8349b1",
+      "bytes": 1531,
+      "sha256": "95027574ac46410be15f86b1ae0f9f17623ec7d4dff2e2ef753f8a650c09cd98",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 14",
+      "formalAiComparison": [
+        "scripts/detect-code-changes.rs"
+      ],
+      "decision": "Require full commit identities; failed fetch/diff propagates, genuinely parentless commits enumerate their tree, and an unavailable push base does not narrow the range. Compare against the native failed-fetch guard and existing complete-range controls."
+    },
+    {
+      "path": "scripts/git-comparison.test.mjs",
+      "gitBlob": "edbe02109d613459db176f8daeec980d6a6831d1",
+      "bytes": 7869,
+      "sha256": "1e4a83e39cbc22cb80d17afc572187e00a71851d1dea7f7b0d846c1902b8c0dd",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 15",
+      "formalAiComparison": [
+        "rust/tests/web/scripts-js-twins-checks.test.mjs",
+        "experiments/issue-1580/template-go-result-integrity.test.mjs"
+      ],
+      "decision": "Real temporary repositories cover initial and shallow commits, complete multi-commit push/PR ranges, unrelated histories and added-only changesets. The staged-diff status-128 control prevents versioning side effects. No upstream suite execution is claimed."
+    },
+    {
+      "path": "scripts/github-actions-log.mjs",
+      "gitBlob": "cdc8d636d7eafe24c58bb811dad3d17c9d073ac4",
+      "bytes": 1192,
+      "sha256": "29d1a076b214deb7f9ade9636ecd1263aca13514c7a1ada48253c95c743c8182",
+      "completeSourceRead": true,
+      "role": "untrusted log output",
+      "formalAiComparison": [
+        "scripts/lib/github-actions-log.mjs",
+        "scripts/lib/github-actions-log.rs",
+        "experiments/issue-1580/untrusted-scanner-logs.test.mjs"
+      ],
+      "decision": "Adopted the untrusted-log boundary in file-size, hardcoded-language and associative-terminology diagnostics. Deterministic reversible JSON encoding preserves exact JavaScript/Rust output while disabling both command delimiters; intentional annotations retain their existing escaping. Actual JavaScript scanner reproducers fail before and pass after; native helper tests await hosted execution. Repository-wide log trust and complete template acceptance remain open.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+      "previousDecision": "Read random 128-bit stop/resume guard and contributor changeset/filename tests. Keep contributor data out of command interpolation and classify diagnostics without treating printed text as execution. Copied helper remains unchanged in the regression fixture.",
+      "followupAt": "2026-11-21"
+    },
+    {
+      "path": "scripts/github-actions-log.test.mjs",
+      "gitBlob": "90fde639dc399a761f0b6858bc358f2fc262ce02",
+      "bytes": 5192,
+      "sha256": "624879fd48906aa9e8f991fcc899222cdaf35c3bd2317e2154210f85e3cf7e6b",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 16",
+      "formalAiComparison": [
+        "scripts/lib/github-actions-log.mjs",
+        "scripts/lib/github-actions-log.rs",
+        "experiments/issue-1580/untrusted-scanner-logs.test.mjs"
+      ],
+      "decision": "Adopted the untrusted-log boundary in file-size, hardcoded-language and associative-terminology diagnostics. Deterministic reversible JSON encoding preserves exact JavaScript/Rust output while disabling both command delimiters; intentional annotations retain their existing escaping. Actual JavaScript scanner reproducers fail before and pass after; native helper tests await hosted execution. Repository-wide log trust and complete template acceptance remain open.",
+      "previousDecision": "The retained immutable template helper disables Actions command processing around contributor-controlled text. The current upstream test change copies its shared Git dependency into the isolated fixture. This source comparison does not establish a repository-wide adoption of that log trust policy.",
+      "followupAt": "2026-11-21"
+    },
+    {
+      "path": "scripts/merge-changesets.mjs",
+      "gitBlob": "5d367c5b3083e428cd41e8d732d3cba9fbd6a2aa",
+      "bytes": 6553,
+      "sha256": "f329f5f1f05d0415464580b1a3a1772bdbf003e30cdfd1a1066dd338f15948f4",
+      "completeSourceRead": true,
+      "role": "changeset validation and release writes",
+      "formalAiComparison": [
+        "scripts/check-changelog-fragment.rs",
+        "scripts/check-release-needed.rs"
+      ],
+      "decision": "Read every parse/fallback/write/tag/push path. The template uses regex frontmatter, file mtime ordering, PR-diff fallbacks and separate branch/tag pushes; these are not a basis to replace Formal AI fragment validation, publication receipts or source-freshness guards. Unknown diff fallback and broad git add -A deserve care; no unexecuted candidate is claimed fixed. Writers remain serialized by workflow.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/validate-changeset.mjs",
+      "gitBlob": "b0e993908b79146ac5b781c27ffd398b0a4918af",
+      "bytes": 6049,
+      "sha256": "d6475601851b8b3f18764bb1644002f68b2442e25bd18f2b060804fb8f2eba87",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 17",
+      "formalAiComparison": [
+        "scripts/check-changelog-fragment.rs",
+        "scripts/check-changelog-fragment.mjs"
+      ],
+      "decision": "Reuse the complete PR range and reject unavailable history before accepting added release metadata. Keep this repository changelog.d format and validation rather than importing Go frontmatter."
+    },
+    {
+      "path": "scripts/verify-module-availability.mjs",
+      "gitBlob": "18bd22c0be7560995352889b70516f5f52a331b3",
+      "bytes": 2223,
+      "sha256": "3c31273f59175e802ad661eed16a04bb6ca77b2ddd00cafa7633aadb1ae0b1fe",
+      "completeSourceRead": true,
+      "role": "consumer publication verification",
+      "formalAiComparison": [
+        "scripts/verify-public-release-downloads.mjs",
+        "scripts/release-publication-observation.mjs"
+      ],
+      "decision": "Read exact version polling, proxy module-path escaping, finite attempt count and injected-fetch tests. Apply verify-before-announcement and bounded retry concepts; Go proxy polling is not a Rust/npm publication verifier. Fetch lacks a per-request deadline; source observation only, no new executed defect claimed.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/verify-module-availability.test.mjs",
+      "gitBlob": "05504f23e22f173a96b0eb6c63d04a516e2a7abc",
+      "bytes": 1597,
+      "sha256": "0e25e56c16a1833b005250b671d638455d47938b0e13a59d79a9e47340db5a38",
+      "completeSourceRead": true,
+      "role": "consumer publication verification",
+      "formalAiComparison": [
+        "scripts/verify-public-release-downloads.mjs",
+        "scripts/release-publication-observation.mjs"
+      ],
+      "decision": "Read exact version polling, proxy module-path escaping, finite attempt count and injected-fetch tests. Apply verify-before-announcement and bounded retry concepts; Go proxy polling is not a Rust/npm publication verifier. Fetch lacks a per-request deadline; source observation only, no new executed defect claimed.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+    },
+    {
+      "path": "scripts/version-and-commit.mjs",
+      "gitBlob": "57cb54b5c4b3ca986c0d832cab2f5dc0e8eb5a45",
+      "bytes": 9517,
+      "sha256": "cf64e66f9cb49876791ad5f36579df9c8cf12b5facd970e36f6ba12150962e88",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 18",
+      "formalAiComparison": [
+        "scripts/version-and-commit.rs"
+      ],
+      "decision": "Only staged-diff status 1 denotes changes; all other observation errors stop commit/tag/push. Keep Formal AI release writer serialization and its own transaction/recovery behavior."
+    },
+    {
+      "path": "scripts/workflow-policy.test.mjs",
+      "gitBlob": "5c9b9b87438de1cc9561941828415647a7eb3c4d",
+      "bytes": 10619,
+      "sha256": "22011e587856cc2786cfde22133f0f210518f0e91bc40a45921abcd1bf58c1b2",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page(s) 19",
+      "formalAiComparison": [
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        "experiments/issue-1580/workflow-concurrency.test.mjs"
+      ],
+      "decision": "Compare bounded jobs, dispatch skip admission, prerequisite success, selected release commit, least permissions, input environment passing, quoting, runner pins and post-publish verification. Formal AI retains actual parser checks and runtime result controls alongside source assertions."
+    }
+  ],
+  "removed": [
+    {
+      "path": ".changeset/add-changeset-workflow.md",
+      "gitBlob": "705684f4955baecc8ae7eef61d843a144a820db2",
+      "decision": "Removed upstream release fragments are historical version-0.2.0 inputs. Prior pinned review remains intact; there is no current file to execute or adopt."
+    },
+    {
+      "path": ".changeset/fix-ci-workflow-dependencies.md",
+      "gitBlob": "8c9c6c75e5848ddfda8fb9554bf7e2bbe52f5bc3",
+      "decision": "Removed upstream release fragments are historical version-0.2.0 inputs. Prior pinned review remains intact; there is no current file to execute or adopt."
+    },
+    {
+      "path": ".changeset/gate-external-state-and-rerun-unacquired.md",
+      "gitBlob": "282870b317074c564cad166436544d4d196a94d9",
+      "decision": "Removed upstream release fragments are historical version-0.2.0 inputs. Prior pinned review remains intact; there is no current file to execute or adopt."
+    },
+    {
+      "path": ".changeset/harden-release-workflow.md",
+      "gitBlob": "3e500be242b701a0a5a5e3da8e05fd103b53ac2b",
+      "decision": "Removed upstream release fragments are historical version-0.2.0 inputs. Prior pinned review remains intact; there is no current file to execute or adopt."
+    },
+    {
+      "path": ".changeset/recover-releases-and-pin-ci.md",
+      "gitBlob": "47b853c1868eea2a7f90a36c59a61575acf52b06",
+      "decision": "Removed upstream release fragments are historical version-0.2.0 inputs. Prior pinned review remains intact; there is no current file to execute or adopt."
+    }
+  ],
+  "upstreamPipelineInputIssue": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/23"
+}

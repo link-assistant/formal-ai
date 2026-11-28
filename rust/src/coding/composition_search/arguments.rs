@@ -467,6 +467,56 @@ pub(super) fn pathological_repeat(node: &IrNode) -> bool {
     walk(node, &mut counts)
 }
 
+/// The number of type constructors in `ty`: the measure that says whether a
+/// fragment's result is strictly larger than what one of its slots accepts.
+fn type_size(ty: &IrType) -> usize {
+    match ty {
+        IrType::Sequence(inner) | IrType::OrderedSequence(inner) => 1 + type_size(inner),
+        IrType::Pair(left, right) | IrType::Mapping(left, right) => {
+            1 + type_size(left) + type_size(right)
+        }
+        _ => 1,
+    }
+}
+
+fn applies_fragment(node: &IrNode, id: &str) -> bool {
+    match node {
+        IrNode::Apply {
+            fragment,
+            arguments,
+        } => {
+            fragment == id
+                || arguments
+                    .iter()
+                    .any(|argument| applies_fragment(argument, id))
+        }
+        _ => false,
+    }
+}
+
+/// Whether applying `fragment` to `arguments` feeds the fragment's own output
+/// back into a collection slot its result type strictly outgrows (issue #1639).
+///
+/// A fragment that maps a collection to a collection of strictly larger
+/// elements amplifies its input: `combinations(x, 2)` turns n items
+/// into n(n-1)/2 pairs, so nesting it k times holds a doubly exponential
+/// number of values (4 numbers become 6, 15, 105, 5 460, 14.9 million pairs at
+/// depth 5), and Python materializes each level before the next. A typed
+/// search bounded only by depth reached the seven-deep chain, whose
+/// verification run allocated more than 15 GB and killed the benchmark corpus
+/// gate. Self-application of a size-preserving fragment (`max(max(a, b), c)`,
+/// `add(add(a, b), c)`) is unaffected, and so is nesting into a scalar slot
+/// (`((a, b), c)` grows linearly): only a collection slot fed a strictly larger
+/// result type, which can never be a fixpoint of that slot, is refused.
+pub(super) fn amplifies_its_own_output(fragment: &Fragment, arguments: &[Expression]) -> bool {
+    arguments.iter().enumerate().any(|(slot, argument)| {
+        fragment.signature.get(slot).is_some_and(|expected| {
+            matches!(expected, IrType::Sequence(_) | IrType::OrderedSequence(_))
+                && type_size(&fragment.result) > type_size(expected)
+        }) && applies_fragment(&argument.node, &fragment.id)
+    })
+}
+
 /// Whether any fragment id is applied more than once in the tree.
 pub(super) fn repeats_a_fragment(node: &IrNode) -> bool {
     fn count(node: &IrNode, counts: &mut std::collections::BTreeMap<String, usize>) {

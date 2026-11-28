@@ -34,9 +34,15 @@ test('an edit whose payload names orders and a list is not a computer-use plan',
   assert.equal(computerUsePlanAgenticStep([user(EDIT)], AGENT_CLI_TOOLS), null);
 });
 
-test('an unquoted computer-use request still plans', () => {
-  const prompt = 'Count the sub-tasks of the customer import rewrite and save the result in `counts.md`.';
-  assert.notEqual(planRequest(prompt), null);
+test('an explicit computer-use count retains its supplied operands', () => {
+  // Main's 66169b8f requires explicit inputs rather than guessed resources.
+  const prompt = 'Count the lines in customers.csv and save counts.md.\n```computer-use\n'
+    + '[{"primitive":"shell.run","arguments":{"operation":"count_lines","input":"customers.csv","output":"counts.md","confirmed":true}}]\n```';
+  const plan = planRequest(prompt);
+  assert.equal(plan.steps.length, 1);
+  assert.deepEqual(plan.steps[0].arguments, {
+    operation: 'count_lines', input: 'customers.csv', output: 'counts.md', confirmed: true,
+  });
 });
 
 // G105 (TRANSLATE, T773): a «…» payload that runs over a blank line was read

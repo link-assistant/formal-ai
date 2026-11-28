@@ -1,0 +1,92 @@
+{
+  "ciHead": "0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6",
+  "run": 44095402201,
+  "job": 134081207267,
+  "actualFailureLog": "experiments/issue-1580/evidence/ci/0f90c0a7a/attempt-1/44095402201.log.gz",
+  "failureLines": [
+    7069,
+    7965,
+    7966,
+    7967,
+    7968,
+    7988
+  ],
+  "cause": "New preserved reporter log used the abbreviated word spec in its basename; the existing filename ratchet rose from 90 to 91. This is a real policy failure, not a checkout or runner-acquisition error.",
+  "oldPath": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/initial-spec-reporter.log.gz",
+  "newPath": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/initial-specification-reporter.log.gz",
+  "compressedSha256": "12946d0b443287a3da3c2c66203c29d4c9fad788b9d8941165fd3d9ef146ebd7",
+  "rawSha256": "92a719db3f9ee9a72d832fed4bdbdc0bcd5730d916592107ef83e849f73bdefe",
+  "rawBytes": 2076,
+  "before": {
+    "command": [
+      "node",
+      "scripts/measure-abbreviations.mjs",
+      "--check"
+    ],
+    "exitCode": 1,
+    "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/abbreviation-before.log.gz",
+    "logSha256": "7f514a3885465f5fa139272bd3861fc89895f4b1458dd00319328e3307ce660a"
+  },
+  "baselineChanged": false,
+  "historicalReferences": "Immutable archived scripts and original failure logs retain the original spelling. This receipt maps that historical name to the current byte-identical file.",
+  "authorship": "Codex-supplied filename repair and checks; zero independently accepted Formal AI reasoning units.",
+  "after": [
+    {
+      "label": "abbreviation-regression",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/abbreviations.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/abbreviation-regression-after.log.gz",
+      "rawSha256": "e574ad1740a37a90caabef1f0f06f8bd9cbc8742d9f59220d0a81a4e6966ac8c",
+      "rawLines": 46
+    },
+    {
+      "label": "check-abbreviations",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-abbreviations-after.log.gz",
+      "rawSha256": "ae7984b716ee3f2e1d62b3e701ecf2b5099b01b26211150941139cba3def9e27",
+      "rawLines": 3
+    },
+    {
+      "label": "check-file-size",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-file-size-after.log.gz",
+      "rawSha256": "08a71afac578dae5888473045d6beda83b10fa05c52a8039a048ac3ea3386f25",
+      "rawLines": 3
+    },
+    {
+      "label": "check-file-size-js-twin",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-file-size-js-twin-after.log.gz",
+      "rawSha256": "cac99620104fa69aded3a25838dfbfed2e8b9c3f56fa6356a56ccbc2c7d912eb",
+      "rawLines": 3
+    }
+  ],
+  "claim": "Existing abbreviation regression and touched local gates pass after the byte-preserving rename, with the ratchet baseline unchanged. This does not establish final-head hosted CI or complete issue 1580.",
+  "reviewHarnessCorrection": "The first metadata-review script indexed a lines key on historical inventory records that do not define line counts. It stopped with KeyError before any changes. The corrected optional-key comparison passes and preserves every existing blob/hash/byte/line field; no source or test repair was needed."
+}

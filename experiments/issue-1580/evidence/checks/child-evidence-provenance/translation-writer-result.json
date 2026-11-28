@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "scripts/translate-js-rust.mjs",
+    "--write",
+    "--fetch",
+    "--jobs",
+    "1",
+    "js/agentic/crate/meta_executor.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 106.054,
+  "rawLines": 7,
+  "rawSha256": "b7fc5bbde61b06a2e51412638ecaf2f27008f3c460281c2ef1aeba25e4b43118",
+  "nativeBuildRequested": false,
+  "independentAuthorshipCredit": 0
+}

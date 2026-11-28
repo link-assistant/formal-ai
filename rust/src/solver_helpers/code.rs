@@ -8,8 +8,70 @@
 //! path resolving unchanged.
 
 use super::{extract_backticked, extract_fenced_block, extract_quoted_phrase};
+use crate::engine::SelectedRule;
 use crate::language::{Language, detect as detect_language};
 use crate::proof_program::FormalProof;
+
+pub(crate) fn catalog_operand_is_unbound(rule: &SelectedRule, has_bound_program: bool) -> bool {
+    !has_bound_program
+        && matches!(rule, SelectedRule::WriteProgram(spec)
+            if crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug).is_some())
+}
+
+pub(crate) fn enforce_answer_questions(
+    body: &str,
+    log: &mut crate::event_log::EventLog,
+    rule: &SelectedRule,
+    has_bound_program: bool,
+) -> String {
+    let requires_input = catalog_operand_is_unbound(rule, has_bound_program)
+        || matches!(
+            rule,
+            SelectedRule::UnsupportedWriteProgram {
+                task: None,
+                language: Some(_),
+            }
+        );
+    if requires_input {
+        crate::question_necessity::enforce_requirement_questions(body, log)
+    } else {
+        crate::question_necessity::enforce_questions(body, log)
+    }
+}
+
+pub(crate) fn catalog_execution_recipe(
+    rule: &crate::engine::SelectedRule,
+    prompt: &str,
+    bound: Option<crate::coding::catalog_parameters::BoundCatalogProgram>,
+    cached: Option<String>,
+) -> Option<Box<crate::engine::ExecutionRecipe>> {
+    let crate::engine::SelectedRule::WriteProgram(spec) = rule else {
+        return None;
+    };
+    let source = if crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+        .is_some()
+    {
+        bound?.template.code.into_owned()
+    } else {
+        cached.unwrap_or_else(|| {
+            crate::code_editing::apply_inline_hello_world_source_replacement(
+                prompt,
+                &spec.template.code,
+                *spec,
+            )
+        })
+    };
+    Some(Box::new(crate::engine::ExecutionRecipe {
+        language: spec.language.code_fence.to_owned(),
+        source,
+        path: spec.language.save_as.to_string(),
+        supporting_files: Vec::new(),
+        commands: crate::discovery_production::catalog_run_commands(spec.language)
+            .into_iter()
+            .map(str::to_owned)
+            .collect(),
+    }))
+}
 
 pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'static str)> {
     let langs = [
@@ -264,7 +326,7 @@ pub fn translate_surface_detailed(
 
 /// Extract a JavaScript program from a prompt that asks the solver to run it.
 /// Looks for triple-backtick code fences first (with optional `js`/`javascript`
-/// language tag), then single-backtick spans, then `run "...";` quoted bodies.
+/// language tag), then the complete colon-introduced body, then backtick or quote wrappers.
 /// Returns `None` when the prompt does not appear to request JS execution.
 pub fn extract_javascript_program(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
@@ -282,14 +344,24 @@ pub fn extract_javascript_program(prompt: &str) -> Option<String> {
     if let Some(body) = extract_fenced_block(prompt, &["javascript", "js"]) {
         return Some(body);
     }
-    if let Some(body) = extract_backticked(prompt) {
-        return Some(body);
-    }
-    extract_quoted_phrase(prompt).or_else(|| {
-        // The colon after the request introduces the program
-        // ("Run this JavaScript: console.log(1 + 2)").
-        let (_, body) = prompt.split_once(": ")?;
+    // A colon introduces the whole program; its string literals are not wrappers.
+    if let Some((_, body)) = prompt.split_once(": ") {
         let body = body.trim();
-        (!body.is_empty()).then(|| body.to_owned())
-    })
+        if !body.is_empty() {
+            for delimiter in ['"', '`'] {
+                if let Some(inner) = body
+                    .strip_prefix(delimiter)
+                    .and_then(|rest| rest.strip_suffix(delimiter))
+                {
+                    return Some(inner.to_owned());
+                }
+            }
+            return Some(body.to_owned());
+        }
+    }
+    extract_backticked(prompt).or_else(|| extract_quoted_phrase(prompt))
 }
+
+#[cfg(test)]
+#[path = "../../tests/unit/solver/javascript_program.rs"]
+mod javascript_program_tests;

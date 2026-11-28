@@ -1,0 +1,306 @@
+{
+  "head": "235fb71c168d9052382d1f4dc473240e14c23495",
+  "sourceHashesBefore": {
+    ".github/workflows/native-type-check.yml": "8781e6acb5bfd769aff702dc3d0f96566d82a427c948a847ef6cfb8b1bf3ec0b",
+    "changelog.d/20261118_150000_issue_1586_structured_output.md": "d06f561e135581d640a38537513a6787417811207d6a2950d75b3fc9cc2a7121",
+    "changelog.d/issue-1580-complete-cache-request-binding.md": "bd14a518244477e4c66b5fe944fe640570b084a8b5abfb2722cffad2b8431fd5",
+    "data/benchmarks/fast-pull-request-javascript-tests.json": "769a43cc7676e5456ad778489f3faf19529236efc7a5456c6f3a05809da9df19",
+    "data/meta/agentic-messages.lino": "5bd49517b34a368318feb23dad163bc161930ab259ebd13006eab2a3e048a514",
+    "data/meta/debt-ratchet.lino": "518ee5031454764764bb3034a8ab67aeef1bb736b22e4577161455803e0ced06",
+    "data/meta/llm-task-classes.lino": "76ba53cf60b49b92d865e099ce97fb3333cbff2252270ead394409dbeef10d3d",
+    "data/meta/notation-ratchet.lino": "207ec3d765806f4e7a423f85cfe2d9ac241b44ab55225dc4574c789c70444df4",
+    "data/meta/runtime-feature-coverage.json": "6f4332805dafc4bac04cf1babd1d4fb32745f22e2c9669c4b333bad695264943",
+    "data/seed/code-task-cues.lino": "e8f6600831f5103d4ec6a8c5386e247b5fb60d062e209c78a94eeb3b4d6ad21f",
+    "data/seed/meanings-concept-lookup.lino": "06a89686fd3b479cd898265e553291ac5670fcb045af3f84351cdc57ffb58694",
+    "dev/log/issues/1586/pulls/1598/sessions/ses_e16a64b32ffeT7gcIqGmGFfoQY/metadata.json": "3bed3771f496169e4457d34f46bcea053f7fcdef08e00535e0e0ec9efc1a1aed",
+    "dev/log/issues/1586/pulls/1598/sessions/ses_e16a64b32ffeT7gcIqGmGFfoQY/solve.log": "1e28c36272af07896db652e0eee200cef6756cfba6071590fca3eb5fbc1196f0",
+    "docs/configuration/server-api.md": "f0602dde5d94752e68eb467c1717c73d96ab123ff160071605c5b8ccd6ebf026",
+    "docs/llm-task-parity.md": "26c28694516691bf0288c60bc249373a3795675252c475cd42dd082f0e42e0c8",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8": "95c727a8b3d0312dbf948e804f6776c4c6fa2aeed1d80b54934abb3d36e01fba",
+    "js/server/chat-request.mjs": "aea88c6537e94d6327f7b11d17ee8602f1ebf3b9a58559e1a5a2ea1dfceb753c",
+    "js/server/client-functions.mjs": "cf61009a1597cf7ba89f51f7ea8de4db5451591d2f8da005eef75ec8b9f82dd1",
+    "js/server/openai.mjs": "1ea7e54d4453692392da2c6bf49b18f8dee9834e155ab505fac728989729f858",
+    "js/server/responses-input.mjs": "97a3de1e80395b95196bd905523c88122bc6db7acc51c59a00e7b789e8ac8ad0",
+    "js/server/responses.mjs": "a5372e09390035ee9f7bfbb0757a736600d6de27882dabac30b3fa3664233493",
+    "js/server/service.mjs": "fe66b243698ade6fc006e8027515e898e0daa61f93cf1f1c9273702441c16dd7",
+    "js/server/structured-output.mjs": "6cee1da5e1368a91869c4472b8fddeeab35c58cdee32620aee6c527f8b5a7820",
+    "js/server/structured-schema.mjs": "38d49ea475e955e4f2ea19510e37a093d49a1381f7ac12705710cc0c3e2e5361",
+    "rust/embedded/data/meta/agentic-messages.lino": "5bd49517b34a368318feb23dad163bc161930ab259ebd13006eab2a3e048a514",
+    "rust/embedded/data/seed/code-task-cues.lino": "e8f6600831f5103d4ec6a8c5386e247b5fb60d062e209c78a94eeb3b4d6ad21f",
+    "rust/embedded/data/seed/meanings-concept-lookup.lino": "06a89686fd3b479cd898265e553291ac5670fcb045af3f84351cdc57ffb58694",
+    "rust/src/agentic_coding/driver.rs": "557ab3e209211b2c8fc540cb316fc7935aec435325508677901c4a31543dc3c0",
+    "rust/src/anthropic.rs": "95ae2877102abdabc39601eca0f32269353605b62e0380d5e814dbbe6269690f",
+    "rust/src/gemini.rs": "4aaf8f1a4a935b77888f799f13803aaec83d9a0a3ab11b23561b56c927dd6ad6",
+    "rust/src/main.rs": "8553719902fc5553a8524d982c1e6830960221823730e112f18dfbce816c7be6",
+    "rust/src/protocol.rs": "fab8cfef1784127751823eae31b9a91d7d923ae22d6ec76374e8394701478ce4",
+    "rust/src/protocol/chat_request.rs": "59d09d6a4a1163fc690f988ca395989f96f34cd4afae0e292e08c1266beafe96",
+    "rust/src/protocol/client_functions.rs": "21acec99e7ab3adcbb60102089788a6bf769517d595b095028f0a75f3fb240de",
+    "rust/src/protocol/cnl.rs": "2f5d26cbe03b7bc6388372596c39bdbdff41c4fe3a3ccc9ec8ab50f6ca97b35e",
+    "rust/src/protocol/output.rs": "556487bd543430028688de3541559eb957aad797a7c9afdf9930def5acd24d35",
+    "rust/src/protocol/structured_output.rs": "c68eb1c593d98e5cf6b0e97860ef175c6e48a91634cf1258e5df126dfc58e1e9",
+    "rust/src/protocol/structured_schema.rs": "0708117b09d36612751ac048c8167ace52565b999cb74c415d44b726904b1839",
+    "rust/src/server.rs": "53d691846829da7f76951ca650847efb18b8ece5f0142bded80f26bcc878e6aa",
+    "rust/src/server/chat_stream.rs": "4585e453583a351ef3548c8eb1409aed2058ab8d0341b98c5138e1c28509b415",
+    "rust/src/solver_unknown_reasoning.rs": "880f2826e95fcb2c8191f414f6afb078d14d29377fbfa2b2eedfd6aa6f15223b",
+    "rust/tests/unit/agentic-coding/issue_716_agentic_execution.rs": "06cf57b8148d41a1c5c8d20ab1e3f06766ad8eba950f69d583f4eba1286d0264",
+    "rust/tests/unit/claude_code_away_recap.rs": "a1e16c5360cd949cd9ce0d45840cea5760c33ecb0c8cc3f23fa87098fce53c3c",
+    "rust/tests/unit/coding_ladder_rungs.rs": "92c5e9fa4fa412072c3af386807d566331a988264fc719eda3507fcc34016a60",
+    "rust/tests/unit/formal_ai.rs": "b863505b7078336502244d0826789fcb3871ce5e201a71833333697070efeb2a",
+    "rust/tests/unit/issue_1184_derivation_records.rs": "73d1086420caf052db72ed4b816681c9b914d4a7407d0f340f9517aeec1476ea",
+    "rust/tests/unit/issue_701_dreaming_amendment_class.rs": "6c26bec8dffdd291a7303697f50485122210f6a92ef0cff8836d9df1978b8880",
+    "rust/tests/unit/issue_705_anticipation.rs": "0afdd9c545b423217263debc24897d5abed89471ad0ae7c479227f70fd483870",
+    "rust/tests/unit/memory/issue_708_memory_query_language_execution.rs": "1bd74deb3834b5b1f50bfae2ed05248e4adc91c7fb5ee26712da97974bb23a80",
+    "rust/tests/unit/memory_learning.rs": "7a19ff0255f78dbc88f267b148b19d83693fb77ff8b4cb8dad484b0f4e2766b0",
+    "rust/tests/unit/memory_maintenance.rs": "20e030c30029e64a59e9e91068f5d4dea41a2e08a045cd10f2d9fa95d54a81b7",
+    "rust/tests/unit/solver/issue_840_route_ladder.rs": "7603aa27b1bade5597779794bb5741f8023d02a4d62430aedb94e3770efd2ad7",
+    "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs": "44a30ed69ccb04112f91081a386df173defa1f0060b3733d3b63901e1946e4ad",
+    "rust/tests/unit/specification/conversation_history.rs": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022",
+    "rust/tests/unit/specification/openai_compatibility.rs": "914c6382208e724c2ae1501c336b77dd83f318feb9fefdabe722e95070f69d31",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "6f672c1ba81dbc538b5ade20856093fd155f46c3469a9fbbc38f705c7e0f561b",
+    "rust/tests/web/issue-1586-structured-output.test.mjs": "37678b9b6c13c68c0b1b84caeb7c025249d05ab7f24e4fbb3a6dd47bbe847f0c",
+    "rust/tests/web/support/structured-log-fixture.mjs": "26ea3396dfb19e127a2a6f45f6d60c55e01ac3cbb733c5f17d6488a35cd9b139",
+    "scripts/ci-pull-request-admission.mjs": "69fd703c2e83d998976f89534c59ab3e329df9161e17e8c5b53e5df59f1a7739",
+    "scripts/generate-llm-task-parity.rs": "9242482e04ed6d71726e98b95ee2bfa07990c918f3c364315f54d29949a9964a",
+    "scripts/hardcoded-language-allowlist.txt": "4709bfab99c4a2b496733991961061667ed42ac24416f481f0dbb35d18b594b9",
+    "ts/server/chat-request.mts": "aea88c6537e94d6327f7b11d17ee8602f1ebf3b9a58559e1a5a2ea1dfceb753c",
+    "ts/server/client-functions.mts": "cf61009a1597cf7ba89f51f7ea8de4db5451591d2f8da005eef75ec8b9f82dd1",
+    "ts/server/openai.mts": "1ea7e54d4453692392da2c6bf49b18f8dee9834e155ab505fac728989729f858",
+    "ts/server/responses-input.mts": "97a3de1e80395b95196bd905523c88122bc6db7acc51c59a00e7b789e8ac8ad0",
+    "ts/server/responses.mts": "a5372e09390035ee9f7bfbb0757a736600d6de27882dabac30b3fa3664233493",
+    "ts/server/service.mts": "fe66b243698ade6fc006e8027515e898e0daa61f93cf1f1c9273702441c16dd7",
+    "ts/server/structured-output.mts": "6cee1da5e1368a91869c4472b8fddeeab35c58cdee32620aee6c527f8b5a7820",
+    "ts/server/structured-schema.mts": "38d49ea475e955e4f2ea19510e37a093d49a1381f7ac12705710cc0c3e2e5361",
+    "ts/server/worker-script-prerequisites.mts": "c0965048ab511da7b5570afa1d479beefbda8ee7799bba996a658b8fd494002d",
+    "ts/worker-script-prerequisites.ts": "a44a88e0e407b6bffae5199dc629da8790c74a0610078f7bd3e02f17dff7287e",
+    "ts/worker/formal_ai_worker_seed_responses_and_language.ts": "299df7f3d5867650f491096d1ef9b81cd7e48ba151bf6d681ce7d1c0ba7e7b3a"
+  },
+  "checks": [
+    {
+      "name": "default-branch-build-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.096,
+      "file": "default-branch-build-policy.log.gz",
+      "rawSha256": "1f9c8293cccbe88d77e8e8dab53b6ac288a8071e4bdaf3f61c6514e1d09f984d",
+      "lines": 32
+    },
+    {
+      "name": "translate-es",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/translate-es.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.769,
+      "file": "translate-es.log.gz",
+      "rawSha256": "f4f28f3336f50a0f48ab5ba512b5aa8fbdd4b6e2b21cc65793f8f028b9ca8806",
+      "lines": 20
+    },
+    {
+      "name": "worker-unknown-language",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/worker-unknown-language.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 16.686,
+      "file": "worker-unknown-language.log.gz",
+      "rawSha256": "3d4c3db7bb7f8b84bd2cbfbbed17697a445ce06ba1e57b0aa40e8783a16d98ad",
+      "lines": 18
+    },
+    {
+      "name": "issue-1550-procedure-census",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-procedure-census.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 24.903,
+      "file": "issue-1550-procedure-census.log.gz",
+      "rawSha256": "01a1932af6ae2664e39d189fd4068f2ffc9de170928cf7525a77e89250a1ef6d",
+      "lines": 16
+    },
+    {
+      "name": "rust-specification-unicode-identifiers",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 15.419,
+      "file": "rust-specification-unicode-identifiers.log.gz",
+      "rawSha256": "b1a360067b0c909d37ca01ba0d2a25dda0cf5cb52519a818f3adc324b1c27f5d",
+      "lines": 42
+    },
+    {
+      "name": "rust-specification-fixture-integrity",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.369,
+      "file": "rust-specification-fixture-integrity.log.gz",
+      "rawSha256": "9cfe38389e43ef5bff1cf8e45145f4120506da60f15e13dabb3b6dba39dca236",
+      "lines": 10
+    },
+    {
+      "name": "issue-1586-structured-output",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1586-structured-output.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 41.351,
+      "file": "issue-1586-structured-output.log.gz",
+      "rawSha256": "7406754970c72d2f6128cd42ad50d6a88a7318d47128417a0a530762878ad90c",
+      "lines": 9
+    },
+    {
+      "name": "issue-0016-seed-mirror",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-0016-seed-mirror.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.958,
+      "file": "issue-0016-seed-mirror.log.gz",
+      "rawSha256": "af0e750576f1646ccffc5882337efedc49737b02e5909b5db70bc848b980bc9a",
+      "lines": 11
+    },
+    {
+      "name": "retrieved-concept-grounding",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/retrieved-concept-grounding.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 2.378,
+      "file": "retrieved-concept-grounding.log.gz",
+      "rawSha256": "531388cd65c7878a801814c12df41f5991b0b71fc221ea28401b9f6802b50259",
+      "lines": 14
+    },
+    {
+      "name": "source-projection-canonical-meanings",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/source-projection-canonical-meanings.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.652,
+      "file": "source-projection-canonical-meanings.log.gz",
+      "rawSha256": "5d49997131c0401f9421c7db38ce5aafcf972b6c0dcb3e583be1a31adc51b234",
+      "lines": 12
+    },
+    {
+      "name": "typescript-projection",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 3.1,
+      "file": "typescript-projection.log.gz",
+      "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+      "lines": 1
+    },
+    {
+      "name": "rustfmt",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/solver_unknown_reasoning.rs",
+        "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.133,
+      "file": "rustfmt.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.359,
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    {
+      "name": "all-local-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 795.257,
+      "file": "all-local-gates.log.gz",
+      "rawSha256": "9ca27b168ad8ba86798b6b11ae75f1cddaf1a27468f3440d09b9d5cd5e25879b",
+      "lines": 140
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "name": "js-rust",
+    "argv": [
+      "node",
+      "--max-old-space-size=384",
+      "scripts/translate-js-rust.mjs",
+      "--write",
+      "--fetch",
+      "--jobs",
+      "1",
+      "js/agentic/crate/cnl_grammar.mjs",
+      "js/agentic/crate/cnl_output.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 116.363,
+    "file": "js-rust.log.gz",
+    "rawSha256": "188d3ecc990546238de55a4688b92bbef75035094ea16b86b182e0114818b0b7",
+    "archiveSha256": "a8516df958fe781179156c66d2e8a85f44eeaed465c39127602c4f2e00717b9d",
+    "lines": 6,
+    "cgroupPeakBytes": 2867990528,
+    "stoppedForMemory": false
+  },
+  {
+    "name": "package-mirror",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 0.506,
+    "file": "package-mirror.log.gz",
+    "rawSha256": "0cbee0a3ab43afdb1a52edbbea0714948f9938be5d8e9048bf1bb8b73f5af045",
+    "archiveSha256": "c095797af42211981be0b33cf35449d83e894a4ceb2f2972216334f81f5f8b52",
+    "lines": 1,
+    "cgroupPeakBytes": 2867990528,
+    "stoppedForMemory": false
+  }
+]

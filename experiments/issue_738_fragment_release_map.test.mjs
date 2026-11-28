@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
   copyFileSync,
+  existsSync,
   mkdtempSync,
   mkdirSync,
   readFileSync,
@@ -16,6 +17,7 @@ import test from "node:test";
 import {
   ARCHIVE_DIR,
   ARCHIVE_LINE_LIMIT,
+  INITIAL_COMMIT,
   addPendingRelease,
   rebaseLinks,
   relativeTo,
@@ -73,13 +75,41 @@ test("release regeneration records a consumed fragment in the release commit", (
   const repo = join(root, "repo");
   const source = process.cwd();
   try {
-    execFileSync("git", ["clone", "--shared", "--quiet", source, repo]);
-    execFileSync("git", ["-C", repo, "config", "user.email", "test@example.com"]);
-    execFileSync("git", ["-C", repo, "config", "user.name", "Test"]);
+    // Keep the real Git/CLI boundary, with a finite history owned by this
+    // fixture. A shared clone of the developer checkout can inherit missing
+    // promisor objects without inheriting the remote that can fetch them.
+    mkdirSync(repo);
+    const git = (...args) => execFileSync("git", ["-C", repo, ...args], { encoding: "utf8" });
+    git("init", "--quiet", "--initial-branch=main");
+    git("config", "user.email", "test@example.com");
+    git("config", "user.name", "Test");
+    mkdirSync(join(repo, "changelog.d"));
+    mkdirSync(join(repo, "docs/case-studies/issue-711"), { recursive: true });
+    mkdirSync(join(repo, "experiments"));
+    const importedBody = "### Added\n- Imported fixture fragment.";
+    writeFileSync(join(repo, "CHANGELOG.md"),
+      `# Changelog\n\n## [0.2.0] - 2026-01-02\n\n${importedBody}\n\n## [0.1.0] - 2026-01-01\n\n### Added\n- Initial release.\n`);
+    writeFileSync(join(repo, "changelog.d/imported.md"), `${importedBody}\n`);
+    git("add", "CHANGELOG.md", "changelog.d");
+    git("commit", "--quiet", "-m", "import fixture history");
+    // Git's replacement ref binds the production import identity to this
+    // fixture's actual baseline. No production override or copied history is
+    // needed, and every blob remains available without a remote.
+    git("update-ref", `refs/replace/${INITIAL_COMMIT}`, git("rev-parse", "HEAD").trim());
+    const historicalFragment = "changelog.d/consumed.md";
+    writeFileSync(join(repo, historicalFragment), "### Fixed\n- Historical consumed fragment.\n");
+    git("add", historicalFragment);
+    git("commit", "--quiet", "-m", "add historical fragment");
+    git("rm", "--quiet", historicalFragment);
+    git("commit", "--quiet", "-m", "chore: release v0.3.0");
     copyFileSync(
       join(source, "experiments/issue_711_rebuild_changelog.mjs"),
       join(repo, "experiments/issue_711_rebuild_changelog.mjs"),
     );
+    assert.equal(git("remote").trim(), "");
+    assert.equal(existsSync(join(repo, ".git/objects/info/alternates")), false);
+    assert.equal(existsSync(join(repo, "rust/src/lib.rs")), false);
+    assert.equal(existsSync(join(repo, "experiments/issue-1580/evidence")), false);
 
     const fragment = "changelog.d/20990101_issue_738_fixture.md";
     mkdirSync(join(repo, "changelog.d"), { recursive: true });
@@ -108,6 +138,10 @@ test("release regeneration records a consumed fragment in the release commit", (
     );
     const changelog = readFileSync(join(repo, "CHANGELOG.md"), "utf8");
     assert.match(map, /^fragment\tfirst_release$/m);
+    assert.equal(git("rev-list", "--count", "HEAD").trim(), "4");
+    assert.match(map, /^changelog\.d\/imported\.md\t0\.2\.0$/m);
+    assert.match(map, /^changelog\.d\/consumed\.md\t0\.3\.0$/m);
+    assert.match(changelog, /Historical consumed fragment/);
     assert.match(map, /^changelog\.d\/20990101_issue_738_fixture\.md\t999\.0\.0$/m);
     assert.doesNotMatch(map, /^fragment\tfirst_release\tfirst_release_commit$/m);
     assert.match(changelog, /## \[999\.0\.0] - 2099-01-01/);

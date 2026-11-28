@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-11-17T21:47:01.443615+00:00",
+  "head": "7780c70715df515a8ffcb085bff0902b4489bb94",
+  "run": 44180825006,
+  "bytes": 1616780,
+  "lines": 9111,
+  "sha256": "a6eb9d1fe8a78a73b05e0fa09b6d261474a326d2c2f7496af6d90cef250fe371",
+  "scope": "Complete raw log preserved; this index is a targeted failure-marker review.",
+  "markers": [
+    {
+      "line": 8984,
+      "payload": "\u2716 the crate under rust/src carries no inline unit tests (1313.990068ms)"
+    },
+    {
+      "line": 9038,
+      "payload": "\u2716 failing tests:"
+    },
+    {
+      "line": 9041,
+      "payload": "\u2716 the crate under rust/src carries no inline unit tests (1313.990068ms)"
+    },
+    {
+      "line": 9062,
+      "payload": "##[error]Process completed with exit code 1."
+    }
+  ]
+}

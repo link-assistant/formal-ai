@@ -1,0 +1,28 @@
+{
+  "baseMain": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "reviewedAt": "2026-11-20",
+  "updatedEntries": [
+    {
+      "path": "scripts/ci-native-regressions.sh",
+      "sourceSha256": "64b7befd32dc6c9ee336075184cfc180f76c7be91f404a9a126c059133dc1b6c",
+      "diffSha256": "60766b9ba7d6dabb8b3449e0e0dcbbca9fc954cbfb3734fa7be7cf1b75e3f38e",
+      "diffLines": 98,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": true,
+      "newDefectEstablished": false
+    },
+    {
+      "path": ".github/workflows/native-type-check.yml",
+      "sourceSha256": "58822ae4b03231dde4a59fe18329a68e76386c612043f9de539fae0f9f5ddf43",
+      "diffSha256": "5859d50f261974a4e176a245bdcc443e6ae3be17841feeda74f859120a29e362",
+      "diffLines": 186,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": true,
+      "newDefectEstablished": false
+    }
+  ],
+  "completeSelectedProductionDiffCount": 106,
+  "wholePullRequestReviewed": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

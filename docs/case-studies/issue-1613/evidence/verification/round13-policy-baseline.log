@@ -1,0 +1,25 @@
+✖ registered carrier policies use the checked section from a verified publisher capture (4392.57873ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7438.691527
+
+✖ failing tests:
+
+test at rust/tests/web/issue-1172-live-fact-parity.test.mjs:336:1
+✖ registered carrier policies use the checked section from a verified publisher capture (4392.57873ms)
+  AssertionError [ERR_ASSERTION]: Air India allows one fully collapsible stroller, carrycot, or infant car seat for each infant, free of charge, in addition to the checked baggage allowance. Strollers are not allowed onboard.
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/issue-1172-live-fact-parity.test.mjs:359:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Air India allows one fully collapsible stroller, carrycot, or infant car seat for each infant, free of charge, in addition to the checked baggage allowance. Strollers are not allowed onboard.',
+    expected: /collapsible stroller|not allowed onboard/,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }

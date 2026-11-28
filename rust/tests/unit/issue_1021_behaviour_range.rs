@@ -296,50 +296,22 @@ fn a_named_exercise_is_answered_as_a_program() {
     }
 }
 
-/// A program that reads standard input is not run by naming it: with no
-/// redirection the reader gets a process waiting on a terminal, and the
-/// "expected output" above it never appears. So the answer prints the fixture
-/// piped in, in the execution report *and* in the numbered test steps — the two
-/// places a reader copies from — and both come from the same task data.
 #[test]
-fn the_stdin_answer_prints_the_input_it_was_verified_against() {
-    // The whole answer, so a reader can see that the fixture appears in the run
-    // command, in the reproduction steps and in the output block, and nowhere
-    // it does not belong.
-    const EXPECTED: &str = "Here is a minimal Rust copy standard input to standard output program:\n\
-         \n\
-         ```rust\n\
-         use std::io::{self, Read, Write};\n\
-         \n\
-         fn main() -> io::Result<()> {\n\
-         \x20   let mut input = Vec::new();\n\
-         \x20   io::stdin().read_to_end(&mut input)?;\n\
-         \x20   io::stdout().write_all(&input)\n\
-         }\n\
-         ```\n\
-         \n\
-         Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\n\
-         Check command: `rustc main.rs -o main`\n\
-         Run command: `printf 'hello\\nworld\\n' | ./main`\n\
-         Output:\n\
-         ```text\n\
-         hello\n\
-         world\n\
-         ```\n\
-         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\
-         \n\
-         How it works:\n\
-         The program performs the requested task and prints its result to standard output.\n\
-         \n\
-         How to test it yourself:\n\
-         1. Install the Rust toolchain from https://rustup.rs.\n\
-         2. Save the code above to a file named `main.rs`.\n\
-         3. Check that it compiles: `rustc main.rs -o main`.\n\
-         4. Run it: `printf 'hello\\nworld\\n' | ./main`.\n\
-         5. Compare the output with the expected output shown above.";
-
+fn the_stdin_answer_leaves_input_to_the_caller() {
     let response = UniversalSolver::default().solve("copy stdin to stdout in Rust");
-    assert_eq!(response.answer, EXPECTED);
+    assert_eq!(response.intent, "write_program");
+    assert_eq!(response.answer.contains("Run command: `./main`"), true);
+    assert_eq!(
+        response.answer.contains("Pipe your data into the command"),
+        true
+    );
+    assert_eq!(response.answer.contains("```text"), false);
+    assert_eq!(
+        response
+            .answer
+            .contains("Execution status: not probed in this environment."),
+        true
+    );
 }
 
 /// And a task that reads no input keeps the plain command it always had, so the
@@ -357,14 +329,13 @@ fn a_task_that_reads_no_input_keeps_its_plain_run_command() {
          }\n\
          ```\n\
          \n\
-         Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\n\
+         Execution status: not probed in this environment.\n\
          Check command: `rustc main.rs -o main`\n\
          Run command: `./main`\n\
-         Output:\n\
+         Output, not observed in this environment:\n\
          ```text\n\
          Hello, world!\n\
          ```\n\
-         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\
          \n\
          How it works:\n\
          The program prints the text `Hello, world!` to standard output and then exits.\n\
@@ -376,7 +347,11 @@ fn a_task_that_reads_no_input_keeps_its_plain_run_command() {
          4. Run it: `./main`.\n\
          5. Compare the output with the expected output shown above.";
 
-    let response = UniversalSolver::default().solve("write me hello world program in Rust");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("write me hello world program in Rust");
     assert_eq!(response.answer, EXPECTED);
     assert!(!response.answer.contains("printf"), "{}", response.answer);
 }
@@ -406,53 +381,44 @@ fn intent(prompt: &str) -> String {
     UniversalSolver::default().solve(prompt).intent
 }
 
-/// Issue #723: *"напиши мне код на PHP Laravel"* — "write me PHP Laravel code" —
-/// was answered with the unspecified-request refusal, because PHP was one of the
-/// few languages the catalog did not template. Cataloguing PHP stopped the
-/// refusal, but it answered a request for Laravel with plain PHP: the catalog
-/// had a single axis where the sentence names two things, so `laravel` could
-/// only be carried as an alias surface of `php`.
-///
-/// The generalization widens that axis instead of adding a rule about Laravel.
-/// A catalog row is an *implementation target*, and a target may be a framework
-/// of another target (`framework_of`). What belongs to the language — its
-/// grammar, its composable idioms — is read through
-/// `ProgramLanguage::base_language`, so a framework inherits it without
-/// restating it; what the request actually asked for — the template, the file
-/// to save it in, the command that runs it — is the framework's own. A
-/// framework nobody catalogued still answers in the language it is written in,
-/// which is the honest answer rather than a refusal.
+/// A request with only an implementation target keeps that target and asks
+/// for the work the program should perform.
 #[test]
-fn a_framework_named_coding_request_is_answered_in_that_framework() {
+fn a_framework_named_coding_request_keeps_the_framework() {
     for (language, prompt, expected) in [
         // Reported.
-        (
-            "ru",
-            "напиши мне код на PHP Laravel",
-            "write_script_laravel",
-        ),
+        ("ru", "напиши мне код на PHP Laravel", "laravel"),
         // Held out: the same request in the other project languages.
-        ("en", "write me PHP Laravel code", "write_script_laravel"),
-        ("hi", "PHP Laravel में कोड लिखें", "write_script_laravel"),
-        ("zh", "用 PHP Laravel 写代码", "write_script_laravel"),
-        // Held out: a second PHP framework nobody catalogued, and the bare
-        // language. Both answer in PHP — an uncatalogued framework falls back
-        // to the language it is written in rather than to a refusal, and the
-        // Laravel row does not capture requests that never named it.
-        ("en", "write me PHP Symfony code", "write_script_php"),
-        ("en", "write me some PHP code", "write_script_php"),
-        ("hi", "PHP में कोड लिखें", "write_script_php"),
-        ("zh", "用 PHP 写代码", "write_script_php"),
+        ("en", "write me PHP Laravel code", "laravel"),
+        ("hi", "PHP Laravel में कोड लिखें", "laravel"),
+        ("zh", "用 PHP Laravel 写代码", "laravel"),
+        // An uncatalogued framework leaves the explicitly requested language.
+        ("en", "write me PHP Symfony code", "php"),
+        ("en", "write me some PHP code", "php"),
+        ("hi", "PHP में कोड लिखें", "php"),
+        ("zh", "用 PHP 写代码", "php"),
         // Controls: the routes this request should have taken all along keep
         // taking it, so PHP joined a rule rather than acquiring one.
-        ("en", "write me Ruby on Rails code", "write_script_ruby"),
-        (
-            "ru",
-            "напиши мне код на Python Django",
-            "write_script_python",
-        ),
+        ("en", "write me Ruby on Rails code", "ruby"),
+        ("ru", "напиши мне код на Python Django", "python"),
     ] {
-        assert_eq!(intent(prompt), expected, "{language}: {prompt}");
+        let response = UniversalSolver::default().solve(prompt);
+        assert_eq!(
+            response.intent, "write_program_skill_gap",
+            "{language}: {prompt}"
+        );
+        assert_eq!(
+            response
+                .links_notation
+                .contains(&format!("program_parameter:language {expected}")),
+            true,
+            "{language}: {prompt}"
+        );
+        assert_eq!(
+            response.answer.contains("```"),
+            false,
+            "{language}: {prompt}"
+        );
     }
 }
 
@@ -465,16 +431,32 @@ fn a_framework_named_coding_request_is_answered_in_that_framework() {
 #[test]
 fn asking_for_code_is_a_coding_request_whatever_the_asking_verb() {
     for (language, prompt, expected) in [
-        ("ru", "мне нужен код на пхп", "write_script_php"),
-        ("ru", "дай мне код на php", "write_script_php"),
-        ("ru", "мне нужен код на python", "write_script_python"),
-        ("en", "I need PHP code", "write_script_php"),
-        ("en", "I want PHP code", "write_script_php"),
-        ("en", "give me python code", "write_script_python"),
-        ("hi", "मुझे php कोड चाहिए", "write_script_php"),
-        ("zh", "我需要 php 代码", "write_script_php"),
+        ("ru", "мне нужен код на пхп", "php"),
+        ("ru", "дай мне код на php", "php"),
+        ("ru", "мне нужен код на python", "python"),
+        ("en", "I need PHP code", "php"),
+        ("en", "I want PHP code", "php"),
+        ("en", "give me python code", "python"),
+        ("hi", "मुझे php कोड चाहिए", "php"),
+        ("zh", "我需要 php 代码", "php"),
     ] {
-        assert_eq!(intent(prompt), expected, "{language}: {prompt}");
+        let response = UniversalSolver::default().solve(prompt);
+        assert_eq!(
+            response.intent, "write_program_skill_gap",
+            "{language}: {prompt}"
+        );
+        assert_eq!(
+            response
+                .links_notation
+                .contains(&format!("program_parameter:language {expected}")),
+            true,
+            "{language}: {prompt}"
+        );
+        assert_eq!(
+            response.answer.contains("```"),
+            false,
+            "{language}: {prompt}"
+        );
     }
 }
 
@@ -564,7 +546,10 @@ fn a_one_letter_alias_does_not_match_inside_an_accented_word() {
     }
     // The boundary is not simply switched off: an accented word that really
     // does name a language still resolves, and so does a bare `c`.
-    assert_eq!(intent("escribe código en Python"), "write_script_python");
+    assert_eq!(
+        intent("escribe código en Python"),
+        "write_program_skill_gap"
+    );
     assert_eq!(
         intent("write me a C program that counts to three"),
         "write_program"
@@ -600,15 +585,15 @@ fn the_languageless_coding_request_is_answered_in_its_own_language() {
     assert!(russian.answer.contains("язык"), "{}", russian.answer);
 }
 
-/// PHP graduating from the coding oracle to the catalog is what makes the #723
-/// answer a real one: the templates are `php -l`-checked and executed by the
-/// issue-8 harness. The Hello World is now php.net's page example (issue
-/// #1165), which that run never executed, so the answer names the page and
-/// its decomposition check rather than borrowing the run; the `FizzBuzz`
-/// template below keeps the verified status.
+/// PHP remains routable across stdout, other catalog operations, and
+/// numeric list composition.
 #[test]
 fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
-    let response = UniversalSolver::default().solve("write a hello world program in php");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("write a hello world program in php");
     assert_eq!(
         response.answer,
         r#"Here is a minimal PHP hello world program:
@@ -616,15 +601,13 @@ fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
 ```php
 <?php
 
-echo "Hello, world!";
-
-?>
+echo "Hello, world!", PHP_EOL;
 ```
 
-Execution status: not run; this program was rediscovered from https://www.php.net/manual/en/tutorial.firstpage.php and its output contract was checked by decomposition, not by executing it.
+Execution status: not probed in this environment.
 Check command: `php -l main.php`
 Run command: `php main.php`
-Expected output after verification:
+Output, not observed in this environment:
 ```text
 Hello, world!
 ```
@@ -642,8 +625,6 @@ How to test it yourself:
     assert_eq!(response.intent, "write_program", "{}", response.answer);
     assert!(response.answer.contains("```php"), "{}", response.answer);
     assert!(response.answer.contains("<?php"), "{}", response.answer);
-    // php.net's page example is not the template the harness ran (issue
-    // #1165), so the answer cites its page, not that run.
     assert!(
         !response.answer.contains("compiled and ran"),
         "{}",
@@ -653,7 +634,8 @@ How to test it yourself:
     // Held out: a catalogued task, and a numeric-list task the universal
     // composer derives from `data/seed/coding-idioms.lino` rather than from a
     // template — both must reach PHP now that the language is catalogued.
-    let fizzbuzz = UniversalSolver::default().solve("write a fizzbuzz program in php");
+    let fizzbuzz =
+        UniversalSolver::default().solve("write a fizzbuzz program in php from 1 through 15");
     assert_eq!(
         fizzbuzz.answer,
         r#"Here is a minimal PHP FizzBuzz program:
@@ -674,10 +656,10 @@ foreach (range(1, 15) as $number) {
 }
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Execution status: not probed in this environment.
 Check command: `php -l main.php`
 Run command: `php main.php`
-Output:
+Output, not observed in this environment:
 ```text
 1
 2
@@ -695,10 +677,9 @@ Fizz
 14
 FizzBuzz
 ```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
 
 How it works:
-The program loops over the numbers 1 to 15. For each number it prints `FizzBuzz` when the number is divisible by both 3 and 5, `Fizz` when it is divisible by 3, `Buzz` when it is divisible by 5, and otherwise the number itself — each on its own line.
+For each integer in the requested range, the program prints Fizz for multiples of 3, Buzz for multiples of 5, FizzBuzz for multiples of both, and the number otherwise.
 
 How to test it yourself:
 1. Install PHP from https://www.php.net/downloads.
@@ -781,13 +762,11 @@ fn a_named_task_is_not_answered_with_a_minimal_script() {
         );
     }
 
-    // Control: with no task of its own to answer, the same asking verbs keep
-    // reaching the minimal script. The route lost the prompts it cannot serve,
-    // not the ones it exists for.
+    // An authoring request with only a language asks for a task.
     for (prompt, expected) in [
-        ("write me some code in Python", "write_script_python"),
-        ("give me python code", "write_script_python"),
-        ("дай мне код на php", "write_script_php"),
+        ("write me some code in Python", "write_program_skill_gap"),
+        ("give me python code", "write_program_skill_gap"),
+        ("дай мне код на php", "write_program_skill_gap"),
     ] {
         assert_eq!(intent(prompt), expected, "prompt: {prompt}");
     }

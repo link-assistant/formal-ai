@@ -1,0 +1,42 @@
+✔ preserve complete renamed native identifier renamed_Москва_value (8.742778ms)
+✔ preserve complete renamed native identifier 東京_case (0.869271ms)
+✔ preserve complete renamed native identifier हिन्दी_case (0.340636ms)
+✔ preserve complete renamed native identifier αβ_case (0.589028ms)
+✔ preserve complete renamed native identifier 𐐀_name (0.295581ms)
+✔ preserve complete renamed native identifier é_case (0.661985ms)
+✔ preserve complete renamed native identifier _case (1.41553ms)
+✔ preserve complete renamed native identifier ascii123 (0.233926ms)
+✔ preserve complete renamed native identifier r#match (0.587756ms)
+✔ preserve complete renamed native identifier r#Москва (1.529764ms)
+✔ preserve complete renamed native identifier r#é_case (0.276356ms)
+✔ refuse unsupported header without silently losing declaration 3name (1.240695ms)
+✔ refuse unsupported header without silently losing declaration emoji_🦄 (0.15579ms)
+✔ refuse unsupported header without silently losing declaration join_‍_name (0.099325ms)
+✔ refuse unsupported header without silently losing declaration join_‌_name (0.129161ms)
+✔ refuse unsupported header without silently losing declaration mark_© (0.103974ms)
+✔ refuse unsupported header without silently losing declaration ́bad (0.123941ms)
+✔ refuse unsupported header without silently losing declaration name-dash (0.089316ms)
+✔ refuse unsupported header without silently losing declaration name space (0.083676ms)
+✔ refuse unsupported header without silently losing declaration r#_ (0.133067ms)
+✔ refuse unsupported header without silently losing declaration r#self (0.134551ms)
+✔ refuse unsupported header without silently losing declaration r#Self (0.158586ms)
+✔ refuse unsupported header without silently losing declaration r#super (0.11254ms)
+✔ refuse unsupported header without silently losing declaration r#crate (0.110576ms)
+✔ NFC semantic names retain distinct source hashes and exact string spelling (4.73945ms)
+✔ governed inventory preserves complete objects and authoritative native source (13336.30408ms)
+✔ unbound raw keyword identifier true cannot become a keyword/literal (0.702551ms)
+✔ unbound raw keyword identifier false cannot become a keyword/literal (0.16042ms)
+✔ unbound raw keyword identifier match cannot become a keyword/literal (0.166521ms)
+✔ unbound raw keyword identifier if cannot become a keyword/literal (0.124783ms)
+✔ unbound raw keyword identifier as cannot become a keyword/literal (0.157264ms)
+✔ declared raw true resolves its variable instead of boolean literal (0.196346ms)
+✔ declared raw false resolves its variable instead of boolean literal (0.106399ms)
+✔ legacy offline config accepts only actual literal and refuses raw variable spelling (0.563402ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14379.910571

@@ -1,0 +1,118 @@
+[
+  {
+    "path": "data/meta/function-test-contracts.lino",
+    "lines": [
+      10
+    ],
+    "beforeSha256": "4021bd56b1c5cbe04d6e2e85e1e026200cd32d71b4033bd45ae6dad59e563b88",
+    "afterSha256": "43efa22fec36cc8f2b005ef6d101e513611b65962f797135021cbd34e4c89e51",
+    "beforeArchive": "function-test-contracts.lino.before.txt.gz"
+  },
+  {
+    "path": "data/meta/restart-hygiene.lino",
+    "lines": [
+      20,
+      22,
+      25
+    ],
+    "beforeSha256": "ea79ccfa1cdced2cfda91d1c263a8228d1baf7040daedca798ff723fabee80e3",
+    "afterSha256": "9ebc582c1a9a5aae86760d541f89eb15d18d44681024916f14a6887f946ca181",
+    "beforeArchive": "restart-hygiene.lino.before.txt.gz"
+  },
+  {
+    "path": "data/meta/worker-line-budget/formal_ai_worker_facts_and_software_phrases.lino",
+    "lines": [
+      4
+    ],
+    "beforeSha256": "a9590a2097914141ed9d29ac87f193e852d99cb041ff2ea64f44a08d172ff7ac",
+    "afterSha256": "671e89edbf02eaabe484a2962e632e6c66194bdd8c4600342553b77bd6488c77",
+    "beforeArchive": "formal_ai_worker_facts_and_software_phrases.lino.before.txt.gz"
+  },
+  {
+    "path": "data/meta/worker-line-budget/formal_ai_worker_shell_compose.lino",
+    "lines": [
+      4
+    ],
+    "beforeSha256": "02302d5028c9fe716302acf392ff64e6cc1867769688707085af3092f0e1d574",
+    "afterSha256": "400784b13a4c9ce16f0feac90b55376d4e2f5e2c0a47768f3ceadff0c3cdf293",
+    "beforeArchive": "formal_ai_worker_shell_compose.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/client-integrations.lino",
+    "lines": [
+      492
+    ],
+    "beforeSha256": "011996a627f6bb07af764533d840fb2b86aa21bcbc7e53749e16f5b88df65c8c",
+    "afterSha256": "c92f90ef37b81806167ae3ff4a0fe7c8c47e0947cafc525c8b01d779f14dc6dd",
+    "beforeArchive": "client-integrations.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/code-review-rules.lino",
+    "lines": [
+      51,
+      53
+    ],
+    "beforeSha256": "24f011805346b283a2b7e1b80f52f33c619f0a813f25c59d763ba7e4501238ff",
+    "afterSha256": "7b366c4238b778d9fa409e42c30673c45c08ff32e85164d9dbf00acd0abf7122",
+    "beforeArchive": "code-review-rules.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/meta-reasoning.lino",
+    "lines": [
+      471,
+      493
+    ],
+    "beforeSha256": "a0f373d3864d9bbcd338713600e1bb42c6fa07bfef479253d66e41c3c036a301",
+    "afterSha256": "6957d59ec39965dbec450128feb50f3134b0ab6c05768fdea72f5cf86440ef0b",
+    "beforeArchive": "meta-reasoning.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/multilingual-responses-capabilities.lino",
+    "lines": [
+      129,
+      141
+    ],
+    "beforeSha256": "1fbb72cf3c1e10b6eb2975977ac8c5d41453b5d94e831f1c43e2a9de3b50c6b9",
+    "afterSha256": "d0311615019c38e7cba7e69b680114d3589ee231db52d25de0100d21f1b3807e",
+    "beforeArchive": "multilingual-responses-capabilities.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/multilingual-responses-text-transform.lino",
+    "lines": [
+      151,
+      231
+    ],
+    "beforeSha256": "c6e46fa0a7afba3499ce974a19b1462c5eccb034c9d2ea796c0ba0028d4dcec1",
+    "afterSha256": "01873bf1e85dc537835f441fad7843807e8cc7fa8798895c3f5688efbc8d760f",
+    "beforeArchive": "multilingual-responses-text-transform.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/multilingual-responses-web.lino",
+    "lines": [
+      672,
+      684
+    ],
+    "beforeSha256": "fd8afedbc88e019d518c58a4491c7788771df58871c70f342fc93cfb5710de13",
+    "afterSha256": "b4721bb3405596b9bdfc04265a744e334268ca9fd5b6555068982b36f08db5a4",
+    "beforeArchive": "multilingual-responses-web.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/text-formalization.lino",
+    "lines": [
+      122
+    ],
+    "beforeSha256": "84a8fcbca8accd02544fa2cc55432cf11e7d7cea4109eee59d0d097387fa8e61",
+    "afterSha256": "8fc795bb78d575207f97a1f77f2e612a6cf0d81b460b3c433ce3ef7627e54841",
+    "beforeArchive": "text-formalization.lino.before.txt.gz"
+  },
+  {
+    "path": "data/seed/workspace-discovery-contracts.lino",
+    "lines": [
+      13,
+      15
+    ],
+    "beforeSha256": "4725cd4805f9b8211f4765cca63559dd056ca9e93e4f0948a9eac1eda2ac23d7",
+    "afterSha256": "eb025c7a71927f31bea7d476b8d93df0b334c7357c668119b72ebf862bcf1857",
+    "beforeArchive": "workspace-discovery-contracts.lino.before.txt.gz"
+  }
+]

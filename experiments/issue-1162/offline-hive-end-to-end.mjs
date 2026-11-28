@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import {offlineSourceCache} from './offline-source-cache.mjs';
 import { planChatStep } from '../../js/agentic/planner.mjs';
 import { drive } from '../js_dogfood/drive.mjs';
 
@@ -74,12 +75,14 @@ export function workspace(language) {
 }
 
 export async function session(env, prompt, steps = 30) {
+  const restoreSourceCache = offlineSourceCache();
   const saved = { PATH: process.env.PATH, FAKE_GH_STATE: process.env.FAKE_GH_STATE };
   process.env.PATH = `${env.bin}:${process.env.PATH}`;
   process.env.FAKE_GH_STATE = env.state;
   try {
     return await drive(planChatStep, env.dir, prompt, { tools: ['bash', 'read', 'write', 'edit'], steps });
   } finally {
+    restoreSourceCache();
     process.env.PATH = saved.PATH;
     if (saved.FAKE_GH_STATE === undefined) delete process.env.FAKE_GH_STATE; else process.env.FAKE_GH_STATE = saved.FAKE_GH_STATE;
   }

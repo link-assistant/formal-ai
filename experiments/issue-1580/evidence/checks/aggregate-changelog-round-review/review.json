@@ -1,0 +1,858 @@
+{
+  "reviewedAt": "2026-11-22T06:02:29.668455+00:00",
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "head": "b40b8e72b0d4ff851487e9126d77c2217bdf807f",
+  "files": [
+    {
+      "index": 242,
+      "path": "rust/src/agentic_coding/general_execution.rs",
+      "diffSha256": "94e51ce78801f4f1ab3411d3d6364c3e73e3e8e8f0ee3a6e17a3f4748d0fcce6",
+      "lines": 134,
+      "currentSourceSha256": "bbdce936f712669d65c7a2d9485fa75aa5be0bc8d561274a2e1a2aa400536b3d",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 243,
+      "path": "rust/src/agentic_coding/general_execution/work_item_delivery.rs",
+      "diffSha256": "85f01b7af2ae3805d4d2e82af11245dfe9e8dda560578cc30b5760f38a459ce8",
+      "lines": 121,
+      "currentSourceSha256": "fe6097c6442d037dc4e0bb563ff4d633a72fbb0de9d99e2f0ad54d920285bb18",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 244,
+      "path": "rust/src/agentic_coding/general_planner/owned_goals.rs",
+      "diffSha256": "40ef696b845162ac8e028d69443f32024e46f5be5543a9a5194a6cd2bc066a22",
+      "lines": 89,
+      "currentSourceSha256": "06ff16952a6dfd5e03d7abf757e7657f919955597f5b509e50ce80d8a71c30d6",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 245,
+      "path": "rust/src/agentic_coding/general_planner/owned_goals/collection_ownership.rs",
+      "diffSha256": "51dff4abbf2ec9857885cbd3861dd576c27856f5013d473ca1c00b4013f936c0",
+      "lines": 83,
+      "currentSourceSha256": "095f45418baf56263c10d2d0ec47e2458d26f74e5d8a1701a5f52fb38fe13d9c",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 246,
+      "path": "rust/src/agentic_coding/module_function.rs",
+      "diffSha256": "434eb0e96bbbd4d3fe3afb7034c58ad2eca331b02174fba6b33e12f2b205fd98",
+      "lines": 138,
+      "currentSourceSha256": "90caab841cffc2ded9d0ff5c2d1535d25822d0ffb177c0090e31532d4f3cc124",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 247,
+      "path": "rust/src/agentic_coding/module_function/arithmetic_declaration.rs",
+      "diffSha256": "1306992b7112f345c41e0ea14b0d038ad98b42df61c1315fd0215adda753fc65",
+      "lines": 132,
+      "currentSourceSha256": "e7476a900dd9fce9f79945461a04dfa76ee1c938bbd22b13093dd83d1d3b9859",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 248,
+      "path": "rust/src/agentic_coding/planner.rs",
+      "diffSha256": "0e0044875318d53e8099fe75580b7ac13558c2c00b5101d7d6a1d7b99d5c0237",
+      "lines": 134,
+      "currentSourceSha256": "b02a6d9e3ac17026e8a69ce8dc5796b9f25cdaa6885e4d2db1757a66d00b5899",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 249,
+      "path": "rust/src/agentic_coding/planner/request_routes.rs",
+      "diffSha256": "10d767b937c5a57568dca69e3995376e89f59a482f0786763c39577c18d6dbd2",
+      "lines": 128,
+      "currentSourceSha256": "68ab62495e02aa4cc88be63f12b6f4202c344408d64fa2a641ded80a81582a60",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 250,
+      "path": "rust/src/agentic_coding/positional_edit.rs",
+      "diffSha256": "dca94ccf2053831065673c9420794b95566090dbfa855f1657d666cc547e18ea",
+      "lines": 159,
+      "currentSourceSha256": "2fc9b8c7025689fe9a3f23af88ae9aba5699a69a071c81464167a52bfb0d1404",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 251,
+      "path": "rust/src/agentic_coding/positional_edit/clause_insertion.rs",
+      "diffSha256": "44c131d245d18105242c55f696f4298eb683588e476a653c742b08f869c6d45d",
+      "lines": 153,
+      "currentSourceSha256": "06c3b6d66441da8bc66b5a68208754ec5106b37a139b95c995d4f8afa40569f9",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 252,
+      "path": "rust/src/agentic_coding/progress.rs",
+      "diffSha256": "f2d5c9f85570695a682fda1ce2a775f488fc5901928d86fcaf6e57d5626f7c66",
+      "lines": 135,
+      "currentSourceSha256": "f16569774a88585d80529ab9c7e7a9370ecde2a57e7d2de56e79b2e3e01ee288",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 256,
+      "path": "rust/src/agentic_coding/repair_loop.rs",
+      "diffSha256": "f6065616255b33d1a4c8b4ac65f4c3a8ff1d40f7369a994bcf1458808492b4f6",
+      "lines": 91,
+      "currentSourceSha256": "24e3efcf46dd2bd190630392bc3725c0ce1b31a1f1967e50a6feace336dab6dd",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 257,
+      "path": "rust/src/agentic_coding/repair_loop/notes.rs",
+      "diffSha256": "4860451cda93b20915fd3bfeb8084d46f5280fb4a7b48d2f5d1c7eb3bffdd161",
+      "lines": 82,
+      "currentSourceSha256": "b69a0d1f2097bfc45da02351e587e8dc9c490c2cd9e11836ef6d4c8a7827408b",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 259,
+      "path": "rust/src/agentic_coding/shell_command.rs",
+      "diffSha256": "e94ab4e6ae7f9f99268ead3f99a8ab08835b7606bae3048ff250fa3c71144b3d",
+      "lines": 156,
+      "currentSourceSha256": "e10044b16776f4fa30c9f50c6f7e603cc118b2c6f2d02fd483b85efe62e42ccf",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 260,
+      "path": "rust/src/agentic_coding/shell_command/prose_classification.rs",
+      "diffSha256": "56e49e71b802a2b3b469a7cd944caa82b5e98bde74e43aa00643c2cae57a9760",
+      "lines": 139,
+      "currentSourceSha256": "5c69ee892f70edfd49c93384687fa437fcb0c3064f800f7e8d6a4a4e1677c80a",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 262,
+      "path": "rust/src/agentic_coding/task_acceptance/reports.rs",
+      "diffSha256": "6101909c73e7647b5ec37eb382db7b05a82c630a2d31eb945f9a0e87ca500b89",
+      "lines": 90,
+      "currentSourceSha256": "f79ae24d93b3c116747d97d9f948924853575e85800da7623304d260e6b96978",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 263,
+      "path": "rust/src/agentic_coding/task_acceptance/workflow_checks.rs",
+      "diffSha256": "a69b1a3b2e20cd5d72906eeb3b1bdd5aecb78c3b0132dccd884823663806afee",
+      "lines": 88,
+      "currentSourceSha256": "459e7a48f1cd53bb23a2f82acbf114484eef1c875e2be5755539fe911a3a4861",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 267,
+      "path": "rust/src/agentic_coding/web_research.rs",
+      "diffSha256": "74460c16bef4d63c491cb175239328f5582ca6a401d708c08b50c3ae5dce6f00",
+      "lines": 112,
+      "currentSourceSha256": "ce941d22b36c7c3cc88ad4ff6c1335d333684e23ae643abf6fcde53a724110b3",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 268,
+      "path": "rust/src/agentic_coding/web_research/answer_selection.rs",
+      "diffSha256": "a833c79c7fafd635da6aa150ea6b41591343bd83931eb196e4b125b07895982d",
+      "lines": 103,
+      "currentSourceSha256": "75b795ff1e99389abe03d4997a7d929933ef6f44a7b0e54457955a268a141e92",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 269,
+      "path": "rust/src/agentic_coding/work_item_file_io.rs",
+      "diffSha256": "cbf2bacc6c00f8bcb12908af1755d62aef7ec87389164e7917cb0cde21ca75bd",
+      "lines": 85,
+      "currentSourceSha256": "45fce573ba9646b4f9e8b9127db9bd2fe0cd7fc96e6724079ffa4209c92b265e",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 270,
+      "path": "rust/src/agentic_coding/work_item_file_io/command_ownership.rs",
+      "diffSha256": "c71a05afc4384ab2101904ee037987533780f98c4480194eeddb0acbf3fae791",
+      "lines": 79,
+      "currentSourceSha256": "fc656c963d75090bf5ab6be03474e06f6e62935f1a310f3ab19ec6d9ff647146",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 273,
+      "path": "rust/src/agentic_coding/workspace_line_operation.rs",
+      "diffSha256": "c1d52d051f91ab19d8b93bd8cd67d5c649e95733f83f45f44acc2d6e837f9969",
+      "lines": 122,
+      "currentSourceSha256": "a6d6bffba0b8d215ffecc546b01959a3c63189b8df6049d5612c0729fcafc8f5",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 274,
+      "path": "rust/src/agentic_coding/workspace_line_operation/applied_changes.rs",
+      "diffSha256": "782525e661b3520ee7f76bb764a1859eca1f65b239b89be6b59de4b0e9922a75",
+      "lines": 118,
+      "currentSourceSha256": "95d7b0bdc0d62221cb59af29e7eab4980bc3390acfc974b928b5a35e17a51ee4",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 275,
+      "path": "rust/src/agentic_coding/write_request.rs",
+      "diffSha256": "051df702b33bf708e8e97a4f60b37a8e7bf7619d4cbc54080504d4dc39edb825",
+      "lines": 150,
+      "currentSourceSha256": "1fed14545664359dab4467e1f0481de9ac60155285260d43a99407fa57c940df",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 276,
+      "path": "rust/src/agentic_coding/write_request/write_bindings.rs",
+      "diffSha256": "dde178d3d2ad6f04dea49698248461d8e63f2e2d200fc53d4d06487786e7d874",
+      "lines": 137,
+      "currentSourceSha256": "4c2030cd8b69b379d5babed522355bee371071d1da44b0b4bf7984321aabb8cd",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 278,
+      "path": "rust/src/algorithm_discovery/evidence.rs",
+      "diffSha256": "2f7da0b13033969794bb350bebe28f97c1864e555fa54cbb6b963dc2822374bf",
+      "lines": 177,
+      "currentSourceSha256": "eb83da31dbb2cadb57c16bde6451924a503475c4dd359aa3474fedfabcda2e32",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 281,
+      "path": "rust/src/cli_solver.rs",
+      "diffSha256": "fb45a159e46a0f2a71be0d630093e1c17c3837475f86230ebd86fee2c96715f3",
+      "lines": 117,
+      "currentSourceSha256": "06642b96c4d0d01ed3331978b2aaa21851911b1a5f71cccad0e421cbaab86e44",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 284,
+      "path": "rust/src/cnl_output/grammar/realization.rs",
+      "diffSha256": "8f3228152980b34a40e7517bbea3653c51dae9fc3ba205e17fd6bac6007fdf99",
+      "lines": 138,
+      "currentSourceSha256": "6f80f068b9b6dc6e69eca539728459f486cdd1ccb2d3a263ac8251229b6c5e47",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 290,
+      "path": "rust/src/coding_research_learning.rs",
+      "diffSha256": "18ab3fb784bba9282f27bb380d33cb5f145bd5c5304972527acf7cb668272ca3",
+      "lines": 111,
+      "currentSourceSha256": "c05391e34149032d295ef07045f697728bd0d9f04c4a7b5be7da18a336c2d4fd",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 291,
+      "path": "rust/src/coding_research_learning/adoption.rs",
+      "diffSha256": "961e2c2bd40f9aa130a5458f2b82ff2133ff2269585a4fb4c4f42fed6dc5706c",
+      "lines": 101,
+      "currentSourceSha256": "cc0cd38b544977d4b2ef04ff4c08cb97a0330409cb0aa3c5fc198b87438326a1",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 292,
+      "path": "rust/src/computer_use/executor.rs",
+      "diffSha256": "6d7eaed40db159aadbc54c04f74ab622769ab2a529224691a0404f2b1e71544b",
+      "lines": 108,
+      "currentSourceSha256": "08422b5844bce85f40d740fbd6439abb259399505d0a312226c84ddc1a5b6f3b",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 293,
+      "path": "rust/src/computer_use/executor_content.rs",
+      "diffSha256": "501548fe98c366b931c2ca02f16ca8929f6b0ce95071233bddb5010e42449a52",
+      "lines": 93,
+      "currentSourceSha256": "1360b21c5830d10ad5a2bf0723d527db42809367618ede017fdbadae79ea6f60",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 294,
+      "path": "rust/src/concept_lookup.rs",
+      "diffSha256": "bf6f764dbe22e88e3120a66502de3a97b6c4515d65337347fa368b3251c4b62b",
+      "lines": 173,
+      "currentSourceSha256": "21ec080a318fc4c3ad640e071e8cad1712f53c44dd8753c00af9ff3edf045b51",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 295,
+      "path": "rust/src/concept_lookup/unknown_surfaces.rs",
+      "diffSha256": "f4014d554413983c1f9e47f2c4c13568d1d1e33665da28bf0ca1174f8b9b5cdf",
+      "lines": 158,
+      "currentSourceSha256": "92fcc75d9cac3ceda7b295c408f8c57ba1fe1747d107ca72d9865cf6ae60d473",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 296,
+      "path": "rust/src/concepts.rs",
+      "diffSha256": "9075d506bffd770180f49ccf4378b22325cddd26b6516c7ccda7c3824f0bedca",
+      "lines": 26,
+      "currentSourceSha256": "af2d0b603a6b6fa0390036bc0b4c08b32eb94f55ef3b2ca8bd3907a00f9fc0d7",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 297,
+      "path": "rust/src/engine.rs",
+      "diffSha256": "e63f85d57e4c2d867985361f700a8cc2762d950237b1d01527654e83e05a3371",
+      "lines": 156,
+      "currentSourceSha256": "aba1e930ecbb6208cc74480508cddabd502f7668d06ebcb8a9c5fc4815b86bae",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 298,
+      "path": "rust/src/engine/knowledge_graph.rs",
+      "diffSha256": "65db19b22164258f20412106a2e1efbe2d2a89a6ecb3aea95152535ba5cca9c1",
+      "lines": 150,
+      "currentSourceSha256": "83c0ba8d7bd0796c0b609ffbf562c5744c84d32c339673c72edd16cb0d3e30cd",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 299,
+      "path": "rust/src/es_meta.rs",
+      "diffSha256": "55998150196ef58eb02dee9e9b481c7e3026f03c2fb59997c38604c3abf8e2c1",
+      "lines": 166,
+      "currentSourceSha256": "6b4585010e17970b7979dec09ae375dcf6be5d2b77bea9e50b06b75363f98745",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 300,
+      "path": "rust/src/es_meta/source_layout.rs",
+      "diffSha256": "ff75d4029f8f84a6ea0be5cf58e2045e24a5da5aedfb1a52862a64dc632a31c0",
+      "lines": 149,
+      "currentSourceSha256": "c3de0e416648e30be9c60c85f8bab16c3a8a6d2c44d70d53e642c430c18ae10a",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 301,
+      "path": "rust/src/event_log.rs",
+      "diffSha256": "e03c17d0f87d53d53cd3911abccb3dabe458de7e010a3b7b60c2b0a7e12a67aa",
+      "lines": 99,
+      "currentSourceSha256": "7dfdcd1b4f6240aa01a222fb29d13eeefb8d7c09a9aacbfc1716958b1f9a384e",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 302,
+      "path": "rust/src/execution_box/configuration.rs",
+      "diffSha256": "d79a0309b721c2ef09e7a93ff0d9f9ef5013b4796921772d1cec82e46bab1fc0",
+      "lines": 101,
+      "currentSourceSha256": "fdb2b7e81f37a8855f2db9543c8b3e21df8a82ff812c2ff8c86e8671ca17c37b",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 303,
+      "path": "rust/src/execution_box/mod.rs",
+      "diffSha256": "67b5bcd6540efb10976396301fa2c4e54aedf2167786cf2b073ca81ea614fd2c",
+      "lines": 107,
+      "currentSourceSha256": "551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 304,
+      "path": "rust/src/formalization/mod.rs",
+      "diffSha256": "98e2938ecdb258d52f19319742398d771e19f9af724fc99ac86642be5d82c8c2",
+      "lines": 40,
+      "currentSourceSha256": "e9ebc0a3f1abf69d1a3c9b58f7b44af9b2f99df4a50021ee148f425b40b8df29",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 305,
+      "path": "rust/src/formalization/proposition_structure.rs",
+      "diffSha256": "8853a43187a2df6e0c0deb581def517b87bd5e65628490bf20138161c1ddd7f5",
+      "lines": 138,
+      "currentSourceSha256": "493f9870ad9f7c4f7ad598209fbfd204db1f3e0210ca5fc2d8dbef264a4e4976",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 306,
+      "path": "rust/src/formalization/proposition_structure/reader.rs",
+      "diffSha256": "b4831bfa905c71936162140aa980008f33712508e38ea5d3d7889421ec82fb5c",
+      "lines": 132,
+      "currentSourceSha256": "52eb995279be844f7d3b676e9471da816b2333c281ce4e55be19addf11139fcb",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 307,
+      "path": "rust/src/formalization/text_statements.rs",
+      "diffSha256": "f1fea74566695f7dbb2309ca9da76fd4c7a253441a52089e9bdb648e616dfb3b",
+      "lines": 119,
+      "currentSourceSha256": "d0ac86b52d12d599fc4826618e24958c004610d1ed0509e29193dccc674db198",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 308,
+      "path": "rust/src/formalization/text_statements/types.rs",
+      "diffSha256": "cb33d001915202f5070b3b1c8cd8ca66ed90310e8a440361c20209afe0ba92bd",
+      "lines": 111,
+      "currentSourceSha256": "9e5045884d2c771b37ff1ff26d0f1c707d0571a9ae3beb0e5de7809611ca710e",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 309,
+      "path": "rust/src/google_trends_catalog.rs",
+      "diffSha256": "f83e36c2d4135acc8212d52025dc9b48fd7a1828f2edf1e80456ccf984da25f2",
+      "lines": 52,
+      "currentSourceSha256": "a62d350272a1f9f4499952afbcd46541a0a7f9d705466d8224e2d1e217210023",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 311,
+      "path": "rust/src/history_context/repository_qa.rs",
+      "diffSha256": "9ff25ec0cd4a3c6a75eca9c09c3efc5427b97cfad8e13d3219c543d0b6c5f59c",
+      "lines": 117,
+      "currentSourceSha256": "dd043ae3c686ee8516e2aca47bb29640af9c48903a189e9c9c87eac12118978a",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 312,
+      "path": "rust/src/intent_formalization/obligations.rs",
+      "diffSha256": "04e78c22c93ae997726cf86a631454e8d5790c881dcfacd4a6fde7beb49b1761",
+      "lines": 13,
+      "currentSourceSha256": "61456f57643cf2c063f0cb6c55693a3d4f86597e3155aeeb8c2e96ce283b525d",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 313,
+      "path": "rust/src/lexeme_import.rs",
+      "diffSha256": "28af48ebc641a8f4dc51c75f7b04fb89ce467d193dd3e35a99881c33a88ad2c1",
+      "lines": 98,
+      "currentSourceSha256": "17e8338951df561557bc76c65c164767d05cfa59bd94b065fcd7b89dc3349c6b",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 314,
+      "path": "rust/src/lexeme_import/shard_files.rs",
+      "diffSha256": "9b4d7c793865a4bd6ba44c5b9a6dc759a6c935e8971eed3ad04ad7d24a48e658",
+      "lines": 86,
+      "currentSourceSha256": "898d48234b8df3969ed9e962d568bba1d329bffa0aee6e6ef751528edbb9f0d3",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 315,
+      "path": "rust/src/link_store.rs",
+      "diffSha256": "d8c7727286317da6c89e595dbaf700f2a4d13758edfe16fe3ea7421ecf6a1c11",
+      "lines": 119,
+      "currentSourceSha256": "5d4ad4d44e274f55bcec9f81b6669fcaa70235e29a7c4aa57d965307ead8e5fd",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 316,
+      "path": "rust/src/link_store/record_fields.rs",
+      "diffSha256": "c444bdbbcc0c10d3a2d8402db44beb8bef68a3399b1c2b254917f4f50b95aa8c",
+      "lines": 98,
+      "currentSourceSha256": "e86cc0c39c2c391c8b94f2ac974eed76bc78442179ea8c7d73706d46f9e76b4c",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 317,
+      "path": "rust/src/main.rs",
+      "diffSha256": "91fd953aca14188a90feb1b52acad1089eed86a4a088e662423a437efb706e14",
+      "lines": 200,
+      "currentSourceSha256": "170628ad602af264f5aebb552521f6d0826e9458ff794ec2520f8903bd60e8c8",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 318,
+      "path": "rust/src/meta_executor.rs",
+      "diffSha256": "8c576fa95908c8a56910e1539f85799a9af9b9a9a39179b3691ec9c16c9e9566",
+      "lines": 239,
+      "currentSourceSha256": "6873622c8d5795916f05198a4bc5ded63fd068f7e294c7d5e793de3d961fdc7f",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 319,
+      "path": "rust/src/meta_executor/decomposition.rs",
+      "diffSha256": "79c7905ee144e7e3aca7086730dd44caae76f84dc7ba084aad9f04a9d4425bd9",
+      "lines": 52,
+      "currentSourceSha256": "ab5a5cbe0413f4fbf8823ee257c51811c8026245e01110e2f2cef40532ba9768",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 320,
+      "path": "rust/src/meta_executor/production.rs",
+      "diffSha256": "583fd98bda248fc43fefba0cca822bfd8594960577dbaad3341192396d24d788",
+      "lines": 87,
+      "currentSourceSha256": "e44c7c8de9a7a79ff1cc86a5ba6bfeeaa4ffe33fe2f998ab9de09c3b44218671",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 321,
+      "path": "rust/src/meta_executor/selection.rs",
+      "diffSha256": "387c8ab5a4114758f6b3eb3045c7d330a899b6fa1a215e923d94b5e968e10014",
+      "lines": 112,
+      "currentSourceSha256": "a4cd40036d3302905db17ff46462e913f17d9ab337c84ca6c13e4a78fda8350f",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 322,
+      "path": "rust/src/meta_method_dispatch.rs",
+      "diffSha256": "58739522734dd64e6c58f2f97d98473dc2ae2088150b1977e23806e0105cbc60",
+      "lines": 217,
+      "currentSourceSha256": "cb90960f444a8081f5f888a26008b5c60aa60e7f9cc0f40006306f752fbdde26",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 323,
+      "path": "rust/src/meta_method_dispatch/execution.rs",
+      "diffSha256": "38ece753de062d2fcc149974ac87849167f3fe6ad8b4c22cbe8991ffec6bb63a",
+      "lines": 210,
+      "currentSourceSha256": "69e1921dd0f029b56a08e194c72397b27e1089b6e23adabc217e88fbd8ef7a97",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 324,
+      "path": "rust/src/meta_reasoner/reasoner.rs",
+      "diffSha256": "d5d58b948d1b12a2f20ad2010e78399c159369bc995f4af12cce84b9029641c5",
+      "lines": 230,
+      "currentSourceSha256": "0d3152a9c71a36f698d092320b0cb20991b4272399fa90ed865103904671d17d",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 325,
+      "path": "rust/src/meta_reasoner/reasoner/reasoning_steps.rs",
+      "diffSha256": "678910cf78544905036b6981cb5a683fe919b3d18c94e7a3f44e7c041b458ee6",
+      "lines": 224,
+      "currentSourceSha256": "c30c2e0568091ec687536efd6b636cb00ccbd638e307286c44f5bd325c2f99a6",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 326,
+      "path": "rust/src/proof_engine/decision/linear.rs",
+      "diffSha256": "56bb493408a042661472e8f8551ff18a36e447b1a90a0cff2674799ac70a8f1f",
+      "lines": 91,
+      "currentSourceSha256": "aa7277f45fed710efb081699498cca65183ce459b4f3a61ca4f574bcfcc26a49",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 327,
+      "path": "rust/src/proof_engine/decision/linear/numeric.rs",
+      "diffSha256": "b6727c16bb19abd5c3a7fd7d954c5daf217c9337dd30594d4a121fa46fb0c8a9",
+      "lines": 67,
+      "currentSourceSha256": "cef8f34e49a1e432e4c8674e5ff9af4939e055597a9a86f5f107f107790ea7db",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 328,
+      "path": "rust/src/protocol.rs",
+      "diffSha256": "eecbdddb9572c1ecd1d3514eac61d2cd1d081686bf1cea3a472ec2b38daf232f",
+      "lines": 250,
+      "currentSourceSha256": "1e048b6a1eda809d3599b2356c3e18fde146325ab6a1527f2eceb55e7502d0ed",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 329,
+      "path": "rust/src/protocol/chat_message.rs",
+      "diffSha256": "4235955be4bbe9450ad27129032938b71f764e9d8775edd449bde77c0984f704",
+      "lines": 227,
+      "currentSourceSha256": "03bec637c617c86b001738c819d995fd0b2ee81ebe1991cdc931ac0a9e5c8211",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 330,
+      "path": "rust/src/protocol/request_context.rs",
+      "diffSha256": "b7ef612c054efa836a0ea396ab782064574cc285c598bc6a218e3766af3a6ed2",
+      "lines": 145,
+      "currentSourceSha256": "ea8bcf3bf32dcd7d50142ed3947a299107c6eb4b8f89e929cbacf801ca99cc70",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 333,
+      "path": "rust/src/repository_workspace/command_allowlist.rs",
+      "diffSha256": "5580285877b37ac037e5997f0002a4a22d151eea1fe722f9994f6cf321adeb04",
+      "lines": 145,
+      "currentSourceSha256": "4290723fedf3c828e10f2238bdb6c73f56a3d7f5b25b133b41246f8681e58fa2",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 334,
+      "path": "rust/src/repository_workspace/mod.rs",
+      "diffSha256": "e442b8dbfedb641eb6bae657a389cfedc598fd766701e02a077172a63f91ae6d",
+      "lines": 167,
+      "currentSourceSha256": "4c4f19f9f9fe5cf4f04cee14e5c7236920b329e624d61cd38d9716abfffccac3",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 335,
+      "path": "rust/src/rule_interpreter.rs",
+      "diffSha256": "5d40d39f9380fe0c18e19c1cabe2bf14ac6d9bc4364ffa6a13264c0ffaad255e",
+      "lines": 132,
+      "currentSourceSha256": "91453defd52a11c1435b763cd4bf3a6ee12f0b31fa036bd7ccc1dec66be2299c",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 336,
+      "path": "rust/src/rule_interpreter/surfaces.rs",
+      "diffSha256": "9d02dc215e684688e768f10d24ee1ccd73b11b481286366089fcbd5afd618108",
+      "lines": 120,
+      "currentSourceSha256": "40c2b9bdef083ac567ff176c5d5a639630e2b34c07d5cbad325188eff00428f5",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 337,
+      "path": "rust/src/seed.rs",
+      "diffSha256": "9cbdcfd3636f17ffe2b1c67b18b7dfaa5f2fe02fdc429154e290e2e1d2f6758b",
+      "lines": 189,
+      "currentSourceSha256": "e8612c994aa735c9046108837616f07db8079a86d5f3e6340ad71ed72109ad32",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 338,
+      "path": "rust/src/seed/embedded_files.rs",
+      "diffSha256": "9da5ff61bbe1e7f98c8c22dec38a0f2c14fd84d0e82a66fc6317ebba607a4e7e",
+      "lines": 397,
+      "currentSourceSha256": "548f4f45f23c530d8b768a7b7b1459bace6182e9e7f988f345fce2329c843772",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 339,
+      "path": "rust/src/seed/embedded_registry.rs",
+      "diffSha256": "40f7860c0c525bcd5a6639063c03238100ec496dd55ee7e071f67e344217386e",
+      "lines": 485,
+      "currentSourceSha256": "6b02d5daaa12770fd6d9224e380c9ee82577df8cc3d2cac452d0fb6efe430c15",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 340,
+      "path": "rust/src/seed/responses.rs",
+      "diffSha256": "d7e19455dcc46245de12e2f15e24da5c2125f4b2489dbece33ca99bbed92e116",
+      "lines": 175,
+      "currentSourceSha256": "0749b80b6a31d105f41cd1a71942d7c5ac7aa64becb93f14d2727b76ce1cacac",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 341,
+      "path": "rust/src/server/debug_stage.rs",
+      "diffSha256": "7bfeda73ab8d86d354a83d0e7dcdea4f030eae1164c38da99e770b1c2185a074",
+      "lines": 23,
+      "currentSourceSha256": "d6135c5f09650db3d0873d680c0977aaf24b356254e4d1538bf8e5d2e1170013",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 342,
+      "path": "rust/src/solver.rs",
+      "diffSha256": "bac1ce1367119dbfc9484fae4891288d15ed52558926047438f21a0c12f427ef",
+      "lines": 242,
+      "currentSourceSha256": "491cfe62d1d97bc74261ea405e6284118e4f703564976628f99426f8e46832ef",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 344,
+      "path": "rust/src/solver_dispatch.rs",
+      "diffSha256": "8652d7886d485397868b7f75455ddf43275cb434e251f06eb638f0e9784e9047",
+      "lines": 22,
+      "currentSourceSha256": "fe44625fcde398568ab1ef37e75031b424615fc6826e7d70e7696d876a100e9c",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 345,
+      "path": "rust/src/solver_handlers/calculator_rate.rs",
+      "diffSha256": "1af1159204e9388f7ee4f675770bfef2b67e4dbab35b9c3104b910112a017370",
+      "lines": 13,
+      "currentSourceSha256": "c5f8a5c025cc495044fe3e105396b5db0eb9f5f967ba103f8de523d58a9242ad",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 346,
+      "path": "rust/src/solver_handlers/calendar/month.rs",
+      "diffSha256": "fd84ec3816d3db3e7ed3611f09e503ccf42ebb5d640799b392f364f379a5029a",
+      "lines": 39,
+      "currentSourceSha256": "f3bad9b904ff0acc54db41e8bc32b5ef8c03b4898d830e1f8dfd69bade9a9622",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 347,
+      "path": "rust/src/solver_handlers/calendar_create.rs",
+      "diffSha256": "cd14fefb9439658aa54f44a981a5644a93595d00e446fd834e8d702bd476ce39",
+      "lines": 326,
+      "currentSourceSha256": "404bd798a61809aa1caeb342edb61ca089a58e87f215bf53f4dfdef2eaabf0a0",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 348,
+      "path": "rust/src/solver_handlers/fact_live_answer.rs",
+      "diffSha256": "f4a98bf4a4d22bb13b3ef66241964e37d340b1d2db6e13893a5b758e427cc7e9",
+      "lines": 47,
+      "currentSourceSha256": "da1aef59d7d953f2d52fa0ee02438f25c4da2f289c4561554f3107071059ab17",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 350,
+      "path": "rust/src/solver_handlers/statistics.rs",
+      "diffSha256": "1d3548cc615f1bbede356d64fb14251f4b42197c585cf37da9dfda7434e868c4",
+      "lines": 267,
+      "currentSourceSha256": "ebd42bcafab0b01883602a05bd5b4b8b67905d69281ca35a30d856a89b115359",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 351,
+      "path": "rust/src/solver_handlers/statistics/word_problems.rs",
+      "diffSha256": "8e20e9ff25822593b9c44797555814f67e5ee240f4b79b5d33b8631229a063b5",
+      "lines": 117,
+      "currentSourceSha256": "09fb5aefc2c205cbc5d0951416098f4fc668c13d88847c90d880b7ce8eb7d0a8",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 352,
+      "path": "rust/src/solver_handlers/text_manipulation.rs",
+      "diffSha256": "f8301f86f8c2c2c495eceb2471ea5531753847c52048e0058451c15e681e32f1",
+      "lines": 152,
+      "currentSourceSha256": "323a3411197ced312d71629f42cab19fdb692450d118a4a0b93ec40769458b2e",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 353,
+      "path": "rust/src/solver_handlers/text_manipulation/replacement.rs",
+      "diffSha256": "b52bfabf6b175f6480f9b06b947f19e7897d3210fbee0c9e710787f7728dd469",
+      "lines": 125,
+      "currentSourceSha256": "30baf338f27e963c4600a7503923ecd4c71ab6fedb10820c64eb0bcf41facae4",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 354,
+      "path": "rust/src/solver_handlers/text_rewrite.rs",
+      "diffSha256": "83afa3e3c0c6e308fb54d8141edac98712c4234193b20a0915735b122adcc7da",
+      "lines": 313,
+      "currentSourceSha256": "3c333e6edd4a659a080842d2e469048dfea261bbf81b0fca4ac20ac886d6a12e",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 355,
+      "path": "rust/src/solver_handlers/text_rewrite/genre_writing.rs",
+      "diffSha256": "cdebee3dcf693f9509c1dde527c46a7ae6ff11733e4332dd1f2dcc2e383392bc",
+      "lines": 308,
+      "currentSourceSha256": "33fc26fc91dd2b23f9b5beeb02156805ad02dd6668ab53beb38ef4382e3c44f7",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 356,
+      "path": "rust/src/solver_handlers/verifiable_task.rs",
+      "diffSha256": "5e4fe71851bccf723e18b5e11b74eedbbf503b8fb349aa28c09e805dd3a4153d",
+      "lines": 33,
+      "currentSourceSha256": "de8e147289af40dbdea905bfe1797ae8b4e2959cef2f2b0db8e2c2bdba02c087",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 357,
+      "path": "rust/src/solver_handlers/web_requests/live_search.rs",
+      "diffSha256": "e029bf08df239173b48a26ee52f4feec1d004548f373d6d22625f05920714602",
+      "lines": 22,
+      "currentSourceSha256": "aead837af6b8b0e1bf6b06850edd4d68fcf5c7ea381b53201681e64e0b718f55",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 359,
+      "path": "rust/src/solver_handlers/web_search_intent.rs",
+      "diffSha256": "83590d09bc8c46a26af0432877c1fa9b0ba493c63bbd70d63ede16f7f080b3ad",
+      "lines": 156,
+      "currentSourceSha256": "3c56bff772a4fdc3bfe5945296c019e91a858aa78033220a58ca6d608e5c5dd6",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 360,
+      "path": "rust/src/solver_handlers/web_search_intent/followup.rs",
+      "diffSha256": "fa7a8559abb13ff05f558d6d0d320db833769149b31bda2699e4a053173f8931",
+      "lines": 121,
+      "currentSourceSha256": "dba0839cb86ea75e5c733a4c429b505b3f09d193579c38ef160ec30d40d3edd1",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 362,
+      "path": "rust/src/solver_synthesis.rs",
+      "diffSha256": "446a2724416f8dbba32a59d4e0cd0274880c3541935a3572e7f67dc3a0ea60ca",
+      "lines": 120,
+      "currentSourceSha256": "6a760aced69aab589b10733ec96551d8f49879bd03d6a8b54c13962818079569",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 363,
+      "path": "rust/src/solver_unknown_reasoning.rs",
+      "diffSha256": "d1bec7a57a5e7e41b2632dab4fa88076d302b13a57129addcf8480abb68af0cd",
+      "lines": 288,
+      "currentSourceSha256": "d0f36c832cf2c2ebb6945ac6110381cc2be1934d900efcb2490f481a29e57ee2",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 364,
+      "path": "rust/src/solver_unknown_reasoning_text.rs",
+      "diffSha256": "54d4930623d21e3b0920a7cfb6fff3e89d9aee84d2637915b54a4b3080fe8619",
+      "lines": 65,
+      "currentSourceSha256": "1df0dd3fbedc11f86b64dba96125e7e0bd344959c00256f87c5345f819ec65e0",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 366,
+      "path": "rust/src/structured_log.rs",
+      "diffSha256": "925f203fd900b9b522eac606d7553ec54ab7ddc953e6547244ccc6d6a283c40d",
+      "lines": 43,
+      "currentSourceSha256": "80471b9aa26d614fbacf5a280cd756ea5d1aaf10be52bae8a665937540c1acd6",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 367,
+      "path": "rust/src/telegram.rs",
+      "diffSha256": "5a6ad4e6da2f4709c96c3b28a1ea3bcd300676a5a25d4c7279f8002a012d8cd4",
+      "lines": 136,
+      "currentSourceSha256": "babd44b984821c5a7d2a2d7ef1a0e74f98f699af664766fc4c94ed9239e645d8",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 368,
+      "path": "rust/src/telegram/markdown.rs",
+      "diffSha256": "d29ee87fadfc8cb9b10b7a7ced26adc7d1cae290e48411d3e5195c5809852f08",
+      "lines": 121,
+      "currentSourceSha256": "7b138a9f49ecc3bb86390919cdf1382ee1699fe853d1884ef9148360517a7484",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 369,
+      "path": "rust/src/thinking.rs",
+      "diffSha256": "2dfaf772b546e362ca811a12e5ded777ae6325485a70dd62678f4b0997c13bc0",
+      "lines": 22,
+      "currentSourceSha256": "f201388abe5b9f7198d684a392d823daafc0aa78f78848c6a48316ad4838bd3b",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 370,
+      "path": "rust/src/unknown_opener.rs",
+      "diffSha256": "6ebdc10a30b0bebde22fdb7cfd8b87a0607f19efbdf819f896a9208ec81339ad",
+      "lines": 51,
+      "currentSourceSha256": "3cdf49c0003be9870482e26b1bf2c55e5488386e93f5730cacac64a5b3274e58",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 371,
+      "path": "rust/src/verifiable_task/quantities.rs",
+      "diffSha256": "528e3f4fd6dfbc3165098666c3503038e3c70d6b82d559aa9fb6795a376b702d",
+      "lines": 75,
+      "currentSourceSha256": "a648b599251f3f3b2ee44531836d0b40d7052a7adda675f8b2c50d669b0fa0e7",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 372,
+      "path": "rust/src/web_formalize.rs",
+      "diffSha256": "b49b3c35dcf0f5211e31ba4d72eee0f6e11389ac820320688ab2091cce9e40f5",
+      "lines": 139,
+      "currentSourceSha256": "da2b7fdf9593fc428486bcaf7507e7c85d66a1cf27d7cbba5bac9a652288a1fc",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 373,
+      "path": "rust/src/web_formalize/html_text.rs",
+      "diffSha256": "eb7f9374fe7073083f43e648e94c896159628eaa6b5cc7cc5f00fa25d0daae11",
+      "lines": 122,
+      "currentSourceSha256": "f9159a2cefdd6a4ef21c8136dc9c13b0f99ab159e540a969f2969317f35ce923",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 374,
+      "path": "rust/src/world_model.rs",
+      "diffSha256": "9f5edb60c41c6943c1f341596a5bb462a1435e6ffe9f42807858fa6d1c200502",
+      "lines": 221,
+      "currentSourceSha256": "6fddd0c84ddcdeff8bffa7db438e66a289bb383fc49cf15ab9e81a999e94d1ad",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    },
+    {
+      "index": 375,
+      "path": "rust/src/world_model/dialogue_memory.rs",
+      "diffSha256": "9fc565fdb688505e1f1807a42b53b2e75f51b50cdf99a5c0249db4b0916edc79",
+      "lines": 201,
+      "currentSourceSha256": "d989b5eb0f11f3f82e53dcbfc18fb137d765274a874ebef5080858d63489d0b1",
+      "review": "Complete aggregate diff read; extracted logic, scope, imports and existing behavior considered. No additional defect established. Runtime proof remains separately scoped."
+    }
+  ],
+  "staleDiffsExcluded": [],
+  "wholePullRequestReviewed": false,
+  "independentAuthorshipCredit": 0
+}

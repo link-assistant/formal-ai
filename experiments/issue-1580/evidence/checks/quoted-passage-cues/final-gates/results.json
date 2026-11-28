@@ -1,0 +1,74 @@
+{
+  "complete": false,
+  "checks": [
+    {
+      "name": "register-new-source",
+      "argv": [
+        "git",
+        "add",
+        "--intent-to-add",
+        "--",
+        "data/meta/worker-line-budget/formal_ai_worker_crate_task_decomposition_cues.lino",
+        "js/agentic/crate/task_decomposition_cues.mjs",
+        "js/worker/formal_ai_worker_crate_task_decomposition_cues.js",
+        "rust/src/meta_executor/decomposition.rs",
+        "rust/tests/fixtures/meta-executor-cue-parity.json",
+        "rust/tests/web/helpers/issue-1580-task-cue-cases.mjs",
+        "ts/agentic/crate/task_decomposition_cues.mts",
+        "ts/worker/formal_ai_worker_crate_task_decomposition_cues.ts"
+      ],
+      "exitCode": 0,
+      "seconds": 0.237,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "translation-writer",
+      "argv": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--write",
+        "--fetch",
+        "--jobs",
+        "1",
+        "js/agentic/crate/meta_executor.mjs",
+        "js/agentic/crate/task_decomposition_cues.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 91.352,
+      "rawLines": 8,
+      "rawSha256": "2d43b1324556472bd0d6b6dc5e716f5f44af40bbf1611f2af0a78e3472a32044",
+      "archiveSha256": "00abb2710c257ea8e576a967e578e7f1d78940fe341a69eb2937f58b0b4043aa"
+    },
+    {
+      "name": "translation-verification",
+      "argv": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 3.235,
+      "rawLines": 1,
+      "rawSha256": "67bffc6883d5a86bf70b01bd6b76f283b3a7987b726187978d3a3eb926f98799",
+      "archiveSha256": "357c20ba8ce048860db19a76cf62f54dce65beaea175b796e37630c4341438de"
+    },
+    {
+      "name": "all-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 953.585,
+      "rawLines": 140,
+      "rawSha256": "e972a38b4c544144fb46d93f778dda8fa8373474e3c2e02585606512dcef7a9a",
+      "archiveSha256": "6871eaa590163a2ad7810997b2b45307dcbf65905d29840c94e780e1d8c2e23a"
+    }
+  ],
+  "observedAt": "2026-11-18T10:19:40.928283+00:00",
+  "nativeExecuted": false,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 158528\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

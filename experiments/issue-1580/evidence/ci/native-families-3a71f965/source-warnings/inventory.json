@@ -1,0 +1,740 @@
+[
+  {
+    "line": 349,
+    "path": "data/meta/rename-map.lino",
+    "lines": 1423,
+    "threshold": 1400
+  },
+  {
+    "line": 351,
+    "path": "data/meta/self-hosting-ledger-parts/0001.lino",
+    "lines": 1472,
+    "threshold": 1400
+  },
+  {
+    "line": 353,
+    "path": "data/seed/multilingual-responses.lino",
+    "lines": 1486,
+    "threshold": 1400
+  },
+  {
+    "line": 355,
+    "path": "data/seed/meanings-response-intents-handlers.lino",
+    "lines": 1407,
+    "threshold": 1400
+  },
+  {
+    "line": 357,
+    "path": "data/seed/meanings-routing-vocabulary.lino",
+    "lines": 1489,
+    "threshold": 1400
+  },
+  {
+    "line": 359,
+    "path": "data/seed/multilingual-responses-synthesis.lino",
+    "lines": 1426,
+    "threshold": 1400
+  },
+  {
+    "line": 361,
+    "path": "data/seed/meanings-response-intents.lino",
+    "lines": 1498,
+    "threshold": 1400
+  },
+  {
+    "line": 363,
+    "path": "data/parity/issue-1584-cnl-infeasible.json",
+    "lines": 1419,
+    "threshold": 1400
+  },
+  {
+    "line": 365,
+    "path": "js/seed_loader.js",
+    "lines": 1500,
+    "threshold": 1400
+  },
+  {
+    "line": 367,
+    "path": "js/wasm-worker/src/lib.rs",
+    "lines": 976,
+    "threshold": 900
+  },
+  {
+    "line": 369,
+    "path": "js/worker/formal_ai_worker_meaning_lexicon.js",
+    "lines": 1460,
+    "threshold": 1400
+  },
+  {
+    "line": 371,
+    "path": "js/worker/formal_ai_worker_code_tasks.js",
+    "lines": 1417,
+    "threshold": 1400
+  },
+  {
+    "line": 373,
+    "path": "js/app/application.jsx",
+    "lines": 1451,
+    "threshold": 1400
+  },
+  {
+    "line": 375,
+    "path": ".github/workflows/release-staged.yml",
+    "lines": 1478,
+    "threshold": 1400
+  },
+  {
+    "line": 377,
+    "path": ".github/workflows/desktop-release.yml",
+    "lines": 1498,
+    "threshold": 1400
+  },
+  {
+    "line": 379,
+    "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/.github_workflows_release.yml.before.txt",
+    "lines": 1475,
+    "threshold": 1400
+  },
+  {
+    "line": 381,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+    "lines": 1494,
+    "threshold": 1400
+  },
+  {
+    "line": 383,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/original-release-workflow.yml.txt",
+    "lines": 1475,
+    "threshold": 1400
+  },
+  {
+    "line": 385,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/release-staged.yml.txt",
+    "lines": 1408,
+    "threshold": 1400
+  },
+  {
+    "line": 387,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity/project-parity-pre-repair-observations.json",
+    "lines": 1482,
+    "threshold": 1400
+  },
+  {
+    "line": 389,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-statistics.rs",
+    "lines": 970,
+    "threshold": 900
+  },
+  {
+    "line": 391,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-web_search_intent.rs",
+    "lines": 910,
+    "threshold": 900
+  },
+  {
+    "line": 393,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-web_search_intent.rs",
+    "lines": 905,
+    "threshold": 900
+  },
+  {
+    "line": 395,
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-statistics.rs",
+    "lines": 975,
+    "threshold": 900
+  },
+  {
+    "line": 397,
+    "path": "experiments/issue-1580/evidence/checks/all-local-gates-fifth-summary.json",
+    "lines": 1437,
+    "threshold": 1400
+  },
+  {
+    "line": 399,
+    "path": "ts/seed_loader.ts",
+    "lines": 1500,
+    "threshold": 1400
+  },
+  {
+    "line": 401,
+    "path": "ts/worker/formal_ai_worker_code_tasks.ts",
+    "lines": 1417,
+    "threshold": 1400
+  },
+  {
+    "line": 403,
+    "path": "ts/worker/formal_ai_worker_meaning_lexicon.ts",
+    "lines": 1460,
+    "threshold": 1400
+  },
+  {
+    "line": 405,
+    "path": "rust/embedded/data/seed/multilingual-responses.lino",
+    "lines": 1486,
+    "threshold": 1400
+  },
+  {
+    "line": 407,
+    "path": "rust/embedded/data/seed/meanings-response-intents-handlers.lino",
+    "lines": 1407,
+    "threshold": 1400
+  },
+  {
+    "line": 409,
+    "path": "rust/embedded/data/seed/meanings-routing-vocabulary.lino",
+    "lines": 1489,
+    "threshold": 1400
+  },
+  {
+    "line": 411,
+    "path": "rust/embedded/data/seed/multilingual-responses-synthesis.lino",
+    "lines": 1426,
+    "threshold": 1400
+  },
+  {
+    "line": 413,
+    "path": "rust/embedded/data/seed/meanings-response-intents.lino",
+    "lines": 1498,
+    "threshold": 1400
+  },
+  {
+    "line": 415,
+    "path": "rust/tests/unit/coding_discovery/no_memorization.rs",
+    "lines": 950,
+    "threshold": 900
+  },
+  {
+    "line": 417,
+    "path": "rust/tests/unit/docs_requirements.rs",
+    "lines": 999,
+    "threshold": 900
+  },
+  {
+    "line": 419,
+    "path": "rust/tests/unit/capability-routing/issue_1175_claim_routing.rs",
+    "lines": 986,
+    "threshold": 900
+  },
+  {
+    "line": 421,
+    "path": "rust/tests/unit/agentic-coding/agentic_general_planner.rs",
+    "lines": 988,
+    "threshold": 900
+  },
+  {
+    "line": 423,
+    "path": "rust/tests/unit/pull_request_1188_teach_f.rs",
+    "lines": 984,
+    "threshold": 900
+  },
+  {
+    "line": 425,
+    "path": "rust/tests/unit/ci-cd/job_budget_fit.rs",
+    "lines": 939,
+    "threshold": 900
+  },
+  {
+    "line": 427,
+    "path": "rust/tests/unit/ci-cd/pinned_tool_images.rs",
+    "lines": 952,
+    "threshold": 900
+  },
+  {
+    "line": 429,
+    "path": "rust/tests/unit/ci-cd/release_publishing.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 431,
+    "path": "rust/tests/unit/ci-cd/workflow_release.rs",
+    "lines": 982,
+    "threshold": 900
+  },
+  {
+    "line": 433,
+    "path": "rust/tests/unit/issue_918_handler_rules_batch.rs",
+    "lines": 953,
+    "threshold": 900
+  },
+  {
+    "line": 435,
+    "path": "rust/tests/unit/memory_maintenance.rs",
+    "lines": 995,
+    "threshold": 900
+  },
+  {
+    "line": 437,
+    "path": "rust/tests/unit/issue_1066_ladder_capability.rs",
+    "lines": 943,
+    "threshold": 900
+  },
+  {
+    "line": 439,
+    "path": "rust/tests/unit/issue_844_statement_merge.rs",
+    "lines": 907,
+    "threshold": 900
+  },
+  {
+    "line": 441,
+    "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 443,
+    "path": "rust/tests/unit/data_files.rs",
+    "lines": 970,
+    "threshold": 900
+  },
+  {
+    "line": 445,
+    "path": "rust/tests/unit/specification/external_benchmarks.rs",
+    "lines": 974,
+    "threshold": 900
+  },
+  {
+    "line": 447,
+    "path": "rust/tests/unit/specification/openai_compatibility.rs",
+    "lines": 997,
+    "threshold": 900
+  },
+  {
+    "line": 449,
+    "path": "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 451,
+    "path": "rust/tests/unit/specification/text_manipulation.rs",
+    "lines": 965,
+    "threshold": 900
+  },
+  {
+    "line": 453,
+    "path": "rust/tests/unit/specification/benchmarks.rs",
+    "lines": 907,
+    "threshold": 900
+  },
+  {
+    "line": 455,
+    "path": "rust/tests/unit/specification/self_hosting_metric.rs",
+    "lines": 961,
+    "threshold": 900
+  },
+  {
+    "line": 457,
+    "path": "rust/tests/unit/semantic_intent_routing.rs",
+    "lines": 984,
+    "threshold": 900
+  },
+  {
+    "line": 459,
+    "path": "rust/tests/integration/issue_703_orchestration.rs",
+    "lines": 994,
+    "threshold": 900
+  },
+  {
+    "line": 461,
+    "path": "rust/tests/integration/issue_703_orchestration_followup.rs",
+    "lines": 982,
+    "threshold": 900
+  },
+  {
+    "line": 463,
+    "path": "rust/tests/integration/with_formal_ai.rs",
+    "lines": 945,
+    "threshold": 900
+  },
+  {
+    "line": 465,
+    "path": "rust/tests/source/solver_helpers.rs",
+    "lines": 962,
+    "threshold": 900
+  },
+  {
+    "line": 467,
+    "path": "rust/tests/source/intent_formalization.rs",
+    "lines": 961,
+    "threshold": 900
+  },
+  {
+    "line": 469,
+    "path": "rust/tests/source/engine.rs",
+    "lines": 921,
+    "threshold": 900
+  },
+  {
+    "line": 471,
+    "path": "rust/tests/source/solver.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 473,
+    "path": "rust/tests/source/solver_handlers/mod.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 475,
+    "path": "rust/tests/source/solver_handlers/behavior_rules.rs",
+    "lines": 961,
+    "threshold": 900
+  },
+  {
+    "line": 477,
+    "path": "rust/tests/source/solver_handlers/software_project.rs",
+    "lines": 911,
+    "threshold": 900
+  },
+  {
+    "line": 479,
+    "path": "rust/tests/source/seed/meanings.rs",
+    "lines": 953,
+    "threshold": 900
+  },
+  {
+    "line": 481,
+    "path": "rust/tests/fixtures/meta-executor-parity.json",
+    "lines": 1424,
+    "threshold": 1400
+  },
+  {
+    "line": 483,
+    "path": "rust/tests/fixtures/source-fetch-provenance.json",
+    "lines": 1401,
+    "threshold": 1400
+  },
+  {
+    "line": 485,
+    "path": "rust/examples/generate_grammar_projection_rules/rules.rs",
+    "lines": 929,
+    "threshold": 900
+  },
+  {
+    "line": 487,
+    "path": "rust/src/repository_workspace/mod.rs",
+    "lines": 968,
+    "threshold": 900
+  },
+  {
+    "line": 489,
+    "path": "rust/src/computer_use/executor.rs",
+    "lines": 903,
+    "threshold": 900
+  },
+  {
+    "line": 491,
+    "path": "rust/src/link_store.rs",
+    "lines": 977,
+    "threshold": 900
+  },
+  {
+    "line": 493,
+    "path": "rust/src/coding_research_learning.rs",
+    "lines": 941,
+    "threshold": 900
+  },
+  {
+    "line": 495,
+    "path": "rust/src/meta_method_dispatch.rs",
+    "lines": 998,
+    "threshold": 900
+  },
+  {
+    "line": 497,
+    "path": "rust/src/agentic_coding/capability_router.rs",
+    "lines": 926,
+    "threshold": 900
+  },
+  {
+    "line": 499,
+    "path": "rust/src/agentic_coding/web_research.rs",
+    "lines": 944,
+    "threshold": 900
+  },
+  {
+    "line": 501,
+    "path": "rust/src/agentic_coding/general_planner/owned_goals.rs",
+    "lines": 946,
+    "threshold": 900
+  },
+  {
+    "line": 503,
+    "path": "rust/src/agentic_coding/command_reroute.rs",
+    "lines": 954,
+    "threshold": 900
+  },
+  {
+    "line": 505,
+    "path": "rust/src/agentic_coding/work_item_file_io.rs",
+    "lines": 940,
+    "threshold": 900
+  },
+  {
+    "line": 507,
+    "path": "rust/src/agentic_coding/positional_edit.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 509,
+    "path": "rust/src/agentic_coding/shell_command.rs",
+    "lines": 990,
+    "threshold": 900
+  },
+  {
+    "line": 511,
+    "path": "rust/src/agentic_coding/write_request.rs",
+    "lines": 994,
+    "threshold": 900
+  },
+  {
+    "line": 513,
+    "path": "rust/src/agentic_coding/workspace_line_operation.rs",
+    "lines": 957,
+    "threshold": 900
+  },
+  {
+    "line": 515,
+    "path": "rust/src/agentic_coding/workspace_computed_change.rs",
+    "lines": 903,
+    "threshold": 900
+  },
+  {
+    "line": 517,
+    "path": "rust/src/agentic_coding/module_function.rs",
+    "lines": 983,
+    "threshold": 900
+  },
+  {
+    "line": 519,
+    "path": "rust/src/agentic_coding/progress.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 521,
+    "path": "rust/src/agentic_coding/tool_result.rs",
+    "lines": 903,
+    "threshold": 900
+  },
+  {
+    "line": 523,
+    "path": "rust/src/agentic_coding/repair_loop.rs",
+    "lines": 921,
+    "threshold": 900
+  },
+  {
+    "line": 525,
+    "path": "rust/src/agentic_coding/general_execution.rs",
+    "lines": 972,
+    "threshold": 900
+  },
+  {
+    "line": 527,
+    "path": "rust/src/agentic_coding/evidence_record.rs",
+    "lines": 993,
+    "threshold": 900
+  },
+  {
+    "line": 529,
+    "path": "rust/src/agentic_coding/task_acceptance.rs",
+    "lines": 930,
+    "threshold": 900
+  },
+  {
+    "line": 531,
+    "path": "rust/src/agentic_coding/planner.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 533,
+    "path": "rust/src/protocol.rs",
+    "lines": 989,
+    "threshold": 900
+  },
+  {
+    "line": 535,
+    "path": "rust/src/engine.rs",
+    "lines": 999,
+    "threshold": 900
+  },
+  {
+    "line": 537,
+    "path": "rust/src/web_formalize.rs",
+    "lines": 936,
+    "threshold": 900
+  },
+  {
+    "line": 539,
+    "path": "rust/src/seed.rs",
+    "lines": 983,
+    "threshold": 900
+  },
+  {
+    "line": 541,
+    "path": "rust/src/es_meta.rs",
+    "lines": 984,
+    "threshold": 900
+  },
+  {
+    "line": 543,
+    "path": "rust/src/meta_executor.rs",
+    "lines": 946,
+    "threshold": 900
+  },
+  {
+    "line": 545,
+    "path": "rust/src/calculation.rs",
+    "lines": 988,
+    "threshold": 900
+  },
+  {
+    "line": 547,
+    "path": "rust/src/proof_engine/decision/linear.rs",
+    "lines": 948,
+    "threshold": 900
+  },
+  {
+    "line": 549,
+    "path": "rust/src/telegram.rs",
+    "lines": 914,
+    "threshold": 900
+  },
+  {
+    "line": 551,
+    "path": "rust/src/world_model.rs",
+    "lines": 1000,
+    "threshold": 900
+  },
+  {
+    "line": 553,
+    "path": "rust/src/execution_box/mod.rs",
+    "lines": 973,
+    "threshold": 900
+  },
+  {
+    "line": 555,
+    "path": "rust/src/lexeme_import.rs",
+    "lines": 912,
+    "threshold": 900
+  },
+  {
+    "line": 557,
+    "path": "rust/src/meta_reasoner/reasoner.rs",
+    "lines": 977,
+    "threshold": 900
+  },
+  {
+    "line": 559,
+    "path": "rust/src/formalization/text_statements.rs",
+    "lines": 975,
+    "threshold": 900
+  },
+  {
+    "line": 561,
+    "path": "rust/src/formalization/proposition_structure.rs",
+    "lines": 955,
+    "threshold": 900
+  },
+  {
+    "line": 563,
+    "path": "rust/src/algorithm_discovery.rs",
+    "lines": 973,
+    "threshold": 900
+  },
+  {
+    "line": 565,
+    "path": "rust/src/concept_lookup.rs",
+    "lines": 961,
+    "threshold": 900
+  },
+  {
+    "line": 567,
+    "path": "rust/src/solver.rs",
+    "lines": 950,
+    "threshold": 900
+  },
+  {
+    "line": 569,
+    "path": "rust/src/cnl_output/grammar.rs",
+    "lines": 966,
+    "threshold": 900
+  },
+  {
+    "line": 571,
+    "path": "rust/src/solver_handlers/web_search_intent.rs",
+    "lines": 910,
+    "threshold": 900
+  },
+  {
+    "line": 573,
+    "path": "rust/src/solver_handlers/statistics.rs",
+    "lines": 976,
+    "threshold": 900
+  },
+  {
+    "line": 575,
+    "path": "rust/src/solver_handlers/text_manipulation.rs",
+    "lines": 949,
+    "threshold": 900
+  },
+  {
+    "line": 577,
+    "path": "rust/src/main.rs",
+    "lines": 992,
+    "threshold": 900
+  },
+  {
+    "line": 579,
+    "path": "rust/src/seed/embedded_registry.rs",
+    "lines": 983,
+    "threshold": 900
+  },
+  {
+    "line": 581,
+    "path": "rust/src/rule_interpreter.rs",
+    "lines": 973,
+    "threshold": 900
+  },
+  {
+    "line": 583,
+    "path": "rust/src/solver_unknown_reasoning.rs",
+    "lines": 932,
+    "threshold": 900
+  },
+  {
+    "line": 585,
+    "path": "docs/requirements-traceability.md",
+    "lines": 1480,
+    "threshold": 1400
+  },
+  {
+    "line": 587,
+    "path": "scripts/normalize-ordered-lists.rs",
+    "lines": 960,
+    "threshold": 900
+  },
+  {
+    "line": 589,
+    "path": "scripts/self-hosting-metric.rs",
+    "lines": 903,
+    "threshold": 900
+  },
+  {
+    "line": 591,
+    "path": "scripts/assemble-requirements.rs",
+    "lines": 989,
+    "threshold": 900
+  },
+  {
+    "line": 593,
+    "path": "CONTRIBUTING.md",
+    "lines": 1491,
+    "threshold": 1400
+  }
+]

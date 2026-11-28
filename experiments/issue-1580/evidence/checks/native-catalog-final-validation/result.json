@@ -1,0 +1,114 @@
+{
+  "complete": true,
+  "sourceHead": "82c36fa5c3ed30947d42d125a311c36187cf8171",
+  "javascriptPassed": 52,
+  "fullGateInventory": 139,
+  "gatesPassedAfterRecheck": 87,
+  "explicitGateExclusions": 52,
+  "unresolvedGateFailures": 0,
+  "initialInventoryFailedGates": [
+    "check-abbreviations"
+  ],
+  "initialShellcheckFailed": true,
+  "beforeSerialRegressionFailed": true,
+  "checks": [
+    {
+      "file": "normalize-artifact-name.log.gz",
+      "rawSha256": "a9c81e393e691e230f0385f163108876ca933314dfc89ba6b24a137c774dc29e",
+      "archiveSha256": "bf1e7433ce41aaf587ceacc2a531090014f39d84c0787bfa125e253b08be7d90",
+      "lines": 1,
+      "name": "normalize-artifact-name",
+      "argv": [
+        "python3",
+        "/tmp/issue-1580-research/normalize-retained-gate-file-name.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.075
+    },
+    {
+      "file": "shellcheck.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "name": "shellcheck",
+      "argv": [
+        "shellcheck",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.048
+    },
+    {
+      "file": "policy.log.gz",
+      "rawSha256": "e529389984c2ac6b78f7718a9651531b7a17973386bac07180d54d75833fe7b3",
+      "archiveSha256": "f8e7486cec44ee04fdb30742ff3c54e8a7c284da09fd0a2a991fa5de9224c9c5",
+      "lines": 52,
+      "name": "policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.678
+    },
+    {
+      "file": "focused-map.log.gz",
+      "rawSha256": "5203854a1bf30c0baa725f3f2298b79204acf89b5191034220a0102f4ddd3e4e",
+      "archiveSha256": "292165ab738bb278333509f7be5b9e008987cce9d4c7f285470b7c2a53019874",
+      "lines": 16,
+      "name": "focused-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.724
+    },
+    {
+      "file": "affected-gates.log.gz",
+      "rawSha256": "251d40bfca6cf8fec3ace98d85673d81c95ab83d6cb1d419d35e4fbd4100368e",
+      "archiveSha256": "58c217fd4f0a9aa95c3fcee0959a53b0a7151c5776a8950caee598fd7c6248f6",
+      "lines": 8,
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 30.516
+    }
+  ],
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "e189a0d103f90ea97c25c4ea167ef515ddfbae2696416714fc5d08c7cbc148ea",
+    "changelog.d/issue-1580-deterministic-trends.md": "5f3733d9dfb18cc03e2ec9b445cb744a28ace4624b5ca8912aaecf78a2701f56",
+    "changelog.d/issue-1580-native-benchmark-budget.md": "427cb1fd3b81141f11b50ddd4b8c53ddfa0a531846999bcded2607d21745ede8",
+    "data/meta/core-boundary-ledger.lino": "9c24ec42b9a7bb747e550a3aedfe6d87fd82c02d904fcbb8ad3f416aab7ad6bf",
+    "data/seed/google-trends-prompts.lino": "589a2477b200e941d00f819f0f8c0a7b00855f1961d5a22845dbc273f0cd4faa",
+    "rust/embedded/data/seed/google-trends-prompts.lino": "589a2477b200e941d00f819f0f8c0a7b00855f1961d5a22845dbc273f0cd4faa",
+    "rust/examples/dump_google_trends_catalog.rs": "f984852bb868b48bb932be10da892ee8b2630b723b8d3f6123a0bd01bbcc184d",
+    "rust/src/event_log.rs": "7dfdcd1b4f6240aa01a222fb29d13eeefb8d7c09a9aacbfc1716958b1f9a384e",
+    "rust/src/google_trends_catalog.rs": "a62d350272a1f9f4499952afbcd46541a0a7f9d705466d8224e2d1e217210023",
+    "rust/src/solver_handlers/fact_live_answer.rs": "da1aef59d7d953f2d52fa0ee02438f25c4da2f289c4561554f3107071059ab17",
+    "rust/src/solver_handlers/web_requests/live_search.rs": "aead837af6b8b0e1bf6b06850edd4d68fcf5c7ea381b53201681e64e0b718f55",
+    "rust/tests/unit/issue_498_google_trends.rs": "48d4e0e65c99949431a6f8453e283da50da92ce29f9972a1150130e44753ea7e",
+    "rust/tests/unit/reasoning_contracts.rs": "a4550c4b9a9badb9c08c8a68cf4d97282b3d09f98d9bce4448482c183758b20e",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "b00e2ccb4a52811b8c033a5f4b06d400a2ce1f80027ba032c8e12a0a009998e8",
+    "scripts/ci-native-regressions.sh": "4c7aa057fcd935fb8a719093debed8eeea0a148c88c7d916a2733d07ab761a7d",
+    "scripts/ci-pull-request-admission.mjs": "b4f855fcfbed3a57e45abd7ee410ec5ba8344eab8d6f75f4045c38aad15c7f2d"
+  },
+  "verifiedEarlierPayloadPairs": 186,
+  "nativeExecuted": false,
+  "nativeFixturesRegenerated": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

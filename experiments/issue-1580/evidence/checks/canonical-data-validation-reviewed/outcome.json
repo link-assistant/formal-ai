@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "allPassed": false,
+  "sourceUnchangedDuringValidation": true,
+  "checks": 11,
+  "failed": [
+    "typescript-runtime",
+    "all-local-gates"
+  ],
+  "gates": {
+    "PASS": 81,
+    "FAIL": 6,
+    "SKIP": 52
+  },
+  "gateLogsArchived": 87,
+  "nativeExecutedLocally": false,
+  "completedAt": "2026-11-18T19:27:52.492520+00:00",
+  "independentAuthorshipCredit": 0
+}

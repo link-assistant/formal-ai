@@ -13,7 +13,7 @@ concept_lookup_step_enumerate
   record_type meta_step
   order 1
   function unknown_surfaces
-  source rust/src/concept_lookup.rs
+  source rust/src/concept_lookup/unknown_surfaces.rs
   effect "Name every surface in the prompt that no seeded meaning, and no quoted example, accounts for."
 concept_lookup_step_select
   record_type meta_step

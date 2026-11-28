@@ -1,0 +1,642 @@
+[
+  {
+    "source": "included-string-protocol-final-validation/all-gates.stderr",
+    "file": "record-0000.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-protocol-final-validation/all-gates.stdout",
+    "file": "record-0001.gz",
+    "rawSha256": "dc9fdd448552435e5421d3a909a5d07a170c43924958dbc19d865c1a7fd03a5b",
+    "archiveSha256": "d5f0fc5a596d31fbb541a9eab58b36f7e264e3684a33f6f9e4d26aecf7097678",
+    "bytes": 6902,
+    "lines": 143
+  },
+  {
+    "source": "included-string-protocol-final-validation/command.json",
+    "file": "record-0002.gz",
+    "rawSha256": "1dcbcd00918b64a02764a8c723321749749dfbe14b0985b72364e3cd8b29951c",
+    "archiveSha256": "1c595831a11bdece177f4739e98448ca1ea062f56fc9ac6550c612462ad90642",
+    "bytes": 165,
+    "lines": 9
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-000.log.gz",
+    "file": "record-0003.gz",
+    "rawSha256": "0d98b455a8ecbd2206064e6f46eb440a146288475047af09290ccbd31eb80221",
+    "archiveSha256": "0f5ff9998ce47a7baee0b53fbec25f4828641597a81902d1ce6409c03be1dee7",
+    "bytes": 117,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-001.log.gz",
+    "file": "record-0004.gz",
+    "rawSha256": "2971512d462d0a8597148530b3959940c1e288b71d1ac8844a25da933d592ef1",
+    "archiveSha256": "fb28d64428c03e8c094059b5db2f39fd87f682789d8ce79b2a3141c45386d404",
+    "bytes": 108,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-002.log.gz",
+    "file": "record-0005.gz",
+    "rawSha256": "13a4ba702514bae8d4ed3de6369f36416d6ba4b1de788c3fbac281877100f627",
+    "archiveSha256": "3a79b1f990df04f073e396064590c5a8dcdbb3c6098f0f6d0dd818810eef0823",
+    "bytes": 91,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-003.log.gz",
+    "file": "record-0006.gz",
+    "rawSha256": "f0199ca30a1f13380f2e8b6a8083017c9ebb701648598d74443181a3b7af6e13",
+    "archiveSha256": "ab1a6028f9e22cc2695404dc31266cf3d33915983a571d2ba16b99b70b066997",
+    "bytes": 190,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-004.log.gz",
+    "file": "record-0007.gz",
+    "rawSha256": "cf212b8db84d6e8512f4d0a14432e9fb3006bcd8760a9299f3d06702ff7cb2db",
+    "archiveSha256": "d7b0a3fc7ce66336ff90444936716c89726ae61748580ca688423c427caa6ceb",
+    "bytes": 135,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-005.log.gz",
+    "file": "record-0008.gz",
+    "rawSha256": "3d913e67367494921da8c6f7c8cdaecd3abf6a57ff5e879e2d3e7331fe1b2e78",
+    "archiveSha256": "a0f798659bf297d99c421f46f1a24f85a2dbd259c8bd5af07aed72b7d44d4ba6",
+    "bytes": 2100,
+    "lines": 16
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-006.log.gz",
+    "file": "record-0009.gz",
+    "rawSha256": "b06839e164ff737ab13cb38edb7bddf2d991bda9048a4f41e223f602e893831a",
+    "archiveSha256": "a4d4ab3dd1667db5c8d11f0777fb177109b49fd909300d0548036fd8c341b0d7",
+    "bytes": 137,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-007.log.gz",
+    "file": "record-0010.gz",
+    "rawSha256": "9a245e881cd4bab6aae02b4a25dc4de6b20a7d9fa82ef951c9a1188b6f20f5a8",
+    "archiveSha256": "48b59010c3f0ff02366fd7ebd30b81b93a55115998e1beb1d9857241665fc826",
+    "bytes": 363,
+    "lines": 6
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-008.log.gz",
+    "file": "record-0011.gz",
+    "rawSha256": "08471655b602264f3b62b0d3bc16e086fe8ba0aea7234abd758c91a33661d17b",
+    "archiveSha256": "7bfede892a943fdf7da541a302670cf782b104b959af59fa51c067af8b51cfe1",
+    "bytes": 142,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-009.log.gz",
+    "file": "record-0012.gz",
+    "rawSha256": "1476ebd5a9c8af0304dda605b9f96ba35ea200ad3624fcee0b61d84204053fe5",
+    "archiveSha256": "52c5e612806ccd1b6d5a7891305845b01799448875a148a3697aad984c859ae2",
+    "bytes": 94,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-010.log.gz",
+    "file": "record-0013.gz",
+    "rawSha256": "d22b34ab70b9bc63e9cb0bc6c54c1140558b35e3e584d891a9ea2abb4a082036",
+    "archiveSha256": "424abe6f05fe6381e63659f92c47d0c9f7d66f17467619eda398a73cc082acf7",
+    "bytes": 144,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-011.log.gz",
+    "file": "record-0014.gz",
+    "rawSha256": "532d5f8315cc6f91e11fea5b431d7545a96ce593e6330fb9a162de240032311c",
+    "archiveSha256": "54ac5a97553a2f32af6ea69d182232a7886e69704abc5dbd8f8a58de923acf88",
+    "bytes": 5952,
+    "lines": 58
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-012.log.gz",
+    "file": "record-0015.gz",
+    "rawSha256": "8f77b55d7b83db51e60cd26464bc763cf1b0f2a85e4356589b2be2135e2cec7d",
+    "archiveSha256": "4de27a2ce79e26e12a195ca51ff2f098009c7297a8f2b02a10d834b1283b5e2d",
+    "bytes": 756,
+    "lines": 5
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-013.log.gz",
+    "file": "record-0016.gz",
+    "rawSha256": "81775dd2353acf09d4a688e5ce1f0e20cefd3b8f14a25d413d6cc066bbcf2409",
+    "archiveSha256": "6bdb45b887f3c4a9681d4db7bd88a54a7132523e6d790797e41fb2209754bbdd",
+    "bytes": 103,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-014.log.gz",
+    "file": "record-0017.gz",
+    "rawSha256": "5ee4009241ee13da1c71e44fd09fb5ba26e15b6bfda355aee981d571bca96f50",
+    "archiveSha256": "2bbf6337a3ad565ec5eda3b40a9646b4fb5102fdc76a8c71a6e01c9f848394c9",
+    "bytes": 129,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-015.log.gz",
+    "file": "record-0018.gz",
+    "rawSha256": "0873ea4a2eac787c2e1e5298ba1feec9182bd11903ade7ae07b88fe021775e49",
+    "archiveSha256": "1d2ec9bafa1023b3c7a37773baa765145a9360fe6226edbf76e8cb4e0819f0a0",
+    "bytes": 3356,
+    "lines": 17
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-016.log.gz",
+    "file": "record-0019.gz",
+    "rawSha256": "e134d3fae23fb83ea98209f6b38809d8f316e821baa781cc8e5a4d8611c2d70e",
+    "archiveSha256": "263b8a6be3bd64de88f332ab9cfbe1d37bbfc6995c72f11dbc63b9b727e629e2",
+    "bytes": 135,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-017.log.gz",
+    "file": "record-0020.gz",
+    "rawSha256": "7914b358af69174e6cb6c057ac364da042abed3a3b1fdd31356614ca7209a144",
+    "archiveSha256": "82103708045a0131cc146570deac8777494c5c456d296f4473748bcb969b25b5",
+    "bytes": 494,
+    "lines": 6
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-018.log.gz",
+    "file": "record-0021.gz",
+    "rawSha256": "1249400ca3baf38dae87f643ffac02b25b8e56c772194f3db235f74c2f8363cf",
+    "archiveSha256": "d2e7e95493d49af03a1d91ff3077c5ba392f80bbe91dd8043c5b7af650684c1b",
+    "bytes": 134,
+    "lines": 4
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-019.log.gz",
+    "file": "record-0022.gz",
+    "rawSha256": "9814d201ab63b1d2f3c4451d36bbd4ec9e6ae9ea2fca4b5ce09a45094d8718ac",
+    "archiveSha256": "2a30e2456bf3e3de2b744a9dc61504716b879fe22e7fb93526711090baf4226e",
+    "bytes": 141,
+    "lines": 5
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-020.log.gz",
+    "file": "record-0023.gz",
+    "rawSha256": "bf0d6c45c5bce24a40de71cf973cf46b0932710d3d4e636d09535c867ddd3509",
+    "archiveSha256": "8126c03f0ee129bdc35981a74970c5f0968f0804b663a5e79f304f1ccae5fa2b",
+    "bytes": 102,
+    "lines": 5
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-021.log.gz",
+    "file": "record-0024.gz",
+    "rawSha256": "9b516190db33030fa2c201fdf9f9b5903224aa9e537b928e0ba1c0534ff0a3da",
+    "archiveSha256": "9835099c846caf170af8f5546604a3f1dabae917fc5e2d0bc1baa454ea018fb0",
+    "bytes": 139,
+    "lines": 4
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-022.log.gz",
+    "file": "record-0025.gz",
+    "rawSha256": "fb40d46f4edbb52ae7a9d9bbf3d04fcd450a6aa8ef067798ab101da8ecd45fd8",
+    "archiveSha256": "1f4abdf8fd475bd43daa576c3d5f8438de0b27d2288a6e5fb9eb9350d9e06be3",
+    "bytes": 125,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-023.log.gz",
+    "file": "record-0026.gz",
+    "rawSha256": "902006218726a7ab0d9e6af1a467f17ed701355058c9e43841564d78bc91ff19",
+    "archiveSha256": "2e927e542de9e96687d30897fea69b0b0b499144fd491fa7d7427076f8e33e8e",
+    "bytes": 134,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-024.log.gz",
+    "file": "record-0027.gz",
+    "rawSha256": "e4d6898ec39dd81b9782841f9402e258ba8c37ce72372123f048d894c175c2ef",
+    "archiveSha256": "5728f6e53fae06e5afc7e0a66c36704a50e6c8aca75e9f54292913209a248f21",
+    "bytes": 180,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-025.log.gz",
+    "file": "record-0028.gz",
+    "rawSha256": "2a26bc94c50b77d4aef40cbc2d52ab634fff7bd9b051f935b12a2aa7de24cfff",
+    "archiveSha256": "0057103aa1c929bc79c3ca33a6e73071b4698c4f9fbeca4b9ef25ff0190e509b",
+    "bytes": 145,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-026.log.gz",
+    "file": "record-0029.gz",
+    "rawSha256": "1f37dcc960aee47fdc4d73e0ee231b6def12619c6490574a3c22d03a397e4fa2",
+    "archiveSha256": "358b75cdfeba03a7aa1b230b75a7518ccbc8513444b37e380a37a9460b0bc685",
+    "bytes": 434,
+    "lines": 7
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-027.log.gz",
+    "file": "record-0030.gz",
+    "rawSha256": "34e05cfed4dbf37b24efe68de97729dcffd10150bc05573b020bb67e2a5688b4",
+    "archiveSha256": "c25a3f17b3acf0c20a4059c4e1083e58f36e60b61d3fdcf724ef64497f499d74",
+    "bytes": 176,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-028.log.gz",
+    "file": "record-0031.gz",
+    "rawSha256": "744fadd2fcd03bfb4899eecf16c4a895a9427ef95e515d0f6e325be189811200",
+    "archiveSha256": "956ee9a5df0ea102eedf653f24fb465294d38093a30f900bc276f9dee6624b2e",
+    "bytes": 130,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-029.log.gz",
+    "file": "record-0032.gz",
+    "rawSha256": "df5a4183b5471241d35b5b1b496d48d74efa80b1fdf4b22bb08c7e3d7a4e5b76",
+    "archiveSha256": "b2a0bb7597b38bac8a133e06bb7efbaf78d1ccbb211c1576207b319dc58a14e2",
+    "bytes": 104,
+    "lines": 4
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-030.log.gz",
+    "file": "record-0033.gz",
+    "rawSha256": "220c61725f4bb958e3120ed479c5b1a06cd778918c66137abc4d4d2b6cc0009a",
+    "archiveSha256": "47ea9759c705c2301880ce94754fecd9a94ac13c58cb01a69947b6b1768aff3a",
+    "bytes": 162,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-031.log.gz",
+    "file": "record-0034.gz",
+    "rawSha256": "c6b143abc9ceda1bf9812d0d9fdcc9a5234af5b069609e0ccba1ed0dfda03802",
+    "archiveSha256": "eb48178b98b8c0c499230c597e2d8614bf71b0641ee818aad843ab7aa4f2f712",
+    "bytes": 137,
+    "lines": 5
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-032.log.gz",
+    "file": "record-0035.gz",
+    "rawSha256": "27efa480dc5269a64eff21dd682f9bb7519a69a301ce741fcffe8c405c426b28",
+    "archiveSha256": "978926dc50fd57a4ce14170fcd34b94e161903761bb4117198e048f8ddf9d6c5",
+    "bytes": 173,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-033.log.gz",
+    "file": "record-0036.gz",
+    "rawSha256": "27588e7ca6753127a73d8aa919dad24ae420325dacb74bf90da53acd0b045ad7",
+    "archiveSha256": "292621013b5ec30a064c565dd5c3c0cf6039096eb91bb80f417fa258768c0322",
+    "bytes": 240,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-034.log.gz",
+    "file": "record-0037.gz",
+    "rawSha256": "d8dbd83841a318807660397d21280997ee1b0f8ba2f2580dfc346024c2bcf27a",
+    "archiveSha256": "26846bc4def5d68857004cabae5c93cd5654d8301add6ff8fd6fb6575c0c09d6",
+    "bytes": 552,
+    "lines": 5
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-035.log.gz",
+    "file": "record-0038.gz",
+    "rawSha256": "4330e4335fd6381c8a61f55ffd7fc996ee6f7f28590133b9e35cb5c36b018373",
+    "archiveSha256": "9405ed5b7d7c33e792aa89d340e9d6132421c5cfade0ae1a02289e5c8ca04b8d",
+    "bytes": 122,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-036.log.gz",
+    "file": "record-0039.gz",
+    "rawSha256": "d0245fa412b957094e709a133026b6e11b918c23e86ccfd731764d1cbf2bcfc5",
+    "archiveSha256": "8fb9416ced4ed3433372158f40f7fcce238e58d6e7cfddf206bbec0f3f8d270c",
+    "bytes": 101,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-037.log.gz",
+    "file": "record-0040.gz",
+    "rawSha256": "2b6fc8df566f2503d797061c448a2dd7009da61bd2932f7ea98e1315102522b5",
+    "archiveSha256": "07658717de9991d5586ed5b6b2151afe86aecf5c152b2c7bb15131c2c0362293",
+    "bytes": 93,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-038.log.gz",
+    "file": "record-0041.gz",
+    "rawSha256": "f09ac0861fda66833ad21948f32dd1c2879bc0620fc1b4280ef068acd25b27a6",
+    "archiveSha256": "eeb25261996f02db9eb8bbe7a10cb572018529b7646ad2b28e1e066abcd012dc",
+    "bytes": 138,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-039.log.gz",
+    "file": "record-0042.gz",
+    "rawSha256": "fadc368c8e04b717dada3de5bf0df4e1335ad06ddbeb21d37c670f30db35db01",
+    "archiveSha256": "ef5e55f1b45ca66deee23def080a90280bfff153109eb3009ac9b70c6204f69a",
+    "bytes": 719,
+    "lines": 8
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-040.log.gz",
+    "file": "record-0043.gz",
+    "rawSha256": "7fc72de9fbcb1095a249dbade5b1401fcdafc22c5ece202035fd8b115e3123ef",
+    "archiveSha256": "31c3e558cbd21c00b1419215098d2c314830f7cf36dee508a4c1fe31f5973f4b",
+    "bytes": 103,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-041.log.gz",
+    "file": "record-0044.gz",
+    "rawSha256": "f60c2c1688ff9e83107f432037da1390c9e95adc89a7aedce36430b13a50a81b",
+    "archiveSha256": "e8d238250e33e91fe55925ce57ca0ce7e926fd609d2ff9c9d5fc637d2cb3f92d",
+    "bytes": 118,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-042.log.gz",
+    "file": "record-0045.gz",
+    "rawSha256": "09582e7c8242a9b73f7ddc7c74e4d6a96b4f9bd712bc4f9d012480307db00b78",
+    "archiveSha256": "94a7ad8db6102f9cb6d894fb5edb904e55aa021eea01ca7f701f05882e7e46c8",
+    "bytes": 133,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-043.log.gz",
+    "file": "record-0046.gz",
+    "rawSha256": "c02bd30622d81a8f3a99197fe427fe8debad209f199bf92fe1c31aa313421f67",
+    "archiveSha256": "2a565669169fb04e5d8768fe380a899939cf843f3dadabe5b1044829ff8844a6",
+    "bytes": 132,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-044.log.gz",
+    "file": "record-0047.gz",
+    "rawSha256": "9a504d5467853a8912833733a0e1cc195912e09df7b5a83e34bbcaee4fdd76b0",
+    "archiveSha256": "2b826c91282bf466e3da6ed9387324cad49ed2bdebe7f1805ac59933a2b76bd8",
+    "bytes": 99,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-045.log.gz",
+    "file": "record-0048.gz",
+    "rawSha256": "d8a142abf14a9b1f9d5981731daf2539bbf224c6f55fbdff20e90a278ea10871",
+    "archiveSha256": "feafa673c1cb5e89f51f035e10fdfd83edf4ec720edc7555bf49a53628a2428c",
+    "bytes": 135,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-046.log.gz",
+    "file": "record-0049.gz",
+    "rawSha256": "6bf054120b37a826eee26d5839f15fdb577f7056324b999cfbeaf6e99a05c05a",
+    "archiveSha256": "0fe8c5411875c12e594d2ab4119b831b1513bc3a47aa71e14d62bbe4e28dde54",
+    "bytes": 145,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-047.log.gz",
+    "file": "record-0050.gz",
+    "rawSha256": "e352d6290423335f5e99dd3098f0acb5d7343ff783e3f13f4cb64713790e9ad9",
+    "archiveSha256": "2460fe1e8d619372dba11809be1854cb4ef3826b8798c58cd29d8345d1ba229f",
+    "bytes": 135,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-048.log.gz",
+    "file": "record-0051.gz",
+    "rawSha256": "594dd7f0303674aa55bb1f3107d251e5e17de2070c0bf1b26a094c06e047adf4",
+    "archiveSha256": "3a48ecf7fde48defa8f4247eb6db80182a87aa54bca715a28d5ac30b47e24dc6",
+    "bytes": 149,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-049.log.gz",
+    "file": "record-0052.gz",
+    "rawSha256": "243b5cd2bed419e2e580cb1acb339d24c48063c0a92677c3f7823198da5a47d1",
+    "archiveSha256": "02845fb8c663db36c466e93eef58eaab9029593bfa365533aa4aee58b68b2d12",
+    "bytes": 103,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-050.log.gz",
+    "file": "record-0053.gz",
+    "rawSha256": "3d1f6e233b3abf250346ce43ef7127aebd8cad8cd1afb60a6d81be3bf6e95b57",
+    "archiveSha256": "952ae5bb9dca199dd28b8bf4f3cd0d95e7a8fe3e50eb70a6ef5eaa5e4f68c5a3",
+    "bytes": 154,
+    "lines": 4
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-051.log.gz",
+    "file": "record-0054.gz",
+    "rawSha256": "0fee3e481082cc36b88ee005da69a11c28335426a776bf9d41c2d17fdb0689f9",
+    "archiveSha256": "8f1136e439b736412527acf8de62129cae34e3d690df5949d04e981ed4b68a93",
+    "bytes": 653,
+    "lines": 4
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-052.log.gz",
+    "file": "record-0055.gz",
+    "rawSha256": "db3976433e4965f4df7db8b14a82b80d13aadc0f3e36a87267907222d4cbcf66",
+    "archiveSha256": "5e251c4665323f01f18c5ecb90b8eb8f0c3de0d3085abda8c0d4ff5816a85b93",
+    "bytes": 139,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-053.log.gz",
+    "file": "record-0056.gz",
+    "rawSha256": "f963a19880f0cb9ac474ff988c25eb692065aff87c614cb1f405c54153bf2b6a",
+    "archiveSha256": "408ca28d8142734a389123a1d61f3811c8d3089f92caa646b24b2798d4b78f06",
+    "bytes": 79,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-054.log.gz",
+    "file": "record-0057.gz",
+    "rawSha256": "7396830647f67721c3328e10319d3aeaf042ed4a39c018edf1341af5f2b302de",
+    "archiveSha256": "96254f176dd1f045bc35a915a04d2521d24f59a772d5a5104563f024b51e9715",
+    "bytes": 134,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-055.log.gz",
+    "file": "record-0058.gz",
+    "rawSha256": "abf0d9a8d6f78b3a0af03832dde16507c10a65ba4c550baf3f457214a33bacf9",
+    "archiveSha256": "ee89f6ed7b2eb3d1879350caaaa12e535a617c8cfaf81847d2a2dd62ffa28c4e",
+    "bytes": 175,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-056.log.gz",
+    "file": "record-0059.gz",
+    "rawSha256": "ac6c118211c796bcd217af8c89f8e7aedabe06ff0b4ae3051fec76185fefe204",
+    "archiveSha256": "bbb0fff9fed480a1b4c756f1e713a7c3e8435fa4950dcdddd90169a350091b6d",
+    "bytes": 95,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-057.log.gz",
+    "file": "record-0060.gz",
+    "rawSha256": "d1daeb5d8ec65cda7c91de65163bd9c51bb6305be9fee3c054af0b4271a4ac58",
+    "archiveSha256": "52e2dd66ac6ed318e8b98802c6ad2ae7a727f803f41addc6c2221481aa0c800d",
+    "bytes": 123,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-058.log.gz",
+    "file": "record-0061.gz",
+    "rawSha256": "93d67b84a6b2cc287a2c05cb02bc5ea76f72c1738bbed595cfef83b446860d63",
+    "archiveSha256": "e10f4fa60833a86eb52120f91324537e064d804d58c6b710ea31d486e6cf36ce",
+    "bytes": 82,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-059.log.gz",
+    "file": "record-0062.gz",
+    "rawSha256": "9932a7be646c2220dadeddf498fbecd21440003cd8d45f6ed84464cab16095a3",
+    "archiveSha256": "d41fd84d50e299c70677b12e4763f7e9d3b073ed38378683431ec3da0e5c0022",
+    "bytes": 86,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-060.log.gz",
+    "file": "record-0063.gz",
+    "rawSha256": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4",
+    "archiveSha256": "776edd75b00b9ff37930f01f80c1cfecf938495914fa012cde6cbadf37980cbb",
+    "bytes": 180,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-061.log.gz",
+    "file": "record-0064.gz",
+    "rawSha256": "678733a772a9882364c4bd8cb0822ae20823e27212e5ac460dbb280d90e24f4c",
+    "archiveSha256": "8d47eae34c71f4d6b22777dfdce66b19f0686c155a033987fcf8002015e66063",
+    "bytes": 131,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-062.log.gz",
+    "file": "record-0065.gz",
+    "rawSha256": "b4403b8cba386e569201a12475539e8e17b2baaea5270f5fd8e1632058ef4bd9",
+    "archiveSha256": "7648ea4988f423dd812b22d51a1ca575384f32b17811cb2949a611ab3562afac",
+    "bytes": 235,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-063.log.gz",
+    "file": "record-0066.gz",
+    "rawSha256": "02a708fcc210ab94e92e13d87eb4c35d1e2aa663ac909117453a843d228ea506",
+    "archiveSha256": "b0960b31be88f06999150f053c7360039cdb5c251ecfc1d5880b1e8b2c02fb36",
+    "bytes": 135,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-064.log.gz",
+    "file": "record-0067.gz",
+    "rawSha256": "0145295efc2167e2668982e558a638f5ec604114d5ce6092cf32a63fce489713",
+    "archiveSha256": "56cd1188005477516fd1cba1c34e5f6c63c0ff0515f7491422105e84559faddd",
+    "bytes": 113,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-065.log.gz",
+    "file": "record-0068.gz",
+    "rawSha256": "0c3451f6a90db5105302a100c7860e6db16c772bda8822bf401985830a79fc7b",
+    "archiveSha256": "4c5609ac51693bb767d34e7f6f07652d1454e8039115bdcb5570f091e0234355",
+    "bytes": 371,
+    "lines": 4
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-066.log.gz",
+    "file": "record-0069.gz",
+    "rawSha256": "a967953d52990a91c9779e6557620b8eec3c2b7164cba05d64e91bacd02a19dc",
+    "archiveSha256": "3712be7fb804909f1c531091e1984b13ce8e79da0cd14ec4c8e44e254c39a56e",
+    "bytes": 211,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-067.log.gz",
+    "file": "record-0070.gz",
+    "rawSha256": "dba068351a96e306a141aeefec99f1fb5516cc2e785258605f2bc12e2db92846",
+    "archiveSha256": "5670044754d44fd4a7a9c38d2b5e26822eb55bae989677016e1a2c90a2905f48",
+    "bytes": 209,
+    "lines": 5
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-068.log.gz",
+    "file": "record-0071.gz",
+    "rawSha256": "d15d338003476b89b0d4f2a0622079b55801b2dd144311a9e15366eaa87bcb14",
+    "archiveSha256": "1e44107eae39c95a8ce2cf6eec8d90af2230d73644d99f34e13ef283aa8282a8",
+    "bytes": 99,
+    "lines": 1
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-069.log.gz",
+    "file": "record-0072.gz",
+    "rawSha256": "524c8db6ffb6b16c41f50d4e7b249dd664a80bef60bc1e81b8529b5aeb910fbb",
+    "archiveSha256": "17949e2ac328013fed15d3137a1a1f2698a248dc0af67bbd3cdba388dd08530c",
+    "bytes": 351,
+    "lines": 4
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-070.log.gz",
+    "file": "record-0073.gz",
+    "rawSha256": "0ed6a2c27caa32bf9ff08110140cbc8ffd536bd00fc68ac7e4552c5dcb81494b",
+    "archiveSha256": "3f37840cc41df1e2fa9bbd6eb9288a6e9ec24cbe9500d38ae77517e02a618714",
+    "bytes": 135,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-071.log.gz",
+    "file": "record-0074.gz",
+    "rawSha256": "6d24f2aa637fc80280eec24c85faf3e44305787a0dbcc1a22134253d7bd0ca95",
+    "archiveSha256": "ddd9ec7da150181d7901818f41e8f41e6c7aa64ef24f1f60dc2d72a7f3192565",
+    "bytes": 2910,
+    "lines": 18
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-072.log.gz",
+    "file": "record-0075.gz",
+    "rawSha256": "b33dbea3f5cbb5b4638f6a0937cc660da769a36a2a8071f774d5ef11f2ab240b",
+    "archiveSha256": "cf4467a2b8197e087982ad75ac4273ec0545487bc80fe6c7da0f6911fda42c4c",
+    "bytes": 10254,
+    "lines": 61
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-073.log.gz",
+    "file": "record-0076.gz",
+    "rawSha256": "b5b9c9b50d684b41d262fb2ce03842ae2eb1bd1e80516630eb9e8729c6b53c72",
+    "archiveSha256": "1bf87c05dd9d4dc17b0922a0c13966d86e7773e1441c45e91ab575f742178749",
+    "bytes": 116,
+    "lines": 3
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-074.log.gz",
+    "file": "record-0077.gz",
+    "rawSha256": "c7a249130bd75b4722e071e926fcc7ce18e87ee9c20cf28760143b5438957ca2",
+    "archiveSha256": "b02081ffa3094ffe4286d43737591b41ce922241071c5b672f4c62db71f19ac9",
+    "bytes": 329,
+    "lines": 5
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-075.log.gz",
+    "file": "record-0078.gz",
+    "rawSha256": "a153e12b494fb71ae22e66349a54e03ac49db87342620b76194f30ff054716a4",
+    "archiveSha256": "8a7a26c28f12eb9ac004d5c8145e13bbe60cd6f39657125c5a0dee8c5b131a6a",
+    "bytes": 191,
+    "lines": 2
+  },
+  {
+    "source": "included-string-protocol-final-validation/gate-streams/gate-076.log.gz",
+    "file": "record-0079.gz",
+    "rawSha256": "e50d94ee54a495155e6bafc0727d874c78c7e7791f04f58e38746dd1a7fb7526",
+    "archiveSha256": "dac902f1459e2e3a7fd72a793eadcf13a8692665f051985c4b289a15340851ff",
+    "bytes": 123,
+    "lines": 1
+  }
+]

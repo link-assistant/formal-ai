@@ -486,3 +486,11 @@ meanings
     lexeme hi परिमाप आयतन क्षेत्रफल
     lexeme zh 周长 体积 面积
     lexeme es perímetro volumen área
+  numpy
+    defined-by concept
+    role object
+    precondition "software documentation or a programming request names the NumPy project"
+    effect "identifies the publisher of the NumPy array and numerical computing library"
+    unit "one software project"
+    example "NumPy publishes reference pages for its public array methods."
+    grounding "https://numpy.org/doc/stable/"

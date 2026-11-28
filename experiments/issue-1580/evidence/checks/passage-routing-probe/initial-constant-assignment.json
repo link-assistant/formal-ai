@@ -1,0 +1,19 @@
+{
+  "exitCode": 1,
+  "cause": "Disposable harness attempted to assign a const binding; no requests executed and production sources unchanged.",
+  "records": [
+    {
+      "source": "experiments/issue-1580/probe-single-passage-task-context.mjs",
+      "artifact": "experiments/issue-1580/evidence/checks/passage-routing-probe/initial-constant-assignment-script.mjs.gz",
+      "rawBytes": 6219,
+      "rawSha256": "a15cf134d7c376778450f701dfba0c55076a8317eb042b511062ea6449386c70"
+    },
+    {
+      "source": "/tmp/issue-1580-research/single-passage-context-probe.log",
+      "artifact": "experiments/issue-1580/evidence/checks/passage-routing-probe/initial-constant-assignment.log.gz",
+      "rawBytes": 499,
+      "rawSha256": "cb9127a0a34e2d8c9d64da24d24a455be07897a392f63e6211b6b0ef0364c3a0"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

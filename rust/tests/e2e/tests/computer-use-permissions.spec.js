@@ -7,7 +7,7 @@ const path = require('node:path');
 // four levels up, not three.
 const REPO_ROOT = path.resolve(__dirname, '../../../..');
 const tasks = fs.readFileSync(
-  path.join(REPO_ROOT, 'data/seed/computer-use-tasks.lino'),
+  path.join(REPO_ROOT, 'rust/tests/fixtures/computer-use/tasks.lino'),
   'utf8',
 );
 const permissions = fs.readFileSync(

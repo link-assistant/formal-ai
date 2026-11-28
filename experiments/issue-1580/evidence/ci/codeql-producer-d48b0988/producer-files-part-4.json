@@ -1,0 +1,450 @@
+[
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/MacroContexts.ql",
+    "file": "producer-14681829181-macro-contexts_MacroContexts.ql.gz",
+    "rawSha256": "762d3bd84356e257aa0828d95baf9aa34db594f59f7a8cc6537857210e47f1b5",
+    "archiveSha256": "64ff8265d68b2e7de79f90e06f990755f8edfeb30946eb0b5102685ebf88ef35",
+    "bytes": 725,
+    "lines": 20
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/codeql-database.yml",
+    "file": "producer-14681829181-macro-contexts_codeql-database.yml.gz",
+    "rawSha256": "17a9de7b05c719c4da893e5d9e418b4361f97c9aaa6ff03ca7daeb0271a0c970",
+    "archiveSha256": "bb969f6e16032f6dbc7ae80ea854108a52b93b9c0761f8612893999bb0592b82",
+    "bytes": 354,
+    "lines": 13
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/codeql-pack.lock.yml",
+    "file": "producer-14681829181-macro-contexts_codeql-pack.lock.yml.gz",
+    "rawSha256": "d97b8e23428d76f96070e2dcfd14cab267615882e7a0d130c4199433b8b31cbb",
+    "archiveSha256": "f9faacabb7f3863215e09ab26d11b149194df65c0532a593b945c5db6df80b92",
+    "bytes": 605,
+    "lines": 32
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/decode.stderr",
+    "file": "producer-14681829181-macro-contexts_decode.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/decode.stdout",
+    "file": "producer-14681829181-macro-contexts_decode.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/macro-contexts.bqrs",
+    "file": "producer-14681829181-macro-contexts_macro-contexts.bqrs.gz",
+    "rawSha256": "6bfbd4219029438967e7a43923279ac8b9d2a2fc880bde7f139e33b683bd4788",
+    "archiveSha256": "0dc2a740f73f1872d3f466307f519b13cdb0646925c33a833eb1d692f8cdc838",
+    "bytes": 3419193,
+    "lines": 193346
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/macro-contexts.json",
+    "file": "producer-14681829181-macro-contexts_macro-contexts.json.gz",
+    "rawSha256": "f1aafe9f1e4e8c739cd8d15b5e951479857193cd67c5670d7f1b65620f994a39",
+    "archiveSha256": "be8981f0329923da9a59ba1ed0dd6fe8bd82b693ec04857ae29efd7ceb9de79b",
+    "bytes": 38119240,
+    "lines": 122566
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/manifest.json",
+    "file": "producer-14681829181-macro-contexts_manifest.json.gz",
+    "rawSha256": "cc6bdbc10939bd720c62f5041c199a002af3048e8f14b1f8d5963e35f2c65bb8",
+    "archiveSha256": "21e7bc33f3eac5aa317e6261aba7c8c6b437ecc45e09747179a10eab3b59f0d0",
+    "bytes": 5221,
+    "lines": 146
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/memory.stderr",
+    "file": "producer-14681829181-macro-contexts_memory.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/memory.stdout",
+    "file": "producer-14681829181-macro-contexts_memory.stdout.gz",
+    "rawSha256": "7c39de9eabbb659c168ef8e55a4a7701845510344af1bec1bfa5c6b443b82659",
+    "archiveSha256": "4bfc680e03f7aead92b6d9b3b99ccd49cb7655b00c9f156591d6fd58a6d280ba",
+    "bytes": 20,
+    "lines": 3
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/qlpack.yml",
+    "file": "producer-14681829181-macro-contexts_qlpack.yml.gz",
+    "rawSha256": "dc1dbd41e9fd796dd38b45ff9febe378ae6126c1e997700c46460e6c21c59798",
+    "archiveSha256": "2c69fb7df153ca5068b4420c95feedf85e71ff7eeb0e7361db899953b3915c2f",
+    "bytes": 383,
+    "lines": 18
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/query.stderr",
+    "file": "producer-14681829181-macro-contexts_query.stderr.gz",
+    "rawSha256": "a089d88cda1954e3d4909dde1ab411cb6c7df712a9060a36352ee39af491e222",
+    "archiveSha256": "f820fc23e3c28543733bf43f716f08ca0fab46a93b2e051dc170325a41d31a1d",
+    "bytes": 691,
+    "lines": 9
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/query.stdout",
+    "file": "producer-14681829181-macro-contexts_query.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/version.stderr",
+    "file": "producer-14681829181-macro-contexts_version.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "macro-contexts/version.stdout",
+    "file": "producer-14681829181-macro-contexts_version.stdout.gz",
+    "rawSha256": "947c5c0baee2f14f2b7611b25591a98dc7ca304efb7d5090361aaa40b5e9ec66",
+    "archiveSha256": "34aecc066ab2aec41c0a65e68cebc2fbb193c0ad4d23554cbcb6046e0266ea79",
+    "bytes": 1530,
+    "lines": 43
+  },
+  {
+    "artifact": {
+      "id": 14681829181,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4MTgyOTE4MQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 3691131,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14681829181/zip",
+      "expired": false,
+      "digest": "sha256:3de2d0fd23217e52b4e99ec81b75985d14e384336019d1b5ff9b88c252069c7d",
+      "created_at": "2026-11-21T00:46:13Z",
+      "updated_at": "2026-11-21T00:46:13Z",
+      "expires_at": "2027-02-19T00:25:45Z",
+      "workflow_run": {
+        "id": 44843748460,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86"
+      }
+    },
+    "relativePath": "rust.sarif",
+    "file": "producer-14681829181-rust.sarif.gz",
+    "rawSha256": "a7ba5b0d01a6f725241d8356d223dacd3faeefa756510598542e7dceb79fce18",
+    "archiveSha256": "c6f82f205907cb66de28b81e9d4e2bb59fe65ed6dfbcc75b28c9ccbf28ba901a",
+    "bytes": 3795217,
+    "lines": 1
+  }
+]

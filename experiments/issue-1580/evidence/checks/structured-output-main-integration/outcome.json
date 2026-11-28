@@ -1,0 +1,21 @@
+{
+  "complete": true,
+  "mergeCommit": "0cc2a1bbdf33f7512cb45b5ce63c818e1c88901a",
+  "main": "7b7e189d770c4fbd8786b996d065282422e93b5c",
+  "bothParentsCompleteWitnessEquality": true,
+  "allNativeTargetsPreserved": true,
+  "structuredOutputReplayPreservedAndGuarded": true,
+  "typescriptProjectionRepairPreserved": true,
+  "seedMirrorByteEqual": true,
+  "inheritedWhitespace": [
+    {
+      "path": "dev/log/issues/1586/pulls/1598/sessions/ses_e16a64b32ffeT7gcIqGmGFfoQY/solve.log",
+      "sha256": "1e28c36272af07896db652e0eee200cef6756cfba6071590fca3eb5fbc1196f0",
+      "unchangedFromMain": true
+    }
+  ],
+  "nativeExecutedLocally": false,
+  "validationPending": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

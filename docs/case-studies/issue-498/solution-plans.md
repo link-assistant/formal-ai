@@ -8,9 +8,9 @@ first implementation:
 1. Fetch `https://trends.google.com/trending/rss?geo=US&hl=ru`.
 2. Parse `<item>` records into ranked topics with title, approximate traffic,
    publication date, and attached news references.
-3. Render the parsed snapshot as Links Notation under
-   `data/seed/google-trends-snapshot.lino`.
-4. Keep live fetches out of tests; CI consumes the checked-in seed.
+3. Render the parsed snapshot as Links Notation for review.
+4. Supply the captured RSS explicitly to CI and acquire current RSS through the
+   runtime source client.
 
 The official Trends API alpha is recorded as future prior art, but the first
 implementation should not depend on limited-access credentials.
@@ -53,5 +53,5 @@ Add a dedicated `google_trends_catalog` agentic recipe:
 5. Commit the generated Agent CLI session and assert a fresh run matches it
    byte-for-byte.
 
-This follows the same reproducibility standard as the Issue #527 question
-catalog while keeping the live Trends source isolated to the refresh command.
+Issue #1613 retains the historical Agent CLI session and checks runtime output
+against a supplied capture, since the routed answers may evolve with the solver.

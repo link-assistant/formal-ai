@@ -1,0 +1,43 @@
+{
+  "sourceHead": "ca68d929474b129bc56500ce93cf189ce3fc7023",
+  "files": [
+    {
+      "path": "data/seed/cnl-output.lino",
+      "convertedFields": 64,
+      "beforeSha256": "4ea86bfb3b2eb5e85732aac08f8057419a8b7859638d6a771d23c93bbbdf9050",
+      "afterSha256": "d7bd7c4fb5f48486be1df0b449e1e686e73dbb9fb26535cd6dd3a560b3a81bcb"
+    },
+    {
+      "path": "data/seed/cnl-language-en.lino",
+      "convertedFields": 184,
+      "beforeSha256": "7bb8497d4530841d38825c16cdeef78df00770e106c9f71f3b4948becc7de82f",
+      "afterSha256": "55e7621b3cc5768dedaba1011bb98ca67601faacf9ad2b04f457e280bced3ed8"
+    },
+    {
+      "path": "data/seed/cnl-language-es.lino",
+      "convertedFields": 181,
+      "beforeSha256": "142c7dc6b92cfcf8b7eb9d97de07f23513f40961838415cdd566d2be8fa1d9dd",
+      "afterSha256": "c0c87ecb5836c0819e98dab6d9069719c219c200877f572d0eade1c3f4d09d86"
+    },
+    {
+      "path": "data/seed/cnl-language-hi.lino",
+      "convertedFields": 188,
+      "beforeSha256": "e30e34dfe5de32e34eb1db228a1046f205c11a805aa1faaaecb1db93fa1e0693",
+      "afterSha256": "7fccebecd2139d96b5eaa8a494b821ca1d5632380f1bb186255f0809df3dcdc1"
+    },
+    {
+      "path": "data/seed/cnl-language-ru.lino",
+      "convertedFields": 183,
+      "beforeSha256": "14cdd2b79d5355439a8726e94cb79b84ab007ed8323788226e36d456d0c27338",
+      "afterSha256": "7ff24d8603a2a0f245602f3f0b10c40330e72b8d273d4012bfc9431c147541a2"
+    },
+    {
+      "path": "data/seed/cnl-language-zh.lino",
+      "convertedFields": 186,
+      "beforeSha256": "f4be3559a6cce323c34b460a81ad7922385d883b246f46772a0826dda76cef94",
+      "afterSha256": "105a2b0ea949c20f48004073432061a01e1c3939094a2ccbefa2f629338b71dc"
+    }
+  ],
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,87 @@
+[
+  {
+    "record": "job-136120949768",
+    "line": 624,
+    "text": "js tier (node --check over js, suite group 1)\tSyntax-check every committed js file\t2026-11-20T06:13:05.6515975Z ^[[36;1m  echo \"::error::the js tier found no js files -- the tier predicate is wrong\"^[[0m"
+  },
+  {
+    "record": "job-136121028636",
+    "line": 293,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T06:13:17.2350952Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028636",
+    "line": 626,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T06:13:30.0939225Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  },
+  {
+    "record": "job-136121028737",
+    "line": 294,
+    "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-20T06:23:32.5365270Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028737",
+    "line": 651,
+    "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-20T06:23:39.3414022Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  },
+  {
+    "record": "job-136121028756",
+    "line": 294,
+    "text": "Native type and lint check / Native contracts (reasoning)\tUNKNOWN STEP\t2026-11-20T06:13:17.6677929Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028756",
+    "line": 658,
+    "text": "Native type and lint check / Native contracts (reasoning)\tUNKNOWN STEP\t2026-11-20T06:13:30.9644254Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  },
+  {
+    "record": "job-136121028760",
+    "line": 295,
+    "text": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-20T06:13:12.6176543Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028760",
+    "line": 659,
+    "text": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-20T06:13:21.9735781Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  },
+  {
+    "record": "job-136121028787",
+    "line": 295,
+    "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-20T06:34:13.8484848Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028787",
+    "line": 652,
+    "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-20T06:34:18.9044521Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  },
+  {
+    "record": "job-136121028809",
+    "line": 294,
+    "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-20T06:35:50.2679526Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028809",
+    "line": 658,
+    "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-20T06:36:04.3864857Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  },
+  {
+    "record": "job-136121028815",
+    "line": 294,
+    "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-20T06:43:09.9261046Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028815",
+    "line": 658,
+    "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-20T06:43:22.2551155Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  },
+  {
+    "record": "job-136121028924",
+    "line": 295,
+    "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-20T06:27:25.8718537Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m"
+  },
+  {
+    "record": "job-136121028924",
+    "line": 659,
+    "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-20T06:27:39.2857758Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+  }
+]

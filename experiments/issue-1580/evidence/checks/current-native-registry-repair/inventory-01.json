@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-21-07.105Z.json",
+    "file": "001-2026-11-21T03-21-07.105Z.json.gz",
+    "bytes": 57313,
+    "lines": 11,
+    "rawSha256": "cfa4e08c87499b126040f3d22f09d883185b13c8cf655293988e278d178520a5",
+    "archiveSha256": "c58d68c0d6495e5fdc577405e4987749682ed62fd27384b26982c0e0eb87e864"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-22-19.141Z.json",
+    "file": "002-2026-11-21T03-22-19.141Z.json.gz",
+    "bytes": 1104,
+    "lines": 11,
+    "rawSha256": "cedb5093569015479b1bc20482e906b4971d31773e6ddffb6cdd718648407a64",
+    "archiveSha256": "9e23fa99b0318d7a18df7559f1d42d1c0256e837ddd1a6dfa9ac52eeb0647d3a"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-23-04.477Z.json",
+    "file": "003-2026-11-21T03-23-04.477Z.json.gz",
+    "bytes": 1912,
+    "lines": 11,
+    "rawSha256": "b8f68af8bc9e05b37401b7b2253c397213a7a1b9cb3353d7de8c8ef05182e05f",
+    "archiveSha256": "3d8fff535b320f8bfe2710dfb3bcae5f6054c446b8326faf69112719d7f49d14"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-23-18.179Z.json",
+    "file": "004-2026-11-21T03-23-18.179Z.json.gz",
+    "bytes": 1143,
+    "lines": 11,
+    "rawSha256": "7c0edb8ec9f960d3a3acd56c911fa5f2789fd3db281d467feaac72a3e42eca83",
+    "archiveSha256": "e11061c94f6b4b7c00e4d705f9aae1f28c9bd99d7f8ec4619e509cc643999b1d"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-24-00.615Z.json",
+    "file": "005-2026-11-21T03-24-00.615Z.json.gz",
+    "bytes": 1097,
+    "lines": 11,
+    "rawSha256": "c2d974d17274e339b38156a7bd10259812ada75522d93c54cc7b46ee00740510",
+    "archiveSha256": "7d5ddf6f831ea68d735816cd8a14ef2a76c30f7b043ff02ec1d8609228816f7f"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-24-45.030Z.json",
+    "file": "006-2026-11-21T03-24-45.030Z.json.gz",
+    "bytes": 2313,
+    "lines": 11,
+    "rawSha256": "19eba0de68e49bdc59e1e1125f8ec23ef4a8555c5f249f3d904eda94204a10b8",
+    "archiveSha256": "2583f12605b3850df891af9aa1fcff2188de322f4a615ff9bd3f14627889853e"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-26-28.828Z.json",
+    "file": "007-2026-11-21T03-26-28.828Z.json.gz",
+    "bytes": 13137,
+    "lines": 11,
+    "rawSha256": "3e11dc1628b06f15fbaadd5cd5f0ae0948a32d7b4c5c51680d55b5981214c49d",
+    "archiveSha256": "18d02b5120d2eb66d804fddc05a652abd17b6a630269d0c73a4cf0eae3a95c06"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-27-39.129Z.json",
+    "file": "008-2026-11-21T03-27-39.129Z.json.gz",
+    "bytes": 924,
+    "lines": 11,
+    "rawSha256": "1df288b552c6bbccc7e5ac12be7678f6d3273732a514d8fa816c2872027b2542",
+    "archiveSha256": "a050af500c399000b89c2735ed3665375249b43774b8f6938542eb2a7f2b26c5"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-31-41.149Z.json",
+    "file": "009-2026-11-21T03-31-41.149Z.json.gz",
+    "bytes": 1340,
+    "lines": 11,
+    "rawSha256": "29660dfe6ee4ffe3866b1198e8bdb03f00e7dbacec132c3f72d34644200e904d",
+    "archiveSha256": "67bb9f880fa9f89504dc243be8fb6629404b5c4a65c9cf545c3b8b2e5461aefe"
+  },
+  {
+    "source": "/tmp/issue-1580-research/commit-current-native-registry.log",
+    "file": "010-commit-current-native-registry.log.gz",
+    "bytes": 284,
+    "lines": 10,
+    "rawSha256": "fbde960e74b6e1cc98c03ebc4789a4bb0045b12469f92f0fef622fb86dfb47ce",
+    "archiveSha256": "505104d5cd5c852ead97b6deb641604c5c114114dc3ed26cb1113004f6b117df"
+  },
+  {
+    "source": "/tmp/issue-1580-research/commit-current-native-registry.py",
+    "file": "011-commit-current-native-registry.py.gz",
+    "bytes": 1373,
+    "lines": 22,
+    "rawSha256": "b7d87fd709156d231151ae4e44ecc1961f35686621835fb56c1514a2f79bbec1",
+    "archiveSha256": "ceb1d8484d3752dd8f4fb9abf3b2cfa52ee2e8b692e3272c20363e64f8fee619"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/before-currency.stderr",
+    "file": "012-before-currency.stderr.gz",
+    "bytes": 348,
+    "lines": 8,
+    "rawSha256": "482d6c51691d4cce785eaf7cf38e442251050c495f69ccaead5a30226da4c7fa",
+    "archiveSha256": "c0c03434e742c3b1aadc7e1fe32516c0333617c7a74f29160673279bdbcbef4f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/before-currency.stdout",
+    "file": "013-before-currency.stdout.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/commit.json",
+    "file": "014-commit.json.gz",
+    "bytes": 133,
+    "lines": 6,
+    "rawSha256": "6ef9dc5b04f76005d6a7cf8a3acd25afca95db1f153eff5f09f68d6d13c8c15a",
+    "archiveSha256": "c15d05c05f6954d42889180bab71ae3cb179e5f0980a9ebe044c2b7530238eeb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/commit.stderr",
+    "file": "015-commit.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/commit.stdout",
+    "file": "016-commit.stdout.gz",
+    "bytes": 139,
+    "lines": 2,
+    "rawSha256": "d7fb0e8ab649b11cb3c2daa671d7a311a90e86e2880c92fcc1a097aa7f75626d",
+    "archiveSha256": "2b4b933287b7cac067ec3b1d093f9ab4fb4da1e551b46cfa3acdc1bbb35a66eb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/focused-map-search.log",
+    "file": "017-focused-map-search.log.gz",
+    "bytes": 1475,
+    "lines": 13,
+    "rawSha256": "b2d86906afd13ea882f3a55fba8638511740c23a4282d6a61fdc08eef571bf1a",
+    "archiveSha256": "60f5a18d60469cc18f9adf9ebaa7a29437d745c370f37768ce42d7f1ac0f45e0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/focused-suite.log",
+    "file": "018-focused-suite.log.gz",
+    "bytes": 737,
+    "lines": 16,
+    "rawSha256": "e54fbc7b95862b9109e6e62825b6422dc016ef9a5e52274e18f14a1d00701ea6",
+    "archiveSha256": "0ac809e9ac1f1837f6679d395179274e24805b128bac603257a11698a603449d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/generate.stderr",
+    "file": "019-generate.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/generate.stdout",
+    "file": "020-generate.stdout.gz",
+    "bytes": 19,
+    "lines": 1,
+    "rawSha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746",
+    "archiveSha256": "8617531febebb95f8c91bc47261d1892b82dbd44a577f97b2467507e37815a3d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/regeneration.json",
+    "file": "021-regeneration.json.gz",
+    "bytes": 760,
+    "lines": 18,
+    "rawSha256": "b21552ea854aa220c456503a2cee23b7f054a2a90ad7ebcd21ca2aae9c8a8787",
+    "archiveSha256": "1f73ec78e7069ca7f9c5f22f1cef1e7dc88a1ae9cb9d4d9fcb2d2fc29e4316e9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/registry-before.mjs",
+    "file": "022-registry-before.mjs.gz",
+    "bytes": 121939,
+    "lines": 1183,
+    "rawSha256": "dc36dad5173dcd386ac1db070b982d1c5105b4345e2357ccccd958476acc6a3a",
+    "archiveSha256": "4702aa2ab74340e18fc3db979a1c87363901f754d95f5d1b718101a7fadf10df"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/registry.diff",
+    "file": "023-registry.diff.gz",
+    "bytes": 2148,
+    "lines": 22,
+    "rawSha256": "78b7e927dc2866b80828d8fdfc70649e5846bd3e057ce747966034a2ae6c75ce",
+    "archiveSha256": "87966a7e9004595a93b7e8d0d04ef3c770fa494b2c63a0e70b71e23fe6b118f3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/reproduction.json",
+    "file": "024-reproduction.json.gz",
+    "bytes": 868,
+    "lines": 30,
+    "rawSha256": "0f6b58b4593a19059e12977bbb2ff6b93d6564378f475ed5ee1276b56c94efc1",
+    "archiveSha256": "301e7cee15180dc2b6dfc7ae5df169bc3f3a0ee806645d71f69aff928d79f111"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/run-state-44860038851.stderr",
+    "file": "025-run-state-44860038851.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/run-state-44860038851.stdout",
+    "file": "026-run-state-44860038851.stdout.gz",
+    "bytes": 8642,
+    "lines": 1,
+    "rawSha256": "35da7ced5cdcbe0d2f4dae7da628a1979547bce8be85909dd01a028edea5b5d4",
+    "archiveSha256": "018d1109372704f2cc83486cb2288e8c1a5453ba7f06c8a3f39fcb42da5ecab9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/run-state-44860043477.stderr",
+    "file": "027-run-state-44860043477.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/run-state-44860043477.stdout",
+    "file": "028-run-state-44860043477.stdout.gz",
+    "bytes": 29644,
+    "lines": 1,
+    "rawSha256": "337662fd58be2c661c125b41d6f1aca8ba52af6890341be8ccbe0041c9c7dca6",
+    "archiveSha256": "4552b9f2e7501269b26a8c75e1ac37856d5ce08bcdea54ca8b938c4daff6070d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/source-and-gate-search.stderr",
+    "file": "029-source-and-gate-search.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/source-and-gate-search.stdout",
+    "file": "030-source-and-gate-search.stdout.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/source-history.stdout",
+    "file": "031-source-history.stdout.gz",
+    "bytes": 509,
+    "lines": 5,
+    "rawSha256": "ef49872a39c8da1a0e696cd2e971b643b438e8f9ed6b7fab29eb9000923f8b25",
+    "archiveSha256": "f25ebca48d3cfca3717951ac1d5f6ccca1220da1cf7d7328f07f2533e1ac2d1b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/stage.stderr",
+    "file": "032-stage.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/stage.stdout",
+    "file": "033-stage.stdout.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/whitespace.stderr",
+    "file": "034-whitespace.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-registry-repair/whitespace.stdout",
+    "file": "035-whitespace.stdout.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

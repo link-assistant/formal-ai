@@ -1,0 +1,47 @@
+{
+  "baseReview": "java-historical-partial-review.json",
+  "previousIndexSummary": {
+    "literalPages": 108,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 7625,
+    "nextForwardPage": 109,
+    "remainingPages": 146,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    109
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/node.json",
+      "newReadRange": [
+        47,
+        76
+      ],
+      "cumulativeReadRange": [
+        1,
+        76
+      ],
+      "totalLines": 884,
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 109,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 7655,
+    "nextForwardPage": 110,
+    "remainingPages": 145,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "Page 109 was literally read without truncation. It extends only the retained historical Node release catalog; the catalog remains partial and does not establish current runtime compatibility.",
+    "Pages 110\u2013254 and complete semantic applicability remain unfinished; independent authorship credit is zero."
+  ]
+}

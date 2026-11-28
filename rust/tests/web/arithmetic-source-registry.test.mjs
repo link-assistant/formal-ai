@@ -6,6 +6,7 @@ import { before, test } from 'node:test';
 import { WorkerHost, REPO_ROOT } from '../../../js/server/worker-host.mjs';
 import { tokenize } from '../../../scripts/lib/rust-specification-cases.mjs';
 import { parseLino } from '../../../js/server/lino.mjs';
+import { renderArithmeticWordTables, rustStringLiteral } from '../../../scripts/generate-arithmetic-word-tables.mjs';
 let host;
 before(async () => { host=new WorkerHost(); await host.boot(); });
 const read = file => readFileSync(path.join(REPO_ROOT,file),'utf8');
@@ -30,8 +31,18 @@ test('all original no_std token and phrase tables match the actual multilingual 
   const tables=await host.run('arithmeticNormalizationTables()');
   const production=read('rust/src/arithmetic_word_tables.rs');
   const snapshot=read('rust/tests/source/arithmetic_word_tables.rs');
+  assert.equal(production,renderArithmeticWordTables(tables),'canonical JavaScript regeneration stays current');
+  assert.equal(snapshot,production,'the native source inventory contains the same complete table');
   for(const [name,key] of [['WORD_VALUE_TOKENS','tokens'],['WORD_VALUE_PHRASES','phrases']]){
     assert.deepEqual(tables[key],staticTable(production,name));
     assert.deepEqual(tables[key],staticTable(snapshot,name));
   }
+});
+
+
+test('arithmetic materialization emits valid Rust strings without escaping combining marks', () => {
+  for (const text of ['गुणा', 'जोड़', 'पाँच', 'λ雪🙂', '"\\\n\r\t\0\x7f\x85']) {
+    assert.equal(tokenize(rustStringLiteral(text))[0].text, text);
+  }
+  assert.equal(rustStringLiteral('गुणा'), '"गुणा"');
 });

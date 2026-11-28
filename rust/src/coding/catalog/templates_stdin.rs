@@ -3,13 +3,8 @@
 //! [`super::templates_core`] only to keep each file well under the repository's
 //! per-file line limit; the groups are concatenated in [`super`].
 //!
-//! Unlike every other group, these programs are not self-contained: their
-//! output is whatever arrives on standard input. The bytes they are verified
-//! against are named once, on the task itself
-//! (`ProgramTask::input` in [`super::tasks`]), and
-//! [`super::types::ProgramSpec::run_command_line`] pipes them into the run
-//! command so the answer a reader copies is the command that was checked
-//! (`experiments/issue-1021-copy-stdin`).
+//! These programs copy the bytes the caller supplies on standard input.
+//! Verification provides an explicit input stream and compares the output.
 
 use super::types::CompiledTemplate;
 
@@ -17,34 +12,30 @@ pub(super) const TEMPLATES_STDIN: &[CompiledTemplate] = &[
     CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "rust",
-        code: r"use std::io::{self, Read, Write};
+        code: r"use std::io;
 
 fn main() -> io::Result<()> {
-    let mut input = Vec::new();
-    io::stdin().read_to_end(&mut input)?;
-    io::stdout().write_all(&input)
+    io::copy(&mut io::stdin().lock(), &mut io::stdout().lock())?;
+    Ok(())
 }",
     },
     CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "python",
-        code: r"import sys
+        code: r"import shutil
+import sys
 
-sys.stdout.write(sys.stdin.read())",
+shutil.copyfileobj(sys.stdin.buffer, sys.stdout.buffer)",
     },
     CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "javascript",
-        code: r#"const fs = require("fs");
-
-process.stdout.write(fs.readFileSync(0));"#,
+        code: r"process.stdin.pipe(process.stdout);",
     },
     CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "typescript",
-        code: r#"import * as fs from "fs";
-
-process.stdout.write(fs.readFileSync(0));"#,
+        code: r"process.stdin.pipe(process.stdout);",
     },
     CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
@@ -113,14 +104,14 @@ class Program {
     CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "ruby",
-        code: r"$stdout.write($stdin.read)",
+        code: r"IO.copy_stream($stdin.binmode, $stdout.binmode)",
     },
     CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "scala",
         code: r"object Main {
   def main(args: Array[String]): Unit = {
-    print(scala.io.Source.stdin.mkString)
+    System.in.transferTo(System.out)
   }
 }",
     },

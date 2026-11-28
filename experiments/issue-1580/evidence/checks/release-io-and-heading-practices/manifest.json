@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-22T13:13:14.500349+00:00",
+  "publishedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "templateCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "records": [
+    {
+      "archive": "hosted-source-01.txt.gz",
+      "bytes": 5004,
+      "sha256": "12281ef374369805052346bda11026a3a4be79b871a6c10542c14190fe12be97",
+      "path": "scripts/release-changelog.rs",
+      "matchesCurrentSource": false,
+      "sourceRead": true
+    },
+    {
+      "archive": "pending-source-01.txt.gz",
+      "bytes": 5374,
+      "sha256": "4f7ca3e9ae98d547178294b2e552ab27a3f860d2de5dbb8d62457f8c20f5c673",
+      "path": "scripts/release-changelog.rs",
+      "nativeExecutionVerified": false,
+      "completeDiffRead": true
+    },
+    {
+      "archive": "hosted-source-02.txt.gz",
+      "bytes": 6718,
+      "sha256": "6a670f58415fd25daa82e5920864e6d99acfa9714f9f17d3bf506d6a7efecd27",
+      "path": "scripts/changelog-files.rs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "hosted-source-03.txt.gz",
+      "bytes": 11948,
+      "sha256": "b67e5e9e76588eeb4a07ef35eaebc3255d77b7bb1132d22ba44b0263088bdff6",
+      "path": "scripts/collect-changelog.rs",
+      "matchesCurrentSource": false,
+      "sourceRead": true
+    },
+    {
+      "archive": "pending-source-03.txt.gz",
+      "bytes": 13244,
+      "sha256": "8fab309b2effd00447b15f8bebff00126b59e06f56d3c0ad9ed17c20be5875da",
+      "path": "scripts/collect-changelog.rs",
+      "nativeExecutionVerified": false,
+      "completeDiffRead": true
+    },
+    {
+      "archive": "hosted-source-04.txt.gz",
+      "bytes": 6852,
+      "sha256": "b5647c1dabbabef9c35c763b1901bf20e275f00aed6981eb60b5c6615772aa04",
+      "path": "scripts/get-bump-type.rs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "hosted-source-05.txt.gz",
+      "bytes": 5887,
+      "sha256": "8042829b37c621b287b96460c7971c9dc41eac71f019f217deeda7cc724afed4",
+      "path": "scripts/version-changelog.rs",
+      "matchesCurrentSource": false,
+      "sourceRead": true
+    },
+    {
+      "archive": "pending-source-05.txt.gz",
+      "bytes": 7435,
+      "sha256": "034608d8699cefa4e34f859e6ba5ff528eb54c81843d1c49c8084d75bcd112a5",
+      "path": "scripts/version-changelog.rs",
+      "nativeExecutionVerified": false,
+      "completeDiffRead": true
+    },
+    {
+      "archive": "hosted-source-06.txt.gz",
+      "bytes": 3946,
+      "sha256": "fab6f4335f74e5823b29fac738fb31599ecb7c769109d0f0151ac850817ec7d9",
+      "path": "scripts/changelog-fragment-file.rs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "hosted-source-07.txt.gz",
+      "bytes": 3527,
+      "sha256": "e4d34ff0321d409025cfcaa51d6f1a4d6bb78448147038fc2062947550911536",
+      "path": "scripts/create-changelog-fragment.rs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "hosted-source-08.txt.gz",
+      "bytes": 9230,
+      "sha256": "3738e9abf2c409741d3f69757e76c3d210fe5e88acced8f4da7802937b3153c0",
+      "path": "scripts/check-changelog-fragment.rs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "hosted-source-09.txt.gz",
+      "bytes": 4668,
+      "sha256": "5672c34e36ca1a545501716aa5a7f6ff6d791099a995f4b2d7dfaa1662ac4ea3",
+      "path": "scripts/check-changelog-fragment.mjs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "hosted-source-10.txt.gz",
+      "bytes": 4126,
+      "sha256": "37745b3a70296e1c1898cbcf143ba710f557c2afab58e7efb407eb3a180f89ab",
+      "path": "scripts/release-changelog/tests.rs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "hosted-source-11.txt.gz",
+      "bytes": 2519,
+      "sha256": "cf43f771ba62bf97d72dd6f090193143183fd70c31c90806c394e6124a4ff61c",
+      "path": "rust/tests/unit/workflow_contracts.rs",
+      "matchesCurrentSource": true,
+      "sourceRead": true
+    },
+    {
+      "archive": "pinned-template-01.txt.gz",
+      "bytes": 4342,
+      "sha256": "3baf09b974fee9bf8e094f4fd2fe92d028bbe5863abfa20204de813cd956ae64",
+      "path": "scripts/release-content.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-02.txt.gz",
+      "bytes": 2477,
+      "sha256": "591b464db4ebeca4aa10dd42b0783af771de329d8a4f48ad780fd6dee74c1faf",
+      "path": "scripts/changelog-files.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-03.txt.gz",
+      "bytes": 4738,
+      "sha256": "4fc1ed98616917b40c275791bd784e25d7ae3068b89b40341efeb4ea8ce8eca0",
+      "path": "scripts/get-bump-type.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-04.txt.gz",
+      "bytes": 7881,
+      "sha256": "5db5f1f5b5e51eb2a78591f5424d813ca89a8d70e0ac61b455298e15f0b34d19",
+      "path": "scripts/collect-changelog.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-05.txt.gz",
+      "bytes": 4711,
+      "sha256": "236b60a6244e4366e062adff6239a3e94050894902ba114a5e4ee716392e7918",
+      "path": "scripts/create-changelog-fragment.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-06.txt.gz",
+      "bytes": 8212,
+      "sha256": "1973c93c68c0255de07876d06ee7eddcbd81c4e6098fb07c12d32c854e260874",
+      "path": "scripts/check-changelog-fragment.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "hosted-job.json.gz",
+      "bytes": 6549,
+      "sha256": "9a07d8a88131f2903fc0944905ef4a842c4e27f4098d4f0209e812b616ff4abf"
+    },
+    {
+      "archive": "hosted-job.log.gz",
+      "bytes": 247870,
+      "sha256": "8daf9fcc830aaddd919c68e161adff9b5c0f6bbc1bd495a694d62889c07e28bd",
+      "completeLogRead": false,
+      "reviewedFirstLine": 1800,
+      "reviewedLastLine": 2110
+    },
+    {
+      "archive": "reviewed-workflow-contracts-range.txt.gz",
+      "bytes": 35597,
+      "sha256": "44f73d29b4c59fb7c1e200507cd2a1ec100e7bc1eb7c4cf2bc88d12c53874226",
+      "firstLine": 1800,
+      "lastLine": 2110,
+      "completeRangeRead": true
+    },
+    {
+      "archive": "pending-collector-fix.patch.gz",
+      "bytes": 11347,
+      "sha256": "7279afeac39fa7e2212b7652e514b2e544206f20cd204c1e3dd67e45673a3986",
+      "completeDiffRead": true,
+      "nativeExecutionVerified": false
+    },
+    {
+      "archive": "local-outcome.json.gz",
+      "bytes": 1544,
+      "sha256": "f93558f962157e3367e4bda4fe8ebafcb151b23194d177afdca14ce7bf0b35be",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-format.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-groups.log.gz",
+      "bytes": 6987,
+      "sha256": "5db7a16048efd2cfd049361e23efdf2032c3b65361c8b3c8c2fece606c1e1379",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-artifact.log.gz",
+      "bytes": 2145,
+      "sha256": "bbf876612f5c02b52312de4f192749e959c889ea10b59a4174d0045aecd76bd9",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-selection.log.gz",
+      "bytes": 358,
+      "sha256": "ba22a5ec5634edefe8da041b90d2363c330e01c8d6ecca8709eb25ed04cb89cf",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-packaging.log.gz",
+      "bytes": 227,
+      "sha256": "6fab5d987cdc8972040628dfa6bb51d03dee9bbcd68aea0a218bdb38d25712d2",
+      "kind": "local-verification",
+      "rustCompiled": false
+    }
+  ],
+  "hostedJob": "https://github.com/link-assistant/formal-ai/actions/runs/45018199760/job/137201251406",
+  "nativeWorkflowContractsPassed": 231,
+  "qualifiedPublishedBehaviors": [
+    "Exclusive creation refuses collision, concurrency and symlink overwrite (four cases).",
+    "Real filesystem fragment discovery and snapshot checks propagate failures and preserve inputs.",
+    "Both real collection functions refuse unreadable fragment and changelog sources.",
+    "Release-section extraction ignores fenced examples and applies exact CommonMark fence whitespace.",
+    "Bump selection propagates invalid filesystem observations."
+  ],
+  "pendingNativeBehaviors": [
+    "The refactored shared heading iterator must retain every existing section control.",
+    "Both collection paths must ignore fenced pseudo-headings and preserve old LF/CRLF bytes (six physical fixtures each)."
+  ],
+  "remainingLimits": [
+    "The current hosted result qualifies the published pre-refactor sources, not the new iterator and insertion changes.",
+    "The focused native target calls production module functions. It does not replay all seven template CLI process boundaries.",
+    "A partial write or concurrent mutation during the final write/removal is not claimed atomic.",
+    "The pinned creator safely logs operator-controlled content; the current creator still prints it directly. That applicable practice remains open.",
+    "The fragment guard differences in nested package detection, base recovery and explicit Dependabot handling still require policy decisions and corresponding behavioral coverage.",
+    "Remaining release dependency closure, live publication and broader original acceptance remain unfinished."
+  ],
+  "allApplicablePracticesImplementedAndVerified": false,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0,
+  "localVerification": {
+    "outcome": "local-outcome.json.gz",
+    "allCommandsPassed": true,
+    "javascriptTestsPassed": 85,
+    "nativeExecutionOfNewCasesVerified": false
+  }
+}

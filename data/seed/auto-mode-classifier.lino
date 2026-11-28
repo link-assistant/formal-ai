@@ -1,0 +1,111 @@
+# Claude Code auto-mode classifier policy (issue #1632).
+#
+# Claude Code's `--permission-mode auto` asks the configured model to act as a
+# "security monitor" before every shell command or network action. The request
+# carries a ~140 KB rule book as the system prompt, a `<transcript>` of the
+# session as the only user message, `stop_sequences: ["</block>"]`, and a 60 s
+# client timeout. Routing that prompt through the general solver timed out
+# ("formal-ai is temporarily unavailable (timed out)"), so every Bash call in
+# auto mode was refused. The server now recognises the classifier envelope by
+# the markers below and answers in the documented output format immediately:
+#
+#   <block>no</block>                                  allow
+#   <block>yes</block><category>Rule</category><reason>[Rule] why</reason>   block
+#
+# The policy is "auto mode with no confirmations" (issue #1632 R4): every agent
+# action is allowed unless its command matches one of the irreversible or
+# exfiltrating patterns below. Patterns are regular expressions in the common
+# subset of the Rust `regex` crate and JavaScript `RegExp` (no look-around,
+# no back-references) and are matched case-insensitively against the agent's
+# latest action only, never against the user's own messages. A `{name}` in a
+# pattern stands for the alternation of the rule's `name` values, so no value
+# packs alternatives with a pipe; a literal pipe is written `\x7c`.
+auto-mode-classifier
+  marker "security monitor for autonomous AI coding agents"
+  marker "<block>no</block>"
+  transcript-open "<transcript>"
+  transcript-close "</transcript>"
+  user-entry-key "user"
+  allow-text "<block>no</block>"
+  # {name} is the matched rule name and {reason} its reason below.
+  block-template "<block>yes</block><category>{name}</category><reason>[{name}] The action {reason}.</reason>"
+  rule "Irreversible Local Destruction"
+    reason "deletes the filesystem root or the home directory"
+    pattern '\brm\s+(-[a-z-]*\s+)*{target}{boundary}'
+    target '/\*?'
+    target '~(/\*?)?'
+    target '\$home(/\*?)?'
+    boundary '\s'
+    boundary '$'
+    boundary '[;&\x7c)"]'
+  rule "Disk Destruction"
+    reason "formats or overwrites a raw disk device"
+    pattern '\bmkfs(\.[a-z0-9]+)?\s'
+    pattern '\bdd\s[^\n]*\bof=/dev/{device}'
+    device "sd"
+    device "hd"
+    device "vd"
+    device "xvd"
+    device "nvme"
+    device "mmcblk"
+    device "disk"
+  rule "Resource Exhaustion"
+    reason "runs a fork bomb"
+    pattern ':\(\)\s*\{\s*:\s*\x7c\s*:\s*&\s*\}\s*;\s*:'
+  rule "Remote Code Execution"
+    reason "pipes a downloaded script straight into a shell"
+    pattern '\b{downloader}\b[^\n\x7c]*\x7c\s*(sudo\s+)?{shell}\b'
+    downloader "curl"
+    downloader "wget"
+    shell "sh"
+    shell "bash"
+    shell "zsh"
+    shell "dash"
+    shell "ksh"
+  rule "Force Push Default Branch"
+    reason "force-pushes over the default branch"
+    pattern '\bgit\s+push\b[^\n]*{force}[^\n]*\b{branch}\b'
+    pattern '\bgit\s+push\b[^\n]*\b{branch}\b[^\n]*{force}'
+    force "--force"
+    force '\s-f\b'
+    branch "main"
+    branch "master"
+  rule "System Power Control"
+    reason "shuts down or reboots the machine"
+    pattern '{command-start}{power}\b'
+    command-start "^"
+    command-start '\n'
+    command-start '[;&\x7c]\s*'
+    command-start 'sudo\s+'
+    command-start '^shell\s+'
+    power "shutdown"
+    power "reboot"
+    power "poweroff"
+    power "halt"
+  rule "Credential Exfiltration"
+    reason "sends private keys or cloud credentials over the network"
+    pattern '{secret}[^\n]*\x7c\s*{sender}\b'
+    pattern '\b{downloader}\b[^\n]*{upload}\s*@?[^\s]*{secret}'
+    secret '\.ssh/id_'
+    secret '\.aws/credentials'
+    secret '\.netrc'
+    secret '\.git-credentials'
+    sender "curl"
+    sender "wget"
+    sender "nc"
+    sender "ncat"
+    downloader "curl"
+    downloader "wget"
+    upload "--data"
+    upload "--upload-file"
+    upload "-d"
+    upload "-f"
+    upload "-t"
+  rule "Permission Weakening"
+    reason "makes the whole filesystem world-writable"
+    pattern '\bchmod\s+(-r\s+)?{mode}\s+/{boundary}'
+    mode '0?777'
+    mode 'a\+rwx'
+    boundary '\s'
+    boundary '$'
+    boundary '[;&\x7c)"]'

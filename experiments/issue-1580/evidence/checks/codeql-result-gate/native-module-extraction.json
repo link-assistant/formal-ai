@@ -1,0 +1,17 @@
+{
+  "source": "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs",
+  "destination": "rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs",
+  "movedTestNames": [
+    "codeql_skips_archived_evidence_but_still_analyses_compiled_code",
+    "codeql_rust_lane_pins_the_extractor_sysroot"
+  ],
+  "extractedBlocksSha256": [
+    "ee487e56f6e650ce57914a78c9dbc4fcb0aed50628993390fca3302e5127c5fe",
+    "46c3126c08bb0654fa2d48d5d919d40e91cd72aea68d40432697a45b47afa637"
+  ],
+  "parentLines": 858,
+  "childLines": 98,
+  "nativeExecutionVerified": false,
+  "sourceSizeWarningRemovedLocally": true,
+  "allWarningsResolved": false
+}

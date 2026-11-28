@@ -336,9 +336,35 @@ fn failed_local_lookup_is_reported_instead_of_treated_as_empty() {
 
 #[test]
 fn report_intent_is_meanings_driven_for_the_reported_russian_phrase() {
-    for prompt in ["Зарепорти баг", "Сообщи об ошибке", "Report a bug"] {
+    // Issue #1632: "Отправь отчёт об ошибке" ("send an error report") got a
+    // research reply because neither "отправь" nor "отчёт" was a report cue.
+    for prompt in [
+        "Зарепорти баг",
+        "Сообщи об ошибке",
+        "Report a bug",
+        "Отправь отчёт об ошибке",
+        "Отправь отчет об ошибке",
+        "Отправить отчёт об ошибке",
+    ] {
         let call = one_call(&[ChatMessage::user(prompt)]);
         assert_eq!(call.tool, "request_user_input", "{prompt}: {call:?}");
+    }
+}
+
+#[test]
+fn sending_something_unrelated_is_not_a_report_intent() {
+    for prompt in ["Отправь письмо маме", "Отправь отчёт начальнику"]
+    {
+        let plan = plan_chat_step(
+            &[ChatMessage::user(prompt)],
+            &["request_user_input", "bash"],
+        );
+        let is_report_question = matches!(
+            &plan,
+            Some(AgenticPlan::ToolCalls(calls))
+                if calls.iter().any(|call| call.tool == "request_user_input")
+        );
+        assert!(!is_report_question, "{prompt}: {plan:?}");
     }
 }
 

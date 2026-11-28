@@ -2,15 +2,17 @@
 //! language drives realization, parsing (its exact inverse) and validation.
 //! JavaScript root: js/agentic/crate/cnl_grammar.mjs.
 mod checks;
-mod graph;
+mod meaning_links;
+mod realization;
 
 pub use checks::{
     Analysis, CheckContext, Piece, PieceKind, answerable_questions, builtin_check,
     canonical_prompt, graph_holds, graph_logic, output_sentences, prompt_analysis,
 };
-pub use graph::{Graph, Slots, graph_key};
+pub use meaning_links::{Graph, Slots, graph_key};
+pub use realization::{all_pairs, realizations, realize_graph};
 
-use crate::seed::parser::{LinoNode, parse_lino};
+use crate::seed::parser::{LinoNode, parse_lino, split_pipe_list};
 use regex::Regex;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
@@ -32,8 +34,6 @@ pub(crate) static NUMBER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^[0-9]+(?:\.[0-9]+)?$").expect("fixed CNL number grammar"));
 static SLOT: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\{([a-z]+)\.([a-z-]+)\}").expect("fixed CNL slot grammar"));
-static LETTER: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\p{L}").expect("fixed CNL letter grammar"));
 
 /// JavaScript `\s` (and `String.prototype.trim`): differs from Rust's
 /// `char::is_whitespace` on U+0085 (not space) and U+FEFF (space).
@@ -58,11 +58,20 @@ pub fn js_trim(text: &str) -> &str {
     text.trim_matches(js_space)
 }
 
+/// Canonical references retain empty positional forms; legacy scalars remain readable.
+pub(crate) fn reference_values(value: &str) -> Vec<String> {
+    let trimmed = value.trim();
+    if trimmed.starts_with('(') && trimmed.ends_with(')') {
+        split_pipe_list(trimmed)
+    } else {
+        value.split('|').map(str::to_owned).collect()
+    }
+}
+
 pub(crate) fn list(value: &str) -> Vec<String> {
-    value
-        .split('|')
+    reference_values(value)
+        .into_iter()
         .filter(|part| !part.is_empty())
-        .map(str::to_owned)
         .collect()
 }
 
@@ -228,7 +237,7 @@ fn pairs(value: &str) -> Vec<Vec<String>> {
         .collect()
 }
 
-/// Parse one cnl-language-<id>.lino file into plain data.
+/// Parse one `cnl-language-<id>.lino` file into plain data.
 pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static str> {
     let parsed = parse_lino(text);
     let root = if parsed.name == "cnl-language" {
@@ -238,8 +247,15 @@ pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static st
             .next()
             .ok_or("cnl_language_missing")?
     };
-    let keyed_children =
-        |name: &'static str| children_named(root, name).map(|node| keyed(&node.id));
+    let keyed_children = |name: &'static str| {
+        children_named(root, name).map(|node| {
+            if let Some(forms) = children_named(node, "forms").next() {
+                (node.id.clone(), list(&forms.id))
+            } else {
+                keyed(&node.id)
+            }
+        })
+    };
     Ok(LanguageGrammar {
         id: root.id.clone(),
         keys: list(root.find_child_value("keys")),
@@ -267,7 +283,7 @@ pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static st
                     .children
                     .iter()
                     .map(|child| {
-                        let forms = child.id.split('|').map(str::to_owned).collect();
+                        let forms = reference_values(&child.id);
                         (child.name.clone(), forms)
                     })
                     .collect(),
@@ -276,10 +292,16 @@ pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static st
         templates: children_named(root, "template")
             .map(|node| {
                 let mut head = node.id.split(' ');
+                let frame = head.next().unwrap_or_default().to_owned();
+                let styles = if let Some(styles) = children_named(node, "styles").next() {
+                    list(&styles.id)
+                } else {
+                    list(head.next().unwrap_or_default())
+                };
                 let texts = |name| children_named(node, name).map(|item| item.id.clone());
                 TemplateData {
-                    frame: head.next().unwrap_or_default().to_owned(),
-                    styles: list(head.next().unwrap_or_default()),
+                    frame,
+                    styles,
                     mood: head.next().unwrap_or_default().to_owned(),
                     positive: texts("positive").collect(),
                     negative: texts("negative").collect(),
@@ -815,130 +837,4 @@ pub fn utterance_graphs(text: &str, grammar: &CompiledGrammar) -> Vec<Graph> {
     }
     graphs.sort_by(|left, right| js_order(&left.0, &right.0));
     graphs.into_iter().map(|(_, graph)| graph).collect()
-}
-
-fn capitalized(text: &str) -> String {
-    match LETTER.find(text) {
-        Some(letter) => {
-            let upper: String = letter.as_str().to_uppercase();
-            format!(
-                "{}{upper}{}",
-                &text[..letter.start()],
-                &text[letter.end()..]
-            )
-        }
-        None => text.to_owned(),
-    }
-}
-
-/// Declared variants of a frame/style/mood/polarity, preferred first.
-fn variants_of<'a>(graph: &Graph, style: &str, grammar: &'a CompiledGrammar) -> Vec<&'a String> {
-    grammar
-        .data
-        .templates
-        .iter()
-        .filter(|item| {
-            item.frame == graph.frame
-                && item.mood == graph.mood
-                && item.styles.iter().any(|known| known == style)
-        })
-        .flat_map(|item| match graph.polarity.as_str() {
-            "positive" => item.positive.iter(),
-            "negative" => item.negative.iter(),
-            _ => [].iter(),
-        })
-        .collect()
-}
-
-// Punctuation that already closes an inner clause after a slot.
-const CLOSING: &[char] = &[
-    '.', ',', ';', ':', '?', '!', '…', '»', ')', '"', '。', '，', '？', '！', '、',
-];
-
-/// One declared variant (the preferred one by default) in one register, or `None`.
-#[must_use]
-pub fn realize_graph(
-    graph: &Graph,
-    style: &str,
-    register: &str,
-    grammar: &CompiledGrammar,
-    variant: usize,
-) -> Option<String> {
-    let source = *variants_of(graph, style, grammar).get(variant)?;
-    let mut missing = false;
-    let mut text = String::new();
-    let mut last = 0;
-    for found in SLOT.captures_iter(source) {
-        let whole = found.get(0).expect("whole match");
-        text.push_str(&source[last..whole.start()]);
-        last = whole.end();
-        let Some(value) = graph.slots.get(&found[1]) else {
-            missing = true;
-            continue;
-        };
-        let key = &found[2];
-        if key == "number" {
-            text.push_str(value);
-            continue;
-        }
-        let forms = grammar
-            .term(value)
-            .and_then(|term| term.register(register).or_else(|| term.register("forms")));
-        let position = grammar.data.keys.iter().position(|item| item == key);
-        let Some(form) = forms.zip(position).and_then(|(forms, at)| forms.get(at)) else {
-            missing = true;
-            continue;
-        };
-        // A form with an inner clause (for example Russian "..., которая может
-        // двигаться") is closed by the language's declared mark unless punctuation
-        // or the end of the sentence already follows it. Parsing ignores the mark.
-        let rest = source[whole.end()..].trim_start_matches(js_space);
-        text.push_str(form);
-        if !grammar.data.clause_close.is_empty()
-            && form.contains(',')
-            && rest
-                .chars()
-                .next()
-                .is_some_and(|next| !CLOSING.contains(&next))
-        {
-            text.push_str(&grammar.data.clause_close);
-        }
-    }
-    text.push_str(&source[last..]);
-    (!missing).then(|| capitalized(&text))
-}
-
-/// Every distinct realization of every variant, in the order of the style/register pairs.
-#[must_use]
-pub fn realizations(
-    graph: &Graph,
-    pairs: &[(String, String)],
-    grammar: &CompiledGrammar,
-) -> Vec<String> {
-    let mut texts: Vec<String> = Vec::new();
-    for (style, register) in pairs {
-        for variant in 0..variants_of(graph, style, grammar).len() {
-            if let Some(text) = realize_graph(graph, style, register, grammar, variant) {
-                if !texts.contains(&text) {
-                    texts.push(text);
-                }
-            }
-        }
-    }
-    texts
-}
-
-#[must_use]
-pub fn all_pairs(grammar: &CompiledGrammar) -> Vec<(String, String)> {
-    grammar
-        .output_styles
-        .iter()
-        .flat_map(|style| {
-            grammar
-                .shared
-                .registers
-                .iter()
-                .map(move |register| (style.clone(), register.clone()))
-        })
-        .collect()
 }

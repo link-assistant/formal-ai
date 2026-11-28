@@ -1,0 +1,162 @@
+[
+  {
+    "originalTest": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+            "line": 61771,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:02:00.6595760Z test shared_cross_runtime_synthesis_fixture_matches_rust_solver ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+            "line": 69412,
+            "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:20:02.9022184Z test benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "formalization::same_prompt_and_config_produce_same_interpretation_choice",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "formalization::same_prompt_and_config_produce_same_interpretation_choice",
+            "line": 64534,
+            "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-22T04:12:40.8103878Z test formalization::same_prompt_and_config_produce_same_interpretation_choice ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::synthesis::renumbered_word_problem_recomputes_from_quantities",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "renumbered_word_problem_recomputes_from_quantities",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "renumbered_word_problem_recomputes_from_quantities",
+            "line": 61770,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:44.9994942Z test renumbered_word_problem_recomputes_from_quantities ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct",
+            "line": 70232,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:25:03.1316780Z test seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+            "line": 67810,
+            "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-22T04:29:39.2242350Z test issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language",
+            "line": 66198,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:14.0763581Z test page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "web_requests::source_search_prompts_still_cover_supported_languages",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "web_requests::source_search_prompts_still_cover_supported_languages",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "web_requests::source_search_prompts_still_cover_supported_languages",
+            "line": 64592,
+            "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-22T04:18:06.2775223Z test web_requests::source_search_prompts_still_cover_supported_languages ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  }
+]

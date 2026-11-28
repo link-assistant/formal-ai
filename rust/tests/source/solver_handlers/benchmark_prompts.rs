@@ -18,27 +18,39 @@ fn summary_topic_seed_data() -> &'static SummaryTopicSeeds {
 
 pub fn try_summarization_request(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let seeds = summary_topic_seed_data();
-    if !seeds.matches_trigger(normalized) {
+    let lower = prompt.to_lowercase();
+    if !seeds.matches_trigger(&lower) {
         return None;
     }
 
-    let (topic, body) = seeds.pick_topic(normalized).map_or_else(
-        || {
-            let label = prompt
-                .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
-                .to_owned();
-            let body = seeds.render_fallback(&label);
-            (label, body)
-        },
-        |topic| (topic.display_name.clone(), topic.body.clone()),
-    );
+    let language = detect_language(prompt).slug();
+    let derived = seeds
+        .subject(&lower)
+        .and_then(|subject| derived_topic_summary(subject, language));
+    if derived.is_none() {
+        log.append("summarization:refusal", "unresolved_subject".to_owned());
+    }
+    let (topic, body, source) = derived.unwrap_or_else(|| {
+        let label = prompt
+            .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
+            .to_owned();
+        let fallback = if seeds.fallback_response.is_empty() {
+            "unknown"
+        } else {
+            seeds.fallback_response.as_str()
+        };
+        let body = seed::localized_response(fallback, language)
+            .unwrap_or_else(|| crate::engine::unknown_answer().to_owned());
+        (label, body, String::from("none"))
+    });
 
     log.append("summarization:topic", topic);
-    if let Some(label) = seeds.constraint_for(normalized) {
+    log.append("summarization:source", source);
+    if let Some(label) = seeds.constraint_for(&lower) {
         log.append("summarization:constraint", label.to_owned());
     }
 
@@ -49,6 +61,42 @@ pub fn try_summarization_request(
         "response:summarize_topic",
         &body,
         0.85,
+    ))
+}
+
+/// Read the requested record using the ordinary project or concept lookup.
+fn derived_topic_summary(subject: &str, language: &str) -> Option<(String, String, String)> {
+    let registry = seed::projects_registry();
+    if let Some(project) = registry.by_alias(subject)
+        && let Some(statement) = project
+            .statements_for(language)
+            .iter()
+            .max_by_key(|statement| statement.weight)
+    {
+        return Some((
+            project.display_name_for(language).to_owned(),
+            statement.text.clone(),
+            project.url.clone(),
+        ));
+    }
+    let query = crate::concepts::ConceptQuery {
+        term: subject.to_owned(),
+        context: None,
+        response_language: None,
+    };
+    let record = crate::concepts::lookup_concept_query(&query)?.record;
+    let variant = record
+        .localized_for(language)
+        .filter(|variant| !variant.summary.is_empty());
+    Some((
+        variant.map_or(&record.term, |value| &value.term).clone(),
+        variant
+            .map_or(&record.summary, |value| &value.summary)
+            .clone(),
+        variant
+            .filter(|value| !value.source.is_empty())
+            .map_or(&record.source, |value| &value.source)
+            .clone(),
     ))
 }
 
@@ -68,7 +116,16 @@ pub fn try_brainstorming_request(
     }
     let category = seeds.pick_category(normalized)?;
     let requested_count = requested_brainstorm_count(normalized);
-    let body = numbered(&category.items, requested_count);
+    let Some(topic) = seeds.topic(normalized) else {
+        log.append("brainstorming:refusal", "missing_topic".to_owned());
+        return None;
+    };
+    let operations: Vec<_> = category
+        .operations
+        .iter()
+        .map(|operation| operation.replace("{topic}", topic))
+        .collect();
+    let body = numbered(&operations, requested_count);
     log.append("brainstorm:category", category.slug.clone());
     Some(finalize_simple(
         prompt,

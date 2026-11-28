@@ -1,0 +1,93 @@
+{
+  "records": 551,
+  "parts": [
+    {
+      "file": "inventory-01.json",
+      "records": 35,
+      "sha256": "7ac8bc751421a4d5f706f4e0d7b39f77619652ffd73be6e2dc3070416f57a993"
+    },
+    {
+      "file": "inventory-02.json",
+      "records": 35,
+      "sha256": "2dc8ed318e43093e0b0e3eacd99c154c13f787ff3b20b569fdbfb9ab495e90d9"
+    },
+    {
+      "file": "inventory-03.json",
+      "records": 35,
+      "sha256": "c9bce1edac82228189f4702c1c5fd3cbffc02716a6c7bf1e0f142bc0f79dc193"
+    },
+    {
+      "file": "inventory-04.json",
+      "records": 35,
+      "sha256": "d458e82e06eb356ef5daf7d9ff595bf8eb4399729f451e4fcbb2a3fee9850e34"
+    },
+    {
+      "file": "inventory-05.json",
+      "records": 35,
+      "sha256": "e52fc989a7e2e0392d40c5d2fb02eadff886cf3bcd8032853423e2404bdd3429"
+    },
+    {
+      "file": "inventory-06.json",
+      "records": 35,
+      "sha256": "8f22566cbb631420bedeefcde13e0f0ed7ead919583baafa0bac52c7635b4dcf"
+    },
+    {
+      "file": "inventory-07.json",
+      "records": 35,
+      "sha256": "d5d1b8c29eb79dde27aaea5f3350e42b9b94a0e4cd354becf38ec5ff2582cbfe"
+    },
+    {
+      "file": "inventory-08.json",
+      "records": 35,
+      "sha256": "75fc5a02d6dba45c4f4e5f2876e7bb72bc1a58918a5335b679fcd3d97eb8ee07"
+    },
+    {
+      "file": "inventory-09.json",
+      "records": 35,
+      "sha256": "51a27b309f076b63a99c472da311304527d8f12bfe8f6bf293d984467ff0c967"
+    },
+    {
+      "file": "inventory-10.json",
+      "records": 35,
+      "sha256": "801350036cb6e71c6136acf388a9799ae6619f24582a286c775bafe779c2c79f"
+    },
+    {
+      "file": "inventory-11.json",
+      "records": 35,
+      "sha256": "55326cfe34ce3f8775803ae5f10b3606c9b3a29c3179624385a93117fa589e69"
+    },
+    {
+      "file": "inventory-12.json",
+      "records": 35,
+      "sha256": "629a7cb1e5b0da7166b4be7a1cb5b8145c842071813d61a4de58752a71ba0c46"
+    },
+    {
+      "file": "inventory-13.json",
+      "records": 35,
+      "sha256": "889b8f050e01f99987d651ec26a681863f5577b0ac71278d2860d3ff0a761efd"
+    },
+    {
+      "file": "inventory-14.json",
+      "records": 35,
+      "sha256": "a97ea85d609a452fde5fcb9bead140966e1f3e9e75f09848f48e4d3afe5ef751"
+    },
+    {
+      "file": "inventory-15.json",
+      "records": 35,
+      "sha256": "92677515e7eacedb1e257b653367f55fb7857d5f2f037dc2e6aeb644204eda63"
+    },
+    {
+      "file": "inventory-16.json",
+      "records": 1,
+      "sha256": "c132f47444e49bf10b674a2cd8e283d0f3cc0aaab0e9c509aeb41591b4326618"
+    },
+    {
+      "file": "inventory-17.json",
+      "records": 25,
+      "sha256": "906c55be25082b47bd750334652db172f2a843afacd2773645ecd201af5fb5f6"
+    }
+  ],
+  "scope": "Custody of supplied investigations, preimages, failed attempts and focused verification; no blanket source/log review credit.",
+  "rawBytes": 65688811,
+  "independentAuthorshipCredit": 0
+}

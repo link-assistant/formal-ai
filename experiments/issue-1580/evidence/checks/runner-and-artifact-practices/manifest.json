@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-22T12:41:14.176307+00:00",
+  "publishedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "base": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "templateRepository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "templateCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "records": [
+    {
+      "archive": "formal-source-01.txt.gz",
+      "bytes": 7213,
+      "sha256": "29248bb2c4f0cbb5900713e0abe4ad4627303334702f20f3ba97017644b557a2",
+      "path": "scripts/rerun-unacquired-jobs.mjs",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-02.txt.gz",
+      "bytes": 1669,
+      "sha256": "c32179e08ba54a315996cf1036a46b3f8d535427fb51a0fee7d47f7a65219b04",
+      "path": ".github/workflows/recover-unacquired-runners.yml",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-03.txt.gz",
+      "bytes": 9420,
+      "sha256": "0435b33460b02de7460020869a1805be07fe72a29f10d42b682af8aa296ac39f",
+      "path": "experiments/issue-1580/runner-acquisition-recovery.test.mjs",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-04.txt.gz",
+      "bytes": 6565,
+      "sha256": "6d1a873ac1a8a4c7735ad78c340d6892848165a877c0807152d5a2b27bed8375",
+      "path": "scripts/extract-artifacts.py",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-05.txt.gz",
+      "bytes": 5412,
+      "sha256": "dbf518c71882d8d7464367df523645d967d19c3b4800283ad48db8029add5d81",
+      "path": ".github/actions/download-artifact/action.yml",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-06.txt.gz",
+      "bytes": 19991,
+      "sha256": "5e1ea24275fbe8537c839ae7289eac2f6182cf76a2b5fac7f99b58c92c64900d",
+      "path": "rust/tests/web/native-test-artifact.test.mjs",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-07.txt.gz",
+      "bytes": 9116,
+      "sha256": "fd37a4835e5bf5d95180f18dbf913689e14a9538d1ce079b23dadb9da94dd1ff",
+      "path": "experiments/issue-1580/artifact-download-retry.test.mjs",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-08.txt.gz",
+      "bytes": 4654,
+      "sha256": "1c4c3f210ed4ed9b90112c50a3cb551ec2fce54d7f2d001176babe53980c8755",
+      "path": "experiments/issue-1580/artifact-download-portable-options.test.mjs",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-09.txt.gz",
+      "bytes": 7121,
+      "sha256": "24dd0e8b52f9dbc75b26f024e7a1aef780bedb9887b30b0af471687f531f0994",
+      "path": "experiments/issue-1580/artifact-extraction-fixtures.py",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-10.txt.gz",
+      "bytes": 1183,
+      "sha256": "ce8633a732028e8d482194c8e770dc631a1a673e18ff0a4627cab56b02d2ce9d",
+      "path": "experiments/issue-1580/artifact-transport-roundtrip.py",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-11.txt.gz",
+      "bytes": 20228,
+      "sha256": "26e489d5bb2222d3540df4bf9fb27ebb27253d205b54c905ac6cb430373b7fb7",
+      "path": ".github/workflows/workflows.yml",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-12.txt.gz",
+      "bytes": 4820,
+      "sha256": "ff41eeee4337ef8002bfe89e30a82620f28d075ef94d6d20f3121c1a637de7fe",
+      "path": "rust/tests/web/issue-1580-template-observations.test.mjs",
+      "kind": "formal-ai-source",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "template-source-01.txt.gz",
+      "bytes": 6917,
+      "sha256": "cc9acc34a63b60a7193132ea59215c22a9de38542720c3722d501a743227c076",
+      "path": "scripts/unacquired-jobs.py",
+      "kind": "pinned-template-source",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "template-source-02.txt.gz",
+      "bytes": 3618,
+      "sha256": "4619cbc3cc5d5386f87e027f5bb8c45529a02b2a4f83a002250fa3682a98bd60",
+      "path": ".github/workflows/rerun-infrastructure-failures.yml",
+      "kind": "pinned-template-source",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "template-source-03.txt.gz",
+      "bytes": 3602,
+      "sha256": "b934af542a0e194ca09fa6b3e36cdf53ddfa83b778fcecb87a016e0691ac9bf0",
+      "path": "scripts/extract-artifacts.py",
+      "kind": "pinned-template-source",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "template-source-04.txt.gz",
+      "bytes": 1557,
+      "sha256": "45ee393d8b4b84ee8e8d42afe4755beb8cf790066a26972d088f2ac7dcbd8b10",
+      "path": ".github/actions/download-artifact/action.yml",
+      "kind": "pinned-template-source",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "hosted-45018199621-run.json.gz",
+      "bytes": 13184,
+      "sha256": "0bae5b05dcd1f2d8ff7cb43d9bad71681d9e47e3d9d55aff90f771e3a740ccb8",
+      "kind": "hosted-observation",
+      "runId": 45018199621,
+      "wholeLogLiterallyRead": null
+    },
+    {
+      "archive": "hosted-45018199621-jobs.json.gz",
+      "bytes": 59876,
+      "sha256": "531ec40dece3acd4bc23614fae79bac117588670881e4ec282f907f691beaba8",
+      "kind": "hosted-observation",
+      "runId": 45018199621,
+      "wholeLogLiterallyRead": null
+    },
+    {
+      "archive": "hosted-45018199621.log.gz",
+      "bytes": 4828920,
+      "sha256": "bd6960094c03e3fac983668fc33fb7eaefd6d84fdfb57a896c7a55f9fc43bddb",
+      "kind": "hosted-observation",
+      "runId": 45018199621,
+      "wholeLogLiterallyRead": false
+    },
+    {
+      "archive": "hosted-45018199633-run.json.gz",
+      "bytes": 13182,
+      "sha256": "56eba17a94d8803719114e8c2abdf5d65bc82c7db2c6cf1041e89fb46c9028ae",
+      "kind": "hosted-observation",
+      "runId": 45018199633,
+      "wholeLogLiterallyRead": null
+    },
+    {
+      "archive": "hosted-45018199633-jobs.json.gz",
+      "bytes": 18023,
+      "sha256": "a299d53baa7d88d780ee31c14a8fc19eb9f90c7699bd222a96855395feda7bc7",
+      "kind": "hosted-observation",
+      "runId": 45018199633,
+      "wholeLogLiterallyRead": null
+    },
+    {
+      "archive": "hosted-45018199633.log.gz",
+      "bytes": 507463,
+      "sha256": "2423a299b414f68809c106fad5531d9b8101b25ac0d4c2cb3190782a77f485d3",
+      "kind": "hosted-observation",
+      "runId": 45018199633,
+      "wholeLogLiterallyRead": false
+    },
+    {
+      "archive": "hosted-focused-excerpts.json.gz",
+      "bytes": 55265,
+      "sha256": "bb69f263c9c5858c26e4c5e5e089529d40b22bc3e491684294f7512318a3017e",
+      "kind": "literal-reviewed-hosted-ranges"
+    }
+  ],
+  "runnerRecovery": {
+    "hostedControlsPassed": 27,
+    "actualProductionCommandExecutedWithFakeGithubTransport": true,
+    "liveGithubRerunExecuted": false,
+    "policy": "Only positively annotated unacquired default-branch pipeline jobs, complete paginated jobs and annotations, exact repository/check identity, newest source and reobserved attempt, at most three attempts. Actual test failures and unknown observations are preserved."
+  },
+  "artifactExtraction": {
+    "hostedDesktopRoundTripsPassed": [
+      "ubuntu-24.04",
+      "macos-15",
+      "windows-2025"
+    ],
+    "realGithubUploadDownloadExecuted": true,
+    "realExtractorControlsPassed": 8,
+    "transportReplayControlsPassed": 11,
+    "annotationControlsPassed": 8,
+    "portableOptionControlsPassed": 3,
+    "policy": "Pinned digest-checked raw transport, prevalidated destinations, streaming extraction with CRC-checked per-file atomic replacement, bounded retries with partial cleanup and preserved selection. Whole-archive atomicity is not claimed."
+  },
+  "allApplicablePracticesImplementedAndVerified": false,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0
+}

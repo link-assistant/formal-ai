@@ -1,0 +1,15 @@
+{
+  "name": "maintained-observations",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "rust/tests/web/issue-1580-template-observations.test.mjs"
+  ],
+  "exitCode": 0,
+  "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/maintained-observations.log.gz",
+  "uncompressedSha256": "cc9688ab5809e78a5bba6cee91c1e2f15eb10b63d3f92ab455f5756e1b15bbf1"
+}

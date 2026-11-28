@@ -1,0 +1,116 @@
+{
+  "sourceCommit": "53816c9eb4bd11729a8be347ccd9497d07042660",
+  "run": 45250430676,
+  "fileSeconds": 254.556480921,
+  "originalSourceSha256": "c92dfe119d94bbd42ce2abd4fad4e69a15b055d93ed072624f9d4e496019d039",
+  "cases": [
+    {
+      "title": "examples alone are a goal state: the shortest typed program with difference 0 is found and verified",
+      "group": "learning",
+      "seconds": 0.99927899,
+      "rawLogLine": 10659,
+      "skipped": false
+    },
+    {
+      "title": "a parameter is inferred from the example, not memorized",
+      "group": "learning",
+      "seconds": 0.0024920100000000002,
+      "rawLogLine": 10660,
+      "skipped": false
+    },
+    {
+      "title": "a nonce word the request defines breaks the tie the examples leave",
+      "group": "learning",
+      "seconds": 0.007304097,
+      "rawLogLine": 10661,
+      "skipped": false
+    },
+    {
+      "title": "an unknown word is looked up, its gloss grounded one level deeper, and the result learned",
+      "group": "learning",
+      "seconds": 21.479433304999997,
+      "rawLogLine": 10673,
+      "skipped": false
+    },
+    {
+      "title": "a word no source reaches stays an open unknown and the answer asks the deciding question",
+      "group": "learning",
+      "seconds": 28.50686553,
+      "rawLogLine": 10674,
+      "skipped": false
+    },
+    {
+      "title": "a specialized handler's admitted impasse is resolved by the general loop",
+      "group": "learning",
+      "seconds": 28.23139422,
+      "rawLogLine": 10675,
+      "skipped": false
+    },
+    {
+      "title": "every answer carries its derivation in links notation",
+      "group": "learning",
+      "seconds": 0.193020823,
+      "rawLogLine": 10676,
+      "skipped": false
+    },
+    {
+      "title": "the same request yields the same derivation",
+      "group": "learning",
+      "seconds": 0.002795258,
+      "rawLogLine": 10677,
+      "skipped": false
+    },
+    {
+      "title": "every rung of the task ladder is derived, never handled",
+      "group": "ladder",
+      "seconds": 148.209078777,
+      "rawLogLine": 10687,
+      "skipped": false
+    },
+    {
+      "title": "a derived file program runs in node and agrees with a direct count",
+      "group": "learning",
+      "seconds": 6.611688996,
+      "rawLogLine": 10693,
+      "skipped": false
+    },
+    {
+      "title": "a message holding several requests is decomposed into sub-goals, each derived",
+      "group": "learning",
+      "seconds": 11.13516469,
+      "rawLogLine": 10694,
+      "skipped": false
+    },
+    {
+      "title": "a question word is asked for, never a term the request defines",
+      "group": "learning",
+      "seconds": 0.319784185,
+      "rawLogLine": 10695,
+      "skipped": false
+    },
+    {
+      "title": "a symbol a gloss defines is a value the program reads, probed with that value",
+      "group": "learning",
+      "seconds": 0.000119012,
+      "rawLogLine": 10697,
+      "skipped": true
+    },
+    {
+      "title": "a superlative is its stem's measure and the degree's selection",
+      "group": "learning",
+      "seconds": 7.8367e-05,
+      "rawLogLine": 10698,
+      "skipped": true
+    },
+    {
+      "title": "a learned meaning leaves as a memory append and comes back through memory",
+      "group": "learning",
+      "seconds": 6.763662568,
+      "rawLogLine": 10699,
+      "skipped": false
+    }
+  ],
+  "modeledIndependentGroupStartupAllowanceSeconds": 5,
+  "executionProof": false,
+  "autonomousAuthorshipCredit": 0
+}

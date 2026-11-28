@@ -1,0 +1,75 @@
+[
+  {
+    "name": "modeled-before-overbroad-read",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "--test-name-pattern=Codex fixture projects",
+      "rust/tests/web/hive-work-item-consumer.test.mjs"
+    ],
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "seconds": 23.8718102700077,
+    "file": "modeled-before-overbroad-read.log.gz",
+    "rawSha256": "2ed14eac3ba2a0871c1b23b47b42a0d2cd83413b9f5c5bdb3fe6df2c071c3685",
+    "archiveSha256": "d3d6da2aa87c31546526a139a8627a952a85495ded7e6050eb98b24ce98621ae"
+  },
+  {
+    "name": "full-consumer",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/hive-work-item-consumer.test.mjs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "seconds": 188.2452784490306,
+    "file": "full-consumer.log.gz",
+    "rawSha256": "e2ac3948526265ae3f066d14a9a5c59cc0a7fa08c7782e7121c20ce8f20c0ef1",
+    "archiveSha256": "939b9cf8401d9aedeb17fbc57d305b42af27afdccb34e8187dcd56a65f6c0f4f"
+  },
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--config",
+      "skip_children=true",
+      "--check",
+      "rust/tests/unit/issue_1133_hive_mind_three_runs.rs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "seconds": 0.08877243404276669,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "name": "gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-readable-code"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "seconds": 110.11831632605754,
+    "file": "gates.log.gz",
+    "rawSha256": "c711084bddfe1dfc7845c746f99c9da6d334421750099e7680811a25d5e239a4",
+    "archiveSha256": "14b43f609fb1ad43eda31aad68793711bbd210dc53a0db36f70e8985c69ae865"
+  }
+]

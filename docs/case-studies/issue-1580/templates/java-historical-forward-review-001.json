@@ -1,0 +1,111 @@
+{
+  "baseReview": "java-historical-partial-review.json",
+  "baseSha256": "39b09d830a5943f12270706260c56fb0081790c418a613986bb549bbad594d8c",
+  "pagesFullyRead": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108
+  ],
+  "filesChangedSinceBase": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-spotless-maven-plugin.xml",
+      "sha256": "d5b5ce5aeb349592bc39676c2caf089df63419f96cc25938f3d0d2ea4b0ceeee",
+      "totalLines": 159,
+      "readRanges": [
+        [
+          1,
+          159
+        ]
+      ],
+      "completeSourceRead": true,
+      "newCompleteLines": 103
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-versions-maven-plugin.xml",
+      "sha256": "57e5096ffa52ed907896b4a19c038bd7c018571a1a9bbd2d03a3b16c5ee02e0c",
+      "totalLines": 54,
+      "readRanges": [
+        [
+          1,
+          54
+        ]
+      ],
+      "completeSourceRead": true,
+      "newCompleteLines": 54
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/merged-pr-23.diff",
+      "sha256": "52236396fe952fb97d11d9820edc7db1cdd54b0b059036763749399dc8f5e263",
+      "totalLines": 558,
+      "readRanges": [
+        [
+          1,
+          558
+        ]
+      ],
+      "completeSourceRead": true,
+      "newCompleteLines": 558
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/merged-pr-23.json",
+      "sha256": "e93ed4a4b14f1e5e1c7d25989cd216c62618f6df85b40f2212424a647e5bcb92",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true,
+      "newCompleteLines": 1
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/merged-prs.json",
+      "sha256": "fbf0dd3b5f3256c8d425f0fae4bb1462144806118da04d34da6f95ef19a7e24c",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true,
+      "newCompleteLines": 1
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/node.json",
+      "sha256": "ecbf1d9f49532daf606cd495537d2ff7ab28f441e877ae40821738d56e2a0a80",
+      "totalLines": 884,
+      "readRanges": [
+        [
+          1,
+          46
+        ]
+      ],
+      "completeSourceRead": false,
+      "newCompleteLines": 46
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 108,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 7625,
+    "nextForwardPage": 109,
+    "remainingPages": 146,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "All eight pages were literally read without truncation. They complete the Spotless and Versions Maven catalogs and the retained PR 23 patch and discussion. They begin the Node release catalog through line 46.",
+    "The historical patch warns on stale dependencies across all events, verifies commented SHA/tag pins, retries interrupted downloads and tests annotation escaping and file-size boundaries. Historical claimed results are not new executions or compatibility evidence.",
+    "The original 1–100 manifest remains byte-identical and under its existing size ceiling. This forward part records new ranges and cumulative counts; later parts can extend the index without enlarging the original file.",
+    "Pages 109–254 and complete semantic applicability remain unfinished. No independent authorship or present runtime credit follows from historical catalog metadata."
+  ]
+}

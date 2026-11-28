@@ -1,0 +1,17 @@
+{
+  "exitCode": 1,
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "rawSha256": "595468a9cec423c9821cf955c67a45d64ea81220f75b6a0c7dce4635fa551120",
+  "archiveSha256": "058892e4c2b639f9d18806e43652ebc0a6cc117c5dfa18dc12ce33ebea88ce91",
+  "lines": 60,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

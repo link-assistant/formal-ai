@@ -69,6 +69,11 @@ prompt_patterns
     language en
     kind prefix
     text "explain "
+  pattern pattern_concept_prefix_explain_the_word
+    intent concept_lookup
+    language en
+    kind prefix
+    text "explain the word "
   pattern pattern_concept_prefix_describe
     intent concept_lookup
     language en

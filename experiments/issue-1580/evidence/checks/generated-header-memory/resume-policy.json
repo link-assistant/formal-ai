@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/recipe-resume-policy-notation.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 0.938,
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 94084,
+  "rawSha256": "709de66eb5a18f268ff067fe6f9b38ba1eb66d8518b2758400b6afba2c9faf76",
+  "rawBytes": 348,
+  "log": "resume-policy.log.gz",
+  "independentAuthorshipCredit": 0
+}

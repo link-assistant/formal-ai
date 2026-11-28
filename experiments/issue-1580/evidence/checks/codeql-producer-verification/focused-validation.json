@@ -1,0 +1,55 @@
+{
+  "checks": [
+    {
+      "name": "codeql-producer",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/security-codeql-results.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.39,
+      "rawSha256": "90c2bb487b1c465c07f7f5d308d1e9b28e51a965697a534fed5a0a6277bff30d",
+      "archiveSha256": "6585f4fa92fe31af9539ec48c9b80f8b3547fe971b5accbdef54998b907ed8bc"
+    },
+    {
+      "name": "production-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.99,
+      "rawSha256": "b661e193e99a6040625ba81fed07dd46c8b6ca6c967c8e08ed0ad2a5c66d9855",
+      "archiveSha256": "97af4c87c069f40ad8529bb90c0c314c9244a9a2eb2fe563b4aff493bdb5cbd9"
+    },
+    {
+      "name": "workflow-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 12.92,
+      "rawSha256": "3b6d807bc203131ac5f14242c7d70aaf5b09f086f8dbb4965bd9fb9435ff7fdd",
+      "archiveSha256": "1945d21980cb58ce1c6bb80485d6cec56b0c72f8fe9605f58173509ed19bfaa3"
+    }
+  ],
+  "fullIssueComplete": false,
+  "liveCodeqlExecuted": false,
+  "independentAuthorshipCredit": 0
+}

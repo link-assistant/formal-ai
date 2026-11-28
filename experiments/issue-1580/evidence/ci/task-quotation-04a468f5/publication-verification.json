@@ -1,0 +1,27 @@
+{
+  "publicationVerified": true,
+  "head": "04a468f53549f0825999c1dd9e53210476723106",
+  "observedAt": "2026-11-18T05:12:46.997496+00:00",
+  "branch": "issue-1580-8d61a32a61e1",
+  "pullRequest": "https://github.com/link-assistant/formal-ai/pull/1581",
+  "draft": true,
+  "changedFilesInPullRequest": 6171,
+  "fullGhPrDiffAvailable": false,
+  "fullGhPrDiffError": "could not find pull request diff: HTTP 406: Sorry, the diff exceeded the maximum number of files (300). Consider using 'List pull requests files' API or locally cloning the repository instead. (https://api.github.com/repos/link-assistant/formal-ai/pulls/1581)\nPullRequest.diff too_large",
+  "completeLocalDiffRetained": true,
+  "codeCommitApiFiles": 13,
+  "allCodeBlobIdentitiesVerified": true,
+  "literalApiPatchReviewComplete": true,
+  "gitMaintenanceStillRunning": [],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "apiPatchPagesLiterallyRead": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "incrementalReviewCompletedAt": "2026-11-18T05:15:10.744479+00:00",
+  "wholePullRequestLiteralReviewClaimed": false
+}

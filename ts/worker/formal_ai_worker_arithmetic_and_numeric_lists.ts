@@ -81,7 +81,7 @@ function numericCalculationResponse(prompt, expression, formatted) {
   return completeOperand ? formatted : null;
 }
 
-function tryArithmeticExpression(prompt) {
+function tryArithmeticExpression(prompt, preferences) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
   const expression = extracted.expression;
@@ -92,9 +92,9 @@ function tryArithmeticExpression(prompt) {
     ? extracted.reasoningSteps
     : [];
   const resultLabel = typeof extracted.resultLabel === "string" ? extracted.resultLabel : "";
+  const currency = currencyQuoteRequest(expression);
+  if (currency) return answerCurrencyQuote(currency, detectLanguage(prompt), preferences);
   try {
-    const capturedCurrency = tryCapturedCurrencyConversion(prompt, expression);
-    if (capturedCurrency) return capturedCurrency;
     const isEquation = expression.includes("=");
     let formatted;
     let backend = "js";
@@ -104,12 +104,8 @@ function tryArithmeticExpression(prompt) {
       backend = "wasm";
     } else {
       const percentOfResult = evaluatePercentOfExpression(expression);
-      const currencyConversionResult = evaluateCurrencyConversionExpression(expression);
       const clockDifferenceResult = evaluateClockDifferenceExpression(expression);
-      if (currencyConversionResult !== null) {
-        formatted = currencyConversionResult;
-        backend = "js-currency";
-      } else if (percentOfResult) {
+      if (percentOfResult) {
         formatted = percentOfResult;
         backend = "js-percent-of";
       } else if (clockDifferenceResult !== null) {
@@ -273,7 +269,7 @@ function extractRequestedAlgebraExpression(prompt) {
       .trim();
     if (cleaned && /[A-Za-z_]/.test(cleaned)) return cleaned;
   }
-  return null;
+  return extractArithmeticExpression(text)?.expression ?? null;
 }
 
 function lastNonWhitespace(value) {
@@ -423,14 +419,14 @@ function tryLinkNativeSynthesis(prompt) {
 // Mirrors looks_like_python_function_request in
 // src/solver_handlers/program_synthesis.rs: a function *subject*, a *domain*
 // signal (Python or a data kind), and an *action* verb — all supplied by the
-// meaning lexicon, never hardcoded. `def ` is Python syntax a user may paste,
-// so a literal signature satisfies both the subject and action sides.
+// meaning lexicon. A Python declaration already identifies the language,
+// function and request shape when the caller supplies the signature.
 function looksLikePythonFunctionSynthesis(prompt, normalized) {
-  const hasDef = String(prompt || "").toLowerCase().includes("def ");
+  if (/\bdef\s+[A-Za-z_][A-Za-z0-9_]*\s*\(/u.test(String(prompt || ""))) return true;
   return (
-    (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || hasDef) &&
+    lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) &&
     (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized) || browserFunctionTemplate(programLanguageFromPrompt(normalized)) !== null) &&
-    (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_ACTION, normalized) || hasDef)
+    lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
   );
 }
 
@@ -783,4 +779,36 @@ function numericListBuildProgram(slug, items, canonical, isFloat) {
 function numericListDirection(canonical) {
   const entry = numericListOntology()[canonical];
   return entry ? entry.direction : "";
+}
+
+function numericListProgramLinks(program) {
+  const lines = [
+    "program_syntax_tree",
+    `  language ${program.languageSlug}`,
+    `  value_type ${program.valueType.label}`,
+    `  operation ${program.canonical}`,
+    `  literal_values ${(program.displayValues || program.literals).join("|")}`,
+  ];
+  for (const statement of program.statements) {
+    if (statement.kind === "literal_list") {
+      lines.push(
+        `  semantic_node literal_list name=${statement.name} mutable=${statement.mutable}`,
+      );
+    } else if (statement.kind === "sort_list" || statement.kind === "reverse_list") {
+      lines.push(
+        `  semantic_node ${statement.kind} source=${statement.source} target=${statement.target} direction=${statement.direction}`,
+      );
+    } else if (statement.kind === "reduce_list") {
+      lines.push(
+        `  semantic_node reduce_list source=${statement.source} target=${statement.target} reducer=${statement.reducer}`,
+      );
+    } else if (statement.kind === "print_joined") {
+      lines.push(
+        `  semantic_node print_joined source=${statement.source} separator="${statement.separator}"`,
+      );
+    } else if (statement.kind === "print_scalar") {
+      lines.push(`  semantic_node print_scalar source=${statement.source}`);
+    }
+  }
+  return lines.join("\n");
 }

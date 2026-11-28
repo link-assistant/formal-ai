@@ -71,7 +71,7 @@ pub struct RecipeProgram {
 #[derive(Clone, Copy)]
 pub enum BlueprintExecution {
     ExternalLibrariesAndNetwork,
-    ReviewDataAssumptions,
+    RequiresScenarioInput,
     LocalSourceAnalysis,
 }
 
@@ -411,24 +411,23 @@ pub fn blueprint_execution_report(
              code is provided for review. Run it yourself from a Cargo project: \
              `{run_command}`."
         ),
-        (BlueprintExecution::ReviewDataAssumptions, Language::Russian) => format!(
+        (BlueprintExecution::RequiresScenarioInput, Language::Russian) => format!(
             "Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, \
-             а встроенные допущения о данных нужно проверить перед использованием. Код приведён \
+             а для расчёта нужны входные данные, описанные в программе. Код приведён \
              для проверки. Запустить самостоятельно: `{run_command}`."
         ),
-        (BlueprintExecution::ReviewDataAssumptions, Language::Hindi) => format!(
+        (BlueprintExecution::RequiresScenarioInput, Language::Hindi) => format!(
             "निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, \
-             और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए \
+             और गणना के लिए प्रोग्राम में बताए गए इनपुट चाहिए। कोड समीक्षा के लिए \
              दिया गया है। स्वयं चलाएँ: `{run_command}`।"
         ),
-        (BlueprintExecution::ReviewDataAssumptions, Language::Chinese) => format!(
-            "执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。\
+        (BlueprintExecution::RequiresScenarioInput, Language::Chinese) => format!(
+            "执行状态：未运行 —— 该报告未在离线沙箱中执行，运行所需的输入数据见程序说明。\
              代码仅供审阅。自行运行：`{run_command}`。"
         ),
-        (BlueprintExecution::ReviewDataAssumptions, _) => format!(
+        (BlueprintExecution::RequiresScenarioInput, _) => format!(
             "Execution status: not run — this report blueprint was not executed in the \
-             offline sandbox, and the embedded data assumptions should be reviewed \
-             before use. The code is provided for review. Run it yourself: \
+             offline sandbox, and it requires the scenario inputs described in the program. The code is provided for review. Run it yourself: \
              `{run_command}`."
         ),
         (_, Language::Russian) => format!(
@@ -487,17 +486,6 @@ pub fn recipe_summary(recipe: &BlueprintRecipe, language: Language) -> &'static 
         }
         _ => recipe.label,
     }
-}
-
-fn recipe_addendum(recipe: &BlueprintRecipe, _language: Language) -> Option<&'static str> {
-    (recipe.slug == "self_source_metrics_report").then_some(
-        "Response self-analysis:\n\
-         - Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, \
-         complexity_score=1.\n\
-         - Comparison: the generated Rust code is more complex than the reasoning text \
-         because it contains executable parsing, loops, conditionals, helper functions, \
-         and JSON rendering logic.",
-    )
 }
 
 /// Localized "Run it yourself" heading shown above the execution report.
@@ -565,10 +553,6 @@ pub fn render(blueprint: &Blueprint, language: Language, strategy: BlueprintComp
         )
     )
     .expect("string write is infallible");
-
-    if let Some(addendum) = recipe_addendum(blueprint.recipe, language) {
-        write!(body, "\n\n{addendum}").expect("string write is infallible");
-    }
 
     body
 }

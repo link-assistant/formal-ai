@@ -65,7 +65,7 @@ test('replay of the issue-698 driver plans run_command, web_fetch, read_file as 
   const rustString = value => JSON.parse(value.replace(/\\\r?\n[ \t]*/gu, '').replace(/\r?\n/gu, '\\n'));
   const declared = source.match(/const ISSUE_698_WORK_ITEM: &str = ("(?:\\[\s\S]|[^"\\])*");/u);
   assert.ok(declared, 'the Rust test still declares ISSUE_698_WORK_ITEM');
-  const body = read('rust/embedded/data/benchmarks/issue-requirements/issue-698.md');
+  const body = read('data/benchmarks/issue-requirements/issue-698.md');
   const tools = ['web_search', 'web_fetch', 'write_file', 'run_command', 'translate', 'read_file'];
   const messages = [{ role: 'user', content: rustString(declared[1]) }];
   const planned = [];

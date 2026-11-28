@@ -29,6 +29,6 @@ test('synchronous worker generation still resolves the parser owned by the selec
  fs.mkdirSync(provider,{recursive:true});fs.mkdirSync(path.join(directory,'js/worker'),{recursive:true});
  fs.writeFileSync(path.join(provider,'package.json'),'{"name":"@babel/parser","type":"commonjs","exports":"./index.cjs"}\n');
  fs.writeFileSync(path.join(provider,'index.cjs'),'module.exports={parse(){throw Error("SelectedRootParserWasUsed");}};\n');
- for(const file of ['parser-cache-primordials.js','seed_loader.js','worker/one.js'])fs.writeFileSync(path.join(directory,'js',file),'// fixture\n');
+ for(const file of ['parser-cache-primordials.js','seed-record-readers.js','seed_loader.js','worker/one.js'])fs.writeFileSync(path.join(directory,'js',file),'// fixture\n');
  assert.throws(()=>generateWorkerPrerequisites({root:directory}),/SelectedRootParserWasUsed/);
 });

@@ -1,0 +1,120 @@
+[
+  {
+    "name": "canonical-data-mirrors",
+    "command": [
+      "node",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "status": 0,
+    "durationSeconds": 1.002,
+    "rawSha256": "51b8b1215954c03b11be020b39241fd887b75441329425691748b9c1b72468e1",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 69668
+  },
+  {
+    "name": "rust-format",
+    "command": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2024",
+      "rust/src/solver_handlers/calendar_create.rs",
+      "rust/tests/unit/solver/issue_869_meeting_scheduling.rs"
+    ],
+    "status": 0,
+    "durationSeconds": 0.16,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 69668
+  },
+  {
+    "name": "projection-currency",
+    "command": [
+      "node",
+      "scripts/translate-js-rust.mjs",
+      "--verify"
+    ],
+    "status": 0,
+    "durationSeconds": 3.405,
+    "rawSha256": "7a44218f3d7dd40e7ae45c9d998c4caf19db0b73557ff7e987dd6de32b597261",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 91184
+  },
+  {
+    "name": "clock-tests",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-clock-preservation.test.mjs"
+    ],
+    "status": 0,
+    "durationSeconds": 14.755,
+    "rawSha256": "1626744ddebdc384a07fa562108887dce75cf51b8ada4a6bade59bd74bb2c622",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 362720
+  },
+  {
+    "name": "intent-span-tests",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1588-intent-spans.test.mjs"
+    ],
+    "status": 0,
+    "durationSeconds": 19.929,
+    "rawSha256": "e0d89845b2cda0cd6ec27fccd556b856adb13611866c7192fcffe1e8322766d2",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 379292
+  },
+  {
+    "name": "ledger-tests",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/main-only-regression-ledger.test.mjs"
+    ],
+    "status": 0,
+    "durationSeconds": 0.259,
+    "rawSha256": "2b8400f754f765319fee288afffecdbd181f608fb982e1c84cd11686ad1d82fb",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 379292
+  },
+  {
+    "name": "fast-profile-tests",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "status": 0,
+    "durationSeconds": 4.308,
+    "rawSha256": "a6ec14b4c69d4c0e962583382821d9bec0bdb2025ca3ca7445746cb670baf4ac",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 379292
+  },
+  {
+    "name": "complete-local-gates",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "status": 1,
+    "durationSeconds": 722.247,
+    "rawSha256": "f537b93a73e329847fc6ff2a8844a5fc2a0f8c1be6a16dad586e0057daeb615f",
+    "nodeHeapMiB": 256,
+    "peakChildRssKiB": 1031360
+  }
+]

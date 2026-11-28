@@ -18,7 +18,7 @@
 //! answering the broad class of real-world coding requests the catalog cannot.
 
 use crate::coding::WRITE_PROGRAM_INTENT;
-use crate::coding::blueprint::{render, select_blueprint};
+use crate::coding::blueprint::{BlueprintExecution, render, select_blueprint};
 use crate::coding::program_language_by_alias;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
@@ -66,14 +66,22 @@ pub fn try_program_blueprint(
     for capability in &blueprint.capabilities {
         log.append("program_blueprint:capability", capability.slug.to_owned());
     }
-    log.append(
-        "execution_status",
-        "not run — requires external libraries and network access".to_owned(),
-    );
-    log.append(
-        "execution_environment",
-        "offline sandbox cannot install libraries or reach the network".to_owned(),
-    );
+    let (status, environment) = match blueprint.program.execution {
+        BlueprintExecution::LocalSourceAnalysis => (
+            "not run — standard-library source analysis blueprint",
+            "answer renderer did not compile generated Cargo program in place",
+        ),
+        BlueprintExecution::RequiresScenarioInput => (
+            "not run — scenario input required",
+            "offline sandbox did not execute the program without caller data",
+        ),
+        BlueprintExecution::ExternalLibrariesAndNetwork => (
+            "not run — requires external libraries and network access",
+            "offline sandbox cannot install libraries or reach the network",
+        ),
+    };
+    log.append("execution_status", status.to_owned());
+    log.append("execution_environment", environment.to_owned());
 
     let response_link = format!(
         "response:write_program:blueprint:{}:{language_slug}",

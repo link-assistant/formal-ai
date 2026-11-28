@@ -1,0 +1,319 @@
+{
+  "entities": {
+    "Q2111": {
+      "id": "Q2111",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "скорость света"
+        },
+        "es": {
+          "language": "es",
+          "value": "velocidad de la luz en el vacío"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रकाश का वेग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "光速"
+        },
+        "en": {
+          "language": "en",
+          "value": "speed of light in vacuum"
+        }
+      },
+      "claims": {
+        "P1181": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P1181",
+              "hash": "16efc15713bd534b9f618003f0e76156547f9f44",
+              "datavalue": {
+                "value": {
+                  "amount": "+299792458",
+                  "unit": "http://www.wikidata.org/entity/Q182429",
+                  "upperBound": "+299792458",
+                  "lowerBound": "+299792458"
+                },
+                "type": "quantity"
+              },
+              "datatype": "quantity"
+            },
+            "type": "statement",
+            "qualifiers": {
+              "P580": [
+                {
+                  "snaktype": "value",
+                  "property": "P580",
+                  "hash": "3ebd528b979ba4e9c96365ca73554c25b5374ba8",
+                  "datavalue": {
+                    "value": {
+                      "time": "+1983-00-00T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 9,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "qualifiers-order": [
+              "P580"
+            ],
+            "id": "Q2111$85708f28-4f3b-e5ff-23fc-85b3d28f5728",
+            "rank": "normal",
+            "references": [
+              {
+                "hash": "84fe6b802c9861302dc2476a6f933e29ace33e48",
+                "snaks": {
+                  "P248": [
+                    {
+                      "snaktype": "value",
+                      "property": "P248",
+                      "hash": "3c868f1858a9bd6df6d278fb8b73091e4c6bcfca",
+                      "datavalue": {
+                        "value": {
+                          "entity-type": "item",
+                          "numeric-id": 78206045,
+                          "id": "Q78206045"
+                        },
+                        "type": "wikibase-entityid"
+                      },
+                      "datatype": "wikibase-item"
+                    }
+                  ],
+                  "P1645": [
+                    {
+                      "snaktype": "value",
+                      "property": "P1645",
+                      "hash": "b0a6059a8c07b0d0a7212240ee0927a587f73679",
+                      "datavalue": {
+                        "value": "c",
+                        "type": "string"
+                      },
+                      "datatype": "external-id"
+                    }
+                  ]
+                },
+                "snaks-order": [
+                  "P248",
+                  "P1645"
+                ]
+              },
+              {
+                "hash": "107ecbc3e9b9a765bb6091481fe72ce92e0a26ba",
+                "snaks": {
+                  "P248": [
+                    {
+                      "snaktype": "value",
+                      "property": "P248",
+                      "hash": "25d369cc5bb4a5f15dfacabee60322cc447ada69",
+                      "datavalue": {
+                        "value": {
+                          "entity-type": "item",
+                          "numeric-id": 68977959,
+                          "id": "Q68977959"
+                        },
+                        "type": "wikibase-entityid"
+                      },
+                      "datatype": "wikibase-item"
+                    }
+                  ]
+                },
+                "snaks-order": [
+                  "P248"
+                ]
+              },
+              {
+                "hash": "edaa5449f3e94e4bdef5f3aced47aab73078377f",
+                "snaks": {
+                  "P854": [
+                    {
+                      "snaktype": "value",
+                      "property": "P854",
+                      "hash": "ccbaf461259664175c6b03d3c3765bf425873013",
+                      "datavalue": {
+                        "value": "https://www.finlex.fi/fi/lainsaadanto/saadoskokoelma/2020/431",
+                        "type": "string"
+                      },
+                      "datatype": "url"
+                    }
+                  ],
+                  "P958": [
+                    {
+                      "snaktype": "value",
+                      "property": "P958",
+                      "hash": "a6ecdf208db62542dac4bd09d2ac5cbeb16c1fd7",
+                      "datavalue": {
+                        "value": "1 §, Perusyksiköiden määritelmät",
+                        "type": "string"
+                      },
+                      "datatype": "string"
+                    }
+                  ],
+                  "P813": [
+                    {
+                      "snaktype": "value",
+                      "property": "P813",
+                      "hash": "4ba2dfa564468d61a2e916669cd99572034654c1",
+                      "datavalue": {
+                        "value": {
+                          "time": "+2026-11-18T00:00:00Z",
+                          "timezone": 0,
+                          "before": 0,
+                          "after": 0,
+                          "precision": 11,
+                          "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                        },
+                        "type": "time"
+                      },
+                      "datatype": "time"
+                    }
+                  ],
+                  "P1476": [
+                    {
+                      "snaktype": "value",
+                      "property": "P1476",
+                      "hash": "57746ce8a923384fe7718c705cc1da72c18e80d2",
+                      "datavalue": {
+                        "value": {
+                          "text": "Valtioneuvoston asetus mittayksiköistä annetun valtioneuvoston asetuksen muuttamisesta (431/2020)",
+                          "language": "fi"
+                        },
+                        "type": "monolingualtext"
+                      },
+                      "datatype": "monolingualtext"
+                    }
+                  ],
+                  "P407": [
+                    {
+                      "snaktype": "value",
+                      "property": "P407",
+                      "hash": "260791b214ddb5397afad59244388fe200d02dbb",
+                      "datavalue": {
+                        "value": {
+                          "entity-type": "item",
+                          "numeric-id": 1412,
+                          "id": "Q1412"
+                        },
+                        "type": "wikibase-entityid"
+                      },
+                      "datatype": "wikibase-item"
+                    }
+                  ]
+                },
+                "snaks-order": [
+                  "P854",
+                  "P958",
+                  "P813",
+                  "P1476",
+                  "P407"
+                ]
+              }
+            ]
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P1181",
+              "hash": "f35045883adafecd99a88b740186944b9c698149",
+              "datavalue": {
+                "value": {
+                  "amount": "+220000",
+                  "unit": "http://www.wikidata.org/entity/Q3674704"
+                },
+                "type": "quantity"
+              },
+              "datatype": "quantity"
+            },
+            "type": "statement",
+            "qualifiers": {
+              "P577": [
+                {
+                  "snaktype": "value",
+                  "property": "P577",
+                  "hash": "cc8e91f647a8bfddde8d0867db1847c2dd1b2dc2",
+                  "datavalue": {
+                    "value": {
+                      "time": "+1676-00-00T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 9,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ],
+              "P2241": [
+                {
+                  "snaktype": "value",
+                  "property": "P2241",
+                  "hash": "a3c4045f411c14ee1ba088f09a0dd1a5c379cbf2",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 42727519,
+                      "id": "Q42727519"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P61": [
+                {
+                  "snaktype": "value",
+                  "property": "P61",
+                  "hash": "5387e546b528eca4ab641ff0c9e24e812f95b152",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 160187,
+                      "id": "Q160187"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P805": [
+                {
+                  "snaktype": "value",
+                  "property": "P805",
+                  "hash": "8062c24c41e35f5b225193399c22e01a48509fec",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 2898393,
+                      "id": "Q2898393"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ]
+            },
+            "qualifiers-order": [
+              "P577",
+              "P2241",
+              "P61",
+              "P805"
+            ],
+            "id": "Q2111$8cc9564c-43a6-191c-79cb-416565dac0aa",
+            "rank": "deprecated"
+          }
+        ]
+      }
+    }
+  }
+}

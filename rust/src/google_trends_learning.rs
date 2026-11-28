@@ -23,7 +23,7 @@
 use std::fmt::Write as _;
 
 use crate::engine::FormalAiEngine;
-use crate::google_trends_catalog::google_trends_catalog;
+use crate::google_trends_catalog::{GoogleTrendsCatalog, feed_for_task, prompt_variants_for_topic};
 use crate::self_improvement::{
     BenchmarkGateReport, LearningRun, UnknownTrace, learn_rules_from_unknown_traces,
 };
@@ -52,9 +52,13 @@ pub struct TrendingFrontierEntry {
 /// It records the coverage split (how many prompts the engine routes vs. leaves on
 /// the frontier) and the honest, gated [`LearningRun`] over the frontier. Because
 /// trending questions are open-domain, the run adopts nothing: it is a faithful,
-/// proposal-only artifact, reproducible as a pure function of the committed catalog.
+/// proposal-only artifact linked to the publisher capture.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TrendingLearningReport {
+    /// Publisher URL and digest for this run, when the feed was captured.
+    pub source_url: String,
+    /// SHA-256 of the exact feed capture.
+    pub source_sha256: Option<String>,
     /// Total generated prompts considered (across all topics and languages).
     pub total_prompts: usize,
     /// Prompts the engine routed to a real capability (e.g. `web_search`).
@@ -103,20 +107,13 @@ impl TrendingLearningReport {
     /// rather than asserted: an empty frontier and a non-empty one are two
     /// different findings and must not read the same.
     #[must_use]
-    pub const fn summary(&self) -> &'static str {
-        if self.frontier.is_empty() {
-            "The trending-prompt frontier is empty: every catalog prompt now routes through the \
-             engine. Issue #701's learning cycle closed the gap by deriving the request-opener \
-             surfaces in `data/seed/learned-request-openers.lino` from the frozen frontier record \
-             (`data/meta/learning-frontier-google-trends.lino`) and promoting them through the \
-             human-gated issue-#656 protocol; the per-prompt capability deltas are recorded in \
-             `data/meta/learning-adoption-ledger.lino`. Nothing is auto-adopted here."
+    pub fn summary(&self) -> String {
+        let key = if self.frontier.is_empty() {
+            "google_trends_frontier_empty"
         } else {
-            "Trending searches are open-domain questions, not program-plan modifiers, so the \
-             rule-synthesis learner declines to fabricate seed rules for them. The learning \
-             frontier — every trending prompt the engine cannot yet route — is recorded here and \
-             handed to the human-gated self-improvement loop for triage; nothing is auto-adopted."
-        }
+            "google_trends_frontier_triage"
+        };
+        crate::seed::agentic_message(key, &[])
     }
 
     /// Render the report as Links Notation — the committable, auditable artifact a
@@ -128,7 +125,11 @@ impl TrendingLearningReport {
         field(&mut out, "issue", "498");
         field(&mut out, "auto_learning_loop", "issue_558_self_improvement");
         field(&mut out, "human_gated", "true");
-        field(&mut out, "summary", self.summary());
+        field(&mut out, "summary", &self.summary());
+        field(&mut out, "source_url", &self.source_url);
+        if let Some(digest) = &self.source_sha256 {
+            field(&mut out, "source_sha256", digest);
+        }
         let _ = writeln!(out, "  total_prompts \"{}\"", self.total_prompts);
         let _ = writeln!(out, "  handled_by_engine \"{}\"", self.handled_by_engine);
         let _ = writeln!(out, "  learning_frontier \"{}\"", self.frontier.len());
@@ -150,6 +151,7 @@ impl TrendingLearningReport {
             self.uniform_rejection_reason().unwrap_or("none"),
         );
         field(&mut out, "benchmark_suite", &self.run.gate.suite_id);
+        field(&mut out, "benchmark_status", self.run.gate.status_slug());
         for entry in &self.frontier {
             out.push_str("  frontier_prompt\n");
             let _ = writeln!(out, "    rank \"{}\"", entry.rank);
@@ -164,17 +166,9 @@ impl TrendingLearningReport {
     }
 }
 
-/// Build the deterministic trending-learning report from the committed catalog.
-///
-/// Every generated prompt is re-answered through the same [`FormalAiEngine`] the
-/// catalog uses (the catalog keeps only a flattened answer, so the full
-/// [`crate::engine::SymbolicAnswer`] is recovered here); prompts on the unknown path
-/// become [`UnknownTrace`]s and are fed to [`learn_rules_from_unknown_traces`] under
-/// a green issue-#362 gate. The result is a pure function of the committed seed, so
-/// it is reproducible and pinnable byte-for-byte.
+/// Build the learning report for a supplied feed using normal solver responses.
 #[must_use]
-pub fn trending_learning_report() -> TrendingLearningReport {
-    let catalog = google_trends_catalog();
+pub fn trending_learning_report_from_feed(catalog: &GoogleTrendsCatalog) -> TrendingLearningReport {
     let engine = FormalAiEngine;
 
     let mut total_prompts = 0usize;
@@ -183,7 +177,7 @@ pub fn trending_learning_report() -> TrendingLearningReport {
     let mut traces = Vec::new();
 
     for topic in &catalog.topics {
-        for prompt in &topic.prompts {
+        for prompt in prompt_variants_for_topic(&topic.query) {
             total_prompts += 1;
             let answer = engine.answer(&prompt.prompt);
             // The frontier is the prompts the engine left *unrouted* (intent
@@ -192,8 +186,9 @@ pub fn trending_learning_report() -> TrendingLearningReport {
             // the unknown path — so classify on the final intent, not on whether a
             // trace can be recovered.
             if answer.intent == "unknown" {
-                let trace = UnknownTrace::from_symbolic_answer(&prompt.prompt, &answer)
-                    .expect("an unknown-intent answer must yield an unknown trace");
+                if let Some(trace) = UnknownTrace::from_symbolic_answer(&prompt.prompt, &answer) {
+                    traces.push(trace);
+                }
                 frontier.push(TrendingFrontierEntry {
                     rank: topic.rank,
                     query: topic.query.clone(),
@@ -202,25 +197,31 @@ pub fn trending_learning_report() -> TrendingLearningReport {
                     prompt: prompt.prompt.clone(),
                     engine_intent: answer.intent.clone(),
                 });
-                traces.push(trace);
             } else {
                 handled_by_engine += 1;
             }
         }
     }
 
-    // A green coding-modification gate, matching the canonical self-healing case:
-    // the point is that even with tests green, an open-domain question yields no
-    // adoptable rule, so the loop still adopts nothing.
-    let gate = BenchmarkGateReport::issue_362_from_counts(4, 0);
+    let gate = BenchmarkGateReport::absent_for_issue_362();
     let run = learn_rules_from_unknown_traces(&traces, gate);
 
     TrendingLearningReport {
+        source_url: catalog.source_url.clone(),
+        source_sha256: catalog.source_sha256.clone(),
         total_prompts,
         handled_by_engine,
         frontier,
         run,
     }
+}
+
+/// Build a report from the default feed when the publisher is available.
+#[must_use]
+pub fn trending_learning_report() -> Option<TrendingLearningReport> {
+    feed_for_task("")
+        .as_ref()
+        .map(trending_learning_report_from_feed)
 }
 
 fn field(out: &mut String, key: &str, value: &str) {

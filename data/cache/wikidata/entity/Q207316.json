@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q207316": {
+      "type": "item",
+      "id": "Q207316",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Lua"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Lua"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लुआ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "Lua"
+        },
+        "es": {
+          "language": "es",
+          "value": "Lua"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "lightweight programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "轻量级脚本语言"
+        },
+        "es": {
+          "language": "es",
+          "value": "Lenguaje de programación interpretado"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Lua language"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Луа"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Lua语言"
+          },
+          {
+            "language": "zh",
+            "value": "脚本语言"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

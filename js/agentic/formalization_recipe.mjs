@@ -16,21 +16,14 @@ import { replaceAllLiteral, trim } from './crate/rust_str.mjs';
 import { localizedResponse, renderResponse } from './crate/seed.mjs';
 import { mentionsRole } from './crate/seed_meanings.mjs';
 import {
-  FISHERMAN_DOC_ID, PRIMITIVE_KINDS, canonicalFishermanSynopsis, coverageLine, formalizeTextToLinks, totalRecords,
+  FISHERMAN_DOC_ID, PRIMITIVE_KINDS, coverageLine, formalizeTextToLinks, totalRecords,
 } from './formalize.mjs';
 import { Lexicon } from './lexicon.mjs';
 import { agenticMessage } from './messages.mjs';
 import { fetchArguments, finalAnswer as finalPlan, jsonText, planOne, writeArguments } from './plan.mjs';
 import { traceRoute } from './planner/continuation.mjs';
 import { Progress } from './progress.mjs';
-
-/** Mirrors `const SEARCH_QUERY` (its wording lives in agentic-messages.lino). */
-export function searchQuery() {
-  return agenticMessage('formalization_recipe_search_query');
-}
-
-/** Mirrors `const CANONICAL_SOURCE_URL`. */
-export const CANONICAL_SOURCE_URL = 'https://ru.wikisource.org/wiki/Сказка_о_рыбаке_и_рыбке_(Пушкин)';
+import { decodeEntities } from './work_item_page.mjs';
 
 /** Mirrors `const KB_PATH`. */
 export const KB_PATH = 'knowledge-base.lino';
@@ -38,31 +31,49 @@ export const KB_PATH = 'knowledge-base.lino';
 /** Mirrors `crate::seed::ROLE_AGENT_ACTION_FORMALIZE_VERB`. */
 const ROLE_AGENT_ACTION_FORMALIZE_VERB = 'agent_action_formalize_verb';
 
-/**
- * Mirrors `fn is_formalization_task` in rust/src/agentic_coding/formalization_recipe.rs.
- * @param {string} prompt
- */
 export function isFormalizationTask(prompt) {
   return mentionsRole(ROLE_AGENT_ACTION_FORMALIZE_VERB, normalizePrompt(prompt));
 }
 
-/** Mirrors `fn inline_formalization_source`. @param {string} task */
-function inlineFormalizationSource(task) {
-  const segment = quotedSegmentSpans(task).find((candidate) => trim(candidate.text) !== '');
-  if (!segment) return null;
-  const source = trim(segment.text);
-  const work = Lexicon.standard().workForTitle(source);
-  const isSupportedReference = work !== null && work.doc_id === FISHERMAN_DOC_ID;
-  return isSupportedReference ? null : source;
+/** Build the publisher request from a registered MediaWiki work. */
+export function publicationUrl(work) {
+  if (!work?.publisher_api || !work.publisher_title) return null;
+  let url;
+  try {
+    url = new URL(work.publisher_api);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== 'https:' || url.search) return null;
+  url.search = new URLSearchParams({ action: 'parse', page: work.publisher_title, prop: 'text', formatversion: '2', format: 'json' });
+  return url.href;
 }
 
-/** Mirrors `fn requested_formalization_source`. @param {string} task */
-function requestedFormalizationSource(task) {
-  const work = Lexicon.standard().bestWorkFor(task);
-  if (work !== null && work.doc_id === FISHERMAN_DOC_ID) return null;
+export function publicationText(work, capture) {
+  if (typeof capture !== 'string' || new TextEncoder().encode(capture).length > 1048576) return null;
+  let page;
+  try {
+    page = JSON.parse(capture)?.parse;
+  } catch {
+    return null;
+  }
+  if (page?.title !== work.publisher_title || typeof page.text !== 'string' || !work.publisher_content_class) return null;
+  for (const div of page.text.matchAll(/<div class="([^"]+)"[^>]*>/gu)) {
+    if (!div[1].split(/\s+/u).includes(work.publisher_content_class)) continue;
+    const start = div.index + div[0].length;
+    const end = page.text.indexOf('</div>', start);
+    if (end < 0) return null;
+    const body = page.text.slice(start, end).replace(/<br ?\/?>\n?/gu, '\n').replace(/<[^>]*>/gu, '');
+    const clean = trim(body.split('\n').map((line) => line.trimEnd()).join('\n'));
+    return clean ? decodeEntities(clean) : null;
+  }
+  return null;
+}
+
+function callerDocument(task) {
   const at = task.indexOf(':');
   const source = trim(at < 0 ? task : task.slice(at + 1));
-  return source ? source : null;
+  return source || null;
 }
 
 /** Mirrors `fn discovery_query`: the first unresolved surface. */
@@ -98,25 +109,27 @@ export function planFormalizationStep(task, messages, toolNames) {
   const runTool = toolFor(toolNames, Capability.Run);
   const progress = Progress.scan(messages);
 
-  const inlineSource = inlineFormalizationSource(task);
-  const requestedSource = inlineSource ?? requestedFormalizationSource(task);
-  traceRoute('formalization_source', requestedSource ?? FISHERMAN_DOC_ID);
+  const inline = quotedSegmentSpans(task).find((segment) => trim(segment.text));
+  const lexicon = Lexicon.standard();
+  const work = inline ? lexicon.workForTitle(trim(inline.text)) : lexicon.bestWorkFor(task);
+  const publication = publicationUrl(work);
+  const requested = publication ? null : inline ? trim(inline.text) : callerDocument(task);
+  traceRoute('formalization_source', requested ?? work?.doc_id ?? '');
 
-  if (inlineSource === null) {
-    const searchTool = toolFor(toolNames, Capability.Search);
-    if (searchTool !== null && !progress.done(Capability.Search)) {
-      const query = (requestedSource === null ? null : discoveryQuery(requestedSource)) ?? searchQuery();
-      return planOne(searchTool, jsonText({ query }));
-    }
-    if (requestedSource === null) {
-      const fetchTool = toolFor(toolNames, Capability.Fetch);
-      if (fetchTool !== null && !progress.done(Capability.Fetch)) {
-        return planOne(fetchTool, fetchArguments(CANONICAL_SOURCE_URL));
-      }
-    }
+  const searchTool = toolFor(toolNames, Capability.Search);
+  if ((!inline || publication) && searchTool !== null && !progress.done(Capability.Search)) {
+    const query = publication ? work.publisher_title : requested ? discoveryQuery(requested) : null;
+    if (query) return planOne(searchTool, jsonText({ query }));
   }
-
-  const source = requestedSource ?? progress.fetched_text ?? canonicalFishermanSynopsis();
+  let source = requested;
+  if (publication) {
+    const fetchTool = toolFor(toolNames, Capability.Fetch);
+    if (fetchTool !== null && !progress.done(Capability.Fetch)) return planOne(fetchTool, fetchArguments(publication));
+    const evidence = progress.fetched_pages.findLast(([url]) => url === publication);
+    source = publicationText(work, evidence?.[1]);
+    if (source === null) return finalPlan(agenticMessage('formalization_recipe_source_unavailable', { source: publication }));
+  }
+  if (source === null) return finalPlan(agenticMessage('formalization_recipe_source_required'));
   const [formalized, grounding] = formalizeWithGrounding(source);
   let knowledgeBase = formalized.links_notation;
   if (grounding !== null) knowledgeBase += `\n${grounding.toLinksNotation()}\n`;

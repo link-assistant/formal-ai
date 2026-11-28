@@ -33,6 +33,6 @@ for (const name of FACT_DERIVATION_HELPERS) {
 function derivedCaptureFacts(raw) {
   return crateModule("crate/fact_derivation.mjs").deriveFactsFromTexts(
     seedRawText(raw, FACT_CAPTURES_FILE),
-    seedRawText(raw, FACT_REALIZATION_FILE), factRelationProperty,
+    seedRawText(raw, FACT_REALIZATION_FILE), (slug) => factRelationBinding(slug).property || "",
   );
 }

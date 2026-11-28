@@ -12,12 +12,14 @@
 //! carried on a `user` message, an OpenAI `function_call_output` item) so the loop
 //! actually advances rather than restarting.
 
-use formal_ai::agentic_coding::{CANONICAL_SOURCE_URL, SEARCH_QUERY};
 use formal_ai::{
     AnthropicContentBlock, AnthropicMessagesRequest, ResponsesRequest, SolverConfig,
     UniversalSolver, anthropic_message_sse, create_anthropic_message_with_solver,
     create_response_with_solver,
 };
+
+const SEARCH_QUERY: &str = "Сказка о рыбаке и рыбке (Пушкин)";
+const CANONICAL_SOURCE_URL: &str = "https://ru.wikisource.org/w/api.php?action=parse&page=%D0%A1%D0%BA%D0%B0%D0%B7%D0%BA%D0%B0+%D0%BE+%D1%80%D1%8B%D0%B1%D0%B0%D0%BA%D0%B5+%D0%B8+%D1%80%D1%8B%D0%B1%D0%BA%D0%B5+%28%D0%9F%D1%83%D1%88%D0%BA%D0%B8%D0%BD%29&prop=text&formatversion=2&format=json";
 
 /// A solver with agent mode enabled — the real guard for any tool execution.
 fn agent_solver() -> UniversalSolver {
@@ -197,7 +199,7 @@ fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
         "model": "claude-sonnet-4-5",
         "max_tokens": 1024,
         "thinking": {"type": "enabled", "budget_tokens": 1024},
-        "messages": [{"role": "user", "content": "What is the capital of France?"}]
+        "messages": [{"role": "user", "content": "What is 731 plus 83?"}]
     }))
     .unwrap();
 
@@ -219,7 +221,7 @@ fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
                 "thinking must open with the concrete impulse step, got: {thinking}"
             );
             assert!(
-                thinking.contains("The capital of France is Paris."),
+                thinking.contains("814"),
                 "thinking must surface the concrete composed answer, got: {thinking}"
             );
             assert!(!signature.is_empty(), "thinking block needs a signature");
@@ -229,7 +231,7 @@ fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
     match &message.content[1] {
         AnthropicContentBlock::Text { text } => {
             assert!(
-                text.contains("Paris"),
+                text.contains("814"),
                 "the answer text block should carry the answer, got: {text}"
             );
         }
@@ -245,7 +247,7 @@ fn anthropic_extended_thinking_streams_thinking_then_signature_delta() {
         "model": "claude-sonnet-4-5",
         "stream": true,
         "thinking": {"type": "enabled", "budget_tokens": 1024},
-        "messages": [{"role": "user", "content": "What is the capital of France?"}]
+        "messages": [{"role": "user", "content": "What is 731 plus 83?"}]
     }))
     .unwrap();
 
@@ -265,7 +267,7 @@ fn anthropic_extended_thinking_streams_thinking_then_signature_delta() {
         "thinking must stream a signature_delta"
     );
     assert!(
-        sse.contains("The capital of France is Paris."),
+        sse.contains("814"),
         "streamed thinking should carry the concrete reasoning"
     );
 }
@@ -412,8 +414,12 @@ fn responses_shell_call_keeps_command_when_the_advertised_schema_uses_command() 
 #[test]
 fn responses_returns_final_message_once_recipe_is_exhausted() {
     // With only web_search advertised and its result already fed back, the planner
-    // has nothing left to call, so the Responses surface completes with the
-    // knowledge base inline as an assistant message and no function call.
+    // has nothing left to call, so the Responses surface completes with one
+    // assistant message and no function call. Without a fetch tool the publisher
+    // text is never verified, so that message reports the missing source instead
+    // of a knowledge base built from text it never read (89a674aa0, PR #1614) --
+    // the same contract the chat-completions surface pins in
+    // `server_reports_the_missing_publisher_text_when_fetch_is_unavailable`.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-ai",
         "input": [
@@ -437,10 +443,10 @@ fn responses_returns_final_message_once_recipe_is_exhausted() {
     assert_eq!(messages.len(), 1);
     let body = &messages[0].content[0].text;
     assert!(
-        body.contains("knowledge_base"),
-        "final answer should be the knowledge base"
+        body.contains("could not verify the requested text"),
+        "final answer should report the unverified source: {body}"
     );
-    assert!(body.contains("9 of 9 protocol primitives"), "{body}");
+    assert!(!body.contains("knowledge_base"), "{body}");
 }
 
 #[test]
@@ -472,8 +478,10 @@ fn responses_non_agentic_task_with_tools_falls_through_to_symbolic() {
     // Tools are advertised in agent mode, but the task is not a formalization task,
     // so the planner returns no step and the Responses surface answers symbolically
     // instead of emitting a tool call — agentic coding stays strictly opt-in.
+    // A locally answered request keeps this a fall-through: a capital lookup has
+    // no shipped capture since PR #1614 and is adopted by web research instead.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "input": "What is the capital of France?",
+        "input": "What is 731 plus 83?",
         "tools": [{"type": "function", "name": "web_search", "parameters": {"type": "object"}}]
     }))
     .unwrap();

@@ -1,0 +1,33 @@
+{
+  "headBeforeRepair": "7a37f11bfa0182fd30de31f17d7eb9e6e1bec355",
+  "repairCommit": "b38161a431d8a531c7e7a3ae5b45b60053dbe0dd",
+  "hostedBefore": {
+    "workflows": 33,
+    "success": 30,
+    "failure": 2,
+    "skip": 1,
+    "nativePass": 440,
+    "nativeFail": 1,
+    "javascriptOwners": 922,
+    "javascriptCompleted": 921,
+    "javascriptFailed": 1,
+    "logLines": 119508
+  },
+  "allActionableFailuresAddressed": true,
+  "nativeFixExecuted": false,
+  "unchangedOriginalNativeAssertion": true,
+  "authorshipCredit": 0,
+  "reasoningCredit": 0,
+  "wholeIssueComplete": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2374001,
+    "sha256": "534a16b459c9dcb550ae892761448caa5a7eb731d8e950156394f46f538a4bbf"
+  },
+  "members": 315,
+  "memberIndex": "members.json.gz",
+  "memberIndexUncompressedSha256": "812d820e8f6918122deeb8f3eaab5bb9113654f0ebb4c327809d78943865b120",
+  "roundTripVerified": true,
+  "initialFailuresRetained": true,
+  "capturedAt": "2026-11-23T23:33:36.924585+00:00"
+}

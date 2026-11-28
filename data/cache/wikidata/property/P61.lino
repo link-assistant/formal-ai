@@ -1,0 +1,23 @@
+P61
+  aliases
+    en (inventor discoverer "inventor or discoverer" developer "first described" "invented by" "created by" invented "discovered by" "developed by" "introduced by" "devised by" "first studied by")
+    es (descubridor descubridora inventor inventora "creado por" "inventado por" "inventada por" "creada por")
+    hi ("आविष्कारक या खोजकर्ता" "आविष्कारक" "खोजकर्ता")
+    ru ("изобретатель" "первооткрыватель" "изобрёл" "изобрел" "изобрела" "открыл" "открыла" "первооткрывательница или изобретательница" "первооткрывательница" "изобретательница" "автор теории")
+    zh ("發現者" "發明者" "发现者或发明者")
+  datatype wikibase-item
+  descriptions
+    en "subject who discovered, first described, invented, or developed this discovery or invention or scientific hypothesis or theory"
+    es "descubierto o inventado por"
+    hi "वह इकाई जिसने पहली बार इस खोज या आविष्कार का पता लगाया, उसका आविष्कार किया या उसका विकास किया"
+    ru "кем открыт или изобретён этот элемент"
+    zh "发现、首先描述、发明或开发此发现或发明的主体"
+  id P61
+  labels
+    en "discoverer or inventor"
+    es "descubridor o inventor"
+    hi "खोजकर्ता या आविष्कारक"
+    ru "первооткрыватель или изобретатель"
+    zh "發現者或發明者"
+  type property
+success 1

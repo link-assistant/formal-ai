@@ -1,0 +1,37 @@
+{
+  "codeCommit": "637a08b745d65d053c116aad961714d107e0fae4",
+  "publishedInput": "edffcb183a7a7f9d5d17967cfea94071aee57a90",
+  "regressionsBefore": {
+    "passed": 6,
+    "failed": 2
+  },
+  "regressionsAfterFinalSource": {
+    "passed": 8,
+    "failed": 0
+  },
+  "initialPublicationGates": {
+    "passed": 8,
+    "failed": [
+      "check-worker-line-budget"
+    ]
+  },
+  "finalSourceGatesPassed": 6,
+  "finalPublicationGatesPassed": 5,
+  "maintainedTypeScriptProjectionsPassed": 717,
+  "sharedDataChangedThisRound": false,
+  "fullGateRunThisRound": false,
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0,
+  "sourceHashes": {
+    "js/worker/formal_ai_worker_unknown_language.js": "cd3df8009683e191e57a14d4843a3a03b4fdf4d67f9b6e205dc746a19367f72a",
+    "rust/tests/web/worker-unknown-language.test.mjs": "3ef9413ed57fabdd45e97ead3a35643aff93fc0c9732dd3a943b72c6c48bda38",
+    "ts/worker/formal_ai_worker_seed_responses_and_language.ts": "f750f917a5d66a1ae29aef9177f7b7c45e15adff46d0153371edb2527ba9af9e",
+    "ts/worker/formal_ai_worker_unknown_language.ts": "cd3df8009683e191e57a14d4843a3a03b4fdf4d67f9b6e205dc746a19367f72a",
+    "changelog.d/20261117_120000_issue-1580-ci-regressions.md": "b4d9b68aada8f05882e2c9fc30a3f772a65d97dc68073ba9f4f848abe1a30bb2"
+  },
+  "suppliedScripts": 1138,
+  "compressedScriptBytes": 603425,
+  "sealedCommandRecords": 2472,
+  "newCommandHashesVerified": 79,
+  "noRunningWorkers": true
+}

@@ -1,0 +1,140 @@
+PASS check-abbreviations 2.4s
+PASS check-architecture-contents 0.1s
+PASS check-architecture-principles 0.1s
+PASS check-assemble-requirements-js-twin 0.5s
+SKIP check-associative-terminology (compiles a Rust script with no JS twin (CI only))
+SKIP check-bootstrap-deletability (needs a Rust build (CI only))
+SKIP check-cache-budget (compiles a Rust script with no JS twin (CI only))
+SKIP check-capability-routing (needs a Rust build (CI only))
+SKIP check-cargo-lock-is-synchronized (needs a Rust build (CI only))
+PASS check-changelog-fragment-js-twin 0.2s
+SKIP check-ci-gate-registry (compiles a Rust script with no JS twin (CI only))
+PASS check-ci-speed 0.2s
+SKIP check-ci-wall-clock (compiles a Rust script with no JS twin (CI only))
+PASS check-closure-audit 5.8s
+SKIP check-condition-source-parity (needs a Rust build (CI only))
+PASS check-conversational-variation-floor 0.3s
+SKIP check-coverage-ratchet (compiles script unit tests (CI only))
+PASS check-debt-ratchet-js-twin 0.8s
+PASS check_debt_ratchet 0.7s
+PASS check-debug-stage-sources 1.1s
+SKIP check-dependencies-latest (compiles a Rust script with no JS twin (CI only))
+PASS check-dependency-direction 1.1s
+PASS check-desktop-library 1.5s
+PASS check-desktop-packaging 0.4s
+SKIP check-disk-usage-policy (compiles a Rust script with no JS twin (CI only))
+SKIP check-docs-rs-dependency-profile (needs a Rust build (CI only))
+PASS check-fact-captures 0.3s
+PASS check-file-size-js-twin 4.1s
+PASS check-file-size 2.7s
+SKIP check-formal-ai-contribution (compiles script unit tests (CI only))
+PASS check-formal-ai-tally 0.3s
+SKIP check-formatting (needs a Rust build (CI only))
+PASS check-fragment-release-map 60.2s
+PASS check-generate-module-map-js-twin 0.4s
+PASS check-generate-requirement-status-js-twin 1.1s
+PASS check-generated-files 39.4s
+PASS check-generated-version-literals-js-twin 0.9s
+PASS check-generated-version-literals 0.7s
+PASS check-hardcoded-language-js-twin 1.6s
+PASS check-hardcoded-language 1.5s
+SKIP check-head-pipeline-coverage (compiles script unit tests (CI only))
+PASS check-i18n-catalog-coverage 0.5s
+SKIP check-issue-citations (compiles a Rust script with no JS twin (CI only))
+PASS check-javascript-dependencies 2.3s
+SKIP check_job_headroom (compiles script unit tests (CI only))
+PASS check_js_rust_translation 2.6s
+PASS check-language-change-parity 1.1s
+PASS check-language-parity-js-twin 0.6s
+PASS check-language-parity 0.6s
+PASS check-language-test-coverage 2.1s
+SKIP check-llm-task-parity (compiles a Rust script with no JS twin (CI only))
+SKIP check-merge-conflict-policy (compiles a Rust script with no JS twin (CI only))
+PASS check-minimal-core-boundary-js-twin 0.2s
+PASS check-minimal-core-boundary 0.4s
+PASS check-multilingual-intent-coverage 1.4s
+PASS check-notation 19.2s
+SKIP check-ordered-lists-are-canonical (compiles a Rust script with no JS twin (CI only))
+PASS check-package-self-containment 0.3s
+PASS check-planner-twins 0.5s
+PASS check-portable-string-contracts 0.2s
+PASS check-progressive-plan 1.0s
+PASS check-project-motto 0.5s
+PASS check-prompt-specialization 7.0s
+SKIP check-pull-request-link (compiles a Rust script with no JS twin (CI only))
+PASS check-readable-code 11.2s
+PASS check-reconstructed-changelog 20.7s
+SKIP check-release-changelog-collection (compiles script unit tests (CI only))
+PASS check_rename_map 36.6s
+PASS check-render-status-js-twin 2.9s
+PASS check-requirement-coverage 9.2s
+PASS check-requirement-extraction 5.4s
+PASS check-requirement-status-js-twin 2.6s
+PASS check-requirement-status 1.7s
+PASS check-requirements-document 0.2s
+PASS check-response-parity-debt 0.1s
+PASS check-round-trip-translation 6.4s
+PASS check-runner-labels 0.6s
+PASS check-runtime-feature-inventory 0.9s
+SKIP check-rust-api-documentation (needs a Rust build (CI only))
+SKIP check-seed-answer-duplicates (compiles a Rust script with no JS twin (CI only))
+PASS check-seed-registry-js-twin 0.2s
+PASS check-seed-registry 0.1s
+PASS check-self-translation 0.2s
+SKIP check-semantic-grounding (needs a Rust build (CI only))
+PASS check-specification-in-javascript 70.6s
+PASS check-status-render 1.2s
+SKIP check-step-budget-headroom (compiles script unit tests (CI only))
+PASS check-system-diagrams 0.7s
+SKIP check-test-partition-balance (compiles a Rust script with no JS twin (CI only))
+PASS check-tests-as-docs 6.8s
+PASS check-tests-as-documentation-javascript-twin 7.8s
+PASS check-text-summarization 20.5s
+PASS check-twin-citations 1.0s
+SKIP check-vscode-extension (needs a Rust build (CI only))
+PASS check-wasm-worker-current 0.1s
+SKIP check-wasm-worker-size (compiles a Rust script with no JS twin (CI only))
+PASS check-web-formalization 5.3s
+PASS check-web-hardcoded-ui 0.6s
+PASS check-web-tdz 0.4s
+PASS check-worker-crate-modules 1.3s
+PASS check-worker-handler-registry 5.2s
+PASS check-worker-line-budget-js-twin 0.3s
+PASS check-worker-line-budget 0.2s
+PASS check-worker-prerequisites 1.1s
+PASS check-worker-terminal-vocabulary 0.1s
+SKIP coding-ladder (compiles a Rust script with no JS twin (CI only))
+PASS lint-shell-scripts 5.4s
+SKIP repository_workspace_protocol (needs a Rust build (CI only))
+SKIP run_clippy (needs a Rust build (CI only))
+SKIP test-script-suites (compiles script unit tests (CI only))
+SKIP agentic-cli-matrix#1 (reads CI context (secrets, variables or artifacts))
+SKIP agentic-cli-matrix#2 (reads CI context (secrets, variables or artifacts))
+SKIP benchmark-corpus-gate (reads CI context (secrets, variables or artifacts))
+SKIP coding-ladder#2 (compiles a Rust script with no JS twin (CI only))
+SKIP coverage#2 (compiles a Rust script with no JS twin (CI only))
+SKIP coverage#4 (compiles a Rust script with no JS twin (CI only))
+SKIP dependencies-latest (compiles a Rust script with no JS twin (CI only))
+PASS evidence-check#1 0.1s
+SKIP evidence-check#2 (reads CI context (secrets, variables or artifacts))
+SKIP job-headroom#1 (compiles a Rust script with no JS twin (CI only))
+SKIP job-headroom#2 (compiles a Rust script with no JS twin (CI only))
+SKIP job-headroom#3 (reads CI context (secrets, variables or artifacts))
+PASS layered-ci#1 0.2s
+PASS layered-ci#2 0.1s
+PASS layered-ci#3 2.5s
+PASS layered-ci#4 92.9s
+SKIP layered-ci#5 (needs a Rust build (CI only))
+SKIP layered-ci#6 (needs a Rust build (CI only))
+SKIP links (reads CI context (secrets, variables or artifacts))
+SKIP question-necessity-ratchet (compiles script unit tests (CI only))
+SKIP release-staged#1 (compiles a Rust script with no JS twin (CI only))
+PASS release#1 0.3s
+PASS release#2 3.4s
+SKIP release#3 (needs a Rust build (CI only))
+SKIP security (reads CI context (secrets, variables or artifacts))
+PASS self-development-status#1 1.0s
+SKIP self-development-status#3 (compiles a Rust script with no JS twin (CI only))
+PASS web-ui-boundary 0.4s
+
+138/138 passed or skipped; failed: none

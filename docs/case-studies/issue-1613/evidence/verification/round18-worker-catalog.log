@@ -1,0 +1,16 @@
+✔ R921-8: the worker installs the Rust catalog tasks from the seed, in Rust table order (4253.923733ms)
+✔ R921-8: the worker language rows equal the Rust catalog rows the seed stores programs for (16.074717ms)
+✔ R921-8: every task x language pair has a worker program exactly when the Rust catalog has one (52.652884ms)
+✔ R921-8: the worker stores no program for a pair the seed retires to the documentation route (5.351443ms)
+✔ R921-8: english Scala and Kotlin requests answer every catalog task with the Rust template (9761.965189ms)
+✔ R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not-run status (47.972722ms)
+✔ R921-8: russian, hindi and chinese requests answer catalog tasks in Scala and Kotlin (729.714004ms)
+✔ R921-8: a concrete catalog request is not claimed by a promoted handler (1705.550368ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17520.696889

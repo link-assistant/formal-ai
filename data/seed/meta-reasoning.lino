@@ -468,7 +468,7 @@ meta_reasoning
     value "the cat saw the cat"
   probe
     type list_text
-    value "[\"pear\", \"apple\", \"fig\", \"apple\"]"
+    value '["pear", "apple", "fig", "apple"]'
   probe
     type list_number
     value "[3, 1, 2, 3]"
@@ -490,7 +490,7 @@ meta_reasoning
   note structural
     text "{indent}{word} is structural vocabulary of the instruction set"
   note frame
-    text "{indent}{word} names the artifact's frame: \"{gloss}\""
+    text '{indent}{word} names the artifact''s frame: "{gloss}"'
   note no_gloss
     text "{indent}{word}: no gloss reaches an operation"
   note lookup_needed

@@ -1,0 +1,4299 @@
+{
+  "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "commit": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+  "coverage": "PARTIAL. Every blob is hash verified; all six workflows and 199 active files (21,394 lines) are fully read. Both generated JavaScript bundles, both locks and all 126 historical blobs remain unread. No complete Python repository review or live publication acceptance is claimed.",
+  "counts": {
+    "active-source-fully-read": 199,
+    "active-source-unread": 4,
+    "active-source-partially-read": 0,
+    "historical-unread": 126
+  },
+  "activeReadLines": 21394,
+  "activeTotalLines": 44284,
+  "historicalTotalLines": 41260,
+  "readMethod": "Corrected ordered active-source pages 1-54 (400 lines each) fully read, plus version_and_commit.py 1-615, release_naming.py 1-104 and tests/test_release_badges.py 1-40. Earlier separate create_manual_changeset.py reading now overlaps these pages. Both generated bundles, both lockfiles and every historical blob remain unread. Truncated previews receive no reading credit. Full Formal AI command transcripts retain source output.",
+  "runtimeEvidence": "All 24 workflows on hosted head d0b8b895661c6b5e809810c4da8a3db9f79138b3 pass. Its retained complete Layered CI log verifies literal execution of all ten Formal AI audit regressions and all 38 maintained template observations, including the four formatter cases under Python 3.15.2. Python formatter report #159 is filed against immutable evidence. Disposable candidate repairs and offline gh/npm boundaries do not establish an upstream repair, full upstream suite/build, hosted publication or broader acceptance.",
+  "authorship": "Codex supplied all review decisions, experiments, commands and edits; zero independent Formal AI reasoning credit.",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "gitBlob": "502d0bdda2d0e8f4c08dada0e577df3723aff2d9",
+      "bytes": 125,
+      "lines": 2,
+      "sha256": "9a702e1f90aa4f0a8cacbf742c50d66046465d163e958e1d2e566848f3f64cec",
+      "readRanges": [
+        [
+          1,
+          2
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Preserve generated bundle bytes; the scoped whitespace exception does not waive handwritten-source checks."
+    },
+    {
+      "path": ".github/actionlint.yaml",
+      "gitBlob": "50cbd7f6fbd5b415963ddb84c5637954258dc82e",
+      "bytes": 679,
+      "lines": 13,
+      "sha256": "c723028a37c8d6a71554bf7d3dd39afb270db2150ca8809824d8ac2b2af31e76",
+      "readRanges": [
+        [
+          1,
+          13
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read narrow runner/queue/self-repository compatibility exceptions. Valid $/ syntax is already handled by the repaired Formal AI review graph; do not report it as invalid."
+    },
+    {
+      "path": ".github/actions/artifact/action.yml",
+      "gitBlob": "751d7bc086ecc07001bbaab766120a456df23f75",
+      "bytes": 1204,
+      "lines": 36,
+      "sha256": "d64435687e636d9524be823da5206112c1254eff4d944e57e70e06361cd34c4f",
+      "readRanges": [
+        [
+          1,
+          36
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the Node 24 transfer contract and fatal missing-file policy. Retain verified artifact identity and explicit download inputs in Formal AI."
+    },
+    {
+      "path": ".github/actions/artifact/dist/835.index.mjs",
+      "gitBlob": "d783d92e34037f1e260a884a09fbdd526492ae8c",
+      "bytes": 683468,
+      "lines": 17237,
+      "sha256": "2800e53d6a32c0f93271c36ccc8c04596704e97bd7095331241ec596a468d745",
+      "readRanges": [],
+      "reviewStatus": "active-source-unread",
+      "decision": "Identity verified; semantic reading is pending. Generated bundles and lockfiles are not silently credited as complete."
+    },
+    {
+      "path": ".github/actions/artifact/dist/extract.py",
+      "gitBlob": "052276102f87f26d3f4f10a60d432107ca50d0b1",
+      "bytes": 2943,
+      "lines": 75,
+      "sha256": "72dc2371cc4c1b42c9c75bf641c0457feda498c6e860fee7fe928dd30500514f",
+      "readRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the exact bundled extractor: prevalidate paths, links, modes, duplicates and file/directory conflicts, then create exclusively. Archive expansion/resource limits remain an unexecuted question."
+    },
+    {
+      "path": ".github/actions/artifact/dist/index.mjs",
+      "gitBlob": "65e6d84dca75a8bada1135e25f5b4c7c373b3aa6",
+      "bytes": 2155918,
+      "lines": 89,
+      "sha256": "ff44d4b1c792a27c42985767a968badf7fe95867eadee093cb3ede04150d29b8",
+      "readRanges": [],
+      "reviewStatus": "active-source-unread",
+      "decision": "Identity verified; semantic reading is pending. Generated bundles and lockfiles are not silently credited as complete."
+    },
+    {
+      "path": ".github/actions/artifact/dist/licenses.txt",
+      "gitBlob": "642273ef614e7c9c9829a89157c6a649c83f06eb",
+      "bytes": 24490,
+      "lines": 436,
+      "sha256": "7124ff8441390a9a3621f81ca2b030dad80de0b7d3a2a702da58ac83a0243d12",
+      "readRanges": [
+        [
+          1,
+          436
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read bundled MIT/Apache/0BSD license notices. Preserve attribution; license text is not evidence of transport behavior."
+    },
+    {
+      "path": ".github/actions/artifact/extract.py",
+      "gitBlob": "052276102f87f26d3f4f10a60d432107ca50d0b1",
+      "bytes": 2943,
+      "lines": 75,
+      "sha256": "72dc2371cc4c1b42c9c75bf641c0457feda498c6e860fee7fe928dd30500514f",
+      "readRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read handwritten extractor, matching its bundled copy. Preserve traversal/symlink rejection and exclusive output creation; no extraction runtime result is claimed here."
+    },
+    {
+      "path": ".github/actions/artifact/files.mjs",
+      "gitBlob": "36b3d4877bf395f05795b0d6b24d8a5a0eba52a0",
+      "bytes": 3847,
+      "lines": 84,
+      "sha256": "c2589fc8fbc78c0fd27c84d8d4b5d72f133394f4ebd28a0c5ae26bbc6a14fe57",
+      "readRanges": [
+        [
+          1,
+          84
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read sorted native-glob discovery, hidden/link pruning, common-root handling and finally-cleaned Pages tar packaging. Tar dereference policy is an unexecuted source question, not a reproduced defect."
+    },
+    {
+      "path": ".github/actions/artifact/index.mjs",
+      "gitBlob": "936ce4a9a98e77eb6ed8099ad11c5d7da3b97bb5",
+      "bytes": 2891,
+      "lines": 50,
+      "sha256": "3dac63cf98f28f0001ba0d1c3ee743f2477aa90f18d323b225421c17f1988e00",
+      "readRanges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read explicit upload/download dispatch, exact or pattern selection, artifact-name validation, digest handling and output-after-completion. Generated main bundle remains unread."
+    },
+    {
+      "path": ".github/actions/artifact/package-lock.json",
+      "gitBlob": "49c4ac15aae5d45cc3e9a74b2dea9d4d5c5621e3",
+      "bytes": 146260,
+      "lines": 4049,
+      "sha256": "c610fa5b40e90a92998e12e915d0d6109757435df2c35faac909fb25d7092de2",
+      "readRanges": [],
+      "reviewStatus": "active-source-unread",
+      "decision": "Identity verified; semantic reading is pending. Generated bundles and lockfiles are not silently credited as complete."
+    },
+    {
+      "path": ".github/actions/artifact/package.json",
+      "gitBlob": "18f11afaec56251ec53d7858380dc36fb064be4e",
+      "bytes": 683,
+      "lines": 29,
+      "sha256": "70810e8938536aafe3af5117dfb20e1ef83ee6dd50c7cae0bc5cf574b3e30698",
+      "readRanges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read exact SDK/core/glob/build/scanner pins and override tree. Tooling Node/npm engines and action Node 24 ABI have distinct roles; do not infer incompatibility without execution."
+    },
+    {
+      "path": ".github/actions/artifact/transport.mjs",
+      "gitBlob": "603b62158cfa3aedc6e2892084022fb76b6c48d7",
+      "bytes": 3913,
+      "lines": 74,
+      "sha256": "3f7384eaea69e0ef29410dfcd75c5dcdd2d67fe7394d465c31304f033813c781",
+      "readRanges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read bounded transient-only retry, auth/quota/conflict refusal, unique-name upload cleanup, required digest match, exact archive count and temporary cleanup. Preserve terminal errors; unique-producer races and partial extraction remain unexecuted questions."
+    },
+    {
+      "path": ".github/actions/deploy-pages/action.yml",
+      "gitBlob": "6c6d7e1a8fc4aa776670e8625c37d234a7ae3ea1",
+      "bytes": 567,
+      "lines": 18,
+      "sha256": "c01cb544a8c0e43586e4e481333b9d52af2751578e12340126fb3170e004f3f8",
+      "readRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read Node 24 deployment inputs/outputs. Preserve explicit artifact ID; no real deployment is authorized by source review."
+    },
+    {
+      "path": ".github/actions/deploy-pages/deploy.mjs",
+      "gitBlob": "72aa5b97e648df9f187e2c7ea3f9b2a7ce422834",
+      "bytes": 10959,
+      "lines": 267,
+      "sha256": "77fb2f039379ae84e760688e4efbc5927abb1cf3eefb68d39df857dc9f39e45d",
+      "readRanges": [
+        [
+          1,
+          267
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read bounded REST/OIDC requests through response bodies, transient-only creation retries, commit-based duplicate recovery, poll/error budgets, cancellation and escaped failure annotations. No real provider call was executed."
+    },
+    {
+      "path": ".github/actions/deploy-pages/index.mjs",
+      "gitBlob": "b30584a42cc4114ff853a340eee19ba9ecd41036",
+      "bytes": 154,
+      "lines": 4,
+      "sha256": "fdf9ae6c24b58f46768f3aacff169d376c07b625dffa182b6ff9ebb8c658d27a",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read main rejection propagation to a failing action result; retain fail-closed deployment behavior."
+    },
+    {
+      "path": ".github/codeql/codeql-config.yml",
+      "gitBlob": "d6f1641feb27d62176706f75f861a889d171165a",
+      "bytes": 279,
+      "lines": 7,
+      "sha256": "fe47e90d27b74328306bd63d754e53b4ea703455a86bde74ec61fd29878639f5",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read generated-bundle and experiment exclusions while scanning original action source. Do not count exclusion as runtime/security completion."
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "gitBlob": "f53b62e015110f41d4b174c9f4c3e9eaddbb20ce",
+      "bytes": 1497,
+      "lines": 60,
+      "sha256": "fa79819eed6a9c15b2e012bc0f811823555baa34a163e2a7b1cfdaed396357c8",
+      "readRanges": [
+        [
+          1,
+          60
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read weekly/cooldown/group policy for Actions, npm, uv, docs pip and pre-commit. Committed bundle changes still require rebuild validation."
+    },
+    {
+      "path": ".github/workflows/dependabot-health.yml",
+      "gitBlob": "5de994eb5407f522d60f13c8a0b10835e3555a0c",
+      "bytes": 2101,
+      "lines": 72,
+      "sha256": "839b1728f3d08d89c8cedd5d43c5a8dc88ffd698a22cd8026f722190de270637",
+      "readRanges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read scoped PR unit tests, schedule/manual actual health checks and terminal status aggregation. Preserve pinned runners and explicit skipped scope in Formal AI."
+    },
+    {
+      "path": ".github/workflows/docs.yml",
+      "gitBlob": "3b929748f94b1b8994e066dbffb413d4cc24d5a2",
+      "bytes": 5426,
+      "lines": 157,
+      "sha256": "a0a3dc4b14d04b66e1b87800035760fe593e859bf070a0b487b2ca921479626d",
+      "readRanges": [
+        [
+          1,
+          157
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read strict Sphinx build, artifact retention, main-only opt-in Pages deployment, serialized writes and terminal status. Retain Formal AI default-branch effect policy; installer PATH propagation still needs helper review."
+    },
+    {
+      "path": ".github/workflows/links.yml",
+      "gitBlob": "bbec6b4e32a384b082c3395910834e9073a505b5",
+      "bytes": 6534,
+      "lines": 184,
+      "sha256": "092893d33071205f383b9215e6de64b85696686b4e033bd20630aa81174213f7",
+      "readRanges": [
+        [
+          1,
+          184
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read daily restore/main-only save, independent checksum pins, transient recheck, advisory archive fallback, real live-link failure and terminal aggregation. Preserve terminal HTTP errors and unchanged failure verdicts."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "ebb8100e2529bf6e8610c477f0e45869c17b0dcc",
+      "bytes": 37097,
+      "lines": 1017,
+      "sha256": "4e72ff0175ac00035b5f7293c18787eeb82af52ff048734476fade60e5f9d200",
+      "readRanges": [
+        [
+          1,
+          1017
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 1017 lines: root/nested paths, dispatch admission, prerequisites, report/release preflight, locked lint/test/build, size and published-package checks, serialized source writers, native-architecture publishing and terminal status. Retain Formal AI PR build/Docker prohibition; source helpers and live publication remain incompletely verified."
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "gitBlob": "c93de678d0c2b4b58d97bcf6fe9f28dc5f5b3be5",
+      "bytes": 5311,
+      "lines": 173,
+      "sha256": "0660e132232d8978e6f0e2a75555c973661c718595b6a2c45fe73c1b5a7dcd46",
+      "readRanges": [
+        [
+          1,
+          173
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read resolved Python/npm audits, full-source CodeQL with findings gate/report retention, availability-aware dependency review and terminal aggregation. Keep existing Formal AI security gates and truthful unavailable states."
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "gitBlob": "77a7b2be77a2668cd67c4c3125309bd7ad02cf19",
+      "bytes": 10457,
+      "lines": 272,
+      "sha256": "17fd357996166b3990dde160c3904a558818814a1918c843f066a62245eddc78",
+      "readRanges": [
+        [
+          1,
+          272
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read pinned actionlint image, regular and narrow pedantic zizmor, isolated ShellCheck, mocked transport/Pages tests, bundle reproducibility and actual byte-roundtrip jobs. Preserve scoped compatibility exceptions; these upstream hosted paths were not executed here."
+    },
+    {
+      "path": ".github/zizmor.yml",
+      "gitBlob": "2c65dd94fe8ab4b493898aace619262f25d74442",
+      "bytes": 520,
+      "lines": 15,
+      "sha256": "172c7481e1de4bcf0e9c01b39d752dd0ab3ec6be86e969705957141c9c667872",
+      "readRanges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read trusted publisher tag policy and hash pinning for all others. Keep explicit repository security policy rather than broad exemptions."
+    },
+    {
+      "path": ".gitignore",
+      "gitBlob": "5ce6805f6ba8aed9592bc88f4e87acb12b8627ac",
+      "bytes": 4801,
+      "lines": 212,
+      "sha256": "a998ef652b6d3d2352a6d1aa24698e41c1fa876493468fd436a2eba7f83d16ae",
+      "readRanges": [
+        [
+          1,
+          212
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all ignore rules. Preserve tracked version/lock inputs and exclude generated environments/caches; do not silently exclude CI source from review."
+    },
+    {
+      "path": ".gitkeep",
+      "gitBlob": "70f58316c393a2105a630c3d4cceb9260ad5d1e1",
+      "bytes": 211,
+      "lines": 1,
+      "sha256": "c9fcccf4b975227ada86ec30186790c8f2568741cbbe011ea9b6dff0f8ab7127",
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the empty-tree retention placeholder; no runtime behavior."
+    },
+    {
+      "path": ".lycheeignore",
+      "gitBlob": "5ca7e16e0acb50854522f68070ccf0a287ec1135",
+      "bytes": 162,
+      "lines": 2,
+      "sha256": "85851656d4a5a6140fd7096d1f5f9818658aa2e3648c3dec7f85cbaca6d3c33f",
+      "readRanges": [
+        [
+          1,
+          2
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the narrow placeholder/link exceptions; do not turn real terminal link failures into success."
+    },
+    {
+      "path": ".nvmrc",
+      "gitBlob": "a2e8115a72f5caabe937810c73de1f7f637f7fe3",
+      "bytes": 8,
+      "lines": 1,
+      "sha256": "5c293036fc0a61ad76e15d85f454c3c7cec157e181e035b69f95058a2c239144",
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the upstream Node 26.13.1 pin. It is a source identity, not a blanket dependency update for Formal AI."
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "gitBlob": "7d3e9e899e95828ef19179ea43fa32b515edc83c",
+      "bytes": 1076,
+      "lines": 35,
+      "sha256": "ba32037910fb18ea73da1485ee15fdbfd6eda5c1f3399d04daf3113f0fa13387",
+      "readRanges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read pinned ShellCheck, Ruff, mypy and whitespace/large-file hooks. Generated bundle exceptions remain scoped; no pre-commit execution is claimed."
+    },
+    {
+      "path": ".python-version",
+      "gitBlob": "861845e450f570a6e923d43052feb4773ecabb88",
+      "bytes": 7,
+      "lines": 1,
+      "sha256": "673e2ba07f95bfcfe0a543258b8e267954e403d1f466481c546f467f86b31d46",
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the upstream Python 3.15.2 pin. Provision that interpreter only for the maintained pinned Python observations; preserve unrelated benchmark runtime policy."
+    },
+    {
+      "path": ".ruff.toml",
+      "gitBlob": "1f0296c281b4e28f69e991900ca9c8fb0994106e",
+      "bytes": 272,
+      "lines": 9,
+      "sha256": "e268a8d382ef44c6bff6f058296ad9fc6cb5a0a0da1556809893553a9d84e756",
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the scoped Python lint configuration and target. No lint run on the complete upstream repository is claimed."
+    },
+    {
+      "path": ".secretlintrc.json",
+      "gitBlob": "7a1a5df3c28e6739fd639bc2a2eac39f62f9a122",
+      "bytes": 92,
+      "lines": 7,
+      "sha256": "1c0e86ca72216c22cc77b1c94c27f975b731aa9e104167f5d57a5befa654c10e",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read secret-scanner configuration; retain narrow source/bundle handling rather than broad security exclusions."
+    },
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "f3f84c7978587a57ef17fa797c186255105e121f",
+      "bytes": 689,
+      "lines": 22,
+      "sha256": "9206206e5c8479164217670a95f607c2a5965ce6fdc24cd027ab4324e280d9c3",
+      "readRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read historical release notes; their past CI/runtime claims do not establish current Formal AI acceptance."
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "gitBlob": "d7d8a56e18f29fb738d6012d138364d8f394f3b8",
+      "bytes": 8582,
+      "lines": 305,
+      "sha256": "e292e654abced24eb2d83068f6f2eabc8df8f44c63dd4e6b68fa24662c7dc83b",
+      "readRanges": [
+        [
+          1,
+          305
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 305 lines of upstream contribution, dependency, evidence, identity and release policy. Retain Formal AI own default-branch build/effect restrictions."
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "bytes": 1211,
+      "lines": 24,
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "readRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete Unlicense terms and retain source provenance; licensing is not runtime validation."
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "ce77f3c31633480396204d001d4fc27e03622874",
+      "bytes": 18652,
+      "lines": 462,
+      "sha256": "d9130aaa1ca675f6b8af0c63a6139c0393e0b7932fcc506d76bf20c04b87358f",
+      "readRanges": [
+        [
+          1,
+          462
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 462 lines of template layout, supported runtime, CI/release/dependency and operational guidance. Preserve failure/identity evidence; no live release or broad latest-version claim."
+    },
+    {
+      "path": "changelog.d/142-ci-reliability.md",
+      "gitBlob": "99a44647bb1a313c452ba359b1c9f82d35b37f98",
+      "bytes": 335,
+      "lines": 3,
+      "sha256": "a02a708aac51fecb4ebd2601b76b2852a2de24744e277492e6df365a001f361c",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20251218_133759_drakonard_issue_1_3b50e2f12be6.md",
+      "gitBlob": "2f15a7060700e394d28c6764b8b7d4c6219714db",
+      "bytes": 317,
+      "lines": 7,
+      "sha256": "f13398f621e0d4dda55f55d57e114181831e81a5c80e5129b0966f52285e1ca2",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260509_204000_issue_6_release_metadata.md",
+      "gitBlob": "22529c0c2dc84b06ca072c8d50d0477d9fd34d5f",
+      "bytes": 207,
+      "lines": 3,
+      "sha256": "e3ecb0b5f404fc29d4cc8d80eae337e8e526d2f14adbb6250e7152d0a14ae71b",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260515_000000_issue_8_docs_pages.md",
+      "gitBlob": "104f47ee897792034dcd2c6716f4f1eb387aa48f",
+      "bytes": 500,
+      "lines": 5,
+      "sha256": "8a0ce1423e753c8da437eb177d8020ba68f6f02e37310bf8330dd4c68ad377fb",
+      "readRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260529_222900_issue_9_preview_regeneration.md",
+      "gitBlob": "66dad5bf7079ddf35cd973afdc9275dda81327ea",
+      "bytes": 165,
+      "lines": 4,
+      "sha256": "7fdf10a0fc16666d59190f85e2ad152307465f09ec214ba48f82e8bf0e44d1ee",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260604_170000_issue_16_release_notes_limit.md",
+      "gitBlob": "2438cac19cffe283e9284b4bbaaa7e8a882210d1",
+      "bytes": 180,
+      "lines": 5,
+      "sha256": "fffe0e3032f6d2ecedf9196e359a2dc894f8b055931035edc70ec7cedf32f7fb",
+      "readRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260609_000000_issue_18_manual_release_skip.md",
+      "gitBlob": "0d191776bd0f556cca116bf78c9c1a690f88e5e1",
+      "bytes": 404,
+      "lines": 7,
+      "sha256": "1dfa9683a2fd5fb7680070d953a51c57b7c26c40e9e7c6d90daeabe8ddc78b0f",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260614_000000_issue_20_published_package_smoke_test.md",
+      "gitBlob": "ce4a31fb9478eb5d050d765d3c929a280a2496b3",
+      "bytes": 335,
+      "lines": 7,
+      "sha256": "95450c73029dc9213448fe49baed4256857ce135a7bec76ec418ca8ba4392136",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260614_issue_21_python_monorepo_releases.md",
+      "gitBlob": "3d7194828c950bf78c33afec701a3d9930304b80",
+      "bytes": 356,
+      "lines": 3,
+      "sha256": "d5579906cc9c29723222894ea44d104d120882e7b57411ab0b08bcc2d9a0fc2f",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260628_issue_24_file_size_warnings.md",
+      "gitBlob": "2c90ffff600e0de950d8626247c8b968237335a2",
+      "bytes": 165,
+      "lines": 4,
+      "sha256": "757ed13128a14c307ad80a331f66fbfe5f5203717d2c8a38b417652016c9d9dd",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260703_issue_26_docs_pages_opt_in.md",
+      "gitBlob": "d4c9aa529ade4972df79400517ca812f1df30d52",
+      "bytes": 204,
+      "lines": 3,
+      "sha256": "ec0e2468fefa85ac9247d54a50e5b66866892d70680d531fa9e2df8cedf5c3c4",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260703_issue_27_codecov_token_gate.md",
+      "gitBlob": "63970f30de4e58e90fe484f0a7410dd1125b1178",
+      "bytes": 156,
+      "lines": 4,
+      "sha256": "e7d0dac93f6f8f15384ac7db85facb4aeab11a93445dce7f008ff89dc422e344",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260703_issue_28_git_default_branch_env.md",
+      "gitBlob": "f10872a2c071f48b4a771f0b97778eb831ab2691",
+      "bytes": 81,
+      "lines": 2,
+      "sha256": "652cfe6be40c8321a7d89ce9f29997024b44bdbca4a63fdacb99bb211c965d5d",
+      "readRanges": [
+        [
+          1,
+          2
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260722_issue_32_node24_actions.md",
+      "gitBlob": "3f74910802fabe5bdbdd32b06d8a8a690632feef",
+      "bytes": 155,
+      "lines": 4,
+      "sha256": "916ab018d0bfff54e153c80c8b5eeaecdd44f9d189421d88a963f0bf78e462f1",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260722_issue_33_release_permissions.md",
+      "gitBlob": "fdc6355b4b8388d263b39450767c5271becfa78b",
+      "bytes": 151,
+      "lines": 4,
+      "sha256": "6ac3be408885874efc42f8eb7ad84f8e2f8883a91f6890c2737e57fa9175cb09",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260722_issue_34_codecov_v7_input.md",
+      "gitBlob": "70101a186164939027ed74a181ae3750470d715d",
+      "bytes": 92,
+      "lines": 3,
+      "sha256": "c6e260aa3e4d46e8a56a4ff3f976333987a9c5db8d7417b41911e37d4a8ef969",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260722_issue_35_ci_release_guards.md",
+      "gitBlob": "9b59f84e5b479da1b331b700709d257f82d802d3",
+      "bytes": 307,
+      "lines": 9,
+      "sha256": "43965adf790d49938adb8118695fc1658cd0d68275e97ce1b2bc3fbc378c4996",
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260727_issue_40_change_detection.md",
+      "gitBlob": "008980f0998aef7073dc6d5a703fbf1676b659ed",
+      "bytes": 214,
+      "lines": 5,
+      "sha256": "77a6d95e933f8d03d78520b7923ccc0e5c1cd02c8d2ec6ddcfa7bd803f1f1cfe",
+      "readRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260801_issue_42_workflow_hardening.md",
+      "gitBlob": "db0c729b825d1d0b79ac0d68102a1e6520a56bad",
+      "bytes": 247,
+      "lines": 9,
+      "sha256": "0299d34ec3640be34547b1b0a24dce6088cab073451dc4f74f8eb3c997353ebf",
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260802_issue_44_mypy_python_39.md",
+      "gitBlob": "9a0d9f1c33e818cd8e31c88a938e72fb1370922b",
+      "bytes": 123,
+      "lines": 4,
+      "sha256": "6bc7671f5cee2679583fda3e76db73ba2d86e9408bd0401d2b8f034ee0d44b33",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260802_issue_45_changelog_check.md",
+      "gitBlob": "f2ab9dad39ca21dd845d13e3ff4e416b582f505d",
+      "bytes": 226,
+      "lines": 8,
+      "sha256": "071ecceb4057a56eb612c9a494969bd0f3b6a6492c01a983f8e47a4520870f1b",
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260809_issue_48_security_scanning.md",
+      "gitBlob": "789c32280d7dfb8e9ed3640ac9d4d1dc53508829",
+      "bytes": 126,
+      "lines": 4,
+      "sha256": "b3a02aa6a2b0028df0247beb414d2cacae1a6f152147999354e8c8ca28dff2ea",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260809_issue_49_broken_links.md",
+      "gitBlob": "5304cf4eb5870f08e21c365b48dfa66729ea4633",
+      "bytes": 94,
+      "lines": 3,
+      "sha256": "3e75a5b096caf368ab0bbd698fdb48803586d0a9fcbb97a8436e58bd9270b7fb",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260809_issue_50_pipeline_timeout_status.md",
+      "gitBlob": "cf1554197627dd153608d7568f458ec04e94cc54",
+      "bytes": 220,
+      "lines": 5,
+      "sha256": "a60f3b4d3dbd33e65bf41e3e8f6d7aedbb8423b1ecb83dce73a608a348c0d338",
+      "readRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260812_issue_54_archived_broken_links.md",
+      "gitBlob": "6f314b459f311168d093ec4d3d496845be0d9808",
+      "bytes": 107,
+      "lines": 3,
+      "sha256": "1c60e42df38d35d14ce5882b03539c847dad7608a8c4646b2f47a973f07a5c3f",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260812_issue_55_multi_arch_docker.md",
+      "gitBlob": "184a45ae36192139d4cfac88d9af1374e1aa313a",
+      "bytes": 170,
+      "lines": 5,
+      "sha256": "2a80d5c7470c0e9e2566d568b2c20675c96195f2ad07a0cbdf411669307528c2",
+      "readRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260816_issue_58_dependency_audit.md",
+      "gitBlob": "cce3886aef421c687a328cb7737a7d06a0e3b2d8",
+      "bytes": 149,
+      "lines": 4,
+      "sha256": "489109417c8d3ef78ed66a0fa9017e7e7ec5079da3395421a014cb30ee6a1c71",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260820_issue_60_step_execution_budgets.md",
+      "gitBlob": "22231ec707584b9a26b6614da4e1661b3d9b8e0e",
+      "bytes": 783,
+      "lines": 15,
+      "sha256": "d269b2221c2206ed0e648c4e6807830b6a0cb0bd6327f794bc57aa11a9368c06",
+      "readRanges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260828_issue_62_workflow_lint.md",
+      "gitBlob": "5c2c3dbeea421ef70f350b73132c78b9cd5f1677",
+      "bytes": 841,
+      "lines": 17,
+      "sha256": "bafc4e5862fe8c8e604c28c43c341450fbce41ce8c3f67725257a3a0d260ae41",
+      "readRanges": [
+        [
+          1,
+          17
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260903_issue_64_workflow_audit.md",
+      "gitBlob": "9109d33768e45b91214ae9efbc4ea41830db9cf9",
+      "bytes": 1310,
+      "lines": 24,
+      "sha256": "efbd405a838bef6530c83d43607486088812b7ef5a0ad9d63152e0a3719ccdfd",
+      "readRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260909_issue_66_pipeline_hardening.md",
+      "gitBlob": "6c3197e5dd1e8bd1a8be3e7db6c5d2f5ddc32d2a",
+      "bytes": 3019,
+      "lines": 50,
+      "sha256": "970daa44b88219167265e9262ae8b66c0e09746d994fd657d6eabc7a9e054df4",
+      "readRanges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260915_issue_83_pipeline_false_negatives.md",
+      "gitBlob": "9ea3d537dcf1bc7790fd5273b2e36006b69d7154",
+      "bytes": 425,
+      "lines": 9,
+      "sha256": "d2f35a8e09977b8236ba8f96fd0f46ff691751461572e80cb94eabce9bc32c4a",
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20260927_issue_85_86_release_changelog_artifact.md",
+      "gitBlob": "7f8db4718d40b28411f2a8d10366170a992d3db4",
+      "bytes": 207,
+      "lines": 4,
+      "sha256": "283def13298b44cd1014bc67b245036f84b741d7b1029ed4de0f02c06c8194cf",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261005_issue_91_ci_links.md",
+      "gitBlob": "7fd2cd7cb862c27316eaf0a2c6fe2122d08b2cb3",
+      "bytes": 365,
+      "lines": 7,
+      "sha256": "0899a4b2f9735a304eef49587092acc484054f6a20ace5bac3c4b076f91caa98",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261007_issue_100_fragment_replacements.md",
+      "gitBlob": "be77555862137f2cfa0c894b7894e7e878016b3d",
+      "bytes": 197,
+      "lines": 5,
+      "sha256": "12c3eeebff2bd7d3f610de4110eeeac0a33f79e1d9a59445c25dbb146aeccedc",
+      "readRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261007_issue_93_changelog_validation.md",
+      "gitBlob": "3584f0d2c77f3fbc791ed04a661b97caaad3b548",
+      "bytes": 364,
+      "lines": 7,
+      "sha256": "7efbe8264bec85c5f362d04b40319489fe214d8def6b8838ea6583e1a20aa031",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261007_issue_98_ci_release_recovery.md",
+      "gitBlob": "b89c4e8eefa88ca0228c00b1113a0c099e80b34b",
+      "bytes": 690,
+      "lines": 14,
+      "sha256": "ea29054482aee32ef546e1856f0812d2818813c02fed850d109586996ad388d7",
+      "readRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261010_issue_102_zizmor_reproduction.md",
+      "gitBlob": "e33712904d9bc3d3eb4bd7ed1cb031997b822aa3",
+      "bytes": 166,
+      "lines": 4,
+      "sha256": "0557db654f7282c378dba6485e30bbc709721b441f0498ec1e63630667b49cd7",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261024_pipeline_safeguards.md",
+      "gitBlob": "9065b24bc6f492d16c80cb5c21796ce1040fa1a2",
+      "bytes": 788,
+      "lines": 13,
+      "sha256": "0efb8a049263a474941f1bd4d48e3c7a2aafa4d9a0f8e71fe214efcdc0e59ef1",
+      "readRanges": [
+        [
+          1,
+          13
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261029_issue_126_ci_evidence.md",
+      "gitBlob": "e45a48b09b7d1e0f526e0ebb1bae95c438e7a1e6",
+      "bytes": 999,
+      "lines": 15,
+      "sha256": "61ffdf7dca8c72eb26eba343a963061145a66dda9a47cbdc10b9743124e0be87",
+      "readRanges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261101_issue_128_archiver_glob.md",
+      "gitBlob": "4c941b8eaa05969508c9b018b920f2790aedd3de",
+      "bytes": 360,
+      "lines": 7,
+      "sha256": "6e9db2ee51b35ee4a7961274faebfbd48d918f778dac11daa7d0543f2717d70f",
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261102_issue_133_ci_reliability.md",
+      "gitBlob": "7a4990c908b5b7c23cf6ead924531c9db24951b4",
+      "bytes": 1163,
+      "lines": 21,
+      "sha256": "c49b6c91f76df2738958f6b514789ff809d2624294982fcca4f74e7420652695",
+      "readRanges": [
+        [
+          1,
+          21
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261106_issue_136_release_integrity.md",
+      "gitBlob": "37e4c97a229374300fcf57a26b00ce42fe9bbf35",
+      "bytes": 437,
+      "lines": 4,
+      "sha256": "f5aab8b9a1f4edf0a2727b2026f2dd64958bc1bff629dc32079183ec9148889d",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261106_issue_137_sarif_notifications.md",
+      "gitBlob": "e88f1aa5e7d68a1d077af42b63f6a6ddb2fee218",
+      "bytes": 228,
+      "lines": 3,
+      "sha256": "369e7710f430b0239e3207ec1f7ebb0a1f0ead12a4841180f5fd6f6aff177e8a",
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261113_issue_147_ci_gates.md",
+      "gitBlob": "643384eef6d0dac30f10e5b47b6c49ac6792900c",
+      "bytes": 700,
+      "lines": 14,
+      "sha256": "f2d4eb7a6ca41dcd610b9a5c3fee5e886f84c325bb7b0f64f956baf5fbdcd8ce",
+      "readRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261114_issue_149_dependabot_health.md",
+      "gitBlob": "39a60512db0f60ac3803f70d49bb0047a83eb8bf",
+      "bytes": 344,
+      "lines": 9,
+      "sha256": "3d8e8edd0dd371c42d8078a089738a61f84f4bf25d2f61bd22c3e640e2a4b2de",
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/20261114_issue_151_dependencies.md",
+      "gitBlob": "4be90a4190a0712d19b693929863a0947df78454",
+      "bytes": 625,
+      "lines": 10,
+      "sha256": "ce88987de4aa112d265085c93100057ce46e9051f52edf75367ccfcfa468ffe0",
+      "readRanges": [
+        [
+          1,
+          10
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/README.md",
+      "gitBlob": "b32bbca3a4d977cc26e079513f8098a313c6835f",
+      "bytes": 2991,
+      "lines": 86,
+      "sha256": "fe8d4b1dc0e865e9c70698cb9e3927e118451cf0dcca885e84dca491285994ab",
+      "readRanges": [
+        [
+          1,
+          86
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "changelog.d/fragment_template.md.j2",
+      "gitBlob": "62d6e5b08fe772fc46bca5049282f5a37ef75061",
+      "bytes": 515,
+      "lines": 31,
+      "sha256": "1417d68060218437cea3cdfc3e1f72182e4997b2fff6ede26b5c46bf379c3551",
+      "readRanges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete pending release record/template and its release-category guidance. Preserve valid earlier fragments; historical change descriptions are not fresh runtime acceptance."
+    },
+    {
+      "path": "docs/api.md",
+      "gitBlob": "08bf196dfb8a1b88063699c042f098c738e4acdf",
+      "bytes": 108,
+      "lines": 9,
+      "sha256": "3fd3d777c29da3a4c8809dfcc9752a7a0f68bb3bef9b0440b1fc601b94ab4031",
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read API documentation entrypoints; application/test execution remains pending."
+    },
+    {
+      "path": "docs/ci-evidence.md",
+      "gitBlob": "0b68d528cfeabe48d11be52cb68d50dd514dd427",
+      "bytes": 7525,
+      "lines": 126,
+      "sha256": "97d1ac0a3ee65be7f5dad79f27ab2a110f8602998b108ec3416bb60842f50b10",
+      "readRanges": [
+        [
+          1,
+          126
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read source-validation, dependency attestation and release evidence contract. Preserve exact identity and terminal outcomes; source review does not execute the provider flows."
+    },
+    {
+      "path": "docs/conf.py",
+      "gitBlob": "f499aada13cd524f9708636ecba3725560d10465",
+      "bytes": 1631,
+      "lines": 67,
+      "sha256": "6a2e4c437223ee2df243c81fccdef1f3f24fc2b731cb1da5a2d476be872021c2",
+      "readRanges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read Sphinx configuration and the explicit compatibility-hook import. No complete documentation build was executed."
+    },
+    {
+      "path": "docs/index.md",
+      "gitBlob": "ce0f11076e9494b2b50560a23b1b2b89bb9fc8af",
+      "bytes": 673,
+      "lines": 23,
+      "sha256": "8e861454fec3169062ac0229587980d1dcbb466d8244e6bb67044610e3ae93ca",
+      "readRanges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read documentation navigation and build references; preserve actual required checks."
+    },
+    {
+      "path": "docs/preview-regeneration.md",
+      "gitBlob": "11b45881d78253192ba72bca7f9585ac7f7fdb1c",
+      "bytes": 2842,
+      "lines": 57,
+      "sha256": "4ab7639eeb95cdf77307eed5962865d087890d82e1d2dfff567e4b790bb695b2",
+      "readRanges": [
+        [
+          1,
+          57
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the deliberate absence of a Python UI preview workflow. Retain Formal AI own real Playwright/browser verification; do not add a no-op preview job."
+    },
+    {
+      "path": "docs/requirements.txt",
+      "gitBlob": "f6eb83e943135612b0cbbc04caeccd4e1e830b71",
+      "bytes": 117,
+      "lines": 4,
+      "sha256": "994ff6bf71ce110214b2cd88d5fc4473f51a1add09d4a861fce02c72c15e60ec",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read exact documentation dependency pins; no resolver or documentation build was executed."
+    },
+    {
+      "path": "docs/sphinx_compat.py",
+      "gitBlob": "ea4796884aa5d69124591e45bdfb4e58454d8cea",
+      "bytes": 835,
+      "lines": 19,
+      "sha256": "f5f729a21eea565c18aad8f77c18b9f20d0c3d805710e94cffd36797bdbd193c",
+      "readRanges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the narrow Sphinx 9.2.0 _AutoDocumenterOptions boolean compatibility patch. Do not replace it with global warning suppression or claim a fresh Sphinx build."
+    },
+    {
+      "path": "examples/basic_usage.py",
+      "gitBlob": "68f712256b403ef1e60486f7a9230651545db9a5",
+      "bytes": 863,
+      "lines": 39,
+      "sha256": "c19c01204e02e66c7c90ca69b1b43a5dda0f403e73de6372344659b7be3412ca",
+      "readRanges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the bounded asynchronous arithmetic example. It is not release machinery and was not run as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/archiver_glob_probe.cjs",
+      "gitBlob": "74817990d975c307129143301bec137d6744da14",
+      "bytes": 930,
+      "lines": 8,
+      "sha256": "8914dd793d719faf6ee6a15532226cdebfd340225c4229b394fb157101c999ab",
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the historical glob probe and fixed /tmp/globprobe cleanup. Do not execute or port its unsafe concurrent scratch-directory reuse."
+    },
+    {
+      "path": "experiments/check_issue_149_upstream.py",
+      "gitBlob": "ed1e75ec1edfc9e3a19446bb0fedd52c8d9a026c",
+      "bytes": 736,
+      "lines": 22,
+      "sha256": "10576185db5137c941aef009b2dfb60b9ae1e73b588a8339f37bd371e2826c9a",
+      "readRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/create_codeql_diff_fixture.py",
+      "gitBlob": "468df11f5fe47d24f5a305276b4ee17de3f45845",
+      "bytes": 785,
+      "lines": 24,
+      "sha256": "d66fee0a32855d807e0cf2ac895f7895480ad3de4e802a09d694d7c9cf1b1bac",
+      "readRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/find_files_differential.mjs",
+      "gitBlob": "34af60bf3bfb2eda88f8d74ebdd9de8f96563074",
+      "bytes": 2177,
+      "lines": 39,
+      "sha256": "f2affb1a889c03bd5a8101ca38230af613f9ca476a32737a319c6776585103e6",
+      "readRanges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-138/PLAN.md",
+      "gitBlob": "27907eef29e6342adae84578e566cdebb5904552",
+      "bytes": 4864,
+      "lines": 56,
+      "sha256": "f83b066ca55748d967c827044ce8f830439c7852a83c781555bde04f96f90e3e",
+      "readRanges": [
+        [
+          1,
+          56
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-138/VERIFICATION.md",
+      "gitBlob": "57db1b0d3107f6c9dc748bb2d71bf6c082ecdc7a",
+      "bytes": 2841,
+      "lines": 48,
+      "sha256": "0f490d680f75c2a90e37c2a9b03c6d00ca18c078c61b53ae97bb3423228436ec",
+      "readRanges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-138/original-reproduction.log",
+      "gitBlob": "ff7ad30cc985382128931f6b218b8a024c883c87",
+      "bytes": 783,
+      "lines": 16,
+      "sha256": "3c45bc7d17bb7e3a774bb2a0620bcad379e0d0762a0daef13051db2ae0f6bdf9",
+      "readRanges": [
+        [
+          1,
+          16
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-138/reproduce_original.py",
+      "gitBlob": "097c9d2f5be50c9763b20cdaae0fabd0a817a50c",
+      "bytes": 2831,
+      "lines": 84,
+      "sha256": "924f79bf52be45d6afc52f56e6c7d61626a004cac595c3a46a7fc18a50e9f800",
+      "readRanges": [
+        [
+          1,
+          84
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-138/verify_uv_lock.py",
+      "gitBlob": "864745b261fa852f0f92e6ea9805e6146ac44b34",
+      "bytes": 1193,
+      "lines": 31,
+      "sha256": "d642431613fd5a862ac1a5a5cf0c4060fab8d6e5d3fb60199015b2d7b70f6823",
+      "readRanges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-142/PLAN.md",
+      "gitBlob": "815f487f74ed1effd53c5f2d4ce3675a3c0e57ea",
+      "bytes": 4342,
+      "lines": 49,
+      "sha256": "d2b240d662b95bdfc2217a12edeb20102304a63a9ac5757d86f2ebca2e2d5d54",
+      "readRanges": [
+        [
+          1,
+          49
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-142/VERIFICATION.md",
+      "gitBlob": "669af250e957362f9b03719845dfabb6e1432cf0",
+      "bytes": 1970,
+      "lines": 30,
+      "sha256": "9ceb0d0e1da758aefc72ba0e5777757558e09ece330bf20f36a3995209984e6f",
+      "readRanges": [
+        [
+          1,
+          30
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-142/reproduce_concurrency.py",
+      "gitBlob": "98a86e5b3ebf0be801f8a2ca4faf337c0a388825",
+      "bytes": 821,
+      "lines": 24,
+      "sha256": "0aa1b2589132b760f8af86722a6cef59fc8dedb769f3f956b4bf92cd29c1696e",
+      "readRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-147/PLAN.md",
+      "gitBlob": "3ca4a5950ebdf984309d18d92ac6989c38f47cf2",
+      "bytes": 8670,
+      "lines": 71,
+      "sha256": "17b034386ec4f9a6e476b01c34ea17549220eb8085acff0ccb38e00cce2eb834",
+      "readRanges": [
+        [
+          1,
+          71
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-147/VERIFICATION.md",
+      "gitBlob": "6830a708ecf4ffe45bdd8b9dc94977f55bbd5a04",
+      "bytes": 1945,
+      "lines": 30,
+      "sha256": "5f9453c6459a0d86ceab8b9b57afde07920ee029ce60e9243b80b7703f1842f4",
+      "readRanges": [
+        [
+          1,
+          30
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-147/reproduce_original.py",
+      "gitBlob": "dde04600f2755165abd93e8774a50b14860217d1",
+      "bytes": 4355,
+      "lines": 128,
+      "sha256": "94b197862a5ed7f1dc25cc22ef849b3f9a184dcbf10b40cd3edf4785132c3cb1",
+      "readRanges": [
+        [
+          1,
+          128
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-147/reproduction.txt",
+      "gitBlob": "1434e22b0acbbd50e4db2a6ca839196dcbd70ade",
+      "bytes": 2067,
+      "lines": 32,
+      "sha256": "519307f673ee102314f6c10fe16dee6e7ca77dcd2492ac42e20e89017db4d6d1",
+      "readRanges": [
+        [
+          1,
+          32
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-151/final_inventory.py",
+      "gitBlob": "1b3a78951245ec4fd7b366c2127d09deb7ae4822",
+      "bytes": 2272,
+      "lines": 59,
+      "sha256": "293d5b6a3c761ef320b0e7f6e0beea5716fd99d587a709ad34d076f97892d622",
+      "readRanges": [
+        [
+          1,
+          59
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the historical dependency inventory and API probe. Do not treat recorded versions or unbounded network calls as current runtime evidence."
+    },
+    {
+      "path": "experiments/issue-151/inventory.py",
+      "gitBlob": "fc5d12bdb713a4098e6fcce2db2d10fa0210598c",
+      "bytes": 4223,
+      "lines": 144,
+      "sha256": "ff78a878f62e0d2794379ee072ad0a8a93b1773bbd51a8c89475ea9477aaa78c",
+      "readRanges": [
+        [
+          1,
+          144
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 144 lines of historical dependency inventory. urlopen has no explicit I/O timeout despite bounded-loop prose; do not port this one-off network probe as a runtime gate."
+    },
+    {
+      "path": "experiments/issue-151/render_inventory.py",
+      "gitBlob": "69f9406c3ad279a634744a1b1c7fd773ecbcee63",
+      "bytes": 10530,
+      "lines": 270,
+      "sha256": "aa2ee350be0f023a7ef05d120b15f994f3188b70bc78dd3bf71c6524876fb2b4",
+      "readRanges": [
+        [
+          1,
+          270
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 270 lines of dependency review rendering. Preserve compatibility-specific decisions; historical latest-version assertions require fresh verification before adoption."
+    },
+    {
+      "path": "experiments/issue-151/reproduce_artifact_network_retry.mjs",
+      "gitBlob": "2dfde39a46e98e0bf9644658b1ea3b8d286c4810",
+      "bytes": 1359,
+      "lines": 22,
+      "sha256": "1249ae028822a73453ed1af92e0919727e2b2800af6c8b46a677a062d0dc555d",
+      "readRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-151/reproduce_sphinx_options.py",
+      "gitBlob": "552b9498c1fd7403c5d8ceabe56987d91702ef8e",
+      "bytes": 1033,
+      "lines": 29,
+      "sha256": "1345173ca053ef8a512b0ad9db93702211f54ab5d9b6a08c6157f95813128c58",
+      "readRanges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue-151/update_manifests.py",
+      "gitBlob": "8ec0dddca4e52a86c641e7aeaa7741cb4f98f18a",
+      "bytes": 6133,
+      "lines": 180,
+      "sha256": "1a9f93068bf8c2f2bb2ead1943455cb6b1884324f1182458d3297fd5934c5d75",
+      "readRanges": [
+        [
+          1,
+          180
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 180 lines of manifest updates and compatibility retentions. Do not copy historical tool pins or blanket major overrides into Formal AI."
+    },
+    {
+      "path": "experiments/issue_126_plan.md",
+      "gitBlob": "ceb052ac3415efaf6892d7397eedb671e2f60e21",
+      "bytes": 13551,
+      "lines": 206,
+      "sha256": "69be5b1acfed4968220a25cd6ebb065d84b9520b0f583ad38bbf59603d05dea8",
+      "readRanges": [
+        [
+          1,
+          206
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue_149_plan.md",
+      "gitBlob": "a9718c95ac8f459b5cb9dd8ea56f3f625ab91b7e",
+      "bytes": 2865,
+      "lines": 50,
+      "sha256": "b03cda6ceadb70bd41fab0b3d8279e25b159fff53d7c6138777ce94a82d6d580",
+      "readRanges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue_149_verification.md",
+      "gitBlob": "4ee81f5c04d456db3142e7a8a937ce3ba81534f9",
+      "bytes": 3035,
+      "lines": 45,
+      "sha256": "30863c8d73643cfe602e5ad009ec34107086dcca93a77e8c6618d48d67cec301",
+      "readRanges": [
+        [
+          1,
+          45
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete historical plan, reproduction or captured result. Keep its pre-fix fixtures, test scope and limitations distinct from current source; it was not executed as fresh acceptance evidence."
+    },
+    {
+      "path": "experiments/issue_98_analysis.md",
+      "gitBlob": "4224ca3bfce3863a44ae2887a2f9894028b4ee5f",
+      "bytes": 12230,
+      "lines": 120,
+      "sha256": "28d2558d734b4b4b43934bf0d9fbcefe733781c164cf5dafed9dc1f4fd595cce",
+      "readRanges": [
+        [
+          1,
+          120
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 120 lines of the historical release-tag polling analysis, including its old-source/runtime assumptions. No live tag propagation or release provider flow was executed."
+    },
+    {
+      "path": "experiments/reproduce_actionlint_queue.py",
+      "gitBlob": "93d63ac394ae158f276c0c367e6623cbcda842bc",
+      "bytes": 2060,
+      "lines": 53,
+      "sha256": "c051ccc0d629e947f43738046af8ec22eed39e16a525bd4fc08858e7c375a578",
+      "readRanges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete offline actionlint queue/queue-size valid/invalid control probe and its 15-second child bounds. It was not rerun as current evidence."
+    },
+    {
+      "path": "experiments/reproduce_artifact_buffer.mjs",
+      "gitBlob": "ece05144756a740141cf1a20104288c8cf05c5aa",
+      "bytes": 430,
+      "lines": 8,
+      "sha256": "da4ca9cf524b6fd059106a382030eacd79f5c12958eb35c6f5a8c7e49ab42f28",
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the bounded two-byte historical unzip-stream deprecation probe. No runtime or dependency installation was executed."
+    },
+    {
+      "path": "experiments/reproduce_partial_release.py",
+      "gitBlob": "04dcfccc12f492d5b2e08a7ff101f6d149e7cd90",
+      "bytes": 3863,
+      "lines": 114,
+      "sha256": "a10d3aa36db7f7b9a349b57e7809f3f16c9d5c2d88073751012c0275f31624b9",
+      "readRanges": [
+        [
+          1,
+          114
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the full historical 1e929ef release-tag gate reproduction, isolated Git repository and virtual 240-second propagation clock. It was not executed or treated as current source validation."
+    },
+    {
+      "path": "experiments/reproduce_zizmor_scope.py",
+      "gitBlob": "582772635aaf3fcebd5c7a4f32d67a1e1d051cbf",
+      "bytes": 2508,
+      "lines": 87,
+      "sha256": "d86dff8d5fe0b3863d74e79eba7597d358341c7f7879377a1972b621499750ae",
+      "readRanges": [
+        [
+          1,
+          87
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the historical workflow-only versus repository-scope Dependabot cooldown audit. Its audit subprocess lacks its own deadline; no audit or dependency installation was run."
+    },
+    {
+      "path": "lychee.toml",
+      "gitBlob": "0f63f77179b70726d2f4cf332457fb2d4c76d35f",
+      "bytes": 137,
+      "lines": 4,
+      "sha256": "0326816cd0dac6bfe5a804fc0148f79a754a518210dee1bd81be6d90c18a27e5",
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read GitHub concurrency two/request interval one second policy. Preserve genuine terminal failures; no live-link scan was executed."
+    },
+    {
+      "path": "pyproject.toml",
+      "gitBlob": "23d2bd93f0c80eca9a573d19cfa81d301cd420b0",
+      "bytes": 4414,
+      "lines": 175,
+      "sha256": "99ef44c2dc190bc5c30f237e8af6a274f3104e0f6371a6f6ff88f3f50c0cb6a1",
+      "readRanges": [
+        [
+          1,
+          175
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 175 lines of Python >=3.15 runtime, optional dependency/build/test/type/lint configuration and Scriv categories/heading marker. No fresh resolver, dependency audit or whole-project test was executed; do not copy historical pins blindly."
+    },
+    {
+      "path": "scripts/audit-npm-locks.sh",
+      "gitBlob": "e4c73c9df844a08e031b786cb8fdb891ce192789",
+      "bytes": 1904,
+      "lines": 53,
+      "sha256": "40bdae551f88431166778fa4f041a437afcf1ff73bf5b82fb59d5fe586b2a7a2",
+      "readRanges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 53 lines and execute unchanged failed/partial inventory, real tracked/empty Git and offline advisory controls. The disposable candidate rejects failed inventory. Filed as upstream #158 with immutable evidence at 1cc2d536a; no upstream repair is claimed. Formal AI analogous helper is repaired and its dedicated tests are now being added to fast pull-request selection."
+    },
+    {
+      "path": "scripts/audit_dependencies.py",
+      "gitBlob": "5b45eeeba20964aa790573d374d6998170578120",
+      "bytes": 5224,
+      "lines": 164,
+      "sha256": "1de6f5d4755b046a7e3f8f2fc0dba6dab8ca7bbc4ce7b8ba97efb09439b9d664",
+      "readRanges": [
+        [
+          1,
+          164
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 164 lines of Python/docs/uv dependency surface checks, locked all-extras export, isolated environments and streamed pip-audit failure handling. No installation or live audit was executed; outer CI owns process/network bounds."
+    },
+    {
+      "path": "scripts/bump_version.py",
+      "gitBlob": "2c115dd7fac04e5bcf376b37dd318a11fde2bcc5",
+      "bytes": 5542,
+      "lines": 177,
+      "sha256": "d8e47381dc86e259d95db964de5b1ab519fec7ecdbfa9fa33f59b48d59825ea9",
+      "readRanges": [
+        [
+          1,
+          177
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 177 lines of version extraction, bump/update, changelog insertion and CLI handling. Preserve caller-owned changelog collection and error propagation; no release or file-mutation trial was executed."
+    },
+    {
+      "path": "scripts/check-dependency-graph.sh",
+      "gitBlob": "e00e61739da4556f4049fbd1e9ef98ba5af21b18",
+      "bytes": 2086,
+      "lines": 56,
+      "sha256": "525d548daf5f959b8a09f16ba6dd36f0863a712361edbdc835b9c38c5f77f3b8",
+      "readRanges": [
+        [
+          1,
+          56
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 56 lines of three-attempt graph probing, explicit disabled versus unknown states, debug tracing and PR-advisory/main-failure policy. No live graph probe was executed; individual gh request timeout remains delegated to the provider/outer job."
+    },
+    {
+      "path": "scripts/check-links.sh",
+      "gitBlob": "d6657f5539fce6aaf67bbb46d4bb76885bd0ac8c",
+      "bytes": 1439,
+      "lines": 43,
+      "sha256": "c5c5154a8d5af04c892441baaad0811278db81418d64ba22533f5a448242bf9d",
+      "readRanges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 43 lines of stale-report removal, scanner exit propagation, nonempty positive-total report validation and malformed/scanner-error refusal. No link scan was executed."
+    },
+    {
+      "path": "scripts/check-pipeline-status.sh",
+      "gitBlob": "665e5e304e84dcf7c3c911b2789b1b026d558d48",
+      "bytes": 4269,
+      "lines": 137,
+      "sha256": "30b451cffa6e8bdf6a5a5119ec83be1d24902fdff1604d64cfee7384761de511",
+      "readRanges": [
+        [
+          1,
+          137
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 137 lines of needs parsing, failed/cancelled classification, branch identity and explicit supersede-policy proof. Unknown cancellation policy remains terminal; no provider/workflow effect was executed."
+    },
+    {
+      "path": "scripts/check-required-docs.sh",
+      "gitBlob": "c00bc9959ff5eb88ece1f2adafcdaa7f23fce89d",
+      "bytes": 3063,
+      "lines": 101,
+      "sha256": "02134fa51ab872898a43824093bfa1727df4d99b65cdebb342022ac90d2f6afb",
+      "readRanges": [
+        [
+          1,
+          101
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 101 lines: required files/headings, exact level-two match, list/unknown-argument behavior and Bash 3.2 failure accumulation. Preserve missing-document failure. No execution is claimed."
+    },
+    {
+      "path": "scripts/check_codeql_results.py",
+      "gitBlob": "eab13a6d140f63aac1ab624502d5d3d55b213aae",
+      "bytes": 6859,
+      "lines": 167,
+      "sha256": "91b4a77cda1a6f0f58fb3fa21e394afafdb63608a369dfb66758328a0ab4a814",
+      "readRanges": [
+        [
+          1,
+          167
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 167 lines: nonempty SARIF runs, fatal findings, execution-success checks and notification severity/message/reference/location validation. JSON quoting keeps finding text inert in annotations. No fresh SARIF runtime probe is claimed."
+    },
+    {
+      "path": "scripts/check_dependabot_health.py",
+      "gitBlob": "4db197ac8bde1dd7541cd86bb4d9fd0884b06647",
+      "bytes": 5345,
+      "lines": 150,
+      "sha256": "c95a1cade23ec4caa918e2b002d42ad35811a34abe5c06e2d5f9a979e8e75049",
+      "readRanges": [
+        [
+          1,
+          150
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 150 lines: paginated API shape, aged/rebase-loop criteria, timezone/threshold checks, repository identity, escaped annotations and fatal API/parse errors. No provider request was executed; individual gh deadlines remain delegated to outer CI."
+    },
+    {
+      "path": "scripts/check_dist_size.py",
+      "gitBlob": "631b3beb503879b3ec1ae5c83e334574fa21e81a",
+      "bytes": 3323,
+      "lines": 89,
+      "sha256": "58f15e8c3cc421ced7b92a16d37e22e6ea77c43b748b18fc82692ef52eddac4b",
+      "readRanges": [
+        [
+          1,
+          89
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 89 lines: positive distribution budget, fatal empty output, per-file limits and bounded member summaries without extraction. Inspection errors cannot erase a known size violation. No archive runtime or publication is claimed."
+    },
+    {
+      "path": "scripts/check_file_size.py",
+      "gitBlob": "04e0300c73d13d3a08dc80d799866aceebd15503",
+      "bytes": 7547,
+      "lines": 281,
+      "sha256": "24431d562229e4862420fc344aaad8b0dbb14caa67001358a0f8473d64608dee",
+      "readRanges": [
+        [
+          1,
+          281
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 281 lines: component-aware pruning, source/document budgets, warnings/violations and escaped annotation properties. Final-newline counting uses split newline and remains an unexecuted boundary question. Keep Formal AI strict limits; no upstream gate execution is claimed."
+    },
+    {
+      "path": "scripts/check_release.py",
+      "gitBlob": "69056a1fbbd5ff946f64819dcf888c46f225fcdb",
+      "bytes": 9201,
+      "lines": 225,
+      "sha256": "9902464405d11d81a6a810c98a893c7fae720f5928424dd40741ba603914395e",
+      "readRanges": [
+        [
+          1,
+          225
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 225 lines: exact package/version endpoints, explicit-404 absence, bounded responses/requests, authenticated redirect refusal and finite retry deadline. Retain artifact identity and unknown/error refusal; no real publication/provider flow was run."
+    },
+    {
+      "path": "scripts/check_web_archive.py",
+      "gitBlob": "a41cc7d6102565b63916f0a8d2caf38639a556fc",
+      "bytes": 7597,
+      "lines": 204,
+      "sha256": "e75880f5ac9c3f70a1252d343cfd6b81453d413e040bd3a21e6c676936b0460b",
+      "readRanges": [
+        [
+          1,
+          204
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 204 lines: broken URL extraction, recovered-link filtering, malformed-report refusal and per-request deadline. Archive response validation/output handling and overall query bounds remain unexecuted questions; source reading is not a live-link acceptance result."
+    },
+    {
+      "path": "scripts/check_zizmor_compatibility.py",
+      "gitBlob": "b3b43d0ca1b2a9d4d78cb2f55fcbbfbc82b29aad",
+      "bytes": 3228,
+      "lines": 90,
+      "sha256": "e7a6fdb6aa5c0f843c730ebdb393f248a20fc9c41a4281cc3fb747b89d8a25bd",
+      "readRanges": [
+        [
+          1,
+          90
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 90 lines: one shared pin, complete upstream tree, lock/digest-table compatibility and fatal API/parse failure. Preserve exact pin policy; no live action lookup or fresh audit was executed."
+    },
+    {
+      "path": "scripts/create_github_release.py",
+      "gitBlob": "e8c6fe9e65dff5c4c2e54eaf315e8138b55aba7e",
+      "bytes": 10572,
+      "lines": 343,
+      "sha256": "a13904f4d841296fc9ed86da0fa5cc0c742328672f1450a194b016e02dda1b77",
+      "readRanges": [
+        [
+          1,
+          343
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 343 lines: fence-aware exact changelog slicing, UTF-8 note limits, fresh command-suspension tokens, draft recovery and published-release preservation. Keep Formal AI publication/source policy; no real release or hosting effect was executed."
+    },
+    {
+      "path": "scripts/create_manual_changeset.py",
+      "gitBlob": "24f4c2b023e08ebb9397c497f2a12f95dd88a93e",
+      "bytes": 7315,
+      "lines": 249,
+      "sha256": "69dff7dae4675f4ae2573761be12b72930c6cdc947d9e7d0aa0ea442fcc5e9f2",
+      "readRanges": [
+        [
+          1,
+          249
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 249 lines and execute the complete unchanged entrypoint with real local Git and a frozen clock. Same-second writes silently erase the earlier category/description. A disposable exclusive-create guard preserves existing bytes and fails; 4 focused and 29 maintained cases pass. Upstream remains unchanged. Formal AI Rust timestamp writes remain an unexecuted source question."
+    },
+    {
+      "path": "scripts/detect_code_changes.py",
+      "gitBlob": "2ee94adb8d211aee095b09349d35bb9f62b50ec4",
+      "bytes": 6456,
+      "lines": 200,
+      "sha256": "c3702e1f2e41c7fe2c5a18220469f8997f15d0ba5f841761874018cebbb8c7a5",
+      "readRanges": [
+        [
+          1,
+          200
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 200 lines: event comparison/fallback, extension and docs classification, outputs. Suppressed Git errors remain the already-filed #156 defect, not a new report. Formal AI production detector already rejects observation failures; no additional upstream fix is claimed."
+    },
+    {
+      "path": "scripts/format_release_notes.py",
+      "gitBlob": "8e6bdb61e4da36068e2dd931135588c46c8926f0",
+      "bytes": 7497,
+      "lines": 266,
+      "sha256": "1d33ffb5d87a6b9a3036231d41ff79e085fd645e8c2611fac959c23c6fd75254",
+      "readRanges": [
+        [
+          1,
+          266
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 266 lines and execute the full pinned CLI with an offline gh boundary. Literal newline/carriage-return/quote escapes in a code example are corrupted and written with success. Removing the three rewrite operations in a disposable candidate preserves these bytes, badge insertion, idempotence and fatal read/write errors. Four focused and 38 maintained cases pass; report remains drafted pending published evidence. No analogous named helper was found in the scoped Formal AI source search."
+    },
+    {
+      "path": "scripts/install-lychee.sh",
+      "gitBlob": "f9ddafb9c020eb78d5442c187cf1580a82c8d4b9",
+      "bytes": 2916,
+      "lines": 69,
+      "sha256": "46d243bde5b336d8a5ed3437bc3b9c544ec84526bc5deee0c84d2ecf4be53ea0",
+      "readRanges": [
+        [
+          1,
+          69
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 69 lines: exact version/architecture/checksum pins, bounded retries, independent published/downloaded digest comparison, executable discovery and later-step PATH propagation. Preserve Formal AI verified download policy; no binary installation was executed."
+    },
+    {
+      "path": "scripts/install-python-dependencies.sh",
+      "gitBlob": "f0ca104dea1f95af25c1cb6ea27f6415469c1653",
+      "bytes": 298,
+      "lines": 8,
+      "sha256": "893e55ad88b12550b3cc3646248a0bad8595b6ecb376b053d394ae595073bc99",
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 8 lines: pinned pip/uv, locked all-extras synchronization and later-step venv PATH propagation. Existing Formal AI build/PR policy stays authoritative; no package installation was executed."
+    },
+    {
+      "path": "scripts/preflight-credentials.sh",
+      "gitBlob": "2e61bd0dcaf820a9220e49f3af022a7d9afbcbd6",
+      "bytes": 13127,
+      "lines": 347,
+      "sha256": "0efc7345b04a89dcd24cbdcede41e02b1798ede464e22c3134819a0208879b42",
+      "readRanges": [
+        [
+          1,
+          347
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 347 lines: finite Docker/PyPI authorization probes, write-scope cancellation attempt, report/release exit rules and refusal/unknown counters. No credentials, provider writes or probe execution is claimed. Partial-unknown release policy, HTTP-200 token shape and cancellation-result wording remain inspection questions requiring controls before a defect claim."
+    },
+    {
+      "path": "scripts/publish_to_pypi.py",
+      "gitBlob": "99bcfa5b588a2a6b9face4cf0bb595c08b0669bb",
+      "bytes": 4946,
+      "lines": 172,
+      "sha256": "d8c9e8ad8cc9cd3b7b0209aed8d5a5b4e35b9e0c44dfc5b71aca45248e8df55d",
+      "readRanges": [
+        [
+          1,
+          172
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 172 lines: clean/build/twine checks, shared distribution budget before both dry-run and upload, skip-existing upload and fatal tool/build/check failures. No package installation, build, credential flow, OIDC exchange or publication was executed. Existing Formal AI artifact identity and publication policy remains authoritative."
+    },
+    {
+      "path": "scripts/read-job-cancel-in-progress.sh",
+      "gitBlob": "2b46282c900d2fcf901ce7feb2532e7fdcb0c816",
+      "bytes": 2718,
+      "lines": 96,
+      "sha256": "d5f7ac76c961b7b24a1f304ce54a046abb3c7293c06cbac88f0d60a171340e6f",
+      "readRanges": [
+        [
+          1,
+          96
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 96 lines: workflow/job concurrency inheritance, exact boolean versus expression unknown, missing-job sentinel and unreadable-file refusal. This is a bounded indentation-aware scalar reader, not a general YAML parser. No fresh runtime behavior is claimed."
+    },
+    {
+      "path": "scripts/read_manifest.py",
+      "gitBlob": "56b599b780fe6a7ebfa3b7a12e524bf76f18e8af",
+      "bytes": 2589,
+      "lines": 76,
+      "sha256": "a359ecaad2a0ed741063654e50c5cadaebd60f5cf85a3df78b52c6a4494c6b9b",
+      "readRanges": [
+        [
+          1,
+          76
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 76 lines: TOML table traversal, missing/non-string/read/parse refusal and optional GitHub output emission. This replaces flat-text version scraping without claiming a complete manifest-schema validator. No fresh runtime execution is claimed."
+    },
+    {
+      "path": "scripts/recheck_broken_links.py",
+      "gitBlob": "c28d791bae9c09894f09451ee2281caef3758366",
+      "bytes": 13398,
+      "lines": 383,
+      "sha256": "61658678ab17afab6f2851ec3514b65f4ee865e1f41a848755d19e7faf1958ab",
+      "readRanges": [
+        [
+          1,
+          383
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 383 lines: bounded shared/per-request retries, exact GitHub URL-to-Contents translation, no-redirect authorization fallback, finite backoff and final-versus-retryable failures. Recovered outputs are cleared before reporting; only a fully recovered set emits true. No network request, token use or runtime probe is claimed."
+    },
+    {
+      "path": "scripts/release_naming.py",
+      "gitBlob": "e5f7625d5cf497682cddd2efceb7f542f0e3f8b2",
+      "bytes": 3544,
+      "lines": 104,
+      "sha256": "108bc0396fbe767e97000b0005da91e0a60200790051bc599a12ae89724cff55",
+      "readRanges": [
+        [
+          1,
+          104
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 104 lines: root/nested layouts, tag/title normalization, encoded badge paths and parsed exact-host badge detection. The complete unchanged helper is hash verified in formatter observations. No live release is claimed."
+    },
+    {
+      "path": "scripts/run-with-budget-warning.sh",
+      "gitBlob": "dc598f25bf396225a0bd75be3933298dd93a8293",
+      "bytes": 8296,
+      "lines": 273,
+      "sha256": "5afeaa50352115e7807aabfbe2d4d169cd984087fd91346dffc90b1fd83a510a",
+      "readRanges": [
+        [
+          1,
+          273
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 273 lines: isolated output/status files and process group, atomic completion, finite TERM/KILL grace, zombie exclusion and explicit budget exit 124. No process stress, sudo, child command or runtime execution is claimed."
+    },
+    {
+      "path": "scripts/simulate-fresh-merge.sh",
+      "gitBlob": "a592d8ced31cf1104dba637d77c371561ee360e7",
+      "bytes": 3041,
+      "lines": 77,
+      "sha256": "e0ee63cf4c5d194552694b09baa0e2731a7cd7d48effaf3e63c3ae393e920635",
+      "readRanges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 77 lines: required base ref, finite fetch retries, verified ref comparison, fatal fetch/merge conflicts and explicit up-to-date success. No remote fetch, checkout or merge in the template was performed."
+    },
+    {
+      "path": "scripts/smoke_test_published_package.py",
+      "gitBlob": "5ffa28fd21f882c493496220922a42f2c28c81ed",
+      "bytes": 12701,
+      "lines": 397,
+      "sha256": "c64b68b427a3b6eeb632c69d5e23716930aa73268316af2b709828cbd272ee5f",
+      "readRanges": [
+        [
+          1,
+          397
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 397 lines: structured distribution/import/console metadata, disposable virtualenv, finite install retries, fatal installation/import/version/console failures, bounded displayed previews and cleanup. The subprocess output is captured before previewing; this source reading is not an executed package installation, smoke check or proof of bounded capture memory."
+    },
+    {
+      "path": "scripts/validate_changeset.py",
+      "gitBlob": "8dc52a1685703bee9b2f65d86b4a5e1444260603",
+      "bytes": 8530,
+      "lines": 240,
+      "sha256": "299426f36218694904cb08d2402f73f6caf68e8704587dd25628e50c2ab66621",
+      "readRanges": [
+        [
+          1,
+          240
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 240 lines: verified commit/merge-base comparison, NUL-delimited source paths, exact-rename exclusion for added fragments, source layout prefix, visible category/content checks and fatal Git/read/ref errors. Markdown/examples/experiments and authenticated Dependabot authors are explicitly exempt. No Git fixture execution or new acceptance/defect claim is made by this source reading."
+    },
+    {
+      "path": "scripts/version_and_commit.py",
+      "gitBlob": "cc6354e50c999e3a05ed3a1789f18607b83a1739",
+      "bytes": 22127,
+      "lines": 615,
+      "sha256": "9859aaa1410fd878c1c9b6513c7c434c993561136f72e285420ffa77f7cf0234",
+      "readRanges": [
+        [
+          1,
+          615
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 615 lines: failed commands/commit propagate, full source/dependency attestation admits only metadata children, policy errors remain terminal, transient retries preserve identity, lost source races dispatch fresh validation, and publication outputs follow push. No Git race, redispatch or release runtime execution is claimed for this review."
+    },
+    {
+      "path": "src/my_package/__init__.py",
+      "gitBlob": "bf4618d4720e3ca1a1e0384e082f87b6c91d936c",
+      "bytes": 780,
+      "lines": 47,
+      "sha256": "b2a806b2899561356c9fdc6ecd6bd4e0737950afc4b59d8c6a0ee95c096e7d6f",
+      "readRanges": [
+        [
+          1,
+          47
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 47 lines: example add/multiply functions, asyncio delay, version string and public export list. This is the template's replacement placeholder; no package installation or runtime benchmark is claimed."
+    },
+    {
+      "path": "src/my_package/py.typed",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readRanges": [],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Identity verified; semantic reading is pending. Generated bundles and lockfiles are not silently credited as complete."
+    },
+    {
+      "path": "tests/__init__.py",
+      "gitBlob": "42baaec78e880de77a32d8c2ee87068d41597e46",
+      "bytes": 33,
+      "lines": 1,
+      "sha256": "d053d872f065af8999b8601fb0e6980354074e235cac2f81364f322ee820271a",
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read the complete one-line test package marker; no runtime behavior is implied."
+    },
+    {
+      "path": "tests/artifact.test.mjs",
+      "gitBlob": "d286e6bfd9b16161e2dc1fb9273401fd93ad9784",
+      "bytes": 11608,
+      "lines": 206,
+      "sha256": "a0ff371b567fae68c1a11f2497e5fe8fdd5c52cd15d39514cef8bf73a99dbf54",
+      "readRanges": [
+        [
+          1,
+          206
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 206 lines: offline artifact retry fixtures distinguish transport errors, permanent refusals, existing-artifact protection, bounded exhaustion, glob roots/exclusions, Pages tar contents, download digest failure and deterministic ZIP bytes. The archive dependency case can skip when dependencies are absent. These tests were read, not executed here; the generated action bundles and lockfile remain unread."
+    },
+    {
+      "path": "tests/deploy-pages.test.mjs",
+      "gitBlob": "3e1b1029008565d6e919e3aa1b7c4441a8b04655",
+      "bytes": 13122,
+      "lines": 315,
+      "sha256": "60d33468c67459740bd12692f47ab2fa3773f3331547f76108f75d1148331de2",
+      "readRanges": [
+        [
+          1,
+          315
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 315 lines: mocked API coverage includes exact artifact deployment, transient create retries, adoption after a lost response, permanent refusals, poll backoff, cancellation, OIDC, authenticated JSON requests and page_url output. No deployment, network request or upstream test execution is claimed."
+    },
+    {
+      "path": "tests/test_audit_dependencies.py",
+      "gitBlob": "f3fa95e5bd82e27a21a0e0aeee5d6ff2f5f42b88",
+      "bytes": 4269,
+      "lines": 123,
+      "sha256": "e39eaa10e9fba624428ae70a04bc15c15f44d4b9408063ffed317ca4006e5c20",
+      "readRanges": [
+        [
+          1,
+          123
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 123 lines: command failure output, captured output, pip-less audit target, missing dependency surfaces/lock and committed-lock constraints are asserted with subprocess fixtures or mocks. This file does not cover the separately reproduced JavaScript lockfile inventory failure reported as upstream #158. No pip install or upstream suite execution is claimed."
+    },
+    {
+      "path": "tests/test_check_codeql_results.py",
+      "gitBlob": "09f875e2555f8a40040f9dc77eb243c674d5ca55",
+      "bytes": 7645,
+      "lines": 249,
+      "sha256": "5fdd7e204f347b1c91fa5c85b92c8808d5d0f1b150418896430b39c5d6df48cd",
+      "readRanges": [
+        [
+          1,
+          249
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 249 lines: real-CLI SARIF fixtures reject findings at all levels, malformed/unsuccessful reports and malformed notifications; permit valid informational diagnostics; escape injected workflow commands. This source review does not execute CodeQL or the upstream pytest file."
+    },
+    {
+      "path": "tests/test_check_dependency_graph.py",
+      "gitBlob": "ca076fc3c44e8c4974141140fe4107ce903fe4c8",
+      "bytes": 3458,
+      "lines": 114,
+      "sha256": "03729036068f00f2064c6f0444cf4f529f3a2f1d9678074c6b545d7361d2d574",
+      "readRanges": [
+        [
+          1,
+          114
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 114 lines: scripted CLI responses distinguish disabled dependency graph from retryable/rate-limit/network failures, with PR-only advisory behavior and fatal default-branch unknowns. No account-setting change or live dependency-review request is claimed."
+    },
+    {
+      "path": "tests/test_check_dist_size.py",
+      "gitBlob": "10ae4d995ed17c0ec2cf19cb26569cb88d8ed437",
+      "bytes": 3791,
+      "lines": 103,
+      "sha256": "545cde2456150a73f7220e812b3548f58f651ae60b2334711d09bd44d058af33",
+      "readRanges": [
+        [
+          1,
+          103
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 103 lines: tiny wheel/tar fixtures assert per-file limits, largest-member diagnostics, CLI budgets, local publish refusal and ordering before both workflow uploads. Archive construction, PyPI upload and upstream test execution were not performed here."
+    },
+    {
+      "path": "tests/test_check_file_size.py",
+      "gitBlob": "b3d31790264be2a62058ee3882b14cab44c104cb",
+      "bytes": 7292,
+      "lines": 208,
+      "sha256": "3564f6ea45b6681efbdff9fd7d908745b8d08ff62c0a0ca17b3bc8d9d33922d2",
+      "readRanges": [
+        [
+          1,
+          208
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 208 lines: warning/error bands, separate Markdown limits, annotations, shell/JavaScript coverage and generated-tree pruning are asserted. Most fixture helpers omit a final newline; the remaining final-newline line-count boundary question is not reproduced or claimed as a defect here."
+    },
+    {
+      "path": "tests/test_check_pipeline_status.py",
+      "gitBlob": "e9e8e36e9f7286646df10962fda37936ac26794e",
+      "bytes": 8785,
+      "lines": 273,
+      "sha256": "27b9922fea3c8d7a408d76ae81492963e5faebff3ad7decd1d14db260b9613ec",
+      "readRanges": [
+        [
+          1,
+          273
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 273 lines: fixture workflows distinguish literal/dynamic/inherited cancellation, require exact fork PR heads for superseding and retain non-cancelling timeout failures. No fresh hosted cancellation or upstream pytest execution is claimed."
+    },
+    {
+      "path": "tests/test_check_release.py",
+      "gitBlob": "b4484cd948267de26456aa92c038dc6da3b5e138",
+      "bytes": 10742,
+      "lines": 315,
+      "sha256": "d8dc1c76bad324fd52c51ebb00750d6f9ef49dde8e75a82b33abd8314253c12b",
+      "readRanges": [
+        [
+          1,
+          315
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 315 lines: mocked and loopback HTTP fixtures cover independent PyPI/GitHub existence, draft handling, bounded propagation time, permanent errors, redirect refusal, token separation and output publication. No release or registry mutation and no execution of this upstream file is claimed."
+    },
+    {
+      "path": "tests/test_check_required_docs.py",
+      "gitBlob": "2f5b37a885cbd6dac9aa2a981ce8e56212f247d3",
+      "bytes": 1931,
+      "lines": 55,
+      "sha256": "819a9af5cf0b58ca3aaa45e3dc630309d9a145bfaba2137890b815a16d54698f",
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 55 lines: real-script assertions cover the current repository, shared requirement listing, missing section/file annotations and usage errors. No new documentation-contract failure is reproduced and the upstream test file is not executed here."
+    },
+    {
+      "path": "tests/test_check_web_archive.py",
+      "gitBlob": "8af590e8cda557a9e7494d897e3222d58e06ca68",
+      "bytes": 5105,
+      "lines": 149,
+      "sha256": "2440e72b00963d090bd8ac1f5fe07969934aaae44cd532b51432c6579bb3d6e3",
+      "readRanges": [
+        [
+          1,
+          149
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 149 lines: fixtures cover broken-URL extraction, HTTPS snapshot normalization, recovered-URL removal, outage refusal and failed-checker missing/malformed evidence. No live archive acceptance or upstream suite execution is claimed."
+    },
+    {
+      "path": "tests/test_create_github_release.py",
+      "gitBlob": "5a3d82a8f1f2466c4cf4f6544fb9d9e82e68d2e2",
+      "bytes": 12952,
+      "lines": 370,
+      "sha256": "41e47d5af5dc3eeb836880b7a03143d0f3d32bbffa07499aac447dffddaf8f6e",
+      "readRanges": [
+        [
+          1,
+          370
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 370 lines: release creation preserves a published release, repairs drafts, handles layout-aware naming, fenced changelog headings, exact release notes, size caps, badge idempotence and workflow-command guards. Existing fenced-heading history is distinct from the separate standalone formatter escape-corruption reproduction. No hosted release or upstream suite execution is claimed."
+    },
+    {
+      "path": "tests/test_dependabot_health.py",
+      "gitBlob": "ec2aefefd47a46f510c58f63d1fffa135a48ce6a",
+      "bytes": 6518,
+      "lines": 185,
+      "sha256": "de3433dc5f842432ac5a4c9d634827b3063dd7dac2a359c32bb0c0b77f8d89d9",
+      "readRanges": [
+        [
+          1,
+          185
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 185 lines: mocks cover independent age/rebase thresholds, malformed/all-page API data, visible failures, summaries, repository validation, opt-in diagnostics and scheduled read-only workflow policy. No Dependabot PR or account-setting mutation is claimed."
+    },
+    {
+      "path": "tests/test_dependabot_updates.py",
+      "gitBlob": "30061b12a1a2f32c2e0cec21a2e96eb353d19867",
+      "bytes": 2885,
+      "lines": 65,
+      "sha256": "fae819b75683939a34fa78975bd5cda4c8907580facd67468efa5b9a2d58da38",
+      "readRanges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 65 lines: disposable workflow text accepts versioned Dependabot action updates while floating/invalid pins remain rejected. These are lexical/behavioral assertion fixtures, not proof that arbitrary future action versions are operationally compatible. No upstream suite execution is claimed."
+    },
+    {
+      "path": "tests/test_detect_code_changes.py",
+      "gitBlob": "5b385c7d4d2733e3140814e5c8f260a525da7e49",
+      "bytes": 2621,
+      "lines": 73,
+      "sha256": "217e74927b69830d81b920778d8edd6325c6f38f81cf3dd39374ed552d7fe20a",
+      "readRanges": [
+        [
+          1,
+          73
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 73 lines: path classification and exclusion precedence are covered. The failed/partial Git-observation reproductions remain separately recorded; no new runtime assertion is inferred from reading this file."
+    },
+    {
+      "path": "tests/test_extract_artifact.py",
+      "gitBlob": "55f14a15d7dc1e9a5fb20ea7b3ece11c07c9592b",
+      "bytes": 2852,
+      "lines": 88,
+      "sha256": "5d81c39a3b3a77c2a1149014a6c53e8bfcc36b96cce20c4344aefff9c6a370b2",
+      "readRanges": [
+        [
+          1,
+          88
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 88 lines: offline CLI fixtures cover nested empty/binary files, traversal and drive/backslash paths, symlinks/special files, destination symlinks and corrupt ZIPs. Whole-archive validation before extraction is applicable; no upstream test execution or arbitrary archive-size guarantee is claimed."
+    },
+    {
+      "path": "tests/test_issue_118_workflows.py",
+      "gitBlob": "8c382e2ad98ae6f00ab24d467a968d593f58374d",
+      "bytes": 6409,
+      "lines": 155,
+      "sha256": "87b45443ab2a5d2ed373e3abcda42f4605ddda973fc4a14ab0e27736dd557bc9",
+      "readRanges": [
+        [
+          1,
+          155
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 155 lines: workflow policies cover exact bot identity, writer queuing, versioned actions, complete link scanning with day-scoped cache, artifact presence, dependency-graph gating, dispatch defaults, local Pages transport, ShellCheck and exact PR-head superseding. Assertions are source policies, not fresh hosted proof."
+    },
+    {
+      "path": "tests/test_issue_126_workflows.py",
+      "gitBlob": "e6b152e7b2fd42a5f8b2569811aeb271795cf15f",
+      "bytes": 1444,
+      "lines": 39,
+      "sha256": "596e78ec5914edd6feac9fcc66ad1acff91726b951f00966db316ff4ebe06b50",
+      "readRanges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 39 lines: full CodeQL analysis is checked before preserving reports and all artifact operations use the transport wrapper. This is source review, not a CodeQL scan or artifact transfer."
+    },
+    {
+      "path": "tests/test_issue_133_workflows.py",
+      "gitBlob": "81b250afafea977f2f630c15b6f5a079791cfad8",
+      "bytes": 8074,
+      "lines": 195,
+      "sha256": "07d1470594cab51776597e7e5642723fde2fc32b186769c099ed93722e4ea4d0",
+      "readRanges": [
+        [
+          1,
+          195
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 195 lines: Pages exact artifact identity, dependency-free action imports, immutable installer pins, day-scoped link cache, npm inventory coverage, Dependabot surfaces, stale bundle repair guidance and patched dependency assertions are covered. The npm inventory success gap is already separately reproduced/reported as #158; these lexical checks do not close it."
+    },
+    {
+      "path": "tests/test_issue_140_concurrency.py",
+      "gitBlob": "f3c6fe0a64cae4346d012bdd49944212bcd5cb29",
+      "bytes": 3220,
+      "lines": 93,
+      "sha256": "414619b0b124534fc70eb69d561c59807f6a278a2ce4d8b943c65c89df8fdf4e",
+      "readRanges": [
+        [
+          1,
+          93
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 93 lines: every job is checked on main and PR refs for isolated check groups and a shared non-cancelling writer group; cancelled superseded checks may pass while writers fail, and only the serialized Pages deploy configures the site. Read-only review; no settings mutation or hosted concurrency acceptance."
+    },
+    {
+      "path": "tests/test_issue_147_workflows.py",
+      "gitBlob": "1e55a4bf25298d681180fb49d9348fb3dda12fec",
+      "bytes": 1849,
+      "lines": 42,
+      "sha256": "2b14260e50c9708fc344e55b41a13597d8237aab0e203396d03ed13f81f6713b",
+      "readRanges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 42 lines: PR caches restore only, main cache saves occur on miss, both architecture digest pins are required, and manual release dispatch retains actions permission and stale-publish refusal. Docker PR caching/build behavior is template-specific and cannot override this repository default-branch build policy."
+    },
+    {
+      "path": "tests/test_issue_91.py",
+      "gitBlob": "915b47426877df1f4e0746f7dfb191621c3d7d18",
+      "bytes": 10378,
+      "lines": 307,
+      "sha256": "1187ac395d3b1684ac0fd1c8b6ff397fecdc224254584016fc2c78d3d82f2501",
+      "readRanges": [
+        [
+          1,
+          307
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 307 lines: runner pins, bounded transient retries, final-failure retention, exact GitHub contents API mapping, token separation, redirect refusal, remaining-budget forwarding and default-off external fallback behavior are tested. No real URL acceptance or upstream pytest execution is claimed."
+    },
+    {
+      "path": "tests/test_issue_98.py",
+      "gitBlob": "15eaefe73725232022f4368e76206a8d29147751",
+      "bytes": 7309,
+      "lines": 172,
+      "sha256": "6699adb68a869b67afe09406e7a6b4ff36a15a2e82b7cfbe670d0de6133cc1e9",
+      "readRanges": [
+        [
+          1,
+          172
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 172 lines: Git defaults, shell-expression isolation, scanner pin compatibility, resumable package publication with propagation checks, both Python layouts, full CodeQL filtering and throttled GitHub link checks are asserted. Keep result integrity and deadlines; no registry publication or dependency installation occurred."
+    },
+    {
+      "path": "tests/test_lychee_install_and_scan.py",
+      "gitBlob": "58e7c7fa5e551f7d9ed139a5fd9a9d07bdfc8516",
+      "bytes": 8755,
+      "lines": 253,
+      "sha256": "d33366975d51cf9416c238e135d10217587eb041609f4d8671110e562d05b531",
+      "readRanges": [
+        [
+          1,
+          253
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 253 lines: loopback fixtures distinguish one-shot failure from bounded verified downloads, reject digest/asset/version drift, select architecture pins, and execute the exact workflow scan command with a stand-in process. The stale-report clearing and nonzero/zero-result distinction are applicable; source review alone does not execute these cases."
+    },
+    {
+      "path": "tests/test_my_package.py",
+      "gitBlob": "93922ece2904df96c30b0b5f56fcc39d6dab1ac6",
+      "bytes": 1610,
+      "lines": 64,
+      "sha256": "bfed38cf721c7b5ab6a8efc01da2983ba73a7d6cc80b46d1e28ab459414378ce",
+      "readRanges": [
+        [
+          1,
+          64
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 64 lines: example addition, multiplication and asynchronous delay assertions. These teach the Python template package API; no corresponding Formal AI arithmetic capability or benchmark result is inferred."
+    },
+    {
+      "path": "tests/test_preflight_credentials.py",
+      "gitBlob": "57da8eebd0e2dadc6f8ade43cfb2acfd92ed1ab3",
+      "bytes": 12571,
+      "lines": 359,
+      "sha256": "b4be97d76a8f0481d876c210a70b776d560105d30cdb28266a25e361d9977525",
+      "readRanges": [
+        [
+          1,
+          359
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 359 lines: local fake OIDC/PyPI/Docker endpoints distinguish verified, refused and unknown credentials; the Docker write probe cancels its fake upload, all failures remain visible, publisher guidance depends on observed registry state, and secrets stay out of output. No real credential probe, upload or account mutation was performed."
+    },
+    {
+      "path": "tests/test_preview_regeneration_docs.py",
+      "gitBlob": "03a4a0dce97f691afdc3a77a6df8d613ef637fb8",
+      "bytes": 1109,
+      "lines": 30,
+      "sha256": "0d8acf79c6504cc9bda2d890fbcbd9e601835efed08062c177f828603e42d26b",
+      "readRanges": [
+        [
+          1,
+          30
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 30 lines: the preview parity gap is explicitly retained until a browser surface exists, with discoverability assertions. This documentation contract is not a visual regression or proof of browser app support."
+    },
+    {
+      "path": "tests/test_project_metadata.py",
+      "gitBlob": "5ab54afaf3492f944774d593786c01442ea3a16f",
+      "bytes": 2305,
+      "lines": 57,
+      "sha256": "049708645770dfce1b7fcff7f4592b08c390e31ca5c26a2e4d60e1564162ad01",
+      "readRanges": [
+        [
+          1,
+          57
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 57 lines: declared mypy compatibility and current options, documentation dependency parity and universal-lock version constraints are checked. The generated lock itself remains unread; package installation and full resolution validation are not claimed."
+    },
+    {
+      "path": "tests/test_read_manifest.py",
+      "gitBlob": "d9d49656ef8f87a6756683b48fc67f42073b8473",
+      "bytes": 2534,
+      "lines": 81,
+      "sha256": "2991fc6f97ba88d4fae9b746530d6437dcda4463255e912280623e8867f991aa",
+      "readRanges": [
+        [
+          1,
+          81
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 81 lines: table-aware TOML version reading rejects missing/non-string fields and supports GitHub output. Prefer parsed metadata to grep scrapes. No upstream pytest execution is claimed."
+    },
+    {
+      "path": "tests/test_recheck_broken_links.py",
+      "gitBlob": "a1363ac7e8aaad4aeae2eb1498af704dad0afb4c",
+      "bytes": 13743,
+      "lines": 432,
+      "sha256": "431e6b649ecc350b2bb34b49c2dd5839cc3e20e83c8181f4d9fc7685f5260cac",
+      "readRanges": [
+        [
+          1,
+          432
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 432 lines: distinguish status answers from unanswered transport failures; preserve request policy, bounded retries and healthy-only recovery, deduplicate URLs and keep live-link failure gating when evidence is missing or malformed. Recovery-helper exit zero is advisory and does not release the parent gate by itself; no live link scan ran."
+    },
+    {
+      "path": "tests/test_release_badges.py",
+      "gitBlob": "645d44d22eccff34826c061323fed84e3dccf2f9",
+      "bytes": 1708,
+      "lines": 40,
+      "sha256": "ab8a1fe962ccf984a44869abfcc3dbdc70cb5e2b2e97196efa1cca59ecc9985e",
+      "readRanges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 40 lines: unrelated/lookalike URL negative controls, actual badge host idempotence and existing project-link behavior. These cases do not exercise literal escape preservation. Existing pytest cases were not rerun; new full-CLI observations cover that boundary offline."
+    },
+    {
+      "path": "tests/test_release_integrity.py",
+      "gitBlob": "4c03849e21d30662621be4cf52a11e27c7cd39a4",
+      "bytes": 12050,
+      "lines": 338,
+      "sha256": "72789550cd67d7380dcdc4270ca8a90c5611bb80befca959e63d3c220529c536",
+      "readRanges": [
+        [
+          1,
+          338
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 338 lines: real isolated Git histories exercise complete-tree source/dependency/mode/fragment provenance, sole-parent metadata releases, clean checkout and nested-layout boundaries, detached HEAD publication, identical-commit retry/adoption and preserved manual inputs. Source drift defers for fresh CI instead of rebasing a validated build. No actual upstream suite, remote push or release was executed here."
+    },
+    {
+      "path": "tests/test_release_workflow.py",
+      "gitBlob": "8a2ddbfbf873f9a5567535d6d098d83b20597fdf",
+      "bytes": 24479,
+      "lines": 582,
+      "sha256": "f756511b87ee652a969fad0eb8a4a74160e51d704a028e934e7d110fe279bc5e",
+      "readRanges": [
+        [
+          1,
+          582
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 582 lines: every release/dependency condition, least-privilege scope, timeout, required context, fresh merge, detected package layout, metadata-aware tag and package smoke check is asserted. Template PR Docker builds explicitly conflict with the local default-branch build policy; retain the useful provenance, failure and deadline contracts without enabling PR application builds."
+    },
+    {
+      "path": "tests/test_run_with_budget_warning.py",
+      "gitBlob": "1cf08cd902f24754c2f5d132d7a28a4d1c4c1274",
+      "bytes": 9507,
+      "lines": 270,
+      "sha256": "f06e25f8b328c844db193991d9942926a6cbdf3266cd5879684ef5ea0a5c03d0",
+      "readRanges": [
+        [
+          1,
+          270
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 270 lines: separate streams/status survive relaying; overruns warn then terminate whole groups, stubborn descendants receive bounded escalation even after root exit, and inside-budget commands remain successful. The fixture treats an exited zombie as terminated; our browser regression instead reaps its own descendant before exact ESRCH. No upstream timing suite was run."
+    },
+    {
+      "path": "tests/test_simulate_fresh_merge.py",
+      "gitBlob": "94fa339ac619471820463a8969997f4f1c33d6ce",
+      "bytes": 4077,
+      "lines": 139,
+      "sha256": "0591d616a23fcf49df949c74f56fbdd551cc2b3ae78a36fb02f2c326fda3626d",
+      "readRanges": [
+        [
+          1,
+          139
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 139 lines: fake Git covers required base ref, bounded transient recovery, persistent failure and invalid retry settings. Broader return-code/path integrity is covered by our separate unchanged-source reproductions; these source assertions are not actual fresh-merge execution."
+    },
+    {
+      "path": "tests/test_smoke_test_published_package.py",
+      "gitBlob": "37a453c7fdf7d8c3d55b0b3a61dd8ce3b29b2bb8",
+      "bytes": 3908,
+      "lines": 130,
+      "sha256": "bfa53377fac8368d004e6dc3b74d9f5c696d7daaf63aec13be1413ac3c222653",
+      "readRanges": [
+        [
+          1,
+          130
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 130 lines: package/import/console metadata comes from project config, captured output remains literal, exact published versions retry with bounded delay and previews avoid shell pipelines. No live pip install or consumer publication acceptance occurred."
+    },
+    {
+      "path": "tests/test_sphinx_compat.py",
+      "gitBlob": "bc60fd08a76df5139b2adcae93ddc81324863f17",
+      "bytes": 1271,
+      "lines": 31,
+      "sha256": "2784518529d141c507124b16b6774f71564e3af881e48cf3bb45f486851329d1",
+      "readRanges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 31 lines: the Napoleon option compatibility shim runs with warnings as errors and its class mutation is restored by pytest. Sphinx-specific behavior is not a Formal AI runtime dependency requirement."
+    },
+    {
+      "path": "tests/test_validate_changeset.py",
+      "gitBlob": "22671dacb86ec9482b8113ea42d9d7d8f19eb9ce",
+      "bytes": 15723,
+      "lines": 400,
+      "sha256": "3a43e4c51bc33f60c21b427fed2daf41926f5d98b7e590df62d0b1a379439f00",
+      "readRanges": [
+        [
+          1,
+          400
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 400 lines: isolated histories require genuinely added committed fragments, preserve bot/exemption scope, validate replacement content, reject missing/unrelated refs and failed diffs, account for deleted/renamed source, and keep checkout drift or shell-like ref data from changing the verdict. The useful complete-observation/committed-content contracts are applicable; no upstream pytest execution is claimed."
+    },
+    {
+      "path": "tests/test_version_and_commit.py",
+      "gitBlob": "66ff3b6a9d259c06df1f42488df77f87bac8d3bb",
+      "bytes": 12393,
+      "lines": 358,
+      "sha256": "0198c53656805e7cb0d27ca67177da1bc22d8b24e3cf6ff815e8216b64790798",
+      "readRanges": [
+        [
+          1,
+          358
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 358 lines: table-aware versions, numeric changelog collection, rule refusals before lost-race classification, bounded identical-commit transient retry and default-off diagnostics are asserted. Failed source provenance and policy refusals never become successful publication. No release commit, remote push or fresh upstream test run occurred."
+    },
+    {
+      "path": "tests/test_workflows.py",
+      "gitBlob": "9021d8477ad6e26284baca00e963b3218337021d",
+      "bytes": 20208,
+      "lines": 457,
+      "sha256": "eecfcfd87d3d9c16fdad9c561502652bedb9536c15dbe4baa73380b7190a9441",
+      "readRanges": [
+        [
+          1,
+          457
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 457 lines: complete security/dependency/link/status coverage, scoped caches, opt-in Pages deploy, job/step deadline headroom, supported concurrency, lint/audit pins, Dependabot scan inclusion, explicit credential persistence and per-job write permissions are checked. Lexical fixture counts are not a substitute for a parsed complete reference graph, already maintained separately here."
+    },
+    {
+      "path": "tests/test_zizmor_compatibility.py",
+      "gitBlob": "2ed6dfa2ecc3518411592429365cbc85946030ce",
+      "bytes": 3392,
+      "lines": 97,
+      "sha256": "89d32488c4fe2bb57dd7713ebaef546f4cec2de86981ce967da74e6b02338b84",
+      "readRanges": [
+        [
+          1,
+          97
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 97 lines: action/CLI compatibility follows the selected complete upstream tree and exact supported version entries; ambiguous pins, truncated metadata and lookup failures stay fatal. No network compatibility lookup or scanner execution was performed in this source review."
+    },
+    {
+      "path": "tests/workflow_helpers.py",
+      "gitBlob": "eb73e44450e8304d61ba018bf5a3839466a5140d",
+      "bytes": 6620,
+      "lines": 183,
+      "sha256": "e43857dcbe2df8f25e8841ee60674d1e3b953e4cf8e6efa5db7089eb626ea2d9",
+      "readRanges": [
+        [
+          1,
+          183
+        ]
+      ],
+      "reviewStatus": "active-source-fully-read",
+      "decision": "Read all 183 lines: indentation-based helpers locate workflow jobs, steps, run blocks, conditions, timeouts, action identities and concurrency keys, and reserve 30 percent of the job cap for setup. These helpers support this fixed template layout and are not arbitrary YAML parsing; our shared template observations retain parsed complete workflows/reference closure."
+    },
+    {
+      "path": "uv.lock",
+      "gitBlob": "fd204a5539782a9d7e3baa5f856a78779a82e9b7",
+      "bytes": 186202,
+      "lines": 1515,
+      "sha256": "67842f49036cf55bcadffca57bd195b386462d24bdfff83d06a16b2790d93261",
+      "readRanges": [],
+      "reviewStatus": "active-source-unread",
+      "decision": "Identity verified; semantic reading is pending. Generated bundles and lockfiles are not silently credited as complete."
+    },
+    {
+      "path": "dev/log/issues/138/pulls/139/sessions/01a1af75-ad8e-7230-a043-d5bf39a4d8c7/metadata.json",
+      "gitBlob": "7b7429575d5866fd59d159ae07f46c6870e153bc",
+      "bytes": 596,
+      "lines": 20,
+      "sha256": "c95a8b0fa77d82a0a9a79c05d1700471c3528a99871424095300b11610ec662a",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/138/pulls/139/sessions/01a1af75-ad8e-7230-a043-d5bf39a4d8c7/solve.log",
+      "gitBlob": "ed7bceae956e06a13192cbb41d6752376ecdc9e1",
+      "bytes": 1128404,
+      "lines": 3249,
+      "sha256": "d7770ddc783ec32b9663fa0a539867bd5afa2f21fe43d6a26d1e6f20b3bdac7e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/DEPENDENCIES-AUTOMATION.md",
+      "gitBlob": "d6923704f836ccefb12310b93ffa9d931277c7f6",
+      "bytes": 6020,
+      "lines": 34,
+      "sha256": "de096c606603da33fe6652fcb502849d5f89eadc74c830f419c7db80e2f2382e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/DEPENDENCIES-NPM.md",
+      "gitBlob": "f0c886761161002e73398bdc864171918d93b8b7",
+      "bytes": 50259,
+      "lines": 306,
+      "sha256": "efc0ca686c197f1f5d3c13572a6a52dcdebf8623ab9552d11047026f4f5a15d6",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/DEPENDENCIES-PYTHON.md",
+      "gitBlob": "d39318f7d27daa86c3bb8e12c98bcc7d19284314",
+      "bytes": 14175,
+      "lines": 107,
+      "sha256": "f6fb2356b5c1154eb513613cb8e34e6febe665153cc7923dd61ce30436a7404d",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/PLAN.md",
+      "gitBlob": "d17830b5d4b5d87481e44e10b87baa5ff066f0f8",
+      "bytes": 4176,
+      "lines": 38,
+      "sha256": "60dce38d50a9c3eb8aea782e67acb6ecfc99a541a899ebc707440e48974f1fef",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/RESEARCH.md",
+      "gitBlob": "fc182d8ee33827104d28788718add15d9cf9de05",
+      "bytes": 18029,
+      "lines": 151,
+      "sha256": "2de7c3bdc4b0c39acbe3975c2de41b2aeee530596f2b54a0eb530aa9d564daa9",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/UPSTREAM-ARTIFACT.md",
+      "gitBlob": "6c356bb7f9ccf067e7717ceae897c686788c90ac",
+      "bytes": 3026,
+      "lines": 28,
+      "sha256": "e905a7552837c4d293b2f5314aa46a07b60b3cfb67621d4243a5bb44dddd8cb3",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/UPSTREAM-SCRIV.md",
+      "gitBlob": "6ccfc45ea0223d1be32f1009a0cac580c4191d4c",
+      "bytes": 1547,
+      "lines": 14,
+      "sha256": "8966a11f75b2444f1a18a665273b5a09e8432133d2fc317be3025af7619e016c",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/UPSTREAM-SPHINX.md",
+      "gitBlob": "4cdb0ca53ca1af63e4d0ef2a76e4a341f2021d5d",
+      "bytes": 1893,
+      "lines": 24,
+      "sha256": "0a906adfac9617aa2ba420c9d9cabc92956cad17e3332dbf8909a200419f4825",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/VALIDATION.md",
+      "gitBlob": "28085c923da519cca638ec03b0562658fab82fce",
+      "bytes": 4100,
+      "lines": 47,
+      "sha256": "fdc7b25f400ceec944b2d50901d7c1b8eda1655da0ce4a52513ac4d2f75e992f",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/actionlint-docker-1.7.12.json",
+      "gitBlob": "a0a909f67a9e477f4495e155b437a06152a03090",
+      "bytes": 2211,
+      "lines": 71,
+      "sha256": "a2247740aba1f7772385bf44e23c27369ba77159354052c469812291e2b26e57",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/actionlint-docker-latest.json",
+      "gitBlob": "c0d76e125f19a99203605f2a9b640fe008ca1c26",
+      "bytes": 2210,
+      "lines": 71,
+      "sha256": "993e88b739a400d49fb7531e0888c5cbedd4e4af889edb3be592a8e2be2382f8",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/actionlint-final.log",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/actionlint-ubuntu-search.json",
+      "gitBlob": "be30e46462517a06d8fac85ff9cc51da1bd9d3ae",
+      "bytes": 707,
+      "lines": 1,
+      "sha256": "4d97263aaa43732afdb635de649b76c5fce111bfbfd2ca219d70d66048bba58e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/archiver-8-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/artifact-network-repro.log",
+      "gitBlob": "db32b9d6f1c6f913a6d40920e9b1cab9111a8057",
+      "bytes": 208,
+      "lines": 2,
+      "sha256": "ba73c57e19681faacca21058cf8a476c060ec298eaff45d9963fb87da96079b4",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/artifact-report-url.txt",
+      "gitBlob": "11909ca7da889cad5d39204070783206c7feff35",
+      "bytes": 47,
+      "lines": 1,
+      "sha256": "1a15e390cc8b6e2e0356a3d18ef33eb5c8fac6571c8921b1a6dd1960c1f75e8c",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/branch-runs-after-push.json",
+      "gitBlob": "c13662dc27b54bacf543028293f8a95283a5f0ba",
+      "bytes": 320,
+      "lines": 1,
+      "sha256": "6b22eeb49ea1aa9885ebcdd8ed0fe35b82844dd2970bdf791de4c0a0dc74a1c4",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/branch-runs-current.json",
+      "gitBlob": "e9979d282cd47becde85b08a6888fa752d408853",
+      "bytes": 1387,
+      "lines": 1,
+      "sha256": "c7f2b4a0e0b74f759c7024626a126f86e64ce1f5bdf2bb9ce2d9757d6c41eb56",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/branch-runs-initial.json",
+      "gitBlob": "b5ee1f0bf855853f5100bc0901eef9898653a3a5",
+      "bytes": 306,
+      "lines": 1,
+      "sha256": "1f0ad54a73196a6e69bc314f6bd97ce2be4cf7ce27bcbc7ccdce37d6722dacd9",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/checkout-action-runtime.txt",
+      "gitBlob": "5b0524f730db83f9513c18ab31a6c086c7239076",
+      "bytes": 5144,
+      "lines": 118,
+      "sha256": "d59219cb79590abdb877deaa14e3b65a00c05318bf5a6f3b989b9162b5d08c35",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/ci-implementation.json",
+      "gitBlob": "52ce0909b71d284d23bdc1a2c9e925656a2872d6",
+      "bytes": 1087,
+      "lines": 1,
+      "sha256": "78000928a294ce728635644b5e546a31a6458c17fe0697dc357f9e88aef61303",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/ci-progress.json",
+      "gitBlob": "2ad5bdfd7697344484b7c954501a9dad67668b38",
+      "bytes": 4274,
+      "lines": 1,
+      "sha256": "65d91d5632663e6a453dc48f95324415e2f6cd2524f67d540cd72efe61109264",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/ci-workflows-43579252326.log",
+      "gitBlob": "f4ab59334b040147d9b78c608c4fc95027962061",
+      "bytes": 173091,
+      "lines": 1255,
+      "sha256": "ae332de19bf80a76763e5c57618bfbbf13795626a5e57f5f6ed54234504413a9",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/codeql-action-releases.json",
+      "gitBlob": "53c75eb85fedfcd5da5a67a24137a768850d506f",
+      "bytes": 336358,
+      "lines": 415,
+      "sha256": "171a1ec8652e7ca98ba660c7e91ebcc9f59eb52b6e301137ada96d766bba6881",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/conversation-final.json",
+      "gitBlob": "0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc",
+      "bytes": 2,
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/dependabot-alerts.json",
+      "gitBlob": "bd09a3b2912345f4f902523cc516892c50d8b65c",
+      "bytes": 9873,
+      "lines": 1,
+      "sha256": "9b7b89ad50fec3f71c9d62a614c861dce0d4cb5b92b1a557025c58fc7ebcb78b",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/dependency-update-best-practices.txt",
+      "gitBlob": "032bc17557d98a5570fe77c9ed9dc446d2ebabe6",
+      "bytes": 21788,
+      "lines": 260,
+      "sha256": "aab60a752cf480ae498a51b9a97689a58b7c5a2681e9b91a7e554cf5c8140254",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/docs-build.log",
+      "gitBlob": "d3a8b44ac41d4a83e133167a1ce5842ccf16c1cd",
+      "bytes": 2512,
+      "lines": 42,
+      "sha256": "91f03f9a3a1eea83b0f19dc150f01c01a851a798b6a11f6cdc0c436e5de32874",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/file-size-final.log",
+      "gitBlob": "c28f0c7997dc643c2a4adce664bfb43b149eb013",
+      "bytes": 158,
+      "lines": 5,
+      "sha256": "18858e96d6eb8b3579dde0b7664213565e54a3e2561672de875aec5e4712467e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/file-size.log",
+      "gitBlob": "a158824b8d3b992597c174975102b28c786f4364",
+      "bytes": 287,
+      "lines": 9,
+      "sha256": "a4c064efd9744ad0d0184e0e2ebae969d98b8378eb24f2b4de70e8b36c0d2e6d",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/hooks-migration.txt",
+      "gitBlob": "522925ee3ef558c3a38ebabd36f195bf94daa44b",
+      "bytes": 20509,
+      "lines": 737,
+      "sha256": "8c0f2748c37de53ebb2c7836ba506d989795c5af83c0632879cb3f656b63edf0",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/implementation-review.diff",
+      "gitBlob": "3e85e42f4cd1ae73b2fbc631e64589c974caf4f0",
+      "bytes": 38095,
+      "lines": 1001,
+      "sha256": "b4160567d7f54ab85c6c8fe53c1edc675621281cb423bcace5c2f18a83fa53c6",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/issue-comments-final.json",
+      "gitBlob": "1455dd74b882d7ea600fbca942f2de16612a608c",
+      "bytes": 3085,
+      "lines": 1,
+      "sha256": "feeb59ddd802e7743c502ef910350271042a4516babf76d4ddd356feaa75a29c",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/issue-final.json",
+      "gitBlob": "8ec401f2d61b03014e46576f7fffb56ef1c1adab",
+      "bytes": 9509,
+      "lines": 1,
+      "sha256": "d91727249c45155f55f3c1e543c7932f26398d2fd43e91a50a45f2a0265ce7c7",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/issue.json",
+      "gitBlob": "8ec401f2d61b03014e46576f7fffb56ef1c1adab",
+      "bytes": 9509,
+      "lines": 1,
+      "sha256": "d91727249c45155f55f3c1e543c7932f26398d2fd43e91a50a45f2a0265ce7c7",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/main-pipeline-43575817822.log",
+      "gitBlob": "13e1b57f3c16f4efabbdd51960461939ffaf8e1f",
+      "bytes": 279162,
+      "lines": 2114,
+      "sha256": "32e5adac1d76821353d4ab6926ff09e246a0e6b779c7e7f83e1c0c983cd93bec",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/main-runs-initial.json",
+      "gitBlob": "03b48077d67d092c59da27a33ee3dd0a4c179986",
+      "bytes": 2592,
+      "lines": 1,
+      "sha256": "997afd5192f68004e7b884db348cc0a16577c4b25561e1414c84af82e08e6828",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/mypy-final.log",
+      "gitBlob": "8539cd2ed98cd05e81db9dc93832e897c1d2a470",
+      "bytes": 42,
+      "lines": 1,
+      "sha256": "5d4b6d285b77932e3d08212c3b4974d0a803f98ec60408ac6ccf6a063fa6c19e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/mypy-migration.txt",
+      "gitBlob": "9c0fd66ff5ae3aef61d391a86c30166ef1874a6b",
+      "bytes": 353136,
+      "lines": 5814,
+      "sha256": "3b4231b9d5731202044e551e8992c4a554dc8e95f5eb1e39a6ea27d13276c275",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/myst-migration.txt",
+      "gitBlob": "d79c7010b6982397c499f12ac553ee4003351963",
+      "bytes": 59369,
+      "lines": 1167,
+      "sha256": "d7f90ddce6bb12ba62d93d8136c1a5718c758ca699877eaa30c2af2e28eb897e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/node-releases.json",
+      "gitBlob": "f8fc1131ba9220a09fc544491075f482372448cb",
+      "bytes": 7285,
+      "lines": 368,
+      "sha256": "c1e24854101b368002babf4d873439c125ca2522f9681d95efee2b099bd291d3",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/node-tests-final.log",
+      "gitBlob": "8412f7d756dcdc2f33402b031679fbd7c5a4b8be",
+      "bytes": 3931,
+      "lines": 57,
+      "sha256": "62c1b46c07799f68afb27c87e850858b3540cee7a35eaa710fc954963b04c00d",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/nonlatest.json",
+      "gitBlob": "aff3967ce0899df662111bcb65210b6061103801",
+      "bytes": 5322,
+      "lines": 214,
+      "sha256": "1c78e56e61ae0d3607da52f57e925a6a7bfd3b37b4a3a6de46f3719f2230ae40",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/npm-12-migration.json",
+      "gitBlob": "b0b1aa01ad461c0183af4d369a10731d3ff1f108",
+      "bytes": 6443,
+      "lines": 1,
+      "sha256": "60f8c9e8841ff8f58209241b69e65dc3aa185403918f41c871d58cf3c91ca73d",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/npm-audit-final.json",
+      "gitBlob": "e79c07bc972e7f6e01c72f0285b83029bd3fc558",
+      "bytes": 363,
+      "lines": 22,
+      "sha256": "e7b124430de09e29c84ae25a9fa33f56ea151a9834a61c331dee602770cc82ee",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/npm-audit.json",
+      "gitBlob": "da3832c88bb2f3b6d9151653bb64caf6c2055356",
+      "bytes": 362,
+      "lines": 22,
+      "sha256": "ac55174c869ce7250b9e52a6b73628bc9161cdc1189f207b0bbf3d15c9e9bce8",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/npm-build-final.log",
+      "gitBlob": "101e0e42b471c9a4dc57743ff890bff773b27498",
+      "bytes": 312,
+      "lines": 10,
+      "sha256": "b403126d230febc4d92fab4c09921a315899d84fe180eaa6f1980da155f6ac4f",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/npm-ci-final.log",
+      "gitBlob": "f83afeb9d6cf80c9b10c62fe05fe56186f159af0",
+      "bytes": 27,
+      "lines": 2,
+      "sha256": "f79fe3de9319dc334e0d729be8135b0881505852aa101edef5efd485aaa50976",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pages-retry-search.json",
+      "gitBlob": "a321faeb851b20cadfde51d78d82d04ee3a54d76",
+      "bytes": 865,
+      "lines": 1,
+      "sha256": "ed6c13b64293b2b609a970a51dcc6e2a19168327b30d10c1af5c812407e5c1af",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pip-audit.log",
+      "gitBlob": "5fe031159b6c671f4ae00e9aef796b98b91f1144",
+      "bytes": 48178,
+      "lines": 746,
+      "sha256": "806d2e4952c17bf4876423cb15063b5131403d2f9547a09f3e32da1eaf442e1c",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pr-135.json",
+      "gitBlob": "0f420b59a2e5465f9d2f3addad3412cdefda933f",
+      "bytes": 17953,
+      "lines": 1,
+      "sha256": "e7b9ecb14e21a170727f6345b17e801ebfcc500495a8984b7153e7b6e67e44e5",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pr-150.json",
+      "gitBlob": "78f5ee2318cc3aefd96513d716c4a676d3aeda9d",
+      "bytes": 5708,
+      "lines": 1,
+      "sha256": "ba7ab1c495d166e843cdb3918955a369a7766ffd4d3e626758a4e273b39ef355",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pr-initial.json",
+      "gitBlob": "d2e801f4a0ef0a43c1da0ac3f290d9708b518d43",
+      "bytes": 1135,
+      "lines": 1,
+      "sha256": "51e1a5490706797a31735825191f6eb448f3a898fcb87b288e15ce57663762cc",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pr-progress.json",
+      "gitBlob": "b6648bfb360ad891ac2921cab78dab1296750d97",
+      "bytes": 238,
+      "lines": 1,
+      "sha256": "1020d8b12cbfe5af4beeeeb46227ec7deb55ec8b3d967dcd439172cdd73a6f1b",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pre-commit-final.log",
+      "gitBlob": "e9623fc1d0d91798f1c38f3114c99c6b32d66275",
+      "bytes": 880,
+      "lines": 11,
+      "sha256": "a7106d8e4876d8c6d7f20b86a68604cb9bcccbf36cf4cd956c6ac6dff21df04e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pre-commit-verified.log",
+      "gitBlob": "e9623fc1d0d91798f1c38f3114c99c6b32d66275",
+      "bytes": 880,
+      "lines": 11,
+      "sha256": "a7106d8e4876d8c6d7f20b86a68604cb9bcccbf36cf4cd956c6ac6dff21df04e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pytest-asyncio-migration.txt",
+      "gitBlob": "cdb9c8854fd7441e20e6850620bceb7b1fcf0ec2",
+      "bytes": 32480,
+      "lines": 551,
+      "sha256": "b0d077f114f23ff90aebb6d2cb9cb75b6913ac9cf586c089b41fec0ab92befae",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pytest-cov-migration.txt",
+      "gitBlob": "cf4037899972dd8e477bfe410f3bdcedeb5765b0",
+      "bytes": 26463,
+      "lines": 518,
+      "sha256": "11d608e7dfd8599e78b4b0fd17f5cb61aac39cc30935faf69d92b595f257b1c4",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pytest-migration.txt",
+      "gitBlob": "874ff25d2f42220d20178eda30c3dc078441fa32",
+      "bytes": 53538,
+      "lines": 1694,
+      "sha256": "0f62753714a4b2f68712846fc501e7f0970c687db77d4acbff3d63537b1c713f",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/pytest-verified.log",
+      "gitBlob": "b6e42ade9095c5ea6259cb2ae7cc005cced53bbd",
+      "bytes": 1677,
+      "lines": 23,
+      "sha256": "814adfb0a632e3e0441e2832e5d37223a37c0e96c72072ec966beb4be19b6502",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/python-build.log",
+      "gitBlob": "a787a3044b4ac83eec8386ef97ff6e70992f5cf4",
+      "bytes": 233,
+      "lines": 6,
+      "sha256": "9aa7e166ffd7d89387374657570d46a518447c8cbadb813f2441627c30319a6b",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/python-tags.txt",
+      "gitBlob": "1bfda09c57391dd0765158f3331a9eb0e8467d80",
+      "bytes": 5736,
+      "lines": 686,
+      "sha256": "9c799dc292501d96caa4bd44d8af97d4c3bce07d912dcbda96317bd2c8c240cf",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/recent-prs.json",
+      "gitBlob": "d978f4e0e1bae993cdda65e0edb54a09486e9488",
+      "bytes": 1252,
+      "lines": 1,
+      "sha256": "b2fd44abf875edbb363a0c6fc7827c2a509a17d92a6855465ddbe3a96cb97b0f",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/registry-final.json",
+      "gitBlob": "4eba185ed549929d576da45c49344891614f6c3c",
+      "bytes": 326395,
+      "lines": 10446,
+      "sha256": "c1619855acb9dfba9fa8e3ed85d0b58ce8a3f9c8a9f028f030ca84a3bd7af85d",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/registry-initial.json",
+      "gitBlob": "de0615acce90ec6a0a2a622a14a426947c68ed6b",
+      "bytes": 296521,
+      "lines": 6764,
+      "sha256": "d78da98adc628096f225f95bf876c3e16362308e16e905c005b9ad8e2225137a",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/review-comments-final.json",
+      "gitBlob": "0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc",
+      "bytes": 2,
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/review-comments.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/reviews-final.json",
+      "gitBlob": "0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc",
+      "bytes": 2,
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/reviews.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/ruff-verified.log",
+      "gitBlob": "55785c40f1920a2d1f028eedfad0da5b29ff15b3",
+      "bytes": 47,
+      "lines": 2,
+      "sha256": "fd0f2ea60483d79bfb0b6570d2a3255966bcd03b5699d35f965f7eacc9c6738d",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/runner-node-runtimes.txt",
+      "gitBlob": "85ff32777f71e0880ec5e594ce7505eef849e4c7",
+      "bytes": 9722,
+      "lines": 197,
+      "sha256": "eefddd78888f2b359ea4bd6a69d788ac0a72817c13bb05860c64e52baec5142e",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/scriv-conflict.log",
+      "gitBlob": "201bc0b891d821e08469284cb2628351ae26f21f",
+      "bytes": 1190,
+      "lines": 20,
+      "sha256": "2d5da9e61b54d5ca0226e2f2bd7f87a0c6b8471ad30c4087503155e11c6b6c63",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/scriv-markdown-conflict.log",
+      "gitBlob": "e3970db3cb03fa5ed6613f8c2607ca57c6e65a45",
+      "bytes": 1694,
+      "lines": 24,
+      "sha256": "45fe345ece8b2a53c26c1a724951bfa7933766a9776dd478b1012c215132f7a8",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/scriv-report-url.txt",
+      "gitBlob": "830d6ca948cbc1467b99cd3c42e618aec3bad7dc",
+      "bytes": 43,
+      "lines": 1,
+      "sha256": "7f84531165bd2ec4f20c126f8b646ac545b11864500d2a2d05242bce396a9b33",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/scriv-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/secretlint-evidence.log",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/secretlint-final.log",
+      "gitBlob": "7f6b116fab09a1e22b3848d18a8578c4c3330dfe",
+      "bytes": 52,
+      "lines": 2,
+      "sha256": "eda780aa2721e105ce5c6d66afe31d5457950781277e65cc427a192dc3a4e0f3",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/secretlint-update-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/setup-node-action.txt",
+      "gitBlob": "31057efa69b67281683c7b601a1d202329eaa3c1",
+      "bytes": 3002,
+      "lines": 47,
+      "sha256": "84cd55863dbadfb83ed786c0bb4336553c2f4ceb52e102fccec01848f1977387",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/shellcheck-release.json",
+      "gitBlob": "7d9c231d4d1d491890ddd5558de761e3f53d4ce4",
+      "bytes": 24737,
+      "lines": 1,
+      "sha256": "f4cc294485c7eafb43805c3bc5b5886437bc8532b9977203d059f84a738ac3a3",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/sphinx-after.log",
+      "gitBlob": "ac9a59d96e13e9fe94f4e5f2636f2bd58cba35e2",
+      "bytes": 78,
+      "lines": 1,
+      "sha256": "defae7924c33b01e089606955adad2c761cb355f38e0353e70c15039a7f8f8e3",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/sphinx-before.log",
+      "gitBlob": "2228837e9459242de175cf11f921e4f17f967f33",
+      "bytes": 1064,
+      "lines": 21,
+      "sha256": "72cf7d16cbe5fe493d9bc9d571021511724c03b87cfd8b8b84293d5a95dceec0",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/sphinx-napoleon-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/sphinx-report-url.txt",
+      "gitBlob": "e2c71a15858d8518b9c984c62fd03292b1f62d42",
+      "bytes": 50,
+      "lines": 1,
+      "sha256": "a9a6d475757b9b38d79a9b6a7251e1aa1586935a700e5d23ef8b82bbd7be6734",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/sub-issues-final.json",
+      "gitBlob": "0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc",
+      "bytes": 2,
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/sub-issues.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/toolchain-occurrences.txt",
+      "gitBlob": "a1b7de5bef70a66ee7117df5abd2cd1a8b46ead5",
+      "bytes": 2102,
+      "lines": 28,
+      "sha256": "fa092127094f58f28d3711ad2733c1a3227d349155796fa786cbc69c8605ec52",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/toolkit-related-issues.json",
+      "gitBlob": "c64c1aa80e7f5489940e8fb88ce03aae0b0e9c60",
+      "bytes": 4559,
+      "lines": 31,
+      "sha256": "1edb3100b71965788b297fa20e489b8bfdd907cdb6cfb96c391d4f26ed1f7752",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/twine-check.log",
+      "gitBlob": "7e8b96547a84a4d815759a2e6b7f1235e5ef40a0",
+      "bytes": 102,
+      "lines": 2,
+      "sha256": "05f565f48004de4a55445552c3c06c151cb461f6dbfe7cfa6402f5a80657361f",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/twine-migration.txt",
+      "gitBlob": "dee339bfa11e5306033877d28eb32d663578f702",
+      "bytes": 29949,
+      "lines": 819,
+      "sha256": "128180736415189217a264229d22f9bc041409bd6eac130a3fad93c6ba15a792",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/ubuntu-2604.json",
+      "gitBlob": "e5894094d5ff4cc4b5bbc26ac98195cc72d66e43",
+      "bytes": 7982,
+      "lines": 1,
+      "sha256": "b1201f2fac5e1ea8bd0e692c918e4b5fd2b94fbbda89dbe8dd313109e9f967e3",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-actionlint-654.json",
+      "gitBlob": "2f72d9e0da4adc2f097dbf181754c9307f627ae3",
+      "bytes": 11520,
+      "lines": 1,
+      "sha256": "bb4ea96223c6a3039de2f84da4b2ce48f2a8bb335158a19c0ceea484f1e16125",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-actionlint-657.json",
+      "gitBlob": "224af03a141c5b7186a76febf9ba0b7bc5ac5289",
+      "bytes": 7848,
+      "lines": 1,
+      "sha256": "de47394831315cda004b6b9711b227cc403660fc2933e73ffae61af30e21d6f3",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-actionlint-682.json",
+      "gitBlob": "d802110ca0b89d3f92a5505e057186aa4fd2b056",
+      "bytes": 10199,
+      "lines": 1,
+      "sha256": "1634a97758532738e0de3288f313e0eabfc17902a31f421e2a31c0f2d10d1484",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-actionlint-711.json",
+      "gitBlob": "fca2161b87e099886fe172b6f502315bae058941",
+      "bytes": 10639,
+      "lines": 1,
+      "sha256": "a899ae6cc76a63dd99674a352ada5d735ffc02e61045c4f01d38626518832c40",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-archiver-2483.json",
+      "gitBlob": "f8667d1ea2a4775821a1c3b347cbc999fa7e0322",
+      "bytes": 102,
+      "lines": 1,
+      "sha256": "4eb1680b41f63bf1f97e244711d9571bc9cd1e10570265eae4358c006bd03966",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-archiver-all-search.json",
+      "gitBlob": "d424a131584836c382a979857f191d0a7df18a77",
+      "bytes": 194,
+      "lines": 1,
+      "sha256": "ac789b51cfab19f4f46690390d112135b6d58a25780cbe91e12cf89e2530d97b",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-archiver-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-2575.json",
+      "gitBlob": "bac45d8e841ad2d4cd346ee09d96ea7cdf43c667",
+      "bytes": 1765,
+      "lines": 1,
+      "sha256": "784a48b307601202e59e9c106a63f93fcd0cc1b61b6e2d6483921a3926f5e5a2",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-download.txt",
+      "gitBlob": "9e85347038e3ce2f3c00794d472dbe0d74d27e7a",
+      "bytes": 9701,
+      "lines": 316,
+      "sha256": "101779ec2ec80d993c2eb8fe88b38f268258238b3dba739a86d8ce79087be90f",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-finalize-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-manifest.json",
+      "gitBlob": "2f0179b5cebfbd15cfc60a61daff4b39e5024584",
+      "bytes": 2182,
+      "lines": 77,
+      "sha256": "11e27d680ad6960344214666ccf7d98d036ef6d5793fcc9bfafb6b60f9f45a35",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-network-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-networkerror-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-reset-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-artifact-retry-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-buffer-2003-comments.json",
+      "gitBlob": "c487e7ecdefa129a85d45f8a3a7dc86b11fa6ac6",
+      "bytes": 21366,
+      "lines": 1,
+      "sha256": "0d45711dcd62f70855620aa3ecada9d8c083a2bd595e6508a8df944bfc0c34ae",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-buffer-2003.json",
+      "gitBlob": "9e57c8e21b36a0b08892fd5f125cf1f6855e0542",
+      "bytes": 6724,
+      "lines": 1,
+      "sha256": "83a683e098f7ad99cbf645380782cd7dbe8ea52f0799807591dca455c98b4c48",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-buffer-constructor-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-buffer-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-glob-2564.json",
+      "gitBlob": "dd29a6d31fae4d0e57112d4399625adbe48b13d2",
+      "bytes": 4583,
+      "lines": 1,
+      "sha256": "0d9e9a3866c595fa997ddb3f0e46910e700eab507513635779b2d95a11d62c24",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-glob-search.json",
+      "gitBlob": "3bcce637a537112ab9c0288ab9efd640ca719624",
+      "bytes": 190,
+      "lines": 1,
+      "sha256": "9c11da7f6d1a1e6a8a9eb73fb9492ba9edc58da4b65ac9e1804ea8f917bf1df9",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-lychee-2297.json",
+      "gitBlob": "0bd7eaa392f665a450ae29d97dbcbb049c9c160c",
+      "bytes": 14814,
+      "lines": 1,
+      "sha256": "c91596d1593bde0ed84b329329fa195663264f71ac4fb454d05fd199260b7f1c",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-pages-434.json",
+      "gitBlob": "1268b5041e2c1634f4e080b556f8a8bd0e309da6",
+      "bytes": 4215,
+      "lines": 1,
+      "sha256": "f41675f4639e8ffbb784f1f739737785e329fd8b29ef6d61f6077bd0739b7e80",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-pages-454.json",
+      "gitBlob": "2e95967aef9cdafe475a17e1810f31542a6eb5d0",
+      "bytes": 3477,
+      "lines": 1,
+      "sha256": "ef80966fcda9499a8d62a6da228b9855cea9d16d0d9c14958d039ba124252b8c",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-pages-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-toolkit-retry-search.json",
+      "gitBlob": "d408a1459b6b6eb3ee0ebf5a94d8b2b92d3c117d",
+      "bytes": 3681,
+      "lines": 1,
+      "sha256": "18f0cf89367340eec1f068193b86cdf343b101d5b0087ad357ac5c934182fb28",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-unzip-all-search.json",
+      "gitBlob": "aa43db883b283eab0e21c4c52ee1fb69892b2663",
+      "bytes": 365,
+      "lines": 1,
+      "sha256": "5e5cd7875adc6e7fcea380269bc8cd71d0631f9bb532c10532494f97d24e6425",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-unzip-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/upstream-zizmor-bootstrap-search.json",
+      "gitBlob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/version-occurrences.txt",
+      "gitBlob": "c70f7768411d843049964016b3f3f5e6443c0ba9",
+      "bytes": 18044,
+      "lines": 215,
+      "sha256": "bc7215886c165e46d1e02a2e1b33c9c52c94505624c1659c8b16725ff0e9f4c0",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/workaround-inventory.txt",
+      "gitBlob": "7802aa50f68e27c184fa23a81e85d300156ccc81",
+      "bytes": 911,
+      "lines": 8,
+      "sha256": "2f5b7fc2cc3813fff749bdfbd5284571dc7eefa390aa17404bfe4fc06da94282",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/zizmor-action.txt",
+      "gitBlob": "81b0bdf4a2add7b43ae715cfff53724b665cb366",
+      "bytes": 4382,
+      "lines": 136,
+      "sha256": "2a69eee96d716915de53d79f7cf7e7415607c9c74e2d4af75a110733fa6b6d2b",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    },
+    {
+      "path": "dev/log/issues/151/pulls/152/zizmor-verified.log",
+      "gitBlob": "f1d5843789ed6c322dfe2602061ef14a12265b8d",
+      "bytes": 232,
+      "lines": 2,
+      "sha256": "26df5ab0c1c4221aab75faaf86c580911f3313fa0f6480e7e126520ac8c6df0b",
+      "readRanges": [],
+      "reviewStatus": "historical-unread",
+      "decision": "Identity verified; historical report/log/source content remains semantically unread."
+    }
+  ]
+}

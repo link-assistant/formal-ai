@@ -1,0 +1,88 @@
+{
+  "before": "aaac490e3087736f303434502f9710c3228aed4e",
+  "repairCommit": "6ca491b2905aafafcdfabc2096ac8e0f4d0feb54",
+  "changes": [
+    {
+      "kind": "fixture",
+      "id": "rust/tests/unit/specification/chat_surface.rs::behavior_rules_can_be_updated_through_conversation_history",
+      "path": "rust/tests/unit/specification/chat_surface.rs",
+      "before": "dd73a316f6992dfc213d44381781c1cf8be22e4fcf2502a8f16d482e72f4cd46",
+      "after": "637574f534e58db169568adbc010fac60d8666c73dff0e96fe178752552db9e0"
+    },
+    {
+      "kind": "fixture",
+      "id": "rust/tests/unit/specification/chat_surface.rs::behavior_rule_can_be_taught_with_russian_phrasing",
+      "path": "rust/tests/unit/specification/chat_surface.rs",
+      "before": "dd73a316f6992dfc213d44381781c1cf8be22e4fcf2502a8f16d482e72f4cd46",
+      "after": "637574f534e58db169568adbc010fac60d8666c73dff0e96fe178752552db9e0"
+    },
+    {
+      "kind": "fixture",
+      "id": "rust/tests/unit/specification/chat_surface.rs::most_recent_behavior_rule_wins_when_multiple_apply",
+      "path": "rust/tests/unit/specification/chat_surface.rs",
+      "before": "dd73a316f6992dfc213d44381781c1cf8be22e4fcf2502a8f16d482e72f4cd46",
+      "after": "637574f534e58db169568adbc010fac60d8666c73dff0e96fe178752552db9e0"
+    },
+    {
+      "kind": "fixture",
+      "id": "rust/tests/unit/specification/chat_surface.rs::unknown_answer_opener_is_deterministic_for_the_same_prompt",
+      "path": "rust/tests/unit/specification/chat_surface.rs",
+      "before": "dd73a316f6992dfc213d44381781c1cf8be22e4fcf2502a8f16d482e72f4cd46",
+      "after": "637574f534e58db169568adbc010fac60d8666c73dff0e96fe178752552db9e0"
+    },
+    {
+      "kind": "fixture",
+      "id": "rust/tests/unit/specification/chat_surface.rs::behavior_rule_teach_supports_english_if_i_ask_grammar",
+      "path": "rust/tests/unit/specification/chat_surface.rs",
+      "before": "dd73a316f6992dfc213d44381781c1cf8be22e4fcf2502a8f16d482e72f4cd46",
+      "after": "637574f534e58db169568adbc010fac60d8666c73dff0e96fe178752552db9e0"
+    },
+    {
+      "kind": "fixture",
+      "id": "rust/tests/unit/specification/chat_surface.rs::behavior_rule_teach_supports_russian_esli_grammar",
+      "path": "rust/tests/unit/specification/chat_surface.rs",
+      "before": "dd73a316f6992dfc213d44381781c1cf8be22e4fcf2502a8f16d482e72f4cd46",
+      "after": "637574f534e58db169568adbc010fac60d8666c73dff0e96fe178752552db9e0"
+    },
+    {
+      "kind": "source",
+      "path": "rust/tests/unit/specification/chat_surface.rs",
+      "before": "dd73a316f6992dfc213d44381781c1cf8be22e4fcf2502a8f16d482e72f4cd46",
+      "after": "637574f534e58db169568adbc010fac60d8666c73dff0e96fe178752552db9e0"
+    },
+    {
+      "kind": "source",
+      "path": "rust/tests/unit/specification/debug_session.rs",
+      "before": "16de6028fb30474a3736cd219b346786513ef40fe18ec6e9b3bc968dbcc98dc7",
+      "after": "6b49fa0a0bee8fff9d9bd0b67937245fec664d1ee681a1b0b208ffb982c2c89d"
+    }
+  ],
+  "counts": {
+    "total": 1193,
+    "supported": 223,
+    "unsupported": 970,
+    "nativeSources": 141
+  },
+  "completeObjectsPreservedExceptEightReviewedHashes": true,
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "previousWitnessSha256": "7c0bdcaceb4aa0777a5bd0c9a9d35402f70569ea1c2b505d94e2ee73bd25c92f",
+  "refreshedWitnessSha256": "787108c54dbb62b7548a29b453627d91ed0357dd9e02af903871a6056b6aefa3",
+  "focusedTestsPassed": 36,
+  "fullJavaScriptGates": {
+    "pass": 89,
+    "CIOnlySkips": 54,
+    "failure": 0
+  },
+  "nativeBehaviorVerifiedByWitness": false,
+  "hostedRepairQualification": "pending",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 653564,
+    "sha256": "ef337e17491fbd87f73b2ae35da33f114a9327597f3ccec3aa983ea6d7ad4296"
+  },
+  "members": 21,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T08:01:42.626586+00:00"
+}

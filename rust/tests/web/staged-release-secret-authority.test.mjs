@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,7 +10,7 @@ const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery
 const YAML = createRequire(import.meta.url)('yaml');
 const names = ['CARGO_REGISTRY_TOKEN', 'CARGO_TOKEN', 'DOCKERHUB_USERNAME', 'DOCKERHUB_TOKEN'];
 function fixture() {
-  const canonical = fs.readFileSync(new URL(evidence + 'original-release-workflow.yml', root), 'utf8');
+  const canonical = readCanonicalSource(root).text;
   const packet = JSON.parse(fs.readFileSync(new URL(evidence + 'stage-source-coverage.json', root), 'utf8'));
   const projection = buildStagedReleaseProjection(canonical, packet);
   return {

@@ -163,7 +163,7 @@ export function describeTurn(stages, root = REPO_ROOT) {
     method,
     ...handlers,
     stages: stages.map((stage) => {
-      const kind = String(stage?.source_event ?? '');
+      const kind = String(stage?.source_origin ?? stage?.source_event ?? '');
       return { rust: at(RUST, kind, handlers.rust?.symbol ?? ''), js: at(JS, kind, handlers.js?.symbol ?? '') };
     }),
   };

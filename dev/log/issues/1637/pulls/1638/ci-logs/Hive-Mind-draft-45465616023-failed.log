@@ -1,0 +1,908 @@
+draft	UNKNOWN STEP	﻿2026-11-24T19:10:21.8168753Z Current runner version: '2.338.2'
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8187091Z ##[group]Runner Image Provisioner
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8187799Z Hosted Compute Agent
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8188212Z Version: 20261111.635
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8188703Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8189268Z Build Date: 2026-11-11T01:49:01Z
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8189779Z Worker ID: {513b79c2-768f-429a-a9f1-80e37433cd33}
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8190298Z Region: us-west-2
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8190701Z Cloud: AWS
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8191070Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8192412Z ##[group]Operating System
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8192860Z Ubuntu
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8193233Z 24.04.5
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8193596Z LTS
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8193961Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8194358Z ##[group]Runner Image
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8194803Z Image: ubuntu-24.04
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8195192Z Version: 20261116.133.1
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8196178Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.133/images/ubuntu/Ubuntu2404-Readme.md
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8197373Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.133
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8198089Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8199188Z ##[group]GITHUB_TOKEN Permissions
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8200691Z Actions: write
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8201134Z Contents: write
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8201790Z Issues: write
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8202302Z Metadata: read
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8202749Z PullRequests: write
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8203161Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8204710Z Secret source: Actions
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8205427Z Cache mode: read
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8205877Z Prepare workflow directory
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8550648Z Prepare all required actions
+draft	UNKNOWN STEP	2026-11-24T19:10:21.8587743Z Getting action download info
+draft	UNKNOWN STEP	2026-11-24T19:10:22.2530527Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+draft	UNKNOWN STEP	2026-11-24T19:10:24.3117719Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+draft	UNKNOWN STEP	2026-11-24T19:10:24.5497706Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+draft	UNKNOWN STEP	2026-11-24T19:10:24.8589159Z Complete job name: draft
+draft	UNKNOWN STEP	2026-11-24T19:10:24.9159024Z ##[group]Run echo "FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs" >> "$GITHUB_ENV"
+draft	UNKNOWN STEP	2026-11-24T19:10:24.9159705Z ^[[36;1mecho "FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs" >> "$GITHUB_ENV"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:10:24.9160389Z ^[[36;1mmkdir -p "$RUNNER_TEMP/formal-ai-draft-logs"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:10:24.9160795Z ^[[36;1mdate -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/draft-started-at"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:10:24.9161974Z ^[[36;1mecho "Attempt budget: 20 minutes for solve; the image is pulled before it in a 6-minute step, and the attempt pulls again only if that failed. Build budget: 22 minutes on a separate runner." > "$RUNNER_TEMP/formal-ai-draft-logs/attempt-policy.txt"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:10:25.1766698Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:10:25.1767290Z env:
+draft	UNKNOWN STEP	2026-11-24T19:10:25.1767650Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:10:25.1768011Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:10:25.1768536Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:10:25.1768864Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2037505Z ##[group]Run actions/checkout@v7
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2037874Z with:
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2038235Z   persist-credentials: false
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2038557Z   repository: link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2040671Z   token: ***
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2040930Z   ssh-strict: true
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2041179Z   ssh-user: git
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2041718Z   clean: true
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2042002Z   sparse-checkout-cone-mode: true
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2042404Z   fetch-depth: 1
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2042719Z   fetch-tags: false
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2042983Z   show-progress: true
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2043283Z   lfs: false
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2043530Z   submodules: false
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2043973Z   set-safe-directory: true
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2044313Z   allow-unsafe-pr-checkout: false
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2044623Z env:
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2044880Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2045246Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2045722Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2046121Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:10:25.2046480Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:29.6517064Z Syncing repository: link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:10:29.6518510Z ##[group]Getting Git version info
+draft	UNKNOWN STEP	2026-11-24T19:10:29.6518867Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+draft	UNKNOWN STEP	2026-11-24T19:10:29.6519410Z [command]/usr/bin/git version
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9091141Z git version 2.56.1
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9107264Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9117639Z Temporarily overriding HOME='/home/runner/work/_temp/cdb87507-37f4-4dc7-bf3f-a0d5281ed00a' before making global git config changes
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9118766Z Adding repository directory to the temporary git global config as a safe directory
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9123159Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9573025Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9580771Z ##[group]Determining repository object format
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9581332Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9582518Z ##[group]Initializing the repository
+draft	UNKNOWN STEP	2026-11-24T19:10:29.9582888Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0480985Z hint: Using 'master' as the name for the initial branch. This default branch name
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0481791Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0482377Z hint: to use in all of your new repositories, which will suppress this warning,
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0482802Z hint: call:
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0483019Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0483432Z hint: 	git config --global init.defaultBranch <name>
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0483797Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0484187Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0484795Z hint: 'development'. The just-created branch can be renamed via this command:
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0485258Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0485544Z hint: 	git branch -m <name>
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0485839Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0486300Z hint: Disable this message with "git config set advice.defaultBranchName false"
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0487029Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0494790Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0541368Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0542088Z ##[group]Disabling automatic garbage collection
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0544827Z [command]/usr/bin/git config --local gc.auto 0
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0568022Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0568463Z ##[group]Setting up auth
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0568804Z Removing SSH command configuration
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0572386Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+draft	UNKNOWN STEP	2026-11-24T19:10:30.0600533Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3454188Z Removing HTTP extra header
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3459036Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3503289Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3635953Z Removing includeIf entries pointing to credentials config files
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3640924Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3672216Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3839119Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3852923Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3876379Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3908131Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3920639Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3941740Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3942266Z ##[group]Fetching the repository
+draft	UNKNOWN STEP	2026-11-24T19:10:30.3947068Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +3888187b7804abd110000f454953246b6955928f:refs/remotes/origin/main
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9218832Z From https://github.com/link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9219396Z  * [new ref]             3888187b7804abd110000f454953246b6955928f -> origin/main
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9230098Z [command]/usr/bin/git branch --list --remote origin/main
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9268237Z   origin/main
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9275053Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9302415Z 3888187b7804abd110000f454953246b6955928f
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9306370Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9307136Z ##[group]Determining the checkout info
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9307941Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9310810Z [command]/usr/bin/git sparse-checkout disable
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9353716Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9388862Z ##[group]Checking out the ref
+draft	UNKNOWN STEP	2026-11-24T19:11:14.9391216Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+draft	UNKNOWN STEP	2026-11-24T19:11:16.7791002Z Updating files:   7% (9771/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:17.0363277Z Updating files:   8% (10705/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:17.2600591Z Updating files:   8% (11110/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:17.3793808Z Updating files:   9% (12043/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:17.5126300Z Updating files:  10% (13381/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:17.6103804Z Updating files:  11% (14719/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:17.7288767Z Updating files:  12% (16057/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.0361893Z Updating files:  13% (17395/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.0381972Z Updating files:  13% (18715/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.1800398Z Updating files:  14% (18733/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.2875130Z Updating files:  15% (20071/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.4129226Z Updating files:  16% (21409/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.5124172Z Updating files:  17% (22747/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.5723831Z Updating files:  18% (24085/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.6216415Z Updating files:  19% (25423/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.6854232Z Updating files:  20% (26761/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.7691363Z Updating files:  21% (28100/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:18.8224780Z Updating files:  22% (29438/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.0213156Z Updating files:  23% (30776/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.0371080Z Updating files:  24% (32114/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.0579126Z Updating files:  24% (32592/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.1121862Z Updating files:  25% (33452/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.1565682Z Updating files:  26% (34790/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.2674916Z Updating files:  27% (36128/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.3096222Z Updating files:  28% (37466/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.3464387Z Updating files:  29% (38804/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.3930780Z Updating files:  30% (40142/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.4343199Z Updating files:  31% (41480/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.4913915Z Updating files:  32% (42818/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.5254827Z Updating files:  33% (44156/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.5809430Z Updating files:  34% (45494/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.6648309Z Updating files:  35% (46832/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.7076674Z Updating files:  36% (48170/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.8042405Z Updating files:  37% (49508/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.8859659Z Updating files:  38% (50846/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:19.9325434Z Updating files:  39% (52184/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.0298096Z Updating files:  40% (53522/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.0358834Z Updating files:  41% (54861/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.0489153Z Updating files:  41% (55251/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.0670262Z Updating files:  42% (56199/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.0969310Z Updating files:  43% (57537/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.1604259Z Updating files:  44% (58875/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.2433979Z Updating files:  45% (60213/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.4162579Z Updating files:  46% (61551/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.5732255Z Updating files:  47% (62889/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.6673053Z Updating files:  48% (64227/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.7795734Z Updating files:  49% (65565/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:20.9654449Z Updating files:  50% (66903/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.0361780Z Updating files:  51% (68241/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.0549229Z Updating files:  51% (69188/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.1147959Z Updating files:  52% (69579/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.1518459Z Updating files:  53% (70917/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.1779137Z Updating files:  54% (72255/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.2181541Z Updating files:  55% (73593/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.2676822Z Updating files:  56% (74931/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.3150181Z Updating files:  57% (76269/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.3467461Z Updating files:  58% (77607/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.3989943Z Updating files:  59% (78945/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.4442535Z Updating files:  60% (80283/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.4843901Z Updating files:  61% (81622/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.5605096Z Updating files:  62% (82960/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.6518765Z Updating files:  63% (84298/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.6852697Z Updating files:  64% (85636/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.7319498Z Updating files:  65% (86974/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.7858684Z Updating files:  66% (88312/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.8200076Z Updating files:  67% (89650/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.8471333Z Updating files:  68% (90988/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.8832886Z Updating files:  69% (92326/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.9209682Z Updating files:  70% (93664/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.9746662Z Updating files:  71% (95002/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:21.9959123Z Updating files:  72% (96340/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.0359264Z Updating files:  73% (97678/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.0885037Z Updating files:  73% (98057/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.1949215Z Updating files:  74% (99016/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.3668832Z Updating files:  75% (100354/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.4159959Z Updating files:  76% (101692/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.4965494Z Updating files:  77% (103030/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.5337023Z Updating files:  78% (104368/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.5614373Z Updating files:  79% (105706/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.6654000Z Updating files:  80% (107044/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.6998180Z Updating files:  81% (108383/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.7459860Z Updating files:  82% (109721/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.7862852Z Updating files:  83% (111059/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.8324200Z Updating files:  84% (112397/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.8774084Z Updating files:  85% (113735/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.8995415Z Updating files:  86% (115073/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.9213889Z Updating files:  87% (116411/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.9442778Z Updating files:  88% (117749/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.9667555Z Updating files:  89% (119087/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:22.9964645Z Updating files:  90% (120425/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.0183088Z Updating files:  91% (121763/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.0360267Z Updating files:  92% (123101/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.0452466Z Updating files:  92% (124015/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.1165990Z Updating files:  93% (124439/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.1865615Z Updating files:  94% (125777/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.2610376Z Updating files:  95% (127115/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.3356166Z Updating files:  96% (128453/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.5277107Z Updating files:  97% (129791/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.5870940Z Updating files:  98% (131129/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.6523366Z Updating files:  99% (132467/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.6525244Z Updating files: 100% (133805/133805)
+draft	UNKNOWN STEP	2026-11-24T19:11:23.6526203Z Updating files: 100% (133805/133805), done.
+draft	UNKNOWN STEP	2026-11-24T19:11:23.7911196Z Switched to a new branch 'main'
+draft	UNKNOWN STEP	2026-11-24T19:11:23.7912223Z branch 'main' set up to track 'origin/main'.
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8079861Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8124239Z [command]/usr/bin/git log -1 --format=%H
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8147408Z 3888187b7804abd110000f454953246b6955928f
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8157913Z ##[group]Removing auth
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8158219Z Removing SSH command configuration
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8158700Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8181335Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8511831Z Removing HTTP extra header
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8515058Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8547188Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8885514Z Removing includeIf entries pointing to credentials config files
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8888348Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8908879Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8909527Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8909960Z includeif.gitdir:/github/workspace/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8910279Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8920567Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8933716Z /home/runner/work/_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8939847Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-c3f7700d\-6a53\-4f4d\-8ba9\-8b1b0ae6733a\.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.8999863Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9022302Z /home/runner/work/_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9028026Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-c3f7700d\-6a53\-4f4d\-8ba9\-8b1b0ae6733a\.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9105771Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9125326Z /github/runner_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9129731Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-c3f7700d\-6a53\-4f4d\-8ba9\-8b1b0ae6733a\.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9332617Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9352618Z /github/runner_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9356482Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-c3f7700d\-6a53\-4f4d\-8ba9\-8b1b0ae6733a\.config
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9398378Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9733644Z Removing credentials config '/home/runner/work/_temp/git-credentials-c3f7700d-6a53-4f4d-8ba9-8b1b0ae6733a.config'
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9742778Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9916058Z ##[group]Run actions/setup-node@v7
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9916340Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9916573Z   node-version: 24.x
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9916822Z   check-latest: false
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9918672Z   token: ***
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9918913Z   package-manager-cache: true
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9919169Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9919371Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9919670Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9920003Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9920352Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:23.9920687Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:24.2876215Z Found in cache @ /opt/hostedtoolcache/node/24.22.3/x64
+draft	UNKNOWN STEP	2026-11-24T19:11:26.3540434Z ##[group]Environment details
+draft	UNKNOWN STEP	2026-11-24T19:11:30.2605265Z node: v24.22.3
+draft	UNKNOWN STEP	2026-11-24T19:11:30.2605576Z npm: 11.19.1
+draft	UNKNOWN STEP	2026-11-24T19:11:30.2605921Z yarn: 1.22.22
+draft	UNKNOWN STEP	2026-11-24T19:11:30.2606483Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:30.2857259Z Prepare all required actions
+draft	UNKNOWN STEP	2026-11-24T19:11:30.2857798Z Getting action download info
+draft	UNKNOWN STEP	2026-11-24T19:11:30.4755546Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+draft	UNKNOWN STEP	2026-11-24T19:11:30.7842737Z Download action repository 'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2876920Z ##[group]Run ./.github/actions/download-artifact
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2877212Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2877420Z   artifact-ids: 14954433547
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2877701Z   merge-multiple: true
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2877967Z   path: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2878273Z   repository: link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2878550Z   run-id: 45465616023
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2878784Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2879028Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2879413Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2879770Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2880129Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2880469Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2936263Z ##[start-action display=Run actions/setup-python@v6;id=__self.python]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2983446Z ##[group]Run actions/setup-python@v6
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2983716Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2984238Z   update-environment: false
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2984494Z   python-version: 3.14
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2984730Z   check-latest: false
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2986602Z   token: ***
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2986829Z   allow-prereleases: false
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2987108Z   freethreaded: false
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2987354Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2987562Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2987872Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2988259Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2988657Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:31.2989133Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.4069915Z ##[group]Installed versions
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6236971Z Successfully set up CPython (3.14.10)
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6237652Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6340311Z ##[end-action id=__self.python;outcome=success;conclusion=success;duration_ms=340]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6346862Z ##[start-action display=Allocate raw archive directory;id=__self.temporary]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6376749Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6377353Z ^[[36;1mecho "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6847729Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6848271Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6848516Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6848837Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6849243Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6849666Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:31.6850023Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7017163Z ##[end-action id=__self.temporary;outcome=success;conclusion=success;duration_ms=66]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7020421Z ##[start-action display=Prepare portable Node observation options;id=__self.observation_options]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7044142Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7044644Z ^[[36;1maction_directory="${ACTION_DIRECTORY//\\//}"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7045372Z ^[[36;1mprintf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7074070Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7074461Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7074690Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7075247Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7075622Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7075997Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7076501Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7076924Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7255170Z ##[end-action id=__self.observation_options;outcome=success;conclusion=success;duration_ms=23]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7258379Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_first]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7288671Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7289018Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7289252Z   artifact-ids: 14954433547
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7289523Z   repository: link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7289787Z   run-id: 45465616023
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7290112Z   path: /home/runner/work/_temp/artifact-archives.h4TQNp
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7290405Z   merge-multiple: false
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7290670Z   skip-decompress: true
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7290920Z   digest-mismatch: error
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7291146Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7291562Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7291894Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7292251Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7292653Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7293284Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7293811Z   ARTIFACT_RETRY_ATTEMPT: 1
+draft	UNKNOWN STEP	2026-11-24T19:11:31.7294047Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:31.8434585Z Downloading artifacts by ID
+draft	UNKNOWN STEP	2026-11-24T19:11:32.1796948Z Found 4 artifact(s)
+draft	UNKNOWN STEP	2026-11-24T19:11:32.1803126Z Preparing to download the following artifacts:
+draft	UNKNOWN STEP	2026-11-24T19:11:32.1803921Z - hive-mind-main-evidence-45465616023-1 (ID: 14954433547, Size: 13405, Expected Digest: sha256:ce7320018ce2797949618bcbe1a66323ed18884dfa65540ec48de825dfe64782)
+draft	UNKNOWN STEP	2026-11-24T19:11:32.7523646Z Redirecting to blob download url: https://productionresultssa17.blob.core.windows.net/actions-results/54e991af-ca89-82e7-bb76-190c8f5f3710/workflow-job-run-0cdd69ec-42a7-5f08-bcba-48a8325023c7/artifacts/4781952c2e0f371cd443712f9336e30bb5fff108521b4ef2ad2aca4b66422353.zip
+draft	UNKNOWN STEP	2026-11-24T19:11:32.7524805Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.h4TQNp
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0849945Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.h4TQNp/hive-mind-main-evidence-45465616023-1.zip
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0889147Z SHA256 digest of downloaded artifact is ce7320018ce2797949618bcbe1a66323ed18884dfa65540ec48de825dfe64782
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0889922Z Artifact download completed successfully.
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0890416Z Total of 1 artifact(s) downloaded
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0893004Z Download artifact has finished successfully
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0949048Z ##[end-action id=__self.download_first;outcome=success;conclusion=success;duration_ms=1368]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0953010Z ##[start-action display=Discard partial archives before the second download;id=__self.retry_second]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0964475Z ##[end-action id=__self.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0967279Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_second]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0972740Z ##[end-action id=__self.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0975258Z ##[start-action display=Discard partial archives before the third download;id=__self.retry_third]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0979122Z ##[end-action id=__self.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0981781Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_third]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0985927Z ##[end-action id=__self.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.0989493Z ##[start-action display=Extract verified archives;id=__self.extract]
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1006029Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1007160Z ^[[36;1m"$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1034867Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1035189Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1035455Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1035821Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1036163Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1036582Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1036992Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1037458Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1037948Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.h4TQNp
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1038338Z   DESTINATION: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1038672Z   MERGE_MULTIPLE: true
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1038912Z   ALLOW_EMPTY_SELECTION: false
+draft	UNKNOWN STEP	2026-11-24T19:11:33.1039208Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1306228Z Artifact extraction destination: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1397694Z ##[end-action id=__self.extract;outcome=success;conclusion=success;duration_ms=2040]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1402780Z ##[start-action display=Remove temporary raw archives;id=__self.__run]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1424725Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1425199Z ^[[36;1mrm -rf -- "$RAW_DIRECTORY"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1452064Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1452479Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1452739Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1453094Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1453458Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1453835Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1454278Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.h4TQNp
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1454607Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1515552Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=11]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1647519Z Prepare all required actions
+draft	UNKNOWN STEP	2026-11-24T19:11:35.1648146Z Getting action download info
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3672748Z ##[group]Run ./.github/actions/download-artifact
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3672991Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3673164Z   artifact-ids: 14955810960
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3673345Z   merge-multiple: true
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3673546Z   path: /home/runner/work/_temp/formal-ai-binary
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3673781Z   repository: link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3673979Z   run-id: 45465616023
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3674130Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3674291Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3674554Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3674839Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3675134Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3675419Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3681938Z ##[start-action display=Run actions/setup-python@v6;id=__self_2.python]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3712141Z ##[group]Run actions/setup-python@v6
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3712360Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3712525Z   update-environment: false
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3712716Z   python-version: 3.14
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3712902Z   check-latest: false
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3714726Z   token: ***
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3714889Z   allow-prereleases: false
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3715071Z   freethreaded: false
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3715238Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3715388Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3715628Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3715911Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3716220Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:35.3716490Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4702093Z ##[group]Installed versions
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4741086Z Successfully set up CPython (3.14.10)
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4741649Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4789664Z ##[end-action id=__self_2.python;outcome=success;conclusion=success;duration_ms=110]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4791615Z ##[start-action display=Allocate raw archive directory;id=__self_2.temporary]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4804542Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4805044Z ^[[36;1mecho "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4831706Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4831968Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4832147Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4832386Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4832670Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4832966Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4833245Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4894229Z ##[end-action id=__self_2.temporary;outcome=success;conclusion=success;duration_ms=10]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4897406Z ##[start-action display=Prepare portable Node observation options;id=__self_2.observation_options]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4912765Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4913367Z ^[[36;1maction_directory="${ACTION_DIRECTORY//\\//}"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4914042Z ^[[36;1mprintf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4945249Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4945641Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4946056Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4946468Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4946911Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4947366Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4948229Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+draft	UNKNOWN STEP	2026-11-24T19:11:35.4948770Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5007263Z ##[end-action id=__self_2.observation_options;outcome=success;conclusion=success;duration_ms=10]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5010469Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self_2.download_first]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5037687Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5038005Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5038159Z   artifact-ids: 14955810960
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5038360Z   repository: link-assistant/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5038563Z   run-id: 45465616023
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5038779Z   path: /home/runner/work/_temp/artifact-archives.VDbeok
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5039016Z   merge-multiple: false
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5039198Z   skip-decompress: true
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5039366Z   digest-mismatch: error
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5039534Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5039704Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5039939Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5040213Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5040499Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5041046Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5041729Z   ARTIFACT_RETRY_ATTEMPT: 1
+draft	UNKNOWN STEP	2026-11-24T19:11:35.5041908Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:35.6208209Z Downloading artifacts by ID
+draft	UNKNOWN STEP	2026-11-24T19:11:35.9128581Z Found 4 artifact(s)
+draft	UNKNOWN STEP	2026-11-24T19:11:35.9141148Z Preparing to download the following artifacts:
+draft	UNKNOWN STEP	2026-11-24T19:11:35.9142060Z - hive-mind-main-binary-45465616023-1 (ID: 14955810960, Size: 79816599, Expected Digest: sha256:fcb853507b9611a345a6fd73dfda1e530308511c69f310cf4f3eca00c27e858e)
+draft	UNKNOWN STEP	2026-11-24T19:11:36.5218069Z Redirecting to blob download url: https://productionresultssa17.blob.core.windows.net/actions-results/54e991af-ca89-82e7-bb76-190c8f5f3710/workflow-job-run-0cdd69ec-42a7-5f08-bcba-48a8325023c7/artifacts/7ab73fd8a922a8bdde3c294d5003aa432b8e8aea3e6c1bb0b93ceb3a75343eb9.zip
+draft	UNKNOWN STEP	2026-11-24T19:11:36.5219450Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.VDbeok
+draft	UNKNOWN STEP	2026-11-24T19:11:36.9041071Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.VDbeok/hive-mind-main-binary-45465616023-1.zip
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8818662Z SHA256 digest of downloaded artifact is fcb853507b9611a345a6fd73dfda1e530308511c69f310cf4f3eca00c27e858e
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8819286Z Artifact download completed successfully.
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8819666Z Total of 1 artifact(s) downloaded
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8826950Z Download artifact has finished successfully
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8889651Z ##[end-action id=__self_2.download_first;outcome=success;conclusion=success;duration_ms=8387]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8892788Z ##[start-action display=Discard partial archives before the second download;id=__self_2.retry_second]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8896210Z ##[end-action id=__self_2.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8897905Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self_2.download_second]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8900815Z ##[end-action id=__self_2.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8902585Z ##[start-action display=Discard partial archives before the third download;id=__self_2.retry_third]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8905347Z ##[end-action id=__self_2.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8906867Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self_2.download_third]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8909656Z ##[end-action id=__self_2.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8914111Z ##[start-action display=Extract verified archives;id=__self_2.extract]
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8927204Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8928216Z ^[[36;1m"$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8955331Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8955605Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8955775Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8956026Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8956321Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8956617Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8956974Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8957371Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8957764Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.VDbeok
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8958079Z   DESTINATION: /home/runner/work/_temp/formal-ai-binary
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8958317Z   MERGE_MULTIPLE: true
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8958503Z   ALLOW_EMPTY_SELECTION: false
+draft	UNKNOWN STEP	2026-11-24T19:11:43.8958691Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8137381Z Artifact extraction destination: /home/runner/work/_temp/formal-ai-binary
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8226790Z ##[end-action id=__self_2.extract;outcome=success;conclusion=success;duration_ms=931]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8229043Z ##[start-action display=Remove temporary raw archives;id=__self_2.__run]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8246992Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8247320Z ^[[36;1mrm -rf -- "$RAW_DIRECTORY"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8284780Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8285201Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8285449Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8285819Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8286270Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8286695Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8287187Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.VDbeok
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8287585Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8400010Z ##[end-action id=__self_2.__run;outcome=success;conclusion=success;duration_ms=17]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8452844Z ##[group]Run actions/checkout@v7
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8453047Z with:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8453228Z   repository: link-assistant/hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8453463Z   ref: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8453697Z   path: .hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8453872Z   persist-credentials: false
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8455766Z   token: ***
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8455927Z   ssh-strict: true
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8456089Z   ssh-user: git
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8456254Z   clean: true
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8456429Z   sparse-checkout-cone-mode: true
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8456638Z   fetch-depth: 1
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8456895Z   fetch-tags: false
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8457062Z   show-progress: true
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8457237Z   lfs: false
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8457394Z   submodules: false
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8457568Z   set-safe-directory: true
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8457780Z   allow-unsafe-pr-checkout: false
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8457979Z env:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8458159Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8458394Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8458687Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8458995Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:11:44.8459272Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9153073Z Syncing repository: link-assistant/hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9153894Z ##[group]Getting Git version info
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9154545Z Working directory is '/home/runner/work/formal-ai/formal-ai/.hive-mind'
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9168055Z [command]/usr/bin/git version
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9198984Z git version 2.56.1
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9212702Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9219738Z Temporarily overriding HOME='/home/runner/work/_temp/69d7e0db-7b93-46f4-9259-c08a2c7e2fbc' before making global git config changes
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9220653Z Adding repository directory to the temporary git global config as a safe directory
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9223821Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9253488Z ##[group]Determining repository object format
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9254821Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9255162Z ##[group]Initializing the repository
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9258421Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai/.hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9288207Z hint: Using 'master' as the name for the initial branch. This default branch name
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9288978Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9289759Z hint: to use in all of your new repositories, which will suppress this warning,
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9290278Z hint: call:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9290562Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9290997Z hint: 	git config --global init.defaultBranch <name>
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9291683Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9292211Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9292983Z hint: 'development'. The just-created branch can be renamed via this command:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9293488Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9293828Z hint: 	git branch -m <name>
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9294160Z hint:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9294645Z hint: Disable this message with "git config set advice.defaultBranchName false"
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9295597Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.hive-mind/.git/
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9297350Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9320447Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9321012Z ##[group]Disabling automatic garbage collection
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9324117Z [command]/usr/bin/git config --local gc.auto 0
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9346114Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9346612Z ##[group]Setting up auth
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9347085Z Removing SSH command configuration
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9350775Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9373752Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9524319Z Removing HTTP extra header
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9528155Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9562697Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9817111Z Removing includeIf entries pointing to credentials config files
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9842386Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+draft	UNKNOWN STEP	2026-11-24T19:11:44.9902855Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0078884Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0114263Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path /home/runner/work/_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0141317Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0165605Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git.path /github/runner_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0189986Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path /github/runner_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0211866Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0212193Z ##[group]Fetching the repository
+draft	UNKNOWN STEP	2026-11-24T19:11:45.0216946Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6256545Z From https://github.com/link-assistant/hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6257143Z  * branch            45c85a4b38f37485511cf6039bb15ccdd4a34d7c -> FETCH_HEAD
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6265848Z [command]/usr/bin/git rev-parse --verify --quiet 45c85a4b38f37485511cf6039bb15ccdd4a34d7c^{object}
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6290071Z 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6292135Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6292532Z ##[group]Determining the checkout info
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6293363Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6298621Z [command]/usr/bin/git sparse-checkout disable
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6333851Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6357047Z ##[group]Checking out the ref
+draft	UNKNOWN STEP	2026-11-24T19:11:58.6360892Z [command]/usr/bin/git checkout --progress --force 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:11:59.9573765Z Updating files:  22% (2432/11041)
+draft	UNKNOWN STEP	2026-11-24T19:11:59.9969940Z Updating files:  23% (2540/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.0286782Z Updating files:  24% (2650/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.0622610Z Updating files:  25% (2761/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.1528707Z Updating files:  26% (2871/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.1682718Z Updating files:  27% (2982/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.2498898Z Updating files:  28% (3092/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.3624225Z Updating files:  29% (3202/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.4374538Z Updating files:  30% (3313/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.6350405Z Updating files:  31% (3423/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.6456145Z Updating files:  32% (3534/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.7342497Z Updating files:  32% (3573/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.7962851Z Updating files:  33% (3644/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.8379962Z Updating files:  34% (3754/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.9079600Z Updating files:  35% (3865/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:00.9807703Z Updating files:  36% (3975/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.0164486Z Updating files:  37% (4086/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.0608979Z Updating files:  38% (4196/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.0910229Z Updating files:  39% (4306/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.1918978Z Updating files:  40% (4417/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.2258982Z Updating files:  41% (4527/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.3022431Z Updating files:  42% (4638/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.3120088Z Updating files:  43% (4748/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.3543105Z Updating files:  44% (4859/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.3828941Z Updating files:  45% (4969/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.3909999Z Updating files:  46% (5079/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.4973025Z Updating files:  47% (5190/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.5683571Z Updating files:  48% (5300/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.6548702Z Updating files:  49% (5411/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.6793641Z Updating files:  49% (5444/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.6911950Z Updating files:  50% (5521/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.7845285Z Updating files:  51% (5631/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.7970630Z Updating files:  52% (5742/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.8219688Z Updating files:  53% (5852/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.8870588Z Updating files:  54% (5963/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.8925849Z Updating files:  55% (6073/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.9035630Z Updating files:  56% (6183/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:01.9830248Z Updating files:  57% (6294/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.0919342Z Updating files:  58% (6404/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.1364777Z Updating files:  59% (6515/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.1613021Z Updating files:  60% (6625/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.1761670Z Updating files:  61% (6736/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.2293377Z Updating files:  62% (6846/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.2624869Z Updating files:  63% (6956/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.3140894Z Updating files:  64% (7067/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.3241104Z Updating files:  65% (7177/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.4382816Z Updating files:  66% (7288/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.6537445Z Updating files:  67% (7398/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.6766778Z Updating files:  67% (7463/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.7263068Z Updating files:  68% (7508/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.7579680Z Updating files:  69% (7619/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.7613455Z Updating files:  70% (7729/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.7645647Z Updating files:  71% (7840/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.7673273Z Updating files:  72% (7950/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.7712421Z Updating files:  73% (8060/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8201294Z Updating files:  74% (8171/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8232252Z Updating files:  75% (8281/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8273541Z Updating files:  76% (8392/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8325536Z Updating files:  77% (8502/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8357746Z Updating files:  78% (8612/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8406864Z Updating files:  79% (8723/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8435060Z Updating files:  80% (8833/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8467491Z Updating files:  81% (8944/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8496045Z Updating files:  82% (9054/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8528273Z Updating files:  83% (9165/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8575680Z Updating files:  84% (9275/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8623718Z Updating files:  85% (9385/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8684809Z Updating files:  86% (9496/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8748562Z Updating files:  87% (9606/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8808608Z Updating files:  88% (9717/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8867479Z Updating files:  89% (9827/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.8944444Z Updating files:  90% (9937/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9009217Z Updating files:  91% (10048/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9061846Z Updating files:  92% (10158/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9113226Z Updating files:  93% (10269/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9162289Z Updating files:  94% (10379/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9215790Z Updating files:  95% (10489/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9272641Z Updating files:  96% (10600/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9325194Z Updating files:  97% (10710/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9385240Z Updating files:  98% (10821/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9435144Z Updating files:  99% (10931/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9435725Z Updating files: 100% (11041/11041)
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9436197Z Updating files: 100% (11041/11041), done.
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9553109Z Note: switching to '45c85a4b38f37485511cf6039bb15ccdd4a34d7c'.
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9553685Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9554111Z You are in 'detached HEAD' state. You can look around, make experimental
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9554861Z changes and commit them, and you can discard any commits you make in this
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9555903Z state without impacting any branches by switching back to a branch.
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9556362Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9556751Z If you want to create a new branch to retain commits you create, you may
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9557472Z do so (now or later) by using -c with the switch command. Example:
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9557865Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9558162Z   git switch -c <new-branch-name>
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9558407Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9558693Z Or undo this operation with:
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9558966Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9559147Z   git switch -
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9562021Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9562523Z Turn off this advice by setting config variable advice.detachedHead to false
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9562934Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9563139Z HEAD is now at 45c85a4 2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9640982Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9680922Z [command]/usr/bin/git log -1 --format=%H
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9704264Z 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9715181Z ##[group]Removing auth
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9715726Z Removing SSH command configuration
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9716273Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9741064Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9911219Z Removing HTTP extra header
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9914442Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+draft	UNKNOWN STEP	2026-11-24T19:12:02.9939205Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0105883Z Removing includeIf entries pointing to credentials config files
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0108526Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0129890Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0130534Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0131073Z includeif.gitdir:/github/workspace/.hive-mind/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0131798Z includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0136229Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0155588Z /home/runner/work/_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0162124Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-7f32e066\-2390\-4a82\-8d10\-7f4c3ec5fd89\.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0256844Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0276885Z /home/runner/work/_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0282750Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-7f32e066\-2390\-4a82\-8d10\-7f4c3ec5fd89\.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0685034Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0709600Z /github/runner_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0715548Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git.path \/github\/runner_temp\/git\-credentials\-7f32e066\-2390\-4a82\-8d10\-7f4c3ec5fd89\.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0740705Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0760389Z /github/runner_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.0766017Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-7f32e066\-2390\-4a82\-8d10\-7f4c3ec5fd89\.config
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1201329Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1382956Z Removing credentials config '/home/runner/work/_temp/git-credentials-7f32e066-2390-4a82-8d10-7f4c3ec5fd89.config'
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1388767Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1473756Z ##[group]Run FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1474569Z ^[[36;1mFORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1500356Z shell: /usr/bin/bash -e {0}
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1500569Z env:
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1500737Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1501036Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1501333Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1501783Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:12:03.1502059Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3357346Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3358317Z added 277 packages, and audited 278 packages in 5s
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3358705Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3358998Z 62 packages are looking for funding
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3359378Z   run `npm fund` for details
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3365195Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3365319Z found 0 vulnerabilities
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3867372Z ##[group]Run node scripts/free-disk-if-short.mjs 40 node .hive-mind/scripts/free-disk-space.mjs
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3867919Z ^[[36;1mnode scripts/free-disk-if-short.mjs 40 node .hive-mind/scripts/free-disk-space.mjs^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3894274Z shell: /usr/bin/bash -e {0}
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3894508Z env:
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3894676Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3894932Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3895224Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3895532Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:12:08.3895810Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4183527Z 81.3 GiB available on /, at least the 40 GiB required; skipping the cleanup.
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4248016Z ##[group]Run node scripts/lib/hive-draft-diagnostics.mjs .hive-mind "$FORMAL_AI_DRAFT_LOG_DIR"
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4248827Z ^[[36;1mnode scripts/lib/hive-draft-diagnostics.mjs .hive-mind "$FORMAL_AI_DRAFT_LOG_DIR"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4277149Z shell: /usr/bin/bash -e {0}
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4277384Z env:
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4277573Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4277827Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4278120Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4278430Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4278711Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4711140Z node:internal/modules/run_main:107
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4711734Z     triggerUncaughtException(
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4711944Z     ^
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4712036Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4712246Z AssertionError [ERR_ASSERTION]: shared diagnostic use site changed
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4712519Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4712584Z 0 !== 1
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4712673Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4712998Z     at adaptDraftDiagnostics (file:///home/runner/work/formal-ai/formal-ai/scripts/lib/hive-draft-diagnostics.mjs:32:9)
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4713648Z     at prepareDraftDiagnostics (file:///home/runner/work/formal-ai/formal-ai/scripts/lib/hive-draft-diagnostics.mjs:46:16)
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4714440Z     at file:///home/runner/work/formal-ai/formal-ai/scripts/lib/hive-draft-diagnostics.mjs:59:29
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4714861Z     at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4715178Z     at async node:internal/modules/esm/loader:647:26
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4715558Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4715892Z   generatedMessage: false,
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4716092Z   code: 'ERR_ASSERTION',
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4716270Z   actual: 0,
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4716424Z   expected: 1,
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4716601Z   operator: 'strictEqual',
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4716780Z   diff: 'simple'
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4716943Z }
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4717020Z 
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4717094Z Node.js v24.22.3
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4743274Z ##[error]Process completed with exit code 1.
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4815379Z ##[group]Run node scripts/prepare-hive-draft-evidence.mjs "$FORMAL_AI_DRAFT_LOG_DIR" "$RUNNER_TEMP/formal-ai-session-artifact"
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4816080Z ^[[36;1mnode scripts/prepare-hive-draft-evidence.mjs "$FORMAL_AI_DRAFT_LOG_DIR" "$RUNNER_TEMP/formal-ai-session-artifact"^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4841630Z shell: /usr/bin/bash -e {0}
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4841857Z env:
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4842021Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4842390Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4842696Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4843021Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4845122Z   GH_TOKEN: ***
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4845307Z   DRAFT_BUILD_OUTCOME: success
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4845515Z   DRAFT_ATTEMPT_OUTCOME: skipped
+draft	UNKNOWN STEP	2026-11-24T19:12:08.4845708Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5332884Z {"complete":true,"files":10,"unavailable":0,"missingRequired":[],"fullModelEvidence":false}
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5397530Z ##[group]Run actions/upload-artifact@v7
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5397774Z with:
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5397952Z   name: hive-mind-draft-session-1634-1
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5398216Z   path: /home/runner/work/_temp/formal-ai-session-artifact
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5398479Z   if-no-files-found: error
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5398662Z   retention-days: 30
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5398840Z   compression-level: 6
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5399010Z   overwrite: false
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5399180Z   include-hidden-files: false
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5399377Z   archive: true
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5399529Z env:
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5399683Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5399979Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5400335Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5400724Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:12:08.5401001Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:08.6599666Z With the provided path, there will be 11 files uploaded
+draft	UNKNOWN STEP	2026-11-24T19:12:08.6603223Z Artifact name is valid!
+draft	UNKNOWN STEP	2026-11-24T19:12:08.6603624Z Root directory input is valid!
+draft	UNKNOWN STEP	2026-11-24T19:12:09.3438194Z Uploading artifact: hive-mind-draft-session-1634-1.zip
+draft	UNKNOWN STEP	2026-11-24T19:12:09.3465118Z Beginning upload of artifact content to blob storage
+draft	UNKNOWN STEP	2026-11-24T19:12:09.8387887Z Uploaded bytes 14736
+draft	UNKNOWN STEP	2026-11-24T19:12:09.9290001Z Finished uploading artifact content to blob storage!
+draft	UNKNOWN STEP	2026-11-24T19:12:09.9291085Z SHA256 digest of uploaded artifact is 923bc333744aa17cb3dc95155ed4234da3e098129c3732d2add0091dc70049f3
+draft	UNKNOWN STEP	2026-11-24T19:12:09.9291815Z Finalizing artifact upload
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5253824Z Artifact hive-mind-draft-session-1634-1 successfully finalized. Artifact ID 14955627376
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5254738Z Artifact hive-mind-draft-session-1634-1 has been successfully uploaded! Final size is 14736 bytes. Artifact ID is 14955627376
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5256825Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/45465616023/artifacts/14955627376
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5348732Z ##[group]Run node scripts/hive-mind-draft-result.mjs --failure
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5349245Z ^[[36;1mnode scripts/hive-mind-draft-result.mjs --failure^[[0m
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5377417Z shell: /usr/bin/bash -e {0}
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5377641Z env:
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5377816Z   FORMAL_AI_DRAFT_ISSUE: 1634
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5378080Z   HIVE_MIND_SOURCE_SHA: 45c85a4b38f37485511cf6039bb15ccdd4a34d7c
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5378381Z   FORMAL_AI_DRAFT_IMAGE: konard/hive-mind:2.49.0
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5378701Z   FORMAL_AI_DRAFT_LOG_DIR: /home/runner/work/_temp/formal-ai-draft-logs
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5380718Z   GH_TOKEN: ***
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5380895Z   DRAFT_ISSUE_NUMBER: 1634
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5381276Z   DRAFT_ARTIFACT_URL: https://github.com/link-assistant/formal-ai/actions/runs/45465616023/artifacts/14955627376
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5381823Z   DRAFT_ATTEMPT_OUTCOME: 
+draft	UNKNOWN STEP	2026-11-24T19:12:10.5382019Z ##[endgroup]
+draft	UNKNOWN STEP	2026-11-24T19:12:14.1219152Z Post job cleanup.
+draft	UNKNOWN STEP	2026-11-24T19:12:14.1949972Z [command]/usr/bin/git version
+draft	UNKNOWN STEP	2026-11-24T19:12:14.1989571Z git version 2.56.1
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2019210Z Temporarily overriding HOME='/home/runner/work/_temp/f8efdac9-bea8-4728-bfe4-7e825d7e2da3' before making global git config changes
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2019874Z Adding repository directory to the temporary git global config as a safe directory
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2023632Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2050837Z Removing SSH command configuration
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2056401Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2085997Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2257324Z Removing HTTP extra header
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2260828Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2291145Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2476657Z Removing includeIf entries pointing to credentials config files
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2485136Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2512928Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2863893Z Post job cleanup.
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2866688Z ##[start-action display=Run actions/setup-python@v6;id=__4734a822-e54f-4216-abd5-9a97d6763d3d.python]
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2868269Z ##[end-action id=__4734a822-e54f-4216-abd5-9a97d6763d3d.python;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2984262Z Post job cleanup.
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2986748Z ##[start-action display=Run actions/setup-python@v6;id=__8db98777-14ab-49e6-a64a-795a2bff182a.python]
+draft	UNKNOWN STEP	2026-11-24T19:12:14.2988351Z ##[end-action id=__8db98777-14ab-49e6-a64a-795a2bff182a.python;outcome=skipped;conclusion=skipped;duration_ms=0]
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3036325Z Post job cleanup.
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3822670Z [command]/usr/bin/git version
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3822996Z git version 2.56.1
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3845467Z Temporarily overriding HOME='/home/runner/work/_temp/dc93fb9a-8795-462f-aafd-7072b050cb0e' before making global git config changes
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3846302Z Adding repository directory to the temporary git global config as a safe directory
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3846978Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3867516Z Removing SSH command configuration
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3872507Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+draft	UNKNOWN STEP	2026-11-24T19:12:14.3898515Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+draft	UNKNOWN STEP	2026-11-24T19:12:14.4249865Z Removing HTTP extra header
+draft	UNKNOWN STEP	2026-11-24T19:12:14.4254276Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+draft	UNKNOWN STEP	2026-11-24T19:12:14.4288265Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+draft	UNKNOWN STEP	2026-11-24T19:12:14.4637977Z Removing includeIf entries pointing to credentials config files
+draft	UNKNOWN STEP	2026-11-24T19:12:14.4643145Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+draft	UNKNOWN STEP	2026-11-24T19:12:14.4670909Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+draft	UNKNOWN STEP	2026-11-24T19:12:14.5112596Z Cleaning up orphan processes

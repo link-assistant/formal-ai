@@ -1,0 +1,438 @@
+[
+  {
+    "id": 41768761745,
+    "name": "Work-item useful-edit hosted qualification",
+    "sha": "e5ade3914a593fcf93a6a85a84e47bd18abd7793",
+    "created": "2026-11-04T03:42:23Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 126374892086,
+        "name": "Actual Hive agent work-item contradicted-documentation",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892087,
+        "name": "Actual Hive agent work-item original-documentation",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892120,
+        "name": "Actual Hive claude work-item unsupported",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892127,
+        "name": "Actual Hive agent work-item unsupported",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892135,
+        "name": "Actual Hive codex work-item contradicted-documentation",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892142,
+        "name": "Actual Hive agent work-item renamed-components",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892144,
+        "name": "Actual Hive claude work-item renamed-components",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892156,
+        "name": "Actual Hive claude work-item original-documentation",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892171,
+        "name": "Actual Hive claude work-item contradicted-documentation",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892194,
+        "name": "Actual Hive codex work-item renamed-components",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892201,
+        "name": "Actual Hive codex work-item unsupported",
+        "conclusion": "failure"
+      },
+      {
+        "id": 126374892307,
+        "name": "Actual Hive codex work-item original-documentation",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "542d7f102fa53043999c0071da8de8a9f29d95272a72b6d0dc7aaa915f59accc",
+    "logLines": 9528
+  },
+  {
+    "id": 42621251488,
+    "name": "External Benchmarks",
+    "sha": "70935ad8e2a12bc2148eef74722749290c2edb66",
+    "created": "2026-11-09T12:57:09Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 129173661788,
+        "name": "Run upstream suites",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "1509c62096d6e67c8ec4683b8a5e01f51dc2ed473647373775c413a0d51a9851",
+    "logLines": 4732
+  },
+  {
+    "id": 42624594054,
+    "name": "Job Headroom",
+    "sha": "70935ad8e2a12bc2148eef74722749290c2edb66",
+    "created": "2026-11-09T13:20:21Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 129184985116,
+        "name": "Audit job timeout headroom",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "aba6fdbfc65a61b6e47119d3d844353bec225516024e310280f08a238e4747fa",
+    "logLines": 835
+  },
+  {
+    "id": 43706083454,
+    "name": "Learning cycle (proposal only)",
+    "sha": "24dd1f232dbe3653a212ac191a00cb24cc520c91",
+    "created": "2026-11-15T10:51:24Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 132787346040,
+        "name": "Replay the recorded frontier in proposal mode",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "247ce98fba55eb4d087677188946aa2c5d23b438fed584ccf33de7b1c351f0b0",
+    "logLines": 532
+  },
+  {
+    "id": 43707981518,
+    "name": "Issue 1028 Agent CLI binary-tree ladder",
+    "sha": "24dd1f232dbe3653a212ac191a00cb24cc520c91",
+    "created": "2026-11-15T11:14:50Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 132793133504,
+        "name": "Plan the Agent CLI ladder",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "649f8470a32daa45748ba0f1b69f153eb55fcdb99af2a78ee65300f8c4c46c5b",
+    "logLines": 1439
+  },
+  {
+    "id": 43715780047,
+    "name": "dependencies-latest",
+    "sha": "686367d201ca010a4c3dab3b4741e265038d925e",
+    "created": "2026-11-15T12:49:15Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 132816887022,
+        "name": "update",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "7896f1239562924022ee8d14082df69fbc74f70733bb36d51f8db85b1c2726e1",
+    "logLines": 5665
+  },
+  {
+    "id": 43738765561,
+    "name": "Hive Mind draft",
+    "sha": "7837d5073c782658c5a1776ec873ca47e87c4abb",
+    "created": "2026-11-15T17:01:49Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 132887682467,
+        "name": "draft",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "912890c44c453e3944cdb6b0b5cddd9fb1c72b17bccb1b5329eb07f059e06947",
+    "logLines": 3789
+  },
+  {
+    "id": 43805800653,
+    "name": "Layered CI",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133096500540,
+        "name": "js tier (node --check over js, suite group 7)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133096500558,
+        "name": "js tier (node --check over js, suite group 2)",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "8d84b4447491e5c405452baad55f7b99a1e7f445ed0d796a2639c5443b28929f",
+    "logLines": 34443
+  },
+  {
+    "id": 43805800854,
+    "name": "CI/CD Pipeline",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:32Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133096447621,
+        "name": "Lint and Format Check (lane 1)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438114,
+        "name": "Test (ubuntu-24.04 / full) shard 6/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438120,
+        "name": "Test (ubuntu-24.04 / full)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438151,
+        "name": "Test (ubuntu-24.04 / specification) shard 3/4",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438218,
+        "name": "Test (ubuntu-24.04 / full) shard 4/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438227,
+        "name": "Test (ubuntu-24.04 / full) shard 5/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438236,
+        "name": "Test (ubuntu-24.04 / full) shard 3/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438294,
+        "name": "Test (ubuntu-24.04 / specification) shard 2/4",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438314,
+        "name": "Test (ubuntu-24.04 / full) shard 8/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133100438321,
+        "name": "Test (ubuntu-24.04 / specification) shard 1/4",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133106780725,
+        "name": "Pipeline Status",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "3bb730a2d2299604dd3a5583ffecec7801270a0ca43ce8bae339ea677ac90dc9",
+    "logLines": 81602
+  },
+  {
+    "id": 43813238887,
+    "name": "Hive Mind draft",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:54:24Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133123072098,
+        "name": "draft",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "719e5efef2005137747259286fa3e9549ffccb9ef5f64cdff86ce1fa52235775",
+    "logLines": 4242
+  },
+  {
+    "id": 43815999152,
+    "name": "Layered CI",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:47Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133128621934,
+        "name": "js tier (node --check over js, suite group 1)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133128621991,
+        "name": "js tier (node --check over js, suite group 7)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133128622038,
+        "name": "js tier (node --check over js, suite group 4)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133128622042,
+        "name": "js tier (node --check over js, suite group 2)",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "17b710627496c91a59065932cfc69cead18a2d0d773e538514d4e2456f450c5b",
+    "logLines": 35205
+  },
+  {
+    "id": 43815999666,
+    "name": "CI/CD Pipeline",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133128579061,
+        "name": "Lint and Format Check (lane 1)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656288,
+        "name": "Test (ubuntu-24.04 / full) shard 6/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656296,
+        "name": "Test (ubuntu-24.04 / full) shard 4/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656325,
+        "name": "Test (ubuntu-24.04 / full) shard 3/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656361,
+        "name": "Test (ubuntu-24.04 / full) shard 7/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656389,
+        "name": "Test (ubuntu-24.04 / full)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656502,
+        "name": "Test (ubuntu-24.04 / full) shard 8/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656518,
+        "name": "Test (ubuntu-24.04 / specification) shard 2/4",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656546,
+        "name": "Test (ubuntu-24.04 / full) shard 5/8",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656569,
+        "name": "Test (ubuntu-24.04 / specification) shard 1/4",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133133656653,
+        "name": "Test (ubuntu-24.04 / specification) shard 3/4",
+        "conclusion": "failure"
+      },
+      {
+        "id": 133141599898,
+        "name": "Pipeline Status",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "02eb5303585c89b51911df49973e8ce3df2f93205084bc91dd7a1df312894217",
+    "logLines": 82365
+  },
+  {
+    "id": 43870207134,
+    "name": "External Benchmarks",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T12:50:28Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133309057544,
+        "name": "Run upstream suites",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "f8cf2ff791a04eec41b29b94526d926036bc120aec508fdcc810464d682ed09a",
+    "logLines": 5209
+  },
+  {
+    "id": 43872809507,
+    "name": "Job Headroom",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T13:07:38Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133318078835,
+        "name": "Audit job timeout headroom",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "762dab5c800d4618d20938df2d82391a109a3aeb3f5bcf109123e93eba35e848",
+    "logLines": 840
+  },
+  {
+    "id": 43878821415,
+    "name": "dependencies-latest",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T13:45:18Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133338888645,
+        "name": "update",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "a6fe34cfa352d96fb3164b00fe09f5d4a60725bb9efd071dadaa15d3419999f7",
+    "logLines": 5678
+  },
+  {
+    "id": 43899940611,
+    "name": "Hive Mind draft",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T15:46:01Z",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 133420800021,
+        "name": "draft",
+        "conclusion": "failure"
+      }
+    ],
+    "logSha256": "614835bfc4b4996edc801c369eeffa4b5557df3e03087871dc0c84831690499f",
+    "logLines": 4321
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "run": 44213727267,
+  "workflow": "Layered CI",
+  "head": "7e89122c9d030b3af5eec2d346141bba3ff3fdab",
+  "attempt": 1,
+  "rawBytes": 1136027,
+  "rawLines": 6602,
+  "rawSha256": "5f34fe5322741f3ecf0613e17b3de64e4e09c325c7a203737c331a2d86d89f30"
+}

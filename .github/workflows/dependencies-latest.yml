@@ -89,27 +89,16 @@ jobs:
             exit "$status"
           fi
 
-      - name: Re-resolve the Rust lockfile from the rewritten manifest
-        working-directory: rust
-        run: cargo update --workspace
+      - name: Re-resolve the Rust lockfiles from the rewritten manifests
+        run: |
+          node scripts/resolve-dependency-lockfiles.mjs --cargo
 
       # Each directory is re-resolved by the tool that owns its lockfile:
       # bun.lock by bun, package-lock.json by npm. Lock-only modes rewrite the
       # resolution without installing; a resolver failure fails the job.
       - name: Re-resolve the JavaScript lockfiles from the rewritten manifests
         run: |
-          set -euo pipefail
-          while IFS= read -r lock; do
-            directory="$(dirname "$lock")"
-            case "$lock" in
-              bun.lock|*/bun.lock)
-                (cd "$directory" && bun install --lockfile-only)
-                ;;
-              package-lock.json|*/package-lock.json)
-                (cd "$directory" && npm install --package-lock-only --ignore-scripts --no-audit --no-fund)
-                ;;
-            esac
-          done < <(git ls-files -- '*bun.lock' '*package-lock.json')
+          node scripts/resolve-dependency-lockfiles.mjs --javascript
 
       - name: Run registered gates (stage rust)
         run: rust-script scripts/run-ci-gates.rs --stage rust

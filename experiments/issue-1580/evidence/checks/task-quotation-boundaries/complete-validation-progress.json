@@ -1,0 +1,178 @@
+[
+  {
+    "name": "final-worker-projection-write",
+    "command": [
+      "node",
+      "scripts/generate-worker-crate-modules.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 1.114,
+    "rawBytes": 36,
+    "rawLines": 1,
+    "rawSha256": "27bc71c1aa3e5c9daa50575c2de66a719d3e9de69cc180158e366f86c81f38e5",
+    "log": "final-worker-projection-write.log"
+  },
+  {
+    "name": "final-typescript-projection-write",
+    "command": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 2.537,
+    "rawBytes": 99,
+    "rawLines": 1,
+    "rawSha256": "07c1f5ed851a6441c72492b3512c00db15b1cf7b77705bd481a25a5fabf724ef",
+    "log": "final-typescript-projection-write.log"
+  },
+  {
+    "name": "final-native-format-write",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "rust/src/meta_executor.rs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.098,
+    "rawBytes": 0,
+    "rawLines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "log": "final-native-format-write.log"
+  },
+  {
+    "name": "final-native-format-check",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/meta_executor.rs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.06,
+    "rawBytes": 0,
+    "rawLines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "log": "final-native-format-check.log"
+  },
+  {
+    "name": "final-fixture-write",
+    "command": [
+      "node",
+      "experiments/issue-1550/parity-fixture.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 3.494,
+    "rawBytes": 66,
+    "rawLines": 1,
+    "rawSha256": "c3f990f2926fb61da627eccab73feef1ee3ef55b230315e4e5ef400c81706c98",
+    "log": "final-fixture-write.log"
+  },
+  {
+    "name": "final-fixture-check",
+    "command": [
+      "node",
+      "experiments/issue-1550/parity-fixture.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 3.572,
+    "rawBytes": 47,
+    "rawLines": 1,
+    "rawSha256": "9bff0d96d6f653c0e289a2420f89df9cde420d50c62af2556ae4d76ada12f0e0",
+    "log": "final-fixture-check.log"
+  },
+  {
+    "name": "final-executor-tests",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1550-meta-executor.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 3.849,
+    "rawBytes": 936,
+    "rawLines": 17,
+    "rawSha256": "5e1f7699a42518c5c9bd8899bf2cdf54c974b616ebbbd7c565625129e4957366",
+    "log": "final-executor-tests.log"
+  },
+  {
+    "name": "final-adjacent-factual-qa",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 14.48,
+    "rawBytes": 1554,
+    "rawLines": 23,
+    "rawSha256": "8a7c221dc62f1c8ffad8aece8a2877b1fb8236505ada53ddec6624fafb3e42be",
+    "log": "final-adjacent-factual-qa.log"
+  },
+  {
+    "name": "final-worker-projection-check",
+    "command": [
+      "node",
+      "scripts/generate-worker-crate-modules.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 1.152,
+    "rawBytes": 39,
+    "rawLines": 1,
+    "rawSha256": "ba62f8e4585cf4d8dea43c01917c77db0eb8d9a9b5c21cbfa8921acedbb331f7",
+    "log": "final-worker-projection-check.log"
+  },
+  {
+    "name": "final-typescript-projection-check",
+    "command": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 2.572,
+    "rawBytes": 28,
+    "rawLines": 1,
+    "rawSha256": "40592cfcdab6b346d44ae208101465c4ea472938567aed877078bf67523bb684",
+    "log": "final-typescript-projection-check.log"
+  },
+  {
+    "name": "final-whitespace",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.24,
+    "rawBytes": 0,
+    "rawLines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "log": "final-whitespace.log"
+  },
+  {
+    "name": "all-local-gates",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1,
+    "durationSeconds": 636.746,
+    "rawBytes": 7085,
+    "rawLines": 140,
+    "rawSha256": "34af616ee5500b1aee8acac1f6b8282eea3bf7276f7a10958a1274935f286c1a",
+    "log": "all-local-gates.log"
+  }
+]

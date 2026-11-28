@@ -99,7 +99,7 @@ fn an_explicit_request_url_precedes_attachment_metadata() {
     assert_eq!(response.intent, "http_fetch");
     assert_eq!(
         response.answer,
-        "cache miss for https://docs.example.org/guide and offline mode is active (set FORMAL_AI_LIVE_API to populate)"
+        "no cached capture for https://docs.example.org/guide"
     );
 }
 
@@ -223,7 +223,15 @@ fn http_fetch_and_url_navigate_intents_are_distinct() {
     let fetch_prompt = "Make a request to google.com";
     let navigate_prompt = "Navigate to google.com";
 
-    let fetch_response = FormalAiEngine.answer(fetch_prompt);
+    // Since fafae7d5a (#1582) an explicit fetch really reads the network by
+    // default, so the default engine would answer with whatever google.com
+    // served. Offline, the answer is the deterministic cache-miss notice that
+    // names the requested URL -- which is what this test pins.
+    let fetch_response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..Default::default()
+    })
+    .solve(fetch_prompt);
     let navigate_response = FormalAiEngine.answer(navigate_prompt);
 
     assert_eq!(
@@ -236,7 +244,11 @@ fn http_fetch_and_url_navigate_intents_are_distinct() {
         "Navigate prompt must route to url_navigate; got {:?}",
         navigate_response.intent,
     );
-    assert!(fetch_response.answer.contains("https://google.com"));
+    assert!(
+        fetch_response.answer.contains("https://google.com"),
+        "the fetch answer must name the requested URL, got: {}",
+        fetch_response.answer
+    );
     assert!(navigate_response.answer.contains("https://google.com"));
     // The navigation copy must not mention fetch()/CORS — the user explicitly
     // asked us not to imply a network request will be attempted.

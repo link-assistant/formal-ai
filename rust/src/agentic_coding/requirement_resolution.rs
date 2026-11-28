@@ -25,6 +25,17 @@ pub fn resolve_requirement_target(requirement: &str) -> Option<RequirementTarget
     resolve_in(workspace(), requirement)
 }
 
+/// Resolve a group using the same workspace census.
+pub(super) fn resolve_requirement_targets<'a>(
+    requirements: impl IntoIterator<Item = Option<&'a str>>,
+) -> Vec<Option<RequirementTarget>> {
+    let census = workspace();
+    requirements
+        .into_iter()
+        .map(|requirement| resolve_in(census, requirement?))
+        .collect()
+}
+
 /// Resolve `requirement` against `census`.
 ///
 /// An identifier the requirement names verbatim wins; otherwise the `const` or

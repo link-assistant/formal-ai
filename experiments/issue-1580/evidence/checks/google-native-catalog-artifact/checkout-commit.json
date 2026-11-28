@@ -1,0 +1,40 @@
+{
+  "sha": "2427bb899f61d872805299f02d5828f39a9db70e",
+  "node_id": "C_kwDOSbOoU9oAKDI0MjdiYjg5OWY2MWQ4NzI4MDUyOTlmMDJkNTgyOGYzOWE5ZGI3MGU",
+  "url": "https://api.github.com/repos/link-assistant/formal-ai/git/commits/2427bb899f61d872805299f02d5828f39a9db70e",
+  "html_url": "https://github.com/link-assistant/formal-ai/commit/2427bb899f61d872805299f02d5828f39a9db70e",
+  "author": {
+    "name": "Konstantin Diachenko",
+    "email": "drakonard@gmail.com",
+    "date": "2026-11-19T19:10:08Z"
+  },
+  "committer": {
+    "name": "GitHub",
+    "email": "noreply@github.com",
+    "date": "2026-11-19T19:10:08Z"
+  },
+  "tree": {
+    "sha": "eadbc642e33b2b701beb1a04bd03ef3787fdbde1",
+    "url": "https://api.github.com/repos/link-assistant/formal-ai/git/trees/eadbc642e33b2b701beb1a04bd03ef3787fdbde1"
+  },
+  "message": "Merge 3c52b7f528b5f477ba04de297eb02bb41c298c78 into 53cbe4430f8b65330f47728401fc83b09977129f",
+  "parents": [
+    {
+      "sha": "53cbe4430f8b65330f47728401fc83b09977129f",
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/git/commits/53cbe4430f8b65330f47728401fc83b09977129f",
+      "html_url": "https://github.com/link-assistant/formal-ai/commit/53cbe4430f8b65330f47728401fc83b09977129f"
+    },
+    {
+      "sha": "3c52b7f528b5f477ba04de297eb02bb41c298c78",
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/git/commits/3c52b7f528b5f477ba04de297eb02bb41c298c78",
+      "html_url": "https://github.com/link-assistant/formal-ai/commit/3c52b7f528b5f477ba04de297eb02bb41c298c78"
+    }
+  ],
+  "verification": {
+    "verified": true,
+    "reason": "valid",
+    "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq/0mQCRC1aQ7uu5UhlAAAvfMQACXfgPrvcOPYeE1WOfehCA4K\ndif2oUWNdpWxCDm1hTvNFnNG8Twd4tB9qJmy6UDI6on6kPRDJpbbtgA9zBkpHeKt\nvEr6ahmDKTRePqQtsoOkJ2e5Q3qX+lJ1Z1ArYn+9YSC+eAUl3nd9Q52PX1wGyXtv\nRleVvkn67r1h0pulvRBuWOHLp3ukH9TXue5FQ0InMa3dVGXNVRrwcaTrqsLE0l/b\nr8TanNZnRwBSjTPSwRY9yNTjrayz1DCpW7/9NjAH3b1jHBcgXSDlxiA8+FPBUr4P\nYrPv0v1EKejTv52/RRTpDGC2R2Bep1811bOzd7WhrtzLoLZZe0SoQlRfePwRTvvf\naWPASrjBVuw7PUHVHjHyeq3jQCMUqZHigXW6nd/8mF46Ys8Vzf9N2xBVpwubelou\nQFWgVNFpcuXD+7KyR6flTqRVYLbAyAhTPgRCfAu865ZVY11orE+EXgIWvQ3wa83R\nuvtqvlAjKPmDpqug+qlOwt3glVEKSBtDTzw8HFBrc2u0hJhvYzK9CdpokFenPjGl\nwfIlFvDcfU3HTxMbNl81ODWsjlAhuC2WoQ5ISOiKsDFMg7kvX4GNMT3ypbjnGFCC\nw6H+zRP2Pd9bYgJX80aaYm3w6LECniRAd1Hdc/CyXAjE1FAcd4Yt3/hbJYaIApVC\nMSEtA/ENT7pUjsQn9wo2\n=Cq1r\n-----END PGP SIGNATURE-----\n",
+    "payload": "tree eadbc642e33b2b701beb1a04bd03ef3787fdbde1\nparent 53cbe4430f8b65330f47728401fc83b09977129f\nparent 3c52b7f528b5f477ba04de297eb02bb41c298c78\nauthor Konstantin Diachenko <drakonard@gmail.com> 1795115408 +0800\ncommitter GitHub <noreply@github.com> 1795115408 +0800\n\nMerge 3c52b7f528b5f477ba04de297eb02bb41c298c78 into 53cbe4430f8b65330f47728401fc83b09977129f\n",
+    "verified_at": "2026-11-19T19:10:08Z"
+  }
+}

@@ -1,0 +1,165 @@
+{"type":"config","level":"info","timestamp":"2026-11-22T09:23:51.143Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":true,"retryOnRateLimits":true,"compactJson":true,"disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"plan"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.148Z","service":"default","version":"0.27.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode plan --output-format stream-json --compact-json --disable-stdin --prompt Read Dockerfile and rust/src/server/transport.rs. What configured location could cause PermissionDenied before the full Docker image server listens when its startup command runs as box? Explain your diagnosis from the code.","workingDirectory":"/tmp/gh-issue-solver-1795338981812","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.150Z","service":"default","directory":"/tmp/gh-issue-solver-1795338981812","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.152Z","service":"project","directory":"/tmp/gh-issue-solver-1795338981812","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.154Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.407Z","service":"project","status":"completed","duration":253,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.416Z","service":"storage","index":0,"message":"running migration"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.419Z","service":"storage","index":1,"message":"running migration"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.426Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","plan","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Read Dockerfile and rust/src/server/transport.rs. What configured location could cause PermissionDenied before the full Docker image server listens when its startup command runs as box? Explain your diagnosis from the code."],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","plan","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Read Dockerfile and rust/src/server/transport.rs. What configured location could cause PermissionDenied before the full Docker image server listens when its startup command runs as box? Explain your diagnosis from the code."],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.426Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.434Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.439Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.442Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.442Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.473Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","message":"no cache found, awaiting refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.474Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:51.732Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","message":"cache unavailable, using bundled data"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.017Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.088Z","service":"claude-oauth","path":"/home/box/.claude/.credentials.json","message":"credentials file not found"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.101Z","service":"provider-registry","available":["formal-ai","formalai","@link-assistant","opencode","kilo","link-assistant"],"message":"providers available"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.101Z","service":"provider","status":"completed","duration":667,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.103Z","service":"default","hint":"Secondary calls (compaction, session summary) inherit --model unless a compaction model is named explicitly","baseProviderID":"formalai","baseModelID":"formal-ai","dropped":["kilo/nemotron-3-super-free","kilo/nemotron-3-ultra-free","kilo/nemotron-3.5-lightning-free"],"kept":["same"],"message":"default compaction models narrowed to the configured provider"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.103Z","service":"default","models":["same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"model_resolved","timestamp":"2026-11-22T09:23:52.103Z","requested":"formalai/formal-ai","selector":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","source":"cli","matchesRequest":true}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.145Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.145Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.155Z","service":"session","id":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","version":"0.27.0","projectID":"0014038ee8b22fe60dc213e6dc1bf2c1f674aa48","directory":"/tmp/gh-issue-solver-1795338981812","title":"New session - 2026-11-22T09:23:52.155Z","time":{"created":1795339432155,"updated":1795339432155},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-11-22T09:23:52.157Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-11-22T09:23:52.157Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.158Z","service":"server","status":"completed","duration":13,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-11-22T09:23:52.165Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.168Z","service":"server","method":"POST","path":"/session/ses_dfd6e4f25ffe3t1UhqvisRmXo5/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.168Z","service":"server","status":"started","method":"POST","path":"/session/ses_dfd6e4f25ffe3t1UhqvisRmXo5/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.183Z","service":"server","status":"completed","duration":15,"method":"POST","path":"/session/ses_dfd6e4f25ffe3t1UhqvisRmXo5/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:23:52.208Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-11-22T09:23:52.216Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-11-22T09:23:52.218Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.224Z","service":"session.prompt","step":0,"sessionID":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.243Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.243Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.245Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.245Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.246Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.246Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.246Z","service":"provider","status":"completed","duration":1,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.248Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:52.248Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:53.405Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:23:53.422Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:53.423Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:53.425Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1795338981812","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:55.845Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-11-22T09:23:55.865Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:23:55.898Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:23:55.898Z","service":"session.summary","providerID":"formalai","modelID":"formal-ai","hint":"Compaction model unavailable, falling back to main model","message":"loading model for summarization"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-11-22T09:23:55.913Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-11-22T09:23:55.915Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:24:31.925Z","service":"session.summary","title":"Cannot satisfy output constraint (Output the title now:).","message":"title"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:24:31.927Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:24:52.191Z","service":"snapshot","message":"initialized"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:47.509Z","service":"snapshot","hash":"b96c18de121c169c471019af1c92d2316a5455da\n","cwd":"/tmp/gh-issue-solver-1795338981812","git":"/home/box/.local/share/link-assistant-agent/snapshot/0014038ee8b22fe60dc213e6dc1bf2c1f674aa48","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-11-22T09:25:47.518Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-11-22T09:25:47.518Z","session_id":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","model":"formalai/formal-ai"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-11-22T09:25:47.526Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-11-22T09:25:47.528Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-11-22T09:25:47.530Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-11-22T09:25:47.532Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-11-22T09:25:47.532Z","session_id":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","role":"assistant","content":[{"type":"text","text":"Still unknown: dockerfile, what, configured, location, cause, permissiondenied, docker, image, startup, box, explain, your, diagnosis. The question that would decide it: could you give one input and the output you expect?\n\nHow I got there:\n2. formalize: goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\n4. hypothesis: read → read_file:1.00 | rewrite_file:0.50 (documentation)\n5. subgoal: understand what through 12 gloss(es)\n6. impasse: ↳ cycle what → what\n7. impasse: what: no gloss reaches an operation\n8. subgoal: understand configured through 1 gloss(es)\n9. hypothesis: ↳ such → maximum_by:1.00 (documentation)\n10. hypothesis: ↳ operation → map_each:1.00 (documentation)\n11. impasse: configured: no gloss reaches an operation\n12. subgoal: understand location through 6 gloss(es)\n13. hypothesis: ↳ place → reverse_list:0.50 | rewrite_file:0.50 (documentation)\n14. hypothesis: ↳ space → join_words:1.00 (documentation)\n15. hypothesis: ↳ non → fail_when_any:1.00 (documentation)\n16. impasse: location: no gloss reaches an operation\n17. subgoal: understand cause through 9 gloss(es)\n18. hypothesis: ↳ results → map_each:1.00 | rewrite_file:0.50 (documentation)\n19. hypothesis: ↳ result → map_each:0.50 | rewrite_file:0.50 (documentation)\n20. hypothesis: ↳ ends → trim_text:1.00 (documentation)\n21. impasse: cause: no gloss reaches an operation\n22. subgoal: understand before through 12 gloss(es)\n23. hypothesis: ↳ time → multiply_by:1.00 (documentation)\n24. hypothesis: ↳ end → trim_text:1.00 (documentation)\n25. grounded: before → multiply_by via https://api.dictionaryapi.dev/api/v2/entries/en/before\n26. subgoal: understand full through 12 gloss(es)\n27. hypothesis: ↳ containing → keep_containing:2.00 | list_files:0.50 (documentation)\n28. hypothesis: ↳ maximum → maximum_by:1.00 | maximum_number:1.00 (documentation)\n29. hypothesis: ↳ amount → add_constant:1.00 (documentation)\n30. hypothesis: ↳ space → join_words:1.00 (documentation)\n31. hypothesis: ↳ total → sum_numbers:1.00 (documentation)\n32. grounded: full → sum_numbers via https://api.dictionaryapi.dev/api/v2/entries/en/full\n33. subgoal: understand docker through 2 gloss(es)\n34. impasse: docker: no gloss reaches an operation\n35. subgoal: understand image through 12 gloss(es)\n36. hypothesis: ↳ not → keep_odd:1.00 (documentation)\n37. impasse: image: no gloss reaches an operation\n38. subgoal: understand server through 5 gloss(es)\n39. grounded: server names the artifact's frame: \"A computer dedicated to running such programs.\"\n40. subgoal: understand listens through 4 gloss(es)\n41. hypothesis: ↳ such → maximum_by:1.00 (documentation)\n42. grounded: listens → maximum_by via https://api.dictionaryapi.dev/api/v2/entries/en/listens\n43. hypothesis: when → fail_when_any:2.00 (documentation)\n44. impasse: startup: unknown, lookup needed\n45. hypothesis: command → run_command:2.00 (documentation)\n46. hypothesis: runs → run_command:2.00 (documentation)\n47. impasse: box: unknown, lookup needed\n48. impasse: explain: unknown, lookup needed\n49. impasse: your: unknown, lookup needed\n50. impasse: diagnosis: unknown, lookup needed\n51. impasse: 13 open unknown(s) outweigh 6 grounded operation(s); no program is claimed\nlookups: dockerfile:0 what:12 configured:1 location:6; cause:9 permissiondenied(permissiondenie):0 before:12 full:12; docker:2 image:12 server:5 listens:4"}]}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:47.981Z","service":"snapshot","hash":"b96c18de121c169c471019af1c92d2316a5455da\n","cwd":"/tmp/gh-issue-solver-1795338981812","git":"/home/box/.local/share/link-assistant-agent/snapshot/0014038ee8b22fe60dc213e6dc1bf2c1f674aa48","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-11-22T09:25:47.986Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-11-22T09:25:47.986Z","session_id":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","status":"success","duration_ms":115821}
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:25:47.987Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:25:48.603Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:25:48.608Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.609Z","service":"session.prompt","step":1,"sessionID":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.621Z","service":"session.prompt","sessionID":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","message":"exiting loop"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.622Z","service":"session.compaction","message":"pruning"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:25:48.624Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.624Z","service":"session.summary","providerID":"formalai","modelID":"formal-ai","hint":"Compaction model unavailable, falling back to main model","message":"loading model for summarization"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.625Z","service":"session.summary","body":"Still unknown: dockerfile, what, configured, location, cause, permissiondenied, docker, image, startup, box, explain, your, diagnosis. The question that would decide it: could you give one input and the output you expect?\n\nHow I got there:\n2. formalize: goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\n4. hypothesis: read → read_file:1.00 | rewrite_file:0.50 (documentation)\n5. subgoal: understand what through 12 gloss(es)\n6. impasse: ↳ cycle what → what\n7. impasse: what: no gloss reaches an operation\n8. subgoal: understand configured through 1 gloss(es)\n9. hypothesis: ↳ such → maximum_by:1.00 (documentation)\n10. hypothesis: ↳ operation → map_each:1.00 (documentation)\n11. impasse: configured: no gloss reaches an operation\n12. subgoal: understand location through 6 gloss(es)\n13. hypothesis: ↳ place → reverse_list:0.50 | rewrite_file:0.50 (documentation)\n14. hypothesis: ↳ space → join_words:1.00 (documentation)\n15. hypothesis: ↳ non → fail_when_any:1.00 (documentation)\n16. impasse: location: no gloss reaches an operation\n17. subgoal: understand cause through 9 gloss(es)\n18. hypothesis: ↳ results → map_each:1.00 | rewrite_file:0.50 (documentation)\n19. hypothesis: ↳ result → map_each:0.50 | rewrite_file:0.50 (documentation)\n20. hypothesis: ↳ ends → trim_text:1.00 (documentation)\n21. impasse: cause: no gloss reaches an operation\n22. subgoal: understand before through 12 gloss(es)\n23. hypothesis: ↳ time → multiply_by:1.00 (documentation)\n24. hypothesis: ↳ end → trim_text:1.00 (documentation)\n25. grounded: before → multiply_by via https://api.dictionaryapi.dev/api/v2/entries/en/before\n26. subgoal: understand full through 12 gloss(es)\n27. hypothesis: ↳ containing → keep_containing:2.00 | list_files:0.50 (documentation)\n28. hypothesis: ↳ maximum → maximum_by:1.00 | maximum_number:1.00 (documentation)\n29. hypothesis: ↳ amount → add_constant:1.00 (documentation)\n30. hypothesis: ↳ space → join_words:1.00 (documentation)\n31. hypothesis: ↳ total → sum_numbers:1.00 (documentation)\n32. grounded: full → sum_numbers via https://api.dictionaryapi.dev/api/v2/entries/en/full\n33. subgoal: understand docker through 2 gloss(es)\n34. impasse: docker: no gloss reaches an operation\n35. subgoal: understand image through 12 gloss(es)\n36. hypothesis: ↳ not → keep_odd:1.00 (documentation)\n37. impasse: image: no gloss reaches an operation\n38. subgoal: understand server through 5 gloss(es)\n39. grounded: server names the artifact's frame: \"A computer dedicated to running such programs.\"\n40. subgoal: understand listens through 4 gloss(es)\n41. hypothesis: ↳ such → maximum_by:1.00 (documentation)\n42. grounded: listens → maximum_by via https://api.dictionaryapi.dev/api/v2/entries/en/listens\n43. hypothesis: when → fail_when_any:2.00 (documentation)\n44. impasse: startup: unknown, lookup needed\n45. hypothesis: command → run_command:2.00 (documentation)\n46. hypothesis: runs → run_command:2.00 (documentation)\n47. impasse: box: unknown, lookup needed\n48. impasse: explain: unknown, lookup needed\n49. impasse: your: unknown, lookup needed\n50. impasse: diagnosis: unknown, lookup needed\n51. impasse: 13 open unknown(s) outweigh 6 grounded operation(s); no program is claimed\nlookups: dockerfile:0 what:12 configured:1 location:6; cause:9 permissiondenied(permissiondenie):0 before:12 full:12; docker:2 image:12 server:5 listens:4","message":"body"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-11-22T09:25:48.630Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-11-22T09:25:48.631Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-11-22T09:25:48.631Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.635Z","service":"session.prompt","sessionID":"ses_dfd6e4f25ffe3t1UhqvisRmXo5","message":"cancel"}
+
+{"type":"session.status","level":"info","timestamp":"2026-11-22T09:25:48.636Z","service":"bus","message":"publishing"}
+
+{"type":"session.idle","level":"info","timestamp":"2026-11-22T09:25:48.636Z","service":"bus","message":"publishing"}
+
+{"type":"idle","timestamp":"2026-11-22T09:25:48.636Z","session_id":"ses_dfd6e4f25ffe3t1UhqvisRmXo5"}
+{"type":"*","level":"info","timestamp":"2026-11-22T09:25:48.642Z","service":"bus","message":"unsubscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.643Z","service":"default","directory":"/tmp/gh-issue-solver-1795338981812","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.643Z","service":"state","key":"/tmp/gh-issue-solver-1795338981812","message":"waiting for state disposal to complete"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.644Z","service":"state","key":"/tmp/gh-issue-solver-1795338981812","message":"state disposal completed"}
+
+{"type":"log","level":"info","timestamp":"2026-11-22T09:25:48.645Z","service":"default","hasError":false,"uptimeSeconds":120,"message":"Agent exiting"}

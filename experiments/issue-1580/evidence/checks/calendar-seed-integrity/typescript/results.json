@@ -1,0 +1,76 @@
+{
+  "recorded_at": "2026-11-17T23:38:25.157233+00:00",
+  "source_head": "2ec6ef93a80c7081a46816d1242bc0f7b843d5ff",
+  "independent_authorship_credit": 0,
+  "results": [
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "js/worker/formal_ai_worker_calendar_and_proofs.js"
+      ],
+      "target": "ts/worker/formal_ai_worker_calendar_and_proofs.ts",
+      "source_sha256": "a52cdb4bd64734499030f7bbf29021c6ff9dc0c400fb6008f713eb058a8d72cc",
+      "before": {
+        "sha256": "16227764d42b2bd1293faa6a97162157e376ad9ee4ce375ea3daa6bad14b5a36",
+        "bytes": 48422,
+        "lines": 1146
+      },
+      "after_sha256": "a52cdb4bd64734499030f7bbf29021c6ff9dc0c400fb6008f713eb058a8d72cc",
+      "duration_seconds": 0.143,
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "js/worker/formal_ai_worker_calendar_offset.js"
+      ],
+      "target": "ts/worker/formal_ai_worker_calendar_offset.ts",
+      "source_sha256": "4d6aadce1fe68d9cb42e5aa4d70bb24b424cbc62d6b17579227f4c11bfa96360",
+      "before": {
+        "sha256": "78f79ea90287080c6f7759b363eef692b7329e3beb4d1dc8687fcdf3c460e14b",
+        "bytes": 30641,
+        "lines": 715
+      },
+      "after_sha256": "4d6aadce1fe68d9cb42e5aa4d70bb24b424cbc62d6b17579227f4c11bfa96360",
+      "duration_seconds": 0.132,
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 3.867,
+      "log": {
+        "sha256": "40592cfcdab6b346d44ae208101465c4ea472938567aed877078bf67523bb684",
+        "bytes": 28,
+        "lines": 1
+      }
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/translate-es.test.mjs"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.735,
+      "log": {
+        "sha256": "5089a788bdba395166db6f02906022df8c00baa3b6b641ea4dbd7e92949d00bf",
+        "bytes": 1095,
+        "lines": 20
+      }
+    }
+  ]
+}

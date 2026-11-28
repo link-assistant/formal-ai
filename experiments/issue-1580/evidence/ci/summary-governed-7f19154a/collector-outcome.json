@@ -1,0 +1,82 @@
+{
+  "complete": true,
+  "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+  "records": [
+    {
+      "name": "completed-head-runs",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs?branch=issue-1580-8d61a32a61e1&head_sha=7f19154a21d79f268f48af6b0938f17e6fb32ba3&per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "9e84ef3eb388f0bbde9696a39c7265443dd4a52af9ad5f396cadc22a7ddf2e9c",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "jobs-44320550114",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs/44320550114/jobs?per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "24bbe59f93e6d12febb2d5585f4066a2be88b02761de2d76eb831408468d2dae",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "job-134858281774",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/jobs/134858281774/logs",
+        "--allow-escape-sequences"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "16c7a15d7bf296c94c06a233e6f46dbcd35adc6ea8b7b2821d1fa709f19a5ff2",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "job-134858281965",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/jobs/134858281965/logs",
+        "--allow-escape-sequences"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "737ed9b7af9cf68e1bc50961a13dba1be094cc23b131cb0254b79f6c1aca84d3",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "jobs-44320550638",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs/44320550638/jobs?per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "24f12ef2e13c9acf54778629ac90122c3564c366cd6d260acb86337e0669e01f",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "job-134858261266",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/jobs/134858261266/logs",
+        "--allow-escape-sequences"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "9e5ee69e03209a27cd3db0f6fe34e0e04af78ce4edfc15459e7b6ea2a9269487",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,27 @@
+{
+  "cumulativeSummary": {
+    "literalPages": 117,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 7872,
+    "nextForwardPage": 118,
+    "remainingPages": 137,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "archives": [
+    {
+      "page": 116,
+      "rawSha256": "bc5ee956e86e75a8bdc465482c255319198aa2161e594242c6b4208928168804",
+      "archiveSha256": "e93a57f986d7d61645401f650330b71ce217f70f8813d7046e5ebd5944ac6567",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 117,
+      "rawSha256": "df7e267ccf92f5c6606f9f5311525109db1694326b717bfffca5af739e854813",
+      "archiveSha256": "6733f8c885462018873c6a731e98b7628099eba4cd8d0eb44f98fdfbd5bafb00",
+      "fullLiteralRead": true
+    }
+  ]
+}

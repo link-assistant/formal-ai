@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,writeFileSync,symlinkSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,symlinkSync,rmSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,dirname} from 'node:path';
 import {readNativeTestModuleGraph,bindOriginalSourceCase} from '../../../scripts/lib/native-test-module-graph.mjs';
@@ -65,4 +65,36 @@ test('listing input requires exact unique target and caller but is not a runtime
  const root=fixture(t,{'rust/tests/unit/mod.rs':body}),graph=readNativeTestModuleGraph(root),id='rust/tests/unit/mod.rs::actual_case',row=bindOriginalSourceCase(graph,id);
  for(const listing of [[],[row.runtimeKey,row.runtimeKey],['integration\\tactual_case']])assert.throws(()=>bindOriginalSourceCase(graph,id,listing),/does not uniquely confirm/);
  const confirmed=bindOriginalSourceCase(graph,id,[row.runtimeKey]);assert.equal(confirmed.suppliedRuntimeListingMatches,true);assert.equal(Object.hasOwn(confirmed,'currentNativeRuntimeListingVerified'),false);
+});
+test('a source compiled into two Cargo targets binds only with an explicit @target qualifier (issue #1637)',t=>{
+ const root=fixture(t,{'rust/Cargo.toml':'[[test]]\nname = "unit"\npath = "tests/unit/mod.rs"\n\n[[test]]\nname = "focused"\npath = "tests/unit/focused.rs"\n',
+  'rust/tests/unit/mod.rs':'mod leaf;','rust/tests/unit/focused.rs':'#[path = "leaf.rs"]\nmod leaf;','rust/tests/unit/leaf.rs':body});
+ const graph=readNativeTestModuleGraph(root),id='rust/tests/unit/leaf.rs::actual_case';
+ assert.throws(()=>bindOriginalSourceCase(graph,id),/no unique registration: .*compiled into targets focused, unit; qualify/);
+ assert.equal(bindOriginalSourceCase(graph,id+'@unit').target,'unit');
+ assert.equal(bindOriginalSourceCase(graph,id+'@focused').caller,'leaf::actual_case');
+ assert.throws(()=>bindOriginalSourceCase(graph,id+'@missing'),/no unique registration/);
+ assert.throws(()=>bindOriginalSourceCase(graph,id+'@'),/empty target qualifier/);
+});
+test('every committed native capture case binds to exactly one registered caller (issue #1637)',()=>{
+ const root=join(dirname(new URL(import.meta.url).pathname),'../../..');
+ const graph=readNativeTestModuleGraph(root);
+ const {cases}=JSON.parse(readFileSync(join(root,'data/meta/native-response-capture-cases.json'),'utf8'));
+ for(const id of cases)assert.doesNotThrow(()=>bindOriginalSourceCase(graph,id),id);
+});
+// Issue #1639: 15ae736ab moved one selected case's solver calls into an
+// `offline_replay::in_child*` re-execution. The capture harness binds records to
+// the PID it launched, so the child's `native-<child>.jsonl` left the parent's
+// file missing and main's native-response-observations job failed 27/28.
+test('no committed native capture case re-executes its body in a replay child (issue #1639)',()=>{
+ const root=join(dirname(new URL(import.meta.url).pathname),'../../..');
+ const {cases}=JSON.parse(readFileSync(join(root,'data/meta/native-response-capture-cases.json'),'utf8'));
+ for(const id of cases){
+  const [, path, name]=/^([^:]+)::([A-Za-z_]\w*)/u.exec(id);
+  const source=readFileSync(join(root,path),'utf8');
+  const start=source.search(new RegExp('\\bfn '+name+'\\s*\\('));
+  assert.ok(start>=0,id);
+  const end=source.indexOf('\n}\n',start);
+  assert.doesNotMatch(source.slice(start,end<0?undefined:end),/\boffline_replay::in_\w*\s*\(/u,id+' runs in a replay child whose PID the capture cannot bind');
+ }
 });

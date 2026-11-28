@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-22T12:45:52.060348+00:00",
+  "publishedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "hostedJob": "https://github.com/link-assistant/formal-ai/actions/runs/45018199621/job/137201294856",
+  "casesPassed": 9,
+  "platform": "Linux; the child-subreaper fixture intentionally excludes other platforms",
+  "limits": "Four-second finite child, 192 MiB address space and 8 MiB stack; no host stress",
+  "fullHostedLog": "../runner-and-artifact-practices/hosted-45018199621.log.gz",
+  "records": [
+    {
+      "archive": "formal-source-01.txt.gz",
+      "sha256": "a2b44fdc1bf7848006bdde748a2493bed6b1033cdc3a5642b8e61d1dde653331",
+      "bytes": 8998,
+      "path": "scripts/run-with-budget-warning.sh",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-02.txt.gz",
+      "sha256": "2d1702e34990f234d87120cfe5628fa60461224d70479de23a4a9698b76f4c83",
+      "bytes": 2227,
+      "path": "experiments/issue-1580/budget-process-lifetime.test.mjs",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-03.txt.gz",
+      "sha256": "f4eab4c3a51794c490391ad7b7652ef47f7ab337b263bbe303d8c4ba23a540b7",
+      "bytes": 6088,
+      "path": "experiments/issue-1580/probe-budget-process-lifetime.py",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "formal-source-04.txt.gz",
+      "sha256": "ff41eeee4337ef8002bfe89e30a82620f28d075ef94d6d20f3121c1a637de7fe",
+      "bytes": 4820,
+      "path": "rust/tests/web/issue-1580-template-observations.test.mjs",
+      "matchesPublishedHead": true,
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-budget.txt.gz",
+      "sha256": "740e6e91d4332abf45373f099e888613fbd4ff0f217ff8cebb382e3f6b47ee80",
+      "bytes": 6794,
+      "path": "scripts/run-with-budget-warning.sh",
+      "templateCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "hosted-child-lifetime-excerpt.json.gz",
+      "sha256": "54663b0c8019b3a07e9b81e7d4b7204acfc8c83d3ca88349c71124577cedca6b",
+      "bytes": 2102
+    }
+  ],
+  "templateRepairVerified": false,
+  "upstreamReport": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/172",
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "name": "cnl-output.test.mjs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/cnl-output.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.131,
+    "file": "cnl-output.test.mjs.log.gz",
+    "rawSha256": "1825036065f8ddf159fba7091b46da37562105368c4d845f5406e65e21e09a4c",
+    "archiveSha256": "b87e341572619a8368b13924dd3a7cd467311cd7b526f22f54c97d41406cf26c",
+    "lines": 24
+  },
+  {
+    "name": "cnl-parity.test.mjs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/cnl-parity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 53.52,
+    "file": "cnl-parity.test.mjs.log.gz",
+    "rawSha256": "3125c8e8535d29ac19ecc75f0aa2d3935f42091b9f46d335bef52895827a47ca",
+    "archiveSha256": "fc0ee5f08debde7ac123ebc792ebe21c09530f4c8b32ccec326a303d52ced18d",
+    "lines": 14
+  },
+  {
+    "name": "cnl-grammar-matrix.test.mjs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/cnl-grammar-matrix.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 78.348,
+    "file": "cnl-grammar-matrix.test.mjs.log.gz",
+    "rawSha256": "3961b6da9b7d86094c3bfe80301ad118e34812986188558efcad9f8e2e699595",
+    "archiveSha256": "fedd356c29eeca54c881c01d58277704671906c6575aacf8971ae5464efa1be0",
+    "lines": 16
+  },
+  {
+    "name": "cnl-solver-dialogue.test.mjs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/cnl-solver-dialogue.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 263.85,
+    "file": "cnl-solver-dialogue.test.mjs.log.gz",
+    "rawSha256": "098e6ed5bd62541b6e16bbe7646541e0747b493332df78a12ce3f092c41f0af7",
+    "archiveSha256": "c09df60c3b2cc98d557100e5ca2c0217ee647afdf673af234e06c3825d43def1",
+    "lines": 15
+  },
+  {
+    "name": "protocol-envelope-values.test.mjs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/protocol-envelope-values.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.131,
+    "file": "protocol-envelope-values.test.mjs.log.gz",
+    "rawSha256": "2f4b701ed012d5491fe45bd47c17c820d8717686e754aacb204274cda8123288",
+    "archiveSha256": "f1d2ed3bbf0d3ac5ece695c471d941ea8e59a1a178b663d00d8eb7f68a778564",
+    "lines": 13
+  },
+  {
+    "name": "issue-1161-host-contract.test.mjs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1161-host-contract.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.288,
+    "file": "issue-1161-host-contract.test.mjs.log.gz",
+    "rawSha256": "1050ee6e6bf277b822235da4d4bc77863e83202731023be13e90adfe3a3b055f",
+    "archiveSha256": "987b6dea86e5a6a1608416df8b394914fad979d69c2359126bbd06a023b07c52",
+    "lines": 13
+  }
+]

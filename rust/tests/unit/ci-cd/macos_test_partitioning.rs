@@ -119,7 +119,11 @@ fn current_template_security_and_link_gates_are_present() {
     // that never finished checking them.
     // Issue #1081 added a second term to this condition, which folded it across
     // lines. The property is the two guards, not the wrapping that carried them.
-    assert!(unwrapped(&links).contains("!cancelled() && steps.lychee.outputs.exit_code != 0"));
+    // 9f81c231d (issue #1580) compares the output as a string and fails on a
+    // missing one too: a null observation coerced to 0 must never pass.
+    assert!(unwrapped(&links).contains(
+        "!cancelled() && (!steps.lychee.outputs.exit_code || steps.lychee.outputs.exit_code != '0')"
+    ));
     assert!(!links.contains("if: ${{ always()"));
     assert!(!links.contains("steps.webarchive.outputs.all_archived != 'true'"));
     assert!(

@@ -50,6 +50,9 @@ meanings
   computer_use_submit_form
     defined-by action
     role computer_use_operation_cue
+    # Issue #1632: "Отправь отчёт об ошибке" sends a report, so the send verbs
+    # are report verbs too (the report subject still has to be named).
+    role agent_action_report_verb
     lexeme en submit post send
     lexeme ru отправь отправить подай
     lexeme hi जमा भेजो

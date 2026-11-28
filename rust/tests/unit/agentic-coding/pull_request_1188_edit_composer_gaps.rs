@@ -301,6 +301,38 @@ fn a_path_names_a_file_not_the_answer_language() {
 }
 
 #[test]
+fn a_separate_evidence_delivery_does_not_supply_a_missing_edit_operand() {
+    let evidence = "Leave supporting evidence in .agent-ladder/node-R-proof.md. The first line must be exactly node_path=R.";
+    assert_eq!(
+        compose_edit_request(&format!(
+            "Change the greeting surface from good evening to good day. {evidence}"
+        )),
+        None
+    );
+    let expected = Some((
+        "f.lino".to_owned(),
+        "good evening".to_owned(),
+        "good day".to_owned(),
+    ));
+    assert_eq!(
+        compose_edit_request(&format!(
+            "Change 'good evening' to 'good day' in f.lino. {evidence}"
+        )),
+        expected
+    );
+    assert_eq!(
+        compose_edit_request(&format!(
+            "{evidence} Change 'good evening' to 'good day' in `f.lino`."
+        )),
+        expected
+    );
+    assert_eq!(
+        compose_edit_request("In f.lino,\nchange 'good evening' to 'good day'."),
+        expected
+    );
+}
+
+#[test]
 fn an_article_between_the_target_cues_is_no_part_of_the_new_text() {
     // G98: the file clause runs back over the seeded function words between
     // its cues, so `in the file f.txt` leaves `the` out of the new text.

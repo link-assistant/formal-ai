@@ -1,0 +1,544 @@
+Corpus shard 1	UNKNOWN STEP	﻿2026-11-25T15:14:26.7772026Z Current runner version: '2.338.2'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7799269Z ##[group]Runner Image Provisioner
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7800137Z Hosted Compute Agent
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7800822Z Version: 20261111.635
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7801463Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7802215Z Build Date: 2026-11-11T01:49:01Z
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7803025Z Worker ID: {62178a05-9719-4845-b32f-25dd859e6623}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7803717Z Region: us-east-1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7804327Z Cloud: AWS
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7804854Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7806844Z ##[group]Operating System
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7807524Z Ubuntu
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7807995Z 24.04.5
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7808561Z LTS
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7809062Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7809609Z ##[group]Runner Image
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7810193Z Image: ubuntu-24.04
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7810759Z Version: 20261116.133.1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7812167Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.133/images/ubuntu/Ubuntu2404-Readme.md
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7813923Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.133
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7815271Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7816488Z ##[group]GITHUB_TOKEN Permissions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7818897Z Contents: read
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7819645Z Metadata: read
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7820197Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7822464Z Secret source: Actions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7823396Z Cache mode: write
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.7824269Z Prepare workflow directory
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.8160212Z Prepare all required actions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.8213681Z Getting action download info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:26.9698542Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5179263Z Complete job name: Corpus shard 1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5942842Z ##[group]Run actions/checkout@v7
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5944033Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5944850Z   persist-credentials: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5946152Z   repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5952664Z   token: ***
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5953561Z   ssh-strict: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5954373Z   ssh-user: git
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5955284Z   clean: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5956123Z   sparse-checkout-cone-mode: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5957076Z   fetch-depth: 1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5957898Z   fetch-tags: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5958708Z   show-progress: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5959572Z   lfs: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5960360Z   submodules: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5961187Z   set-safe-directory: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5962126Z   allow-unsafe-pr-checkout: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:28.5963252Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.3992541Z Syncing repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.3993864Z ##[group]Getting Git version info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.3994461Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.3995305Z [command]/usr/bin/git version
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7156512Z git version 2.56.1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7171904Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7181666Z Temporarily overriding HOME='/home/runner/work/_temp/5bcab2d8-4d8e-4a59-831c-96c39dc7f32a' before making global git config changes
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7182773Z Adding repository directory to the temporary git global config as a safe directory
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7189519Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7552754Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7553908Z ##[group]Determining repository object format
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7555575Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7556326Z ##[group]Initializing the repository
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.7560437Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8001317Z hint: Using 'master' as the name for the initial branch. This default branch name
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8002077Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8003124Z hint: to use in all of your new repositories, which will suppress this warning,
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8003551Z hint: call:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8003848Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8004251Z hint: 	git config --global init.defaultBranch <name>
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8004667Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8005210Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8005763Z hint: 'development'. The just-created branch can be renamed via this command:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8006126Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8006349Z hint: 	git branch -m <name>
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8006664Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8007010Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8007729Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8014583Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8058593Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8059408Z ##[group]Disabling automatic garbage collection
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8061711Z [command]/usr/bin/git config --local gc.auto 0
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8086393Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8087052Z ##[group]Setting up auth
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8087600Z Removing SSH command configuration
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8091203Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:32.8118738Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.1884533Z Removing HTTP extra header
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.1890932Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.1914856Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2065796Z Removing includeIf entries pointing to credentials config files
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2070735Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2096277Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2259841Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2274924Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2303638Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2323276Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2346310Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2366745Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2367130Z ##[group]Fetching the repository
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:14:33.2371375Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +513e4d9542a181cc4925105f44ad6e3648974e27:refs/remotes/origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5406971Z From https://github.com/link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5407680Z  * [new ref]             513e4d9542a181cc4925105f44ad6e3648974e27 -> origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5415256Z [command]/usr/bin/git branch --list --remote origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5450704Z   origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5486463Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5496048Z 513e4d9542a181cc4925105f44ad6e3648974e27
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5498052Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5498565Z ##[group]Determining the checkout info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5499074Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5499548Z [command]/usr/bin/git sparse-checkout disable
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5551332Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5571930Z ##[group]Checking out the ref
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:11.5574801Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:13.6313404Z Updating files:   7% (9686/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:13.6663974Z Updating files:   8% (10700/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:14.1040322Z Updating files:   8% (10709/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:14.2169395Z Updating files:   9% (12037/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:14.3517318Z Updating files:  10% (13375/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:14.4517457Z Updating files:  11% (14712/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:14.5795206Z Updating files:  12% (16050/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:14.6586435Z Updating files:  13% (17387/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:14.8930261Z Updating files:  13% (17670/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.0399073Z Updating files:  14% (18725/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.1422918Z Updating files:  15% (20062/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.2694800Z Updating files:  16% (21399/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.3692734Z Updating files:  17% (22737/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.4307576Z Updating files:  18% (24074/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.4834965Z Updating files:  19% (25412/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.5439109Z Updating files:  20% (26749/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.6310635Z Updating files:  21% (28087/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.6678500Z Updating files:  22% (29424/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.6947316Z Updating files:  22% (30205/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.9039084Z Updating files:  23% (30761/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.9374590Z Updating files:  24% (32099/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:15.9893162Z Updating files:  25% (33436/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.0314356Z Updating files:  26% (34774/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.1426907Z Updating files:  27% (36111/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.1904960Z Updating files:  28% (37449/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.2508077Z Updating files:  29% (38786/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.2756307Z Updating files:  30% (40123/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.3151725Z Updating files:  31% (41461/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.3714295Z Updating files:  32% (42798/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.4054860Z Updating files:  33% (44136/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.4867755Z Updating files:  34% (45473/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.5491640Z Updating files:  35% (46811/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.5988981Z Updating files:  36% (48148/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.6586691Z Updating files:  37% (49485/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.6909607Z Updating files:  37% (50522/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.7693955Z Updating files:  38% (50823/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.8150187Z Updating files:  39% (52160/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.9124441Z Updating files:  40% (53498/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.9316066Z Updating files:  41% (54835/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.9577836Z Updating files:  42% (56173/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:16.9803377Z Updating files:  43% (57510/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.0472230Z Updating files:  44% (58847/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.1306744Z Updating files:  45% (60185/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.3907485Z Updating files:  46% (61522/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.5466021Z Updating files:  47% (62860/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.6473679Z Updating files:  48% (64197/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.6697919Z Updating files:  49% (65535/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.7527487Z Updating files:  49% (65654/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:17.9355958Z Updating files:  50% (66872/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.0233901Z Updating files:  51% (68209/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.0798050Z Updating files:  52% (69547/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.1155137Z Updating files:  53% (70884/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.1412746Z Updating files:  54% (72222/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.1814260Z Updating files:  55% (73559/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.2314593Z Updating files:  56% (74897/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.2788844Z Updating files:  57% (76234/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.3092751Z Updating files:  58% (77571/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.3632753Z Updating files:  59% (78909/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.4128537Z Updating files:  60% (80246/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.4483817Z Updating files:  61% (81584/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.5232289Z Updating files:  62% (82921/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.5597621Z Updating files:  63% (84259/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.7467821Z Updating files:  64% (85596/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.7495758Z Updating files:  64% (86885/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.7788891Z Updating files:  65% (86933/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.8334074Z Updating files:  66% (88271/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.8650578Z Updating files:  67% (89608/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.8911412Z Updating files:  68% (90946/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.9265932Z Updating files:  69% (92283/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:18.9641471Z Updating files:  70% (93621/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.0166630Z Updating files:  71% (94958/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.0371785Z Updating files:  72% (96295/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.1281386Z Updating files:  73% (97633/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.2330287Z Updating files:  74% (98970/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.4018957Z Updating files:  75% (100308/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.4508692Z Updating files:  76% (101645/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.5312998Z Updating files:  77% (102983/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.5685787Z Updating files:  78% (104320/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.5984136Z Updating files:  79% (105657/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.6460576Z Updating files:  80% (106995/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.6549978Z Updating files:  81% (108332/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.6944783Z Updating files:  81% (108758/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.7268771Z Updating files:  82% (109670/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.7691076Z Updating files:  83% (111007/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.8852646Z Updating files:  84% (112345/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.9325112Z Updating files:  85% (113682/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.9555183Z Updating files:  86% (115019/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.9767181Z Updating files:  87% (116357/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:19.9997400Z Updating files:  88% (117694/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.0225806Z Updating files:  89% (119032/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.0523292Z Updating files:  90% (120369/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.0750439Z Updating files:  91% (121707/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.1034291Z Updating files:  92% (123044/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.1788720Z Updating files:  93% (124381/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.2506073Z Updating files:  94% (125719/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.3282437Z Updating files:  95% (127056/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.4041448Z Updating files:  96% (128394/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.4657092Z Updating files:  97% (129731/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.5252419Z Updating files:  98% (131069/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.5923826Z Updating files:  99% (132406/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.5924618Z Updating files: 100% (133743/133743)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.5926153Z Updating files: 100% (133743/133743), done.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.7754167Z Switched to a new branch 'main'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.7755198Z branch 'main' set up to track 'origin/main'.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.7932879Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.7970654Z [command]/usr/bin/git log -1 --format=%H
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8002368Z 513e4d9542a181cc4925105f44ad6e3648974e27
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8003647Z ##[group]Removing auth
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8003898Z Removing SSH command configuration
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8010445Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8029066Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8363032Z Removing HTTP extra header
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8366948Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8390864Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8729597Z Removing includeIf entries pointing to credentials config files
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8732438Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8753818Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8754423Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8754950Z includeif.gitdir:/github/workspace/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8755564Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8761638Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8780773Z /home/runner/work/_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8789286Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-2bde903a\-aa4f\-4497\-8c61\-e13ef65984b6\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8900145Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8918552Z /home/runner/work/_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.8924734Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-2bde903a\-aa4f\-4497\-8c61\-e13ef65984b6\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9066932Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9085249Z /github/runner_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9089376Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-2bde903a\-aa4f\-4497\-8c61\-e13ef65984b6\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9165862Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9185604Z /github/runner_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9190635Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-2bde903a\-aa4f\-4497\-8c61\-e13ef65984b6\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9269806Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9603399Z Removing credentials config '/home/runner/work/_temp/git-credentials-2bde903a-aa4f-4497-8c61-e13ef65984b6.config'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9610740Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9943456Z Prepare all required actions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:20.9944009Z Getting action download info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.1129192Z Download action repository 'actions/setup-python@v7' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.4192760Z Download action repository 'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7200987Z ##[group]Run ./.github/actions/download-artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7201302Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7201575Z   name: corpus-gate-executable
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7201828Z   path: corpus-gate
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7202057Z   merge-multiple: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7202352Z   repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7202615Z   run-id: 45636781444
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7202842Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7260000Z ##[start-action display=Run actions/setup-python@v7;id=__self.python]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7373673Z ##[group]Run actions/setup-python@v7
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7374070Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7374299Z   update-environment: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7374564Z   python-version: 3.14
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7374815Z   check-latest: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7376784Z   token: ***
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7377108Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7377462Z   allow-prereleases: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7377718Z   freethreaded: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.7377960Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:21.8292307Z ##[group]Installed versions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.0009214Z Successfully set up CPython (3.14.10)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.0010006Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.0085474Z ##[end-action id=__self.python;outcome=success;conclusion=success;duration_ms=282]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.0089624Z ##[start-action display=Allocate raw archive directory;id=__self.temporary]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.0208102Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.0208834Z ^[[36;1mecho "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1604870Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1605413Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1722476Z ##[end-action id=__self.temporary;outcome=success;conclusion=success;duration_ms=163]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1730869Z ##[start-action display=Prepare portable Node observation options;id=__self.observation_options]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1766498Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1766916Z ^[[36;1maction_directory="${ACTION_DIRECTORY//\\//}"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1767427Z ^[[36;1mprintf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1793456Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1793853Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1794245Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1794650Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1842164Z ##[end-action id=__self.observation_options;outcome=success;conclusion=success;duration_ms=11]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1845683Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_first]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1983449Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1983831Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1984059Z   name: corpus-gate-executable
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1984344Z   repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1984667Z   run-id: 45636781444
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1984944Z   path: /home/runner/work/_temp/artifact-archives.dXI4Ud
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1985447Z   merge-multiple: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1985688Z   skip-decompress: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1985934Z   digest-mismatch: error
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1986186Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1986807Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1987330Z   ARTIFACT_RETRY_ATTEMPT: 1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.1987581Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.3080807Z Downloading single artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.4412162Z Preparing to download the following artifacts:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.4412981Z - corpus-gate-executable (ID: 15033288951, Size: 79937247, Expected Digest: sha256:8bac2b561645056ba8165b8abe18c13eac56de52bc066b222c320555748fd1a4)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.6143454Z Redirecting to blob download url: https://productionresultssa0.blob.core.windows.net/actions-results/285a4b23-f1e6-8b30-aa91-bda138cc8d4c/workflow-job-run-067cda81-1157-54f3-903d-2cbf08d6f2c1/artifacts/70ac6116724de0b317d84440ca144345ad73dba212b98960232671eac8654636.zip
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.6144844Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.dXI4Ud
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:22.7032728Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.dXI4Ud/corpus-gate-executable.zip
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4318740Z SHA256 digest of downloaded artifact is 8bac2b561645056ba8165b8abe18c13eac56de52bc066b222c320555748fd1a4
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4319272Z Artifact download completed successfully.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4319774Z Total of 1 artifact(s) downloaded
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4321445Z Download artifact has finished successfully
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4397712Z ##[end-action id=__self.download_first;outcome=success;conclusion=success;duration_ms=1255]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4402897Z ##[start-action display=Discard partial archives before the second download;id=__self.retry_second]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4413938Z ##[end-action id=__self.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4417843Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_second]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4422935Z ##[end-action id=__self.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4425877Z ##[start-action display=Discard partial archives before the third download;id=__self.retry_third]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4430419Z ##[end-action id=__self.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4433037Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_third]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4437952Z ##[end-action id=__self.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4442790Z ##[start-action display=Extract verified archives;id=__self.extract]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4474095Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4475302Z ^[[36;1m"$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4503287Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4503594Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4503978Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4504448Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4504942Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.dXI4Ud
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4505417Z   DESTINATION: corpus-gate
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4505662Z   MERGE_MULTIPLE: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4505949Z   ALLOW_EMPTY_SELECTION: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:23.4506227Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6405738Z Artifact extraction destination: /home/runner/work/formal-ai/formal-ai/corpus-gate
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6521440Z ##[end-action id=__self.extract;outcome=success;conclusion=success;duration_ms=2207]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6527851Z ##[start-action display=Remove temporary raw archives;id=__self.__run]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6554096Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6554517Z ^[[36;1mrm -rf -- "$RAW_DIRECTORY"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6593786Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6594344Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6594784Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.dXI4Ud
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6595289Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6709351Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=18]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6778878Z ##[group]Run set -euo pipefail
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6779472Z ^[[36;1mset -euo pipefail^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6779857Z ^[[36;1mchmod +x corpus-gate/integration^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6780268Z ^[[36;1m(while sleep 30; do^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6780988Z ^[[36;1m  echo "[corpus-resources] $(date -u +%T) $(free -m | awk 'NR==2{print "mem used="$3"MiB available="$7"MiB"}') $(df -h / | awk 'NR==2{print "disk used="$3" available="$4}')"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6781825Z ^[[36;1mdone) &^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6782115Z ^[[36;1mmonitor=$!^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6782438Z ^[[36;1mtrap 'kill "$monitor" 2>/dev/null || true' EXIT^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6782982Z ^[[36;1mexport FORMAL_AI_CORPUS_SHARD="$((SHARD_INDEX + 1))/${SHARD_TOTAL}"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6783613Z ^[[36;1m# cargo runs an integration test from the package root; so does this.^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6784103Z ^[[36;1mcd rust^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6784468Z ^[[36;1m../scripts/run-with-budget-warning.sh \^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6785303Z ^[[36;1m  "$TEST_BUDGET_SECONDS" "Benchmark corpus gate shard" \^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6785884Z ^[[36;1m  ../corpus-gate/integration issue_1138_no_silent_unknown --nocapture \^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6786433Z ^[[36;1m  | tee ../corpus-shard.log^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6786929Z ^[[36;1m# A filter that matches nothing reports `ok` with zero tests; that^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6787373Z ^[[36;1m# is a shard that checked nothing, not a pass.^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6787901Z ^[[36;1mgrep -E '^test result: ok\. 1 passed' ../corpus-shard.log >/dev/null || {^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6788572Z ^[[36;1m  echo "::error title=Corpus shard ran no gate::the shard's filter matched no test, so no prompt was checked" >&2^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6789169Z ^[[36;1m  exit 1^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6789529Z ^[[36;1m}^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6820330Z shell: /usr/bin/bash -e {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6820646Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6821180Z   TEST_BUDGET_SECONDS: 900
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6821587Z   TEST_WARN_RATIO_PERCENT: 70
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6821905Z   SHARD_INDEX: 0
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6822177Z   SHARD_TOTAL: 6
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6822450Z   FORMAL_AI_CORPUS_TRACE: 1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6822807Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6935753Z 
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:25.6936373Z running 1 test
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:26.2976631Z [corpus-trace] 1/234 data/benchmarks/capability-routing/en.lino: "What's happening in the world right now?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:26.2977233Z corpus shard 1/6: 234 of 1399 prompts
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.2609698Z [corpus-trace] 1/234 answered in 1.96s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.2611211Z [corpus-trace] 2/234 data/benchmarks/capability-routing/en.lino: "Summarise the last few hours for me, with links."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.3665178Z [corpus-trace] 2/234 answered in 0.11s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.3666150Z [corpus-trace] 3/234 data/benchmarks/capability-routing/en.lino: "That went over my head."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.4590936Z [corpus-trace] 3/234 answered in 0.09s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.4591754Z [corpus-trace] 4/234 data/benchmarks/capability-routing/en.lino: "Could you unpack that a bit?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.5504572Z [corpus-trace] 4/234 answered in 0.09s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:28.5505840Z [corpus-trace] 5/234 data/benchmarks/capability-routing/en.lino: "Put together a few pages on how quantum mechanics got started."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:30.7755779Z [corpus-trace] 5/234 answered in 2.23s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:30.7756796Z [corpus-trace] 6/234 data/benchmarks/capability-routing/en.lino: "Compose something substantial about superposition for readers who are new to it."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.3859710Z [corpus-trace] 6/234 answered in 2.61s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.3860585Z [corpus-trace] 7/234 data/benchmarks/capability-routing/en.lino: "Give me a line in Hindi."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.4912473Z [corpus-trace] 7/234 answered in 0.11s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.4913061Z [corpus-trace] 8/234 data/benchmarks/capability-routing/en.lino: "Answer the next one in Spanish, please."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.6154043Z [corpus-trace] 8/234 answered in 0.12s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.6155223Z [corpus-trace] 9/234 data/benchmarks/capability-routing/en.lino: "Put me down with Alexander at eight tonight, Tbilisi time."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.7116036Z [corpus-trace] 9/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:33.7116731Z [corpus-trace] 10/234 data/benchmarks/capability-routing/en.lino: "Get me and Chen on the calendar for Thursday at 18:45."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:38.8526023Z [corpus-trace] 10/234 answered in 5.14s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:38.8526848Z [corpus-trace] 11/234 data/benchmarks/capability-routing/en.lino: "How far down do oak roots usually reach?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:40.7032801Z [corpus-trace] 11/234 answered in 1.85s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:40.7033691Z [corpus-trace] 12/234 data/benchmarks/capability-routing/en.lino: "What depth do pine roots typically reach in sandy soil?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.1800065Z [corpus-trace] 12/234 answered in 3.48s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.1801763Z [corpus-trace] 13/234 data/benchmarks/capability-routing/en.lino: "Find hive-mind-control center folder on my desktop"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.2578184Z [corpus-trace] 13/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.2579505Z [corpus-trace] 14/234 data/benchmarks/capability-routing/en.lino: "Locate the hive-mind-control-center directory for me."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.3356499Z [corpus-trace] 14/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.3357874Z [corpus-trace] 15/234 data/benchmarks/capability-routing/es.lino: "¿Qué está pasando en el mundo ahora mismo?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.4910850Z [corpus-trace] 15/234 answered in 0.16s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.4911859Z [corpus-trace] 16/234 data/benchmarks/capability-routing/es.lino: "Resúmeme las últimas horas, con enlaces."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.5861989Z [corpus-trace] 16/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.5862864Z [corpus-trace] 17/234 data/benchmarks/capability-routing/es.lino: "Eso se me escapó."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.6640827Z [corpus-trace] 17/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.6641725Z [corpus-trace] 18/234 data/benchmarks/capability-routing/es.lino: "¿Puedes desglosarlo un poco?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.7428519Z [corpus-trace] 18/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:44.7430002Z [corpus-trace] 19/234 data/benchmarks/capability-routing/es.lino: "Prepárame unas páginas sobre cómo empezó la mecánica cuántica."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:47.7018088Z [corpus-trace] 19/234 answered in 2.96s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:47.7019081Z [corpus-trace] 20/234 data/benchmarks/capability-routing/es.lino: "Redacta algo sustancial sobre la superposición para lectores nuevos."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:52.8764984Z [corpus-trace] 20/234 answered in 5.17s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:52.8765885Z [corpus-trace] 21/234 data/benchmarks/capability-routing/es.lino: "Dime una frase en hindi."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:52.9790084Z [corpus-trace] 21/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:52.9790881Z [corpus-trace] 22/234 data/benchmarks/capability-routing/es.lino: "Responde lo siguiente en ruso, por favor."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:53.0986610Z [corpus-trace] 22/234 answered in 0.12s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:53.0988211Z [corpus-trace] 23/234 data/benchmarks/capability-routing/es.lino: "Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:53.1968170Z [corpus-trace] 23/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:53.1969676Z [corpus-trace] 24/234 data/benchmarks/capability-routing/es.lino: "Mete a Chen y a mí en el calendario el jueves a las 18:45."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:53.5716044Z [corpus-trace] 24/234 answered in 0.37s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:53.5717362Z [corpus-trace] 25/234 data/benchmarks/capability-routing/es.lino: "¿Hasta qué profundidad llegan las raíces del roble?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:55.5866834Z [corpus-trace] 25/234 answered in 2.02s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:55.5868175Z [corpus-trace] 26/234 data/benchmarks/capability-routing/es.lino: "¿A qué profundidad llegan las raíces del pino en suelo arenoso?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:55.6980022Z [corpus-resources] 15:15:55 mem used=1140MiB available=14560MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.3850186Z [corpus-trace] 26/234 answered in 2.80s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.3851228Z [corpus-trace] 27/234 data/benchmarks/capability-routing/es.lino: "Busca la carpeta hive-mind-control-center en mi escritorio."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.4637126Z [corpus-trace] 27/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.4637997Z [corpus-trace] 28/234 data/benchmarks/capability-routing/es.lino: "Localiza el directorio hive-mind-control-center."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.5434936Z [corpus-trace] 28/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.5436271Z [corpus-trace] 29/234 data/benchmarks/capability-routing/hi.lino: "इस समय द\u{941}निया म\u{947}\u{902} क\u{94d}या चल रहा ह\u{948}?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.8423803Z [corpus-trace] 29/234 answered in 0.30s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.8424878Z [corpus-trace] 30/234 data/benchmarks/capability-routing/hi.lino: "पिछल\u{947} क\u{941}छ घ\u{902}टो\u{902} का सार लि\u{902}क क\u{947} साथ दीजिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.9186358Z [corpus-trace] 30/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.9951817Z [corpus-trace] 31/234 data/benchmarks/capability-routing/hi.lino: "यह म\u{947}र\u{947} सिर क\u{947} ऊपर स\u{947} चला गया।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.9952677Z [corpus-trace] 31/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:58.9953329Z [corpus-trace] 32/234 data/benchmarks/capability-routing/hi.lino: "क\u{94d}या आप इस\u{947} ट\u{941}कड\u{93c}ो\u{902} म\u{947}\u{902} खोलकर बताए\u{901}ग\u{947}?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:59.0700847Z [corpus-trace] 32/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:15:59.0702238Z [corpus-trace] 33/234 data/benchmarks/capability-routing/hi.lino: "क\u{94d}वा\u{902}टम या\u{902}त\u{94d}रिकी की श\u{941}र\u{941}आत पर क\u{941}छ पन\u{94d}न\u{947} त\u{948}यार कीजिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:01.0598170Z [corpus-trace] 33/234 answered in 1.99s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:01.0599235Z [corpus-trace] 34/234 data/benchmarks/capability-routing/hi.lino: "नए पाठको\u{902} क\u{947} लिए अध\u{94d}यारोपण पर एक ठोस रचना लिखिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:02.9416149Z [corpus-trace] 34/234 answered in 1.88s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:02.9417362Z [corpus-trace] 35/234 data/benchmarks/capability-routing/hi.lino: "म\u{941}झ\u{947} चीनी म\u{947}\u{902} एक प\u{902}क\u{94d}ति दीजिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:03.0446790Z [corpus-trace] 35/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:03.0447878Z [corpus-trace] 36/234 data/benchmarks/capability-routing/hi.lino: "अगला उत\u{94d}तर क\u{943}पया स\u{94d}प\u{947}निश म\u{947}\u{902} दीजिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:03.1459508Z [corpus-trace] 36/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:03.1460955Z [corpus-trace] 37/234 data/benchmarks/capability-routing/hi.lino: "आज रात आठ बज\u{947} तिबिलिसी समय पर अल\u{947}क\u{94d}ज\u{947}\u{902}डर क\u{947} साथ म\u{941}झ\u{947} दर\u{94d}ज कीजिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:03.2244643Z [corpus-trace] 37/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:03.2246245Z [corpus-trace] 38/234 data/benchmarks/capability-routing/hi.lino: "ग\u{941}र\u{941}वार 18:45 पर म\u{941}झ\u{947} और च\u{947}न को क\u{948}ल\u{947}\u{902}डर म\u{947}\u{902} डालिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:11.5323221Z [corpus-trace] 38/234 answered in 8.31s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:11.5324274Z [corpus-trace] 39/234 data/benchmarks/capability-routing/hi.lino: "बल\u{942}त की जड\u{93c}\u{947}\u{902} आमतौर पर कितनी गहरी जाती ह\u{948}\u{902}?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:15.9387577Z [corpus-trace] 39/234 answered in 4.41s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:15.9388662Z [corpus-trace] 40/234 data/benchmarks/capability-routing/hi.lino: "र\u{947}तीली मिट\u{94d}टी म\u{947}\u{902} चीड\u{93c} की जड\u{93c}\u{947}\u{902} कितनी गहराई तक जाती ह\u{948}\u{902}?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:17.4697615Z [corpus-trace] 40/234 answered in 1.53s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:17.4698716Z [corpus-trace] 41/234 data/benchmarks/capability-routing/hi.lino: "म\u{947}र\u{947} ड\u{947}स\u{94d}कटॉप पर hive-mind-control-center फ\u{93c}ोल\u{94d}डर ढ\u{942}\u{901}ढिए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:17.5486930Z [corpus-trace] 41/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:17.5488078Z [corpus-trace] 42/234 data/benchmarks/capability-routing/hi.lino: "hive-mind-control-center निर\u{94d}द\u{947}शिका का पता लगाइए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:17.6263610Z [corpus-trace] 42/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:17.6264510Z [corpus-trace] 43/234 data/benchmarks/capability-routing/ru.lino: "Что сейчас происходит в мире?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:24.0099387Z [corpus-trace] 43/234 answered in 6.38s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:24.0100728Z [corpus-trace] 44/234 data/benchmarks/capability-routing/ru.lino: "Подведи итог последних часов и дай ссылки."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:25.6940614Z test issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener has been running for over 60 seconds
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:25.7043833Z [corpus-resources] 15:16:25 mem used=1116MiB available=14585MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:26.0190796Z [corpus-trace] 44/234 answered in 2.01s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:26.0191981Z [corpus-trace] 45/234 data/benchmarks/capability-routing/ru.lino: "Это мне непонятно."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:26.0964849Z [corpus-trace] 45/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:26.0966027Z [corpus-trace] 46/234 data/benchmarks/capability-routing/ru.lino: "Можешь разложить это по частям?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:26.1763740Z [corpus-trace] 46/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:26.1765227Z [corpus-trace] 47/234 data/benchmarks/capability-routing/ru.lino: "Составь мне несколько страниц о том, как возникла квантовая механика."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:31.6353045Z [corpus-trace] 47/234 answered in 5.46s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:31.6354352Z [corpus-trace] 48/234 data/benchmarks/capability-routing/ru.lino: "Составь основательный материал о суперпозиции для новичков."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:34.6627894Z [corpus-trace] 48/234 answered in 3.03s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:34.6628777Z [corpus-trace] 49/234 data/benchmarks/capability-routing/ru.lino: "Дай фразу на хинди."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:34.7696800Z [corpus-trace] 49/234 answered in 0.11s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:34.7700024Z [corpus-trace] 50/234 data/benchmarks/capability-routing/ru.lino: "Следующий ответ дай, пожалуйста, по-испански."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:36.7975882Z [corpus-trace] 50/234 answered in 2.03s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:36.7977137Z [corpus-trace] 51/234 data/benchmarks/capability-routing/ru.lino: "Назначь мне встречу с Александром на 20:00 по Грузии."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:36.8758059Z [corpus-trace] 51/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:36.8759458Z [corpus-trace] 52/234 data/benchmarks/capability-routing/ru.lino: "Внеси в календарь нас с Ченом на четверг, 18:45."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:36.9752285Z [corpus-trace] 52/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:36.9753647Z [corpus-trace] 53/234 data/benchmarks/capability-routing/ru.lino: "Какого размера средний корень яблони?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:38.1710397Z [corpus-trace] 53/234 answered in 1.20s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:38.1711589Z [corpus-trace] 54/234 data/benchmarks/capability-routing/ru.lino: "На какую глубину уходят корни сосны в песчаной почве?"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:41.0849769Z [corpus-trace] 54/234 answered in 2.91s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:41.0850746Z [corpus-trace] 55/234 data/benchmarks/capability-routing/ru.lino: "Найди папку hive-mind-control center на моём рабочем столе"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:41.1657894Z [corpus-trace] 55/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:41.1658956Z [corpus-trace] 56/234 data/benchmarks/capability-routing/ru.lino: "Определи расположение каталога hive-mind-control-center."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:41.2459601Z [corpus-trace] 56/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.0270147Z [corpus-trace] 57/234 data/benchmarks/capability-routing/zh.lino: "现在世界上发生了什么？"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.0271191Z [corpus-trace] 57/234 answered in 4.78s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.0271714Z [corpus-trace] 58/234 data/benchmarks/capability-routing/zh.lino: "把最近几个小时的情况总结一下，附上链接。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.1231285Z [corpus-trace] 58/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.1232507Z [corpus-trace] 59/234 data/benchmarks/capability-routing/zh.lino: "这个我没跟上。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.2010680Z [corpus-trace] 59/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.2011811Z [corpus-trace] 60/234 data/benchmarks/capability-routing/zh.lino: "能拆开一点一点讲吗？"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.2787146Z [corpus-trace] 60/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:46.2788466Z [corpus-trace] 61/234 data/benchmarks/capability-routing/zh.lino: "写几页关于量子力学如何起步的内容。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:47.1092735Z [corpus-trace] 61/234 answered in 0.83s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:47.1094134Z [corpus-trace] 62/234 data/benchmarks/capability-routing/zh.lino: "为初学者写一篇有分量的文章，讲叠加态。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.2550221Z [corpus-trace] 62/234 answered in 1.15s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.2551334Z [corpus-trace] 63/234 data/benchmarks/capability-routing/zh.lino: "用印地语说一句吧。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.3592499Z [corpus-trace] 63/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.3593921Z [corpus-trace] 64/234 data/benchmarks/capability-routing/zh.lino: "下一个回答请用西班牙语。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.4637505Z [corpus-trace] 64/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.4638992Z [corpus-trace] 65/234 data/benchmarks/capability-routing/zh.lino: "今晚八点第比利斯时间，帮我和亚历山大约一下。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.5608286Z [corpus-trace] 65/234 answered in 0.10s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:48.5609479Z [corpus-trace] 66/234 data/benchmarks/capability-routing/zh.lino: "把我和陈放到周四 18:45 的日程上。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:53.4314849Z [corpus-trace] 66/234 answered in 4.87s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:53.4316669Z [corpus-trace] 67/234 data/benchmarks/capability-routing/zh.lino: "橡树的根一般能扎多深？"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:54.4669067Z [corpus-trace] 67/234 answered in 1.04s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:54.4670923Z [corpus-trace] 68/234 data/benchmarks/capability-routing/zh.lino: "在沙质土里松树的根一般扎到多深？"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:55.7107052Z [corpus-resources] 15:16:55 mem used=1114MiB available=14587MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:56.0023475Z [corpus-trace] 68/234 answered in 1.54s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:56.0024482Z [corpus-trace] 69/234 data/benchmarks/capability-routing/zh.lino: "在我的桌面上找 hive-mind-control-center 文件夹。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:56.0831500Z [corpus-trace] 69/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:56.0832646Z [corpus-trace] 70/234 data/benchmarks/capability-routing/zh.lino: "帮我定位 hive-mind-control-center 目录。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:56.1635381Z [corpus-trace] 70/234 answered in 0.08s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:16:56.1636524Z [corpus-trace] 71/234 data/benchmarks/coding-composition-from-sources.lino: "Write a Python function run_length(text) that returns a list of (character, count) pairs for each run of equal characters in text."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:07.1479634Z [corpus-trace] 71/234 answered in 10.98s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:07.1483536Z [corpus-trace] 72/234 data/benchmarks/coding-composition-from-sources.lino: "Напиши функцию на Python find_position(values, target), которая возвращает индекс target в отсортированном списке values или -1, если его нет, не просматривая каждый элемент."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:25.7167432Z [corpus-resources] 15:17:25 mem used=1117MiB available=14583MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:29.8169135Z [corpus-trace] 72/234 answered in 22.67s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:29.8171254Z [corpus-trace] 73/234 data/benchmarks/coding-composition-from-sources.lino: "एक Python फ\u{93c}\u{902}क\u{94d}शन edit_steps(first, second) लिखो जो first को second म\u{947}\u{902} बदलन\u{947} क\u{947} लिए एक-अक\u{94d}षर क\u{947} जोड\u{93c}न\u{947}, हटान\u{947} या बदलन\u{947} की न\u{94d}य\u{942}नतम स\u{902}ख\u{94d}या लौटाए।"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:48.2947924Z [corpus-trace] 73/234 answered in 18.48s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:48.2948965Z [corpus-trace] 74/234 data/benchmarks/coding-composition-from-sources.lino: "写一个 Rust 函数，把字符串中连续相同字符的段落作为 (char, usize) 对返回。"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:17:55.7227041Z [corpus-resources] 15:17:55 mem used=1120MiB available=14580MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:18:07.5234676Z [corpus-trace] 74/234 answered in 19.23s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:18:07.5236398Z [corpus-trace] 75/234 data/benchmarks/coding-composition-from-sources.lino: "Escribe una función de Python blorptide(values) que devuelva el blorptide de los números."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:18:18.5803025Z [corpus-trace] 75/234 answered in 11.06s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:18:18.5804310Z [corpus-trace] 76/234 data/benchmarks/coding-discovery-paraphrases.lino: "Define Python function summarize_numbers(numbers). Return a tuple of the sum and product of every integer."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:18:25.7282213Z [corpus-resources] 15:18:25 mem used=1126MiB available=14575MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:18:55.7349401Z [corpus-resources] 15:18:55 mem used=1168MiB available=14533MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:04.6343342Z [corpus-trace] 76/234 answered in 46.05s
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:04.6345852Z [corpus-trace] 77/234 data/benchmarks/coding-discovery-paraphrases.lino: "Реализуй функцию Python near_pair(numbers, threshold). Верни истину, если хотя бы один набор из двух чисел различается меньше чем порог."
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:25.7416967Z [corpus-resources] 15:19:25 mem used=1169MiB available=14531MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:55.8850344Z [corpus-resources] 15:19:55 mem used=15421MiB available=280MiB disk used=61G available=84G
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:56.8303346Z Terminated
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:56.8443350Z ##[error]The runner has received a shutdown signal. This can happen when the runner service is stopped, or a manually started runner is canceled.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:56.8443670Z ##[error]Process completed with exit code 143.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T15:19:56.8749288Z Cleaning up orphan processes

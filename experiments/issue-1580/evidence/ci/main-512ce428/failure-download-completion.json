@@ -1,0 +1,154 @@
+{
+  "status": 0,
+  "durationSeconds": 48.824,
+  "runs": [
+    {
+      "runId": "44117975432",
+      "workflowName": "CI/CD Pipeline",
+      "headSha": "512ce428029a92687628b4180309ee5ab660fe08",
+      "status": 0,
+      "rawBytes": 16362638,
+      "rawLines": 82630,
+      "rawSha256": "07c2f10b6e2c46b9cf562358027de632272b9245785f4580c197a8c8a2647573",
+      "durationSeconds": 26.455,
+      "log": "44117975432.log.gz",
+      "stderr": "",
+      "failedJobs": [
+        {
+          "name": "Lint and Format Check (lane 1)",
+          "databaseId": 134162215405,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run registered gates (stage rust)"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 8/8",
+          "databaseId": 134170078449,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 5/8",
+          "databaseId": 134170078471,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 4/8",
+          "databaseId": 134170078477,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 6/8",
+          "databaseId": 134170078490,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / specification) shard 2/4",
+          "databaseId": 134170078547,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run specification tests from the prebuilt executable"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / specification) shard 1/4",
+          "databaseId": 134170078595,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run specification tests from the prebuilt executable"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 7/8",
+          "databaseId": 134170078676,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full)",
+          "databaseId": 134170078701,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 3/8",
+          "databaseId": 134170078873,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / specification) shard 3/4",
+          "databaseId": 134170079986,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run specification tests from the prebuilt executable"
+          ]
+        },
+        {
+          "name": "Pipeline Status",
+          "databaseId": 134183469470,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Fail the run when a required job was cancelled or failed"
+          ]
+        }
+      ]
+    },
+    {
+      "runId": "44117974304",
+      "workflowName": "Layered CI",
+      "headSha": "512ce428029a92687628b4180309ee5ab660fe08",
+      "status": 0,
+      "rawBytes": 6953834,
+      "rawLines": 34418,
+      "rawSha256": "0a0bfcd19cfd19d9c31d1d74a51996587d443e2a06767c3e736b97817d0e5e8a",
+      "durationSeconds": 18.24,
+      "log": "44117974304.log.gz",
+      "stderr": "",
+      "failedJobs": [
+        {
+          "name": "js tier (node --check over js, suite group 8)",
+          "databaseId": 134161889692,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 7)",
+          "databaseId": 134161889750,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 2)",
+          "databaseId": 134161889865,
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        }
+      ]
+    }
+  ]
+}

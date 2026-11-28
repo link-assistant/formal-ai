@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-22T08:32:51.338191+00:00",
+  "sourceHead": "13fb0ff42",
+  "result": {
+    "exitCode": 0,
+    "finishedAt": "2026-11-22T08:26:03.238640+00:00",
+    "command": "node experiments/formal_ai_subagent/local-gates.mjs",
+    "localRustExecution": false,
+    "autonomousAuthorshipCredit": 0
+  },
+  "gateCounts": {
+    "PASS": 89,
+    "SKIP": 53
+  },
+  "allImplementationEditsPresentDuringRun": true,
+  "hostedOnlyExclusionsRemainUnqualified": true,
+  "localRustExecution": false,
+  "productionDiffReviewed": true,
+  "wholePullRequestReviewed": false,
+  "autonomousAuthorshipCredit": 0
+}

@@ -1,3 +1,4 @@
+import {assembleCanonicalSource} from './canonical-release-source.mjs';
 import assert from 'node:assert/strict';
 import { releaseContext } from './release-source-freshness.mjs';
 import { createHash } from 'node:crypto';
@@ -152,12 +153,20 @@ export function compileContract({
   assert.equal(groups.size, 1);
   const retained=[];
   if (retainedSourceProof !== undefined) {
-    assert.deepEqual(Object.keys(retainedSourceProof).sort(), ['originalSource', 'packetSource']);
+    assert.deepEqual(Object.keys(retainedSourceProof).sort(), retainedSourceProof.physicalSourceFiles === undefined ? ['originalSource','packetSource'] : ['originalSource','packetSource','physicalSourceFiles']);
     assert.equal(retainedSourceProof.originalSource, canonical);
     assert.deepEqual(JSON.parse(retainedSourceProof.packetSource), packet);
     const prefix = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
+    const physicalFiles = retainedSourceProof.physicalSourceFiles;
+    let physicalDigests;
+    if (physicalFiles === undefined) {
+      physicalDigests = [{path:prefix+'original-release-workflow.yml',sha256:sha(canonical)}];
+    } else {
+      assert.equal(assembleCanonicalSource(physicalFiles),canonical);
+      physicalDigests = physicalFiles.map(({path,text})=>({path,sha256:sha(text)}));
+    }
     retained.push(
-      {path: prefix + 'original-release-workflow.yml', sha256: sha(canonical)},
+      ...physicalDigests,
       {path: prefix + 'stage-source-coverage.json', sha256: sha(retainedSourceProof.packetSource)}
     );
   }
@@ -216,7 +225,7 @@ export async function observeCommandStagedContext({
   assert.equal(workflow.path, '.github/workflows/release.yml');
   assert.equal(workflow.state, 'active');
   read(provider.commitPath);
-  const visited=new Set();const expectedTrees=contract.sources.length===4?8:3;
+  const visited=new Set();const expectedTrees=contract.sources.length===2?3:8;
   for(let index=0;index<expectedTrees;index++){const path=provider.registered().trees.find(path=>!visited.has(path));assert.ok(path,'complete source tree path required');visited.add(path);read(path);}
   assert.equal(provider.registered().trees.length,expectedTrees);assert.equal(provider.registered().sources.length,contract.sources.length,'all immutable source declarations must bind');
   for (const source of provider.registered().sources) {
@@ -305,7 +314,7 @@ export async function observeCommandCurrentGroupStagedContext({
   assert.equal(workflow.path, '.github/workflows/release.yml');
   assert.equal(workflow.state, 'active');
   read(provider.commitPath);
-  const visited=new Set();const expectedTrees=contract.sources.length===4?8:3;
+  const visited=new Set();const expectedTrees=contract.sources.length===2?3:8;
   for(let index=0;index<expectedTrees;index++){const path=provider.registered().trees.find(path=>!visited.has(path));assert.ok(path,'complete source tree path required');visited.add(path);read(path);}
   assert.equal(provider.registered().trees.length,expectedTrees);assert.equal(provider.registered().sources.length,contract.sources.length,'all immutable source declarations must bind');
   for (const source of provider.registered().sources) {

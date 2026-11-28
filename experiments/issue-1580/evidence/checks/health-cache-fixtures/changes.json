@@ -1,0 +1,56 @@
+{
+  "changes": [
+    {
+      "path": "rust/tests/web/server-memory-schema.test.mjs",
+      "beforeSha256": "a8604ec69ef455fd0d4fd8843af92532a59d4b08337291bc1b053f6e2fff2b25",
+      "afterSha256": "3390f6d7ce8551d47a19ae828280b1aa4bd39445c4248090d86117c221adea92"
+    },
+    {
+      "path": "rust/tests/web/server-memory-schema.test.mjs",
+      "beforeSha256": "3390f6d7ce8551d47a19ae828280b1aa4bd39445c4248090d86117c221adea92",
+      "afterSha256": "e2dfffa1c9e3b57ba5215535c7f8524ab13bf0fff8779f0e03c1b9b152f1dbb3"
+    },
+    {
+      "path": "rust/tests/web/server-memory-schema.test.mjs",
+      "beforeSha256": "e2dfffa1c9e3b57ba5215535c7f8524ab13bf0fff8779f0e03c1b9b152f1dbb3",
+      "afterSha256": "6f54ec1ea1b676eb6abb9c0c1f4d9b72e445b0211657cd1aac9966559b2d97f4"
+    },
+    {
+      "path": "rust/tests/web/hive-work-item-consumer.test.mjs",
+      "beforeSha256": "422af9aa0bb858ecc812f7e7907e8e6306eaf995db9a2089d3364f018071e1d8",
+      "afterSha256": "bb81361d04f2b1e837d9d1c51c7ed3b6e7a4891ccf6078677a1642676af685d2"
+    },
+    {
+      "path": "rust/tests/web/hive-work-item-consumer.test.mjs",
+      "beforeSha256": "bb81361d04f2b1e837d9d1c51c7ed3b6e7a4891ccf6078677a1642676af685d2",
+      "afterSha256": "edbf164bfeca3b20c50d29118956bd3be528cd01e6a7cfcbd0b2685da292e49b"
+    },
+    {
+      "path": "rust/tests/web/hive-work-item-consumer.test.mjs",
+      "beforeSha256": "edbf164bfeca3b20c50d29118956bd3be528cd01e6a7cfcbd0b2685da292e49b",
+      "afterSha256": "7188dff9703528ce61c244f2a93eb82260b7a55b333cf2cddca69886f7626463"
+    },
+    {
+      "path": "rust/tests/web/issue-1168-source-cache.test.mjs",
+      "beforeSha256": "c0ddde9756ae51c4a426a4b3bfee39ec0f47eb68ffce34f665b61b7d009c9248",
+      "afterSha256": "6cd090b1cd9dcd1e3693baf63b8a1a33bd33ae33f5f8c38a2a5fa7ad89ac9d0c"
+    },
+    {
+      "path": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "beforeSha256": "98a6920811648c34e56e3ed64729bcf609cf20af8f974cffa3ede6db79d5a4c1",
+      "afterSha256": "1ffada2a699252222251e1fe98be1f46ef17113a03817f6ddd66bc0b6c60f03a"
+    },
+    {
+      "path": "data/benchmarks/fast-pull-request-javascript-tests.json",
+      "beforeSha256": "ba2c14024286faf59de71300669278d7a1218983b88c93ea227a8ad85895a461",
+      "afterSha256": "79b3174b674e99982e40f7eaaf7ba0526c33b56b14c651c67efadc4348b94189"
+    },
+    {
+      "path": "data/meta/main-only-regressions.lino",
+      "beforeSha256": "8d54703270240ab7ccaa94addef142142a19a35776044bd7e5e014aa3b19d9eb",
+      "afterSha256": "a70053351f77ffb0e5b53580f21a1871ad9dafc9aced7a6c2ce74a8766856f7b"
+    }
+  ],
+  "productionBehaviorChanged": false,
+  "independentAuthorshipCredit": 0
+}

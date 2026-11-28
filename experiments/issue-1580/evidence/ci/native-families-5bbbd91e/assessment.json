@@ -1,0 +1,411 @@
+{
+  "headSha": "5bbbd91e39761a8e7163148b72a890b97c3d64b3",
+  "recordsVerified": 103,
+  "workflowCount": 23,
+  "successfulWorkflowCount": 21,
+  "failedWorkflows": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-20T05:13:05Z",
+      "databaseId": 44679541169,
+      "headSha": "5bbbd91e39761a8e7163148b72a890b97c3d64b3",
+      "status": "completed",
+      "updatedAt": "2026-11-20T05:13:27Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44679541169",
+      "workflowName": "Documentation policy"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-20T05:13:05Z",
+      "databaseId": 44679541559,
+      "headSha": "5bbbd91e39761a8e7163148b72a890b97c3d64b3",
+      "status": "completed",
+      "updatedAt": "2026-11-20T05:20:37Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44679541559",
+      "workflowName": "Layered CI"
+    }
+  ],
+  "pipeline": {
+    "conclusion": "success",
+    "createdAt": "2026-11-20T05:13:05Z",
+    "databaseId": 44679541824,
+    "headSha": "5bbbd91e39761a8e7163148b72a890b97c3d64b3",
+    "status": "completed",
+    "updatedAt": "2026-11-20T05:56:49Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44679541824",
+    "workflowName": "CI/CD Pipeline"
+  },
+  "executedNativeJobs": [
+    {
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "id": 136099525380,
+      "conclusion": "success",
+      "log": "job-136099525380.stdout.gz",
+      "lines": 2638,
+      "testSummaries": [
+        {
+          "line": 1742,
+          "text": "2026-11-20T05:18:29.0022092Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.45s"
+        },
+        {
+          "line": 1757,
+          "text": "2026-11-20T05:18:30.1065623Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.10s"
+        },
+        {
+          "line": 1765,
+          "text": "2026-11-20T05:18:39.0010551Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.89s"
+        },
+        {
+          "line": 1793,
+          "text": "2026-11-20T05:18:39.9835723Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s"
+        },
+        {
+          "line": 1807,
+          "text": "2026-11-20T05:18:54.1100151Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.12s"
+        },
+        {
+          "line": 1814,
+          "text": "2026-11-20T05:18:54.2804995Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s"
+        },
+        {
+          "line": 1824,
+          "text": "2026-11-20T05:18:54.6787327Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s"
+        },
+        {
+          "line": 1848,
+          "text": "2026-11-20T05:19:01.8336007Z test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.15s"
+        },
+        {
+          "line": 1866,
+          "text": "2026-11-20T05:19:36.1741569Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 34.33s"
+        },
+        {
+          "line": 1881,
+          "text": "2026-11-20T05:19:42.3958991Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.21s"
+        },
+        {
+          "line": 1968,
+          "text": "2026-11-20T05:19:43.6222663Z test result: ok. 77 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.22s"
+        },
+        {
+          "line": 2011,
+          "text": "2026-11-20T05:21:58.0768344Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 0.74s"
+        },
+        {
+          "line": 2020,
+          "text": "2026-11-20T05:22:04.3609763Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 5.28s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 622,
+          "text": "2026-11-20T05:14:07.1111429Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": [
+        {
+          "line": 1886,
+          "text": "2026-11-20T05:19:42.4057616Z test bump_version::tests::manual_bump_reads_and_writes_only_the_package_version ... ok"
+        },
+        {
+          "line": 1887,
+          "text": "2026-11-20T05:19:42.4058924Z test cargo_package_identity::a_package_header_inside_a_multiline_string_is_not_a_package ... ok"
+        },
+        {
+          "line": 1888,
+          "text": "2026-11-20T05:19:42.4061618Z test cargo_package_identity::a_release_badge_can_read_a_name_without_a_literal_version ... ok"
+        },
+        {
+          "line": 1889,
+          "text": "2026-11-20T05:19:42.4062455Z test cargo_package_identity::an_empty_new_version_preserves_the_original_file ... ok"
+        },
+        {
+          "line": 1890,
+          "text": "2026-11-20T05:19:42.4065610Z test cargo_package_identity::inherited_or_missing_identity_never_falls_back_to_dependencies ... ok"
+        },
+        {
+          "line": 1891,
+          "text": "2026-11-20T05:19:42.4069385Z test cargo_package_identity::literal_package_identity_does_not_follow_dependency_tables ... ok"
+        },
+        {
+          "line": 1892,
+          "text": "2026-11-20T05:19:42.4072246Z test cargo_package_identity::missing_or_malformed_package_tables_are_rejected_before_writes ... ok"
+        },
+        {
+          "line": 1893,
+          "text": "2026-11-20T05:19:42.4073485Z test cargo_package_identity::unrelated_inheritance_does_not_hide_a_literal_package_version ... ok"
+        },
+        {
+          "line": 1894,
+          "text": "2026-11-20T05:19:42.4076732Z test cargo_package_identity::version_write_changes_only_the_parsed_token_in_a_crlf_manifest ... ok"
+        },
+        {
+          "line": 1895,
+          "text": "2026-11-20T05:19:42.4079421Z test cargo_package_identity::workspace_selection_uses_actual_members_and_package_publish_configuration ... ok"
+        },
+        {
+          "line": 1928,
+          "text": "2026-11-20T05:19:42.4250862Z test collect_changelog::tests::changelog_version_uses_the_package_and_refuses_inherited_or_missing_versions ... ok"
+        },
+        {
+          "line": 1961,
+          "text": "2026-11-20T05:19:43.6213640Z test workspace_manifest_resolution::errors_when_workspace_has_no_publishable_members ... ok"
+        },
+        {
+          "line": 1962,
+          "text": "2026-11-20T05:19:43.6214884Z test workspace_manifest_resolution::path_helpers_match_repository_layout ... ok"
+        },
+        {
+          "line": 1963,
+          "text": "2026-11-20T05:19:43.6215939Z test workspace_manifest_resolution::resolves_first_publishable_workspace_member ... ok"
+        },
+        {
+          "line": 1964,
+          "text": "2026-11-20T05:19:43.6218310Z test workspace_manifest_resolution::resolves_root_package_manifest_when_package_exists ... ok"
+        },
+        {
+          "line": 1965,
+          "text": "2026-11-20T05:19:43.6219411Z test workspace_manifest_resolution::rust_root_cli_parser_returns_none_without_configuration ... ok"
+        },
+        {
+          "line": 1966,
+          "text": "2026-11-20T05:19:43.6219944Z test workspace_manifest_resolution::rust_root_prefers_explicit_parameter ... ok"
+        }
+      ]
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-2)",
+      "id": 136099525510,
+      "conclusion": "success",
+      "log": "job-136099525510.stdout.gz",
+      "lines": 1413,
+      "testSummaries": [
+        {
+          "line": 1333,
+          "text": "2026-11-20T05:49:23.6782195Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 179 filtered out; finished in 710.62s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 658,
+          "text": "2026-11-20T05:35:48.7568457Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": []
+    },
+    {
+      "name": "Native type and lint check / Native contracts (coding)",
+      "id": 136099525512,
+      "conclusion": "success",
+      "log": "job-136099525512.stdout.gz",
+      "lines": 1454,
+      "testSummaries": [
+        {
+          "line": 1347,
+          "text": "2026-11-20T05:24:04.8048355Z test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 473.94s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 652,
+          "text": "2026-11-20T05:13:55.8543531Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": []
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-3)",
+      "id": 136099525518,
+      "conclusion": "success",
+      "log": "job-136099525518.stdout.gz",
+      "lines": 1411,
+      "testSummaries": [
+        {
+          "line": 1331,
+          "text": "2026-11-20T05:56:40.6042503Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 182 filtered out; finished in 601.16s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 659,
+          "text": "2026-11-20T05:44:36.8447513Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": []
+    },
+    {
+      "name": "Native type and lint check / Native contracts (interfaces)",
+      "id": 136099525549,
+      "conclusion": "success",
+      "log": "job-136099525549.stdout.gz",
+      "lines": 1506,
+      "testSummaries": [
+        {
+          "line": 1399,
+          "text": "2026-11-20T05:35:06.9340523Z test result: ok. 78 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 409.63s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 659,
+          "text": "2026-11-20T05:26:21.4310356Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": []
+    },
+    {
+      "name": "Native type and lint check / Native contracts (reasoning)",
+      "id": 136099525596,
+      "conclusion": "success",
+      "log": "job-136099525596.stdout.gz",
+      "lines": 1543,
+      "testSummaries": [
+        {
+          "line": 1463,
+          "text": "2026-11-20T05:25:46.5787109Z test result: ok. 141 passed; 0 failed; 0 ignored; 0 measured; 48 filtered out; finished in 610.43s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 659,
+          "text": "2026-11-20T05:14:00.3293007Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": []
+    },
+    {
+      "name": "Native type and lint check / Native contracts (benchmarks)",
+      "id": 136099525601,
+      "conclusion": "success",
+      "log": "job-136099525601.stdout.gz",
+      "lines": 1443,
+      "testSummaries": [
+        {
+          "line": 1336,
+          "text": "2026-11-20T05:34:59.9391884Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 178 filtered out; finished in 457.62s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 659,
+          "text": "2026-11-20T05:24:42.2748147Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": []
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-1)",
+      "id": 136099525696,
+      "conclusion": "success",
+      "log": "job-136099525696.stdout.gz",
+      "lines": 1453,
+      "testSummaries": [
+        {
+          "line": 1346,
+          "text": "2026-11-20T05:43:56.3272031Z test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 169 filtered out; finished in 322.20s"
+        }
+      ],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [
+        {
+          "line": 658,
+          "text": "2026-11-20T05:35:44.8636738Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m"
+        }
+      ],
+      "packageCases": []
+    }
+  ],
+  "notRunJobs": [
+    {
+      "name": "native-response-observations",
+      "id": 136099527114,
+      "conclusion": "skipped",
+      "log": "job-136099527114.stdout.gz",
+      "lines": 0,
+      "testSummaries": [],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [],
+      "packageCases": []
+    },
+    {
+      "name": "Server parity (JavaScript vs Rust)",
+      "id": 136099527724,
+      "conclusion": "skipped",
+      "log": "job-136099527724.stdout.gz",
+      "lines": 0,
+      "testSummaries": [],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [],
+      "packageCases": []
+    },
+    {
+      "name": "Native full and slim container publication",
+      "id": 136100408322,
+      "conclusion": "skipped",
+      "log": "job-136100408322.stdout.gz",
+      "lines": 0,
+      "testSummaries": [],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [],
+      "packageCases": []
+    }
+  ],
+  "otherCollectedJobs": [
+    {
+      "name": "Pipeline Status",
+      "id": 136115047670,
+      "conclusion": "success",
+      "log": "job-136115047670.stdout.gz",
+      "lines": 214,
+      "testSummaries": [],
+      "emittedWarningOrErrorCandidates": [],
+      "warningTextInCommandEcho": [],
+      "packageCases": []
+    }
+  ],
+  "behaviorOnLaterLocalRepairsVerified": false,
+  "fullIssueComplete": false,
+  "assessmentCorrection": "The earlier helper included skipped downstream jobs in the assertion for executed native jobs. This corrected inventory preserves those jobs as skipped with no execution credit. ANSI-colored shell source echo is retained separately from emitted warning candidates.",
+  "observedFailureRepairs": [
+    {
+      "workflow": "Documentation policy",
+      "runId": 44679541169,
+      "log": "failed-run-44679541169.stdout.gz",
+      "rawFailureLines": [
+        381,
+        401,
+        410,
+        418
+      ],
+      "error": "ReferenceError: steps is not defined in disabled-compile documentation context",
+      "repairCommit": "93f26a59e",
+      "localVerification": "experiments/issue-1580/evidence/checks/documentation-checkout-guard/verification.json",
+      "hostedRepairVerified": false
+    },
+    {
+      "workflow": "Layered CI",
+      "runId": 44679541559,
+      "log": "failed-run-44679541559.stdout.gz",
+      "rawFailureLines": [
+        4198,
+        4199,
+        4200
+      ],
+      "error": "JavaScript suite group exceeded its unchanged 360-second step deadline and exited 124 after stale timing weights overloaded a two-group plan",
+      "repairCommits": [
+        "d0c2515401edc122a29180de50c10cfb8f15b33f",
+        "722e01f4df7a2b4aa8bc497d53cd9f4407dbdfb6"
+      ],
+      "localVerification": "experiments/issue-1580/evidence/checks/measured-javascript-shards/verification.json",
+      "hostedRepairVerified": false
+    }
+  ],
+  "logReviewLimit": "Exact failure sections and every extracted native test summary were inspected. Collection and hash verification do not claim literal review of all 9,484 Layered workflow log lines."
+}

@@ -12,6 +12,10 @@
 agentic_messages
   message structured-output-schema-unsupported
     text "The requested JSON output schema is invalid or uses unsupported constraints."
+  message structured-output-schema-unsupported-keyword
+    text "unsupported keyword {keyword} at {pointer}"
+  message structured-output-schema-invalid-keyword
+    text "invalid value for keyword {keyword} at {pointer}"
   message structured-output-underivable
     text "Could not derive a valid JSON object for the requested schema."
   message structured-output-experience-qualifier
@@ -180,18 +184,22 @@ agentic_messages
     text "command completed. Output:"
   message prerequisite_recovery_not_found_marker
     text "command not found"
-  message formalization_recipe_search_query
-    text "Пушкин Сказка о рыбаке и рыбке полный текст"
+  message formalization_recipe_source_unavailable
+    text "I could not verify the requested text at {source}."
+  message formalization_recipe_source_required
+    text "Please provide the text to formalize."
   message formalization_recipe_fisherman_subject
     text "«Сказка о рыбаке и рыбке»"
   message formalization_recipe_source_subject
     text "the source text ({doc_id})"
-  message meaning_detail_tomato_search_query
-    text "Wikidata lexemes tomato помидор томат grammatical number forms"
-  message meaning_detail_potato_search_query
-    text "Wikidata lexemes potato картофель картошка grammatical number forms"
   message meaning_detail_keywords
-    text "grammatical number|more detailed|singular or plural|part of speech|detailed meaning|detailed word"
+    text "grammatical number|more detailed|singular or plural|singular/plural|grammatical forms|part of speech|detailed meaning|detailed word"
+  message meaning-detail-source-title
+    text "Wikidata lexemes for {name} ({entity})"
+  message meaning-detail-search-query
+    text "Wikidata lexemes {name} grammatical number forms {lexemes}"
+  message meaning_detail_source_unavailable
+    text "I could not verify the required grammatical forms at {source}."
   message meaning_detail_defined_by_line
     text "    defined-by entity"
   message meaning_detail_source_lexeme_line
@@ -209,15 +217,15 @@ agentic_messages
   message meaning_detail_surface_line
     text "    surface {id}-{suffix} # wikidata {name} {number} surface{comment_text}"
   message meaning_detail_final_answer
-    text "Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}"
+    text "Made the {name} meaning more detailed using grammatical forms from Wikidata. Enriched meaning block ({path}):\n\n{block}"
   message diagram_formalize_title
     text "Formalize a text into a knowledge base"
   message diagram_formalize_route
-    text "formaliz / knowledge base / fisherman"
+    text "formalize a text / knowledge base"
   message diagram_formalize_step_0
     text "find the source text"
   message diagram_formalize_step_1
-    text "read it; a tool error falls back to the canonical synopsis"
+    text "read and verify the publisher text or report a source gap"
   message diagram_formalize_step_2
     text "formalize prose into Links Notation"
   message diagram_formalize_step_3
@@ -229,9 +237,9 @@ agentic_messages
   message diagram_meaning_step_0
     text "find the concept's Wikidata lexemes"
   message diagram_meaning_step_1
-    text "read the forms; recover the missing plural"
+    text "verify the lexemes and read their grammatical forms"
   message diagram_meaning_step_2
-    text "re-derive the grounded block, byte-for-byte the seed"
+    text "derive the meaning block from the verified forms"
   message diagram_meaning_step_3
     text "cat the block to verify"
   message diagram_diagram_title
@@ -273,7 +281,7 @@ agentic_messages
   message self_heal_repair_phrases
     text "fix it yourself|fix yourself|fix your self|fix your own|fix them yourself|fix this yourself|solve it yourself|solve this yourself|debug yourself|debug it yourself|heal yourself|repair yourself|correct yourself|fix on your own|fix it on your own|learn from your mistake"
   message self_heal_final_answer
-    text "Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto {module} with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case ({outcome}). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document ({path}):\n\n{document}"
+    text "Recorded a self-healing case for the supplied failure trace, with a verified source round-trip for {module}. Outcome: {outcome}. Any proposed lesson requires benchmark evidence and human approval.\n\nGenerated document ({path}):\n\n{document}"
   message ledger_keywords
     text "learning ledger|promotion ledger|promote the lesson|promote the approved|approved learning record"
   message ledger_final_answer
@@ -281,11 +289,11 @@ agentic_messages
   message repair_strategy_keywords
     text "classify the failure|classify a failure|repair strategy|repair strategies|which part to repair|solver method, a data record, or a test"
   message repair_strategy_final_answer
-    text "Classified {count} failure traces, one per repair class ({targets}), and composed a grounded, human-gated repair strategy for each: the general repair loop now decides *which part* to change — a solver method, a data record, or a test — for every failure, not just one canonical case. Nothing is applied — each strategy is a reviewable plan that merges only through the same human-gated loop. Neural inference is not used; every classification and plan is a deterministic function of the trace.\n\nGenerated document ({path}):\n\n{document}"
+    text "Classified {count} supplied failure trace(s) ({targets}) and prepared a reviewable repair strategy for each. Each proposed change requires human approval.\n\nGenerated document ({path}):\n\n{document}"
   message explain_keywords
     text "how formal ai works|how does formal ai work|how formal ai itself works|how the system itself works|explain how formal ai"
   message explain_final_answer
-    text "Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({path}):\n\n{document}"
+    text "Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations. Each section draws from its cited module's documentation. Source citations identify the exact module content, and supporting citations give repository paths.\n\nGenerated document ({path}):\n\n{document}"
   message source-links-diagnostic-boundary
     text "  representation navigation-diagnostic\n  complete-recursive-content false"
   message source_links_final_answer
@@ -294,8 +302,6 @@ agentic_messages
     text "change formal ai|modify formal ai|add a capability to formal ai|add a new capability to the system|change the ai system|change formal ai itself"
   message change_request_final_answer
     text 'Turned your change request into a reviewable pull request: it derives the requirement "{requirement}", proposes the test `{test}`, and a {steps}-step patch plan against the grounded module {target}. Nothing is applied — the change merges only through the same human-gated loop: a green benchmark gate and your explicit approval. Neural inference is not used; the requirement, test, and patch plan are a deterministic function of your request and its grounded target.\n\nGenerated document ({path}):\n\n{document}'
-  message change_request_canonical_request
-    text "Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output."
   message change_request_requirement_prefixes
     text "please |can you please |can you |could you please |could you |i want you to |i would like you to |i want |i would like |we need to |we need "
   message change_request_requirement
@@ -370,6 +376,8 @@ agentic_messages
     text "Formal AI ranked {expressions} {subject}; the human-review-gated report is in {path}."
   message learning_report_final_ungated
     text "Formal AI persisted and ranked {expressions} {subject} through the associative auto-learning pipeline; the reproducible Links Notation report is in {path}."
+  message learning-report-memory-required
+    text "Supply the persisted memory events in a fenced `lino` block to generate {path}."
   message learning_report_retention_formula
     text "reads + writes + incoming_links + outgoing_links"
   message learning_report_task_associative_learning
@@ -427,9 +435,9 @@ agentic_messages
   message dreaming_audit_final_answer
     text "Audited the grounded issue-#540 dreaming meta-algorithm through Formal AI by cross-referencing its recipe stages against the functions and test suites the recipe itself declares. {stage_count} stages analyzed, {open_gaps} open gap(s) found.\n\nGenerated document ({path}):\n\n{document}"
   message google_trends_learning_final_answer
-    text "Routed the Google Trends learning frontier through the human-gated self-improvement loop: of {total} trending prompts, the engine already resolves {handled} and leaves {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 learner, which — because trending searches are open-domain questions, not program-plan modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without human review. The report is a pure function of the committed catalog.\n\nGenerated document ({path}):\n\n{document}"
+    text "Routed trends from {source_url} through human-gated learning. The engine routed {handled} of {total} generated prompts and left {frontier} for triage. The learner proposed {proposals} rules and adopted {adopted}.\n\nGenerated document ({path}):\n\n{document}"
   message google_trends_catalog_final_answer
-    text "Generated the Google Trends catalog from {topic_count} top searches in {geo}: produced {prompt_count} multilingual request variants and answered {answer_count} of them through the standard Formal AI engine. The catalog is generated from the checked-in Trends RSS snapshot, so tests stay offline while the converter can refresh the seed from the live RSS feed.\n\nGenerated document ({path}):\n\n{document}"
+    text "Generated the Google Trends catalog from {topic_count} searches in {geo} using {source_url}. The engine answered {answer_count} of {prompt_count} multilingual prompts.\n\nGenerated document ({path}):\n\n{document}"
   message question_catalog_final_answer
     text "Generated the question catalog from a frequency-tiered vocabulary of {vocabulary} words: classified {candidates} candidates smallest-first into the four-way distinction (grammatical-and-meaningful, grammatical open-slot, fragment, ungrammatical) and answered the first {answers} grammatical-and-meaningful questions with the deterministic engine. The answered questions are a reviewable recall table — a repeated question is answered from the catalog instead of re-derived — and nothing changes solver behaviour without the human-gated learning ledger. Neural inference is not used; every candidate, class, and answer is a deterministic function of the lexicon.\n\nGenerated document ({path}):\n\n{document}"
   message associative_persistence_unresolved_evidence
@@ -442,16 +450,6 @@ agentic_messages
     text "question catalog|all possible questions|generate every possible question|generate all questions|enumerate questions"
   message self_explanation_question
     text "how does Formal AI work?"
-  message self_explanation_deterministic_meta_algorithm
-    text "Formal AI answers agentic requests with a deterministic planner state machine: a keyword-routed recipe walk (write, verify, final answer), never neural inference, so every step is a reproducible function of its inputs."
-  message self_explanation_source_to_links_round_trip
-    text "The entire owned source tree is embedded as content-addressed data and projected through the single CST/AST engine (tree-sitter); every owned module round-trips source to links and back byte-for-byte, so the system's own code is present in its data as links."
-  message self_explanation_self_healing_loop
-    text "When Formal AI cannot answer, it does not simply fail: it captures the failure as a structured RepairCase (unknown trace, a verified source-to-links mapping, and a benchmark gate) that never advances past awaiting human review."
-  message self_explanation_human_gated_promotion_ledger
-    text "An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning."
-  message self_explanation_agentic_interface
-    text "Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests."
   message orchestration_cli_value_required
     text "a value is required for '{flag} <{value}>' but none was supplied"
   message orchestration_cli_invalid_digit
@@ -720,3 +718,47 @@ agentic_messages
 
   message literal-create-receipt-unbound
     text "Unbound target verification receipt."
+  message google_trends_source_unavailable
+    text "The requested regional Google Trends feed is unavailable. Provide a valid feed region and a verified capture or allow the source to be fetched."
+  message google_trends_chat_learning_summary
+    text "I collected {total} multilingual prompts from Google Trends ({source_url}). The solver routed {handled}, and the remaining {frontier} went to the human-gated learning loop. The learner proposed {proposals} rules and adopted {adopted}."
+  message google_trends_frontier_empty
+    text "Every generated prompt from this feed routed through the engine."
+  message google_trends_frontier_triage
+    text "The learning frontier records generated prompts the engine could not route and hands their traces to human triage."
+  message change_request_input_needed
+    text "Provide a fenced JSON object with request and target_module for an owned Rust source file. I can then prepare the requirement, test, and reviewable patch plan."
+  message rebuild_input_needed
+    text "Provide a fenced JSON object with change_id from the operator's accepted-change records to prepare the rebuild and reattachment plan."
+  message self_heal_input_needed
+    text "Provide a fenced JSON object with source_module and trace. The trace carries the original prompt and its events, each with kind and payload."
+  message repair_strategy_input_needed
+    text "Provide a fenced JSON object with a nonempty traces array. Each trace carries the original prompt and events with kind and payload."
+  message self_heal_source_unavailable
+    text "The selected source module could not be restored and verified. Supply owned source with an available source model to prepare a repair case."
+  message repair_strategy_default_rationale
+    text "no specific data or test signal was present, so the meta algorithm still lacks a way to resolve the failure"
+  message repair_class_solver_method_cues
+    text "rule_synthesis|no_seed_route|no route|no rule|try_rule_synthesis"
+  message repair_class_solver_method_rationale
+    text "the trace shows `{signal}` — the meta algorithm could not route the task"
+  message repair_class_solver_method_proposal
+    text "Synthesise a new solver method (a substitution rule) that routes \"{prompt}\" to a resolved task, grounded in the operation vocabulary, and run it through the self-healing repair case."
+  message repair_class_solver_method_verification
+    text "Add a fixture that lowers and renders the new task; the rule-synthesis benchmark gate must be green before human review."
+  message repair_class_data_record_cues
+    text "missing surface|missing meaning|lexicon gap|seed data|unknown word|data record"
+  message repair_class_data_record_rationale
+    text "the trace shows `{signal}` — the seed data the task needs is absent or wrong"
+  message repair_class_data_record_proposal
+    text "Add or correct the seed data record the failure needs for \"{prompt}\" (the missing meaning, surface, or lexicon entry), expressed in Links Notation."
+  message repair_class_data_record_verification
+    text "Add a data-driven test asserting the corrected record is present and well-formed; the meaning/lexicon suite must stay green."
+  message repair_class_test_cues
+    text "regression|previously passing|no test pins|missing test|unguarded"
+  message repair_class_test_rationale
+    text "the trace shows `{signal}` — a correct behaviour is unguarded by a test"
+  message repair_class_test_proposal
+    text "Add a guard test that pins the behaviour \"{prompt}\" exposed, so the regression cannot recur."
+  message repair_class_test_verification
+    text "The new test must fail before the fix and pass after it, and the whole suite must stay green."

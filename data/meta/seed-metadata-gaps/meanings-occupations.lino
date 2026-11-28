@@ -1,0 +1,11 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-occupations.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-16946d47ba05e3ea
+    record "forklift-operator"
+  gap seed-metadata-gap-5432dc1aab1e53d9
+    record "storekeeper"
+  gap seed-metadata-gap-4c4509e3c246b55a
+    record "warehouse-supervisor"

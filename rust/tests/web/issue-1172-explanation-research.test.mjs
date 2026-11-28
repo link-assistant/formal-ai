@@ -47,7 +47,14 @@ before(async () => {
 test('the explanation concept follows the seeded explain cue', async () => {
   const context = await host.boot();
   assert.equal(evaluate(context, 'explanationConcept("Explain the Kotlin compiler")'), 'kotlin compiler');
-  assert.equal(evaluate(context, 'explanationConcept("The Kotlin compiler is fast")'), null);
+  for (const [prompt, expected] of [
+    ['Explain Kotlin compiler', 'kotlin compiler'],
+    ['Explain the theory of types', 'theory of types'],
+    ['Explain vitamin A', 'vitamin a'],
+    ['Explain theorem', 'theorem'],
+    ['Explain the', null],
+    ['The Kotlin compiler is fast', null],
+  ]) assert.equal(evaluate(context, `explanationConcept(${JSON.stringify(prompt)})`), expected, prompt);
 });
 
 test('the fixture page digest is the one the Rust test pins', () => {

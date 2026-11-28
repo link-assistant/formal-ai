@@ -153,6 +153,7 @@ fn no_document_demands_that_rust_only_shrinks() {
         "ROADMAP.md",
         "REQUIREMENTS.md",
         "docs/requirements-traceability.md",
+        "docs/requirements-traceability-continuation.md",
     ] {
         let text = read(document);
         assert!(

@@ -12,9 +12,11 @@ import { before, test } from 'node:test';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 
+import { codingDocumentationReplay } from './support/coding-documentation-replay.mjs';
+const replay = codingDocumentationReplay();
 let host;
 before(async () => {
-  host = new WorkerHost();
+  host = new WorkerHost({}, { networkFetch: replay.networkFetch });
   await host.boot();
 });
 
@@ -48,6 +50,7 @@ test('R921-8: the matrix languages are answered with the program and an honest n
       [language, check, run],
     );
     assert.equal(result.programExecution.block, notRun(language, source));
+    assert.ok(replay.requests.includes(source), source);
     assert.ok(result.content.includes(`\`\`\`${language}\n${program}\n\`\`\``), result.content);
     assert.ok(result.content.includes(notRun(language, source)), result.content);
     assert.equal(result.content.includes('compiled and ran'), false, result.content);

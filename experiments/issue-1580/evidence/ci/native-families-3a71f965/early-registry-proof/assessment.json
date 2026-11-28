@@ -1,0 +1,117 @@
+{
+  "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+  "run": 44702570685,
+  "job": {
+    "completedAt": "2026-11-20T08:28:16Z",
+    "conclusion": "success",
+    "databaseId": 136174486087,
+    "name": "Native type and lint check / Release registry scripts",
+    "startedAt": "2026-11-20T08:27:33Z",
+    "status": "completed",
+    "steps": [
+      {
+        "completedAt": "2026-11-20T08:27:34Z",
+        "conclusion": "success",
+        "name": "Set up job",
+        "number": 1,
+        "startedAt": "2026-11-20T08:27:34Z",
+        "status": "completed"
+      },
+      {
+        "completedAt": "2026-11-20T08:27:38Z",
+        "conclusion": "success",
+        "name": "Run actions/checkout@v7",
+        "number": 2,
+        "startedAt": "2026-11-20T08:27:34Z",
+        "status": "completed"
+      },
+      {
+        "completedAt": "2026-11-20T08:27:47Z",
+        "conclusion": "success",
+        "name": "Run dtolnay/rust-toolchain@stable",
+        "number": 3,
+        "startedAt": "2026-11-20T08:27:38Z",
+        "status": "completed"
+      },
+      {
+        "completedAt": "2026-11-20T08:27:53Z",
+        "conclusion": "success",
+        "name": "Run ./.github/actions/cache-cargo-registry",
+        "number": 4,
+        "startedAt": "2026-11-20T08:27:47Z",
+        "status": "completed"
+      },
+      {
+        "completedAt": "2026-11-20T08:28:13Z",
+        "conclusion": "success",
+        "name": "Verify real release registry requests and CLI decisions",
+        "number": 5,
+        "startedAt": "2026-11-20T08:27:53Z",
+        "status": "completed"
+      },
+      {
+        "completedAt": "2026-11-20T08:28:13Z",
+        "conclusion": "success",
+        "name": "Post Run ./.github/actions/cache-cargo-registry",
+        "number": 9,
+        "startedAt": "2026-11-20T08:28:13Z",
+        "status": "completed"
+      },
+      {
+        "completedAt": "2026-11-20T08:28:13Z",
+        "conclusion": "success",
+        "name": "Post Run actions/checkout@v7",
+        "number": 10,
+        "startedAt": "2026-11-20T08:28:13Z",
+        "status": "completed"
+      },
+      {
+        "completedAt": "2026-11-20T08:28:13Z",
+        "conclusion": "success",
+        "name": "Complete job",
+        "number": 11,
+        "startedAt": "2026-11-20T08:28:13Z",
+        "status": "completed"
+      }
+    ],
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570685/job/136174486087"
+  },
+  "observedAt": "2026-11-20T08:54:54.562610+00:00",
+  "helperCasesPassed": 3,
+  "actualCliCasesPassed": 8,
+  "logLineCount": 782,
+  "literalLogRangesReviewed": [
+    [
+      1,
+      230
+    ],
+    [
+      570,
+      782
+    ]
+  ],
+  "scope": "early registry result only; overall workflow remains incomplete",
+  "logTransport": "GitHub CLI requires --allow-escape-sequences to preserve this original log; earlier rejected transport is not a job failure",
+  "records": [
+    {
+      "path": "job-136174486087.log.gz",
+      "rawSha256": "8e973062b61f6c5a3660e12b025b95f00a581e483127bf85c3522d30fda17730",
+      "archiveSha256": "4ca29b6d97607f3813640600da91306c44627eb302cb36a2bb22f28e26b49356",
+      "rawBytes": 60012
+    },
+    {
+      "path": "job-136174486087.log.api-stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawBytes": 0
+    },
+    {
+      "path": "jobs.json.gz",
+      "rawSha256": "234489e2232216270e8cfb372e31707b9cc3b3eb6f0baf3cb755ff53a7e46c4c",
+      "archiveSha256": "09598e21ed8e32c9a8b7c1e2afdee451003a6800a99b9391ce296eb4f645c313",
+      "rawBytes": 36655
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

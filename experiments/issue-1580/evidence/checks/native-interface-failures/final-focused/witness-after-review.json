@@ -1,0 +1,14 @@
+{
+  "witness": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+  "beforeSha256": "bcdb43f851a90b2dffbbf52d804f452f6a7f30c612e4457575cc1f4abcc60075",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "totalNativeCases": 1189,
+  "carriedCases": 221,
+  "unsupportedCases": 968,
+  "nativeSourceManifestCount": 133,
+  "completeObjectComparison": true,
+  "identical": true,
+  "changes": [],
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false
+}

@@ -1,0 +1,8 @@
+{
+  "observedAt": "2026-11-18T13:23:50.011081+00:00",
+  "returncode": 1,
+  "stdoutSha256": "f8bae079094e0eb695d40887b6c0e85ecd9e7c4ca03f0ec7b99914e088cb9cd3",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

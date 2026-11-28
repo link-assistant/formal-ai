@@ -5,7 +5,7 @@
 // Controlled output: reversible lexical projection, independent of input routing.
 // Rust counterpart: rust/src/cnl_output.rs. Profiles and wording are shared data.
 const { cached, childValue, childrenNamed, parseLino, readText } = crateRequire("host.mjs");
-const { CNL_LANGUAGE_PATH, allPairs, answerableQuestions, builtinCheck, canonicalPrompt, compileGrammar, graphHolds, graphKey, graphLogic, outputSentences, parseGrammarPolicy, parseLanguageGrammar, promptAnalysis, realizations, utteranceGraphs } = crateRequire("crate/cnl_grammar.mjs");
+const { CNL_LANGUAGE_PATH, allPairs, answerableQuestions, builtinCheck, canonicalPrompt, compileGrammar, graphHolds, graphKey, graphLogic, outputSentences, parseGrammarPolicy, parseLanguageGrammar, promptAnalysis, realizations, utteranceGraphs, referenceValues } = crateRequire("crate/cnl_grammar.mjs");
 const CNL_POLICY_PATH = 'data/seed/cnl-output.lino';
 /** Read profile constraints and explicitly equivalent lexical realizations. */
 function cnlPolicy() {
@@ -26,26 +26,26 @@ function parseOutputPolicy(text, parse = parseLino, grammarText = () => null) {
     const root = parsed.name === 'controlled-output' ? parsed : childrenNamed(parsed, 'controlled-output')[0];
     if (!root) throw new Error('cnl_policy_missing');
     const profiles = childrenNamed(root, 'profile').map(node => ({
-      id: node.value, aliases: childValue(node, 'aliases').split('|'),
+      id: node.value, aliases: referenceValues(childValue(node, 'aliases')),
       maxWords: Number(childValue(node, 'maximum-words')) || null,
       densityMaxWords: Number(childValue(node, 'density-maximum-words')) || null,
-      styles: childValue(node, 'styles').split('|').filter(Boolean),
-      registers: childValue(node, 'registers').split('|').filter(Boolean),
-      densityRequired: childValue(node, 'density-required').split('|').filter(Boolean),
-      forbidden: childValue(node, 'forbidden').split('|').filter(Boolean),
-      required: childValue(node, 'required').split('|').filter(Boolean),
+      styles: referenceValues(childValue(node, 'styles')).filter(Boolean),
+      registers: referenceValues(childValue(node, 'registers')).filter(Boolean),
+      densityRequired: referenceValues(childValue(node, 'density-required')).filter(Boolean),
+      forbidden: referenceValues(childValue(node, 'forbidden')).filter(Boolean),
+      required: referenceValues(childValue(node, 'required')).filter(Boolean),
     }));
     const languages = childrenNamed(root, 'language').map(node => ({
       id: node.value, notice: childValue(node, 'notice'), frequency: childValue(node, 'frequency'),
-      primes: childValue(node, 'primes').split('|').filter(Boolean),
-      grammar: childValue(node, 'grammar').split('|').filter(Boolean),
+      primes: referenceValues(childValue(node, 'primes')).filter(Boolean),
+      grammar: referenceValues(childValue(node, 'grammar')).filter(Boolean),
       directives: childrenNamed(node, 'directive').map(cue => cue.value),
       switches: childrenNamed(node, 'switch').map(cue => ({text: cue.value, mode: childValue(cue, 'mode')})),
     }));
     const lexemes = childrenNamed(root, 'lexeme').map(node => ({
       id: node.value, language: childValue(node, 'language'),
       forms: childrenNamed(node, 'form').map(form => ({
-        text: form.value, mode: childValue(form, 'mode'),
+        text: form.value, mode: referenceValues(childValue(form, 'mode')).join('|'),
       })),
     }));
     const shared = parseGrammarPolicy(root);

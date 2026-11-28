@@ -1,0 +1,13 @@
+✔ R1173-3: a program that prints a greeting binds the task's output operand (2050.731731ms)
+✔ R1173-3: the operand is a quoted literal, an unquoted utterance or a greeting, in every script (13.138528ms)
+✔ R1173-3: a described value, two literals or no print verb name no operand (385.571645ms)
+✔ R1173-3: a script request stays the minimal-script lane, and no program is stored for print_text (99.348235ms)
+✔ issue #1175 p133: every before-promotion row is asked in solve()'s early phase, before the promoted walk (69.424314ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6099.771573

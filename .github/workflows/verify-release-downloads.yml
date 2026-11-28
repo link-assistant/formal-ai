@@ -74,13 +74,11 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with: {node-version: '24', package-manager-cache: false}
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.github/actions/download-artifact
         with:
           name: public-release-selection
           path: ${{ runner.temp }}/release-selection
-      - name: Stream, hash and delete every public asset
+      - name: Stream and verify every public asset
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
@@ -115,6 +113,9 @@ jobs:
             architecture: x64
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
     env:
       RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
       RELEASE_ID: ${{ needs.resolve.outputs.release_id }}
@@ -130,9 +131,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with: {node-version: '24', package-manager-cache: false}
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.github/actions/download-artifact
         with:
           name: public-release-selection
           path: ${{ runner.temp }}/release-selection

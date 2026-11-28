@@ -1,0 +1,270 @@
+{
+  "headBeforeRepair": "e93881cb64a78a19253088c19f09a1f1b816229c",
+  "observedAt": "2026-11-22T04:07:11.616315+00:00",
+  "files": [
+    {
+      "file": "affected-gates.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "affected-gates.stdout.gz",
+      "bytes": 243,
+      "lines": 8,
+      "rawSha256": "45bbd998298a26574e47135e2381c2d06f3baba9799039f63d66cd3b25d18b76",
+      "archiveSha256": "8e993d2ffa7a60b08327db2043606a5ae44243742604f5d79be92ed62533413e"
+    },
+    {
+      "file": "cargo-package-tests.before.rs.gz",
+      "bytes": 6396,
+      "lines": 152,
+      "rawSha256": "fb9e436ef462c52fd85f821a18a9c5541f8432a9df5b5dc0a8c697f8cd9fe394",
+      "archiveSha256": "4c71e69ed4a7390729ab721849eb4db58d5889ef4e3b1e8cb968e3361fae2e26"
+    },
+    {
+      "file": "cargo-package.before.rs.gz",
+      "bytes": 5751,
+      "lines": 152,
+      "rawSha256": "91861986e46f22f4bf7cb12918e8b09fc75dbdc231b52b4535170b83f3d0237a",
+      "archiveSha256": "a28342f8220826aedd0b3fa78a1e452c5b8589f04c78f6ba254d7664fc81613a"
+    },
+    {
+      "file": "check-0.log.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "check-1.log.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "checks-outcome.json.gz",
+      "bytes": 1185,
+      "lines": 51,
+      "rawSha256": "8a48c0349ac58441a8fd13ec999cccd916087519650e24f5ffef04d60b8dd138",
+      "archiveSha256": "fce4309009eb6cd46fe30b0ebdff82576a1730528e1047143ac241e3239a10ae"
+    },
+    {
+      "file": "checks-worker.log.gz",
+      "bytes": 59,
+      "lines": 4,
+      "rawSha256": "372307ba7c7aaf4014a4bd30a95820ff2b5364d443a37196a6ab50c9b276877e",
+      "archiveSha256": "11dadd0316ecc14a880a15c5ac4b4f997ffe93854d19019a8965e1b113c964eb"
+    },
+    {
+      "file": "draft.diff.gz",
+      "bytes": 3004,
+      "lines": 67,
+      "rawSha256": "028a79957f84c3d17ad00ddd1801eb8ba56cd3fe02ced8681787cd6d2ff07fb0",
+      "archiveSha256": "5bcca2626e2ae95d1d82816412486ecc6d47d755b085bf5a686b44d90af691b7"
+    },
+    {
+      "file": "native-admission.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "native-admission.stdout.gz",
+      "bytes": 6889,
+      "lines": 70,
+      "rawSha256": "1b04d00de03a72f4e474aeb8d9e6b9d1d2c22de6d5d5dc2d55fb31c1a95160fa",
+      "archiveSha256": "c11722e93a9cdcc95124972db091d6712a6f7b8bb7f2416415f6a0e217706054"
+    },
+    {
+      "file": "outcome.json.gz",
+      "bytes": 605,
+      "lines": 15,
+      "rawSha256": "cfdc35506995e6c241522a47db723ffc9681591034338d498ea78574e57d2b27",
+      "archiveSha256": "4662f037de7ed9c983b08a3fe649a710cb9847aa32336c058666345dad6fe63e"
+    },
+    {
+      "file": "rustfmt.log.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "rustfmt.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "rustfmt.stdout.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "whitespace.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "whitespace.stdout.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "upstream-155-comments.json.gz",
+      "bytes": 4,
+      "lines": 1,
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe"
+    },
+    {
+      "file": "upstream-155-comments.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "upstream-155-issue.json.gz",
+      "bytes": 6211,
+      "lines": 1,
+      "rawSha256": "0bdf67015e064594eee4261ea2b990c2cd55bf0c026571ebb5001a3794577be5",
+      "archiveSha256": "547e26444e64e2bbb69dfd591c5d1496c14f30881dbdf0991e5e942a9cdda9e1"
+    },
+    {
+      "file": "upstream-155-issue.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "upstream-36-comments.json.gz",
+      "bytes": 4,
+      "lines": 1,
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe"
+    },
+    {
+      "file": "upstream-36-comments.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "upstream-36-issue.json.gz",
+      "bytes": 2778,
+      "lines": 1,
+      "rawSha256": "e4afa8094ddbddda7d8f21a8097476be443e0fbc0380f144489e7b5dc0134fa6",
+      "archiveSha256": "e4f3a87f45b4970366754c3b73ffd9a97c7a8f53257f49ab605644a6fce76cfc"
+    },
+    {
+      "file": "upstream-36-issue.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "upstream-current-commit.json.gz",
+      "bytes": 7848,
+      "lines": 1,
+      "rawSha256": "b669df001d9be69d2ffd587c4a838f02495d370bdc4a539916224825f6b82c48",
+      "archiveSha256": "0b6c25416e8621c9d1642def79cd1197d256871dcdb3849ac915ee1798f05020"
+    },
+    {
+      "file": "upstream-current-source.json.gz",
+      "bytes": 17063,
+      "lines": 1,
+      "rawSha256": "bfcc9c1b264629234cd642b374d4d57f72b8bf986d1add885461e615aa4636b6",
+      "archiveSha256": "cc337e889aa935f49be7736052875102f65c6b6e7160e52b062f01a72f77e320"
+    },
+    {
+      "file": "upstream-current-source.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "upstream-issue-body.md.gz",
+      "bytes": 2135,
+      "lines": 25,
+      "rawSha256": "040ad92b0e14be05cb82080b9ea2b1025d60c015e9e880cfd66a0d6a9731dfc5",
+      "archiveSha256": "3a41ffc1f277744f02b0293b7df1b92dbe8da5fa20c73074d7ba470012cb52b3"
+    },
+    {
+      "file": "upstream-issue-create.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "upstream-issue-create.stdout.gz",
+      "bytes": 91,
+      "lines": 1,
+      "rawSha256": "d568b5dff58463cf24e3e0a3cc3356c26b93a786be8f400129dc9c663391c4c2",
+      "archiveSha256": "e0a3d39d47286e9d96108056e88bd7a9f0a0355230e5003e460c8cd896c5eb83"
+    },
+    {
+      "file": "upstream-observation.json.gz",
+      "bytes": 356,
+      "lines": 8,
+      "rawSha256": "d7b040b3eda630aacc693a9afdf925482082dd16945de932edacae81bd7b36df",
+      "archiveSha256": "6304222fdaec814ff3f72f9b7c73098fd7d1240e9db074b57416ecb71e4b0b20"
+    },
+    {
+      "file": "upstream-report.json.gz",
+      "bytes": 300,
+      "lines": 7,
+      "rawSha256": "b84a07e40ee0ab05386929feb50e1d0b6d13d013893c827cf8c04a1ee0b7f5ce",
+      "archiveSha256": "f7b12bd61ce0850313f93d990d6ba5a1b26d54551b57dfb8cff2d2c645f62c0e"
+    },
+    {
+      "file": "upstream-rust-paths.current.rs.gz",
+      "bytes": 11556,
+      "lines": 347,
+      "rawSha256": "ec737d3c36515dd232ecd39beeb87182761b6b1f0ee50276892eba22a7d18a50",
+      "archiveSha256": "cab47a4c08d77c92dc07801a38638acc30f5f8f0653001ea23a863dd80de57b8"
+    },
+    {
+      "file": "upstream-search.json.gz",
+      "bytes": 19727,
+      "lines": 1,
+      "rawSha256": "a5d8c6c0ac9aa0a839841690b5a77d2394257979eda826187f6951be29543ada",
+      "archiveSha256": "5bd0b55e92d7985bedff3bb670f79f15c41c60199bd3006b3821c7acb5649cb7"
+    },
+    {
+      "file": "upstream-search.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "actualNativeExecutionPending": true,
+  "originalRegressionExecutionObserved": false,
+  "localNativeBuildExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "upstreamReport": {
+    "url": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/261",
+    "sourceCommit": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+    "sourceBlob": "4f4d9d36b710dc029918ab6ec53c26677174adc6",
+    "actualNativeExecutionObserved": false,
+    "fullIssueComplete": false
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "head": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "createdAt": "2026-11-18T00:34:02.428006+00:00",
+  "durationSeconds": 3.596,
+  "environment": {
+    "GIT_HTTP_LOW_SPEED_LIMIT": "1024",
+    "GIT_HTTP_LOW_SPEED_TIME": "20",
+    "GIT_TERMINAL_PROMPT": "0"
+  },
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "version"
+      ],
+      "exitCode": 0,
+      "seconds": 0.006
+    },
+    {
+      "argv": [
+        "git",
+        "init"
+      ],
+      "exitCode": 0,
+      "seconds": 0.013
+    },
+    {
+      "argv": [
+        "git",
+        "remote",
+        "add",
+        "origin",
+        "https://github.com/link-assistant/formal-ai"
+      ],
+      "exitCode": 0,
+      "seconds": 0.008
+    },
+    {
+      "argv": [
+        "git",
+        "config",
+        "gc.auto",
+        "0"
+      ],
+      "exitCode": 0,
+      "seconds": 0.009
+    },
+    {
+      "argv": [
+        "git",
+        "config",
+        "pack.threads",
+        "1"
+      ],
+      "exitCode": 0,
+      "seconds": 0.006
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "protocol.version=2",
+        "fetch",
+        "--no-tags",
+        "--no-recurse-submodules",
+        "--filter=blob:none",
+        "--depth=1",
+        "origin",
+        "6b1d75a62a610e58914ef594c107f3fa402ded9d"
+      ],
+      "exitCode": 0,
+      "seconds": 0.853
+    },
+    {
+      "argv": [
+        "git",
+        "sparse-checkout",
+        "set",
+        "--no-cone",
+        "--stdin"
+      ],
+      "exitCode": 0,
+      "seconds": 0.007
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "--force",
+        "FETCH_HEAD"
+      ],
+      "exitCode": 0,
+      "seconds": 1.357
+    },
+    {
+      "argv": [
+        "git",
+        "sparse-checkout",
+        "set",
+        "--no-cone",
+        "--stdin"
+      ],
+      "exitCode": 0,
+      "seconds": 1.316
+    },
+    {
+      "argv": [
+        "git",
+        "count-objects",
+        "-v"
+      ],
+      "exitCode": 0,
+      "seconds": 0.013
+    }
+  ],
+  "outcome": {
+    "firstCheckoutExitCode": 0,
+    "materializedFiles": {
+      ".bun-version": {
+        "bytes": 6,
+        "sha256": "b99b4c7cdf236f59bc9f65d963deaecae3b16a7dad87939cacb9057f7664daee"
+      },
+      "package.json": {
+        "bytes": 2081,
+        "sha256": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77"
+      },
+      ".gitignore": {
+        "bytes": 5542,
+        "sha256": "2d1b537287bb9470597cd9d47e41667a173320d935fb54b96d163461133245e4"
+      },
+      ".github/workflows/layered-ci.yml": {
+        "bytes": 40206,
+        "sha256": "5e48ce6f5f68304071be935ba690174bdfc0e52f89ad4fe643a5f827084f932a"
+      },
+      "js/worker/formal_ai_worker_calendar_offset.js": {
+        "bytes": 30614,
+        "sha256": "4d6aadce1fe68d9cb42e5aa4d70bb24b424cbc62d6b17579227f4c11bfa96360"
+      },
+      "rust/src/solver_handlers/calendar/month.rs": {
+        "bytes": 21695,
+        "sha256": "f3bad9b904ff0acc54db41e8bc32b5ef8c03b4898d830e1f8dfd69bade9a9622"
+      },
+      "rust/src/solver_handlers/calculator_rate.rs": {
+        "bytes": 10417,
+        "sha256": "c5f8a5c025cc495044fe3e105396b5db0eb9f5f967ba103f8de523d58a9242ad"
+      }
+    }
+  },
+  "rawSha256": "a908bc22ba1a2b76b3ca4c8533d5a6f1ec159d269bbedc086d39fb2542125111",
+  "rawBytes": 1575,
+  "rawLines": 53,
+  "scope": "Fresh local shallow blobless clone; one six-byte checkout then seven source files. Different host/Git version from hosted runner; does not reproduce its complete checkout. No native execution.",
+  "cumulativeChildPeakKiB": 38912,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,92 @@
+{
+  "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+  "reviewedAt": "2026-11-20T05:04:40.556186+00:00",
+  "workflowsCompleted": 23,
+  "workflowsSucceeded": 21,
+  "allCurrentHeadRunsTerminal": true,
+  "logRecordsVerified": 90,
+  "failures": [
+    {
+      "workflow": "Layered CI",
+      "run": 44673787188,
+      "job": 136080748101,
+      "log": "job-136080748101.stdout.gz",
+      "rawLines": [
+        5162,
+        5176
+      ],
+      "error": "unchanged pinned command includes its own output",
+      "cause": "The fixture required a fresh redirected checksum output to exist before find enumerated. Shell pipeline scheduling does not guarantee that order.",
+      "repairCommit": "ee716ff55",
+      "verification": "experiments/issue-1580/evidence/checks/package-identity-and-checksum-race/verification.json",
+      "hostedRepairConfirmation": false
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44673787597,
+      "job": 136080809086,
+      "log": "job-136080809086.stdout.gz",
+      "rawLines": [
+        140,
+        142,
+        171
+      ],
+      "error": "curl 28 low-speed transfer, bad pack header, failed promisor fetch; Git exit 128",
+      "cause": "A lazy blob fetch failed during checkout after the initial fetch. No compiler or coding test ran.",
+      "repairCommit": "f59b22a50",
+      "verification": "experiments/issue-1580/evidence/checks/bounded-native-checkout-retry/verification.json",
+      "hostedRepairConfirmation": false
+    }
+  ],
+  "passingNativeEvidence": {
+    "core": {
+      "job": 136080808912,
+      "workflowContractTests": 60,
+      "fragmentOwnershipTests": 4,
+      "fallibleOutputTests": 7
+    },
+    "reasoning": {
+      "job": 136080809149,
+      "passed": 141
+    },
+    "interfaces": {
+      "job": 136080809076,
+      "passed": 78
+    },
+    "benchmarks": {
+      "job": 136080809166,
+      "passed": 11
+    },
+    "hive": {
+      "passed": 37,
+      "shards": [
+        {
+          "job": 136080809183,
+          "passed": 20,
+          "rawSummaryLine": 1327
+        },
+        {
+          "job": 136080809117,
+          "passed": 10,
+          "rawSummaryLine": 1318
+        },
+        {
+          "job": 136080809123,
+          "passed": 7,
+          "rawSummaryLine": 1315
+        }
+      ],
+      "restoredCodexDeliveryCase": {
+        "job": 136080809183,
+        "rawLine": 1317
+      },
+      "restoredFullClaudeKotlinCase": {
+        "job": 136080809183,
+        "rawLine": 1322
+      }
+    }
+  },
+  "originalUnchangedTestAcceptanceInferred": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

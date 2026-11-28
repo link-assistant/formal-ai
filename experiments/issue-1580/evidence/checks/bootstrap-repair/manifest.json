@@ -1,0 +1,42 @@
+{
+  "schema": "issue-1580-bootstrap-repair-evidence/v1",
+  "utc": "2026-11-21T21:56:39.977699+00:00",
+  "fileCount": 164,
+  "parts": [
+    {
+      "file": "manifest-files-1.json",
+      "files": 100,
+      "sha256": "4141eef5abf6fa5911574269f8dffc9c642143b2e82416c9a6d7007519fb6a01"
+    },
+    {
+      "file": "manifest-files-2.json",
+      "files": 64,
+      "sha256": "1d88086af29ca5c9baa670eac61dfb4c1c4e98015101fd23cfba215e6b587a32"
+    }
+  ],
+  "localGates": {
+    "PASS": 87,
+    "FAIL": 1,
+    "SKIP": 53
+  },
+  "maintainedBeforeCompanionRepair": 332,
+  "autonomousAuthorshipCredit": 0,
+  "fullWordArchiveNames": [
+    {
+      "before": "autonomous-worker-import-repair--lib.rs.after.gz",
+      "after": "autonomous-worker-import-repair--library.rs.after.gz"
+    },
+    {
+      "before": "autonomous-worker-import-repair--lib.rs.before.gz",
+      "after": "autonomous-worker-import-repair--library.rs.before.gz"
+    },
+    {
+      "before": "worker-unused-import-checks--lib.rs.before.gz.gz",
+      "after": "worker-unused-import-checks--library.rs.before.gz.gz"
+    },
+    {
+      "before": "local-gate--check-tests-as-docs.log.gz",
+      "after": "local-gate--check-tests-as-documentation.log.gz"
+    }
+  ]
+}

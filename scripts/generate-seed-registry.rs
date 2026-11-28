@@ -11,7 +11,9 @@
 //!
 //! Generated files:
 //!   * `src/seed/embedded_registry.rs` -- `include_str!` constants,
-//!     `seed_files()`, `RESPONSE_FILES`, `MEANING_FILES`. It is `include!`d by
+//!     `RESPONSE_FILES`, `MEANING_FILES` and an include of `embedded_files.rs`.
+//!   * `src/seed/embedded_files.rs` -- the complete `seed_files()` function.
+//!     Both are `include!`d by
 //!     `src/seed/embedded.rs` rather than declared as a module, because rustfmt
 //!     only formats files it reaches through a `mod` declaration: the generator
 //!     therefore owns the layout outright and `cargo fmt --check` has nothing to
@@ -42,6 +44,8 @@ const SEED_DIR: &str = "data/seed";
 const RUST_TARGET: &str = "src/seed/embedded_registry.rs";
 #[cfg(not(test))]
 const WEB_TARGET: &str = "js/seed-files.js";
+#[cfg(not(test))]
+const RUST_FILES_TARGET: &str = "src/seed/embedded_files.rs";
 
 /// The column the generated Rust wraps at, matching rustfmt's default
 /// `max_width` so the file reads like the rest of the crate even though rustfmt
@@ -167,7 +171,9 @@ fn parse_registry(source: &str) -> Registry {
 /// union of their flags is the answer; dropping either would lose a branch's
 /// change.
 fn canonicalize(mut registry: Registry) -> Registry {
-    registry.seeds.sort_by(|left, right| left.name.cmp(&right.name));
+    registry
+        .seeds
+        .sort_by(|left, right| left.name.cmp(&right.name));
     let mut merged: Vec<Seed> = Vec::with_capacity(registry.seeds.len());
     for seed in registry.seeds {
         match merged.last_mut() {
@@ -183,7 +189,9 @@ fn canonicalize(mut registry: Registry) -> Registry {
     registry
         .unregistered
         .sort_by(|left, right| left.pattern.cmp(&right.pattern));
-    registry.unregistered.dedup_by(|left, right| left.pattern == right.pattern);
+    registry
+        .unregistered
+        .dedup_by(|left, right| left.pattern == right.pattern);
     registry
 }
 
@@ -250,7 +258,11 @@ const RUST_HEADER: &str = r#"// Embedded Links Notation seed files and the file 
 "#;
 
 fn render_rust(registry: &Registry) -> String {
-    let embedded: Vec<&Seed> = registry.seeds.iter().filter(|seed| seed.embedded()).collect();
+    let embedded: Vec<&Seed> = registry
+        .seeds
+        .iter()
+        .filter(|seed| seed.embedded())
+        .collect();
     let mut out = String::from(RUST_HEADER);
 
     out.push_str("\n/// Raw embedded contents (used by `merged_bundle` and by tests).\n");
@@ -275,6 +287,53 @@ fn render_rust(registry: &Registry) -> String {
         out.push('\n');
     }
 
+    out.push_str("\ninclude!(\"embedded_files.rs\");\n");
+
+    out.push_str(
+        "\n/// The registered set of multilingual-response files, walked by\n\
+         /// [`super::multilingual_responses`].\n\
+         ///\n\
+         /// Split so none breaches the seed file-size guard; each wraps its records\n\
+         /// under a top-level `multilingual_responses` node and the parser walks all of\n\
+         /// them, so an intent may live in whichever file keeps the sizes balanced.\n\
+         pub const RESPONSE_FILES: &[&str] = &[\n",
+    );
+    for seed in embedded
+        .iter()
+        .filter(|seed| seed.lexicon.contains("response"))
+    {
+        out.push_str(&format!("    {},\n", seed.constant()));
+    }
+    out.push_str("];\n");
+
+    out.push_str(
+        "\n/// The registered set of meaning-lexicon files, concatenated by\n\
+         /// [`super::lexicon`].\n\
+         ///\n\
+         /// Split across several `.lino` files so none breaches the seed file-size\n\
+         /// guard; each wraps its records under a top-level `meanings` node (the loader\n\
+         /// walks all of them).\n\
+         pub const MEANING_FILES: &[&str] = &[\n",
+    );
+    for seed in embedded
+        .iter()
+        .filter(|seed| seed.lexicon.contains("meaning"))
+    {
+        out.push_str(&format!("    {},\n", seed.constant()));
+    }
+    out.push_str("];\n");
+    out
+}
+
+fn render_rust_files(registry: &Registry) -> String {
+    let embedded: Vec<&Seed> = registry
+        .seeds
+        .iter()
+        .filter(|seed| seed.embedded())
+        .collect();
+    let mut out = String::from(
+        "// Generated bundle inventory from data/meta/seed-registry.lino; do not edit by hand.\n",
+    );
     out.push_str(
         "\n/// Embedded copy of every Links Notation seed file. Returned in registry\n\
          /// order so callers can render the merged bundle deterministically.\n\
@@ -296,33 +355,6 @@ fn render_rust(registry: &Registry) -> String {
     }
     out.push_str("    ]\n}\n");
 
-    out.push_str(
-        "\n/// The registered set of multilingual-response files, walked by\n\
-         /// [`super::multilingual_responses`].\n\
-         ///\n\
-         /// Split so none breaches the seed file-size guard; each wraps its records\n\
-         /// under a top-level `multilingual_responses` node and the parser walks all of\n\
-         /// them, so an intent may live in whichever file keeps the sizes balanced.\n\
-         pub const RESPONSE_FILES: &[&str] = &[\n",
-    );
-    for seed in embedded.iter().filter(|seed| seed.lexicon.contains("response")) {
-        out.push_str(&format!("    {},\n", seed.constant()));
-    }
-    out.push_str("];\n");
-
-    out.push_str(
-        "\n/// The registered set of meaning-lexicon files, concatenated by\n\
-         /// [`super::lexicon`].\n\
-         ///\n\
-         /// Split across several `.lino` files so none breaches the seed file-size\n\
-         /// guard; each wraps its records under a top-level `meanings` node (the loader\n\
-         /// walks all of them).\n\
-         pub const MEANING_FILES: &[&str] = &[\n",
-    );
-    for seed in embedded.iter().filter(|seed| seed.lexicon.contains("meaning")) {
-        out.push_str(&format!("    {},\n", seed.constant()));
-    }
-    out.push_str("];\n");
     out
 }
 
@@ -348,7 +380,11 @@ fn render_web(registry: &Registry) -> String {
 /// Everything the registry has to satisfy, as human-readable failures.
 fn problems(registry: &Registry, on_disk: &BTreeSet<String>) -> Vec<String> {
     let mut failures = Vec::new();
-    let registered: BTreeSet<&str> = registry.seeds.iter().map(|seed| seed.name.as_str()).collect();
+    let registered: BTreeSet<&str> = registry
+        .seeds
+        .iter()
+        .map(|seed| seed.name.as_str())
+        .collect();
 
     for seed in &registry.seeds {
         if !on_disk.contains(&seed.name) {
@@ -454,15 +490,31 @@ fn main() {
         for failure in &failures {
             println!("::error::{failure}");
         }
-        println!("\n{} seed registry violation(s). Update {REGISTRY}.\n", failures.len());
+        println!(
+            "\n{} seed registry violation(s). Update {REGISTRY}.\n",
+            failures.len()
+        );
         std::process::exit(1);
     }
 
     // The crate's generated files moved under rust/ with the crate itself
     // (issue #1138); the registry and the browser list stayed at the root.
     let targets = [
-        (REGISTRY, root.join(REGISTRY), render_registry(&registry, &header)),
-        (RUST_TARGET, root.join("rust").join(RUST_TARGET), render_rust(&registry)),
+        (
+            REGISTRY,
+            root.join(REGISTRY),
+            render_registry(&registry, &header),
+        ),
+        (
+            RUST_TARGET,
+            root.join("rust").join(RUST_TARGET),
+            render_rust(&registry),
+        ),
+        (
+            RUST_FILES_TARGET,
+            root.join("rust").join(RUST_FILES_TARGET),
+            render_rust_files(&registry),
+        ),
         (WEB_TARGET, root.join(WEB_TARGET), render_web(&registry)),
     ];
     let mut stale = Vec::new();
@@ -547,7 +599,11 @@ mod tests {
     fn a_union_merge_leaves_the_order_scrambled_and_the_output_sorted() {
         let unioned = "seed_registry\n  seed zebra\n    web true\n  seed alpha\n    web true\n";
         let registry = canonicalize(parse_registry(unioned));
-        let names: Vec<&str> = registry.seeds.iter().map(|seed| seed.name.as_str()).collect();
+        let names: Vec<&str> = registry
+            .seeds
+            .iter()
+            .map(|seed| seed.name.as_str())
+            .collect();
         assert_eq!(names, ["alpha", "zebra"]);
     }
 
@@ -568,7 +624,9 @@ mod tests {
         disk.remove("concepts");
         let failures = problems(&sample(), &disk);
         assert!(
-            failures.iter().any(|failure| failure.contains("does not exist")),
+            failures
+                .iter()
+                .any(|failure| failure.contains("does not exist")),
             "{failures:?}"
         );
     }
@@ -579,7 +637,9 @@ mod tests {
         disk.remove("closure-generated-01");
         let failures = problems(&sample(), &disk);
         assert!(
-            failures.iter().any(|failure| failure.contains("stale exclusion")),
+            failures
+                .iter()
+                .any(|failure| failure.contains("stale exclusion")),
             "{failures:?}"
         );
     }
@@ -589,7 +649,9 @@ mod tests {
         let orphan = "seed_registry\n  seed concepts\n";
         let failures = problems(&canonicalize(parse_registry(orphan)), &on_disk());
         assert!(
-            failures.iter().any(|failure| failure.contains("no consumer")),
+            failures
+                .iter()
+                .any(|failure| failure.contains("no consumer")),
             "{failures:?}"
         );
     }
@@ -603,7 +665,10 @@ mod tests {
         // this a regression test for the file that shipped with it.
         let rendered = render_registry(&sample(), &registry_header(SAMPLE));
 
-        assert!(rendered.starts_with("# header\nseed_registry\n"), "{rendered}");
+        assert!(
+            rendered.starts_with("# header\nseed_registry\n"),
+            "{rendered}"
+        );
         assert!(!rendered.contains("\n\n"), "{rendered}");
     }
 
@@ -632,6 +697,31 @@ mod tests {
     }
 
     #[test]
+    fn the_complete_bundle_function_is_reachable_without_moving_declaration_owners() {
+        let registry = sample();
+        let declarations = render_rust(&registry);
+        let files = render_rust_files(&registry);
+        assert!(declarations.contains("\ninclude!(\"embedded_files.rs\");\n"));
+        assert!(!declarations.contains("pub fn seed_files("));
+        assert!(files.contains("pub fn seed_files() -> Vec<(&'static str, &'static str)> {"));
+        assert!(files.contains("(\"data/seed/concepts.lino\", CONCEPTS_LINO),"));
+        assert!(files.contains("(\"data/seed/meanings-units.lino\", MEANINGS_UNITS_LINO),"));
+        assert!(declarations.contains("pub const CONCEPTS_LINO: &str ="));
+    }
+
+    #[test]
+    fn the_bundle_include_does_not_admit_web_only_or_lexicon_only_seeds() {
+        let registry = canonicalize(parse_registry(
+            "seed_registry\n  seed bundled\n    bundle true\n  seed browser-only\n    web true\n  seed lexicon-only\n    lexicon meaning\n",
+        ));
+        let files = render_rust_files(&registry);
+        assert!(files.contains("(\"data/seed/bundled.lino\", BUNDLED_LINO),"));
+        assert!(!files.contains("BROWSER_ONLY_LINO"));
+        assert!(!files.contains("LEXICON_ONLY_LINO"));
+        assert!(render_rust(&registry).contains("pub const LEXICON_ONLY_LINO: &str ="));
+    }
+
+    #[test]
     fn the_browser_list_holds_exactly_the_web_seeds() {
         let web = render_web(&sample());
         assert!(web.contains("\"seed/concepts.lino\","));
@@ -643,7 +733,10 @@ mod tests {
 
     #[test]
     fn a_pattern_matches_the_way_the_exclusions_read() {
-        assert!(pattern_matches("closure-generated-*", "closure-generated-01"));
+        assert!(pattern_matches(
+            "closure-generated-*",
+            "closure-generated-01"
+        ));
         assert!(!pattern_matches("closure-generated-*", "concepts"));
         assert!(pattern_matches("roles", "roles"));
         assert!(pattern_matches("google-trends-*", "google-trends-snapshot"));

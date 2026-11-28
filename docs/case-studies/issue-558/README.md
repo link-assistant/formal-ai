@@ -1,5 +1,10 @@
 # Issue 558 Case Study: Auto Learning
 
+Issue #1613 moved the historical repair case and approved records to explicit
+test fixtures. The running planner uses the requested failure trace and the
+operator's configured review records. The original investigation and captured
+outputs below describe PR #637. [Current agentic configuration](../../configuration/agentic-clis.md)
+
 Status: **first closed self-healing slice implemented in PR #637**. This case
 study answers issue #558's request to collect data, inspect issue #538 / PR #601,
 search for related approaches, list requirements, and propose a concrete path to

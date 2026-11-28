@@ -1,0 +1,90 @@
+{
+  "collectedAt": "2026-11-17T20:18:43.252470+00:00",
+  "mainHead": "444575f2ac28f609c94497865f125f99415ff6d5",
+  "mainIsAncestor": false,
+  "rows": [
+    {
+      "source": "issue",
+      "bytes": 10642,
+      "sha256": "fdc9408c4dc7805894a240269e2728abdf57d12f51d719c3ddde7907a9d56123",
+      "updatedAt": "2026-11-16T06:15:48Z",
+      "bodySha256": "3d11b9be96a2a6564776b75b46d1d557b4c74947e507b295d5808b1a4b5c2cec"
+    },
+    {
+      "source": "issue-comments",
+      "bytes": 4475,
+      "sha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "entries": [
+        {
+          "id": 6908948768,
+          "updatedAt": "2026-11-16T06:15:48Z",
+          "bodySha256": "045bcf1d4d81c767433840d68f745497bb0bf2932d86394d52446e8ca4bf3cd1"
+        }
+      ]
+    },
+    {
+      "source": "pr-comments",
+      "bytes": 31784,
+      "sha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302",
+      "entries": [
+        {
+          "id": 6908914117,
+          "updatedAt": "2026-11-16T06:13:49Z",
+          "bodySha256": "3a489b65160f0955c48b98cf472d84a4a86e79e609b1552b11ed7a5eabb9e906"
+        },
+        {
+          "id": 6908935772,
+          "updatedAt": "2026-11-16T06:15:04Z",
+          "bodySha256": "ae73183a68ec40ca64962d0da02f1a28a6d95558c066a77057a5fe0e85150a85"
+        },
+        {
+          "id": 6908939671,
+          "updatedAt": "2026-11-16T06:15:16Z",
+          "bodySha256": "11ad93cba5668f250b7b8e30f3a6a463a7406da23b858d3267d14fe5d8735818"
+        },
+        {
+          "id": 6908942876,
+          "updatedAt": "2026-11-16T06:15:28Z",
+          "bodySha256": "20370f6b01b38cbce1ccdfc3658ed5d79e7eef8d1e9d34424b050917355e19c6"
+        },
+        {
+          "id": 6909568186,
+          "updatedAt": "2026-11-16T06:51:14Z",
+          "bodySha256": "58d60993e65962d3fa0cc86fb65336f2c3b78eb2b344098052281b1a5961897d"
+        },
+        {
+          "id": 6909598528,
+          "updatedAt": "2026-11-16T06:53:02Z",
+          "bodySha256": "282a7dfcec8bd2e89178a2e88f327083c1f29ec712fe5e21d62bf94a2e7a0fc9"
+        },
+        {
+          "id": 6909598996,
+          "updatedAt": "2026-11-16T06:53:03Z",
+          "bodySha256": "bdb30e5066a3d0efb2dccec1733fac09a831a3813471fd0327f6a7c0d4f4fb01"
+        },
+        {
+          "id": 6927565215,
+          "updatedAt": "2026-11-16T19:58:31Z",
+          "bodySha256": "2b3d99ab49e330c2fabf6bf6a75d2832963a8cc2a39d9e7f7494d5fb41f6757d"
+        },
+        {
+          "id": 6941679312,
+          "updatedAt": "2026-11-17T07:28:40Z",
+          "bodySha256": "c5d3e64d22a477e6cdaf3135ef0372868faa0eb3721892b2f2abe26e7334d0b0"
+        }
+      ]
+    },
+    {
+      "source": "pr-inline-comments",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "entries": []
+    },
+    {
+      "source": "pr-reviews",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "entries": []
+    }
+  ]
+}

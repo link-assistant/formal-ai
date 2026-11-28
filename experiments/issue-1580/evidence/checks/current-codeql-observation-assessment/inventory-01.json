@@ -1,0 +1,130 @@
+[
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-35-20.404Z.json",
+    "file": "001-2026-11-21T03-35-20.404Z.json.gz",
+    "bytes": 4219,
+    "lines": 11,
+    "rawSha256": "9ebff12180e57b861bce8db054ddf55822f10a0ea4da7706d57551a1b30a7c1c",
+    "archiveSha256": "7df47d4873417c1e08717c99af2365aba72af0416ae340122f6f7f30d4069f25"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-44-31.224Z.json",
+    "file": "002-2026-11-21T03-44-31.224Z.json.gz",
+    "bytes": 1323,
+    "lines": 11,
+    "rawSha256": "c7129f697cb5b57a53dd062aa919f63e86264f324a2dc78b670b3d01baebb502",
+    "archiveSha256": "45011adb51cdf7779e7c8ce77cd65526098fb824ea31588ee5a501176d5d7fa1"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-44-55.099Z.json",
+    "file": "003-2026-11-21T03-44-55.099Z.json.gz",
+    "bytes": 9474,
+    "lines": 11,
+    "rawSha256": "94adc38f23efc196f1c9aeeaa60e3ab7d1a8f24dcaa7a1a7078b714ea6c3f551",
+    "archiveSha256": "83faa29293b2905e84e0342872dab1b8ea70111e6d8d1c0551d7d6d5d4764c39"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-45-07.440Z.json",
+    "file": "004-2026-11-21T03-45-07.440Z.json.gz",
+    "bytes": 33251,
+    "lines": 11,
+    "rawSha256": "2b3c8c1f36f731e2c1d30b73252bb6d9a621cb7715c0cf4813503e7ebe719b48",
+    "archiveSha256": "50e31f6e1771ba44f4ca963d80bcb7093949ac92eab011d011926cea04e451af"
+  },
+  {
+    "source": "/tmp/issue-1580-research/assess-current-codeql-observations-retry.log",
+    "file": "005-assess-current-codeql-observations-retry.log.gz",
+    "bytes": 4437,
+    "lines": 104,
+    "rawSha256": "fc387dbffcd1e3ccfe3ea28e8f1af9f894409e667b92077ccc49b1c81884b9e6",
+    "archiveSha256": "c8343fd42d0e455e5dcd9dd8a5c082b4793e5bbf4b97515fa49f55bc28565c78"
+  },
+  {
+    "source": "/tmp/issue-1580-research/assess-current-codeql-observations.log",
+    "file": "006-assess-current-codeql-observations.log.gz",
+    "bytes": 488,
+    "lines": 9,
+    "rawSha256": "46997194116131e5eacb79c2fd011c596760d29bf302dbcf63290d98362349d0",
+    "archiveSha256": "7e1a485ee48b829288d628d6c27f98b4db2b1f78d6e5a6339ad6d7243da3afa9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/assess-current-codeql-observations.py",
+    "file": "007-assess-current-codeql-observations.py.gz",
+    "bytes": 9181,
+    "lines": 176,
+    "rawSha256": "dfb69ea80e761726b1362102c3e48eac855f574effc67b0252b7ff24c7816a93",
+    "archiveSha256": "8441b99e2fe69a5fd13023f84fba019389ab574fbdf3866d2d7a15d9a4aefa70"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-all-source-size-findings.json",
+    "file": "008-current-all-source-size-findings.json.gz",
+    "bytes": 17082,
+    "lines": 685,
+    "rawSha256": "dc510e3337f8ff2097344176a1342b91684cd770344c750453fdf3946ad21bd5",
+    "archiveSha256": "400bec6e9b7e0e01db1bdb790315254ee328b87d2c8a0f8e9a287b28dc22f380"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-committable-source-size-findings.json",
+    "file": "009-current-committable-source-size-findings.json.gz",
+    "bytes": 17607,
+    "lines": 654,
+    "rawSha256": "273fc5b8687f8cdf48aec3fe388825d3a1087a61f62bc3c3206bdf7b6446c9ce",
+    "archiveSha256": "68911a254bbf220e6dbded14a5ecf40e1dc0697bf157ed6cae4ad4432cc68644"
+  },
+  {
+    "source": "/tmp/issue-1580-research/scan-current-all-source-size-findings.log",
+    "file": "010-scan-current-all-source-size-findings.log.gz",
+    "bytes": 11679,
+    "lines": 398,
+    "rawSha256": "60318c30a9ca98bb477f9fd39dc512de8b13c6150da3482555b2a066441ddde1",
+    "archiveSha256": "176cc8a45073f3efb62b16ec052221a6a5bde75ed640f5e53d59f80c3b236132"
+  },
+  {
+    "source": "/tmp/issue-1580-research/scan-current-committable-source-warnings.log",
+    "file": "011-scan-current-committable-source-warnings.log.gz",
+    "bytes": 11845,
+    "lines": 4,
+    "rawSha256": "829ea3c35e6e534ffddc113f66c5ea86703f588e4e8cd050bc6187d92b288ef8",
+    "archiveSha256": "515ba2d5f8ec8cf90e0e4cf7d6ac1ca67b696c3134ab20938d80d865591a9eae"
+  },
+  {
+    "source": "/tmp/issue-1580-research/scan-current-committable-source-warnings.mjs",
+    "file": "012-scan-current-committable-source-warnings.mjs.gz",
+    "bytes": 771,
+    "lines": 11,
+    "rawSha256": "20e2d7ebcb9145c72afbe17611942239b2864d1df976f3ecf5b861661bf1f07e",
+    "archiveSha256": "ac042167ed8f023ae0667f9595bf1a6a22de736d400349f60074610728c8a88c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-codeql-observations.log",
+    "file": "013-seal-current-codeql-observations.log.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-codeql-observations.py",
+    "file": "014-seal-current-codeql-observations.py.gz",
+    "bytes": 8555,
+    "lines": 133,
+    "rawSha256": "0a9e75e49575acff055cddeec6b9f023f06f6994f7f1cd873deade9dc938bf45",
+    "archiveSha256": "0deceaff3363b43e8c924b7959c1d980a318029d9a6bf074741994f78a80046b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/verify-current-codeql-producer.log",
+    "file": "015-verify-current-codeql-producer.log.gz",
+    "bytes": 1870,
+    "lines": 65,
+    "rawSha256": "745076d3a9499023315a97a4e2e82793da97c510911ae6330221655bde2329a4",
+    "archiveSha256": "d8ce4ba9dbb7ede15f7a0f890422838cf67f3b0c01d17989166452cd4e705484"
+  },
+  {
+    "source": "/tmp/issue-1580-research/verify-current-codeql-producer.py",
+    "file": "016-verify-current-codeql-producer.py.gz",
+    "bytes": 3840,
+    "lines": 70,
+    "rawSha256": "bd1bb16de9c8d8bfee320339471e2ec20edbf207fe47eeef3656bde4122207a7",
+    "archiveSha256": "c49aa3f5afd3739f6a68bf4e8ed5dd435c0e69e3a2f4ea459b1a6afc7cfddf78"
+  }
+]

@@ -1,0 +1,151 @@
+{
+  "sourceBefore": "4bd6e29188c5ac446e648deeadc700a22d6d69fc",
+  "cargoManifests": 6,
+  "activeCargoManifests": 3,
+  "preservedReproducers": 2,
+  "emptyFixtures": 1,
+  "npmManifests": 14,
+  "focusedFinalChecks": [
+    {
+      "label": "before-actual-rust-resolution",
+      "command": [
+        "bash",
+        "-c",
+        "cargo() { printf \"cargo:%s:%s\\n\" \"$PWD\" \"$*\"; }\ncargo update --workspace"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048/rust",
+      "exitCode": 0
+    },
+    {
+      "label": "after-actual-rust-resolution",
+      "command": [
+        "bash",
+        "-c",
+        "cargo() { printf \"cargo:%s:%s\\n\" \"$PWD\" \"$*\"; }\nset -euo pipefail\nmanifests=\"$(node scripts/dependency-manifest-inventory.mjs --cargo)\"\nwhile IFS= read -r manifest; do\n  cargo update --workspace --manifest-path \"$manifest\"\ndone <<< \"$manifests\"\n"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "maintenance-controls",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/dependencies-maintenance-workflow.test.mjs"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "currency-workflow-controls",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1169-dependencies-latest-workflow.test.mjs"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "actual-tracked-manifest-inventory",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/dependency-manifest-inventory.mjs"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "typescript-currency",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "native-source-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/check-dependencies-latest.rs",
+        "scripts/check-dependencies-manifests.rs",
+        "scripts/check-dependencies-latest-tests.rs",
+        "rust/tests/unit/issue_1169_dependency_currency.rs",
+        "rust/tests/unit/workflow_contracts.rs"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "native-artifact-controls",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/native-test-artifact.test.mjs"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "local-gate-inventory",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--list"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "file-size-gate",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    },
+    {
+      "label": "readable-code-gate",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-readable-code"
+      ],
+      "cwd": "/tmp/gh-issue-solver-1794900398048",
+      "exitCode": 0
+    }
+  ],
+  "nativeExecuted": false,
+  "scope": "All final focused JavaScript checks pass. Actual native collection and hosted maintenance qualification remain pending; the resolver recorder does not execute Cargo.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 145286,
+    "sha256": "a8efcb3fcac831612cb7ab39b3fbddc52eaccff8703020dcf26384b0cc6dd8a5"
+  },
+  "members": 77,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

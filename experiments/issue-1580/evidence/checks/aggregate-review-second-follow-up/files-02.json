@@ -1,0 +1,130 @@
+[
+  {
+    "path": "rust/src/coding/composition_search.rs",
+    "diff": "0287.diff",
+    "sha256": "9f654163d2f7f1cdf3812240fa54f33200763ee7fead31fdd28a9e37f6338056",
+    "bytes": 1051,
+    "lines": 20,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/coding/composition_search/binders.rs",
+    "diff": "0288.diff",
+    "sha256": "173f1151c2867b06ca3fffbd7f66b55f03a744a69d86a2eaffb4f24d8cb6395c",
+    "bytes": 899,
+    "lines": 19,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/coding/composition_search/pool.rs",
+    "diff": "0289.diff",
+    "sha256": "98658e91a77d02ecacf2d6df5487e0224321f2d60101d13a4d8b79f073ae8f5d",
+    "bytes": 1099,
+    "lines": 22,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/history_context.rs",
+    "diff": "0310.diff",
+    "sha256": "2c102261a49794d9392ab16d4aefe7df62fde4256d025f084296adcfe2aac01f",
+    "bytes": 625,
+    "lines": 14,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/protocol_policy.rs",
+    "diff": "0331.diff",
+    "sha256": "113100c4f2a619be7ad74a82e79fa5cdfbde3a8b76a5244434fb0074d6dbeb1a",
+    "bytes": 927,
+    "lines": 19,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/protocol_responses.rs",
+    "diff": "0332.diff",
+    "sha256": "c54c3f4d5faf3098b0e36d59efff7463a6e26bdc95f36860b4a36726cf78a148",
+    "bytes": 741,
+    "lines": 15,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/solver_handlers/prompt_data.rs",
+    "diff": "0349.diff",
+    "sha256": "5dd0902494f91bb31bdb1d07ce7a06b9c728136760d79e119f482786d6ec3edf",
+    "bytes": 864,
+    "lines": 15,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/solver_handlers/web_requests/url_parse.rs",
+    "diff": "0358.diff",
+    "sha256": "b55005485c84bae910f21e998067050cf337417d2c400699cba5787dfb0ac710",
+    "bytes": 1785,
+    "lines": 47,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/solver_helpers/mod.rs",
+    "diff": "0361.diff",
+    "sha256": "901cdf77223ea16055293851def3dcbda50c91b19ad9c34b3a2ba775e7755d76",
+    "bytes": 1558,
+    "lines": 39,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/source_walk.rs",
+    "diff": "0365.diff",
+    "sha256": "e93c93e81b4b20a6dab9e2bd4aebb32e9b891caba4bff1c00f1499688ba2a6d3",
+    "bytes": 952,
+    "lines": 21,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-crate-package-size.rs",
+    "diff": "0385.diff",
+    "sha256": "a7b07781c108d094e502595f1baafd3d6ccddaa8e98b239574fd534d131584c7",
+    "bytes": 323,
+    "lines": 12,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-hardcoded-language.mjs",
+    "diff": "0391.diff",
+    "sha256": "1493197d1d1ac1d3c9e6538768e24ba68d65cf19fff4a93043b92aa48223e800",
+    "bytes": 2097,
+    "lines": 37,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-issue-citations.rs",
+    "diff": "0393.diff",
+    "sha256": "ab0dd8b848201261544991ae2a80e037fee1a3ba95a916adefb24e4b92cb6fdb",
+    "bytes": 471,
+    "lines": 12,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-pipeline-status.sh",
+    "diff": "0395.diff",
+    "sha256": "365661dd6581b14182e1d50fc0ca39d65a208bb0b64731ec093b1de4451a02eb",
+    "bytes": 2438,
+    "lines": 50,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-prompt-specialization.mjs",
+    "diff": "0396.diff",
+    "sha256": "5132de85b782257da8496fd7ddc79c387495de73c3a42bbcb5cc20e2fa0b3145",
+    "bytes": 1255,
+    "lines": 22,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/checked-release-operation-view.mjs",
+    "diff": "0406.diff",
+    "sha256": "dbb783d36c40e26ac7a1188b854267b29b7bc38757176ddc11ca9d08805d585c",
+    "bytes": 3346,
+    "lines": 41,
+    "carriedExactDiffReview": false
+  }
+]

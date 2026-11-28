@@ -1,0 +1,29 @@
+{
+  "entities": {
+    "Q182429": {
+      "id": "Q182429",
+      "labels": {
+        "es": {
+          "language": "es",
+          "value": "metro por segundo"
+        },
+        "en": {
+          "language": "en",
+          "value": "metre per second"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "метр в секунду"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "米每秒"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मीटर प्रति सेकंड"
+        }
+      }
+    }
+  }
+}

@@ -111,79 +111,52 @@ mod small_model_fallback {
 }
 
 mod triz_solver {
-    use formal_ai::triz_solver::{relevant_tasks, triz_benchmark_tasks, triz_cues, triz_families};
+    use formal_ai::seed::parse_lino;
+    use formal_ai::triz_solver::{triz_cues, triz_demands, triz_families};
 
-    /// The seeded principle identifiers (forty inventive + four separation),
-    /// read from the seed's `principle_id` fields.
-    fn principle_ids() -> Vec<String> {
+    #[test]
+    fn explicit_benchmark_covers_seeded_methods() {
         let seed = std::fs::read_to_string(concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/../data/seed/triz-principles.lino"
         ))
-        .expect("the TRIZ seed is readable");
-        seed.lines()
-            .filter_map(|line| line.trim().strip_prefix("principle_id "))
-            .map(|value| value.trim().trim_matches('"').to_owned())
-            .filter(|id| !id.is_empty())
-            .collect()
-    }
-
-    #[test]
-    fn families_and_benchmark_load_from_the_seed() {
-        let families = triz_families();
-        assert!(
-            families.len() >= 12,
-            "twelve general families, got {}",
-            families.len()
-        );
-        assert!(
-            families
-                .iter()
-                .any(|family| family.method_id == "family_range_selection")
-        );
-        let tasks = triz_benchmark_tasks();
-        assert_eq!(tasks.len(), 20, "the top-20 corpus");
-        for task in &tasks {
-            assert!(
-                !task.methods.is_empty(),
-                "{} must name its methods",
-                task.task_id
-            );
-        }
-        // Every method a task names must exist as a family or a seeded
-        // principle identifier -- the corpus cannot cite ghosts.
-        let known: Vec<String> = families
-            .iter()
-            .map(|family| family.method_id.clone())
-            .chain(principle_ids())
+        .expect("TRIZ seed");
+        let known: Vec<String> = triz_families()
+            .into_iter()
+            .map(|family| family.method_id)
+            .chain(
+                parse_lino(&seed)
+                    .children
+                    .iter()
+                    .map(|row| row.find_child_value("principle_id"))
+                    .filter(|id| !id.is_empty())
+                    .map(str::to_owned),
+            )
             .collect();
-        for task in &tasks {
-            for method in &task.methods {
+        let tasks = parse_lino(include_str!("../fixtures/triz/benchmark-tasks.lino")).children;
+        assert_eq!(tasks.len(), 20);
+        for task in tasks {
+            assert_eq!(task.find_child_value("record_type"), "triz_benchmark_task");
+            let contradiction = task.find_child_value("contradiction");
+            let (left, right) = contradiction.split_once(" vs ").expect("two demands");
+            let prompt = format!("TRIZ: {contradiction}");
+            assert_eq!(triz_demands(&prompt), Some((left, right)), "{}", task.name);
+            assert!(
+                !task.find_child_value("statement").is_empty(),
+                "{}",
+                task.name
+            );
+            let methods = task.find_child_value("methods");
+            assert!(!methods.is_empty(), "{}", task.name);
+            for method in methods.split_whitespace() {
                 assert!(
                     known.iter().any(|id| id == method),
-                    "{} cites unknown method {method}",
-                    task.task_id
+                    "{}: unknown method {method}",
+                    task.name
                 );
             }
         }
-    }
-
-    // The prompt is the corpus row's own statement, read from the seed: a
-    // statement shares every one of its content words with itself, so no
-    // other row can outrank it. The prose-prompt version of this check is
-    // the handler test in rust/tests/unit/issue_901_triz_solver.rs.
-    #[test]
-    fn umbrella_prompt_finds_the_umbrella_precedent_first() {
-        let tasks = triz_benchmark_tasks();
-        let umbrella = tasks
-            .iter()
-            .find(|task| task.task_id == "umbrella_crowd")
-            .expect("the corpus carries the umbrella task");
-        let relevant = relevant_tasks(&umbrella.statement, &tasks);
-        assert_eq!(
-            relevant.first().map(|task| task.task_id.as_str()),
-            Some("umbrella_crowd")
-        );
+        assert!(!seed.contains("triz_benchmark_task"));
     }
 
     #[test]

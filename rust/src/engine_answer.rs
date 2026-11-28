@@ -9,6 +9,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::thinking::ThinkingStep;
 
+/// Evidence from a verifiable task whose derived program actually ran.
+pub(crate) const VERIFIABLE_TASK_EXECUTION_LINK: &str = "verifiable_task:executed:";
+
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct SymbolicAnswer {
     pub intent: String,
@@ -103,6 +106,11 @@ impl SymbolicAnswer {
                 | "meta_reasoning_open"
                 | "meta_reasoned_program_unverified"
         ) || self.asks_for_clarification()
+            || (self.intent == "verifiable_task"
+                && !self
+                    .evidence_links
+                    .iter()
+                    .any(|link| link.starts_with(VERIFIABLE_TASK_EXECUTION_LINK)))
     }
 
     /// Whether the answer is a clarifying question. An ask is not an unknown:

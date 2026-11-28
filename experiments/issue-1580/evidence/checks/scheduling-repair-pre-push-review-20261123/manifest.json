@@ -1,0 +1,27 @@
+{
+  "scope": "Masked changed-source scan, original whitespace finding and subsequent repair, preserved partition callbacks, fresh main ancestry and idle-branch observations.",
+  "reviewedHead": "72e4d5be43515a7607c5fc024923f64195ef417b",
+  "secretScan": {
+    "exitCode": 0,
+    "files": 36,
+    "compressedFiles": 2,
+    "base": "53816c9eb4bd11729a8be347ccd9497d07042660"
+  },
+  "diffCheckAfterWhitespace": 0,
+  "partitionTestsPassed": 4,
+  "mainIncluded": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "activeRuns": 0,
+  "queuedRuns": 0,
+  "fullLiteralAggregateReview": false,
+  "independentReasoningCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2277,
+    "sha256": "7923aaf1516aa3b3142c4040879bf21edc4837aa899394fac769bb2a0cabd9bd"
+  },
+  "members": 14,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T20:45:18.142203+00:00"
+}

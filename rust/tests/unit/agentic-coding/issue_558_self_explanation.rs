@@ -9,6 +9,11 @@
 //! serialises to valid Links Notation with a stable content id, and it is reachable
 //! through the agentic interface as the eighth recipe.
 
+#[allow(clippy::duplicate_mod)]
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::LEDGER_TASK;
+use repair_fixture::SELF_HEAL_TASK;
 use std::path::Path;
 
 use formal_ai::agentic_coding::{
@@ -17,7 +22,7 @@ use formal_ai::agentic_coding::{
 };
 use formal_ai::{
     ChatMessage, Citation, CitationKind, SystemExplanation, ToolCall, canonical_explanation,
-    owned_manifest,
+    owned_manifest, owned_source_files,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -96,14 +101,16 @@ fn every_data_and_test_citation_exists_on_disk() {
 fn the_explanation_covers_all_three_artifact_kinds() {
     let explanation = canonical_explanation();
     assert!(explanation.section_count() >= 3, "several grounded topics");
-    // Every section must be backed by at least one real citation.
+    // Each statement starts with documentation from its primary source citation.
     for section in &explanation.sections {
-        assert!(
-            !section.citations.is_empty(),
-            "topic {} has no citation",
-            section.topic
-        );
-        assert_ne!(section.statement.trim(), "");
+        let citation = section.citations.first().expect("primary citation");
+        assert_eq!(citation.kind, CitationKind::Source);
+        let (_, source) = owned_source_files()
+            .iter()
+            .find(|(path, _)| *path == citation.path)
+            .expect("cited source");
+        let opening = source.lines().next().unwrap().strip_prefix("//! ").unwrap();
+        assert!(section.statement.starts_with(opening), "{}", section.topic);
     }
     // Source, data, and test are all represented — the issue asks for all three.
     assert_ne!(
@@ -167,13 +174,11 @@ fn recognises_the_explain_task_without_colliding_with_the_sibling_recipes() {
     // Unrelated and sibling self-inspection requests do not route here.
     assert!(!is_explain_task("what files are in this folder?"));
     assert!(!is_explain_task("how do I sort a list in reverse?"));
-    assert!(!is_explain_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
+    assert!(!is_explain_task(SELF_HEAL_TASK));
     assert!(!is_explain_task(
         formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
-    assert!(!is_explain_task(formal_ai::agentic_coding::LEDGER_TASK));
+    assert!(!is_explain_task(LEDGER_TASK));
     assert!(
         !is_explain_task(
             "You are an AI issue solver.\n\

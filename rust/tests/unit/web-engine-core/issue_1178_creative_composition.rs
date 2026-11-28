@@ -17,12 +17,11 @@
 //! - R3 a poem's form constraints are extracted and the rendered output is
 //!   checked against them before it is returned — a constraint-violating
 //!   composition yields the honest refusal, never the poem;
-//! - R4 English rhyme grounds in the Wiktionary rhyme classes; for
-//!   ru/hi/zh the pronunciation-coverage gap is stated, not guessed;
+//! - R4 rhyme uses caller-supplied classes, with a free-verse path when absent;
 //! - R5 the itinerary schedules under its constraints, cites every item,
 //!   and reports its feasibility check;
 //! - R6 advice items carry citation and evidence grade, ordered by grade
-//!   weight, with the #1179 relative-meta-logic forward dependency stated;
+//!   weight and attributed to the caller;
 //! - R7 none of the four classes returns the "Web search requested for"
 //!   paragraph, and planning never answers with a terminal command;
 //! - R8 held-out probe sets per class in en/ru/hi/zh with automated
@@ -43,6 +42,15 @@ macro_rules! answer_of {
             .unwrap_or_else(|| panic!("{} should answer this request", stringify!($handler)));
         answer.answer
     }};
+}
+
+fn with_evidence(prompt: &str, kind: &str) -> String {
+    let captures: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1178/creative-observations.json"
+    ))
+    .unwrap();
+    let evidence = serde_json::json!({ (kind): captures[kind] });
+    format!("{prompt}\n```json\n{evidence}\n```")
 }
 
 /// The poem block of a creative-writing answer: the text before the
@@ -159,7 +167,7 @@ fn handler_brainstorm_multilingual_probes() {
 fn handler_creative_writing_four_line_poem_about_the_sea() {
     let answer = answer_of!(
         formal_ai::handle_creative_writing_request,
-        "Write a four-line poem about the sea"
+        &with_evidence("Write a four-line poem about the sea", "rhyme")
     );
     let poem = poem_of(&answer);
     assert_eq!(poem.len(), 4, "exactly four lines: {answer}");
@@ -182,7 +190,7 @@ fn handler_creative_writing_four_line_poem_about_the_sea() {
 fn handler_creative_writing_rhymed_positions_share_a_rhyme_class() {
     let answer = answer_of!(
         formal_ai::handle_creative_writing_request,
-        "Write a four-line poem about the sea"
+        &with_evidence("Write a four-line poem about the sea", "rhyme")
     );
     let poem = poem_of(&answer);
     let end = |line: &str| {
@@ -205,7 +213,7 @@ fn handler_creative_writing_never_returns_a_violating_poem() {
     // the check, so the refusal comes back instead of a violating poem.
     let answer = answer_of!(
         formal_ai::handle_creative_writing_request,
-        "Write a rhyming sonnet about the star"
+        &with_evidence("Write a rhyming sonnet about the star", "rhyme")
     );
     assert!(
         answer.contains("never returned"),
@@ -247,11 +255,13 @@ fn handler_creative_writing_states_the_non_english_rhyme_gap() {
         let poem = poem_of(&answer);
         assert_eq!(poem.len(), 4, "{language}: exactly four lines: {answer}");
         assert!(
-            answer.contains("gap"),
+            answer.contains("rhyme.classes"),
             "{language}: the gap is stated: {answer}"
         );
         assert!(
-            !answer.contains("rhyme scheme") || answer.contains("none"),
+            !answer
+                .lines()
+                .any(|line| line.starts_with("- rhyme scheme")),
             "{language}: no guessed rhyme: {answer}"
         );
     }
@@ -265,17 +275,17 @@ fn handler_creative_writing_states_the_non_english_rhyme_gap() {
 fn handler_planning_builds_a_cited_feasible_itinerary() {
     let answer = answer_of!(
         formal_ai::handle_planning_request,
-        "3-day itinerary for Rome"
+        &with_evidence("3-day itinerary for Harbor City", "planning")
     );
     assert!(answer.contains("Day 1"), "{answer}");
     assert!(answer.contains("Day 3"), "{answer}");
-    assert!(answer.contains("Colosseum"), "{answer}");
+    assert!(answer.contains("Harbor Archive"), "{answer}");
     assert!(
-        answer.contains("wikivoyage.org"),
+        answer.contains("example.org"),
         "items cite their source: {answer}"
     );
     assert!(
-        answer.matches("wikivoyage.org").count() >= 5,
+        answer.matches("example.org").count() >= 5,
         "every scheduled item carries a citation: {answer}"
     );
     assert!(
@@ -294,7 +304,7 @@ fn handler_planning_builds_a_cited_feasible_itinerary() {
 fn handler_planning_schedule_respects_windows() {
     let answer = answer_of!(
         formal_ai::handle_planning_request,
-        "3-day itinerary for Rome"
+        &with_evidence("3-day itinerary for Harbor City", "planning")
     );
     // Every scheduled window is inside the day window and ordered within
     // its day (the clock resets at each "Day N" header).
@@ -340,21 +350,24 @@ fn handler_planning_unknown_destination_refuses_honestly() {
         formal_ai::handle_planning_request,
         "plan a trip to Atlantis"
     );
-    assert!(answer.contains("no places in the seeded cache"), "{answer}");
+    assert!(answer.contains("cited opening hours"), "{answer}");
     assert!(!answer.contains("Web search requested for"), "{answer}");
 }
 
 #[test]
 fn handler_planning_multilingual_probes() {
     let probes = [
-        ("ru", "составь маршрут по Риму на 3 дня"),
-        ("zh", "罗马三天行程"),
+        ("ru", "составь маршрут по городу на 3 дня"),
+        ("zh", "城市三天行程"),
     ];
     for (language, prompt) in probes {
-        let answer = answer_of!(formal_ai::handle_planning_request, prompt);
+        let answer = answer_of!(
+            formal_ai::handle_planning_request,
+            &with_evidence(prompt, "planning")
+        );
         assert!(answer.contains("Day 1"), "{language}: {answer}");
         assert!(
-            answer.contains("wikivoyage.org"),
+            answer.contains("example.org"),
             "{language}: cited: {answer}"
         );
         assert!(!answer.contains("terminal"), "{language}: {answer}");
@@ -369,17 +382,23 @@ fn handler_planning_multilingual_probes() {
 fn handler_advice_returns_cited_graded_guidance() {
     let answer = answer_of!(
         formal_ai::handle_advice_request,
-        "evidence-based tips for trouble sleeping"
+        &with_evidence(
+            "evidence-based tips for maintaining a project changelog",
+            "advice"
+        )
     );
-    assert!(answer.contains("CDC"), "{answer}");
-    assert!(answer.contains("cdc.gov"), "citations are URLs: {answer}");
+    assert!(answer.contains("Project policy"), "{answer}");
     assert!(
-        answer.contains("strong (health-authority guideline)"),
+        answer.contains("example.org/policy"),
+        "citations are URLs: {answer}"
+    );
+    assert!(
+        answer.contains("strong (authority guideline)"),
         "the evidence grade is labeled: {answer}"
     );
     assert!(
-        answer.contains("issue #1179"),
-        "the relative-meta-logic forward dependency is stated: {answer}"
+        answer.contains("supplied grades"),
+        "the ordering is attributed to the caller: {answer}"
     );
     assert!(!answer.contains("Web search requested for"), "{answer}");
 }
@@ -387,14 +406,20 @@ fn handler_advice_returns_cited_graded_guidance() {
 #[test]
 fn handler_advice_multilingual_probes() {
     let probes = [
-        ("ru", "дай советы для борьбы с бессонницей"),
-        ("hi", "नींद के लिए सलाह दो"),
-        ("zh", "改善睡眠的建议"),
+        ("ru", "дай советы по ведению журнала изменений"),
+        ("hi", "परियोजना के लिए सलाह दो"),
+        ("zh", "维护项目的建议"),
     ];
     for (language, prompt) in probes {
-        let answer = answer_of!(formal_ai::handle_advice_request, prompt);
-        assert!(answer.contains("CDC"), "{language}: {answer}");
-        assert!(answer.contains("cdc.gov"), "{language}: {answer}");
+        let answer = answer_of!(
+            formal_ai::handle_advice_request,
+            &with_evidence(prompt, "advice")
+        );
+        assert!(answer.contains("Project policy"), "{language}: {answer}");
+        assert!(
+            answer.contains("example.org/policy"),
+            "{language}: {answer}"
+        );
     }
 }
 
@@ -404,7 +429,7 @@ fn handler_advice_unknown_topic_refuses_honestly() {
         formal_ai::handle_advice_request,
         "advice for choosing a hoverboard"
     );
-    assert!(answer.contains("no formalized recommendations"), "{answer}");
+    assert!(answer.contains("cited recommendations"), "{answer}");
 }
 
 // ---------------------------------------------------------------------------

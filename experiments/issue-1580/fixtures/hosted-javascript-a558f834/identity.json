@@ -1,0 +1,29 @@
+{
+  "sourceCommit": "a558f83430dd1b114839ca979a02a71730abfac9",
+  "run": 44999044965,
+  "runConclusion": "failure",
+  "rawBytes": 4825272,
+  "rawSha256": "c930f967e5f7f09319e13a185358ab7969e7090cdf78ff5bb4d9f4e7e1d27087",
+  "completeObservations": 913,
+  "failedObservations": [
+    "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+    "rust/tests/web/issue-1580-template-observations.test.mjs",
+    "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+  ],
+  "durationsSha256": "b067fe3e62a18c8ca5fd2a2bdaa7914615747f464aff5d91019226a423519357",
+  "modeledWorkers": 4,
+  "unobservedFallbackSeconds": 1,
+  "warnings": [
+    {
+      "line": 17814,
+      "text": "js tier (node --check over js, suite group 6)\tRun this shard of the JavaScript suites\t2026-11-22T07:42:51.0599104Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."
+    }
+  ],
+  "warningSeconds": 270,
+  "budgetSeconds": 360,
+  "executionProof": false,
+  "scope": "Complete per-file timings include three failed suites. The top-level-only server-dialog-lino file emitted its pass marker without a node:test summary; the fallback covers it and newly added files. Timings do not prove test success.",
+  "schedulingFactor": 1.2,
+  "runnerOverheadAllowanceSeconds": 30,
+  "schedulingNote": "The importer reserves 20% over exact retained observations while preserving every earlier scheduling floor. This is a scheduling allowance, not a measured duration. All current hosted shards had 13\u201322 seconds beyond the four-worker file model; the replay additionally reserves 30 seconds."
+}

@@ -28,7 +28,7 @@ use regex::Regex;
 use serde_json::{Value, json};
 
 use super::task_condition::{
-    TaskLiteral, conditional_statement, condition_table, fence_lines, first_role_match,
+    TaskLiteral, condition_table, conditional_statement, fence_lines, first_role_match,
     task_literals,
 };
 use super::work_item_requirements::work_item_requirements;
@@ -66,7 +66,10 @@ fn checkbox_pattern() -> &'static Regex {
 
 fn file_name_pattern() -> &'static Regex {
     static CELL: OnceLock<Regex> = OnceLock::new();
-    pattern(&CELL, r"^[\p{L}\p{N}_.-]*[\p{L}\p{N}_]\.[A-Za-z][A-Za-z0-9]{0,4}$")
+    pattern(
+        &CELL,
+        r"^[\p{L}\p{N}_.-]*[\p{L}\p{N}_]\.[A-Za-z][A-Za-z0-9]{0,4}$",
+    )
 }
 
 fn trigger_pattern() -> &'static Regex {
@@ -179,7 +182,9 @@ fn file_names(clause: &str, literals: &[TaskLiteral]) -> Vec<String> {
     for word in clause.split_whitespace() {
         let token = word
             .trim_start_matches(['(', '"', '\'', '`', '«', '“'])
-            .trim_end_matches([')', '"', '\'', '`', '»', '”', ',', ';', ':', '!', '?', '。', '，']);
+            .trim_end_matches([
+                ')', '"', '\'', '`', '»', '”', ',', ';', ':', '!', '?', '。', '，',
+            ]);
         let token = token.strip_suffix('.').unwrap_or(token);
         if file_name_pattern().is_match(token)
             && !token.contains('/')
@@ -224,7 +229,9 @@ fn clause_contexts(text: &str) -> Vec<ClauseContext> {
         let clause = unboxed.replace("**", "").trim().to_owned();
         let is_lead = clause.ends_with(':') || clause.ends_with('：');
         out.push(ClauseContext {
-            heading: heading.map(|index| headings[index].1.clone()).unwrap_or_default(),
+            heading: heading
+                .map(|index| headings[index].1.clone())
+                .unwrap_or_default(),
             lead: if is_lead { None } else { lead.clone() },
             clause: clause.clone(),
             start,
@@ -243,75 +250,16 @@ fn workflow_context(text: &str) -> bool {
     mentions("ci_workflow_request", &words) || mentions("workflow-context-noun", &words)
 }
 
-/// The workflow checks a workflow-context clause asks for.
-fn workflow_checks(
-    clause: &str,
-    words: &str,
-    literals: &[TaskLiteral],
-    language: Option<&str>,
-) -> Vec<Value> {
-    let mut checks = Vec::new();
-    let negation = first_role_match(&clause.to_lowercase(), "statement_negation_cue");
-    let paths: Vec<&TaskLiteral> = literals
-        .iter()
-        .filter(|literal| literal.text.contains('/') && !literal.text.contains(char::is_whitespace))
-        .collect();
-    if !paths.is_empty() {
-        let after = |literal: &TaskLiteral| negation.is_some_and(|found| literal.start >= found.0);
-        let included: Vec<&str> = paths.iter().filter(|literal| !after(literal)).map(|literal| relative(&literal.text)).collect();
-        let excluded: Vec<&str> = paths.iter().filter(|literal| after(literal)).map(|literal| relative(&literal.text)).collect();
-        return vec![json!({ "check": "workflow_path", "included": included, "excluded": excluded })];
-    }
-    if negation.is_none() {
-        let pairs: Vec<(String, String)> = template("workflow-trigger-events")
-            .and_then(|source| serde_json::from_str(&source).ok())
-            .unwrap_or_default();
-        let events: Vec<&str> = pairs
-            .iter()
-            .filter(|(role, _)| mentions(role, words))
-            .map(|(_, event)| event.as_str())
-            .collect();
-        if !events.is_empty() {
-            checks.push(json!({ "check": "workflow_triggers", "events": events }));
-        }
-    }
-    if mentions("workflow-execution-verb", words) {
-        checks.push(json!({ "check": "workflow_runs_program" }));
-    }
-    if evidenced("print_stdout", words) || mentions("output_obligation_verb", words) {
-        let lines: Vec<&str> = literals
-            .iter()
-            .filter(|literal| !literal.escaped)
-            .map(|literal| literal.text.as_str())
-            .collect();
-        let lines = if lines.is_empty() { Value::Null } else { json!(lines) };
-        checks.push(json!({ "check": "workflow_verifies_output", "lines": lines }));
-    }
-    if mentions("workflow-status-obligation", words) {
-        checks.push(json!({ "check": "workflow_status" }));
-    }
-    if mentions("ci_badge_obligation", words) {
-        checks.push(json!({ "check": "workflow_badge" }));
-    }
-    if mentions("file_naming_obligation", words) {
-        let names = file_names(clause, literals);
-        if !names.is_empty() {
-            checks.push(json!({ "check": "workflow_file_name", "names": names }));
-        }
-    }
-    if let Some(language) = language
-        && requested_in(clause).as_deref() == Some(language)
-    {
-        checks.push(json!({ "check": "workflow_runtime", "language": language }));
-    }
-    if checks.is_empty() {
-        checks.push(json!({ "check": "workflow_exists" }));
-    }
-    checks
-}
+#[path = "task_acceptance/workflow_checks.rs"]
+mod workflow_checks;
+use workflow_checks::workflow_checks;
 
 /// What one clause asks of a candidate.
-fn clause_checks(context: &ClauseContext, language: Option<&str>, lead_illustrative: bool) -> Vec<Value> {
+fn clause_checks(
+    context: &ClauseContext,
+    language: Option<&str>,
+    lead_illustrative: bool,
+) -> Vec<Value> {
     let clause = context.clause.as_str();
     if context.is_lead {
         return vec![json!({ "check": "inapplicable", "reason": "lead_clause" })];
@@ -328,7 +276,8 @@ fn clause_checks(context: &ClauseContext, language: Option<&str>, lead_illustrat
     {
         checks.extend(workflow_checks(clause, &words, &literals, language));
     } else {
-        let output = evidenced("print_stdout", &words) || mentions("output_obligation_verb", &words);
+        let output =
+            evidenced("print_stdout", &words) || mentions("output_obligation_verb", &words);
         if output {
             checks.push(output_check(clause, &literals));
         }
@@ -340,14 +289,18 @@ fn clause_checks(context: &ClauseContext, language: Option<&str>, lead_illustrat
             checks.push(json!({ "check": "comments" }));
         }
         if mentions("program-file-obligation", &words)
-            || (!output && mentions("coding_request_verb", &words) && requested_in(clause).is_some())
+            || (!output
+                && mentions("coding_request_verb", &words)
+                && requested_in(clause).is_some())
         {
             checks.push(json!({ "check": "program_file" }));
         }
     }
     // A named example settles the judgment it illustrates (`a meaningful name like ci.yml`).
     if mentions("judgment-obligation", &words)
-        && !checks.iter().any(|check| check["check"] == "workflow_file_name")
+        && !checks
+            .iter()
+            .any(|check| check["check"] == "workflow_file_name")
     {
         checks.push(json!({ "check": "judgment" }));
     }
@@ -373,7 +326,9 @@ fn output_check(clause: &str, literals: &[TaskLiteral]) -> Value {
         .iter()
         .enumerate()
         .map(|(index, literal)| {
-            let next = literals.get(index + 1).map_or(clause.len(), |next| next.start);
+            let next = literals
+                .get(index + 1)
+                .map_or(clause.len(), |next| next.start);
             let count = explicit_count(clause.get(literal.end..next).unwrap_or(""));
             vec![literal.text.clone(); count]
         })
@@ -411,7 +366,10 @@ fn merged_lines(groups: &[Vec<String>]) -> Vec<String> {
 fn task_output(outputs: &[&Value]) -> Value {
     let mut statements: Vec<Value> = Vec::new();
     for statement in outputs.iter().filter_map(|check| check.get("statement")) {
-        let otherwise = statement["otherwise"].as_array().cloned().unwrap_or_default();
+        let otherwise = statement["otherwise"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default();
         if statement["continues"] == true {
             if let Some(last) = statements.last_mut()
                 && let Some(branch) = last["otherwise"].as_array_mut()
@@ -467,7 +425,11 @@ pub fn specify_task(text: &str) -> Value {
         .iter()
         .flat_map(|clause| clause["checks"].as_array().map_or(&[][..], Vec::as_slice))
         .collect();
-    let outputs: Vec<&Value> = checks.iter().copied().filter(|check| check["check"] == "output").collect();
+    let outputs: Vec<&Value> = checks
+        .iter()
+        .copied()
+        .filter(|check| check["check"] == "output")
+        .collect();
     let output = task_output(&outputs);
     let pick = |name: &str, field: &str| -> BTreeSet<String> {
         checks
@@ -512,7 +474,10 @@ fn clean(word: &str) -> String {
 #[must_use]
 pub fn workflow_events(source: &str) -> Vec<String> {
     let lines: Vec<&str> = source.split('\n').collect();
-    let Some(index) = lines.iter().position(|line| trigger_pattern().is_match(line)) else {
+    let Some(index) = lines
+        .iter()
+        .position(|line| trigger_pattern().is_match(line))
+    else {
         return Vec::new();
     };
     let inline = trigger_pattern()
@@ -522,7 +487,11 @@ pub fn workflow_events(source: &str) -> Vec<String> {
     let inline = inline.split('#').next().unwrap_or("").trim();
     if let Some(list) = inline.strip_prefix('[') {
         let list = list.strip_suffix(']').unwrap_or(list);
-        return list.split(',').map(clean).filter(|word| !word.is_empty()).collect();
+        return list
+            .split(',')
+            .map(clean)
+            .filter(|word| !word.is_empty())
+            .collect();
     }
     if !inline.is_empty() {
         return vec![clean(inline)];
@@ -576,7 +545,11 @@ fn comment_lines(source: &str, prefix: &str) -> (Vec<String>, Vec<String>) {
 fn observed_lines(observations: &[Value], inputs: &Value, expected: &[String]) -> Option<bool> {
     let empty = json!([]);
     let observation = observations.iter().find(|candidate| {
-        candidate.get("args").filter(|args| !args.is_null()).unwrap_or(&empty) == inputs
+        candidate
+            .get("args")
+            .filter(|args| !args.is_null())
+            .unwrap_or(&empty)
+            == inputs
     })?;
     let lines = output_lines(observation["stdout"].as_str().unwrap_or(""));
     let compared = if observation["tail"] == true {
@@ -598,7 +571,9 @@ fn check_output(specification: &Value, candidate: &Value) -> Verdict {
     if let Some(gap) = output.get("gap") {
         return verdict("unresolved", gap.as_str().unwrap_or("unread"));
     }
-    let observations = candidate["observations"].as_array().map_or(&[][..], Vec::as_slice);
+    let observations = candidate["observations"]
+        .as_array()
+        .map_or(&[][..], Vec::as_slice);
     if let Some(table) = output.get("table") {
         for row in table["rows"].as_array().map_or(&[][..], Vec::as_slice) {
             match observed_lines(observations, &row["args"], &strings(&row["lines"])) {
@@ -628,7 +603,12 @@ fn candidate_files(candidate: &Value) -> Vec<CandidateFile<'_>> {
         .as_array()
         .map_or(&[][..], Vec::as_slice)
         .iter()
-        .map(|file| (file["path"].as_str().unwrap_or(""), file["source"].as_str().unwrap_or("")))
+        .map(|file| {
+            (
+                file["path"].as_str().unwrap_or(""),
+                file["source"].as_str().unwrap_or(""),
+            )
+        })
         .collect()
 }
 
@@ -709,7 +689,9 @@ fn check_workflow(
         .iter()
         .copied()
         .filter(|(path, source)| {
-            std::path::Path::new(path).extension().is_some_and(|extension| extension == "yml" || extension == "yaml")
+            std::path::Path::new(path)
+                .extension()
+                .is_some_and(|extension| extension == "yml" || extension == "yaml")
                 && jobs_pattern().is_match(source)
         })
         .collect();
@@ -717,7 +699,9 @@ fn check_workflow(
     if kind == "workflow_badge" {
         let badge = files.iter().any(|(path, source)| {
             document_pattern().is_match(path)
-                && workflows.iter().any(|(workflow, _)| source.contains(basename(workflow)))
+                && workflows
+                    .iter()
+                    .any(|(workflow, _)| source.contains(basename(workflow)))
         });
         return if badge {
             verdict("discharged", "badge_present")
@@ -764,7 +748,9 @@ fn check_workflow(
                 .iter()
                 .flat_map(|(_, source)| workflow_events(source))
                 .collect();
-            let all = strings(&check["events"]).iter().all(|event| events.contains(event));
+            let all = strings(&check["events"])
+                .iter()
+                .all(|event| events.contains(event));
             outcome(all, "workflow_triggers_match", "workflow_trigger_missing")
         }
         "workflow_runs_program" => {
@@ -773,7 +759,11 @@ fn check_workflow(
             };
             let text = workflow_text(files, &workflows);
             let runs = text.contains(basename(path)) || text.contains(stem(path));
-            outcome(runs, "workflow_runs_program", "workflow_does_not_run_program")
+            outcome(
+                runs,
+                "workflow_runs_program",
+                "workflow_does_not_run_program",
+            )
         }
         "workflow_verifies_output" => {
             let lines = if check["lines"].is_null() {
@@ -786,11 +776,18 @@ fn check_workflow(
             }
             let text = workflow_text(files, &workflows);
             let verifies = lines.iter().all(|line| text.contains(line.as_str()));
-            outcome(verifies, "workflow_verifies_output", "workflow_does_not_verify_output")
+            outcome(
+                verifies,
+                "workflow_verifies_output",
+                "workflow_does_not_verify_output",
+            )
         }
         "workflow_file_name" => {
             let names = strings(&check["names"]);
-            if paths.iter().any(|path| names.iter().any(|name| name == basename(path))) {
+            if paths
+                .iter()
+                .any(|path| names.iter().any(|name| name == basename(path)))
+            {
                 verdict("discharged", "workflow_file_named")
             } else {
                 verdict("unresolved", JUDGMENT)
@@ -801,7 +798,11 @@ fn check_workflow(
             let text = workflow_text(files, &workflows).to_lowercase();
             let named = program_language_by_slug(slug)
                 .is_some_and(|language| text.contains(&language.name.to_lowercase()));
-            outcome(text.contains(slug) || named, "workflow_runtime_present", "workflow_runtime_missing")
+            outcome(
+                text.contains(slug) || named,
+                "workflow_runtime_present",
+                "workflow_runtime_missing",
+            )
         }
         _ => verdict("discharged", "workflow_present"),
     }
@@ -840,7 +841,12 @@ pub fn check_task(specification: &Value, candidate: &Value) -> Value {
             })
         })
         .collect();
-    let count = |name: &str| verdicts.iter().filter(|entry| entry["verdict"] == name).count();
+    let count = |name: &str| {
+        verdicts
+            .iter()
+            .filter(|entry| entry["verdict"] == name)
+            .count()
+    };
     let complete = !verdicts.iter().any(|entry| {
         entry["required"] == true
             && (entry["verdict"] == "contradicted"
@@ -856,75 +862,6 @@ pub fn check_task(specification: &Value, candidate: &Value) -> Value {
     })
 }
 
-/// The verdict lines a finished recipe's answer carries, or an empty string
-/// when every clause of `objective` is discharged or inapplicable. The
-/// candidate is the recipe's files and the last non-empty verification
-/// output, compared at its tail.
-#[must_use]
-#[allow(clippy::literal_string_with_formatting_args)]
-pub fn acceptance_report(objective: &str, recipe: &ExecutionRecipe, outputs: &[String]) -> String {
-    let specification = specify_task(objective);
-    let stdout = outputs
-        .iter()
-        .rev()
-        .find(|output| !output.trim().is_empty())
-        .map_or("", String::as_str);
-    let mut files = vec![json!({ "path": recipe.path, "source": recipe.source })];
-    files.extend(
-        recipe
-            .supporting_files
-            .iter()
-            .map(|file| json!({ "path": file.path, "source": file.source })),
-    );
-    let report = check_task(
-        &specification,
-        &json!({
-            "task_identity": specification["task_identity"],
-            "program_path": recipe.path,
-            "files": files,
-            "observations": [{ "args": [], "stdout": stdout, "tail": true }],
-        }),
-    );
-    let open: Vec<&Value> = report["verdicts"]
-        .as_array()
-        .map_or(&[][..], Vec::as_slice)
-        .iter()
-        .filter(|entry| entry["verdict"] != "discharged" && entry["verdict"] != "inapplicable")
-        .collect();
-    // A clause outside the supported subset is a reader gap, not evidence against
-    // the candidate: the report is appended only when some verdict is actionable
-    // (contradicted, or unresolved for want of an observation).
-    let actionable = open.iter().any(|entry| {
-        !UNREAD.contains(&entry["justification"].as_str().unwrap_or(""))
-    });
-    if !actionable {
-        return String::new();
-    }
-    let counts: Vec<(String, String)> = ["discharged", "contradicted", "unresolved", "inapplicable"]
-        .iter()
-        .map(|name| (format!("{{{name}}}"), report[*name].to_string()))
-        .collect();
-    let count_pairs: Vec<(&str, &str)> = counts.iter().map(|(key, value)| (key.as_str(), value.as_str())).collect();
-    let mut lines = vec![fill("task-acceptance-heading", &count_pairs)];
-    for entry in open {
-        let span = &entry["span"];
-        let (start, end) = (span[0].to_string(), span[1].to_string());
-        lines.push(fill(
-            "task-acceptance-line",
-            &[
-                ("{verdict}", entry["verdict"].as_str().unwrap_or("")),
-                ("{justification}", entry["justification"].as_str().unwrap_or("")),
-                ("{start}", &start),
-                ("{end}", &end),
-                ("{clause}", &entry["clause"].as_str().unwrap_or("").replace('\n', " ")),
-            ],
-        ));
-    }
-    let closing = if report["complete"] == true {
-        "task-acceptance-review"
-    } else {
-        "task-acceptance-incomplete"
-    };
-    lines.push(fill(closing, &[]));
-    lines.join("\n")
-}
+#[path = "task_acceptance/reports.rs"]
+mod reports;
+pub use reports::acceptance_report;

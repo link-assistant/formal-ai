@@ -1,28 +1,13 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { PRIMITIVES } from "./issue-707-reference.mjs";
 
 const [expectedPath, evidenceDir] = process.argv.slice(2);
 assert.ok(
   expectedPath && evidenceDir,
   "usage: verify_issue_707_generalization.mjs EXPECTED_JSONL EVIDENCE_DIR",
 );
-
-/** Enum variant names as the plan serializes them, to the advertised tool names. */
-const PRIMITIVES = {
-  FsRead: "fs.read",
-  FsWrite: "fs.write",
-  FsList: "fs.list",
-  FsMove: "fs.move",
-  ShellRun: "shell.run",
-  HttpFetch: "http.fetch",
-  HttpPost: "http.post",
-  DomQuery: "dom.query",
-  DomExtract: "dom.extract",
-  ArchivePack: "archive.pack",
-  ArchiveUnpack: "archive.unpack",
-  ProcessStatus: "process.status",
-};
 
 function readEvents(file) {
   return fs
@@ -49,7 +34,7 @@ const cases = readEvents(expectedPath).map((entry) => ({
 assert.ok(cases.length >= 12, "expected at least twelve held-out cases");
 for (const entry of cases) {
   assert.ok(
-    entry.plan_id.startsWith("synthesized-"),
+    (entry.learned_plan_id ?? entry.plan_id).startsWith("synthesized-"),
     `${entry.case_id} must be synthesized, not recalled`,
   );
 }

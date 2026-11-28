@@ -1,0 +1,678 @@
+{
+  "source": "unchanged maintained renderers over complete merged committed projections; no retranslation or projection replacement",
+  "parentCommits": [
+    "a748854197dcc693033610acc6589f10b1c6d525",
+    "30ff2d8a81cf8f21f679c2826851b5b413c34b7a"
+  ],
+  "ratchetAgainstBothParents": true,
+  "modules": 164,
+  "totals": {
+    "modules": 164,
+    "translated_items": 342,
+    "workaround_items": 38,
+    "inferred_signatures": 3,
+    "carried_items": 2656,
+    "translated_modules": 114,
+    "fully_translated_modules": 1,
+    "refused_modules": 50
+  },
+  "projections": [
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/algorithm_discovery.rs",
+      "sha256": "d4fb94709dc2a997b01f3fe405d1d1e53a89524301641c65e499a2deaabab0b9"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/associative_persistence.rs",
+      "sha256": "4a8112ec3c851d9aa813d9b2cfd075aaecb0766cc72167f09bc0fe00ea3faf0a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/calculation.rs",
+      "sha256": "8cf29ee66b5119e126c607f4e01e90d4e47fda3d90796f618b40deecd52adaab"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/capability_routing.rs",
+      "sha256": "5621d861073c6998c68104ffd7ae3e934246916e8e98f4b1072746c66dab6ced"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/change_request.rs",
+      "sha256": "d66cb1f1887c34f12de39dda441269d9dcde4cbbf4a258585d07eb40e1192f30"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/client_contract_learning.rs",
+      "sha256": "55a19bedb4b3c360689dc08f00177fbfd0a9c51a27a9b2b8d14e5ab05d7ce716"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/cnl_grammar.rs",
+      "sha256": "24b608029903a54fdf8e0d5cbc34b2c07c4139b96e3270515513141a010561be"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/cnl_output.rs",
+      "sha256": "01fc62c5905d41a8614565221519f1ada9b0479c9fe360866028c669d6bf76f1"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/coding_catalog.rs",
+      "sha256": "89984c06e538039906f2dc1c9ed40a92da5f80cbf6480cf4881344636128bb9f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/coding_cjk.rs",
+      "sha256": "eea4461641eb35745ced720e069470c34f39c86a673704fa548babca642ad07b"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/coding_program_contract.rs",
+      "sha256": "2a1da5451812a4695e9ae0d191e789fe0ccfa9ee69ae1bf46c7a04d5a26a61cd"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/command_output_contract.rs",
+      "sha256": "c786e2f4a0bea1264d70027746dd55e94bb92c168a9738139404e414dfbea884"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/computer_use.rs",
+      "sha256": "9b63db1995f3646696aa48ed68f61fb58c535e197849de37b59aaff711fbbead"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/computer_use_induction.rs",
+      "sha256": "a0fc6ff7499f251acdf0c8742db6f9e45c4ed85abd1311f4e1ecb766e1c3b405"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/computer_use_lexicon.rs",
+      "sha256": "295b55f9fb7c68d2110c924fd63c3b17030c4b192f3525dfc55cd360c9f7c169"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/computer_use_planner.rs",
+      "sha256": "4a53b9d0ed4218344c27fda28d3b5a8ed0cf5719099e67326f487e88503aaf05"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/computer_use_seed.rs",
+      "sha256": "d22439977fed8b499da1ea261e60beba15931fe2e27350edb5cbb71cd4b82061"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/computer_use_synthesis.rs",
+      "sha256": "8efd9a766a045f5dd5e0a12ee0686cfedb0d1c14396293d13f362dd0402164e0"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/concept_lookup.rs",
+      "sha256": "bbc3ac137e9f159c6b2c4eba437d59c50b1ed4fd3b29cc7eff025002e57a2c1f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/concepts_lookup.rs",
+      "sha256": "5cb4f4f38312153613a707ad01995f17d6107b1dfed061e0feb56f07f655dd04"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/concise_dependency_restatement.rs",
+      "sha256": "3aa9d0358394b4aaba9772ada584546c7ee78b60826fc2da6ccd04a82f288ef8"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/conversation_summary.rs",
+      "sha256": "37256fcf40eed9bc71888bd99657dc9be644d9d07b9172be14f82e284636061a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/dependency_summarization.rs",
+      "sha256": "9144d1eb1af7d979102ce7fcdebc370c7c32b787a095b180e57b45f6ddd085da"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/derivation.rs",
+      "sha256": "9c29629180ddde414eb2f893504fb58463f4df696e39e92e23a9dc79c512c31b"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/dialog_log.rs",
+      "sha256": "cff7706387ab38383eb323cea23dba781a30c003855687ef62bfc5237625d650"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/dialogue_formalization.rs",
+      "sha256": "73f3a0960b66b2bea90160efbba8ded65c4a3c5345a8798e437c96074194bb4e"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/discovery_production.rs",
+      "sha256": "de771250ffe60e99807beddb0b0507bc214e81c56949d748d03e9ebcac96bb20"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/engine.rs",
+      "sha256": "15f785877395f3f53e1f896ad6012a9d9b6055c0492b85c572ee2ea74ffa055c"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/engine_answer.rs",
+      "sha256": "b2025ad39e3f9ce72fe6b48e6ee3eba5e107cecd2151086d74bb11623bfcadc2"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/engine_stable_identifier.rs",
+      "sha256": "6f13c1ab8accf4fc991a30184f11a10b8671a986e6c4da5454c5cfd23cf0497e"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/es_tokenizer.rs",
+      "sha256": "2addc53fa794c8dddafff5b2dd91b300aa48a5ad67623f73f3e1b976593e17c5"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/event_log.rs",
+      "sha256": "2b043889c9a0e9fe2cb6d927f3f55e30ffac29e5a82523968bbb26471d8a5bc4"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/execution_evidence.rs",
+      "sha256": "4f35f79cc59d07f487bc335065bc38e490963c2b0da50e190323de097f217ad0"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/fact_derivation.rs",
+      "sha256": "5971d85bc61e2effe9580906d47d4227726a7af123f29a11a6bc80d9b46b165c"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/failure_reporting.rs",
+      "sha256": "aaf14abf987b1fd8f7372d7d602227b93de007f1b945df066de253d954879f94"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/formalization_concept_links.rs",
+      "sha256": "92c4633a0a307da821745d8b357361e34338a885b59dfe0b5180a941629a3de7"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/formalization_concepts.rs",
+      "sha256": "6be7fa93a2aaf60c5b2b3602e0455df524cdea8dde38ab998a50a1da3faa92de"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/formalization_grammar.rs",
+      "sha256": "82a628cd55f02f9eb4d29e50b486caf62b8913445d129082a2c245c4eeb37cce"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/formalization_needs.rs",
+      "sha256": "1556885964f20dcd8617d71a2ef71f4e1ab3e5f2d13bf1e42b9d89ff7cb56ec2"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/formalization_segment.rs",
+      "sha256": "d55f857845c0a342fdfec609784ce2dae4a6d533f0ad99e530a5051d4d4c3269"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/formalization_structures.rs",
+      "sha256": "5a662c3bce24d97247f5fd5ade2831195c4c3b5aa374692f0668330056c9cfb9"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/history_context.rs",
+      "sha256": "bcba0aebcc9e0840e9b7b493014bb17aa3de5f52b626b2d4c5a3264a97625e7a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/history_github.rs",
+      "sha256": "11d5493e9fd7e4ec9b245783ac7cfd2859b91124a4e4c20a81df83671ffc6c00"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/history_lineage.rs",
+      "sha256": "df95c8a3aa6eca2e66528b2a95a2d2fd4da614a57c50fbd065d9f5195d7f4357"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/history_repository_qa.rs",
+      "sha256": "7e1db22c96856b8d9f38bdd763b9a94f5bca58426cf6f355062d65af78b79f00"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/history_store.rs",
+      "sha256": "b449c0e145219ecf90ab5371a1d623a2d9d6d494c36786b628ab259ffc50c342"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/implementation_language.rs",
+      "sha256": "33beb8807a1a61d74cfd44a0590582b1c0de235810b367c9c9d1230848e8f264"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/intent_formalization.rs",
+      "sha256": "5717f5672417abe65666ccb82638b3f3b1c8dbf515ada32fe9fc3a67aab60d32"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/intent_formalization_obligations.rs",
+      "sha256": "d60380f16d411a6ff6106bccfa169eeba3ae0e6a18ce3e438ec61dea29393cb3"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/intent_formalization_requirements.rs",
+      "sha256": "6cc5b354edc591e7f587771c25762b66e97999cf8e9b0152184517786f3aac74"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/issue_report.rs",
+      "sha256": "85a6b3d9101b77f3533a179240e12be2c5e519c25375e1b8ce80c77dbddfc14f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/issue_report_title.rs",
+      "sha256": "afd68a0ad3e3de123d9ef8bf204a0cc38d3bb5a345764cfa1aa893352ff8c88f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/language.rs",
+      "sha256": "42bca3497bd4cc5227d45a768c1d3bbb707c6ef0863a22ad37637f98218528bd"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/least_action.rs",
+      "sha256": "c7a511e3d3e28d63175919438a10c9197d93c53c3f839a92ef11b2b93b56a848"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/links_format.rs",
+      "sha256": "426010806b487b86fc830d679072f887cff85a38a0bf8521a5367d3fa21a9c31"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/links_substitution_query.rs",
+      "sha256": "dc5be2af59d8d1515d70ffbc2d965a3d4b655896a8c85a01ca649bfdb473b317"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/literal_authoring_contract.rs",
+      "sha256": "06d910b6c45e2a34a414cf94e1bd7e384678e7b792fcbc5c0d9b29c8c9571ece"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/literal_body_ownership.rs",
+      "sha256": "c172aca5dd1035bfdb3ff7036471ded7172ffa29112047a18bcd5053b23937b6"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/literal_content.rs",
+      "sha256": "351c8f8374e129892cdba2b1e567faccf8f1e3e84e71f64340c20ddbcfebe381"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/literal_instruction_view.rs",
+      "sha256": "15f663d72ce0fd5045a702491bfefd4720fcbd549f646ca26c40b359e2cb9948"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/memory.rs",
+      "sha256": "6bd2fe09c6bca6308ad91d7f5dd00c44480b2976afcee7f7123463d2eef80510"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/meta_core.rs",
+      "sha256": "0504bff220d4ce6ed876b74a99e79c1310c4684c924020055dc90c6854043a15"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/meta_executor.rs",
+      "sha256": "2e69f6f3d455d7e3124dac79c3c6c535f4415bbb6e7114e21760f3942ae7a593"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/meta_frame.rs",
+      "sha256": "e37c4416bda3837657079e5e925f2534fa395463e66c96069db34523997029bb"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/meta_translate.rs",
+      "sha256": "31358520ad9b381b9ae6ba9a8a8a6b3de9996a5e01b78969782004d30ebb9b94"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/method_registry.rs",
+      "sha256": "0587fe13957d33d917f7fbc60ce840609007da36d5d142ffcf2118361a7a310a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/needs.rs",
+      "sha256": "a79a30fedd68318a64a4fcbc8f46667e9d31a47655e341b9fdbe4540630f95d7"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/normal_markov.rs",
+      "sha256": "2bfc4feeb3188ab0cdc3e17854af89bdc572e9f828d7a4e7b668fbe3411fc788"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/normalization_cache.rs",
+      "sha256": "23574d3f0034389ce6fea2a81a3d05c4b9f0450bd74e7c4add233df392e0ddfe"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/obligation_ledger.rs",
+      "sha256": "63fd10f54ad83b7a6b0158f74a9fd42a1a7a1fc087a1f4928fbe5d6fa740029a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/operation_owner.rs",
+      "sha256": "a8c1fa2f8cf4c9793f00c1e83d56783b15702a2d5c2a9b66294b70aa742f0b24"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_analysis.rs",
+      "sha256": "3882f34908264b6b341d308da8e2174256efe9b72e992dd244d173d6d8ecf0f5"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_attribution.rs",
+      "sha256": "899688b99c2935aa77b7be87e02e7521f99f04061ba9c435b9fd8f8d410b6bca"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_dispatch.rs",
+      "sha256": "113c039e1cd094cad964d4e2c8fa3b5831f884cf2fe8e3fac8ad89e4fb1fa03f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_dispatch_error.rs",
+      "sha256": "142a0d62d1ef9b34c8cbd11cf73cc04e7222d731e071431085b310cf865d5601"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_incremental.rs",
+      "sha256": "a4b6cd2f2abdb7733b119bf413aa22ac8344dad91c7c9bc7ab1726398fad1010"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_json_stream.rs",
+      "sha256": "17283596dc864c7b5b5bf7c5849264b1de7f561c0c1797c167bfdd9b2f4a9217"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_permission.rs",
+      "sha256": "713fef7115d3c2cf69b7549536129c434596cb47644f3627b6c4261a8fea396c"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_replay.rs",
+      "sha256": "8a6cb621192c77030dfab2881d8b5a92450bbbf2a4e85837bb2cc619e251260f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_runner.rs",
+      "sha256": "ac67dc47adc93a5bf2c4ce18a1760f411261d8c6b50fb7965ce78c884f048b29"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_session_file.rs",
+      "sha256": "fa59bc4c6df42d3d2a1435a86c0c28d2116627b0034fa226e3f0e29df34e1dea"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/orchestration_workspace.rs",
+      "sha256": "2b608c1a07440ed9f6c339e08a802e568c2bc1f838403bdcde779d34002709f0"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/page_formalization.rs",
+      "sha256": "3249ea95d8cec0148ee5c6994c9b61b45d654790079dbfe9d6801584c9c7a6da"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/probability.rs",
+      "sha256": "c66df1a342033f7e5a6dd79ee0ce05aea4d0a7119754182aedbcf400e09dc192"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/proposition_structure.rs",
+      "sha256": "7011da29587c8f33d29048ff7cec23208fc713b5a37018f92667cd2b6b91cc91"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/protocol_recording.rs",
+      "sha256": "f107a218fb554dd0e7aa9cbc35410b2afb09ce798fa5dae88ec2294a50bbc1ae"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/protocol_responses.rs",
+      "sha256": "fbfcead0f116a2fac69ec9183a00c677cbb57cf106a66a269a66ca5cdc62a695"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/protocol_responses_apply_patch.rs",
+      "sha256": "1e28d01c12790ae26f5fa79ba25c13bca6319272685892246d3e48d7167df17e"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/quoted_segments.rs",
+      "sha256": "7ade86b472cacf6023a2cd1d441a301b28f133b20cfe1c606a8282a8efa16150"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/rebuild_plan.rs",
+      "sha256": "cb1eb8565cdad0b68582032bded9d74484481b433e73b9cc902e4fb97c312b14"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/recursive_execution.rs",
+      "sha256": "cee6cbe1a6e5c413a60601d462fee2d91f6897db908c7de7b39c865d4fc7af4c"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/relative_meta_logic.rs",
+      "sha256": "d3a7107ef2ac1bef6ef84841ff6cf65432516943c13531b020c4f5b80c5caf90"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/repository_workspace.rs",
+      "sha256": "58a0eac6f41dbe31fbcfd9fc03c58a57522dac0225d783736bbfe05e2c054dfd"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/repository_workspace_authoring.rs",
+      "sha256": "16026606ed80d5e7e2fd4da47bca76425be0552913c76ef6130631f7ffc3c876"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/repository_workspace_runner.rs",
+      "sha256": "5ed84264f18f04289a839b6505eb29a5e065fcd3fdbe48316d40a3b0ef55f4fd"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/repository_workspace_stages.rs",
+      "sha256": "cdb975b92da74206a392d284ada05623d193d90e769c8acb1bc9498119e845f3"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/requirement_extraction.rs",
+      "sha256": "ead3c4b83d2cb9cf2ddc39be61aecde3c8125bbf99198a084a512092ec11839a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/round_trip_translation.rs",
+      "sha256": "2bf98adf93416e2b2e1e8ca4fab26529d9fded3d85d83a3e2b87cb3f18feeda2"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/rule_interpreter.rs",
+      "sha256": "9925ffdbb62351c6835ea949175d20b664b7e12d5248b3ebb497a832a4191483"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/rust_ast_census.rs",
+      "sha256": "83ae6280a11a3cd2f946cf962c375a08582cb4993749e7aa1d8d08d93314cc4d"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/rust_constant_rename.rs",
+      "sha256": "5017635f5307fdc3d265f9ec3cca2c0653c10caf429671f3d97f85fd93433888"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/rust_str.rs",
+      "sha256": "3fd328d048ef5aee6671482769a83b202494d198781cff83a5a2d88ce2c1a8e0"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed.rs",
+      "sha256": "e7f5879de326cd48b6ed1a38c9154853bd7402899928ad673455e6959574d731"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_agent_info.rs",
+      "sha256": "b8d1624cadff55a98a94b23eec3df36fc162dec2bfb7e51a21414264ef5fb746"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_agentic_tool_capabilities.rs",
+      "sha256": "62636f424829cc9840e875ce939496c0a19f07aaa27a28c7106c22b0827255d7"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_caller_context.rs",
+      "sha256": "e9bbc762f94e93de0ab7ad50486c69961cb77fe841f0602f561b2413fc2c06a9"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_client_integrations.rs",
+      "sha256": "e5c303c45cd8e499de3e5207a51f13e17b8af74078b3b3662af9382587986e14"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_concepts.rs",
+      "sha256": "73109623428bd48c2f94f07755c68754b515d365774987861cd4e25817058066"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_learning_sources.rs",
+      "sha256": "db12847ea9df8883c352fdb118fc95c86fc34e238384a69134252db6bde8ce37"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_meanings.rs",
+      "sha256": "c24c3c5f6f4cd95576b4004e589aa259491481164566b495b4ec655b9fe96f58"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_operation_vocabulary.rs",
+      "sha256": "f8e2ea62ced8a3435929fa518be82426f449aedba9ce394c4aebc2919e79908a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_parser.rs",
+      "sha256": "31f45e689f0e9e466408c409e10188bb696ef2207b2a8fbd228a2ad9f02dd2ab"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_reports.rs",
+      "sha256": "e75429d34cc63f3c8000c8f869aac56465b3bfe8d0516c7b163bc91d43803933"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_shell_intents.rs",
+      "sha256": "842fac61c6405e27e62efbf5f9d95ab5c33564b3c5b3a9a1a3ed20db649cf737"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/seed_terminal_commands.rs",
+      "sha256": "1627fbb9ad92cd96f178f379dc45da98711b7da8070ad78709972d570336337b"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/selection_heuristics_triz.rs",
+      "sha256": "af1580ce5574b2db34293a13e91ae3d78481fd9d583b2deec2d1f67bf31d9a65"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/self_ast_census.rs",
+      "sha256": "e4eecfa305721d668112ba62904dbf785f10d4e9e9271d1e5460c3d504bcee21"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/self_explanation.rs",
+      "sha256": "5337d4306fd6d667d85575bd79b000b3f297760ad89dfe649734001a2189ba91"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/self_source_links.rs",
+      "sha256": "427c1d82bf42ef5aece66b1de732118ce9ef0a2fb4339852134a581036575758"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/sequences.rs",
+      "sha256": "e127e8bf576a272db9f1ea6afa6d5a8052a504070e224a8a90a33715f2e7729f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/skill_compiler.rs",
+      "sha256": "adee4324ab9a4d36f2341f22aefde1c4d9fbe80ceb6d703adb037373a763c49a"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/skill_procedure.rs",
+      "sha256": "e07d258a7879703f622d67dd4fc4ad825c690276a3ee9e8f5ce754673423bfd0"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/skill_procedure_artifact.rs",
+      "sha256": "abea28fbb25694e585084ff44a475d0d5c8b173f2970df43ceebf5ba5534b8bf"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/solver_event_projection.rs",
+      "sha256": "4ee8a9de04f47a8b19fb560da1f56873e40977acb8b3270f518775df45e2a7b9"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/solver_formalization.rs",
+      "sha256": "cc1ec9523a75843d58f2a819db368aba5021124ae35d1541daa8154721380791"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/solver_handlers_benchmark_prompts.rs",
+      "sha256": "98dba9eca9ee2b5e8e77964f352faa3c143d0016c1de52f572716ee284fd1f44"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/solver_handlers_task_decomposition.rs",
+      "sha256": "0c1ad159e7fd36776ec7fc864a13bdd4366debd0c246d17afcab651aba094225"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/solver_handlers_web_search.rs",
+      "sha256": "40e696413558f5e9ad1272e561462bb6f3da1fdad103795e720acefb39354c6c"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/solver_search.rs",
+      "sha256": "378c9ca57b459a683c7818de51b139d428e565d06a637ded35dbf71760d986ed"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/source_cache.rs",
+      "sha256": "b3ef03a9e6d9baf96da8ea74612217e0c1fecb55899df7c0d118f31e0e97c11b"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/source_fetch.rs",
+      "sha256": "e8f4d0ddb7ae89308985ed55d1224b884f2db20d73100f6042fb0c0e9d483002"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/source_walk.rs",
+      "sha256": "40bb0c5106228eb60b7c6cc5ee3fa67ce6571d049aab43d2e3f7407c52e38bab"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/spelling.rs",
+      "sha256": "5460d0960fdd73750fbb54adfc5fed89ac18b6994826688c87fd17847ba71552"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/statement_relation.rs",
+      "sha256": "435df2c9283fdde902bc1deb488602279524b9d2f349f9acb78ebc8d5736ef56"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/statement_verification.rs",
+      "sha256": "43a0312dda8d47b2ebbb66e4a1ae31905cf53b978cc44764753090f8850ececc"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization.rs",
+      "sha256": "1d62b09913d3eafb8eb6e2edcae2b9bdb8a6742c1cd48986a51ed476fea09e2e"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_dedup.rs",
+      "sha256": "5fc0a26513bfa0ae935c277f36c4c2f14aaa8735eb8459e7ce97b0eb5c9cc6ca"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_dialog.rs",
+      "sha256": "97f96fd65fe9705ada319298f0a3f4e0563a441c9971f3595394ac3d3f4f8801"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_file.rs",
+      "sha256": "c3e8ee01d980e10481dcd227985ca573678165fad39130ed5e50069c74658a2b"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_identifier.rs",
+      "sha256": "0e7f0d5cd97f5f6f231c1d8d5fb5ba8bf7cdc0ab0feb83cdf383c91d0efa46a2"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_importance.rs",
+      "sha256": "6954c87cdd411cc22e45c787ca19d2a3fa8a3b0863bb89ac44dae673eb3cc153"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_markdown.rs",
+      "sha256": "0e92de57e4be48eb5539f89116a1788f1013cd989b5a9d08bf8d6593f545e913"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_meta_language.rs",
+      "sha256": "79bc45bfb4f65874440817d25ec1fed627b80fb4aaffaf62c5647c4b5b7a1a9f"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_recheck.rs",
+      "sha256": "c9f3383ca24ba8163461f9295cd4f034e72dd5f1b02c1341cc8fbbade467c888"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_resource.rs",
+      "sha256": "e987378e9cd2587db4062da1c8847703cbd4eb41d566b87318225c8dfbf004c4"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/summarization_vocabulary.rs",
+      "sha256": "bf45eba7fb2f22f04f0d4ade60cf354b88b1edd894f1a335b09515c189574c2e"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/task_decomposition.rs",
+      "sha256": "aa40098d889f0a28726b1a04a73b923baf3987718425df8ebe89c60a1a8616fe"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/task_decomposition_cues.rs",
+      "sha256": "81883dad681ce332a6f939904e91829217aaf65b15ce63f788cfa7b6db0b6392"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/task_decomposition_stated_task.rs",
+      "sha256": "27897062723554aaebf5a5b99c789281fdd6a6b4fe1b0749c5d217b5c259a072"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/task_decomposition_tree.rs",
+      "sha256": "626a06737e837b19b809067299e08f617da4203c8a6fab7eda4fb3eb059265f4"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/text_formalization.rs",
+      "sha256": "772cc620c0b9c448656d83cc240d1c53e6288b3c6d6fa356b59a12036738e891"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/theorem_claim_binding.rs",
+      "sha256": "ee2a8e5ac7a02cd9b7c7c63eef2dafb6b09d78b6e5781a0ee20e8eef03d6e4d8"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/tool_call_validation.rs",
+      "sha256": "70fc9c7338e466e83969079b10f2f0636e15fc0b1439f1fa2ef8b71ec1710cc2"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/tool_scope.rs",
+      "sha256": "9ef4802a2052e12caf8e287ff3a5048f49a059272d129faf3a376dd25c7c9520"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/translation_formalization.rs",
+      "sha256": "277f2985ae70b6cfff4f2ed2af17c98c841e7c651703e69e2042b07b6cf43926"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/translation_language_markers.rs",
+      "sha256": "07e2bc91a57703f60ddd183e49558f829a2893dde706a9f394b689a58a3df171"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/typed_meaning.rs",
+      "sha256": "6f80bceefd75af9b6fb4fc70445e050aea8d2b8924f5151e017e66687394fb4d"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/unread_structure.rs",
+      "sha256": "cf68689752646c8c9251c14add998562583b912a0ed16e3ce514cdd70e7678b8"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/version_resolution.rs",
+      "sha256": "0f5fefbfcb7019d6a245cd0bd277bb2e3ab3bc44877a2cbffe7e082d16b15224"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/web_engine_core.rs",
+      "sha256": "d23612be6e82886894940829f35bca5878df296c3ceb8170dcbbf301dbf0f9ad"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/workspace_change_learning.rs",
+      "sha256": "c5d21d44ebd2d052d9403697d2bd41422bee0b871ffc6d229c0594e63b7ba4b9"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/worker/formal_ai_worker_meta_composite.rs",
+      "sha256": "b98b9d325a1c1bc0164efa23f9eb317a70da33f50553f73a97ecd5066b774f30"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/worker/formal_ai_worker_meta_reasoner.rs",
+      "sha256": "0d3a9709bf148819968f7097b5dd0cd6d87afe19753ee9a665ba68df95e46ef6"
+    },
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/worker/formal_ai_worker_meta_synthesis.rs",
+      "sha256": "659b593ccb21fb61936fe32c1237342e10a54e5cc70d5e3951952fe46096ff51"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

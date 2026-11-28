@@ -29,9 +29,7 @@ runs:
         file: Dockerfile.slim
         build-args: BINARY_SOURCE=prebuilt
         push: true
-        tags: |
-          ${{ inputs.image }}:slim
-          ${{ inputs.image }}:${{ inputs.version }}-slim
+        tags: ${{ inputs.image }}:candidate-${{ inputs.version }}-${{ github.run_id }}-${{ github.run_attempt }}-slim
         labels: |
           org.opencontainers.image.revision=${{ steps.source.outputs.revision }}
           org.opencontainers.image.version=${{ inputs.version }}
@@ -44,6 +42,7 @@ runs:
         SOURCE_COMMIT: ${{ steps.source.outputs.revision }}
         RELEASE_VERSION: ${{ inputs.version }}
         BINARY_SHA256: ${{ steps.source.outputs.binary-sha256 }}
+        IMAGE_REPOSITORY: ${{ inputs.image }}
       run: |
         set -euo pipefail
         docker pull "$SLIM_IMAGE"
@@ -51,4 +50,10 @@ runs:
         docker run --rm --entrypoint verify-formal-ai-slim "$SLIM_IMAGE"
         bytes=$(docker image inspect "$SLIM_IMAGE" --format '{{.Size}}')
         test "$bytes" -le 2147483648
+        version_tag="$IMAGE_REPOSITORY:$RELEASE_VERSION-slim"
+        slim_tag="$IMAGE_REPOSITORY:slim"
+        docker buildx imagetools create --prefer-index=false --tag "$version_tag" --tag "$slim_tag" "$SLIM_IMAGE"
+        for tag in "$version_tag" "$slim_tag"; do
+          test "$(docker buildx imagetools inspect --format '{{.Manifest.Digest}}' "$tag")" = "${SLIM_IMAGE##*@}"
+        done
         sha256sum slim-image-release-receipt.json > slim-image-release-receipt.json.sha256

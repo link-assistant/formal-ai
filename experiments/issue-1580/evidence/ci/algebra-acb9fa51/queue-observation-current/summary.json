@@ -1,0 +1,251 @@
+{
+  "observedAt": "2026-11-18T12:23:35.245308+00:00",
+  "head": "acb9fa51085c8ba88ff8fae006b45698d355921e",
+  "jobs": [
+    {
+      "name": "Release Preflight",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-18T11:49:08Z",
+      "completed_at": "2026-11-18T11:49:16Z",
+      "runner_name": "GitHub Actions 1000269134",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Fast Linux source and requirement checks",
+      "status": "queued",
+      "conclusion": null,
+      "started_at": "2026-11-18T11:30:24Z",
+      "completed_at": null,
+      "runner_name": "",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Detect Changes",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-18T12:18:53Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": "GitHub Actions 1000269156",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "hive-source-provenance / Hive source event provenance",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-18T11:49:01Z",
+      "completed_at": "2026-11-18T11:49:06Z",
+      "runner_name": "GitHub Actions 1000269133",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Version Modification Check",
+      "status": "queued",
+      "conclusion": null,
+      "started_at": "2026-11-18T11:30:24Z",
+      "completed_at": null,
+      "runner_name": "",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "base / Pin base commit",
+      "status": "queued",
+      "conclusion": null,
+      "started_at": "2026-11-18T11:30:24Z",
+      "completed_at": null,
+      "runner_name": "",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Create Changelog PR",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T11:30:24Z",
+      "completed_at": "2026-11-18T11:30:24Z",
+      "runner_name": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Changelog Fragment Check",
+      "status": "queued",
+      "conclusion": null,
+      "started_at": "2026-11-18T12:19:01Z",
+      "completed_at": null,
+      "runner_name": "",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Secrets Scan",
+      "status": "queued",
+      "conclusion": null,
+      "started_at": "2026-11-18T12:19:01Z",
+      "completed_at": null,
+      "runner_name": "",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "status": "in_progress",
+      "conclusion": null,
+      "started_at": "2026-11-18T12:19:31Z",
+      "completed_at": null,
+      "runner_name": "GitHub Actions 1000269162",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "E2E Tests (local web app)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:01Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [],
+      "run": 44295294921
+    },
+    {
+      "name": "Docker Image Build & Runtime Check",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:02Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "native-response-observations",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:02Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [],
+      "run": 44295294921
+    },
+    {
+      "name": "Build binaries and tests",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:02Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Server parity (JavaScript vs Rust)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:02Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "E2E Tests (agent CLI \u2194 formal-ai)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:02Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [],
+      "run": 44295294921
+    },
+    {
+      "name": "Slim Docker build and runtime",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:02Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [],
+      "run": 44295294921
+    },
+    {
+      "name": "Box Image Projects (${{ matrix.language }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T12:19:02Z",
+      "completed_at": "2026-11-18T12:19:01Z",
+      "runner_name": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294921
+    },
+    {
+      "name": "Cargo audit",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-18T12:13:51Z",
+      "completed_at": "2026-11-18T12:14:22Z",
+      "runner_name": "GitHub Actions 1000269149",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294376
+    },
+    {
+      "name": "Dependency Review",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-18T12:22:25Z",
+      "completed_at": "2026-11-18T12:22:42Z",
+      "runner_name": "GitHub Actions 1000269170",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294376
+    },
+    {
+      "name": "CodeQL (${{ matrix.language }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-11-18T11:30:24Z",
+      "completed_at": "2026-11-18T11:30:23Z",
+      "runner_name": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "run": 44295294376
+    }
+  ],
+  "allRunsComplete": false
+}

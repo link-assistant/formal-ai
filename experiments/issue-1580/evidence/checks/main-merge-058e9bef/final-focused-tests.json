@@ -1,0 +1,133 @@
+{
+  "state": "complete",
+  "rows": [
+    {
+      "file": "rust/tests/web/issue-1592-server-retention.test.mjs",
+      "exitCode": 0,
+      "seconds": 32.462,
+      "rawBytes": 690,
+      "rawLines": 14,
+      "rawSha256": "b1e43f7cc0a69fc3736579827f26d92b313f709bbe789deb93fb300e0099fe2d",
+      "log": "issue-1592-server-retention.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1174-text-transform-parity.test.mjs",
+      "exitCode": 0,
+      "seconds": 9.951,
+      "rawBytes": 1086,
+      "rawLines": 22,
+      "rawSha256": "8998e3dde254670821fcc0be02372b3e1034d057ce985ed92a01c2ccd3863b42",
+      "log": "issue-1174-text-transform-parity.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1168-workflow-render-parity.test.mjs",
+      "exitCode": 0,
+      "seconds": 6.844,
+      "rawBytes": 297,
+      "rawLines": 10,
+      "rawSha256": "ee6d7a7ec8f0280fc2ccd2ac888f610f8ebfd494eb4fe787148cb4a52dc7aa9c",
+      "log": "issue-1168-workflow-render-parity.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1168-source-cache.test.mjs",
+      "exitCode": 0,
+      "seconds": 4.267,
+      "rawBytes": 676,
+      "rawLines": 14,
+      "rawSha256": "4cf128ab0d48ae353651a87ccd64d405dad5307879339140b5c59676a47d76d9",
+      "log": "issue-1168-source-cache.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1580-client-output-constraints.test.mjs",
+      "exitCode": 0,
+      "seconds": 11.3,
+      "rawBytes": 693,
+      "rawLines": 14,
+      "rawSha256": "57dfdd81c372632271a616a87062a3ae48b48d1c3132d69c6c5292b65d446620",
+      "log": "issue-1580-client-output-constraints.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1582-defaults.test.mjs",
+      "exitCode": 0,
+      "seconds": 26.13,
+      "rawBytes": 1034,
+      "rawLines": 20,
+      "rawSha256": "a8d20ee2b695d7bf9babd56acfbde886365ba3e0360f97ed665acdc48f884e8d",
+      "log": "issue-1582-defaults.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1582-permissions.test.mjs",
+      "exitCode": 0,
+      "seconds": 8.957,
+      "rawBytes": 3108,
+      "rawLines": 44,
+      "rawSha256": "358955c839c086ed2a2a55ccc32a273620193d765fae4aa29bf1d50f0d0e6552",
+      "log": "issue-1582-permissions.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1587-request-context.test.mjs",
+      "exitCode": 0,
+      "seconds": 12.986,
+      "rawBytes": 454,
+      "rawLines": 12,
+      "rawSha256": "5c655f77ff6d3dc2f86aec68b5988089f042fb3f3edad88681f9113d0a841e59",
+      "log": "issue-1587-request-context.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/recipe-resume-policy-notation.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.849,
+      "rawBytes": 349,
+      "rawLines": 10,
+      "rawSha256": "4bcefda1dbbd79711a4fd2ae2fc85f57b6b64b991f70d2484683d29da3b4ee10",
+      "log": "recipe-resume-policy-notation.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/browser-engine-release-integration.test.mjs",
+      "exitCode": 0,
+      "seconds": 2.78,
+      "rawBytes": 2782,
+      "rawLines": 30,
+      "rawSha256": "410380542f9d52e392c8da21854a534342f322b5161e344651342e157b31c052",
+      "log": "browser-engine-release-integration.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+      "exitCode": 0,
+      "seconds": 11.088,
+      "rawBytes": 2951,
+      "rawLines": 42,
+      "rawSha256": "083824047088c18d50bcd190a445f5b0cea70a161c1ff1d3064866f864ebb64d",
+      "log": "rust-specification-unicode-identifiers.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/rust-specification-fixture-integrity.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.285,
+      "rawBytes": 309,
+      "rawLines": 10,
+      "rawSha256": "412efe52fc4e1d9bf93f0b1423cf8d4b164b3805cc047b2b2d62d647985a90f8",
+      "log": "rust-specification-fixture-integrity.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "exitCode": 0,
+      "seconds": 4.018,
+      "rawBytes": 1731,
+      "rawLines": 23,
+      "rawSha256": "73db10a121ea28723ce527b5de935fcf2932bea23ef8f01df912fb0b4e5d6237",
+      "log": "fast-pull-request-production-profile.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/main-only-regression-ledger.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.262,
+      "rawBytes": 439,
+      "rawLines": 12,
+      "rawSha256": "a633a9e1a8f0c67d5081dd9d0878f24fb92364c13206bc594312009183935ecf",
+      "log": "main-only-regression-ledger.test-final.log.gz"
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

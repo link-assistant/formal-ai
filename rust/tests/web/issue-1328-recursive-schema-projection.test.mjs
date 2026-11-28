@@ -111,9 +111,9 @@ test('declared reserved object members cannot mutate prototypes or erase distinc
 });
 
 
-test('required shell description is grounded in the exact user prompt on both wire surfaces',()=>{
+test('required shell description summarizes the selected command on both wire surfaces',()=>{
  const schema={type:'object',properties:{command:{type:'string'},description:{type:'string'}},required:['command','description'],additionalProperties:false};
- accepted(fixture(schema,{cmd:'printf verified'},'run_shell_command'),{command:'printf verified',description:'explicit user task'});
+ accepted(fixture(schema,{cmd:'printf verified'},'run_shell_command'),{command:'printf verified',description:'I’ll run `printf`.'});
  accepted(fixture(schema,{command:'printf verified',description:'caller supplied detail'},'run_shell_command'),{command:'printf verified',description:'caller supplied detail'});
  for(const description of [null,7,'']) {
   const result=fixture(schema,{command:'printf verified',description},'run_shell_command');

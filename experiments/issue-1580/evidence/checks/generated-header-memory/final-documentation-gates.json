@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-file-size,check-abbreviations,check-readable-code"
+  ],
+  "status": 0,
+  "durationSeconds": 20.625,
+  "rawSha256": "58ccf5e5fb472ce00fb17825c9d1c33a2ab433aafd734afa1a43a920e83dc710",
+  "log": "final-documentation-gates.log.gz",
+  "nodeHeapMiB": 256,
+  "rustBuildsEnabled": false,
+  "independentAuthorshipCredit": 0
+}

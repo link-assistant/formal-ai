@@ -1,0 +1,28 @@
+{
+  "qualification": {
+    "complete": true,
+    "head": "44771e97373f89d4d582bc384c2fd1f8d69cd83d",
+    "headAfter": "44771e97373f89d4d582bc384c2fd1f8d69cd83d",
+    "cleanBefore": true,
+    "cleanAfter": true,
+    "statusAfter": "",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 0,
+    "pass": 89,
+    "failure": 0,
+    "hostedOnlySkip": 54,
+    "seconds": 568.1050380030647,
+    "startedAt": "2026-11-22T23:46:02.173647+00:00",
+    "finishedAt": "2026-11-22T23:55:30.279219+00:00",
+    "localRustExecution": false,
+    "qualified": true
+  },
+  "payloadCount": 93,
+  "archiveSha256": "2483e9a280b51ef363a103147243afd687bbb93305f84cdd398feb76e2e6b910",
+  "roundTripVerified": true,
+  "nativeExecution": "pending hosted CI",
+  "independentAuthorshipCredit": 0
+}

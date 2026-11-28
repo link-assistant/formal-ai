@@ -1,0 +1,69 @@
+Layered CI	Detect tier changes	success	6
+Layered CI	js tier (node --check over js, suite group 1)	success	198
+Layered CI	js tier (node --check over js, suite group 6)	success	170
+Layered CI	js tier (node --check over js, suite group 10)	success	201
+Layered CI	js tier (node --check over js, suite group 11)	success	294
+Layered CI	js tier (node --check over js, suite group 12)	success	197
+Layered CI	js tier (node --check over js, suite group 4)	success	205
+Layered CI	js tier (node --check over js, suite group 3)	success	190
+Layered CI	js tier (node --check over js, suite group 7)	success	189
+Layered CI	js tier (node --check over js, suite group 9)	success	203
+Layered CI	js tier (node --check over js, suite group 5)	success	176
+Layered CI	js tier (node --check over js, suite group 8)	success	180
+Layered CI	js tier (node --check over js, suite group 2)	success	230
+Layered CI	ts tier (js<->ts file-set parity)	success	8
+Desktop Release	base / Pin base commit	success	7
+Benchmark Corpus Gate	pr-check-profile / profile	success	3
+Guarded staged release authority refusal	Exercise guarded staged subprocess refusal	success	14
+Proactive failure report Agent CLI E2E	pr-check-profile / profile	success	3
+Documentation policy	documentation-policy	success	8
+Stock Rust Install	pr-check-profile / profile	success	6
+Self-development status	pr-check-profile / profile	success	5
+container-images	pr-check-profile / profile	success	2
+Publish VS Code extension	resolve	success	18
+Source scanner qualification and debt inventory	javascript	success	72
+Native provenance interoperability and performance	pr-check-profile / profile	success	5
+Publish source networks	resolve	success	11
+Self-hosting evidence	pr-check-profile / profile	success	3
+Question necessity ratchet	pr-check-profile / profile	success	4
+External Benchmarks	pr-check-profile / profile	success	4
+CI/CD Pipeline	Version Modification Check	success	14
+CI/CD Pipeline	Detect Changes	success	17
+CI/CD Pipeline	Release Preflight	success	13
+CI/CD Pipeline	Fast Linux source and requirement checks	success	42
+CI/CD Pipeline	base / Pin base commit	success	11
+CI/CD Pipeline	hive-source-provenance / Hive source event provenance	success	15
+CI/CD Pipeline	Secrets Scan	success	84
+CI/CD Pipeline	Changelog Fragment Check	success	20
+CI/CD Pipeline	Native type and lint check / Rust compile inputs changed	success	801
+CI/CD Pipeline	Native type and lint check / Compile focused native contracts once	success	188
+CI/CD Pipeline	Native type and lint check / Release registry scripts	success	61
+CI/CD Pipeline	Native type and lint check / Native contracts (hive-2)	success	397
+CI/CD Pipeline	Native type and lint check / Native contracts (benchmarks)	success	458
+CI/CD Pipeline	Native type and lint check / Native contracts (hive-3)	success	593
+CI/CD Pipeline	Native type and lint check / Native contracts (reasoning-2)	success	609
+CI/CD Pipeline	Native type and lint check / Native contracts (hive-4)	success	412
+CI/CD Pipeline	Native type and lint check / Native contracts (hive-1)	success	485
+CI/CD Pipeline	Native type and lint check / Native contracts (coding-1)	success	622
+CI/CD Pipeline	Native type and lint check / Native contracts (reasoning-1)	success	659
+CI/CD Pipeline	Native type and lint check / Native contracts (coding-2)	success	365
+CI/CD Pipeline	Native type and lint check / Native contracts (interfaces)	success	435
+CI/CD Pipeline	Pipeline Status	success	4
+Regenerate native session projections	pr-check-profile / profile	success	3
+Agentic CLI Matrix	pr-check-profile / profile	success	3
+Verify full readable source content	pr-check-profile / profile	success	4
+Publish browser engine	resolve	success	16
+Broken Link Checker	Link parser regressions	success	14
+Security	Cargo audit	success	32
+Security	Locked secret scanner (Node 22)	success	13
+Security	Dependency Review	success	8
+Observe read-only GitHub authorization profiles	Observe actions-omitted authenticated read profile	success	58
+Observe read-only GitHub authorization profiles	Observe actions-readable authenticated read profile	success	57
+Workflows	Immutable BuildKit bootstrap and registry fallback	success	18
+Workflows	Zizmor	success	24
+Workflows	Artifact transport (windows-2025)	success	17
+Workflows	Actionlint	success	26
+Workflows	Artifact transport (macos-15)	success	15
+Workflows	Artifact transport (ubuntu-24.04)	success	17
+Coverage	Declare temporary coverage scope	success	3
+Coverage	Detect Changes	success	6

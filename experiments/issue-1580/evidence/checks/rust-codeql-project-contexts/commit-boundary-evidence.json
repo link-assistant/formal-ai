@@ -1,0 +1,42 @@
+{
+  "files": [
+    {
+      "file": "commit-rust-codeql-context-batch.py",
+      "sha256": "12079b5ff2491bcb27062e75d4f07a96fc07e2eccd92aa0d33c814d98c516a3f",
+      "bytes": 4006
+    },
+    {
+      "file": "commit-rust-codeql-context-batch.log",
+      "sha256": "cf8d5c6f447c6ac87bd956ceb52ba5b9f52b57ee94a7982c36d6670f76667565",
+      "bytes": 1943
+    },
+    {
+      "file": "rust-codeql-context-commits/records.json",
+      "sha256": "f35eeb1cebd17e85b8867c0f3b121765ea7f01df2e14b13b34ac336b10b2bec4",
+      "bytes": 2649
+    },
+    {
+      "file": "rust-codeql-context-commits/outcome.json",
+      "sha256": "89ba529554ff826bcb2d35387c0f2592be9a728e0ab9c2031bb000503a06d9bd",
+      "bytes": 169
+    },
+    {
+      "file": "rust-codeql-context-commits/commit-context-source.log",
+      "sha256": "630237ec9d0b107f84dee3993f71c72b7e939c0ce2d853bdd4b6f9c5732a6dd4",
+      "bytes": 271
+    },
+    {
+      "file": "rust-codeql-context-commits/commit-exact-producer-evidence.log",
+      "sha256": "8d047cd604c23a4934711c49247aa71ff6c5e0ee958b0503f5a4683984c67123",
+      "bytes": 58731
+    },
+    {
+      "file": "seal-rust-codeql-review-boundaries.py",
+      "sha256": "6aca3fc90ef8050ea963f8241603d35fe2a85d1effbb7f12685e3a293a34781c",
+      "bytes": 2330
+    }
+  ],
+  "rawSha256": "5a352998d0e04b38b3ea776ae8b4fccdd4f3ca5217f1ca3bcdef605f8f2780d0",
+  "archiveSha256": "5c7dde637013379ed9b47569e689b11a19b9dba7b3cae376f0612141c1f3c007",
+  "independentAuthorshipCredit": 0
+}

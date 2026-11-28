@@ -1,0 +1,15 @@
+{
+  "commit": "d72073e877df1864d1547c9a38eb86ecb16608d4",
+  "originalNativeFailure": "job-135896026664.stdout.gz:1884-1886",
+  "rootCause": "main.rs default-true global verbosity enabled structured terminal logging for formal-ai with; the standalone with-formal-ai binary did not configure this terminal mirror",
+  "behavior": "normal wrapper logs still persist; explicit wrapper --verbose enables the mirror; a client --verbose after the existing parser-generated delimiter does not",
+  "originalSilenceAssertionRetained": true,
+  "additionalNativeRegression": "with_formal_ai_wrapper_and_client_verbosity_have_separate_scopes",
+  "nativeExecutionObserved": false,
+  "rustfmtCheck": "passed",
+  "files": {
+    "rust/src/main.rs": "b478fc6a73a17a872591ffdb32227968a5cb4ee6c7a053e2a65d571114bf340b",
+    "rust/tests/integration/with_formal_ai.rs": "6dc7cb672c05aba9fc9e7844ae90c1b8ed2b3cfb992142ee80f633fc467c3edf"
+  },
+  "fullIssueComplete": false
+}

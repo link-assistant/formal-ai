@@ -46,12 +46,12 @@ fn last_five_rows_the_documented_method_is_read_from_the_prompt() {
             "{prompt}"
         );
     }
-    // An explanation lead and the project without the documented method.
+    // An explanation lead without a registered publisher and method.
     for prompt in [
-        "Explain pandas DataFrame.merge",
-        "объясни pandas DataFrame.merge",
-        "pandas DataFrame.merge कैसे काम करता है?",
-        "pandas DataFrame.merge 如何工作？",
+        "Explain unknown DataFrame.merge",
+        "объясни pandas DataFrame",
+        "DataFrame.merge कैसे काम करता है?",
+        "pandas DataFrame 如何工作？",
     ] {
         assert_eq!(
             claim_admission("docs_method_explanation", prompt, &prompt.to_lowercase()),

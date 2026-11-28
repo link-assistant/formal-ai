@@ -18,6 +18,8 @@ const MAX_RUST_LINES: usize = 1_000;
 /// `world_model.rs` (plan 15's evidence-backed deltas), `trace.rs` (R1138-3-5's
 /// `repository-protocol.lino` evidence), `protocol-header.txt` (plan 03
 /// L8's rediscovery header), and `operation.rs` (source-bound observation goals).
+/// `command_allowlist.rs` holds the command admission split out of `mod.rs` by
+/// commit dd89c1ecb ("separate solver configuration and command admission").
 const DECLARED: &[&str] = &[
     "rust/src/repository_workspace/mod.rs",
     "rust/src/repository_workspace/operation.rs",
@@ -30,6 +32,7 @@ const DECLARED: &[&str] = &[
     "rust/src/repository_workspace/world_model.rs",
     "rust/src/repository_workspace/trace.rs",
     "rust/src/repository_workspace/protocol-header.txt",
+    "rust/src/repository_workspace/command_allowlist.rs",
     "rust/src/cli_solve.rs",
 ];
 

@@ -32,6 +32,17 @@ before(async () => {
 const THREE = 'one\ntwo\nthree\n';
 const LINO = 'meanings\n  table a\n    row x\n  b\nc\n';
 
+test('a separate evidence delivery does not supply a missing edit operand', () => {
+  const evidence = 'Leave supporting evidence in .agent-ladder/node-R-proof.md. The first line must be exactly node_path=R.';
+  assert.equal(composeEditRequest(`Change the greeting surface from good evening to good day. ${evidence}`), null);
+  assert.deepEqual(composeEditRequest(`Change 'good evening' to 'good day' in f.lino. ${evidence}`),
+    ['f.lino', 'good evening', 'good day']);
+  assert.deepEqual(composeEditRequest(`${evidence} Change 'good evening' to 'good day' in \`f.lino\`.`),
+    ['f.lino', 'good evening', 'good day']);
+  assert.deepEqual(composeEditRequest("In f.lino,\nchange 'good evening' to 'good day'."),
+    ['f.lino', 'good evening', 'good day']);
+});
+
 /** Run `prompt` over one file `name` holding `source`; the tools act as the Agent CLI's do. */
 async function drive(prompt, source, name, format = 'inline') {
   let file = source;

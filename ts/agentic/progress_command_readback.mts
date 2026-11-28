@@ -101,12 +101,12 @@ export function postMutationReadStateFor(progress, path, capability, argumentsVa
 /** The actual complete preimage before the latest target mutation, without intervening effects. */
 export function sourceReadBeforeLatestMutationFor(progress, path, capability, qualifyCommand, pathFromArguments) {
   const index = progress.attempts.findLastIndex(attempt => attempt.capability === capability
-    && attempt.arguments !== null && pathFromArguments(attempt.arguments) === path);
+    && attempt.arguments !== null && progress.matchesWorkspaceSourcePath(attempt.arguments, path));
   for (let prior = index - 1; prior >= 0; prior--) {
     const attempt = progress.attempts[prior];
     if (!readOnlyAttempt(progress, attempt, qualifyCommand, pathFromArguments)) return null;
     if (attempt.capability === Capability.Read && attempt.arguments !== null
-      && pathFromArguments(attempt.arguments) === path) {
+      && progress.matchesWorkspaceSourcePath(attempt.arguments, path)) {
       const observed = attempt.source_read;
       return attempt.succeeded && observed?.error === null && observed.complete ? attempt : null;
     }
@@ -120,7 +120,7 @@ export function freshSourceReadAttemptFor(progress, path, qualifyCommand, pathFr
     const attempt = progress.attempts[index];
     if (!readOnlyAttempt(progress, attempt, qualifyCommand, pathFromArguments)) return null;
     if (attempt.capability === Capability.Read && attempt.arguments !== null
-      && pathFromArguments(attempt.arguments) === path) return attempt;
+      && progress.matchesWorkspaceSourcePath(attempt.arguments, path)) return attempt;
   }
   return null;
 }

@@ -33,3 +33,21 @@ test("explicit server chat mode overrides a retained agent preference", async ()
   assert.equal(result.intent, "tool_call_refused");
   assert.ok(result.evidence.includes("policy:agent_mode_required_for_tools:tool:javascript_execution"));
 });
+
+test("program extraction preserves literals and complete colon bodies", async () => {
+  const cases = [
+    ['Run this JavaScript: console.log("Hello, world!");', 'console.log("Hello, world!");'],
+    ['Run this JavaScript: console.log(`Hello, world!`);', 'console.log(`Hello, world!`);'],
+    ['Run this JavaScript: console.log(6 * 7);', 'console.log(6 * 7);'],
+    ['Run this JavaScript: `console.log(42);`', 'console.log(42);'],
+    ['Run this JavaScript: "console.log(42);"', 'console.log(42);'],
+    ['Execute this JS "console.log(42);"', 'console.log(42);'],
+    ['Execute this JS `console.log(42);`', 'console.log(42);'],
+    [["Run this JavaScript:", fence + "js", "console.log(42);", fence].join("\n"), 'console.log(42);'],
+    ['Explain JavaScript: console.log(42);', null],
+  ];
+  for (const [prompt, expected] of cases) {
+    const actual = await host.run("extractJavaScriptProgram(__sourcePrompt)", {__sourcePrompt: prompt});
+    assert.equal(actual, expected, prompt);
+  }
+});

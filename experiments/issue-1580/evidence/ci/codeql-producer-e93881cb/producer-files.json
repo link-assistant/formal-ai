@@ -1,0 +1,25 @@
+{
+  "records": 33,
+  "parts": [
+    {
+      "file": "producer-files-00.json",
+      "records": 10,
+      "sha256": "03b4252793de301c901e88a8f93bdac97c92a23422c261500632b497f2f08f5c"
+    },
+    {
+      "file": "producer-files-01.json",
+      "records": 10,
+      "sha256": "d20bd0788aee575744697ecc7d7fa4e86bab5b8f36e36195b4974742ae4b9765"
+    },
+    {
+      "file": "producer-files-02.json",
+      "records": 10,
+      "sha256": "537a475ab62996b350896afcc533d88904edb24c3ebb0612ee73523420940c06"
+    },
+    {
+      "file": "producer-files-03.json",
+      "records": 3,
+      "sha256": "9002f62f8571f3deb1c2507cb1cab19c98b46c535cbcf79ba77871a4791cf0e5"
+    }
+  ]
+}

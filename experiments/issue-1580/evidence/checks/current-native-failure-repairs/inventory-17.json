@@ -1,0 +1,202 @@
+[
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-47-02.174Z.json",
+    "file": "527-evidence.gz",
+    "bytes": 901,
+    "lines": 11,
+    "rawSha256": "ae0843ec68ca13ef2e7cceddffc7669d6330692a74ea5d9b2d9480c165937059",
+    "archiveSha256": "0be05ab38367acbb372ab421b360939caefc6b4987cc21fa42f2c5a28b37d39e"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-47-46.904Z.json",
+    "file": "528-evidence.gz",
+    "bytes": 18946,
+    "lines": 11,
+    "rawSha256": "95a71e9c3191aadd583a31155c5df6c468d28cb7beacec5a37b0a6202842209f",
+    "archiveSha256": "02844cf80768d127791fdad380f92c0e15d8e8e282415f1797a345859ab0db52"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-48-36.407Z.json",
+    "file": "529-evidence.gz",
+    "bytes": 71716,
+    "lines": 11,
+    "rawSha256": "1fd840867b7e31a825b744cd2982a5c63a56416173a0ff8869a2fd272f19e6f8",
+    "archiveSha256": "d6563be8505b65a7d647d355eee4f45960b1ef71dbe8917c7fcddaffa3c24f88"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-49-13.396Z.json",
+    "file": "530-evidence.gz",
+    "bytes": 792,
+    "lines": 11,
+    "rawSha256": "2bc312d0bddde3be5eb3145d98881df365e2fd7a87a978585c4aeeb7ce9b33cd",
+    "archiveSha256": "0a85f1e22f9036827f277a7306b468b6cd7e05757f05b3d4e3b1f8b170704625"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-50-06.257Z.json",
+    "file": "531-evidence.gz",
+    "bytes": 1184,
+    "lines": 11,
+    "rawSha256": "a2625a997726f56257b488e4eb12932ae880dcc06ba926facbcac9ed6f09d7c3",
+    "archiveSha256": "48edd894db3f67993d40674481900b8b45399c376130fea21fe0c7f93520eaeb"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T05-50-33.804Z.json",
+    "file": "532-evidence.gz",
+    "bytes": 1308,
+    "lines": 11,
+    "rawSha256": "92d4964e061836f192f5526adcdfbf6efbe32a295ad5fbfa9ca3d3ba11a65dbb",
+    "archiveSha256": "0200ea1adb467da8e53d4b0c36fbd909e70abaa6f1c0fcb79acec9ba46b0dfdc"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-documentation-checks/gates.log",
+    "file": "533-evidence.gz",
+    "bytes": 123,
+    "lines": 5,
+    "rawSha256": "58832d3c8fd0e3e1915db98bd542510636f8e5156a5fe7f95b6646653f07d9c2",
+    "archiveSha256": "cd8606c3e42353dfa8ce97d02047920a396b7e28111bbed6f7b346a110c6d6e7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-documentation-checks/outcome.json",
+    "file": "534-evidence.gz",
+    "bytes": 556,
+    "lines": 28,
+    "rawSha256": "0daecd9397d219f4a1c35f5d9fd33580e37bbe305bffbf21ef470d558c36ba05",
+    "archiveSha256": "478fce912f6f3d0712266ffcc888a5c0518d50197e61f86aa970d20535e5199f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-documentation-checks/whitespace.log",
+    "file": "535-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/pull-request-body.md",
+    "file": "536-evidence.gz",
+    "bytes": 21782,
+    "lines": 94,
+    "rawSha256": "c5189c1f42e6adc382d5d71218214a7cd604bbf5cc34ebb8f0aa52149bd57520",
+    "archiveSha256": "0e8e469ac614c829837d653949ee99b8605da430914438a37b702919ea112aa5"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-review/batch.diff",
+    "file": "537-evidence.gz",
+    "bytes": 33433,
+    "lines": 659,
+    "rawSha256": "57beabfb51546c75e2b34e8cbc9e44bf16f1037ab544c02728eebf3ccef7970a",
+    "archiveSha256": "01c3e850def950636c8876b898917f578d48330f2d99dfb05d7ca9d925742901"
+  },
+  {
+    "source": "/tmp/issue-1580-research/finalize-current-repair-evidence.py",
+    "file": "538-evidence.gz",
+    "bytes": 3486,
+    "lines": 53,
+    "rawSha256": "776c23e17d2464570df01617bb76b59bdaf34cfdfa39160e95a600a3234b7557",
+    "archiveSha256": "84a4119d0f81503777afffc5c5325e97dbe5d5966b96343726afbac47b6c9027"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-exact-status-review/outcome.json",
+    "file": "539-evidence.gz",
+    "bytes": 267,
+    "lines": 12,
+    "rawSha256": "3b22d41a554fbb1a7b43442a56cded217cd0aa0ffdbb49f42c904afca592eee7",
+    "archiveSha256": "4a08159e46576b4d7c02e9f33ab1acac1a36a85d13c9a5c90b771df6281e69ee"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-exact-status-review/policy-suite.log",
+    "file": "540-evidence.gz",
+    "bytes": 14033,
+    "lines": 152,
+    "rawSha256": "80fcb2ef3f7ecdbbc792f46be8ad1402726a0dbb78b01a2246e253496d6c064e",
+    "archiveSha256": "5f7ab4f5e71265c3f37fcc0de30570a82e075d55e1304b33badd9ed852aeede3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/pipeline-exact-status-review/test.before.mjs",
+    "file": "541-evidence.gz",
+    "bytes": 81472,
+    "lines": 1236,
+    "rawSha256": "3dff5b13f54d5e30581f677a02f18fbb48edf0dfefa8e9c3b3db8b40efd036cd",
+    "archiveSha256": "a29439ba61583eb7bfbe5730228f94669c442afed3bf7e66330baa7a5e467f40"
+  },
+  {
+    "source": "/tmp/issue-1580-research/prepare-current-repair-publication.log",
+    "file": "542-evidence.gz",
+    "bytes": 210,
+    "lines": 4,
+    "rawSha256": "07cf617a128c48ff523164c20881d5e7a466978cc7585823a9c9e7da9047ba74",
+    "archiveSha256": "5d36db590b0e1431e6f25f5a59fb7b5f4676f3e310ce48f438b8eb3fc20e2a6c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/prepare-current-repair-publication.py",
+    "file": "543-evidence.gz",
+    "bytes": 5486,
+    "lines": 45,
+    "rawSha256": "1e03756ae8952a36056ee012faf8dc622bee5246be1c3722e030e8b680f2201a",
+    "archiveSha256": "42ba710395a1de61dcf2c81da030a381dcc6e2044940965bf109c97b4d7a16a8"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-current-repair-batch-diff.log",
+    "file": "544-evidence.gz",
+    "bytes": 35541,
+    "lines": 662,
+    "rawSha256": "6e3070500977b8b543920768a00e8fed280b8ad8c1934657fe6617aaedd9f672",
+    "archiveSha256": "c2b89cd3fb2ab92ea9aa7439e14120b662cc7a5225d1a714acf538488819f143"
+  },
+  {
+    "source": "/tmp/issue-1580-research/restore-pipeline-exact-status-assertion.log",
+    "file": "545-evidence.gz",
+    "bytes": 376,
+    "lines": 4,
+    "rawSha256": "590d3cdc7fd0e5d8ddff74d043a5218356078ced2d08f5a611e566920a6aebc7",
+    "archiveSha256": "7dd142fa31a80a74f11a439c0c4eb01b5c87ec1406df32172d6855aefadf25c4"
+  },
+  {
+    "source": "/tmp/issue-1580-research/restore-pipeline-exact-status-assertion.py",
+    "file": "546-evidence.gz",
+    "bytes": 1122,
+    "lines": 18,
+    "rawSha256": "725c5bcba3190e24612a5abc7d20b5609d3a93879daf4ffd6a8c6b2b1c3fcbf4",
+    "archiveSha256": "f7dca1d3e1633aabfd273a2ea6872e821a451561c11764c0bcb2a777c9c47ad2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/review-current-repair-batch.log",
+    "file": "547-evidence.gz",
+    "bytes": 9191,
+    "lines": 179,
+    "rawSha256": "61da06b93afcdad88c303612270ad97371a145b5599940b38e1621878bb2bf0f",
+    "archiveSha256": "858e8b800456401359b3d1b75d51ee799fe4f7ea71ef0016d1162678b20587ee"
+  },
+  {
+    "source": "/tmp/issue-1580-research/review-current-repair-batch.py",
+    "file": "548-evidence.gz",
+    "bytes": 973,
+    "lines": 16,
+    "rawSha256": "c74b0f49d0c4240f8d0f7977f5f2bddbcc7978e0718955a1ddf74016bae3c9c9",
+    "archiveSha256": "c47ae07d8c66f4da54b3d63feac07556cadada9a916c3d73376b463ec49824eb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-native-failure-repairs.log",
+    "file": "549-evidence.gz",
+    "bytes": 257,
+    "lines": 4,
+    "rawSha256": "b122dcd9e8186f7365ec51cdccad767c10caa709e1d1c85bdbaef7f6b66ac3c6",
+    "archiveSha256": "1e098637f62de64829d82111d05b28cd30501d7fd87658c2f9cf32c3571520b6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/verify-current-repair-documentation.log",
+    "file": "550-evidence.gz",
+    "bytes": 446,
+    "lines": 5,
+    "rawSha256": "92a02cab4addf192f422ec885cb217eddf0967b433e5c7fa1da2fbe49d815e0e",
+    "archiveSha256": "ce1a688a11a4f3664de5d53b67778a21cfbbdf281e43c055705f2ff6e2f6bd32"
+  },
+  {
+    "source": "/tmp/issue-1580-research/verify-current-repair-documentation.py",
+    "file": "551-evidence.gz",
+    "bytes": 942,
+    "lines": 16,
+    "rawSha256": "1f8a4bc7e3d82dc376d844a2a07660ae6be749142649c7ec6ca759bbdad0a361",
+    "archiveSha256": "1c1f07026debbdc64476b0e48fa22ccf8121d9fae9a379a1c7b420cb5fb8582c"
+  }
+]

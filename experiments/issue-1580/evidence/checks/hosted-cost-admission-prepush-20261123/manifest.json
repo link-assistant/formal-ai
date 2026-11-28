@@ -1,0 +1,19 @@
+{
+  "baseSource": "e46254ac53c360e4c45652fa7abd63fb0d9ecad7",
+  "documentationGatesPassed": 8,
+  "changedPathsSecretScanned": 20,
+  "freshActiveRuns": 0,
+  "freshQueuedRuns": 0,
+  "mainAncestor": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "hostedQualification": "pending exact new source",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 24865,
+    "sha256": "e4c1d17269ce476312cd6367c28e2997e272b0eccb3aed7e7f55e22bc0676454"
+  },
+  "members": 52,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T19:32:53.987933+00:00"
+}

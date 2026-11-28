@@ -1,0 +1,442 @@
+{
+  "head": "53d8212bdd4871c54b2ac42ae0602a31bd3eeb53",
+  "allWorkflowsCompleted": true,
+  "workflowCount": 23,
+  "success": 21,
+  "failures": [
+    {
+      "id": 44613974224,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44613974224"
+    },
+    {
+      "id": 44613974902,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44613974902"
+    }
+  ],
+  "payloadHashesVerified": 86,
+  "nativeIsolatedBehaviorExecuted": false,
+  "cause": "unused public helper in a private focused test module; -D warnings rejects dead_code",
+  "nativeErrorJob": 135877853426,
+  "nativeErrorLines": [
+    1671,
+    1680
+  ],
+  "layeredErrorWorkflow": 44613974224,
+  "layeredErrorLines": [
+    10005,
+    10007
+  ],
+  "nativeRustPasses": 14,
+  "nativeHttpPasses": 4,
+  "newHiveNativePasses": 0,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "summaries": [
+    {
+      "job": "job-135877781328",
+      "summaries": [
+        {
+          "line": 1232,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T20:59:47.7232466Z # tests 6"
+        },
+        {
+          "line": 1234,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T20:59:47.7233537Z # pass 6"
+        },
+        {
+          "line": 1235,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T20:59:47.7234075Z # fail 0"
+        },
+        {
+          "line": 1237,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T20:59:47.7235323Z # skipped 0"
+        },
+        {
+          "line": 1321,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:08.5547591Z # tests 13"
+        },
+        {
+          "line": 1323,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:08.5553565Z # pass 13"
+        },
+        {
+          "line": 1324,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:08.5553919Z # fail 0"
+        },
+        {
+          "line": 1326,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:08.5554608Z # skipped 0"
+        },
+        {
+          "line": 1404,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:15.1291678Z # tests 12"
+        },
+        {
+          "line": 1406,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:15.1292389Z # pass 12"
+        },
+        {
+          "line": 1407,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:15.1292713Z # fail 0"
+        },
+        {
+          "line": 1409,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:15.1293689Z # skipped 0"
+        },
+        {
+          "line": 1433,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:18.0498212Z # tests 3"
+        },
+        {
+          "line": 1435,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:18.0501352Z # pass 3"
+        },
+        {
+          "line": 1436,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:18.0501645Z # fail 0"
+        },
+        {
+          "line": 1438,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:18.0502359Z # skipped 0"
+        },
+        {
+          "line": 1457,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:23.8023412Z # tests 2"
+        },
+        {
+          "line": 1459,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:23.8024590Z # pass 2"
+        },
+        {
+          "line": 1460,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:23.8025995Z # fail 0"
+        },
+        {
+          "line": 1462,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:23.8027469Z # skipped 0"
+        },
+        {
+          "line": 1624,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:29.4321626Z # tests 26"
+        },
+        {
+          "line": 1626,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:29.4322611Z # pass 26"
+        },
+        {
+          "line": 1627,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:29.4323083Z # fail 0"
+        },
+        {
+          "line": 1629,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:00:29.4324068Z # skipped 0"
+        },
+        {
+          "line": 1741,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:19.4174010Z # tests 13"
+        },
+        {
+          "line": 1743,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:19.4175031Z # pass 13"
+        },
+        {
+          "line": 1744,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:19.4175508Z # fail 0"
+        },
+        {
+          "line": 1746,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:19.4176341Z # skipped 0"
+        },
+        {
+          "line": 1788,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:28.5568638Z # tests 6"
+        },
+        {
+          "line": 1790,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:28.5569445Z # pass 6"
+        },
+        {
+          "line": 1791,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:28.5569875Z # fail 0"
+        },
+        {
+          "line": 1793,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:01:28.5571598Z # skipped 0"
+        },
+        {
+          "line": 1835,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:10.1265241Z # tests 6"
+        },
+        {
+          "line": 1837,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:10.1266091Z # pass 6"
+        },
+        {
+          "line": 1838,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:10.1266769Z # fail 0"
+        },
+        {
+          "line": 1840,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:10.1267961Z # skipped 0"
+        },
+        {
+          "line": 1888,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:13.4715554Z # tests 7"
+        },
+        {
+          "line": 1890,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:13.4716676Z # pass 7"
+        },
+        {
+          "line": 1891,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:13.4717219Z # fail 0"
+        },
+        {
+          "line": 1893,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:13.4718347Z # skipped 0"
+        },
+        {
+          "line": 1929,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:23.6196636Z # tests 5"
+        },
+        {
+          "line": 1931,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:23.6197571Z # pass 5"
+        },
+        {
+          "line": 1932,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:23.6197932Z # fail 0"
+        },
+        {
+          "line": 1934,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:23.6198526Z # skipped 0"
+        },
+        {
+          "line": 1970,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.5344684Z # tests 5"
+        },
+        {
+          "line": 1972,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.5345535Z # pass 5"
+        },
+        {
+          "line": 1973,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.5345936Z # fail 0"
+        },
+        {
+          "line": 1975,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.5346811Z # skipped 0"
+        },
+        {
+          "line": 2053,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.6646380Z # tests 12"
+        },
+        {
+          "line": 2055,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.6647035Z # pass 12"
+        },
+        {
+          "line": 2056,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.6647391Z # fail 0"
+        },
+        {
+          "line": 2058,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.6648415Z # skipped 0"
+        },
+        {
+          "line": 2112,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.8032892Z # tests 8"
+        },
+        {
+          "line": 2114,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.8033705Z # pass 8"
+        },
+        {
+          "line": 2115,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.8034184Z # fail 0"
+        },
+        {
+          "line": 2117,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:41.8035190Z # skipped 0"
+        },
+        {
+          "line": 2237,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.7360589Z # tests 19"
+        },
+        {
+          "line": 2239,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.7361444Z # pass 19"
+        },
+        {
+          "line": 2240,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.7361869Z # fail 0"
+        },
+        {
+          "line": 2242,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.7362748Z # skipped 0"
+        },
+        {
+          "line": 2290,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.8635551Z # tests 7"
+        },
+        {
+          "line": 2292,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.8636237Z # pass 7"
+        },
+        {
+          "line": 2293,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.8636738Z # fail 0"
+        },
+        {
+          "line": 2295,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:42.8638060Z # skipped 0"
+        },
+        {
+          "line": 2355,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.1879619Z # tests 9"
+        },
+        {
+          "line": 2357,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.1880580Z # pass 9"
+        },
+        {
+          "line": 2358,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.1891026Z # fail 0"
+        },
+        {
+          "line": 2360,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.1901222Z # skipped 0"
+        },
+        {
+          "line": 2538,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.5767196Z # tests 24"
+        },
+        {
+          "line": 2540,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.5770928Z # pass 24"
+        },
+        {
+          "line": 2541,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.5771281Z # fail 0"
+        },
+        {
+          "line": 2543,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:43.5772021Z # skipped 0"
+        },
+        {
+          "line": 2843,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:45.8775242Z # tests 49"
+        },
+        {
+          "line": 2845,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:45.8776305Z # pass 49"
+        },
+        {
+          "line": 2846,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:45.8776811Z # fail 0"
+        },
+        {
+          "line": 2848,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:45.8777923Z # skipped 0"
+        },
+        {
+          "line": 2902,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:46.2736532Z # tests 8"
+        },
+        {
+          "line": 2904,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:46.2737368Z # pass 8"
+        },
+        {
+          "line": 2905,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:46.2737850Z # fail 0"
+        },
+        {
+          "line": 2907,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-19T21:02:46.2738927Z # skipped 0"
+        }
+      ]
+    },
+    {
+      "job": "job-135877853426",
+      "summaries": [
+        {
+          "line": 1724,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:07:37.1726455Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 0.74s"
+        },
+        {
+          "line": 1733,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:07:52.3696163Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 5.35s"
+        },
+        {
+          "line": 1795,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:01.7643892Z # tests 2"
+        },
+        {
+          "line": 1797,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:01.7644331Z # pass 2"
+        },
+        {
+          "line": 1798,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:01.7644541Z # fail 0"
+        },
+        {
+          "line": 1800,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:01.7645556Z # skipped 0"
+        },
+        {
+          "line": 1830,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:05.6305972Z # tests 1"
+        },
+        {
+          "line": 1832,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:05.6306377Z # pass 1"
+        },
+        {
+          "line": 1833,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:05.6314291Z # fail 0"
+        },
+        {
+          "line": 1835,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:05.6318433Z # skipped 0"
+        },
+        {
+          "line": 1865,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:08.4818761Z # tests 1"
+        },
+        {
+          "line": 1867,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:08.4819194Z # pass 1"
+        },
+        {
+          "line": 1868,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:08.4819438Z # fail 0"
+        },
+        {
+          "line": 1870,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T21:08:08.4820900Z # skipped 0"
+        }
+      ]
+    }
+  ],
+  "layeredFinalShards": [
+    {
+      "job": 135877781328,
+      "pass": 1509,
+      "fail": 0,
+      "skipped": 7
+    },
+    {
+      "job": 135877781367,
+      "pass": 1395,
+      "fail": 0,
+      "skipped": 10
+    }
+  ],
+  "layeredJavascriptPasses": 2904,
+  "layeredJavascriptSkips": 17
+}

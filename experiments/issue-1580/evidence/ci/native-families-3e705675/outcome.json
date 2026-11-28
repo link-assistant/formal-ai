@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "head": "3e7056756ed57e4899780913eae2f0fb07723e5f",
+  "workflowCount": 27,
+  "success": 25,
+  "failed": [
+    {
+      "id": 44836234464,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44836234464"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

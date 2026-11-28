@@ -1,0 +1,74 @@
+[
+  {
+    "name": "before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 3.601,
+    "counts": {
+      "tests": 28,
+      "pass": 26,
+      "fail": 2,
+      "skipped": 0
+    },
+    "file": "before.log.gz",
+    "rawSha256": "316907e75d8be770f2be0598e5a4f8769e735f91faa840d50eb95e24bfdaf1c7",
+    "archiveSha256": "e225976f6fa4b64c161659d8b61a2ac7a51ebf264f5aec190d5ebfb131c4b846",
+    "lines": 94
+  },
+  {
+    "name": "after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 3.467,
+    "counts": {
+      "tests": 28,
+      "pass": 26,
+      "fail": 2,
+      "skipped": 0
+    },
+    "file": "after.log.gz",
+    "rawSha256": "1d5171447b8001232ce5abb1a11069d4e35393b4c815259bb5d84e3e648227c8",
+    "archiveSha256": "cdefe410fe9c1a65b2726bd71f9edb86b62240597c93cb193531829c2e1d023f",
+    "lines": 79
+  },
+  {
+    "name": "after-corrected",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 10.591,
+    "counts": {
+      "tests": 28,
+      "pass": 28,
+      "fail": 0,
+      "skipped": 0
+    },
+    "file": "after-corrected.log.gz",
+    "rawSha256": "ca99eaf5bb3b0a8c3325894949b4e4df179ba6a8fd86c96e2e40c6c0e051d083",
+    "archiveSha256": "0797a7ab1e7ca3e81cf830343ffb994c7ff427f2282d48965e087d766eeb9661",
+    "lines": 36
+  }
+]

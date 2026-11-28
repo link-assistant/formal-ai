@@ -10,10 +10,9 @@
 //! ([`plan_document_recipe`]) and one description of a recipe
 //! ([`DocumentRecipe`]).
 //!
-//! These live beside [`super::planner`] rather than inside it: the planner is the
-//! router that decides *which* recipe a request is, and this module is *what each
-//! recipe does*. Keeping the two apart means adding a recipe never lengthens the
-//! router.
+//! The planner offers its request to this family as one step. Within the
+//! family, the first matching recipe runs, in the same order as the
+//! JavaScript planner and the declared planner precedence.
 
 use serde_json::json;
 
@@ -30,11 +29,69 @@ use super::planner::{
 };
 use super::question_catalog;
 use super::rebuild_plan;
+use super::repair_input;
 use super::repair_strategy;
 use super::self_ast;
 use super::self_heal;
 use super::source_links;
 use crate::protocol::ChatMessage;
+
+type RecipePredicate = fn(&str) -> bool;
+type RecipeStep = fn(&str, &[ChatMessage], &[&str]) -> AgenticPlan;
+
+const SELF_REFERENTIAL_RECIPES: &[(RecipePredicate, RecipeStep)] = &[
+    (self_heal::is_self_heal_task, plan_self_heal_step),
+    (
+        dreaming_audit::is_dreaming_audit_task,
+        |_, messages, tools| plan_dreaming_audit_step(messages, tools),
+    ),
+    (self_ast::is_self_ast_task, |_, messages, tools| {
+        plan_self_ast_step(messages, tools)
+    }),
+    (source_links::is_source_links_task, |_, messages, tools| {
+        plan_source_links_step(messages, tools)
+    }),
+    // Self-healing claims its requests before the learning ledger.
+    (ledger::is_ledger_task, |_, messages, tools| {
+        plan_ledger_step(messages, tools)
+    }),
+    (explain::is_explain_task, |_, messages, tools| {
+        plan_explain_step(messages, tools)
+    }),
+    (
+        change_request::is_change_request_task,
+        plan_change_request_step,
+    ),
+    (
+        repair_strategy::is_repair_strategy_task,
+        plan_repair_strategy_step,
+    ),
+    (rebuild_plan::is_rebuild_task, plan_rebuild_step),
+    // Keep the more specific learning frontier ahead of the catalog.
+    (
+        google_trends_learning::is_google_trends_learning_task,
+        plan_google_trends_learning_step,
+    ),
+    (
+        google_trends_catalog::is_google_trends_catalog_task,
+        plan_google_trends_catalog_step,
+    ),
+    (
+        question_catalog::is_question_catalog_task,
+        |_, messages, tools| plan_question_catalog_step(messages, tools),
+    ),
+];
+
+pub(super) fn plan_self_referential_recipe(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let (_, step) = SELF_REFERENTIAL_RECIPES
+        .iter()
+        .find(|(predicate, _)| predicate(task))?;
+    Some(step(task, messages, tool_names))
+}
 
 /// A self-referential *generate → verify → final* recipe expressed as data.
 ///
@@ -97,9 +154,8 @@ pub(super) fn plan_meaning_detail_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
-) -> AgenticPlan {
-    // Route to the concept the request names (default: tomato — the canonical task).
-    let concept = meaning_detail::concept_for_task(task).unwrap_or(&meaning_detail::TOMATO);
+) -> Option<AgenticPlan> {
+    let concept = meaning_detail::concept_for_task(task)?;
 
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
@@ -112,24 +168,36 @@ pub(super) fn plan_meaning_detail_step(
     if let Some(tool) = search_tool
         && !progress.done(Capability::Search)
     {
-        return plan_one(tool, json!({ "query": concept.search_query }).to_string());
+        return Some(plan_one(
+            tool,
+            json!({ "query": concept.search_query }).to_string(),
+        ));
     }
     // Step 2: fetch the lexeme forms (where the missing plural is recovered).
     if let Some(tool) = fetch_tool
         && !progress.done(Capability::Fetch)
     {
-        return plan_one(tool, fetch_arguments(concept.source_url));
+        return Some(plan_one(tool, fetch_arguments(&concept.source_url)));
     }
 
-    // Re-derive the enriched block from the fetched lexeme facts (or the canonical
-    // fallback when the fetch errored), exactly as the formalization recipe does.
-    let block = meaning_detail::enrich_block(concept, progress.fetched_text.as_deref());
+    let block = progress
+        .fetched_pages
+        .iter()
+        .rev()
+        .find(|(url, _)| url == &concept.source_url)
+        .and_then(|(_, fetched)| meaning_detail::enrich_block(concept, fetched));
+    let Some(block) = block else {
+        return Some(AgenticPlan::Final(crate::seed::agentic_message(
+            "meaning_detail_source_unavailable",
+            &[("source", &concept.source_url)],
+        )));
+    };
 
     // Step 3: write the enriched meaning block.
     if let Some(tool) = write_tool
         && !progress.done(Capability::Write)
     {
-        return plan_one(tool, write_arguments(concept.kb_path, &block));
+        return Some(plan_one(tool, write_arguments(&concept.kb_path, &block)));
     }
     // Step 4: verify by reading the enriched block back (mirrors the formalization
     // recipe; `cat` is the allowlisted read the sandbox workspace supports).
@@ -137,11 +205,13 @@ pub(super) fn plan_meaning_detail_step(
         && !progress.done(Capability::Run)
     {
         let arguments = json!({ "command": format!("cat {}", concept.kb_path) });
-        return plan_one(tool, arguments.to_string());
+        return Some(plan_one(tool, arguments.to_string()));
     }
 
     // Step 5: nothing left to do — answer with the enriched block inline.
-    AgenticPlan::Final(meaning_detail::final_answer_for(concept, &block))
+    Some(AgenticPlan::Final(meaning_detail::final_answer_for(
+        concept, &block,
+    )))
 }
 
 /// The issue-#538 diagram recipe: write the generated mermaid document → verify →
@@ -192,17 +262,20 @@ pub(super) fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) 
 
 /// The issue-#558 self-healing recipe: write the generated repair-case document →
 /// verify → final. Like the diagram and self-AST recipes it needs no web step — the
-/// document is a pure function of the canonical self-healing case
+/// document is derived from the supplied failure trace and verified source
 /// ([`self_heal::render_document`]), so the loop *repairs itself*. Steps whose tool
 /// the CLI did not advertise are skipped.
-pub(super) fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    if !crate::self_healing::SourceRoundTrip::for_pinned_target().faithful {
-        return AgenticPlan::Final(
-            "Unknown:SourceModelUnavailable:SourceRoundTripUnverified".to_owned(),
-        );
-    }
-    let document = self_heal::render_document();
-    let final_answer = self_heal::final_answer(&document);
+pub(super) fn plan_self_heal_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
+    let case = match self_heal::case_from_task(task) {
+        Ok(case) => case,
+        Err(reason) => return repair_input_needed(reason),
+    };
+    let document = self_heal::render_document(&case);
+    let final_answer = self_heal::final_answer(&case, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -238,12 +311,18 @@ pub(super) fn plan_source_links_step(messages: &[ChatMessage], tool_names: &[&st
 
 /// The issue-#558 learning-ledger recipe: write the generated approved-lesson ledger
 /// document → verify → final. Like the other self-inspection recipes it needs no web
-/// step — the document is a pure function of the canonical, human-approved ledger
+/// step — the document is a projection of the configured, human-approved ledger
 /// ([`ledger::render_document`]). Steps whose tool the CLI did not advertise are
 /// skipped.
 pub(super) fn plan_ledger_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = ledger::render_document();
-    let final_answer = ledger::final_answer(&document);
+    let ledger = match crate::learning_ledger::configured_ledger() {
+        Ok(ledger) => ledger,
+        Err(reason) => {
+            return AgenticPlan::Final(format!("Unknown:ReviewDocumentUnavailable:{reason}"));
+        }
+    };
+    let document = ledger::render_document(ledger);
+    let final_answer = ledger::final_answer(ledger, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -283,11 +362,15 @@ pub(super) fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -
 /// *change Formal AI itself* into a reviewable PR. Steps whose tool the CLI did not
 /// advertise are skipped.
 pub(super) fn plan_change_request_step(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> AgenticPlan {
-    let document = change_request::render_document();
-    let final_answer = change_request::final_answer(&document);
+    let Some(request) = change_request::request_from_task(task) else {
+        return repair_input_needed("change_request_input_needed");
+    };
+    let document = change_request::render_document(&request);
+    let final_answer = change_request::final_answer(&request, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -302,16 +385,20 @@ pub(super) fn plan_change_request_step(
 
 /// The issue-#558 general repair-classification recipe: write the generated
 /// repair-strategies document → verify → final. Like the other self-referential recipes
-/// it needs no web step — the document is a deterministic function of the three
-/// self-contained canonical failure traces ([`repair_strategy::render_document`]), so
+/// it needs no web step — the document is a deterministic function of the supplied
+/// failure traces ([`repair_strategy::render_document`]), so
 /// the loop decides *which part* of itself to repair for every failure class. Steps
 /// whose tool the CLI did not advertise are skipped.
 pub(super) fn plan_repair_strategy_step(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> AgenticPlan {
-    let document = repair_strategy::render_document();
-    let final_answer = repair_strategy::final_answer(&document);
+    let Some(strategies) = repair_strategy::strategies_from_task(task) else {
+        return repair_input_needed("repair_strategy_input_needed");
+    };
+    let document = repair_strategy::render_document(&strategies);
+    let final_answer = repair_strategy::final_answer(&strategies, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -331,9 +418,16 @@ pub(super) fn plan_repair_strategy_step(
 /// turns an accepted change into the ordered, reversible plan to recompile Formal AI and
 /// reattach the improved worker to the UI. Steps whose tool the CLI did not advertise are
 /// skipped.
-pub(super) fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = rebuild_plan::render_document();
-    let final_answer = rebuild_plan::final_answer(&document);
+pub(super) fn plan_rebuild_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
+    let Some(plan) = rebuild_plan::plan_from_task(task) else {
+        return repair_input_needed("rebuild_input_needed");
+    };
+    let document = rebuild_plan::render_document(&plan);
+    let final_answer = rebuild_plan::final_answer(&plan, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -388,44 +482,113 @@ pub(super) fn plan_dreaming_audit_step(
     )
 }
 
-/// The issues-#498 + #558 learning-frontier recipe: write the generated
-/// learning-frontier report → verify → final. Like the other self-referential recipes
-/// it needs no web step — the report is a pure function of the committed Trends catalog
-/// routed through the human-gated self-improvement loop
-/// ([`google_trends_learning::render_document`]), so the loop maps its own coverage gap
-/// and hands it to human triage. Steps whose tool the CLI did not advertise are skipped.
+/// Render the learning frontier from the regional capture.
 pub(super) fn plan_google_trends_learning_step(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> AgenticPlan {
-    let document = google_trends_learning::render_document();
-    let final_answer = google_trends_learning::final_answer(&document);
+    plan_trends_document(
+        task,
+        messages,
+        tool_names,
+        google_trends_learning::GOOGLE_TRENDS_LEARNING_PATH,
+        google_trends_learning::document_for_task,
+        google_trends_learning::verification_command,
+        google_trends_learning::final_answer,
+    )
+}
+
+/// Render the catalog from the regional capture.
+pub(super) fn plan_google_trends_catalog_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
+    plan_trends_document(
+        task,
+        messages,
+        tool_names,
+        google_trends_catalog::GOOGLE_TRENDS_CATALOG_PATH,
+        google_trends_catalog::document_for_task,
+        google_trends_catalog::verification_command,
+        google_trends_catalog::final_answer,
+    )
+}
+
+fn plan_trends_document(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    path: &'static str,
+    render: fn(&str) -> Option<String>,
+    verify: fn() -> String,
+    answer: fn(&str) -> String,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    let previous = progress
+        .research_attempts()
+        .iter()
+        .rev()
+        .find_map(|attempt| {
+            if attempt.capability != Capability::Write {
+                return None;
+            }
+            let arguments: serde_json::Value =
+                serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
+            let names = ["path", "filePath", "file_path"];
+            if names
+                .iter()
+                .filter_map(|key| arguments.get(*key))
+                .any(|value| value.as_str() != Some(path))
+                || !names.iter().any(|key| arguments.get(*key).is_some())
+            {
+                return None;
+            }
+            arguments.get("content")?.as_str().map(str::to_owned)
+        });
+    let Some(document) = previous.or_else(|| render(task)) else {
+        return AgenticPlan::Final(crate::seed::agentic_message(
+            "google_trends_source_unavailable",
+            &[],
+        ));
+    };
     plan_document_recipe(
         messages,
         tool_names,
         DocumentRecipe {
-            path: google_trends_learning::GOOGLE_TRENDS_LEARNING_PATH,
-            verify_command: google_trends_learning::verification_command(),
-            final_answer,
+            path,
+            verify_command: verify(),
+            final_answer: answer(&document),
             document,
         },
     )
 }
 
-pub(super) fn plan_google_trends_catalog_step(
+fn repair_input_needed(key: &str) -> AgenticPlan {
+    AgenticPlan::Final(super::wording::agentic_message(key, &[]))
+}
+
+/// Route a structured repair request from its intent before scanning its data.
+pub(super) fn plan_structured_repair(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
-) -> AgenticPlan {
-    let document = google_trends_catalog::render_document();
-    let final_answer = google_trends_catalog::final_answer(&document);
-    plan_document_recipe(
-        messages,
-        tool_names,
-        DocumentRecipe {
-            path: google_trends_catalog::GOOGLE_TRENDS_CATALOG_PATH,
-            verify_command: google_trends_catalog::verification_command(),
-            final_answer,
-            document,
-        },
-    )
+) -> Option<AgenticPlan> {
+    let intent = repair_input::intent(task);
+    if intent.len() == task.len() {
+        return None;
+    }
+    let plan = if self_heal::is_self_heal_task(intent) {
+        plan_self_heal_step(task, messages, tool_names)
+    } else if change_request::is_change_request_task(intent) {
+        plan_change_request_step(task, messages, tool_names)
+    } else if repair_strategy::is_repair_strategy_task(intent) {
+        plan_repair_strategy_step(task, messages, tool_names)
+    } else if rebuild_plan::is_rebuild_task(intent) {
+        plan_rebuild_step(task, messages, tool_names)
+    } else {
+        return None;
+    };
+    Some(plan)
 }

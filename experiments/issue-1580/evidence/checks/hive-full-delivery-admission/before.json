@@ -1,0 +1,10 @@
+{
+  "exitCode": 1,
+  "passed": 47,
+  "failed": 1,
+  "file": "before.log.gz",
+  "rawSha256": "d85343ccae882d1abeea88a215f041a18d5680e77e140f15e52ba60823e1902d",
+  "archiveSha256": "aa9a487597b273b3378acbda660ae8f6295ff60f69832bd9452f255202b80c39",
+  "nativeExecuted": false,
+  "fullIssueComplete": false
+}

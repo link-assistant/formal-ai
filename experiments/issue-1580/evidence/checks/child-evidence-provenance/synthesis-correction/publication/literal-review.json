@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-11-18T09:59:38.862530+00:00",
+  "head": "c8fb9ad1df655abe89289e229189f3fc41451ec0",
+  "sourceHead": "05a3deb0fad932e097578c636cb6924392861563",
+  "commandPayloadHashesVerified": true,
+  "patchRawSha256": "2973e7d4e95049c757b3543a0e115eaa1e26e40229b0fd69ae00d37e907da8f3",
+  "patchLines": 17,
+  "incrementalPatchLiterallyRead": true,
+  "wholePullRequestDiffLiterallyRead": false,
+  "wholePullRequestDiffLimit": "HTTP 406: more than 300 files",
+  "firstAttemptFailure": "publication receipt schema assertion requested a nonexistent top-level nativeExecuted key; aborted before staging, commits or push",
+  "successfulAttemptPushes": 1,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

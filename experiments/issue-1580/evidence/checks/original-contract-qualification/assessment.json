@@ -1,0 +1,719 @@
+{
+  "originalFailureHead": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+  "strictUnchangedMetric": "31/53",
+  "contracts": [
+    {
+      "originalTest": "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+      "executedName": "google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+      "path": "rust/tests/unit/issue_498_google_trends.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "48d4e0e65c99949431a6f8453e283da50da92ce29f9972a1150130e44753ea7e",
+      "receipts": [
+        {
+          "job": "job-136459956254",
+          "log": "job-136459956254.stdout.gz",
+          "rawSha256": "7f82fb935bec5b10053c92a98da11c7ddabf870842dc160fa8caa4fc4f407cd6",
+          "line": 1355
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 82,
+          "endLine": 175,
+          "sha256": "f029a6eb7b210eada59d16d6ebcbd94632c5b4b3a8ffce8dcade0703e4c118ae"
+        },
+        {
+          "label": "current",
+          "startLine": 82,
+          "endLine": 175,
+          "sha256": "fa5b67cf01c9ef8fd6a2bc29657e4a06f316cd7082a524971faa3b52aefe489b"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The top-ten catalog still checks all five languages, exact rank counts, uniqueness and trace links. Only the expected connectivity guidance follows the now-enabled read-only retrieval default.",
+      "scopeLimit": "Catalog and offline guidance; no live retrieval receipt."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+      "executedName": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+      "receipts": [
+        {
+          "job": "job-136459956685",
+          "log": "job-136459956685.stdout.gz",
+          "rawSha256": "57a0dae4046d14ec82f440eb7bc18ff171015013a772218e7d12bfef6ba2feea",
+          "line": 1342
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 716,
+          "endLine": 723,
+          "sha256": "19f5df1ae9187f8b25388e51548f346d7f3ab00c961c9f3e2e18e90465772c05"
+        },
+        {
+          "label": "current",
+          "startLine": 834,
+          "endLine": 841,
+          "sha256": "19f5df1ae9187f8b25388e51548f346d7f3ab00c961c9f3e2e18e90465772c05"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The Spanish named-branch function and shared branch-push guard are unchanged. The shared recipe expectation follows the current workflow header and retired placeholder.",
+      "scopeLimit": "Scripted connector responses; this case does not independently prove a live GitHub push."
+    },
+    {
+      "originalTest": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+      "executedName": "workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+      "path": "rust/tests/unit/ci-cd/workflow_release.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "e16c455ce479a37a360eaea79eeb389b27b267bcc58a4a66472146c257062093",
+      "receipts": [
+        {
+          "job": "job-136459956141",
+          "log": "job-136459956141.stdout.gz",
+          "rawSha256": "85f9ce7187b33a83c07214576e3deb2fdf7a3ea4efd4d5404ce635d717350e92",
+          "line": 2012
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 55,
+          "endLine": 86,
+          "sha256": "361ccd6d73b65ca2d239ab8e1c7eb767509e4da93e60c9c6d6809eb783dc2ed0"
+        },
+        {
+          "label": "current",
+          "startLine": 58,
+          "endLine": 98,
+          "sha256": "13f7608376fc5a622c7deed1a098797a25382e0062e6c33aac20235978ac4ce1"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The same 600000 ms deployment limit and larger enclosing job budget remain asserted. The lookup now follows the owned deployment composite and permits the flow-mapping closing brace.",
+      "scopeLimit": "Configuration contract; no actual Pages publication receipt."
+    },
+    {
+      "originalTest": "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+      "executedName": "agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+      "path": "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "b8c092e4ed1edbee890579d3386c5480831a24e47f2ecc144c6e376e24e898ed",
+      "receipts": [
+        {
+          "job": "job-136459956141",
+          "log": "job-136459956141.stdout.gz",
+          "rawSha256": "85f9ce7187b33a83c07214576e3deb2fdf7a3ea4efd4d5404ce635d717350e92",
+          "line": 1833
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 45,
+          "endLine": 138,
+          "sha256": "a16980648ab83f110a41d3e14d5bc992009299177799514a8dd8d45c563473c7"
+        },
+        {
+          "label": "current",
+          "startLine": 45,
+          "endLine": 160,
+          "sha256": "ea96b3d29eec348acfca333cb43b2ed3c2fd8a55f44cb50ee590d89fe3cb7d52"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "Shell-planner, tool-capability, seed and server opt-in assertions remain. CLI tracing follows cli_local_transport and solver_helpers after the module split.",
+      "scopeLimit": "Source ownership and traceability assertions; no external CLI authentication proof."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+      "executedName": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+      "receipts": [
+        {
+          "job": "job-136459956685",
+          "log": "job-136459956685.stdout.gz",
+          "rawSha256": "57a0dae4046d14ec82f440eb7bc18ff171015013a772218e7d12bfef6ba2feea",
+          "line": 1337
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 326,
+          "endLine": 358,
+          "sha256": "3b6b6814bfd6933f3b583b3597770d4ab2baf97cb73f436cbcf6506f5018a993"
+        },
+        {
+          "label": "current",
+          "startLine": 390,
+          "endLine": 436,
+          "sha256": "f98d63ba8938825096534394e531ca7607284a67c73487d94432ebea463420a8"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "All original failed-verification and never-created-file assertions remain. The test correlates the failure by tool_call_id; one extra source-probe step changes the local bound from eight to nine.",
+      "scopeLimit": "Explicit failing compiler fixture. This is not unchanged-step-budget or real compiler coverage."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+      "executedName": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "47004d934729afd0ff2c97c48d60011f6d77d569fe6828c44e241513fb9b2929",
+      "receipts": [
+        {
+          "job": "job-136459956422",
+          "log": "job-136459956422.stdout.gz",
+          "rawSha256": "3ca9079ca9275b3a0d6a8cbd71f7ef770afe39782b3cd6345d0a5ea1b6315bcc",
+          "line": 1345
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 134,
+          "endLine": 192,
+          "sha256": "01ccf5b6a2a5f3dc8236c07d0c3e3df6760b4ed6348199b69823323a3435f2ce"
+        },
+        {
+          "label": "current",
+          "startLine": 134,
+          "endLine": 210,
+          "sha256": "a7f274b6f2d182443bff3b36cf52aa7946b285e73d274829cba3c063a2195105"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "Runtime setup and exact newline verification remain for all four runtime languages, as do the workflow checks and prohibition on blanket git add. Observed workspace requirements strengthen the assertions.",
+      "scopeLimit": "Compiler responses are explicit fixtures; temporary local Git operations are real."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+      "executedName": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+      "receipts": [
+        {
+          "job": "job-136459956336",
+          "log": "job-136459956336.stdout.gz",
+          "rawSha256": "1cc2d821884f9c67268d78b76ff5d16af881bb3811a961e47963dd997e1775cf",
+          "line": 1500
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 692,
+          "endLine": 697,
+          "sha256": "559a3803be0eccc27ffb4d1e1f2c2a3b799b6ccb1b0333e03348c9d990a62f03"
+        },
+        {
+          "label": "current",
+          "startLine": 810,
+          "endLine": 815,
+          "sha256": "559a3803be0eccc27ffb4d1e1f2c2a3b799b6ccb1b0333e03348c9d990a62f03"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The Russian named-branch function and shared branch-push guard are unchanged. The shared recipe expectation follows the current workflow header and retired placeholder.",
+      "scopeLimit": "Scripted connector responses; no independent live GitHub push receipt."
+    },
+    {
+      "originalTest": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+      "executedName": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+      "path": "rust/tests/unit/web_requests.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "3e304c3ff7504b33bc6cfdfb9b91a2f89b4351dd033d125738a6f17da2d692ca",
+      "receipts": [
+        {
+          "job": "job-136459956254",
+          "log": "job-136459956254.stdout.gz",
+          "rawSha256": "7f82fb935bec5b10053c92a98da11c7ddabf870842dc160fa8caa4fc4f407cd6",
+          "line": 1411
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 417,
+          "endLine": 447,
+          "sha256": "c670e6fb2442c52b8a299c11a69560802873c484383a788ecfabae1d191cd767"
+        },
+        {
+          "label": "current",
+          "startLine": 425,
+          "endLine": 455,
+          "sha256": "0d4e610a991b917ef4f1b9994e9677f9c8896e426599f4a0425c494e61104368"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "Query extraction, source-marker removal and evidence assertions remain. The fixture explicitly enables offline mode so changing network availability cannot rewrite its expected guidance.",
+      "scopeLimit": "Offline query and evidence contract; no live search or cache-equivalence proof."
+    },
+    {
+      "originalTest": "specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+      "executedName": "procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+      "path": "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6",
+      "receipts": [
+        {
+          "job": "job-136459956461",
+          "log": "job-136459956461.stdout.gz",
+          "rawSha256": "cffd25aa6d5c8d7d020066fbc59533cf7a05d6b76970d4822111c942fa9df6c9",
+          "line": 1375
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 173,
+          "endLine": 227,
+          "sha256": "297ab33b70a059574a177f9e51aa23e62827c92b9cbc8f9a954c86500002164d"
+        },
+        {
+          "label": "current",
+          "startLine": 173,
+          "endLine": 227,
+          "sha256": "297ab33b70a059574a177f9e51aa23e62827c92b9cbc8f9a954c86500002164d"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The same source-backed tea procedure assertions remain. The expected wikiHow link follows the supported English API hostname.",
+      "scopeLimit": "Plan/source-reference test; no new network observation."
+    },
+    {
+      "originalTest": "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice",
+      "executedName": "formalization::same_prompt_and_config_produce_same_interpretation_choice",
+      "path": "rust/tests/unit/specification/formalization.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3",
+      "receipts": [
+        {
+          "job": "job-136459956461",
+          "log": "job-136459956461.stdout.gz",
+          "rawSha256": "cffd25aa6d5c8d7d020066fbc59533cf7a05d6b76970d4822111c942fa9df6c9",
+          "line": 1352
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 274,
+          "endLine": 296,
+          "sha256": "7f335140a9deb60d99e35aac67b6f893a2dea132b92b98b0701f929b7fcf861d"
+        },
+        {
+          "label": "current",
+          "startLine": 274,
+          "endLine": 299,
+          "sha256": "883f93916e317f9659a3e3db5b7cd915d09db47a78022262e6de3f6cd9384141"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The complete first-versus-second answer equality and multiple-candidate assertions remain with the same sampling configuration. Explicit offline mode fixes input provenance.",
+      "scopeLimit": "Determinism for fixed offline inputs; online first-fetch versus cache-hit equivalence remains unproven."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+      "executedName": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+      "receipts": [
+        {
+          "job": "job-136459956336",
+          "log": "job-136459956336.stdout.gz",
+          "rawSha256": "1cc2d821884f9c67268d78b76ff5d16af881bb3811a961e47963dd997e1775cf",
+          "line": 1499
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 161,
+          "endLine": 207,
+          "sha256": "125005f18861e085b20b85e455cb62ba311d324c5f09c33d65ccd4a803670258"
+        },
+        {
+          "label": "current",
+          "startLine": 199,
+          "endLine": 271,
+          "sha256": "33b162567d50a0d4fa05ace49e4cfeb8a75434a833819e1a8df92004b380822a"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The 24-step Kotlin drive retains its reads, paths and named push assertions, then adds clean-worktree, two-commit, matching pushed-head, published-tree and ready-PR assertions.",
+      "scopeLimit": "Real temporary working and bare Git repositories; compiler and GitHub responses are simulated."
+    },
+    {
+      "originalTest": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language",
+      "executedName": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language",
+      "path": "rust/tests/unit/page_formalization_route.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "3f5b90614851c906716c9f2808cc5e9abfc25039641021103ffd97985d2e2477",
+      "receipts": [
+        {
+          "job": "job-136459956461",
+          "log": "job-136459956461.stdout.gz",
+          "rawSha256": "cffd25aa6d5c8d7d020066fbc59533cf7a05d6b76970d4822111c942fa9df6c9",
+          "line": 1372
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 119,
+          "endLine": 130,
+          "sha256": "b7b7494ac3b767b473e9b4f7b6bba045cf1d02a137c7734475458d79fa90dd70"
+        },
+        {
+          "label": "current",
+          "startLine": 120,
+          "endLine": 131,
+          "sha256": "b7b7494ac3b767b473e9b4f7b6bba045cf1d02a137c7734475458d79fa90dd70"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The test function is byte-identical: it still checks the 43-line source, first statement and every language. The shared summary fixture changes one unknown term from 196 to 195 after adding known vocabulary.",
+      "scopeLimit": "Fixture vocabulary changed; no literal whole-file identity or new live page-fetch proof."
+    },
+    {
+      "originalTest": "web_requests::source_search_prompts_still_cover_supported_languages",
+      "executedName": "web_requests::source_search_prompts_still_cover_supported_languages",
+      "path": "rust/tests/unit/web_requests.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "3e304c3ff7504b33bc6cfdfb9b91a2f89b4351dd033d125738a6f17da2d692ca",
+      "receipts": [
+        {
+          "job": "job-136459956254",
+          "log": "job-136459956254.stdout.gz",
+          "rawSha256": "7f82fb935bec5b10053c92a98da11c7ddabf870842dc160fa8caa4fc4f407cd6",
+          "line": 1408
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 683,
+          "endLine": 714,
+          "sha256": "21cf8c78c781d8847b74f75066ef47fd24c6cd79d7a7f678d593b602b64b378c"
+        },
+        {
+          "label": "current",
+          "startLine": 691,
+          "endLine": 722,
+          "sha256": "cf87415c4afc48bd198add546ced7b345c75ffc7227d0b8ea40dc30f7b8a0317"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "All supported language, extracted query, intent and evidence checks remain. The fixture uses explicit offline configuration and updated connectivity guidance.",
+      "scopeLimit": "Offline language coverage; no live search receipt."
+    },
+    {
+      "originalTest": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+      "executedName": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+      "path": "rust/tests/integration/with_formal_ai_argv.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "a6825176174d355184f9eea23a750fc559d29fd16a479baf8f63d76042532707",
+      "receipts": [
+        {
+          "job": "job-136459956277",
+          "log": "job-136459956277.stdout.gz",
+          "rawSha256": "309a23e3e65175c0f461bccc96606ad11eb722b719378b1b4b0752438d105fc4",
+          "line": 1406
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 19,
+          "endLine": 125,
+          "sha256": "b4a2b36c4cd979ff1073deaf485e65a437be88d08399f7a538bcbcdb55570e78"
+        },
+        {
+          "label": "current",
+          "startLine": 19,
+          "endLine": 133,
+          "sha256": "bfc0ae9736edf3bce8b5965695964f901f3c092ccb906a7275dd0a159414cc3d"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "Argument versus piped-prompt equivalence remains strict for all eight clients. Claude expected arguments add the current Read, Glob, Grep, WebFetch and WebSearch allowlist.",
+      "scopeLimit": "Fake client captures argv; no actual remote-model identity or execution proof."
+    },
+    {
+      "originalTest": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+      "executedName": "network_download_retry::no_remote_download_is_left_out_of_that_rule",
+      "path": "rust/tests/unit/ci-cd/network_download_retry.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "c7a7c0392c81a6f9f05f0cce34a940145f5fa213cfda5dc046fedd612831a734",
+      "receipts": [
+        {
+          "job": "job-136459956141",
+          "log": "job-136459956141.stdout.gz",
+          "rawSha256": "85f9ce7187b33a83c07214576e3deb2fdf7a3ea4efd4d5404ce635d717350e92",
+          "line": 1835
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 136,
+          "endLine": 187,
+          "sha256": "52dc3e08b929d85bd0326a28c1de525f5febc5686f6c28566702200db57087b8"
+        },
+        {
+          "label": "current",
+          "startLine": 138,
+          "endLine": 189,
+          "sha256": "52dc3e08b929d85bd0326a28c1de525f5febc5686f6c28566702200db57087b8"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The test function is byte-identical. The download-script inventory adds the two newly checked curl scripts without exempting existing paths.",
+      "scopeLimit": "Source-level retry inventory; no real upstream outage recovery receipt."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+      "executedName": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+      "receipts": [
+        {
+          "job": "job-136459956336",
+          "log": "job-136459956336.stdout.gz",
+          "rawSha256": "1cc2d821884f9c67268d78b76ff5d16af881bb3811a961e47963dd997e1775cf",
+          "line": 1483
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 543,
+          "endLine": 557,
+          "sha256": "0fecb5ba772673d07e641a9f92d98385e3fffd6334dd82cab71302453ad14efe"
+        },
+        {
+          "label": "current",
+          "startLine": 645,
+          "endLine": 675,
+          "sha256": "e055c1ee402bb70be06de72d2cc01f51a0d8359b5d348918db21762c6fc73e20"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The exact structured connector envelope and generated main function remain asserted. A current-workspace probe precedes the write.",
+      "scopeLimit": "Structured-content handling with scripted connector replies."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+      "executedName": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+      "receipts": [
+        {
+          "job": "job-136459956422",
+          "log": "job-136459956422.stdout.gz",
+          "rawSha256": "3ca9079ca9275b3a0d6a8cbd71f7ef770afe39782b3cd6345d0a5ea1b6315bcc",
+          "line": 1340
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 727,
+          "endLine": 771,
+          "sha256": "5c8880d30280373c05b94f8ec9c2d3d20aa4188f6d7dff1ca4d1b84c53ab1d70"
+        },
+        {
+          "label": "current",
+          "startLine": 845,
+          "endLine": 889,
+          "sha256": "5c8880d30280373c05b94f8ec9c2d3d20aa4188f6d7dff1ca4d1b84c53ab1d70"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The function is byte-identical and retains workflow-file assertions across all five languages.",
+      "scopeLimit": "Fixture-generated workflow paths; no live workflow run receipt."
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+      "executedName": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a",
+      "receipts": [
+        {
+          "job": "job-136459956685",
+          "log": "job-136459956685.stdout.gz",
+          "rawSha256": "57a0dae4046d14ec82f440eb7bc18ff171015013a772218e7d12bfef6ba2feea",
+          "line": 1341
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 682,
+          "endLine": 689,
+          "sha256": "f673e538964f2e35a46259cb4a50ee5c3e6421da89865d3261d59bc847d891ca"
+        },
+        {
+          "label": "current",
+          "startLine": 800,
+          "endLine": 807,
+          "sha256": "f673e538964f2e35a46259cb4a50ee5c3e6421da89865d3261d59bc847d891ca"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The English named-branch function and shared branch-push guard are unchanged. Canonical recipe expectations follow the new workflow header.",
+      "scopeLimit": "Scripted connector responses; live delivery remains a separate acceptance criterion."
+    },
+    {
+      "originalTest": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+      "executedName": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+      "path": "rust/tests/integration/with_formal_ai.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "d6b93ce35cd81d7fa3256e92c65132274344ba740533ef133fee3f0d7b1ba3cf",
+      "receipts": [
+        {
+          "job": "job-136459956277",
+          "log": "job-136459956277.stdout.gz",
+          "rawSha256": "309a23e3e65175c0f461bccc96606ad11eb722b719378b1b4b0752438d105fc4",
+          "line": 1391
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 546,
+          "endLine": 582,
+          "sha256": "fdba566bb1119f074ac247974eab15a68be21b049f299013fa42ff672a2674ab"
+        },
+        {
+          "label": "current",
+          "startLine": 559,
+          "endLine": 596,
+          "sha256": "97a143f85972057d063e20b8fc7cd7c611e974b4ddcf1b6b1b906df0cdd97c2f"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "Default quiet stderr, TCP server setup and teardown, and captured diagnostics behavior remain. Only the assertion failure diagnostic is more informative.",
+      "scopeLimit": "Local wrapper/server behavior with fixture clients."
+    },
+    {
+      "originalTest": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+      "executedName": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+      "path": "rust/tests/integration/with_formal_ai.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "d6b93ce35cd81d7fa3256e92c65132274344ba740533ef133fee3f0d7b1ba3cf",
+      "receipts": [
+        {
+          "job": "job-136459956277",
+          "log": "job-136459956277.stdout.gz",
+          "rawSha256": "309a23e3e65175c0f461bccc96606ad11eb722b719378b1b4b0752438d105fc4",
+          "line": 1399
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 231,
+          "endLine": 348,
+          "sha256": "047e386c96326c7a8a811cf63d78affca9d7156f013a62e58809cabae89a973e"
+        },
+        {
+          "label": "current",
+          "startLine": 232,
+          "endLine": 361,
+          "sha256": "98397eb477df7e0fee00b7ac4075947fd31766a1b664e6e6d5e270d0cad48c88"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "All eight clients retain strict interactive and non-interactive argv checks. Claude expectations add the current allowed-tools list.",
+      "scopeLimit": "Fixture argv verification; no real third-party client session."
+    },
+    {
+      "originalTest": "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui",
+      "executedName": "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui",
+      "path": "rust/tests/integration/issue_819_tui_isolation.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "1ed6de6ff03f0743f087104aedf8d836f169b99fb21924a87cd728151eb92fc6",
+      "receipts": [
+        {
+          "job": "job-136459956277",
+          "log": "job-136459956277.stdout.gz",
+          "rawSha256": "309a23e3e65175c0f461bccc96606ad11eb722b719378b1b4b0752438d105fc4",
+          "line": 1360
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 47,
+          "endLine": 93,
+          "sha256": "c667c9c755f8a0d580f3996637da27bbc6777b87a8a5627911e791e94c9f654f"
+        },
+        {
+          "label": "current",
+          "startLine": 47,
+          "endLine": 97,
+          "sha256": "bccab03e072830aafd2143f2642f55ac87eaba6956874d8fd4eb7be627997de8"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The PTY identity, absence of raw diagnostics on the terminal and presence of retained diagnostic logs remain. The fixture explicitly opts into default-off trace and stderr controls.",
+      "scopeLimit": "Local terminal isolation with explicit diagnostic flags."
+    },
+    {
+      "originalTest": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+      "executedName": "debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+      "path": "rust/tests/unit/specification/debug_session.rs",
+      "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+      "publishedFileSha256": "8faf53bf31998b6212a4ae5feb8eaaa103f9b9c4fa9d7ad82de45dfb8827b680",
+      "receipts": [
+        {
+          "job": "job-136459956461",
+          "log": "job-136459956461.stdout.gz",
+          "rawSha256": "cffd25aa6d5c8d7d020066fbc59533cf7a05d6b76970d4822111c942fa9df6c9",
+          "line": 1343
+        }
+      ],
+      "functionSnapshots": [
+        {
+          "label": "original",
+          "startLine": 650,
+          "endLine": 841,
+          "sha256": "0f13f86630da1cee7faf76d5d91e943f7e24d22abd00d34b68730c6e90c6437f"
+        },
+        {
+          "label": "current",
+          "startLine": 651,
+          "endLine": 842,
+          "sha256": "0f13f86630da1cee7faf76d5d91e943f7e24d22abd00d34b68730c6e90c6437f"
+        }
+      ],
+      "contractQualification": "reviewed-compatible-at-tested-scope",
+      "literalAssertionReview": "The test function is byte-identical: held stages, no early persistence, one-step advancement, conflict response, real request result and exact cached digest remain. The shared expected event names the actual record_answer_test owner.",
+      "scopeLimit": "Local served debug-session and trace fixture; no independent authoring credit."
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "contractsLiterallyReviewed": 22,
+  "wholeFileIdentityReplays": 31,
+  "totalOriginalFailureNames": 53,
+  "allOriginalBudgetsQualified": false,
+  "allLiveDeliveryQualified": false,
+  "assessment": "Separate assertion review and published passing receipts; strict whole-file identity remains 31/53."
+}

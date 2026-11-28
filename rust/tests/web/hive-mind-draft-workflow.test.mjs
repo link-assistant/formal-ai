@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-import {selectAttemptPullRequest, failureComment, usefulDraftChanges, inspectAttemptDraft} from '../../../scripts/hive-mind-draft-result.mjs';
+import {readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {execFileSync, spawnSync} from 'node:child_process';
+import YAML from 'yaml';
+import {selectAttemptPullRequest, failureComment, usefulDraftChanges, inspectAttemptDraft, occupyingPullRequests} from '../../../scripts/hive-mind-draft-result.mjs';
+import {shortOfRoom, main as freeDiskIfShort} from '../../../scripts/free-disk-if-short.mjs';
 const workflow=readFileSync(new URL('../../../.github/workflows/hive-mind-draft.yml',import.meta.url),'utf8');
 const context={branch:'issue-7-attempt',repository:'owner/repo',startedAt:'2026-10-16T00:00:00Z'};
 const pr={number:9,headRefName:context.branch,headRepository:{nameWithOwner:context.repository},createdAt:'2026-10-16T00:01:00Z',state:'OPEN'};
@@ -19,13 +24,15 @@ test('workflow contracts retain source identity, shared policy, evidence and def
  assert.match(workflow,/types:\s*(?:\[opened\]|- opened)/); assert.match(workflow,/issue_number:/);
  assert.match(workflow,/cancel-in-progress: false/); assert.match(workflow,/group: hive-mind-draft-/);
  assert.doesNotMatch(workflow,/2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d/);
- assert.match(workflow,/repos\/link-assistant\/hive-mind\/commits\/main/);
- assert.match(workflow,/ref: \$\{\{ steps.hive-source.outputs.sha/);
+ const mainCheckouts=YAML.parse(workflow).jobs.build.steps.filter(step=>step.uses?.startsWith('actions/checkout@')&&step.with?.path);
+ assert.deepEqual(mainCheckouts.map(step=>[step.with.repository,step.with.ref]),
+  [['link-assistant/hive-mind','refs/heads/main'],[undefined,'refs/heads/main']]);
  assert.match(workflow,/ref: \$\{\{ needs.build.outputs.hive_source_sha/);
  assert.match(workflow,/FORMAL_AI_DRAFT_IMAGE: \$\{\{ needs.build.outputs.hive_image/);
  assert.match(workflow,/HIVE_MIND_SOURCE_SHA: \$\{\{ needs.build.outputs.hive_source_sha/);
  assert.ok(workflow.indexOf('--decide') < workflow.indexOf('cargo build'));
- assert.match(workflow,/commits\/main/); assert.match(workflow,/ref: \$\{\{ steps.source.outputs.sha/);
+ assert.match(workflow,/EXPECTED_SOURCE_SHA: \$\{\{ steps.source.outputs.sha/);
+ assert.match(workflow,/test \"\$actual_sha\" = \"\$EXPECTED_SOURCE_SHA\"/);
  assert.match(workflow,/--version/); assert.match(workflow,/sha256sum/);
  assert.match(workflow,/FORMAL_AI_DRAFT_BINARY:.*formal-ai/);
  assert.match(workflow,/GH_TOKEN: \$\{\{ github.token \}\}/); assert.match(workflow,/actions\/dispatch-checks/);
@@ -65,23 +72,22 @@ test('bounded build and attempt jobs share one exact-main binary and retain fail
 test('deadline invocations remain portable with exact setup and kill-grace budgets',()=>{
  assert.doesNotMatch(workflow,/\btimeout --/);
  assert.equal((workflow.match(/run-with-deadline\.sh" 180 npm/g)||[]).length,2);
- assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=15/g)||[]).length,2);
+ assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=15/g)||[]).length,3);
  assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=30/g)||[]).length,2);
  assert.equal((workflow.match(/timeout-minutes: 30/g)||[]).length,2);
  assert.match(workflow,/bash "\$GITHUB_WORKSPACE\/scripts\/run-with-session-evidence\.sh" 1320 build cargo/);
  assert.match(workflow,/bash "\$GITHUB_WORKSPACE\/scripts\/run-with-session-evidence\.sh" 1200 attempt node/);
 });
 
-test('download warning suppression is narrow and concurrency distinguishes build from issue writer',()=>{
+test('downloads use the raw adapter and concurrency distinguishes build from issue writer',()=>{
  const header=workflow.slice(0,workflow.indexOf('\njobs:\n'));
  assert.match(header,/\nconcurrency:\n/);
  assert.match(header,/cancel-in-progress: false/);
  const jobs=workflowJobs(workflow);
  assert.match(jobs.find(job=>job.id==='build').body,/hive-mind-draft-build-.*github.ref/);
- assert.match(jobs.find(job=>job.id==='build').body,/cancel-in-progress: true/);
- // One narrow suppression per artifact download (issue #1486 added the shared build download).
- assert.equal((workflow.match(/NODE_OPTIONS: --disable-warning=DEP0005/g)||[]).length,(workflow.match(/uses: actions\/download-artifact@/g)||[]).length);
- assert.equal((workflow.match(/uses: actions\/download-artifact@/g)||[]).length,3);
+ assert(jobs.find(job=>job.id==='build').body.includes("cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}"));
+ assert.doesNotMatch(workflow,/DEP0005|actions\/download-artifact@/);
+ assert.equal((workflow.match(/uses: \.\/\.github\/actions\/download-artifact/g)||[]).length,3);
  assert.doesNotMatch(workflow,/--no-deprecation|--no-warnings|NODE_NO_WARNINGS/);
 });
 
@@ -131,4 +137,101 @@ test('fresh selections are sealed across jobs and setup failures retain an issue
  assert.match(integration,/run: \|\n\s+bun add -g --ignore-scripts @link-assistant\/hive-mind@latest\n\s+bun pm ls -g/);
  assert.doesNotMatch(integration,/bun add -g[^\n]*&&/);
  assert.doesNotMatch(integration,/@link-assistant\/hive-mind@2\.15\.1/);
+});
+
+// Issue #1580, run 43813238887: the attempt began after another session opened #1581 for its issue, and Hive Mind
+// continued that pull request -- three log commits and a `formal-ai-draft` label on a PR it did not open.
+test('an issue another session already works on is left to that session',()=>{
+ const census=[{number:1581,headRefName:'issue-1580-8d61a32a61e1',state:'OPEN'},{number:1579,headRefName:'issue-1162-100a9a565183',state:'OPEN'},
+  {number:1500,headRefName:'issue-15800-aaaa',state:'OPEN'},{number:1490,headRefName:'issue-1580-old',state:'CLOSED'}];
+ assert.deepEqual(occupyingPullRequests(census,'1580'),[1581]);
+ assert.deepEqual(occupyingPullRequests(census,1162),[1579]);
+ assert.deepEqual(occupyingPullRequests(census,'7'),[]);
+ for(const bad of ['', '0', 'x', undefined]) assert.throws(()=>occupyingPullRequests(census,bad),/invalid occupancy census/);
+ assert.throws(()=>occupyingPullRequests(null,'1580'),/invalid occupancy census/);
+ const occupancy=workflow.indexOf('id: occupancy');
+ assert(occupancy>workflow.indexOf('id: custody')&&occupancy<workflow.indexOf('id: attempt'));
+ assert.match(workflow,/run: node scripts\/hive-mind-draft-result.mjs --occupied/);
+ assert.match(workflow,/id: attempt\n[^\n]*\n\s+if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''/);
+ assert.match(workflow,/steps.custody.outcome == 'success' && steps.attempt.outcome != 'skipped'/);
+ assert.match(workflow,/steps.exact-pr.outputs.pull_request_number == '' && steps.occupancy.outputs.occupied_by == ''/);
+});
+
+// Issue #1580, run 43738765561: 4 minutes of SDK deletion on a runner with 80 GB free, then a 5-minute image pull
+// inside the attempt's 1200 s, left solve 15 of its 20 minutes.
+test('the image is pulled before the attempt deadline and the disk cleanup runs only when room is short',()=>{
+ const GIB=1024**3;
+ assert.equal(shortOfRoom(80*GIB,40),false);
+ assert.equal(shortOfRoom(40*GIB,40),false);
+ assert.equal(shortOfRoom(40*GIB-1,40),true);
+ for(const bad of [-1,1.5,NaN]) assert.throws(()=>shortOfRoom(bad,40),/available bytes/);
+ assert.throws(()=>shortOfRoom(GIB,0),/required gigabytes/);
+ const calls=[],lines=[],deps=available=>({measure:()=>available,run:(command,args)=>{calls.push([command,...args]);return {status:0};},log:line=>lines.push(line),env:{}});
+ assert.equal(freeDiskIfShort(['40','node','clean.mjs'],deps(80*GIB)),0);
+ assert.deepEqual(calls,[]);
+ assert.match(lines.at(-1),/80\.0 GiB available on \/, at least the 40 GiB required; skipping the cleanup/);
+ assert.equal(freeDiskIfShort(['40','node','clean.mjs'],deps(10*GIB)),0);
+ assert.deepEqual(calls,[['node','clean.mjs']]);
+ assert.throws(()=>freeDiskIfShort(['forty','node'],deps(GIB)),/usage/);
+ assert.throws(()=>freeDiskIfShort(['40'],deps(GIB)),/usage/);
+ assert.match(workflow,/run: node scripts\/free-disk-if-short.mjs 40 node .hive-mind\/scripts\/free-disk-space.mjs/);
+ assert.doesNotMatch(workflow,/run: node .hive-mind\/scripts\/free-disk-space.mjs/);
+ const pull=workflow.indexOf('id: image');
+ assert(pull>workflow.indexOf('id: occupancy')&&pull<workflow.indexOf('id: attempt'));
+ const step=workflow.slice(pull,workflow.indexOf('id: attempt'));
+ assert.match(step,/if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''/);
+ assert.match(step,/continue-on-error: true/);
+ assert.match(step,/run-with-deadline\.sh" 360 docker pull --quiet "\$FORMAL_AI_DRAFT_IMAGE"/);
+});
+
+
+for (const [id, checkoutPath, repository] of [
+ ['hive-source', '.hive-mind', 'link-assistant/hive-mind'],
+ ['source', '.formal-ai-source', undefined],
+]) test(`literal main checkout seals ${id} before maintained code runs`, {timeout: 20000}, () => {
+ const definition=YAML.parse(workflow), steps=definition.jobs.build.steps;
+ const selected=steps.find(step=>step.uses?.startsWith('actions/checkout@')&&step.with?.path===checkoutPath);
+ assert.equal(selected?.with.ref,'refs/heads/main','select the maintained branch directly before binding its actual commit');
+ assert.equal(selected.with.repository,repository);
+ assert.equal(selected.with['persist-credentials'],false);
+ const binding=steps.find(step=>step.id===id);
+ assert(steps.indexOf(selected)<steps.indexOf(binding));
+ assert(steps.indexOf(binding)<steps.findIndex(step=>id==='hive-source'?
+  step.name==='Install shared automation dependencies':step.id==='build-identity'));
+ assert.doesNotMatch(binding.run,/gh api|github\.event|inputs\./u);
+ assert.doesNotMatch(JSON.stringify(selected.with),/outputs\.|github\.event|inputs\./u);
+ // Delivery still checks out the admitted Hive commit, never a later branch tip.
+ assert.equal(definition.jobs.draft.steps.find(step=>step.with?.path==='.hive-mind').with.ref,
+  '${{ needs.build.outputs.hive_source_sha }}');
+ const directory=mkdtempSync(join(tmpdir(),'maintained-main-'));
+ try {
+  const source=join(directory,checkoutPath), output=join(directory,'output'), logs=join(directory,'logs');
+  mkdirSync(source);mkdirSync(logs);
+  const env={...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_DEFAULT_HASH:'sha1',
+   GITHUB_WORKSPACE:directory,RUNNER_TEMP:directory,GITHUB_OUTPUT:output,FORMAL_AI_DRAFT_LOG_DIR:logs};
+  const git=(...args)=>execFileSync('git',['-C',source,...args],{encoding:'utf8',env,timeout:5000}).trim();
+  git('init','--quiet','--initial-branch=main');
+  const commit=message=>git('-c','user.name=fixture','-c','user.email=fixture@example.invalid',
+   '-c','core.hooksPath=/dev/null','commit','--quiet','--allow-empty','-m',message);
+  commit('maintained main');
+  const admitted=git('rev-parse','HEAD');git('update-ref','refs/remotes/origin/main',admitted);
+  const run=()=>{
+   writeFileSync(output,'');
+   return spawnSync('bash',['-e','-o','pipefail','-c',binding.run],
+    {cwd:directory,env,encoding:'utf8',timeout:5000});
+  };
+  const accepted=run();assert.equal(accepted.status,0,accepted.stdout+accepted.stderr);
+  assert.equal(readFileSync(output,'utf8'),`sha=${admitted}\n`);
+  const identity=readFileSync(join(logs,'source-identity.txt'),'utf8');assert(identity.includes(admitted));
+  // A subsequent mutable ref/HEAD change cannot silently replace the admitted identity.
+  commit('different main');assert.notEqual(git('rev-parse','HEAD'),admitted);
+  assert.equal(readFileSync(output,'utf8'),`sha=${admitted}\n`);
+  const changed=run();assert.notEqual(changed.status,0);
+  assert.equal(readFileSync(output,'utf8'),'');
+  assert.equal(readFileSync(join(logs,'source-identity.txt'),'utf8'),identity);
+  git('reset','--quiet','--hard',admitted);git('update-ref','-d','refs/remotes/origin/main');
+  const missing=run();assert.notEqual(missing.status,0);
+  assert.equal(readFileSync(output,'utf8'),'');
+  assert.equal(readFileSync(join(logs,'source-identity.txt'),'utf8'),identity);
+ } finally {rmSync(directory,{recursive:true,force:true});}
 });

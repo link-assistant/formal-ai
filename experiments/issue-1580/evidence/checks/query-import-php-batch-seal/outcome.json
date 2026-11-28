@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "sourceHead": "a0798663bcffd11a46cd2cb202bb76ef42002071",
+  "observedAt": "2026-11-21T01:07:12.187737+00:00",
+  "fullReplay": {
+    "entries": 141,
+    "passedOrSkipped": 140,
+    "failed": [
+      "check-abbreviations"
+    ]
+  },
+  "focusedRepairedCheckPassed": true,
+  "ratchetsChanged": false,
+  "templateCasesPassed": 93,
+  "selectedVersionCasesPassed": 9,
+  "nativeExecutionPerformedLocally": false,
+  "includedStringQueryRuntimeQualified": false,
+  "repairDiffReviewedLines": 606,
+  "wholePrReviewComplete": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

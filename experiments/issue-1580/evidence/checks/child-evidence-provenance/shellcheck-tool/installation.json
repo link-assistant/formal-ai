@@ -1,0 +1,12 @@
+{
+  "tag": "v0.11.0",
+  "releaseUrl": "https://github.com/koalaman/shellcheck/releases/tag/v0.11.0",
+  "assetUrl": "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz",
+  "assetSha256": "8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198",
+  "githubAssetDigest": "sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198",
+  "binarySha256": "4da528ddb3a4d1b7b24a59d4e16eb2f5fd960f4bd9a3708a15baddbdf1d5a55b",
+  "installedPath": "/home/box/.local/bin/shellcheck",
+  "version": "ShellCheck - shell script analysis tool\nversion: 0.11.0\nlicense: GNU General Public License, version 3\nwebsite: https://www.shellcheck.net\n",
+  "nativeProjectBuildExecuted": false,
+  "independentAuthorshipCredit": 0
+}

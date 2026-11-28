@@ -1,0 +1,77 @@
+{
+  "publishedHead": "84e1ad85fc70541ae64c59a8518dbce59b883e64",
+  "workflowSuccess": 25,
+  "workflowSkipped": 1,
+  "workflowFailure": 0,
+  "checkRuns": 143,
+  "annotationLevels": {
+    "notice": 21,
+    "warning": 11,
+    "failure": 1
+  },
+  "mergeHead": "873f1c339aa0df4307c05f7aa6924cb909ef596e",
+  "initialFailures": [
+    "test-2",
+    "test-4",
+    "test-7",
+    "whitespace"
+  ],
+  "followupCommandsPassed": 5,
+  "maintainedCasesPassed": 133,
+  "localGates": {
+    "PASS": 88,
+    "SKIP": 53
+  },
+  "sourceWarnings": 87,
+  "retainedRecords": 348,
+  "allArchiveHashesVerified": true,
+  "sourceSha256": {
+    ".github/workflows/native-type-check.yml": "cb4a729522de435fbecd04ceca80348fad11ef9af7fe5edf3015932211325a61",
+    "scripts/ci-pull-request-admission.mjs": "14e1577b574281fbb1c3a3d8be2d12e83ff0e8540e054451f8f0d7966078b430",
+    "scripts/list-fast-pull-request-tests.mjs": "1fb0ed4fa4235979e730d6d9178793351db4ba6a253a7a3b6ebd8f712917ee7e",
+    "experiments/issue-1580/native-checkout-retry.test.mjs": "a8ed94eb52d402488090de75a5d60480a610104a347b03438174805171327945",
+    "experiments/issue-1580/fast-inventory-boundary.test.mjs": "84cd1ce5bec1bf51e3e9423294d3b430a1ec17b4a57872362631e44e1b0eed8b",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "94a94ae4815aeab519e1d4790015b1fe0b636cdc85eea5cb911c049a105fe1b9",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs": "eb48d3c9478f9def45d6e5f5c6e15fe7f477099f9aa81540211e625b6136cb3f",
+    "docs/ci-cd/default-branch-builds.md": "ee75d67657e8a45548eaa10d4a1ced59051d8cd6933bbb10adc4f098d22b0cf3",
+    "changelog.d/issue-1580-dynamic-meta-ci-inputs.md": "6169af66922dd014adb9fe59b32566dce811f9a2026e33a6fe81ab416997258d"
+  },
+  "localNativeBuildPerformed": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "postArchivePreflight": {
+    "allRequiredPassed": true,
+    "records": 20,
+    "mergeParentCurrent": true,
+    "queuesEmpty": true,
+    "unchangedRawLogsPreserved": true,
+    "broadHistoricalWhitespaceFailureRetained": true,
+    "committed": false,
+    "pushed": false,
+    "fullIssueComplete": false,
+    "independentAuthorshipCredit": 0
+  },
+  "feedback": [
+    {
+      "endpoint": "issue-comments",
+      "count": 1,
+      "newOrChangedBodies": []
+    },
+    {
+      "endpoint": "conversation-comments",
+      "count": 11,
+      "newOrChangedBodies": []
+    },
+    {
+      "endpoint": "inline-comments",
+      "count": 0,
+      "newOrChangedBodies": []
+    },
+    {
+      "endpoint": "reviews",
+      "count": 0,
+      "newOrChangedBodies": []
+    }
+  ],
+  "postArchiveEvidenceNamingCorrection": "spell stage-document in full; preserve the failing naming check"
+}

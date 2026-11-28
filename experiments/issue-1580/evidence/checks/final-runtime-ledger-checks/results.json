@@ -1,0 +1,40 @@
+[
+  {
+    "label": "test-issue-1328-bounded-retries.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1328-bounded-retries.test.mjs"
+    ],
+    "completedAt": "2026-11-17T22:16:47.171152+00:00",
+    "seconds": 16.104,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/final-runtime-ledger-test-issue-1328-bounded-retries.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/final-runtime-ledger-checks/test-issue-1328-bounded-retries.test.log.gz",
+    "rawSha256": "4a8ea13a6a8ac8ef1b71a3ef112746c21b353cfa7d6144dcaa0c349325a50a55",
+    "lines": 33
+  },
+  {
+    "label": "test-main-only-regression-ledger.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/main-only-regression-ledger.test.mjs"
+    ],
+    "completedAt": "2026-11-17T22:16:47.531922+00:00",
+    "seconds": 0.358,
+    "exitCode": 1,
+    "log": "/tmp/issue-1580-research/final-runtime-ledger-test-main-only-regression-ledger.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/final-runtime-ledger-checks/test-main-only-regression-ledger.test.log.gz",
+    "rawSha256": "b45685fd29aa839d93d2960ab63ce134d58585270e99520c20e56c3cedde4603",
+    "lines": 32
+  }
+]

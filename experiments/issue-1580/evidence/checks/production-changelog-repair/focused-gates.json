@@ -1,0 +1,57 @@
+[
+  {
+    "name": "check-file-size",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "check-dependency-direction",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-dependency-direction"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "check-abbreviations",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "check-hardcoded-language",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-hardcoded-language"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "release-1",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "release#1"
+    ],
+    "exitCode": 0
+  }
+]

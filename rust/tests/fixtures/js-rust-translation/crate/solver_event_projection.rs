@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=fd6e2b084d25d7080f9badb4633a758448ed475e78eab21691f4b9d1a0192428 bytes=6044
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=6ba75081a62af6edb87bcb1952621d2e45a1c2748aefcaee99d5e63d465bed4d bytes=6151
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=4
 
@@ -68,4 +68,4 @@ pub const UNKNOWN_RULE_SELECTION: &str = "initial unknown reason no_seed_route n
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers Array.isArray | JSDoc type {…} | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | global call String() | method call .filter() | method call .find() | method call .has() | method call .map() | method call .push() | method call .slice() | method call .some() | null | nullish coalescing | object without a $ tag | optional chaining | sibling value
+// formal-ai:blockers Array.isArray | JSDoc type {…} | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | global call String() | method call .filter() | method call .find() | method call .has() | method call .map() | method call .push() | method call .slice() | method call .some() | null | nullish coalescing | object spread | object without a $ tag | optional chaining | sibling value | typeof operator

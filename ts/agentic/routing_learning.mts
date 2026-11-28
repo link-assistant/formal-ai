@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: 'reported_matrix_and_unseen_paraphrases_pass',
   path: ROUTING_LEARNING_PATH,
   taskMessage: 'learning_report_task_tool_routing_learning',
-  memoryPath: 'data/meta/issue-712-routing-learning.lino',
   subjectMessage: 'learning_report_subject_tool_routing_learning',
 }, 'isRoutingLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const task = reportApi.task;
 
 /** Mirrors `fn is_routing_learning_task` in rust/src/agentic_coding/routing_learning.rs. @param {string} prompt */
 export const isRoutingLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/routing_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/routing_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

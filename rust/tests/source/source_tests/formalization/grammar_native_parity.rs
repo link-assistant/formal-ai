@@ -23,10 +23,34 @@ fn raw_grammar_vocabulary_preserves_case_defaults_and_declared_languages() {
             expected
         );
     }
+    for vector in vectors["structural"].as_array().unwrap() {
+        let expected = vector["values"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|value| value.as_str().unwrap().to_owned())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            structural_rule_values_from(
+                root,
+                vector["rule"].as_str().unwrap(),
+                vector["kind"].as_str().unwrap()
+            ),
+            expected
+        );
+    }
     assert_eq!(grammar_root().unwrap().name, "text-formalization");
     assert_eq!(
         grammar_vocabulary("xx", "numeric-decimal"),
         Vec::<String>::new()
     );
     assert!(grammar_root_from(&crate::seed::parse_lino("unrelated root")).is_none());
+}
+
+#[test]
+fn task_decomposition_preserves_decoded_ascii_quote_pairs() {
+    let values = structural_rule_values("task-decomposition", "quote-pair");
+    assert!(values.contains(&"\"\"".to_owned()));
+    assert!(values.contains(&"''".to_owned()));
+    assert!(values.iter().all(|pair| pair.chars().count() == 2));
 }

@@ -323,9 +323,8 @@ fn pipeline_status_gate_covers_every_other_job() {
     }
 }
 
-/// `main` never gets cancelled by concurrency, so a cancellation there can only
-/// be a timeout or a manual cancel -- both must be red. Elsewhere a supersede is
-/// legitimate and must stay a warning.
+/// A cancelled dependency is incomplete on every branch. Supersession does not
+/// prove a check passed, and a current PR timeout must remain a failure.
 #[test]
 fn gate_script_treats_cancellation_on_main_as_a_failure() {
     let script = repository_file("scripts/check-pipeline-status.sh");
@@ -340,8 +339,8 @@ fn gate_script_treats_cancellation_on_main_as_a_failure() {
         "a cancellation on main must be an error annotation"
     );
     assert!(
-        script.contains("::warning::Cancelled jobs:"),
-        "a cancellation on another ref is an ordinary supersede: warn only"
+        script.contains("::error::Pipeline has cancelled jobs:"),
+        "a cancellation on another ref must not hide an unfinished check"
     );
 
     let workflow = release_workflow();
@@ -392,10 +391,10 @@ fn gate_script_behaves_correctly_for_every_conclusion() {
         // The case this whole issue is about.
         ("cancelled on main is a timeout", timed_out, "true", false),
         (
-            "cancelled elsewhere is a supersede",
+            "cancelled elsewhere remains incomplete",
             timed_out,
             "false",
-            true,
+            false,
         ),
         ("outright failure", failed, "false", false),
     ];

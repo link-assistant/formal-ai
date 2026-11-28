@@ -122,6 +122,7 @@ export function createBrowserContext(overrides = {},{provenance=false}={}) {
   const sandbox = {};
   const context = vm.createContext(sandbox);
   initializeParserBootstrap(context,provenance);
+  loadBrowserScript(context, "js/seed-record-readers.js");
   Object.assign(sandbox, {
     globalThis: sandbox,
     window: sandbox,
@@ -195,7 +196,7 @@ const runWorkerScript = vm.Script.prototype.runInContext;
 const parserMemoContexts = new WeakMap();
 const counterOwnDescriptor = Object.getOwnPropertyDescriptor;
 const counterFreeze = Object.freeze;
-const parserMemoSeedIdentity = "4a3b4ef0056d6b191f2b2504189f1e760c419c6ed945e3bb9f022de44d076c4d";
+const parserMemoSeedIdentity = "57de2fd46c51297f1b67efd1e998b07cf3211d098d225219c2fa549c5bba44ca";
 const counterVmScriptDescriptor = counterOwnDescriptor(vm, "Script");
 const counterVmPrototypeDescriptor = counterOwnDescriptor(WorkerScript, "prototype");
 const counterVmRunDescriptor = counterOwnDescriptor(counterVmPrototypeDescriptor.value, "runInContext");
@@ -312,6 +313,9 @@ export function loadBrowserScript(context, relativePath) {
     evaluated.set(script, parserBootstrapIdentity);
     return;
   }
+  // The constructor already completed this readonly lexical provider.
+  // Only the private evaluator receipt for these exact bytes permits reuse.
+  if (script === "js/seed-record-readers.js" && evaluated.get(script) === sourceHash) return context;
   evaluated.delete(script);
   const record = prerequisiteRecords.get(script);
   if (record) {
@@ -548,8 +552,8 @@ export class WorkerHost {
    * greets with the canonical wording, so the worker's per-reply greeting
    * variation (a browser preference) is off here.
    */
-  async solve(prompt, history = [], options = {}) {
-    const solve = "solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)";
+  async solve(prompt, history = [], { preferences = {}, ...options } = {}) {
+    const solve = "solve(__serverPrompt, __serverHistory, { greetingVariations: false, ...__serverPreferences }, {}, [], __serverOptions)";
     const expression = options.readOnly ? `(async () => {
       const retained = new Map(metaLearnedChunks);
       try { return await ${solve}; }
@@ -557,32 +561,30 @@ export class WorkerHost {
         metaLearnedChunks.clear();
         for (const [word, chunk] of retained) metaLearnedChunks.set(word, chunk);
         metaNewChunks.clear();
-        __serverPrompt = __serverHistory = __serverOptions = undefined;
+        __serverPrompt = __serverHistory = __serverOptions = __serverPreferences = undefined;
       }
     })()` : solve;
     const result = await this.run(expression, {
       __serverPrompt: prompt,
       __serverHistory: history,
       __serverOptions: options,
+      __serverPreferences: preferences,
     });
     // Issue #1165 R1165-10: the native `WriteProgram` branch reads the procedure cache file.
-    return applyProcedureCache(result, prompt, this, await this.catalogTemplate(), options);
+    return applyProcedureCache(result, prompt, this, await this.catalogTemplate());
   }
 
   /**
-   * The worker's catalog template for a `(task, language)` pair (rediscovered
-   * from documentation first, issue #1165 R1165-1), what `prompt` rendered it
-   * to (the inline replacement a customised request makes), and the
-   * rediscovered row when there is one, for the procedure-cache read.
+   * The pair's local template and the result
+   * of applying the caller's inline replacement for the procedure-cache read.
    */
   async catalogTemplate() {
     const context = await this.boot();
     if (!this.templateFor) {
       this.templateFor = evaluate(context, `((prompt, task, language) => {
         const template = writeProgramTemplate(task, language);
-        if (typeof template !== "string") return { template: null, rendered: null, documented: null };
-        const documented = documentedProgram(task, language).recipe;
-        return { template, rendered: applyInlineHelloWorldOutputReplacement(prompt, task, template), documented };
+        if (typeof template !== "string") return { template: null, rendered: null };
+        return { template, rendered: writeProgramTemplateForPrompt(prompt, task, language, template) };
       })`);
     }
     return this.templateFor;

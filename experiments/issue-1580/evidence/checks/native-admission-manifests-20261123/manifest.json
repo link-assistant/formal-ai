@@ -1,0 +1,30 @@
+{
+  "sourceBefore": "8682a89a84d391d987a967b5764a27c8d1d0c457",
+  "sparseCommit": "253954b56b1dda8094fb219e70bc2595b1fc543b",
+  "npmCommit": "2844e13579e9e1c59a2b207c990ffe1bfd5ff941",
+  "completeLocalVerification": true,
+  "nativeVerification": "pending next hosted head",
+  "failingOriginalJob": 137479512542,
+  "failingOriginalRun": 45109737000,
+  "originalWorkflowControls": {
+    "passed": 283,
+    "failed": 2
+  },
+  "localJavaScriptTests": {
+    "maintenance": 10,
+    "neighboringWorkflow": 6,
+    "nativeArtifact": 20
+  },
+  "localGateTwins": 6,
+  "newNativeRegressionTests": 6,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 166864,
+    "sha256": "7b72bfa8f2b5367697e799e0d188948f11b2b317283352330ae264348166838c"
+  },
+  "members": 56,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "recordedAt": "2026-11-23T04:32:00.146140+00:00"
+}

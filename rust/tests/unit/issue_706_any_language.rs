@@ -343,7 +343,8 @@ fn the_learn_cli_replays_the_language_frontier_through_the_shared_cycle() {
     assert!(slugs.contains(&"language-gap"));
     assert!(formal_ai::learning_cycle::recorded_frontier("nope").is_none());
 
-    let run = formal_ai::learning_cycle::language_gap_learning_cycle();
+    let report = read("data/meta/learning-frontier-language-gap.lino");
+    let run = formal_ai::learning_cycle::language_gap_learning_cycle(&report);
     assert_eq!(run.frontier, "language-gap");
     assert_eq!(
         run.frontier_items, 7,
@@ -372,7 +373,8 @@ fn adopting_the_proposals_changed_what_the_engine_answers() {
     // A learning loop that only emits proposals proves nothing (issue #701's
     // rule). The ledger replays the frozen "before" record through the live
     // engine and must show a real capability delta for every prompt.
-    let ledger = formal_ai::language_adoption::language_adoption_ledger();
+    let report = read("data/meta/learning-frontier-language-gap.lino");
+    let ledger = formal_ai::language_adoption::language_adoption_ledger(&report);
     assert_eq!(ledger.pairs.len(), 7);
     assert_eq!(ledger.unadopted().len(), 0, "every recorded prompt adopted");
     for pair in ledger.adopted() {
@@ -385,7 +387,7 @@ fn adopting_the_proposals_changed_what_the_engine_answers() {
     assert_eq!(
         read("data/meta/language-adoption-ledger.lino"),
         ledger.links_notation(),
-        "run `cargo run --example issue_706_language_adoption > data/meta/language-adoption-ledger.lino`"
+        "run `cargo run --example issue_706_language_adoption -- ../data/meta/learning-frontier-language-gap.lino > ../data/meta/language-adoption-ledger.lino`"
     );
 
     // The adopted surfaces live in seed data, not in Rust.

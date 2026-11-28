@@ -1,0 +1,24 @@
+✔ ranked Wikibooks procedures verify the page title, required words, and procedure section (4102.006567ms)
+✔ unchanged native procedural assertions: greeting_prefixed_russian_connect_how_to_composes_procedure (14527.528246ms)
+✔ unchanged native procedural assertions: procedural_elaboration_followup_rebinds_to_prior_how_to (12784.815199ms)
+✔ unchanged native procedural assertions: procedural_elaboration_followup_covers_supported_languages (14525.647579ms)
+✔ no-source plans retain transport encoding and producer-owned typed stages (2117.551122ms)
+✔ disabled source services keep their actual outcome and skip wikiHow requests (1965.8516ms)
+✔ a procedural followup requires an actual prior procedural dialogue (2164.533884ms)
+✔ genuine captured source steps survive discovery-plan rendering (3028.810677ms)
+✔ typed discovery stages distinguish skipped, attempted and disabled wikiHow (1896.404064ms)
+✔ an unregistered Russian how-to uses the localized CORS API and quotes its ordered steps (2314.347663ms)
+✔ the browser uses a matching archival capture for the short Russian question after a live request fails (2416.675063ms)
+✔ publisher search discovers a held-out Russian title while preserving the requested topic (2338.901702ms)
+✔ a mismatched parse or archive cannot become numbered instructions (2236.88834ms)
+✔ the browser tries the web capture component when the archive is unavailable (2069.089355ms)
+✔ the capture component can discover and verify a source after browser transport fails (3058.73655ms)
+✔ offline and wikiHow opt-out prevent both live and archived wikiHow requests (2545.228029ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74958.309415

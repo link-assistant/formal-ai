@@ -1,0 +1,25 @@
+{
+  "oldCases": 223,
+  "newCases": 223,
+  "cargoSha256": "e5d8a3d8d23da21f5c27a61778c749c1ac206a2325d27b0894ed0a489740fe4c",
+  "caseChanges": [
+    {
+      "id": "rust/tests/unit/specification/meta_construction.rs::modes_round_trip_through_their_slugs",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/meta_self_improvement.rs::modes_round_trip_through_their_slugs",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/selection.rs::modes_round_trip_through_their_slugs",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/skill_ledger.rs::modes_round_trip_through_their_slugs",
+      "change": "updated"
+    }
+  ],
+  "unsupportedChanges": [],
+  "sourceChanges": []
+}

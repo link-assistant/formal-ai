@@ -1,0 +1,15 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "experiments/issue-1580/template-python-audit-integrity.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 1.1,
+  "log": "python-after.log.gz",
+  "rawSha256": "337a1cab9dd89b7ce2fb29d2f21276573c4eb9491f11e6b9b262b16a6e502ffa"
+}

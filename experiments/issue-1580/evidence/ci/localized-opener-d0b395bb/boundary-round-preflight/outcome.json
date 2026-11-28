@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-18T03:16:20.187628+00:00",
+  "main": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "publishedHead": "d0b395bb2310e285c89d93818571e4d54ed59c02",
+  "passingWorkflows": 22,
+  "failedWorkflows": {
+    "44226415780": "failure"
+  },
+  "feedbackUnchanged": true,
+  "requiredSubIssues": 0,
+  "noActiveRuns": true,
+  "nativeBehaviorVerified": false,
+  "complete": true
+}

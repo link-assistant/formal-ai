@@ -73,8 +73,10 @@ test.describe('Issue #343 Russian spec-driven how-to typo', () => {
           'intent:procedural_how_to',
         );
         await expect(body).toContainText('spec driven development');
-        await expect(body).toContainText('web search');
         await expect(body).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        await expect(lastMessage).toContainText(
+          'web_search:request:how to spec driven development',
+        );
         await expect(lastMessage).toContainText(
           'spelling_correction:dirven->driven',
         );

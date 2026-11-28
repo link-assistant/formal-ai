@@ -61,6 +61,8 @@ roles
     kind predicate
   brainstorming_request
     kind meaning
+  business-market-qualifier
+    kind predicate
   cache-clearing-action
     kind predicate
   cache-reference
@@ -417,6 +419,8 @@ roles
     kind meaning
   fact_relation
     kind predicate
+  fact_subject_connector
+    kind meaning
   feature_action_arithmetic
     kind meaning
   feature_action_planning
@@ -721,6 +725,8 @@ roles
     kind meaning
   nondeterministic_marker
     kind predicate
+  noun
+    kind meaning
   null
     kind meaning
   number_constraint_entity
@@ -757,6 +763,8 @@ roles
     kind meaning
   observed-callable-authoring
     kind meaning
+  occupation-title
+    kind predicate
   ontology_category
     kind predicate
   ontology_root
@@ -816,6 +824,8 @@ roles
   production_relation
     kind predicate
   program-file-obligation
+    kind meaning
+  program-reverse-operand-introducer
     kind meaning
   program-termination-clause
     kind meaning
@@ -915,6 +925,8 @@ roles
     kind predicate
   repository_reference
     kind meaning
+  request-prefix
+    kind predicate
   request_function_word
     kind meaning
   request_objective_lead
@@ -1062,6 +1074,8 @@ roles
   software_sentence_end_character
     kind meaning
   software_step_granularity
+    kind meaning
+  source
     kind meaning
   source-authoring-grammar
     kind meaning

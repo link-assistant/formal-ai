@@ -1,0 +1,58 @@
+[
+  {
+    "file": "after.log.gz",
+    "rawSha256": "f2f56d6153803d2eb9dcaf56a0c5ef0069f550e62904ba9982460d5d34453abe",
+    "archiveSha256": "3a5730d5c4e6e0e57d214c0cad5db0d308ca3fe9276a4e811f55e3010dd4a587",
+    "bytes": 9504,
+    "lines": 105
+  },
+  {
+    "file": "before.log.gz",
+    "rawSha256": "40236f34fc97310930b79d4aea54447269b8d4ff596d2c78d912b1e45185e973",
+    "archiveSha256": "f175430d93290eefd92bc6c4eb98b00db1a77d9fd0e51d952aa66deb0c0cf6a3",
+    "bytes": 10482,
+    "lines": 128
+  },
+  {
+    "file": "check-changelog-fragment-js-twin.log.gz",
+    "rawSha256": "1927d8bf642f24daa2ad7ff6f553ac105f9f53f91deaf94b1818d405b44c098d",
+    "archiveSha256": "a00b138a325fc45302159aa60d791382f5ebf7c9acd278b460458deda5e573f6",
+    "bytes": 80,
+    "lines": 3
+  },
+  {
+    "file": "diff-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "gate-inventory.log.gz",
+    "rawSha256": "a2261f7178ebd5f67b64afbcebc4933e7eaa5e35b83671d6d792a4184f5c6050",
+    "archiveSha256": "4d5087662f181e7b160808e74d8cf0e4a4abaa7c895f13da124582d6a3572685",
+    "bytes": 17851,
+    "lines": 140
+  },
+  {
+    "file": "release-1.log.gz",
+    "rawSha256": "6cab6a814673372a4297ebc364d5fbd72927d9f7a8e2132f595b3d4f1653e9da",
+    "archiveSha256": "4550ef24f967cb4d92cd9ddc939049570cb2bb2b6a39077af05061b00b255e69",
+    "bytes": 57,
+    "lines": 3
+  },
+  {
+    "file": "rustfmt-default-edition-attempt.log.gz",
+    "rawSha256": "0e333e483dda20869279e1a800201ecf89e4995b8a0af2b28ac632d07f17ebe5",
+    "archiveSha256": "50cc7854bc671221468866c3310e055a63c648c0b282191cd49b94ecffdf9089",
+    "bytes": 967,
+    "lines": 19
+  },
+  {
+    "file": "rustfmt.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  }
+]

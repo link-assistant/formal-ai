@@ -130,65 +130,95 @@ fn generated_output_verifier_rejects_wrong_bytes_and_nonzero_processes() {
     fs::remove_dir_all(root).unwrap();
 }
 
-#[test]
-fn repository_workflows_include_runtime_setup_and_output_verification() {
-    for (language, setup) in [
-        ("Kotlin", "kotlin"),
-        ("Scala", "coursier"),
-        ("Rust", "rustup"),
-        ("Python", "setup-python"),
-    ] {
-        let mut messages = vec![ChatMessage::user(prompt())];
-        let objective = page(language);
-        let (planned, _) = drive(
-            &AGENT_TOOLS,
-            &mut messages,
-            |tool, arguments| {
-                if is_work_item_read(tool, arguments) {
-                    objective.clone()
-                } else {
-                    String::new()
-                }
-            },
-            24,
-        );
-        let workflow = planned
-            .iter()
-            .find(|call| path_of(call).starts_with(".github/workflows/"))
-            .unwrap_or_else(|| panic!("missing workflow for {language}"));
+fn verify_repository_workflow(language: &str, setup: &str) {
+    // Delivery checks consume real status, tracked paths and source bytes.
+    // A blank compiler fixture cannot stand in for those Git observations.
+    let delivery = crate::offline_delivery::Workspace::for_work_item(
+        language,
+        &format!("workflow-replay-{language}"),
+        BRANCH,
+        PR,
+    );
+    let mut messages = vec![ChatMessage::user(prompt())];
+    let objective = page(language);
+    let (planned, _) = drive_with_delivery_workspace(
+        &AGENT_TOOLS,
+        &mut messages,
+        |tool, arguments| {
+            if is_work_item_read(tool, arguments) {
+                objective.clone()
+            } else if serde_json::from_str::<serde_json::Value>(arguments)
+                .ok()
+                .and_then(|value| value["command"].as_str().map(str::to_owned))
+                .as_deref()
+                == Some("sh tests/verify-output.sh")
+            {
+                // This unit covers workflow composition; compiler execution
+                // is an explicit fixture, separate from observed Git delivery.
+                "Output: Hello, World!\n\nExit Code: 0".to_owned()
+            } else {
+                String::new()
+            }
+        },
+        24,
+        Some(&delivery),
+    );
+    let workflow = planned
+        .iter()
+        .find(|call| path_of(call).starts_with(".github/workflows/"))
+        .unwrap_or_else(|| panic!("missing workflow for {language}"));
+    assert!(
+        workflow.arguments.to_lowercase().contains(setup),
+        "{language}: {workflow:?}"
+    );
+    // Every step opens its own line: the rendered fragments are line
+    // blocks, never glued onto the previous step's last line.
+    let written: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
+    for line in written["content"].as_str().unwrap_or_default().lines() {
+        let markers = line.matches("- uses:").count() + line.matches("- run:").count();
         assert!(
-            workflow.arguments.to_lowercase().contains(setup),
-            "{language}: {workflow:?}"
-        );
-        // Every step opens its own line: the rendered fragments are line
-        // blocks, never glued onto the previous step's last line.
-        let written: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
-        for line in written["content"].as_str().unwrap_or_default().lines() {
-            let markers = line.matches("- uses:").count() + line.matches("- run:").count();
-            assert!(
-                markers == 0 || (markers == 1 && line.trim_start().starts_with('-')),
-                "{language}: glued step line `{line}`"
-            );
-        }
-        let verifier = planned
-            .iter()
-            .find(|call| path_of(call) == "tests/verify-output.sh")
-            .unwrap_or_else(|| panic!("missing output assertion for {language}"));
-        assert!(verifier.arguments.contains("Hello, World!"), "{verifier:?}");
-        assert!(
-            workflow.arguments.contains("tests/verify-output.sh"),
-            "{workflow:?}"
-        );
-        let commit = planned
-            .iter()
-            .map(command_of)
-            .find(|command| command.contains("git commit"))
-            .expect("commit after verification");
-        assert!(
-            !commit.contains("git add -A"),
-            "compiler outputs and unrelated files must not be staged: {commit}"
+            markers == 0 || (markers == 1 && line.trim_start().starts_with('-')),
+            "{language}: glued step line `{line}`"
         );
     }
+    let verifier = planned
+        .iter()
+        .find(|call| path_of(call) == "tests/verify-output.sh")
+        .unwrap_or_else(|| panic!("missing output assertion for {language}"));
+    assert!(verifier.arguments.contains("Hello, World!"), "{verifier:?}");
+    assert!(
+        workflow.arguments.contains("tests/verify-output.sh"),
+        "{workflow:?}"
+    );
+    let commit = planned
+        .iter()
+        .map(command_of)
+        .find(|command| command.contains("git commit"))
+        .unwrap_or_else(|| panic!("commit after verification for {language}: {planned:?}"));
+    assert!(
+        !commit.contains("git add -A"),
+        "compiler outputs and unrelated files must not be staged: {commit}"
+    );
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_kotlin() {
+    verify_repository_workflow("Kotlin", "kotlin");
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_scala() {
+    verify_repository_workflow("Scala", "coursier");
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_rust() {
+    verify_repository_workflow("Rust", "rustup");
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_python() {
+    verify_repository_workflow("Python", "setup-python");
 }
 
 #[test]
@@ -356,8 +386,19 @@ fn drive(
     results: impl Fn(&str, &str) -> String,
     max_steps: usize,
 ) -> (Vec<PlannedToolCall>, Option<String>) {
+    drive_with_delivery_workspace(tools, messages, results, max_steps, None)
+}
+
+fn drive_with_delivery_workspace(
+    tools: &[&str],
+    messages: &mut Vec<ChatMessage>,
+    results: impl Fn(&str, &str) -> String,
+    max_steps: usize,
+    delivery: Option<&crate::offline_delivery::Workspace>,
+) -> (Vec<PlannedToolCall>, Option<String>) {
     let mut planned = Vec::new();
     let append = append_provider::AppendWorkspace::new();
+    let mut workspace = crate::observed_plan_tools::ToolWorkspace::new("issue-1133-source-probes");
     let definitions: Vec<serde_json::Value> = tools
         .iter()
         .filter(|name| matches!(**name, "Write" | "write"))
@@ -369,6 +410,11 @@ fn drive(
             Some(AgenticPlan::ToolCalls(calls)) => {
                 let call = calls[0].clone();
                 let args: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+                // Codex echoes the Responses custom-tool projection, not planner JSON.
+                let patch = (call.tool == "apply_patch")
+                    .then(|| formal_ai::protocol::apply_patch_input(&call.arguments))
+                    .flatten();
+                let echoed = patch.as_deref().unwrap_or(&call.arguments);
                 let appended = if matches!(call.tool.as_str(), "Write" | "write")
                     && args["append_mode"] == "atomic_record_append"
                 {
@@ -376,18 +422,58 @@ fn drive(
                 } else {
                     None
                 };
+                // Source observations must describe the actual workspace, including ENOENT.
+                // Compiler and network results remain the explicit per-test fixtures.
+                let command = command_of(&call);
+                let actual_delivery = delivery.filter(|_| {
+                    patch.is_some()
+                        || matches!(call.tool.as_str(), "Write" | "write")
+                        || (matches!(call.tool.as_str(), "shell" | "bash" | "Bash")
+                            && !is_work_item_read(&call.tool, &call.arguments)
+                            && command != "sh tests/verify-output.sh")
+                });
+                let observed = if let Some(delivery) = actual_delivery {
+                    let tool = if patch.is_some() || matches!(call.tool.as_str(), "Write" | "write")
+                    {
+                        "write"
+                    } else {
+                        "bash"
+                    };
+                    Some(ChatMessage::tool_result(
+                        format!("c{step}"),
+                        &call.tool,
+                        delivery.execute(tool, &args),
+                    ))
+                } else if patch.is_some() {
+                    // Execute the same declared creation through the workspace's
+                    // write/readback adapter while retaining the external tool name.
+                    let creation = PlannedToolCall {
+                        tool: "write".to_owned(),
+                        arguments: call.arguments.clone(),
+                    };
+                    let mut observed = workspace.execute(&format!("c{step}"), &creation);
+                    observed.name = Some(call.tool.clone());
+                    Some(observed)
+                } else if appended.is_none()
+                    && (args["command"]
+                        .as_str()
+                        .is_some_and(|command| command.contains("workspace-source-v1"))
+                        || matches!(call.tool.as_str(), "Write" | "write"))
+                {
+                    Some(workspace.execute(&format!("c{step}"), &call))
+                } else {
+                    None
+                };
                 let result = match &appended {
                     Some(Ok(_)) => String::new(),
                     Some(Err(error)) => format!("Error: {error}"),
+                    None if observed.is_some() => String::new(),
                     None => results(&call.tool, &call.arguments),
                 };
-                record(
-                    messages,
-                    &format!("c{step}"),
-                    &call,
-                    &call.arguments,
-                    &result,
-                );
+                record(messages, &format!("c{step}"), &call, echoed, &result);
+                if let Some(observed) = observed {
+                    *messages.last_mut().expect("recorded source observation") = observed;
+                }
                 if let Some(receipt) = appended {
                     let result_message = messages.last_mut().expect("recorded append result");
                     match receipt {
@@ -419,7 +505,34 @@ fn path_of(call: &PlannedToolCall) -> String {
 }
 
 fn is_work_item_read(tool: &str, arguments: &str) -> bool {
-    tool == "webfetch" || arguments.contains("gh issue view")
+    // A delivery command also reads the issue title before editing the PR.
+    // Only the initial standalone read belongs to the page-response fixture.
+    tool == "webfetch"
+        || serde_json::from_str::<serde_json::Value>(arguments)
+            .ok()
+            .and_then(|args| args["command"].as_str().map(str::to_owned))
+            .is_some_and(|command| command.starts_with("gh issue view "))
+}
+
+#[test]
+fn delivery_title_read_does_not_replace_the_pr_edit_with_a_mocked_page() {
+    let read = serde_json::json!({
+        "command": format!("gh issue view '{ISSUE}' --json title --jq .title")
+    });
+    assert!(is_work_item_read("shell", &read.to_string()));
+    assert!(is_work_item_read(
+        "webfetch",
+        r#"{"url":"https://example.invalid"}"#
+    ));
+    for command in [
+        format!(
+            "pr_title=$(gh issue view '{ISSUE}' --json title --jq .title) && gh pr edit '{PR}' --body 'Resolves {ISSUE}'"
+        ),
+        "printf '%s' 'gh issue view is documentation'".to_owned(),
+    ] {
+        let args = serde_json::json!({"command": command}).to_string();
+        assert!(!is_work_item_read("shell", &args), "{args}");
+    }
 }
 
 // ---- F1 and the 2026-09-16 Kotlin rerun ----------------------------------

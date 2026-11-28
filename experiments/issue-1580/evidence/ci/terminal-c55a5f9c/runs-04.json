@@ -1,0 +1,19 @@
+[
+  {
+    "file": "44988162955.log.gz",
+    "rawBytes": 12259444,
+    "rawSha256": "1d431b6a156ca75a52a281b808c3244371f44b9a0866de8a0c61cc304457a41c",
+    "archiveSha256": "364a7a7ecaff6c4e538754f264c87a007542afcaa2f2b9ab81e1f107ed59394e",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162955,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:53:01Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162955",
+      "workflowName": "CI/CD Pipeline"
+    },
+    "rawLines": 71604
+  }
+]

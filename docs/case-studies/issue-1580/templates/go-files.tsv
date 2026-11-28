@@ -1,0 +1,43 @@
+path	git_blob	bytes	role	local_same_name	comparison
+.changeset/README.md	e2acfe234784e2dd4dc536801ac4a7cbb37d9bf4	1393	build-or-policy-configuration	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+.changeset/add-changeset-workflow.md	705684f4955baecc8ae7eef61d843a144a820db2	391	build-or-policy-configuration		no-same-name-file
+.changeset/config.json	17a8556c2ae963b8607b666e2472863990db82a1	137	build-or-policy-configuration		no-same-name-file
+.changeset/fix-ci-workflow-dependencies.md	8c9c6c75e5848ddfda8fb9554bf7e2bbe52f5bc3	526	build-or-policy-configuration		no-same-name-file
+.changeset/gate-external-state-and-rerun-unacquired.md	282870b317074c564cad166436544d4d196a94d9	474	build-or-policy-configuration		no-same-name-file
+.changeset/harden-release-workflow.md	3e500be242b701a0a5a5e3da8e05fd103b53ac2b	376	build-or-policy-configuration		no-same-name-file
+.changeset/recover-releases-and-pin-ci.md	47b853c1868eea2a7f90a36c59a61575acf52b06	355	build-or-policy-configuration		no-same-name-file
+.github/dependabot.yml	9b5ab57dcb59c83f6777a6d7121a3c99fd310517	728	build-or-policy-configuration		no-same-name-file
+.github/workflows/release.yml	0b3253abfe7828bc5dfaa63af10bd114e064502d	15833	workflow	.github/workflows/release.yml	different-implementation
+.github/workflows/rerun-unacquired.yml	9911e5b99ec98618cc50da170cccf365b25dc67a	2324	workflow		no-same-name-file
+.github/workflows/workflows.yml	777aa295841d6867e5a0428b9751943e2faa6e1b	1760	workflow	.github/workflows/workflows.yml	different-implementation
+.gitignore	06ca9f7e9b339c0b747156a65e4925e06c26569a	659	application-source-or-asset	.gitignore,js/.gitignore,packages/formal-ai-engine/.gitignore,rust/tests/e2e/.gitignore,vscode/.gitignore	different-implementation
+.pre-commit-config.yaml	c9b9fdc87d7d731edb0ee0466a2ac0e60341fc90	941	build-or-policy-configuration	.pre-commit-config.yaml	different-implementation
+CHANGELOG.md	4fba9ac2f9651db23a449930dd0351de25865da8	916	documentation-or-license	CHANGELOG.md	different-implementation
+CONTRIBUTING.md	51c7d95cd23172b792aa09ecc3e2a0bf3c167a68	6445	documentation-or-license	CONTRIBUTING.md	different-implementation
+LICENSE	fdddb29aa445bf3d6a5d843d6dd77e10a9f99657	1211	documentation-or-license	LICENSE	identical:LICENSE
+README.md	22be8262e9efd1391779993043e181d0334d9c80	9687	documentation-or-license	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+examples/basic_usage.go	fb3f878cca63d5802604fc8cfb12a29608257ee1	1491	application-source-or-asset		no-same-name-file
+experiments/issue-14-live-dry-run.sh	741562ca7d0fc8e617b8156a98631011ed93e9dd	691	historical-evidence-or-experiment		no-same-name-file
+go.mod	8ac673484105f30a12e799c6aa9c2c9240da9416	86	application-source-or-asset		no-same-name-file
+pkg/mypackage/mypackage.go	fc6014f63298607f23c856576081f6cff02f5c7d	1209	application-source-or-asset		no-same-name-file
+pkg/mypackage/mypackage_test.go	acf8d42a4a2e6696fbdb417f57de475470086c18	3109	application-source-or-asset		no-same-name-file
+scripts/check-file-size.mjs	d5ef1f947e1940b8380871e24a99facba0d55370	2326	script-or-test	scripts/check-file-size.mjs	different-implementation
+scripts/check-release-needed.mjs	24be5f0c67a68361fca1c7ce03519e883fe1b3ff	2189	script-or-test		no-same-name-file
+scripts/check-release-needed.test.mjs	cf23279979742bbd37234cbd3c6ae01429875ae5	5629	script-or-test		no-same-name-file
+scripts/ci/check-dependencies.mjs	62397dcfdd1b1173b16bcb2e750903066695d4e4	9274	script-or-test		no-same-name-file
+scripts/ci/check-dependencies.test.mjs	63c4f230bd2969a270e08c99d7984e46fabc5194	6101	script-or-test		no-same-name-file
+scripts/ci/check-pipeline-status.mjs	999317eee3979f4e3be31afdaf318d04c4c9c36b	4757	script-or-test		no-same-name-file
+scripts/ci/rerun-unacquired.mjs	921ed8ac7debdad9bf774535387a936e6dffe9b7	5233	script-or-test		no-same-name-file
+scripts/ci/runner-acquisition.mjs	6dfec1d449f69d31c256f44712217a6235042cdf	3602	script-or-test		no-same-name-file
+scripts/ci/runner-acquisition.test.mjs	ff0f715371ab274798767c9dabe871e416c31377	7518	script-or-test		no-same-name-file
+scripts/create-github-release.mjs	86b63802976a0253fe98a7704957174a2a96ba25	3121	script-or-test		no-same-name-file
+scripts/create-github-release.test.mjs	6d33c93ca7fddf7a7377b354d4585a48616b88d7	2002	script-or-test		no-same-name-file
+scripts/detect-code-changes.mjs	24d680619faca711ab32ceafb6570be17ba97df9	6493	script-or-test		no-same-name-file
+scripts/github-actions-log.mjs	cdc8d636d7eafe24c58bb811dad3d17c9d073ac4	1192	script-or-test		no-same-name-file
+scripts/github-actions-log.test.mjs	90546efaab0ca9de736a868560c96cb331776fda	4917	script-or-test		no-same-name-file
+scripts/merge-changesets.mjs	5d367c5b3083e428cd41e8d732d3cba9fbd6a2aa	6553	script-or-test		no-same-name-file
+scripts/validate-changeset.mjs	64018fef3439fea2210ec26a68341c6735864908	8734	script-or-test		no-same-name-file
+scripts/verify-module-availability.mjs	18bd22c0be7560995352889b70516f5f52a331b3	2223	script-or-test		no-same-name-file
+scripts/verify-module-availability.test.mjs	05504f23e22f173a96b0eb6c63d04a516e2a7abc	1597	script-or-test		no-same-name-file
+scripts/version-and-commit.mjs	eec295b38a29c5eb804606b7e6b3847915c4c7e8	9404	script-or-test		no-same-name-file
+scripts/workflow-policy.test.mjs	f82b97cbe0b5807e23cd15d1b86dce01cc7d9d7e	8215	script-or-test		no-same-name-file

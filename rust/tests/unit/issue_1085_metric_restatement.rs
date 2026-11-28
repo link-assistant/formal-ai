@@ -72,8 +72,12 @@ fn earlier_rows_are_archived_verbatim_rather_than_rewritten() {
 
 #[test]
 fn the_restatement_mechanism_appends_and_the_figure_is_published() {
+    // 652ce0877 moved argument parsing into the `cli` module the metric
+    // script includes; the flag is still parsed, just one file over.
     let metric = read("scripts/self-hosting-metric.rs");
-    assert!(metric.contains("\"--replay-epoch\" => replay_epoch = true"));
+    assert!(metric.contains("#[path = \"self-hosting-metric-cli.rs\"]\nmod cli;"));
+    let cli = read("scripts/self-hosting-metric-cli.rs");
+    assert!(cli.contains("\"--replay-epoch\" => replay_epoch = true"));
     assert!(read("scripts/self-hosting-replay.rs").contains("pub fn replay_epoch("));
     let status = read("docs/status.md");
     assert!(status.contains("## Latest self-hosting release"));

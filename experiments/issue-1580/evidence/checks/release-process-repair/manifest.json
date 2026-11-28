@@ -1,0 +1,35 @@
+{
+  "draftedFromHead": "55ee124b7bc836942095b344b4b1119ecb53ba5f",
+  "productionSourceSha256": "bf2c52eb1bbd18fbea16a1b649e280f29f8245a0ddff14a8bb5ee5acb8698cca",
+  "originalSourceSha256": "cf33b84f693d85cf640eaf17b646dfbb7ead23da1c7d2c847bfc142980ccbbdc",
+  "localChecks": {
+    "httpFixtureTestsPassed": 2,
+    "javascriptTestsPassed": 63,
+    "pythonAstSyntax": "passed",
+    "rustfmtEdition2024": "passed",
+    "boundedPipeControlsPassed": 4
+  },
+  "nativeCompilationOrExecutionLocal": false,
+  "hostedNativeNegativeControls": "pending",
+  "autonomousAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false,
+  "archiveSha256": "bf6f9ce6d0fa2c10f15e3fc1b9f48c42f3152c83a8c5a9b6ec8c390838d3e855",
+  "roundTripVerified": true,
+  "payloads": [
+    {
+      "path": "release-process-current-checks.log",
+      "bytes": 2296,
+      "sha256": "0e69176f90a4f007278ae33d86c4610b0846b0a7977847f5650355b8b07b44eb"
+    },
+    {
+      "path": "release-native-group-js-check.log",
+      "bytes": 7373,
+      "sha256": "dda0b9f857cd1e4d71f98f3f70b5640cb26e91c8d462fe926a2693a15865f0a9"
+    },
+    {
+      "path": "release-repair-current-review.log",
+      "bytes": 23392,
+      "sha256": "843a1af16bc60bfdba73c6c8478447da2dd96e767f164791987301cd536d9096"
+    }
+  ]
+}

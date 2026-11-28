@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-11-18T11:31:49.474669+00:00",
+  "head": "acb9fa51085c8ba88ff8fae006b45698d355921e",
+  "sourceHead": "b08fb20ca928043f63634b2ad1c473bd8ae44959",
+  "commandPayloadHashesVerified": true,
+  "patchSha256": "e86170b64b712efe1d5d4b16715991aac8850c75765acf1a717a7e08b5e3957e",
+  "incrementalPatchLinesLiterallyRead": 157,
+  "incrementalSourceFiles": 8,
+  "fullPullRequestDiffAvailable": false,
+  "fullPullRequestDiffLimit": "HTTP 406: more than 300 files",
+  "pushes": 1,
+  "draft": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

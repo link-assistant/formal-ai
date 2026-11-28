@@ -8,10 +8,8 @@
 # them (lowercase, punctuation folded to spaces) so a cue still matches its
 # punctuated raw form; multi-word surfaces are quoted.
 #
-# The handlers deliberately claim only topic-bearing shapes — a bare
-# "brainstorm" with no topic stays with the legacy brainstorm-seeds path
-# (data/seed/brainstorm-seeds.lino), whose two fixed categories remain as a
-# deletable cache while the composition path here answers topic requests.
+# Both the narrower naming cues and the broader brainstorm cues ask for a
+# topic when the prompt leaves it out.
 #
 # Read through `crate::seed::lexicon()` by the handlers in
 # rust/src/solver_handlers/{creative_composition,creative_writing}.rs.
@@ -21,9 +19,9 @@ meanings
     defined-by action
     role brainstorming_request
     lexeme en
-      words "name ideas for" "names for a" "names for the" "ideas for a" "ideas for the" "idea for a"
+      words "name ideas for" "names for a" "names for the"
       words "come up with names" "come up with a name" "suggest names for" "suggest a name for" "brainstorm names for"
-      words "brainstorm a name for" "brainstorm ideas for" "name ideas"
+      words "brainstorm a name for" "name ideas"
     lexeme ru
       words "название для" "названия для" "имя для" "имена для" "идеи для" "идей для" "придумай название для"
       words "придумай имя для" "предложи названия для" "придумай идеи для"
@@ -63,3 +61,11 @@ meanings
     lexeme hi "सलाह दो" "सलाह के लिए" "सुझाव दो" "सुझाव के लिए" "कैसे सुधारूँ"
     lexeme zh "建议" "给点建议" "小贴士" "有什么建议" "怎样才能改善"
     lexeme es "consejos para" "un consejo para" "recomendaciones para" "recomienda" "como puedo mejorar"
+  planning_no_fit
+    defined-by answer
+    role localized_response_template
+    precondition "no supplied place fits the scheduling windows"
+    effect "ask for a usable visit window or duration"
+    unit "not applicable"
+    example "No visit fits the opening and travel windows."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"

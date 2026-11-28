@@ -259,7 +259,7 @@ pub(crate) mod duration {
     fn words(role: &str) -> Vec<String> {
         let mut out: Vec<String> = handler_table_rows(role)
             .iter()
-            .flat_map(|(_, value)| value.split('|').map(str::to_owned))
+            .map(|(_, value)| value.clone())
             .collect();
         out.sort_by_key(|word| std::cmp::Reverse(word.len()));
         out
@@ -362,7 +362,7 @@ pub(crate) mod duration {
     pub(crate) fn request(prompt: &str) -> Option<DurationRequest> {
         let text = prompt.to_lowercase();
         let text = text.trim();
-        if let Some(cue) = words("calendar-duration-sum")
+        if let Some(cue) = words("calendar-duration-addition-cue")
             .into_iter()
             .find(|word| starts(text, word))
         {
@@ -532,14 +532,14 @@ pub(crate) mod duration {
     pub(crate) fn duration(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
         let request = request(prompt)?;
         let role = if request.kind == "calendar-duration-sum" {
-            "calendar-duration-sum"
+            "calendar-duration-addition-cue"
         } else {
             "calendar-full-query"
         };
         let text = prompt.to_lowercase();
         let language = handler_table_rows(role)
             .iter()
-            .find(|(_, words)| words.split('|').any(|word| starts(text.trim(), word)))
+            .find(|(_, word)| starts(text.trim(), word))
             .map_or_else(|| detect(prompt).slug(), |(language, _)| language.as_str());
         let body = localized_response(request.kind, language)?
             .replace("{result}", &request.result)

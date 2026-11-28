@@ -1,0 +1,18 @@
+{
+  "localSparseTests": 88,
+  "testCounts": [
+    17,
+    6,
+    3,
+    17,
+    11,
+    3,
+    5,
+    26
+  ],
+  "allCombinedLogLinesLiterallyRead": true,
+  "combinedLogLines": 178,
+  "nativeResultsQualified": true,
+  "remoteCheckoutWithNewRulesVerified": false,
+  "independentAuthorshipCredit": 0
+}

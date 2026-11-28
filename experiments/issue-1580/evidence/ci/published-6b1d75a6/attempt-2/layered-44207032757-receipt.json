@@ -1,0 +1,11 @@
+{
+  "run": 44207032757,
+  "head": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "attempt": 2,
+  "rawSha256": "2f7c87f4b9d600a294ca810e989a49ee1c1ee450d56ca53f6eea0229639b9300",
+  "rawBytes": 1500058,
+  "rawLines": 9544,
+  "log": "layered-44207032757.log.gz",
+  "failures": [],
+  "independentAuthorshipCredit": 0
+}

@@ -1,6 +1,11 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
+import { once } from 'node:events';
+import { execFile } from 'node:child_process';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createServer } from 'node:http';
+import { promisify } from 'node:util';
 import YAML from 'yaml';
 const root=new URL('../../../',import.meta.url);
 const evidence='experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
@@ -21,7 +26,7 @@ function validatePreflight(workflow){
  return job;
 }
 test('canonical and deployed preflight retain the real credential gate with bounded sparse source checkout',()=>{
- const canonical=YAML.parse(read(evidence+'original-release-workflow.yml'));
+ const canonical=YAML.parse(readCanonicalSource(root).text);
  const expected=validatePreflight(canonical);
  for(const file of ['.github/workflows/release.yml',evidence+'candidate-release-caller.yml']){
   assert.deepEqual(validatePreflight(YAML.parse(read(file))),expected);
@@ -31,7 +36,7 @@ test('canonical and deployed preflight retain the real credential gate with boun
  assert.doesNotMatch(script,/^\s*(?:source|\.)\s+[^#\n]+/mu,'sparse closure must remain standalone');
 });
 test('broad checkout, lost transfer bounds, changed event source and bypassed probes are rejected',()=>{
- const original=YAML.parse(read(evidence+'original-release-workflow.yml'));
+ const original=YAML.parse(readCanonicalSource(root).text);
  const mutations=[
   x=>delete x.jobs['release-preflight'].steps[0].with['sparse-checkout'],
   x=>x.jobs['release-preflight'].steps[0].with['sparse-checkout']='/',
@@ -47,4 +52,68 @@ test('broad checkout, lost transfer bounds, changed event source and bypassed pr
   x=>x.jobs['release-preflight']['timeout-minutes']=6
  ];
  for(const mutate of mutations){const changed=structuredClone(original);mutate(changed);assert.throws(()=>validatePreflight(changed));}
+});
+
+// Issue #1639: the crates.io check is a no-archive publish probe (PUT /crates/new),
+// not the public crate lookup that could only ever say `unknown`.
+test('a stalled crates.io publish probe is retried and all credential verdicts are reported', { timeout: 15_000 }, async (t) => {
+  const requests = [];
+  const server = createServer((request, response) => {
+    const route = `${request.method} ${request.url.split('?')[0]}`;
+    requests.push(route);
+    if (route === 'PUT /crates/new' && requests.length === 1) {
+      const timer = setTimeout(() => response.end('{}'), 7000);
+      response.once('close', () => clearTimeout(timer));
+      return;
+    }
+    const replies = {
+      'PUT /crates/new': [503],
+      'GET /ghcr-token': [200, {}, '{"token":"fixture-bearer"}'],
+      'POST /v2/test/ghcr/blobs/uploads/': [202, { location: '/ghcr-upload' }],
+      'DELETE /ghcr-upload': [204],
+      'GET /docker-token': [200, {}, '{"token":"fixture-bearer"}'],
+      'POST /v2/test/docker/blobs/uploads/': [403],
+    };
+    const [status, headers, body] = replies[route] ?? [404];
+    response.writeHead(status, headers).end(body);
+  });
+  server.listen(0, '127.0.0.1');
+  t.after(() => new Promise((resolve) => {
+    server.close(resolve);
+    server.closeAllConnections();
+  }));
+  await once(server, 'listening');
+  const endpoint = `http://127.0.0.1:${server.address().port}`;
+  await assert.rejects(promisify(execFile)('bash', ['scripts/preflight-credentials.sh', '--mode', 'release'], {
+    cwd: root,
+    timeout: 12_000,
+    env: {
+      PATH: process.env.PATH,
+      CARGO_REGISTRY_TOKEN: 'fixture-crate-token',
+      GHCR_IMAGE: 'ghcr.io/test/ghcr',
+      GITHUB_TOKEN: 'fixture-github-token',
+      DOCKERHUB_IMAGE: 'test/docker',
+      DOCKERHUB_USERNAME: 'fixture-user',
+      DOCKERHUB_TOKEN: 'fixture-docker-token',
+      CRATES_IO_API: endpoint,
+      GHCR_REGISTRY: endpoint,
+      GHCR_TOKEN_ENDPOINT: `${endpoint}/ghcr-token`,
+      DOCKERHUB_REGISTRY: endpoint,
+      DOCKERHUB_TOKEN_ENDPOINT: `${endpoint}/docker-token`,
+      PREFLIGHT_RETRIES: '2',
+      PREFLIGHT_RETRY_DELAY: '0',
+    },
+  }), (error) => {
+    assert.equal(error.code, 1);
+    assert.match(error.stdout, /Release preflight \(release mode\): 1 verified, 1 failed, 1 unknown/);
+    assert.match(error.stdout, /UNKNOWN: crates\.io publish token -- the no-archive publish probe answered HTTP 503/);
+    assert.match(error.stdout, /OK: GHCR push -- .*opened a blob upload session/);
+    assert.match(error.stdout, /BLOCKED: Docker Hub push -- .*HTTP 403/);
+    return true;
+  });
+  assert.deepEqual(requests, [
+    'PUT /crates/new', 'PUT /crates/new',
+    'GET /ghcr-token', 'POST /v2/test/ghcr/blobs/uploads/', 'DELETE /ghcr-upload',
+    'GET /docker-token', 'POST /v2/test/docker/blobs/uploads/',
+  ]);
 });

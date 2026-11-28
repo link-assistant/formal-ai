@@ -1,0 +1,26 @@
+[
+  {
+    "path": "scripts/self-hosting-ledger.rs",
+    "diff": "0469.diff",
+    "sha256": "995f57aa3e57d098ee2ceb2c34f5802ff4ed0f7b1596d662542e57e0b171df50",
+    "bytes": 4580,
+    "lines": 103,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/self-hosting-metric-cli.rs",
+    "diff": "0470.diff",
+    "sha256": "70e5cb10ac4e98799845b8ebdb5f385dc554fa347b9a679054e717c0f4d8cd84",
+    "bytes": 5238,
+    "lines": 142,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/self-hosting-metric.rs",
+    "diff": "0471.diff",
+    "sha256": "414c571fed068d0b8c1892827e9814279064029b3e84993174eb2d906c5824c8",
+    "bytes": 5538,
+    "lines": 150,
+    "carriedExactDiffReview": false
+  }
+]

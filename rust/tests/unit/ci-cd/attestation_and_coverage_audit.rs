@@ -131,8 +131,22 @@ fn workflows_suppress_git_default_branch_hints_at_the_source() {
 fn artifact_download_and_expected_adhoc_signing_are_warning_free() {
     let desktop = workflow("desktop-release.yml");
 
-    assert!(desktop.contains("uses: actions/download-artifact@v8"));
-    assert!(!desktop.contains("uses: actions/download-artifact@v7"));
+    // Issue #1580 (f400d7ab2) routes every desktop download through the
+    // workflow-owned adapter, which pins the current upstream transport and
+    // extracts without the deprecated code path; no step may reach the
+    // upstream action (current or older major) directly.
+    assert!(
+        desktop.contains("uses: ./.formal-ai-protocol-source/.github/actions/download-artifact")
+    );
+    assert!(!desktop.contains("actions/download-artifact@"));
+    let adapter = fs::read_to_string(format!(
+        "{}/../.github/actions/download-artifact/action.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("artifact download adapter should be readable");
+    assert!(adapter.contains("uses: actions/download-artifact@"));
+    assert!(adapter.contains("# v8."));
+    assert!(adapter.contains("skip-decompress: true"));
     assert!(desktop.contains("::notice::macOS signing/notarization secrets are not configured:"));
     assert!(!desktop.contains("::warning::Missing required macOS signing/notarization secrets:"));
 }

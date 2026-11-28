@@ -1,0 +1,275 @@
+{
+  "records": [
+    {
+      "name": "before-registry-source-control",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=registry uncertainty is exercised",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before-registry-source-control.log.gz",
+      "rawSha256": "5a8a0ac44899c6960f26d20c9019a0d5bae8ff79ba8cb1395dbcc76c11725322",
+      "archiveSha256": "e0bb8dbeeb8f9435aa976fbfef5476ccc9b6c6c11ebfac398c4bbcd9b4a4ea5a"
+    },
+    {
+      "name": "rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/registry.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/version-and-commit.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "python-syntax",
+      "command": [
+        "python3",
+        "-c",
+        "import ast;from pathlib import Path;ast.parse(Path('experiments/issue-1580/release-registry/cli_regressions.py').read_text());print('Parsed actual CLI fixture; no Rust compiled.')"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "python-syntax.log.gz",
+      "rawSha256": "3f685b69601201cc55379d43718e11aa38c77b28c56db614e631d5af788839da",
+      "archiveSha256": "850309f9d7d0a1c5de009bc04d81a3c8ffa3087321ce3fcd3918215525cfac39"
+    },
+    {
+      "name": "native-groups",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups.log.gz",
+      "rawSha256": "bfb175785ac28ffaaa9c184b78c26847a6cc4e6578d36c033c9bd76eb2e394fb",
+      "archiveSha256": "1190dca2d4af8bbf2d3149e4d39cc3d5b9af89a39f3d3ec26f07d9b083c39086"
+    },
+    {
+      "name": "default-build-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 0,
+      "log": "default-build-policy.log.gz",
+      "rawSha256": "e287952fc132fe24dd317de52a1813a31842d579107751f6d8f746dc0f7a8c39",
+      "archiveSha256": "1b60d3b368e3c6b0782ddf64ba50efdd8eb1331bff718b835e8cb3913459c359"
+    },
+    {
+      "name": "before-registry-source-control-corrected",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=registry uncertainty is exercised",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before-registry-source-control-corrected.log.gz",
+      "rawSha256": "ff73926e6454e8ccdafa56c7e85464ded70bccd9a57fc7ab0dd28dd99138a015",
+      "archiveSha256": "089f77981fa3074b98f1ed2e6d5d0a17226e4350d6908e6d0c413f7f8940a33f"
+    },
+    {
+      "name": "rustfmt-check-corrected",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/registry.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/version-and-commit.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check-corrected.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "python-syntax-corrected",
+      "command": [
+        "python3",
+        "-c",
+        "import ast;from pathlib import Path;ast.parse(Path('experiments/issue-1580/release-registry/cli_regressions.py').read_text());print('Parsed actual CLI fixture; no Rust compiled.')"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "python-syntax-corrected.log.gz",
+      "rawSha256": "3f685b69601201cc55379d43718e11aa38c77b28c56db614e631d5af788839da",
+      "archiveSha256": "850309f9d7d0a1c5de009bc04d81a3c8ffa3087321ce3fcd3918215525cfac39"
+    },
+    {
+      "name": "native-groups-corrected",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups-corrected.log.gz",
+      "rawSha256": "e9a3d7890c62f075b4ddd9afa1695ef0c2bdaa331352579e8d1765876470d98b",
+      "archiveSha256": "ee3d3c5605a6ca291920064435ed83a13396e71f15832a76c26c7c9cd201441b"
+    },
+    {
+      "name": "default-build-policy-corrected",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "default-build-policy-corrected.log.gz",
+      "rawSha256": "4cda49b49f44590467a2b32f50aa66030a1fcbc207b360b085f52824d1bc271f",
+      "archiveSha256": "40604d9e66ac4ff28f4c642bd8e6107ec95e25d3f24a5b7a14d71111a4d7e40d"
+    },
+    {
+      "name": "documentation-policy-corrected",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "documentation-policy-corrected.log.gz",
+      "rawSha256": "0a679a490b5f0acf5243bc1f53d78f8943d9c01c66d9daf6d30a5ccc404e0299",
+      "archiveSha256": "cd11316e30d3584ef7eeb637af7c1a1075d6e84c9162f5c79d764d53525828e0"
+    },
+    {
+      "name": "gates-corrected",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-changelog-fragment-js-twin,check-generated-files,check-runner-labels,check_js_rust_translation,layered-ci#1,layered-ci#2,layered-ci#3,layered-ci#4"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "gates-corrected.log.gz",
+      "rawSha256": "81e9311e2fe69e81d58a8981e49fda2b30a3005760a12a612950aeafb6a70bfc",
+      "archiveSha256": "a815c1d9ffa7c215e89b22b8e4e7c03aec1bf108771677288e0fd4e5603a02ba"
+    },
+    {
+      "name": "diff-check-corrected",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "diff-check-corrected.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false,
+  "complete": true,
+  "failedPriorAttempts": [
+    "default-build-policy"
+  ],
+  "finalValidatedRecords": [
+    "before-registry-source-control-corrected",
+    "rustfmt-check-corrected",
+    "python-syntax-corrected",
+    "native-groups-corrected",
+    "default-build-policy-corrected",
+    "documentation-policy-corrected",
+    "gates-corrected",
+    "diff-check-corrected"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "scripts/registry.rs",
+      "sha256": "6d69fe4f11cbe6608bdac87f095c4b1f40080b12b5eec5c23576905bcbda6265"
+    },
+    {
+      "path": "scripts/check-release-needed.rs",
+      "sha256": "850e835d75d0b572dd541ee99262e8d49a4112b2f07ea94e762ca40ae19050aa"
+    },
+    {
+      "path": "scripts/version-and-commit.rs",
+      "sha256": "c7228551f8716570260a64fae65f4e58247def47ede0b925708894d0550ff834"
+    },
+    {
+      "path": "rust/tests/web/default-branch-build-policy.test.mjs",
+      "sha256": "040aa63e93e0780265df27db3170649a306c5b5da2d4151fae6270903e9f63c4"
+    },
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "sha256": "1f3f94d8a6f3a9a27facc0c65882643d8b36fcf6e5f5e6260c744a8108cdf393"
+    },
+    {
+      "path": ".github/workflows/native-type-check.yml",
+      "sha256": "8f26aec98fc2433aa781b6be011e649c72e7e167f2810fc739e973a38d810058"
+    },
+    {
+      "path": "experiments/issue-1580/native-regression-groups.test.mjs",
+      "sha256": "1079d51246cfde525d16b7a4b8e65fec25c2f193d9a757c95ffe292fdf11ff76"
+    },
+    {
+      "path": "experiments/issue-1580/release-registry/Cargo.toml",
+      "sha256": "8ad84c18e9a0abf554240e520e249dd5f4d4580a7a22550faaff9b672c9f329e"
+    },
+    {
+      "path": "experiments/issue-1580/release-registry/Cargo.lock",
+      "sha256": "168c433058fea8e82c1aed0ebebbb585f04e4dc3e99d9f3c1377f565f1487032"
+    },
+    {
+      "path": "experiments/issue-1580/release-registry/cli_regressions.py",
+      "sha256": "d0552574e377a2228bcf7965a36ffd47c9d43da81dcddfe4fdc6e12db91df6d5"
+    }
+  ],
+  "verificationLimits": "The before/after JavaScript source control verifies that the actual shared registry operations replace the historical false-on-error implementation and that the harness is admitted. Native HTTP and real CLI regressions execute only in the hosted job, not locally."
+}

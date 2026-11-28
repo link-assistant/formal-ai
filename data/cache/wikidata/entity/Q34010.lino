@@ -1,0 +1,18 @@
+Q34010
+  aliases
+    en ("Haskell programming language" hs)
+    es ("Haskell 98")
+    ru ("Хаскел" "Хаскелл" "Хаскель")
+    zh ("Haskell语言" "Haskell程式語言")
+  descriptions
+    en "purely functional programming language"
+    es "lenguaje de programación"
+    hi "प्रोग्रामिंग भाषा"
+    ru "функциональный язык программирования"
+    zh "函數式編程語言"
+  id Q34010
+  labels
+    en Haskell
+    hi "हैस्केल"
+  type item
+success 1

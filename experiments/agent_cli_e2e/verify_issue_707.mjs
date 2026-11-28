@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-const [seedPath, evidenceDir] = process.argv.slice(2);
-assert.ok(seedPath && evidenceDir, "usage: verify_issue_707.mjs SEED EVIDENCE_DIR");
+const [seedPath, evidenceDir, promptsDir] = process.argv.slice(2);
+assert.ok(seedPath && evidenceDir, "usage: verify_issue_707.mjs CORPUS EVIDENCE_DIR [PROMPTS_DIR]");
 
 const seed = fs.readFileSync(seedPath, "utf8");
 const tasks = [];
@@ -19,6 +20,14 @@ for (const line of seed.split(/\r?\n/)) {
   if (step && current) current.steps.push(step[1]);
 }
 assert.equal(tasks.length, 10, "benchmark must contain exactly ten tasks");
+for (const task of tasks) {
+  task.planId = task.id;
+  if (promptsDir) {
+    const plan = fs.readFileSync(path.join(promptsDir, `${task.id}.txt`), "utf8").trimEnd().split("\n").at(-2);
+    assert.deepEqual(JSON.parse(plan).map((step) => step.primitive), task.steps);
+    task.planId = `computer-use-${createHash("sha256").update(plan).digest("hex").slice(0, 24)}`;
+  }
+}
 
 function readEvents(file) {
   return fs.readFileSync(file, "utf8")
@@ -64,7 +73,7 @@ function taskEvidence(phase, task) {
     .filter((part) => part.type === "text")
     .map((part) => part.text)
     .join("\n");
-  assert.match(finalText, new RegExp(`computer_use_complete:.*${task.id}`), `${phase}/${task.id} final`);
+  assert.match(finalText, new RegExp(`computer_use_complete:.*${task.planId}`), `${phase}/${task.id} final`);
 
   const idle = events.find((event) => event.type === "idle" && /^ses_/.test(event.session_id || ""));
   assert.ok(idle, `${phase}/${task.id} session id`);
@@ -78,7 +87,7 @@ function auditEvidence(phase) {
   assert.equal(records.length, expectedCount, `${phase} audit record count`);
   const byPlan = {};
   for (const task of tasks) {
-    const planRecords = records.filter((record) => record.plan_id === task.id);
+    const planRecords = records.filter((record) => record.plan_id === task.planId);
     assert.deepEqual(
       planRecords.map((record) => record.primitive),
       task.steps,

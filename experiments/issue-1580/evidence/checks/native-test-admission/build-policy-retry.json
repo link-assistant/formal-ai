@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 0,
+  "rawSha256": "d5d901ae1d81d1f250b5bd0e842c6bd8bd4af0c4533a5521c03227e6bcfbefa3",
+  "archiveSha256": "afe23d9e2d812dfde0f3e4193c084ed86c1ec54ddd1ec6f855ebdfe9473cb8c9",
+  "reason": "One unchanged retry after the independent VM guard timed out; no timeout or assertion changes."
+}

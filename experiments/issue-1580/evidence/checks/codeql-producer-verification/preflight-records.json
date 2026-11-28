@@ -1,0 +1,82 @@
+[
+  {
+    "label": "documentation-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/documentation-only-ci-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "file": "preflight-documentation-policy.log.gz",
+    "rawSha256": "483d1f31d1e8f147fc536593af7b4951e7c188e9aa276ffea4beb5a73603d635",
+    "archiveSha256": "22a917d547bea98b07856983772ab2f3495cd6be526edce002130dc73e6dbc27"
+  },
+  {
+    "label": "check-abbreviations",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0,
+    "file": "preflight-check-abbreviations.log.gz",
+    "rawSha256": "237673b0217061278d0fed1004a8850537d41ff7297a8f28497cc70529074e85",
+    "archiveSha256": "dae91817a5b4fa2e270240344d711db5f88d16709d4458c94817601b49d29077"
+  },
+  {
+    "label": "check-file-size",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0,
+    "file": "preflight-check-file-size.log.gz",
+    "rawSha256": "4595478ebe941fe7dd0383a0bdbf7ba2e8f128625023d4236cb01643803ae459",
+    "archiveSha256": "fd4ba2972042cf947a558909029e7806b858412c26221dc37f8c66f1ac77cf70"
+  },
+  {
+    "label": "check-file-size-js-twin",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "exitCode": 0,
+    "file": "preflight-check-file-size-js-twin.log.gz",
+    "rawSha256": "28258401e18e28c4a7557825c1d6027eb20ff8a010dd2315d2f69f3f0f4f87c5",
+    "archiveSha256": "aa8791cb25f9d275f6ff3003585a00f73cce71fd71fc17a7371914480ab05315"
+  },
+  {
+    "label": "diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "file": "preflight-diff-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "label": "staged-diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 0,
+    "file": "preflight-staged-diff-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

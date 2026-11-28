@@ -323,7 +323,7 @@ const DIRECTIONS: &[(&str, &str)] = &[
 /// why `rust:function_item_typed` precedes `rust:function_item`).
 mod rules;
 
-use rules::RULE_ROWS;
+use rules::RULE_ROW_GROUPS;
 
 fn main() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -331,7 +331,7 @@ fn main() {
         .expect("the repository root sits one level above the crate");
 
     let mut rule_set = TranslationRuleSet::new(RULE_SET_NAME);
-    for row in RULE_ROWS {
+    for row in RULE_ROW_GROUPS.iter().flat_map(|rows| rows.iter()) {
         let query = LinkQuery::from_sexpression(row.sexpression)
             .unwrap_or_else(|error| panic!("rule {}: {error}", row.name))
             .with_link_type(LinkType::Syntax);

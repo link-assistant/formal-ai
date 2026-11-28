@@ -1,0 +1,210 @@
+{
+  "complete": true,
+  "observedAt": "2026-11-18T05:31:12.546561+00:00",
+  "head": "04a468f53549f0825999c1dd9e53210476723106",
+  "main": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "mainMerged": true,
+  "requiredSubIssues": 0,
+  "feedbackUnchanged": true,
+  "knownCompletedFailures": [
+    44242408037,
+    44242407754
+  ],
+  "noActiveRuns": true,
+  "records": [
+    {
+      "label": "branch",
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 24,
+      "stdoutSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195"
+    },
+    {
+      "label": "head",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "5cf686fb7f8792af54d1fd7ced108d85608614d861aeb51a8b8b9dbcc6734f39"
+    },
+    {
+      "label": "issue-view",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "title,body,comments"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 11315,
+      "stdoutSha256": "7fd7e0bc448e54a777bdecdaf2c2fa441eb570092f3b2624201856ef61637f37"
+    },
+    {
+      "label": "issue-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 4477,
+      "stdoutSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2"
+    },
+    {
+      "label": "pull-request-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 31786,
+      "stdoutSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb"
+    },
+    {
+      "label": "inline-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 4,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "reviews",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 4,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "subissues",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues?per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 4,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "pull-request",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "title,body,isDraft,headRefOid,baseRefName"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 8957,
+      "stdoutSha256": "a6e4b7631adac1868919bb5db82077f2b2ac0a6163b1039a3b044f7c89c5d506"
+    },
+    {
+      "label": "fetch-main",
+      "command": [
+        "git",
+        "-c",
+        "gc.auto=0",
+        "fetch",
+        "origin",
+        "main"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "main-ancestor",
+      "command": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "origin/main",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "main",
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "738f2ab5cc36a13f21eb8b93c566bb1b0f65302304f5b662e56093ab94dc9d2b"
+    },
+    {
+      "label": "runs-in_progress",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "in_progress",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 3,
+      "stdoutSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "label": "runs-queued",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "queued",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 3,
+      "stdoutSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

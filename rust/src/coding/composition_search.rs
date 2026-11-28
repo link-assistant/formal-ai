@@ -24,8 +24,8 @@ use analysis::{
 };
 pub(crate) use analysis::{literal_leaves, parameter_reads, python_tokens};
 use arguments::{
-    argument_choices, argument_coherence, argument_grounded_structures, binder_circularity,
-    constant_map_count, diversify, enumerate_arguments, fragment_coverage,
+    amplifies_its_own_output, argument_choices, argument_coherence, argument_grounded_structures,
+    binder_circularity, constant_map_count, diversify, enumerate_arguments, fragment_coverage,
     inferred_expression_type, loose_feeds, node_contains_parameter, normalize_pool,
     parameter_displacement,
 };
@@ -182,6 +182,7 @@ pub fn search_with_structures(
         .map(|fragment| fragment_binder_slots(fragment, &spec.language))
         .collect();
     let mut pool = atom_expressions(spec, &parameters, &ranked, structure_ids);
+    crate::diagnostic!("trace"; "coding_search: language={} shape={:?} structures={} ranked={:?} parameters={} atoms={}", spec.language, spec.artifact_shape, structure_ids.len(), ranked.iter().map(|fragment| fragment.id.as_str()).collect::<Vec<_>>(), parameters.len(), pool.len());
     let fold_roots = ranked
         .iter()
         .filter_map(|fragment| {
@@ -327,6 +328,9 @@ pub fn search_with_structures(
             });
             combinations.truncate(2_048);
             for arguments in combinations {
+                if amplifies_its_own_output(fragment, &arguments) {
+                    continue;
+                }
                 let result_ty =
                     inferred_expression_type(&fragment.result, &fragment.signature, &arguments);
                 let mut fragments = vec![fragment.id.clone()];
@@ -516,6 +520,7 @@ pub fn search_with_structures(
             candidate.content_id(),
         )
     });
+    crate::diagnostic!("trace"; "coding_search: language={} surviving_programs={}", spec.language, candidates.len());
     candidates
 }
 

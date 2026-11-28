@@ -1,0 +1,495 @@
+[
+  {
+    "checkId": 137083404425,
+    "name": "Pipeline Status",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 153,
+      "start_column": null,
+      "end_line": 153,
+      "end_column": null,
+      "annotation_level": "failure",
+      "title": "",
+      "message": "Process completed with exit code 1.",
+      "raw_details": ""
+    },
+    "decision": "repaired-shared-zizmor-contract-and-terminal-propagation"
+  },
+  {
+    "checkId": 137083404425,
+    "name": "Pipeline Status",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 152,
+      "start_column": null,
+      "end_line": 152,
+      "end_column": null,
+      "annotation_level": "failure",
+      "title": "",
+      "message": "Pipeline failed. Failing jobs: native-type-check",
+      "raw_details": ""
+    },
+    "decision": "repaired-shared-zizmor-contract-and-terminal-propagation"
+  },
+  {
+    "checkId": 137073043040,
+    "name": "Native type and lint check / Rust compile inputs changed",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 50,
+      "start_column": null,
+      "end_line": 50,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "sccache stats - clippy",
+      "message": "100% - 1413 hits, 2 misses, 0 errors",
+      "raw_details": ""
+    },
+    "decision": "actual-cache-statistics-zero-errors"
+  },
+  {
+    "checkId": 137073043040,
+    "name": "Native type and lint check / Rust compile inputs changed",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 761,
+      "start_column": null,
+      "end_line": 761,
+      "end_column": null,
+      "annotation_level": "failure",
+      "title": "",
+      "message": "Process completed with exit code 101.",
+      "raw_details": ""
+    },
+    "decision": "repaired-shared-zizmor-contract-and-terminal-propagation"
+  },
+  {
+    "checkId": 137073043000,
+    "name": "Native type and lint check / Compile focused native contracts once",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 48,
+      "start_column": null,
+      "end_line": 48,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "sccache stats - contract-build",
+      "message": "100% - 612 hits, 1 miss, 0 errors",
+      "raw_details": ""
+    },
+    "decision": "actual-cache-statistics-zero-errors"
+  },
+  {
+    "checkId": 137073025026,
+    "name": "js tier (node --check over js, suite group 8)",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 1489,
+      "start_column": null,
+      "end_line": 1489,
+      "end_column": null,
+      "annotation_level": "failure",
+      "title": "",
+      "message": "Process completed with exit code 1.",
+      "raw_details": ""
+    },
+    "decision": "repaired-actual-original-verifier-git-object-binding"
+  },
+  {
+    "checkId": 137073024936,
+    "name": "js tier (node --check over js, suite group 5)",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 1895,
+      "start_column": null,
+      "end_line": 1895,
+      "end_column": null,
+      "annotation_level": "failure",
+      "title": "",
+      "message": "Process completed with exit code 1.",
+      "raw_details": ""
+    },
+    "decision": "repaired-complete-yaml-sequence-structural-equality"
+  },
+  {
+    "checkId": 137072958284,
+    "name": "Release Preflight",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 28,
+      "start_column": null,
+      "end_line": 28,
+      "end_column": null,
+      "annotation_level": "warning",
+      "title": "",
+      "message": "UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only `cargo publish` can prove it",
+      "raw_details": ""
+    },
+    "decision": "unresolved-publication-authority-observation-no-read-proof-available"
+  },
+  {
+    "checkId": 137072957595,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072957253,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072957246,
+    "name": "Actionlint",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 81,
+      "start_column": null,
+      "end_line": 81,
+      "end_column": null,
+      "annotation_level": "failure",
+      "title": "",
+      "message": "The action 'Run actions/checkout@v7' has timed out after 3 minutes.",
+      "raw_details": ""
+    },
+    "decision": "repaired-bounded-checkout-recovery"
+  },
+  {
+    "checkId": 137072957246,
+    "name": "Actionlint",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 77,
+      "start_column": null,
+      "end_line": 77,
+      "end_column": null,
+      "annotation_level": "failure",
+      "title": "",
+      "message": "unable to access 'https://github.com/link-assistant/formal-ai/': Failed to connect to github.com port 443 after 135797 ms: Couldn't connect to server",
+      "raw_details": ""
+    },
+    "decision": "repaired-bounded-checkout-recovery"
+  },
+  {
+    "checkId": 137072957210,
+    "name": "Artifact transport (macos-15)",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 1,
+      "start_column": null,
+      "end_line": 1,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.",
+      "raw_details": ""
+    },
+    "decision": "hosted-capacity-notice-job-actually-passed"
+  },
+  {
+    "checkId": 137072957151,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072957129,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072957116,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072957082,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072957074,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072957021,
+    "name": "Immutable BuildKit bootstrap and registry fallback",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 12,
+      "start_column": null,
+      "end_line": 12,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Expected canonical pull outage recovered; actual mirror image and daemon verification follows.",
+      "raw_details": ""
+    },
+    "decision": "deliberate-outage-control-actual-mirror-daemon-check-passed"
+  },
+  {
+    "checkId": 137072957021,
+    "name": "Immutable BuildKit bootstrap and registry fallback",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 162,
+      "start_column": null,
+      "end_line": 162,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Expected fallback control: Error response from daemon: canonical registry unavailable in deliberate fallback control",
+      "raw_details": ""
+    },
+    "decision": "deliberate-outage-control-actual-mirror-daemon-check-passed"
+  },
+  {
+    "checkId": 137072957015,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956962,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956727,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956719,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956665,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956574,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956542,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956308,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  },
+  {
+    "checkId": 137072956255,
+    "name": "pr-check-profile / profile",
+    "annotation": {
+      "path": ".github",
+      "blob_href": "https://github.com/link-assistant/formal-ai/blob/6903d9bd28ac96f3e73b35d700dce1415c0f5ac6/.github",
+      "start_line": 6,
+      "start_column": null,
+      "end_line": 6,
+      "end_column": null,
+      "annotation_level": "notice",
+      "title": "",
+      "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+      "raw_details": ""
+    },
+    "decision": "explicit-unexecuted-heavy-path-notice-no-capability-credit"
+  }
+]

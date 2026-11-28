@@ -18,32 +18,18 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! ```
 
-use std::env;
-use std::fs;
 use std::process::exit;
+
+#[path = "github-output.rs"]
+mod github_output;
+use github_output::set_output;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
-
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Err(e) = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&output_file)
-            .and_then(|mut f| {
-                use std::io::Write;
-                writeln!(f, "{}={}", key, value)
-            })
-        {
-            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
-        }
-    }
-    println!("Output: {}={}", key, value);
-}
 
 fn main() {
     let rust_root = match rust_paths::get_rust_root(None, true) {

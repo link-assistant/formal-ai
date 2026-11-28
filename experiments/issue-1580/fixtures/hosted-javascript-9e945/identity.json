@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "9e945eae3f1f3a03a2b9e3302bdb81000f7820b1",
+  "run": 44938456935,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/44938456935",
+  "completeObservations": 898,
+  "modeledWorkers": 4,
+  "warningSeconds": 270,
+  "unobservedFallbackSeconds": 0.34,
+  "rawLogSha256": "32679b18f6b87b086352a6d034d4db9a14c0cf49ec1730ab8925e0b11d07c9a4",
+  "jobs": [
+    {
+      "job": "js tier (node --check over js, suite group 2)"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 8)"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 1)"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 5)"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 3)"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 4)"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 7)"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 6)"
+    }
+  ]
+}

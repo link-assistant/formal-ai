@@ -1,0 +1,93 @@
+{
+  "sourceCommit": "a558f83430dd1b114839ca979a02a71730abfac9",
+  "run": 44999044965,
+  "completeObservations": 913,
+  "failedObservations": 3,
+  "originalWarningLine": 17814,
+  "originalWarningSeconds": 325,
+  "beforeMeasuredMaximumSeconds": 300.554762181,
+  "withoutReserveMaximumSeconds": 258.725836617,
+  "schedulingFactor": 1.2,
+  "runnerOverheadAllowanceSeconds": 30,
+  "afterMeasuredMaximumSeconds": 217.55147346500004,
+  "raisedSchedulingWeights": 86,
+  "loweredSchedulingWeights": 0,
+  "budgetSeconds": 360,
+  "warningSeconds": 270,
+  "executionProof": false,
+  "autonomousAuthorshipCredit": 0,
+  "files": [
+    {
+      "file": "before.log.gz",
+      "bytes": 1057,
+      "sha256": "8dbbd93633d7123f40cfbc50e254fc6b820b14364f078557c93699902e483170",
+      "gzipSHA256": "8ca01367e0734cafa885fbb5c07d7d2bbc01720e248b322ea90a07e64e6ce941"
+    },
+    {
+      "file": "before-exit.json.gz",
+      "bytes": 49,
+      "sha256": "e97bb2d65ca9b769472b69e7069db7f74cbf536ca856c372071123f1fc497362",
+      "gzipSHA256": "25963d6b4a68f470dcc428516e73d9ae5612464a7717161ce5b010359ede3ac4"
+    },
+    {
+      "file": "before-headroom.log.gz",
+      "bytes": 1076,
+      "sha256": "b62bb5312b3ad976fed9f4601839a30b3846e6d8b1021e4beac95ee462d36fc8",
+      "gzipSHA256": "9b5af1819149a570938aa48b951f6129218b43af7c0d9ffbd5fcf2fd504d3584"
+    },
+    {
+      "file": "before-headroom-exit.json.gz",
+      "bytes": 49,
+      "sha256": "e97bb2d65ca9b769472b69e7069db7f74cbf536ca856c372071123f1fc497362",
+      "gzipSHA256": "25963d6b4a68f470dcc428516e73d9ae5612464a7717161ce5b010359ede3ac4"
+    },
+    {
+      "file": "table.before.lino.gz",
+      "bytes": 43925,
+      "sha256": "bf9784294e7f8a19b57e4adcf68cea177775e79774e599f1d9a0f10f6c1707bf",
+      "gzipSHA256": "9c325404c525698dcff8e46432994176141693ab259a7580905eb8023d15ccc7"
+    },
+    {
+      "file": "headroom-probe.json.gz",
+      "bytes": 2167,
+      "sha256": "fc55c39e867a55c7c9ede9822da49bcb91643ae165a5ee1dbeeeba3d74e68fb0",
+      "gzipSHA256": "97f7779ed43572321a31c5c939ba4839c916ee44f8f51296a9da61a5420d0491"
+    },
+    {
+      "file": "import-with-headroom.mjs.gz",
+      "bytes": 2786,
+      "sha256": "7f570a1946c8e460bc5f64149b7f0aec8125352385516379cd0cfb67ddbc1861",
+      "gzipSHA256": "ff7aaaa2a49bc0616aaf75232317c462ef7d0542fd8e3f9d4a144d7d40a50e2f"
+    },
+    {
+      "file": "result.json.gz",
+      "bytes": 69146,
+      "sha256": "b52fb16362e29d9365609e81b45a57380361f562fbd36aeed77f4890eabcd381",
+      "gzipSHA256": "5298fcc2e4ac6fe2a1d0725d041d708bae25f94eaf3af9f3c27382d32ac2859f"
+    },
+    {
+      "file": "scheduling-headroom-after.log.gz",
+      "bytes": 889,
+      "sha256": "3dc2872d8e64a1ff1d0ba86276f836f8d1a4335c1ad01258e8928743ab5faae7",
+      "gzipSHA256": "760ce5ebda8d08ec1ce2fcc50c81dda680a0f2c8b15dfb663ff21eab2f2fbe87"
+    },
+    {
+      "file": "ci-speed-headroom-after.log.gz",
+      "bytes": 2664,
+      "sha256": "85bc99bce37c211e2f6a899bd16cdfa2f51f5931bdd4fbabe06ee1c3f90493ef",
+      "gzipSHA256": "2cb4b17761cd31f55072c98f52b19c187f68822bcd78530c9c80c3a18efbc999"
+    },
+    {
+      "file": "probe-a558-scheduling-headroom.mjs.gz",
+      "bytes": 1416,
+      "sha256": "06125f4d19ef16fdf76470925fd4fd4a778fd52a7439bdd0253d10e1974cb906",
+      "gzipSHA256": "b9cb47f3f906b038aed29598725e075168cccbae763e8d33cd0ee08a95dad198"
+    },
+    {
+      "file": "layered-early.log.gz",
+      "bytes": 4825272,
+      "sha256": "c930f967e5f7f09319e13a185358ab7969e7090cdf78ff5bb4d9f4e7e1d27087",
+      "gzipSHA256": "58888c13f0f31fd432a1ac83bc66b19c0228004bc688ecd8ae169f865597c130"
+    }
+  ]
+}

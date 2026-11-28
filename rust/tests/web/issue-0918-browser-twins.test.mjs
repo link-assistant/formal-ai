@@ -12,7 +12,9 @@ import test from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
 
-const worker = createWorkerContext();
+import { currencyCaptures, currencyFetch, quoteDate } from "./support/currency-publisher-captures.mjs";
+
+const worker = createWorkerContext({}, { networkFetch: currencyFetch });
 const ready = evaluate(worker, "loadSeed()");
 const defaultFetch = worker.fetch;
 
@@ -74,16 +76,15 @@ test("a memory request no seeded family covers names its gap", async () => {
   assert.equal(response.content, GAP_EN);
 });
 
-// Issue #918 (R914-6): the compound_interest twins read one policy block and
-// one set of seeded responses. Two deliberate parity fixes: the native row
-// took its rate from the calculator while the worker took a table of its own
-// (both now read the seeded default rates), and the worker appended a
-// USD -> USD "conversion" whenever a principal was spelled in dollars (a
-// conversion now skips its source currency, and the native row gains the
-// ruble target the worker already had).
 const COMPOUND_REPORT = "Compound interest calculation\n\nFormula: A = P(1 + r/n)^(n*t)\nP = 1000 USD\nr = 0.08 (8% annual)\nn = 12 (monthly)\nt = 5 years\n\nStep 1: periodic rate = r/n = 0.08/12 = 0.006666666666667\nStep 2: number of periods = n*t = 12*5 = 60\nStep 3: A = 1000 * (1 + 0.006666666666667)^60\nFinal amount: 1489.85 USD";
-const COMPOUND_EUR = "\n\nConversion: USD -> EUR\n1 USD in EUR = 0.92 EUR\n1489.85 USD * 0.92 = 1370.66 EUR\nRate detail: Exchange rate: 1 USD = 0.92 EUR (source: default (hardcoded))\nLive web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.";
-const COMPOUND_RUB = "\n\nConversion: USD -> RUB\n1 USD in RUB = 89.5 RUB\n1489.85 USD * 89.5 = 133341.57 RUB\nRate detail: Exchange rate: 1 USD = 89.5 RUB (source: default (hardcoded))";
+const COMPOUND_EUR = compoundExpected("EUR", "0.9086", "1353.68");
+const COMPOUND_RUB = compoundExpected("RUB", "82.5143", "122933.93");
+
+function compoundExpected(target, rate, converted) {
+  const source = [...currencyCaptures.keys()].find(url => url.includes(`/usd/${target.toLowerCase()}?`));
+  return `\n\nConversion: USD -> ${target}\n1 USD in ${target} = ${rate} ${target}\n1489.85 USD * ${rate} = ${converted} ${target}\nRate detail: Exchange rate: 1 USD = ${rate} ${target} (${source}, ${quoteDate})`;
+}
+
 const COMPOUND_PROMPT = "Invest $1000 at 8% annual interest compounded monthly for 5 years";
 
 async function solveWith(prompt, history) {
@@ -91,10 +92,10 @@ async function solveWith(prompt, history) {
   return worker.solve(prompt, history, {}, {}, [], {});
 }
 
-test("a compound-interest report converts at the seeded euro and ruble rates", async () => {
+test("a compound-interest report converts at the publisher euro and ruble rates", async () => {
   for (const [prompt, expected] of [
-    [`${COMPOUND_PROMPT} and convert the final amount to EUR using current exchange rates from the web.`, COMPOUND_REPORT + COMPOUND_EUR],
-    [`${COMPOUND_PROMPT} and convert the final amount to rubles.`, COMPOUND_REPORT + COMPOUND_RUB],
+    [`${COMPOUND_PROMPT} and convert the final amount to EUR on ${quoteDate}.`, COMPOUND_REPORT + COMPOUND_EUR],
+    [`${COMPOUND_PROMPT} and convert the final amount to rubles on ${quoteDate}.`, COMPOUND_REPORT + COMPOUND_RUB],
   ]) {
     const response = await solveWith(prompt, []);
     assert.equal(response.intent, "calculation", prompt);
@@ -112,9 +113,15 @@ test("a follow-up converts the earlier final amount", async () => {
     { role: "user", content: COMPOUND_PROMPT },
     { role: "assistant", content: COMPOUND_REPORT },
   ];
-  const response = await solveWith("Convert the final amount to rubles", history);
+  const response = await solveWith(`Convert the final amount to rubles on ${quoteDate}`, history);
   assert.equal(response.intent, "calculation");
   assert.equal(response.content, `Final amount conversion\nSource amount: 1489.85 USD${COMPOUND_RUB}`);
+});
+
+test("compound interest accepts another ISO principal without a network quote", async () => {
+  const response = await solveWith("Invest 1000 CAD at 8% annual interest compounded monthly for 5 years", []);
+  assert.equal(response.intent, "calculation");
+  assert.match(response.content, /Final amount: 1489\.85 CAD/u);
 });
 
 // Issue #918 (R914-6): the playwright_script prelude row renders the seeded
@@ -249,25 +256,30 @@ test("web search texts come from the seed in every language", async () => {
 // every line from seeded procedural_how_to_* and how_it_works* responses and
 // the search-query frames of the `policy procedural_how_to` and
 // `policy how_it_works` blocks, filled in one pass in both runtimes. The
-// no-source enabled plan uses the native discovery template; disabled sources
-// retain actual live outcomes. The harness serves seed data and refuses external URLs.
+// harness serves seed data and refuses external URLs. Disabled sources retain
+// their outcome in the evidence.
 async function procedure(prompt, language, preferences) {
   await ready;
   worker.fetch = defaultFetch;
   return plain(await evaluate(worker, `tryProceduralHowTo(${JSON.stringify(prompt)}, ${JSON.stringify(language)}, ${JSON.stringify(preferences)})`));
 }
 
-test("a procedural plan renders its seeded lines in English and Russian", async () => {
-  assert.equal((await procedure("how to make tea", "en", { externalServiceWikihow: false })).content, "Procedural discovery plan for `make tea` (action `make`, object `tea`).\n\nSource path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).\n\nwikiHow is disabled in settings.\n\nFallback web search for `how to make tea`:\n\nNo CORS-enabled web search results were returned for `how to make tea`.\n\nProviders tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.");
-  assert.equal((await procedure("how to install docker", "en", {})).content, "Procedural discovery plan for `install docker` (action `install`, object `docker`).\n\nFor install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `docker install official documentation` and keeps the general how-to query `how to install docker` as fallback.\n\nI do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `Install-Docker` via `https://www.wikihow.com/api.php?action=parse&page=Install-Docker&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. If those sources do not expose usable steps, the fallback path runs web search for `docker install official documentation` across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews and merges the top results with reciprocal rank fusion (k = 60). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `install docker`.");
+test("an unverified procedural answer uses localized wording and retains source stages", async () => {
+  const tea = await procedure("how to make tea", "en", { externalServiceWikihow: false });
+  assert.equal(tea.content, "I couldn’t verify steps for “make tea”. If you have a guide, share its link and I can help you work through it.");
+  assert.ok(tea.evidence.includes("procedural_how_to:service_disabled:wikihow"));
+  const docker = await procedure("how to install docker", "en", {});
+  assert.equal(docker.content, "I couldn’t verify steps for “install docker”. If you have a guide, share its link and I can help you work through it.");
+  assert.ok(docker.evidence.includes("procedural_how_to:source_gate:official_documentation_first"));
+  assert.ok(docker.evidence.includes("web_search:request:docker install official documentation"));
   const russian = await procedure("как установить docker", "ru", { externalServiceWikihow: false });
-  assert.equal(russian.content, "План поиска процедуры для `установить docker` (действие `install`, объект `docker`).\n\nДля задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с `docker install official documentation` и держит `how to установить docker` как fallback.\n\nПуть источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках).\n\nOfficial-documentation web search for `docker install official documentation` did not return ranked guidance; preserving `how to установить docker` as the general how-to fallback.\n\nwikiHow is disabled in settings.\n\nFallback web search for `how to установить docker`:\n\nНе получены результаты веб-поиска с поддержкой CORS для `how to установить docker`.\n\nПопробованы провайдеры: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.");
+  assert.equal(russian.content, "Не удалось найти проверенные инструкции по запросу «установить docker». Если у вас есть ссылка на руководство, пришлите её.");
   assert.equal(russian.query, "how to установить docker");
 });
 
 test("a task text with braces is never re-filled", async () => {
   const response = await procedure("how to {task} it {k}", "en", { externalServiceWikihow: false });
-  assert.ok(response.content.startsWith("Procedural discovery plan for `task it k` (action `task`, object `it k`)."));
+  assert.ok(response.content.startsWith("I couldn’t verify steps for “task it k”."));
 });
 
 test("the mechanism discovery plan answers as the native row does", async () => {

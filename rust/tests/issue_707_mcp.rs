@@ -1,6 +1,9 @@
-use formal_ai::computer_use::{COMPUTER_USE_PRIMITIVES, benchmark_tasks};
+use formal_ai::computer_use::{COMPUTER_USE_PRIMITIVES, parse_benchmark_tasks};
 use formal_ai::{enable_http_agent_mode_for_current_process, handle_api_request};
 use serde_json::{Value, json};
+
+#[path = "fixtures/computer-use/support.rs"]
+mod fixtures;
 
 #[test]
 fn mcp_advertises_the_complete_computer_use_taxonomy_with_schemas() {
@@ -35,8 +38,23 @@ fn mcp_advertises_the_complete_computer_use_taxonomy_with_schemas() {
 
 #[test]
 fn mcp_executes_and_verifies_all_ten_plans_in_agent_mode() {
+    const CHILD_CORPUS: &str = "FORMAL_AI_TEST_COMPUTER_USE_CORPUS";
+    let Some(corpus) = std::env::var_os(CHILD_CORPUS) else {
+        let publisher = fixtures::Publisher::start();
+        let status = std::process::Command::new(std::env::current_exe().expect("test binary"))
+            .args([
+                "--exact",
+                "mcp_executes_and_verifies_all_ten_plans_in_agent_mode",
+            ])
+            .env(CHILD_CORPUS, publisher.corpus())
+            .env("FORMAL_AI_COMPUTER_USE_HTTP_ORIGIN", &publisher.origin)
+            .status()
+            .expect("MCP test subprocess");
+        assert!(status.success());
+        return;
+    };
     enable_http_agent_mode_for_current_process();
-    for task in benchmark_tasks() {
+    for task in parse_benchmark_tasks(&corpus.to_string_lossy()) {
         let plan_id = format!("mcp-{}-{}", std::process::id(), task.id);
         for step in &task.steps {
             let mut arguments = step.arguments.clone();

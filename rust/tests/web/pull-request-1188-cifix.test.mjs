@@ -32,8 +32,9 @@ async function firstWrite(prompt, path, source) {
     if (call.tool === 'write') return args.content;
     const id = `call_${turn}`;
     messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
-    const result = call.tool === 'read' && (args.filePath ?? args.file_path ?? args.path) === path ? source : '';
-    messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: result });
+    const observedTarget = call.tool === 'read' && (args.filePath ?? args.file_path ?? args.path) === path;
+    const evidence = observedTarget ? { source_read: { path, success: true, complete: true, format: 'raw' } } : {};
+    messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: observedTarget ? source : '', ...evidence });
   }
   return null;
 }

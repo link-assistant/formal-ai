@@ -16,7 +16,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 - Covered by rows that existed before this audit: 96 (every issue item has its own row).
 - Drafted in `docs/requirements/issue-1188-user-requirements.md`: 35 rows for 31 requirements, 24 of which no earlier row covered and 7 of which earlier rows covered only in part.
 - Row verdicts in scope: implemented 120, not-delivered 1, partial 32, superseded 1.
-- Evidence check: 120 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
+- Evidence check: 120 implemented rows re-read; 0 cite evidence that does not exist, and 2 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
 
@@ -205,7 +205,6 @@ A row listed here cites a path, name or test title that the check did not find. 
 | --- | --- | --- |
 | R1016 | `js/styles.css` | Reviewed: js/styles.css is named as the stylesheet that was split into js/styles/, not as evidence |
 | R1161-6 | `tests/formal-ai-tool-env-keeps-gh-auth-2314.test.mjs` | Reviewed: the regression test lives in link-assistant/hive-mind, not in this repository; this repository's side is pinned by rust/tests/web/issue-1161-host-contract.test.mjs |
-| R1172-9 | `fact_lotr_author` | Reviewed: fact_lotr_author is named as a seed record that was deleted, not as evidence |
 
 ## Documents that contradicted the latest vision
 

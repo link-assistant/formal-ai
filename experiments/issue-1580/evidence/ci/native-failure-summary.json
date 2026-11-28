@@ -1,0 +1,904 @@
+[
+  {
+    "run": "43815999666",
+    "failedTests": [
+      {
+        "name": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+        "lines": [
+          28289
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+        "lines": [
+          28393
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+        "lines": [
+          28480
+        ]
+      },
+      {
+        "name": "ci_cd::ci_warning_audit::audited_warning_band_sources_stay_below_their_limits",
+        "lines": [
+          32031
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder",
+        "lines": [
+          32184
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_hindi",
+        "lines": [
+          32185
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands",
+        "lines": [
+          36717
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch",
+        "lines": [
+          36722
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome",
+        "lines": [
+          44358
+        ]
+      },
+      {
+        "name": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+        "lines": [
+          48583
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+        "lines": [
+          48706
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+        "lines": [
+          48707
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+        "lines": [
+          48726
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+        "lines": [
+          52599
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+        "lines": [
+          52603
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+        "lines": [
+          52690
+        ]
+      },
+      {
+        "name": "specification::synthesis::renumbered_word_problem_recomputes_from_quantities",
+        "lines": [
+          56362
+        ]
+      },
+      {
+        "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_chinese",
+        "lines": [
+          59666
+        ]
+      },
+      {
+        "name": "pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written",
+        "lines": [
+          59878
+        ]
+      },
+      {
+        "name": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints",
+        "lines": [
+          63150
+        ]
+      },
+      {
+        "name": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value",
+        "lines": [
+          63210
+        ]
+      },
+      {
+        "name": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra",
+        "lines": [
+          63211
+        ]
+      },
+      {
+        "name": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+        "lines": [
+          63221
+        ]
+      },
+      {
+        "name": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order",
+        "lines": [
+          63234
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+        "lines": [
+          63257
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+        "lines": [
+          70826
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+        "lines": [
+          70827
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+        "lines": [
+          70828
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+        "lines": [
+          70829
+        ]
+      },
+      {
+        "name": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+        "lines": [
+          70929
+        ]
+      },
+      {
+        "name": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation",
+        "lines": [
+          71184
+        ]
+      }
+    ],
+    "timeouts": [
+      {
+        "line": 28146,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:39:22.7057924Z test agentic_coding::issue_1558_reference_resolution::hive_mind_4033_successful_read_is_not_planned_again has been running for over 60 seconds"
+      },
+      {
+        "line": 28155,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:39:27.9558199Z test agentic_coding::issue_498_google_trends_learning::planner_walks_the_google_trends_learning_recipe has been running for over 60 seconds"
+      },
+      {
+        "line": 28194,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:39:56.7607795Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_7 has been running for over 60 seconds"
+      },
+      {
+        "line": 28299,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:40:49.4632468Z test agentic_coding::work_item_report_outcome::issue_1486_link_into_dot_github_is_read_at_its_linked_path has been running for over 60 seconds"
+      },
+      {
+        "line": 28301,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:41:43.1317945Z test coding_discovery::composition::structural_compositions_cover_tuple_pairwise_and_vowel_counting has been running for over 60 seconds"
+      },
+      {
+        "line": 28305,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:41:51.6788054Z test coding_discovery::composition_search::an_unseen_combination_of_seeded_meanings_composes has been running for over 60 seconds"
+      },
+      {
+        "line": 28486,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:44:12.8717855Z test issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter has been running for over 60 seconds"
+      },
+      {
+        "line": 28701,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:46:35.8116742Z test solver::issue_1138_self_use_concept_lookup::an_honest_refusal_names_every_source_it_consulted has been running for over 60 seconds"
+      },
+      {
+        "line": 28944,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T06:47:45.5039729Z test issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family has been running for over 60 seconds"
+      },
+      {
+        "line": 31994,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:38:50.4561102Z test agentic_coding::issue_498_google_trends_learning::driver_drives_the_google_trends_learning_recipe_to_a_write has been running for over 60 seconds"
+      },
+      {
+        "line": 31997,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:38:52.1730947Z test agentic_coding::issue_538_agentic::historical_self_inspection_request_produces_current_recursive_source_content has been running for over 60 seconds"
+      },
+      {
+        "line": 31999,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:39:15.6411167Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_6 has been running for over 60 seconds"
+      },
+      {
+        "line": 32011,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:39:51.2351149Z test agentic_coding::work_item_report_outcome::hive_mind_sessions_read_a_repository_file_and_do_not_refuse_the_read has been running for over 60 seconds"
+      },
+      {
+        "line": 32151,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:41:27.9841098Z test coding_discovery::multilingual::composition_from_sources_holds_in_five_languages has been running for over 60 seconds"
+      },
+      {
+        "line": 32284,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:45:57.5930960Z test issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli has been running for over 60 seconds"
+      },
+      {
+        "line": 32349,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:46:24.2611370Z test issue_705_anticipation::the_same_history_produces_byte_identical_predictions_and_ledger has been running for over 60 seconds"
+      },
+      {
+        "line": 33413,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T06:49:29.6733698Z test issue_457_self_source_metrics::issue_457_rust_self_source_metrics_request_returns_blueprint_program has been running for over 60 seconds"
+      },
+      {
+        "line": 36467,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:41:06.9819712Z test agentic_coding::issue_1558_reference_resolution::issue_1507_runtime_name_is_a_term_and_other_files_are_still_read has been running for over 60 seconds"
+      },
+      {
+        "line": 36468,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:41:09.1832677Z test agentic_coding::issue_538_agentic::self_ast_task_wins_over_the_formalization_keyword has been running for over 60 seconds"
+      },
+      {
+        "line": 36469,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:41:33.7632665Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_2 has been running for over 60 seconds"
+      },
+      {
+        "line": 36517,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:42:05.2512577Z test agentic_coding::issue_749_shell_routing::file_operation_cues_do_not_come_from_path_operands has been running for over 60 seconds"
+      },
+      {
+        "line": 36548,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:43:19.6342744Z test agentic_coding::work_item_report_outcome::issue_1501_page_session_reads_a_file_and_its_requirements_carry_no_chrome has been running for over 60 seconds"
+      },
+      {
+        "line": 36740,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:44:33.4071737Z test coding_discovery::multilingual::five_language_paraphrases_share_specs_concepts_and_verified_compositions has been running for over 60 seconds"
+      },
+      {
+        "line": 36785,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:45:28.4073031Z test issue_1160_regular_prompt::the_regular_prompt_delivers_a_ready_pull_request has been running for over 60 seconds"
+      },
+      {
+        "line": 36786,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:45:44.8272655Z test issue_499_learn_from_source::committed_agent_cli_session_matches_a_fresh_learn_from_source_run has been running for over 60 seconds"
+      },
+      {
+        "line": 36942,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:48:59.7088715Z test meta_executor_census::every_specification_prompt_runs_the_recursive_procedure has been running for over 60 seconds"
+      },
+      {
+        "line": 37259,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T06:53:42.5634361Z test issue_1138_family_behaviour::no_family_answer_is_the_unknown_opener has been running for over 60 seconds"
+      },
+      {
+        "line": 40249,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T06:38:35.0081909Z test agentic_coding::coding_research_production::canonical_native_production_route_handles_cold_held_out_typescript_and_reuses_without_writes has been running for over 60 seconds"
+      },
+      {
+        "line": 40262,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T06:38:45.3872173Z test agentic_coding::issue_1558_reference_resolution::issue_1487_linked_name_is_read_under_js_agentic_crate has been running for over 60 seconds"
+      },
+      {
+        "line": 40410,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T06:39:51.5662046Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_1 has been running for over 60 seconds"
+      },
+      {
+        "line": 40412,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T06:40:50.0632007Z test coding_discovery::composition_search::search_is_deterministic_across_runs has been running for over 60 seconds"
+      },
+      {
+        "line": 40570,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T06:46:02.3982106Z test issue_1559_standing_requirement_scope::replaying_the_two_recorded_prompts_shows_no_text_of_the_first_prompt_in_the_second_session has been running for over 60 seconds"
+      },
+      {
+        "line": 40571,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T06:46:02.5161825Z test issue_499_learn_from_source::learn_from_source_is_recognized_in_every_supported_language has been running for over 60 seconds"
+      },
+      {
+        "line": 44265,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:38:30.5271480Z test agentic_coding::issue_538_agentic::self_inspection_session_retains_actual_source_model_write_and_read has been running for over 60 seconds"
+      },
+      {
+        "line": 44266,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:38:49.8241084Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_3 has been running for over 60 seconds"
+      },
+      {
+        "line": 44269,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:39:17.2261934Z test coding_discovery::composition::existing_collection_meanings_compose_into_held_out_programs has been running for over 60 seconds"
+      },
+      {
+        "line": 44270,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:39:24.8855964Z test coding_discovery::structural_composition::held_out_filter_predicate_and_string_window_schemas_execute has been running for over 60 seconds"
+      },
+      {
+        "line": 44280,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:39:59.9381924Z test coding_discovery::structural_composition::held_out_sequence_and_symmetry_schemas_execute has been running for over 60 seconds"
+      },
+      {
+        "line": 44350,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:41:16.5661362Z test installation_conversion::extended::popular_github_projects_route_through_install_conversion has been running for over 60 seconds"
+      },
+      {
+        "line": 44446,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:42:31.6068666Z test issue_1138_family_migration::no_answer_is_byte_equal_to_a_seed_body_field has been running for over 60 seconds"
+      },
+      {
+        "line": 44447,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T06:42:35.2164887Z test issue_1160_regular_prompt::the_restart_prompt_ignores_a_stray_kotlin_jar_commits_pushes_and_keeps_the_pull_request_ready has been running for over 60 seconds"
+      },
+      {
+        "line": 48613,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T06:43:47.0229880Z test agentic_coding::issue_1562_cited_programs::the_solver_selects_a_program_only_from_the_cited_addresses has been running for over 60 seconds"
+      },
+      {
+        "line": 48614,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T06:43:47.3503510Z test agentic_coding::issue_498_google_trends_learning::committed_agent_cli_session_matches_a_fresh_google_trends_learning_run has been running for over 60 seconds"
+      },
+      {
+        "line": 48615,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T06:44:00.9269885Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_4 has been running for over 60 seconds"
+      },
+      {
+        "line": 48691,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T06:45:24.4429025Z test coding_discovery::structural_composition::held_out_relation_ordering_and_pattern_schemas_execute has been running for over 60 seconds"
+      },
+      {
+        "line": 48857,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T06:47:21.8529914Z test issue_1157_idempotent_commit::the_commit_names_its_files_and_a_repeated_run_is_a_clean_no_op has been running for over 60 seconds"
+      },
+      {
+        "line": 52364,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T06:40:05.5120883Z test agentic_coding::issue_1558_reference_resolution::issue_1485_linked_name_is_read_at_its_linked_path has been running for over 60 seconds"
+      },
+      {
+        "line": 52365,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T06:40:05.7150788Z test agentic_coding::issue_1562_cited_programs::a_session_whose_only_written_file_is_named_by_no_obligation_commits_nothing has been running for over 60 seconds"
+      },
+      {
+        "line": 52380,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T06:40:45.7860937Z test agentic_coding::issue_558_self_healing::committed_self_healing_case_is_generated_and_written_by_the_driver has been running for over 60 seconds"
+      },
+      {
+        "line": 52382,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T06:40:49.9710825Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_0 has been running for over 60 seconds"
+      },
+      {
+        "line": 52529,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T06:43:07.0290863Z test coding_discovery::structural_composition::held_out_arithmetic_scan_and_geometry_schemas_execute has been running for over 60 seconds"
+      },
+      {
+        "line": 52901,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T06:47:47.9705070Z test solver::issue_938_meta_algorithm_builder::shared_program_synthesis_trace_is_multilingual has been running for over 60 seconds"
+      },
+      {
+        "line": 56374,
+        "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-16T06:39:59.8687948Z test specification::benchmarks::issue_315_programming_benchmark_cases_synthesize_and_verify has been running for over 60 seconds"
+      },
+      {
+        "line": 56406,
+        "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-16T06:40:17.5246468Z test specification::code_generation_blueprint::python_comments_omitted_drops_docstring_and_hash_comments_end_to_end has been running for over 60 seconds"
+      },
+      {
+        "line": 59396,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:40:25.8716367Z test agentic_coding::issue_1085_requirement_resolution::committed_leaf_rules_apply_or_refuse_their_original_conflicting_scope has been running for over 60 seconds"
+      },
+      {
+        "line": 59403,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:40:44.6026161Z test agentic_coding::issue_1562_cited_programs::the_three_reports_write_run_and_commit_nothing_and_name_the_defect has been running for over 60 seconds"
+      },
+      {
+        "line": 59406,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:41:00.6565127Z test agentic_coding::issue_538_agentic::recursive_source_content_is_generated_and_written_by_the_driver has been running for over 60 seconds"
+      },
+      {
+        "line": 59563,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:41:44.2323950Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_5 has been running for over 60 seconds"
+      },
+      {
+        "line": 59643,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:42:45.1326323Z test coding_discovery::composition_search::a_typed_lowering_without_an_oracle_stays_explicitly_unverified has been running for over 60 seconds"
+      },
+      {
+        "line": 59757,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:45:45.0929139Z test issue_1158_pull_request_steps::the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pull_request has been running for over 60 seconds"
+      },
+      {
+        "line": 59758,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:46:42.0636087Z test issue_705_anticipation::changed_transition_evidence_appends_a_new_prediction_revision has been running for over 60 seconds"
+      },
+      {
+        "line": 59924,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:49:55.2346487Z test solver::issue_1173_route3_recurrence::the_native_solver_answers_the_probes_with_the_source_recurrence has been running for over 60 seconds"
+      },
+      {
+        "line": 59925,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T06:50:01.6496717Z test solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured has been running for over 60 seconds"
+      },
+      {
+        "line": 63256,
+        "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-16T06:40:11.8690435Z test specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation has been running for over 60 seconds"
+      },
+      {
+        "line": 66644,
+        "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-16T06:40:37.0817822Z test specification::benchmarks::issue_326_program_synthesis_accepts_native_operation_verbs has been running for over 60 seconds"
+      },
+      {
+        "line": 66651,
+        "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-16T06:41:29.6424240Z test specification::text_manipulation_benchmarks::issue_408_text_code_edit_profile_passes_local_ratchet has been running for over 60 seconds"
+      },
+      {
+        "line": 70822,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T06:40:22.6896236Z test specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts has been running for over 60 seconds"
+      },
+      {
+        "line": 70823,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T06:40:22.7252851Z test specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace has been running for over 60 seconds"
+      },
+      {
+        "line": 70824,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T06:40:23.5151709Z test specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit has been running for over 60 seconds"
+      },
+      {
+        "line": 70825,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T06:40:26.0154950Z test specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case has been running for over 60 seconds"
+      },
+      {
+        "line": 71230,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T06:42:22.2189367Z test specification::code_generation_blueprint::budget_calculator_blueprint_covers_supported_prompt_languages has been running for over 60 seconds"
+      }
+    ]
+  },
+  {
+    "run": "43805800854",
+    "failedTests": [
+      {
+        "name": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+        "lines": [
+          35605
+        ]
+      },
+      {
+        "name": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+        "lines": [
+          43793
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+        "lines": [
+          47541
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+        "lines": [
+          47542
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+        "lines": [
+          47543
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+        "lines": [
+          47544
+        ]
+      },
+      {
+        "name": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+        "lines": [
+          47644
+        ]
+      },
+      {
+        "name": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation",
+        "lines": [
+          47899
+        ]
+      },
+      {
+        "name": "ci_cd::ci_warning_audit::audited_warning_band_sources_stay_below_their_limits",
+        "lines": [
+          51146
+        ]
+      },
+      {
+        "name": "pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written",
+        "lines": [
+          51513
+        ]
+      },
+      {
+        "name": "specification::synthesis::renumbered_word_problem_recomputes_from_quantities",
+        "lines": [
+          74259
+        ]
+      },
+      {
+        "name": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints",
+        "lines": [
+          80984
+        ]
+      },
+      {
+        "name": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra",
+        "lines": [
+          81043
+        ]
+      },
+      {
+        "name": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value",
+        "lines": [
+          81044
+        ]
+      },
+      {
+        "name": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+        "lines": [
+          81052
+        ]
+      },
+      {
+        "name": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order",
+        "lines": [
+          81063
+        ]
+      },
+      {
+        "name": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+        "lines": [
+          81090
+        ]
+      }
+    ],
+    "timeouts": [
+      {
+        "line": 27925,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T04:59:57.6881167Z test agentic_coding::coding_research_production::canonical_native_production_route_handles_cold_held_out_typescript_and_reuses_without_writes has been running for over 60 seconds"
+      },
+      {
+        "line": 27938,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T05:00:09.2326399Z test agentic_coding::issue_1558_reference_resolution::issue_1487_linked_name_is_read_under_js_agentic_crate has been running for over 60 seconds"
+      },
+      {
+        "line": 28086,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T05:01:18.5072506Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_1 has been running for over 60 seconds"
+      },
+      {
+        "line": 28088,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T05:02:15.7331929Z test coding_discovery::composition_search::search_is_deterministic_across_runs has been running for over 60 seconds"
+      },
+      {
+        "line": 28354,
+        "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-16T05:07:26.5452012Z test issue_499_learn_from_source::learn_from_source_is_recognized_in_every_supported_language has been running for over 60 seconds"
+      },
+      {
+        "line": 31931,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:00:27.6845611Z test agentic_coding::issue_538_agentic::self_inspection_session_retains_actual_source_model_write_and_read has been running for over 60 seconds"
+      },
+      {
+        "line": 31932,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:00:48.4994372Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_3 has been running for over 60 seconds"
+      },
+      {
+        "line": 31935,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:01:17.3244826Z test coding_discovery::composition::existing_collection_meanings_compose_into_held_out_programs has been running for over 60 seconds"
+      },
+      {
+        "line": 31936,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:01:26.2814056Z test coding_discovery::structural_composition::held_out_filter_predicate_and_string_window_schemas_execute has been running for over 60 seconds"
+      },
+      {
+        "line": 31944,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:01:59.4806921Z test coding_discovery::structural_composition::held_out_sequence_and_symmetry_schemas_execute has been running for over 60 seconds"
+      },
+      {
+        "line": 32016,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:03:23.1116039Z test installation_conversion::extended::popular_github_projects_route_through_install_conversion has been running for over 60 seconds"
+      },
+      {
+        "line": 32111,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:04:30.2124058Z test issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome has been running for over 60 seconds"
+      },
+      {
+        "line": 32113,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:04:44.9484305Z test issue_1138_family_migration::no_answer_is_byte_equal_to_a_seed_body_field has been running for over 60 seconds"
+      },
+      {
+        "line": 32256,
+        "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-16T05:06:25.7813219Z test meta_executor_census::every_specification_prompt_runs_the_recursive_procedure has been running for over 60 seconds"
+      },
+      {
+        "line": 35462,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:00:02.5889462Z test agentic_coding::issue_1558_reference_resolution::hive_mind_4033_successful_read_is_not_planned_again has been running for over 60 seconds"
+      },
+      {
+        "line": 35471,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:00:08.3940283Z test agentic_coding::issue_498_google_trends_learning::planner_walks_the_google_trends_learning_recipe has been running for over 60 seconds"
+      },
+      {
+        "line": 35510,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:00:40.9519177Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_7 has been running for over 60 seconds"
+      },
+      {
+        "line": 35614,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:01:28.3709408Z test agentic_coding::work_item_report_outcome::issue_1486_link_into_dot_github_is_read_at_its_linked_path has been running for over 60 seconds"
+      },
+      {
+        "line": 35617,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:02:28.2369389Z test coding_discovery::composition::structural_compositions_cover_tuple_pairwise_and_vowel_counting has been running for over 60 seconds"
+      },
+      {
+        "line": 35628,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:02:37.6309722Z test coding_discovery::composition_search::an_unseen_combination_of_seeded_meanings_composes has been running for over 60 seconds"
+      },
+      {
+        "line": 35804,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:05:10.9289208Z test issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter has been running for over 60 seconds"
+      },
+      {
+        "line": 36909,
+        "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-16T05:08:28.8101470Z test issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family has been running for over 60 seconds"
+      },
+      {
+        "line": 40174,
+        "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-16T05:00:08.2411653Z test specification::benchmarks::issue_326_program_synthesis_accepts_native_operation_verbs has been running for over 60 seconds"
+      },
+      {
+        "line": 40182,
+        "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-16T05:01:02.7361270Z test specification::text_manipulation_benchmarks::issue_408_text_code_edit_profile_passes_local_ratchet has been running for over 60 seconds"
+      },
+      {
+        "line": 43823,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T05:02:41.1330619Z test agentic_coding::issue_1562_cited_programs::the_solver_selects_a_program_only_from_the_cited_addresses has been running for over 60 seconds"
+      },
+      {
+        "line": 43824,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T05:02:41.8324762Z test agentic_coding::issue_498_google_trends_learning::committed_agent_cli_session_matches_a_fresh_google_trends_learning_run has been running for over 60 seconds"
+      },
+      {
+        "line": 43825,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T05:02:55.4584640Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_4 has been running for over 60 seconds"
+      },
+      {
+        "line": 44003,
+        "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-16T05:05:43.8224746Z test issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification has been running for over 60 seconds"
+      },
+      {
+        "line": 47537,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T05:00:51.7308456Z test specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts has been running for over 60 seconds"
+      },
+      {
+        "line": 47538,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T05:00:51.7780789Z test specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace has been running for over 60 seconds"
+      },
+      {
+        "line": 47539,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T05:00:52.5039034Z test specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit has been running for over 60 seconds"
+      },
+      {
+        "line": 47540,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T05:00:55.8556126Z test specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case has been running for over 60 seconds"
+      },
+      {
+        "line": 47945,
+        "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-16T05:02:54.0065287Z test specification::code_generation_blueprint::budget_calculator_blueprint_covers_supported_prompt_languages has been running for over 60 seconds"
+      },
+      {
+        "line": 51102,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:00:37.3275953Z test agentic_coding::issue_498_google_trends_learning::driver_drives_the_google_trends_learning_recipe_to_a_write has been running for over 60 seconds"
+      },
+      {
+        "line": 51109,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:00:41.0475336Z test agentic_coding::issue_538_agentic::historical_self_inspection_request_produces_current_recursive_source_content has been running for over 60 seconds"
+      },
+      {
+        "line": 51114,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:01:05.6731631Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_6 has been running for over 60 seconds"
+      },
+      {
+        "line": 51120,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:01:42.7040162Z test agentic_coding::work_item_report_outcome::hive_mind_sessions_read_a_repository_file_and_do_not_refuse_the_read has been running for over 60 seconds"
+      },
+      {
+        "line": 51265,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:03:22.9305038Z test coding_discovery::multilingual::composition_from_sources_holds_in_five_languages has been running for over 60 seconds"
+      },
+      {
+        "line": 51299,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:05:57.8765245Z test issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder has been running for over 60 seconds"
+      },
+      {
+        "line": 51302,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:07:01.2952159Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_hindi has been running for over 60 seconds"
+      },
+      {
+        "line": 51396,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:08:21.5825326Z test issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli has been running for over 60 seconds"
+      },
+      {
+        "line": 51462,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:08:51.8915450Z test issue_705_anticipation::the_same_history_produces_byte_identical_predictions_and_ledger has been running for over 60 seconds"
+      },
+      {
+        "line": 51819,
+        "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-16T05:11:55.9469273Z test issue_457_self_source_metrics::issue_457_rust_self_source_metrics_request_returns_blueprint_program has been running for over 60 seconds"
+      },
+      {
+        "line": 63518,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:00:14.9931915Z test agentic_coding::issue_1085_requirement_resolution::committed_leaf_rules_apply_or_refuse_their_original_conflicting_scope has been running for over 60 seconds"
+      },
+      {
+        "line": 63528,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:00:35.4361918Z test agentic_coding::issue_1562_cited_programs::the_three_reports_write_run_and_commit_nothing_and_name_the_defect has been running for over 60 seconds"
+      },
+      {
+        "line": 63553,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:00:51.7681919Z test agentic_coding::issue_538_agentic::recursive_source_content_is_generated_and_written_by_the_driver has been running for over 60 seconds"
+      },
+      {
+        "line": 63681,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:01:36.7191736Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_5 has been running for over 60 seconds"
+      },
+      {
+        "line": 63768,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:02:38.0062367Z test coding_discovery::composition_search::a_typed_lowering_without_an_oracle_stays_explicitly_unverified has been running for over 60 seconds"
+      },
+      {
+        "line": 63918,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:06:08.9261904Z test issue_705_anticipation::changed_transition_evidence_appends_a_new_prediction_revision has been running for over 60 seconds"
+      },
+      {
+        "line": 64055,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:09:13.8030491Z test solver::issue_1173_route3_recurrence::the_native_solver_answers_the_probes_with_the_source_recurrence has been running for over 60 seconds"
+      },
+      {
+        "line": 64056,
+        "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-16T05:09:17.2190852Z test solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured has been running for over 60 seconds"
+      },
+      {
+        "line": 67109,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:00:12.4243364Z test agentic_coding::issue_1558_reference_resolution::issue_1507_runtime_name_is_a_term_and_other_files_are_still_read has been running for over 60 seconds"
+      },
+      {
+        "line": 67110,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:00:14.6593234Z test agentic_coding::issue_538_agentic::self_ast_task_wins_over_the_formalization_keyword has been running for over 60 seconds"
+      },
+      {
+        "line": 67126,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:00:48.2253270Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_2 has been running for over 60 seconds"
+      },
+      {
+        "line": 67128,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:01:22.9683755Z test agentic_coding::issue_749_shell_routing::file_operation_cues_do_not_come_from_path_operands has been running for over 60 seconds"
+      },
+      {
+        "line": 67178,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:03:03.7746250Z test agentic_coding::work_item_report_outcome::a_page_without_an_issue_body_is_rejected_and_the_api_read_is_used has been running for over 60 seconds"
+      },
+      {
+        "line": 67179,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:03:04.8413313Z test agentic_coding::work_item_report_outcome::issue_1501_page_session_reads_a_file_and_its_requirements_carry_no_chrome has been running for over 60 seconds"
+      },
+      {
+        "line": 67375,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:04:55.3773516Z test coding_discovery::multilingual::five_language_paraphrases_share_specs_concepts_and_verified_compositions has been running for over 60 seconds"
+      },
+      {
+        "line": 67376,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:05:42.8153292Z test issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch has been running for over 60 seconds"
+      },
+      {
+        "line": 67377,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:05:42.9103632Z test issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands has been running for over 60 seconds"
+      },
+      {
+        "line": 67446,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:07:05.7073685Z test issue_1559_standing_requirement_scope::replaying_the_two_recorded_prompts_shows_no_text_of_the_first_prompt_in_the_second_session has been running for over 60 seconds"
+      },
+      {
+        "line": 67447,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:07:12.5173369Z test issue_499_learn_from_source::committed_agent_cli_session_matches_a_fresh_learn_from_source_run has been running for over 60 seconds"
+      },
+      {
+        "line": 67478,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:10:59.0043455Z test issue_705_anticipation::a_held_out_predicted_prompt_becomes_answerable_offline_after_prelearning has been running for over 60 seconds"
+      },
+      {
+        "line": 67852,
+        "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-16T05:15:40.9052015Z test issue_1138_family_behaviour::no_family_answer_is_the_unknown_opener has been running for over 60 seconds"
+      },
+      {
+        "line": 74183,
+        "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-16T05:00:08.6900939Z test specification::benchmarks::issue_315_programming_benchmark_cases_synthesize_and_verify has been running for over 60 seconds"
+      },
+      {
+        "line": 74271,
+        "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-16T05:00:30.9502867Z test specification::code_generation_blueprint::python_comments_omitted_drops_docstring_and_hash_comments_end_to_end has been running for over 60 seconds"
+      },
+      {
+        "line": 77259,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:00:15.1638014Z test agentic_coding::issue_1558_reference_resolution::issue_1485_linked_name_is_read_at_its_linked_path has been running for over 60 seconds"
+      },
+      {
+        "line": 77260,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:00:15.4476219Z test agentic_coding::issue_1562_cited_programs::a_session_whose_only_written_file_is_named_by_no_obligation_commits_nothing has been running for over 60 seconds"
+      },
+      {
+        "line": 77276,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:01:17.8386230Z test agentic_coding::issue_558_self_healing::committed_self_healing_case_is_generated_and_written_by_the_driver has been running for over 60 seconds"
+      },
+      {
+        "line": 77278,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:01:24.8876035Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_0 has been running for over 60 seconds"
+      },
+      {
+        "line": 77424,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:03:28.7336244Z test agentic_coding::work_item_report_outcome::issue_1501_bare_readme_is_the_root_file_not_a_deeper_one_sharing_a_word has been running for over 60 seconds"
+      },
+      {
+        "line": 77426,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:04:06.6572469Z test coding_discovery::routing::coding_task_is_not_claimed_by_concept_or_arithmetic_routes has been running for over 60 seconds"
+      },
+      {
+        "line": 77437,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:05:04.1916371Z test coding_discovery::structural_composition::held_out_arithmetic_scan_and_geometry_schemas_execute has been running for over 60 seconds"
+      },
+      {
+        "line": 77442,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:06:09.3836483Z test conversational_variations::conversational_variation_benchmark_routes_every_case has been running for over 60 seconds"
+      },
+      {
+        "line": 77515,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:07:54.8796170Z test issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language has been running for over 60 seconds"
+      },
+      {
+        "line": 77516,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:08:39.5885951Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language has been running for over 60 seconds"
+      },
+      {
+        "line": 77600,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:09:47.8545917Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish has been running for over 60 seconds"
+      },
+      {
+        "line": 77852,
+        "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-16T05:13:35.4158236Z test solver::issue_938_meta_algorithm_builder::shared_program_synthesis_trace_is_multilingual has been running for over 60 seconds"
+      },
+      {
+        "line": 81089,
+        "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-16T05:01:39.5745074Z test specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation has been running for over 60 seconds"
+      }
+    ]
+  }
+]

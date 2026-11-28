@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "head": "dc618e45c5372edbd742f500105ac5e3a72a9737",
+  "sourceUnchangedDuringValidation": true,
+  "checks": 12,
+  "failed": [],
+  "gateLogsArchived": 87,
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "completedAt": "2026-11-18T18:04:30.760397+00:00",
+  "focusedFiles": 8,
+  "focusedCounts": {
+    "tests": 86,
+    "pass": 85,
+    "fail": 0,
+    "skipped": 1
+  },
+  "gateCounts": {
+    "PASS": 87,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "typescriptFiles": 729,
+  "allAggregateAndFocusedLogsLiterallyRead": true,
+  "allDetailedGateLogsLiterallyRead": false,
+  "allPayloadHashesVerified": true
+}

@@ -1,0 +1,12 @@
+{
+  "sourceHeadBeforeCommit": "ba01ef99fb06a228401f848664ee65e7d422163d",
+  "owners": 9,
+  "conservedAssertionBodies": 16,
+  "nativeTestsRetained": 200,
+  "maintainedObservationsPassed": 217,
+  "sourceWarnings": 46,
+  "archives": 64,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

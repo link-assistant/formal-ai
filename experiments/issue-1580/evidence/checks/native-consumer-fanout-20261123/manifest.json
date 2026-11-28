@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "repository": "link-assistant/formal-ai",
+  "observedHostedHead": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+  "observedHostedRun": 45218149963,
+  "reproducedBeforeFix": true,
+  "focusedBeforeExitCode": 1,
+  "focusedAfterExitCode": 0,
+  "neighborFilesPassed": 5,
+  "neighborCountsOverlap": true,
+  "affectedJavaScriptGatesPassed": 10,
+  "rustBuildExecuted": false,
+  "hostedNewSchedulingVerified": false,
+  "wholeIssueAcceptance": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 100778,
+    "sha256": "b287ffee85d469773f4f31c25b206747985aebe2116dddf83ce9b56a64d37de0"
+  },
+  "members": 56,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T17:11:08.678054+00:00"
+}

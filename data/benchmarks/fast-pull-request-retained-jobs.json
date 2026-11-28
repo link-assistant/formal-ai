@@ -1,7 +1,7 @@
 {
   "schema": "retained-ci-job-payloads/v1",
   "source": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
-  "scope": "Retained suites and optional qualifications. Main-only builds; redundant compilation removed; native fixture installation keeps frozen flags under bounded supervision.",
+  "scope": "Retained suites and optional qualifications. Main-only builds; redundant compilation removed; native fixture installation keeps frozen flags under bounded supervision. Artifact transport now uses the reviewed raw adapter; original selectors, predicates and non-transport payloads remain independently compared to aca32b1a.",
   "jobs": [
     {
       "file": "release.yml",
@@ -16,7 +16,7 @@
     {
       "file": "release.yml",
       "id": "test",
-      "payloadSha256": "3efe6069b6fd86a523c2de13491b9b5be326f29c8908ce3efa8439ba4d8c371b"
+      "payloadSha256": "7d84ee78565813c39eb63c704bfb809fa68630c8569b5a72cf582310e95b2b5e"
     },
     {
       "file": "release.yml",
@@ -116,7 +116,7 @@
     {
       "file": "coding-ladder.yml",
       "id": "coding-ladder",
-      "payloadSha256": "ded5a6c022d690f6842c7297d945cd711a3a5431024f25d165b7e0a9c70d3044"
+      "payloadSha256": "07f27b8a8e40dcbda448bc4ebb9c9e29950145242b07c57bb24a1ad37018b8fb"
     },
     {
       "file": "container-images.yml",
@@ -161,7 +161,7 @@
     {
       "file": "security.yml",
       "id": "codeql",
-      "payloadSha256": "5f9b47093cfb3dc58dce10b9ec51be3004cf154b8644fc0673976783cbc3bcb1"
+      "payloadSha256": "4aac9e9b44627d4d5f9c399f76b21b4f84fcebc2a00feb362432a6895384fcb8"
     },
     {
       "file": "publish-engine.yml",
@@ -226,7 +226,7 @@
     {
       "file": "links.yml",
       "id": "link-checker",
-      "payloadSha256": "d4dbf548c0d89a161c1af5cd41ce02b3c5c43f4cb602fa8bdaa7414b33d3e299"
+      "payloadSha256": "38984c2f728fb8c4738af9034a3c9a2e0a7a09318cd97a46127c9f7da3a614f6"
     },
     {
       "file": "coding-ladder.yml",

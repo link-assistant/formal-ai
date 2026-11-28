@@ -1,0 +1,44 @@
+[
+  {
+    "label": "calendar-currency",
+    "startedAt": "2026-11-17T23:31:21.711887+00:00",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "rust/tests/web/issue-1589-calendar-currency.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 24.699502208037302,
+    "lines": 268,
+    "sha256": "d069951aecff64a86574b047c5921de17e4f7ce074bbe8224f872313beb45a37",
+    "rawLog": "/tmp/issue-1580-research/calendar-seed-after-calendar-currency.log",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/after-calendar-currency.log.gz",
+    "authorshipCredit": 0
+  },
+  {
+    "label": "main-only-ledger",
+    "startedAt": "2026-11-17T23:31:46.412525+00:00",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "rust/tests/web/main-only-regression-ledger.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.2327353700529784,
+    "lines": 34,
+    "sha256": "1ddfdb602e803c480b40776ab8cc931babe2bc4b5f9a56f4975c6eb05d090bf8",
+    "rawLog": "/tmp/issue-1580-research/calendar-seed-after-main-only-ledger.log",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/after-main-only-ledger.log.gz",
+    "authorshipCredit": 0
+  }
+]

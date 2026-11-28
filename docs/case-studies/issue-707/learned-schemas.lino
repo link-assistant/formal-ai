@@ -1,5 +1,5 @@
 computer_use_learned_schemas
-  source data/seed/computer-use-tasks.lino
+  source "rust/tests/fixtures/computer-use/tasks.lino"
   operation computer_use_count_lines
     step shell.run:count_lines
     constant confirmed true

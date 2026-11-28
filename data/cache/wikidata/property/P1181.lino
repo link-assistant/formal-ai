@@ -1,0 +1,19 @@
+P1181
+  aliases
+    en (value "numerical value")
+    ru ("численное значение" "значение")
+    zh ("数值")
+  datatype quantity
+  descriptions
+    en "numerical value of a number, a mathematical constant, or a physical constant"
+    es "valor numérico de un número (ej.: 1) o de una constante (ej.: pi)"
+    ru "числовое значение числа (например, 1) или константы (например, «пи»)"
+    zh "某數字（例：1）或常數（圓周率）的數值"
+  id P1181
+  labels
+    en "numeric value"
+    es "valor numérico"
+    ru "числовое значение"
+    zh "數值"
+  type property
+success 1

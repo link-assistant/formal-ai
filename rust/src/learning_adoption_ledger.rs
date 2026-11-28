@@ -6,7 +6,7 @@
 //! frontier item:
 //!
 //! * **before** is read from the frozen frontier record
-//!   (`data/meta/learning-frontier-google-trends.lino`), which captured the
+//!   supplied by the caller, which captured the
 //!   engine's verdict *before* the issue-#701 adoption cycle: `intent: unknown`,
 //!   routed to human triage;
 //! * **after** is produced live by [`FormalAiEngine::answer`] on the very same
@@ -17,16 +17,15 @@
 //! (`web_search_query_for`); routing to some unrelated capability would be a
 //! regression, not an adoption, and is recorded as one.
 //!
-//! Because "before" is a committed record and "after" is a pure function of the
-//! committed seed, the whole ledger is reproducible offline and pins
-//! byte-for-byte as `data/meta/learning-adoption-ledger.lino`.
+//! Replaying the same inputs offline lets the tests compare the resulting ledger
+//! with the historical adoption evidence.
 
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
 
 use crate::engine::{FormalAiEngine, normalize_prompt};
-use crate::google_trends_catalog::google_trends_catalog;
-use crate::learning_cycle::{FrontierItem, recorded_google_trends_frontier};
+use crate::google_trends_catalog::{GoogleTrendsCatalog, prompt_variants_for_topic};
+use crate::learning_cycle::{FrontierItem, parse_frontier_record};
 use crate::solver_handlers::web_search_query_for;
 
 /// The intent the unknown path reports.
@@ -214,10 +213,10 @@ impl AdoptionLedger {
 
 /// Build the adoption ledger for the recorded Google Trends frontier.
 #[must_use]
-pub fn google_trends_adoption_ledger() -> AdoptionLedger {
-    let recorded = recorded_google_trends_frontier();
+pub fn google_trends_adoption_ledger(frontier: &str, feed: &GoogleTrendsCatalog) -> AdoptionLedger {
+    let recorded = parse_frontier_record(frontier);
     let pairs = recorded.iter().map(adoption_pair).collect();
-    let (corpus_prompts, corpus_unknown_after) = corpus_unknown_counts();
+    let (corpus_prompts, corpus_unknown_after) = corpus_unknown_counts(feed);
     AdoptionLedger {
         frontier: String::from(crate::learning_cycle::GOOGLE_TRENDS_FRONTIER),
         pairs,
@@ -242,14 +241,13 @@ fn adoption_pair(item: &FrontierItem) -> AdoptionPair {
     }
 }
 
-/// The committed trends corpus size and how many of its prompts are still on the
+/// The supplied trends corpus size and how many of its prompts are still on the
 /// unknown path.
-fn corpus_unknown_counts() -> (usize, usize) {
-    let catalog = google_trends_catalog();
+fn corpus_unknown_counts(feed: &GoogleTrendsCatalog) -> (usize, usize) {
     let mut total = 0usize;
     let mut unknown = 0usize;
-    for topic in &catalog.topics {
-        for prompt in &topic.prompts {
+    for topic in &feed.topics {
+        for prompt in prompt_variants_for_topic(&topic.query) {
             total += 1;
             if FormalAiEngine.answer(&prompt.prompt).intent == UNKNOWN_INTENT {
                 unknown += 1;

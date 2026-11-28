@@ -31,6 +31,15 @@ function fileStem(path) {
 
 /** Mirrors `fn attach`: add the workflow to `recipe` (mutated) once. */
 export function attach(recipe, objective = '') {
+  return attachUsing(recipe, objective, render);
+}
+
+/** Attach with the caller's one generation snapshot, including its provenance. */
+export function attachWith(recipe, objective, versions) {
+  return attachUsing(recipe, objective, recipe => renderWith(recipe, versions()));
+}
+
+function attachUsing(recipe, objective, renderWorkflow) {
   const name = Array.from(fileStem(recipe.path) ?? 'run')
     .map((value) => (isAsciiAlphanumeric(value) || value === '-' || value === '_' ? value : '-'))
     .join('');
@@ -38,7 +47,7 @@ export function attach(recipe, objective = '') {
   if (binding.kind === 'refused') { recipe.commands.unshift(fill('target_binding_refused_command', [])); return; }
   const path = binding.kind === 'bound' ? binding.value : suggestedWorkflowPath(objective) ?? fill('workflow_path_named', [['{name}', name]]);
   if (recipe.supporting_files.some((file) => file.path === path)) return;
-  recipe.supporting_files.push({ path, source: render(recipe) });
+  recipe.supporting_files.push({ path, source: renderWorkflow(recipe) });
 }
 
 /** Mirrors `fn valid_workflow_file_name`: a workflow file name with no directory. */

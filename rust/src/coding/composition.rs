@@ -1,9 +1,7 @@
 //! Draft construction, bounded execution, and least-action selection.
 
-use std::fmt::Write as _;
-use std::time::Duration;
+mod verification;
 
-use crate::agent::{AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
 use crate::coding::concept_discovery::{CandidatePart, ConceptMap};
 use crate::coding::fragment_catalog::{FragmentCatalog, FragmentKind};
 use crate::coding::program_ir::{IrNode, IrType, ProgramIr};
@@ -11,6 +9,10 @@ use crate::coding::python_render::render_function;
 use crate::coding::python_signature::{matching_close_paren, split_top_level_commas};
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 use crate::needs::{Need, NeedKind, NeedState};
+use verification::{derived_examples, verify};
+
+mod ir_draft;
+use ir_draft::ir_draft;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DraftAttempt {
@@ -121,7 +123,29 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
         crate::coding::composition_search::SearchBounds::default(),
         &concepts.structure_ids(),
     );
+    crate::diagnostic!("trace"; "coding_composition: language={} task={} needs={} programs={}", spec.language, spec.name, concepts.needs.len(), programs.len());
     compose_with_ir(spec, concepts, &catalog, programs)
+}
+
+/// Searches typed callable candidates once the runtime can verify them. Source
+/// acquisition can add examples and retry this same composition step.
+pub(super) fn compose_for_verification(
+    spec: &CodingTaskSpec,
+    concepts: &ConceptMap,
+) -> CompositionOutcome {
+    if spec.language == "python"
+        && spec.artifact_shape == ArtifactShape::Function
+        && spec.examples.is_empty()
+        && !concepts.needs.iter().any(|need| {
+            need.candidates
+                .iter()
+                .any(|candidate| !candidate.source_tests.is_empty())
+        })
+        && derived_examples(spec, concepts).is_empty()
+    {
+        return compose_with_ir(spec, concepts, &FragmentCatalog::bootstrap(), []);
+    }
+    compose(spec, concepts)
 }
 
 /// Compose ordinary retrieved parts together with already-elaborated IR.
@@ -150,6 +174,7 @@ pub fn compose_with_ir(
         spec.examples.clone()
     };
     let mut drafts = Vec::new();
+    let mut attempts = Vec::new();
     let mut blocked_needs = Vec::new();
     for structure_id in concepts.structure_ids() {
         let available = catalog.get(&structure_id).is_some()
@@ -167,7 +192,7 @@ pub fn compose_with_ir(
         }
     }
     for (search_rank, program) in programs.into_iter().enumerate() {
-        match ir_draft(spec, catalog, program, search_rank) {
+        match ir_draft(spec, catalog, program, search_rank, &mut attempts) {
             Ok(Some(draft)) => {
                 drafts.push(draft);
             }
@@ -216,7 +241,6 @@ pub fn compose_with_ir(
     }
     blocked_needs.sort_by(|left, right| left.need_id.cmp(&right.need_id));
     blocked_needs.dedup_by(|left, right| left.need_id == right.need_id);
-    let mut attempts = Vec::new();
     let mut passing = Vec::new();
     let mut unverified = Vec::new();
     for draft in drafts {
@@ -356,76 +380,6 @@ fn constant_bounded_domain(program: &ProgramIr, catalog: &FragmentCatalog) -> us
         false
     };
     usize::from(!reads_input(domain))
-}
-
-fn ir_draft(
-    spec: &CodingTaskSpec,
-    catalog: &FragmentCatalog,
-    program: ProgramIr,
-    search_rank: usize,
-) -> Result<Option<Draft>, MissingFragment> {
-    if let Some(id) = program
-        .fragments
-        .iter()
-        .find(|fragment| catalog.get(fragment).is_none())
-    {
-        return Err(MissingFragment::new(id));
-    }
-    if program.type_check(catalog).is_err() {
-        return Ok(None);
-    }
-    let Some(lowering) = crate::coding::ir_lowering::lowering_for(&spec.language) else {
-        return Ok(None);
-    };
-    let Ok(source) = lowering.lower(&program, catalog) else {
-        return Ok(None);
-    };
-    // The prompt's declared surface travels with the derived artifact: a
-    // signature the task itself spelled out (annotations, return, imports)
-    // is echoed verbatim, never reconstructed from the unified types — the
-    // reconstruction would drop the spelling's own import (`List[float]`
-    // needs `from typing import List`) and with it the artifact's
-    // executability (issue #1085 upstream transfer, HumanEval/0).
-    let source = echo_declared_surface(spec, source);
-    let content_id = program.content_id();
-    let mut action_cost = program.action_cost();
-    // A draft whose driving iteration runs over a constant performs
-    // input-independent action: its work is bounded by the constant, not by
-    // the task's input, so agreement with the examples is coincidence. Such
-    // a draft owes the unexamined input as extra action.
-    action_cost += 4 * constant_bounded_domain(&program, catalog);
-    // A literal the search introduced is an assumption no oracle justified:
-    // each one owes extra action, so among verifying drafts the composition
-    // that reads the task's inputs outranks an equally cheap one that
-    // guesses a constant.
-    action_cost += crate::coding::composition_search::literal_leaves(&program.body);
-    let parameter_names: Vec<&str> = spec
-        .parameters
-        .iter()
-        .map(|parameter| parameter.name.as_str())
-        .collect();
-    let referenced_params =
-        crate::coding::composition_search::parameter_reads(&program.body, &parameter_names);
-    let composition = format!(
-        "typed_search({})",
-        program.composition_notation(|id| {
-            catalog
-                .get(id)
-                .is_some_and(|fragment| fragment.kind == FragmentKind::Meaning)
-        })
-    );
-    Ok(Some(Draft {
-        id: content_id,
-        source,
-        callable_name: program.name,
-        source_urls: program.source_urls,
-        source_licenses: program.source_licenses,
-        composition,
-        action_cost,
-        typed_ir: true,
-        search_rank,
-        referenced_params,
-    }))
 }
 
 #[cfg(feature = "meta-language")]
@@ -696,192 +650,6 @@ fn adapt_implementation(code: &str, spec: &CodingTaskSpec) -> Option<String> {
         body = body.replace(from, &to.name);
     }
     Some(body)
-}
-
-fn verify(
-    spec: &CodingTaskSpec,
-    draft: &Draft,
-    examples: &[Example],
-    concepts: &ConceptMap,
-    catalog: &FragmentCatalog,
-) -> (bool, String) {
-    if spec.language == "python"
-        && spec.artifact_shape == ArtifactShape::Function
-        && examples.is_empty()
-    {
-        return (false, "no executable examples or derived tests".to_owned());
-    }
-    let mut script = draft.source.clone();
-    if spec.language == "python" && spec.artifact_shape == ArtifactShape::Function {
-        let Ok(entrypoint) = template(catalog, "python_test_entrypoint", &[]) else {
-            return (false, "missing fragment:python_test_entrypoint".to_owned());
-        };
-        script.push_str(&entrypoint);
-        for example in examples {
-            let _ = writeln!(
-                script,
-                "    assert {}({}) == {}",
-                draft.callable_name,
-                example.arguments.join(", "),
-                example.expected
-            );
-        }
-    }
-    let config = AgentWorkspaceConfig {
-        time_budget: Duration::from_secs(5),
-        ..AgentWorkspaceConfig::default()
-    };
-    let Ok(mut workspace) = AgentWorkspace::for_prompt(
-        &format!("coding-discovery:{}:{}", spec.name, draft.id),
-        &config,
-    ) else {
-        return (false, "could not create bounded workspace".to_owned());
-    };
-    let (file, command) = match spec.language.as_str() {
-        "python" => ("solution.py", "python3 solution.py"),
-        "rust" if examples.is_empty() => ("solution.rs", "rustc --crate-type lib solution.rs"),
-        "rust" => {
-            return (
-                false,
-                "verification_unavailable:rust_example_adapter".to_owned(),
-            );
-        }
-        language => {
-            return (
-                false,
-                format!("verification_unavailable:language={language}"),
-            );
-        }
-    };
-    workspace.create_file(file, &script);
-    workspace.run_command(command);
-    let run = workspace.finish();
-    let command_succeeded = run.status == AgentRunStatus::Completed
-        && run
-            .command_results
-            .iter()
-            .any(|result| result.status_code == Some(0) && !result.timed_out);
-    let expected_stdout = program_stdout_expectation(spec, concepts);
-    let output_matches = if spec.artifact_shape == ArtifactShape::Program {
-        expected_stdout.is_some_and(|expected| {
-            run.command_results
-                .last()
-                .is_some_and(|result| result.stdout.trim_end() == expected)
-        })
-    } else {
-        true
-    };
-    let passed = command_succeeded && output_matches;
-    let detail = run.command_results.last().map_or_else(
-        || "no command result".to_owned(),
-        |result| {
-            format!(
-                "exit={:?};timed_out={};stderr={}",
-                result.status_code,
-                result.timed_out,
-                result.stderr.trim()
-            )
-        },
-    );
-    (passed, detail)
-}
-
-fn program_stdout_expectation(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Option<String> {
-    if let Some(expected) = &spec.expected_stdout {
-        return Some(expected.clone());
-    }
-    if concepts
-        .structure_ids()
-        .iter()
-        .any(|structure| structure == "range_inclusive")
-    {
-        let bound = first_positive_integer(&spec.requirement_sentences)?
-            .parse::<usize>()
-            .ok()?;
-        return Some(
-            (1..=bound)
-                .map(|value| value.to_string())
-                .collect::<Vec<_>>()
-                .join("\n"),
-        );
-    }
-    None
-}
-
-fn derived_examples(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Example> {
-    let structures = concepts.structure_ids();
-    let has = |id: &str| structures.iter().any(|structure| structure == id);
-    let example = |arguments: &[&str], expected: &str| Example {
-        arguments: arguments.iter().map(|value| (*value).to_owned()).collect(),
-        expected: expected.to_owned(),
-    };
-    if has("tuple_of") && has("reduce_sum") && has("reduce_product") {
-        return vec![
-            example(&["[]"], "(0, 1)"),
-            example(&["[1, 2, 3]"], "(6, 6)"),
-        ];
-    }
-    if has("quantifier_any") && has("pairwise_distinct") && has("predicate_abs_diff_lt") {
-        return vec![
-            example(&["[1.0, 2.0, 3.0]", "0.5"], "False"),
-            example(&["[1.0, 2.8, 3.0]", "0.3"], "True"),
-        ];
-    }
-    if has("reduce_count") && has("vowel_character_class") {
-        return vec![example(&["'hello'"], "2"), example(&["'sky'"], "0")];
-    }
-    if has("set_intersection") {
-        return vec![
-            example(&["(3, 4, 5, 6)", "(5, 7, 4, 10)"], "(4, 5)"),
-            example(&["(1, 2)", "(3, 4)"], "()"),
-        ];
-    }
-    if has("distinct_elements") && (has("reduce_count") || has("reduce_len")) {
-        return vec![example(&["[1, 1, 2, 3]"], "3"), example(&["[]"], "0")];
-    }
-    if has("range_inclusive") {
-        if spec.parameters.is_empty() {
-            if let Some(bound) = first_positive_integer(&spec.requirement_sentences)
-                && let Ok(number) = bound.parse::<usize>()
-            {
-                let expected = format!(
-                    "[{}]",
-                    (1..=number)
-                        .map(|value| value.to_string())
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                );
-                return vec![Example {
-                    arguments: Vec::new(),
-                    expected,
-                }];
-            }
-        } else {
-            return vec![example(&["3"], "[1, 2, 3]"), example(&["1"], "[1]")];
-        }
-    }
-    Vec::new()
-}
-
-fn first_positive_integer(sentences: &[String]) -> Option<String> {
-    let numeric = sentences
-        .iter()
-        .flat_map(|sentence| sentence.split(|character: char| !character.is_ascii_digit()))
-        .find(|token| token.parse::<usize>().is_ok_and(|number| number > 0))
-        .map(str::to_owned);
-    if numeric.is_some() {
-        return numeric;
-    }
-    let normalized = crate::engine::normalize_prompt(&sentences.join(" "));
-    crate::seed::lexicon()
-        .arithmetic_normalization_tables()
-        .0
-        .into_iter()
-        .find(|(surface, value)| {
-            value.parse::<usize>().is_ok_and(|number| number > 0)
-                && normalized.split_whitespace().any(|word| word == surface)
-        })
-        .map(|(_, value)| value)
 }
 
 fn render_comparison(attempts: &[DraftAttempt]) -> String {

@@ -1,0 +1,143 @@
+{
+  "records": 925,
+  "parts": [
+    {
+      "file": "inventory-01.json",
+      "records": 35,
+      "sha256": "9bf57fb8027ac45a0f13a1bbeb0c4ccdb09edf111eb7e2be76e46d84700d2cdf"
+    },
+    {
+      "file": "inventory-02.json",
+      "records": 35,
+      "sha256": "a67fd80d2b8a3de679c750215a91cf35dfb8e24317a7e0d4cd61a50d7c5f19da"
+    },
+    {
+      "file": "inventory-03.json",
+      "records": 35,
+      "sha256": "1db1751d2750fc892144366e1d13d55168d08922c5eab187acf15b7e7974ddcf"
+    },
+    {
+      "file": "inventory-04.json",
+      "records": 35,
+      "sha256": "8a3af5b5c96fac3ba0a3b015bcb12c998e9a2e52f6b0aea83eb7fa8784a47a12"
+    },
+    {
+      "file": "inventory-05.json",
+      "records": 35,
+      "sha256": "ed56ff6ce4f687da61b816107fa6469991adbc05a898ec9bac6e9d2ce012e391"
+    },
+    {
+      "file": "inventory-06.json",
+      "records": 35,
+      "sha256": "707186d20db36fc1a9c4920f1162794bd2fa995214cbb497353a8a13e928889b"
+    },
+    {
+      "file": "inventory-07.json",
+      "records": 35,
+      "sha256": "6016ea7b48b30f130b33947e71d2c5b38fc65c775b7762472d5dd58a2e4049e8"
+    },
+    {
+      "file": "inventory-08.json",
+      "records": 35,
+      "sha256": "7a66ffc31ea62bfa7d820a96b1175d62c8824870353312337d5f33d927f6606d"
+    },
+    {
+      "file": "inventory-09.json",
+      "records": 35,
+      "sha256": "0390d26509a5e817b4293db98ecc702986edd5b46f21c6436d2688d0f7ec9748"
+    },
+    {
+      "file": "inventory-10.json",
+      "records": 35,
+      "sha256": "9f34a32cf33435c0f2e644aba8384711a96eaa38fd9c7f74960c6c58cd1edc39"
+    },
+    {
+      "file": "inventory-11.json",
+      "records": 35,
+      "sha256": "e1dce8b7f964e018a4e3db39036e6203ef261efe7ca3c09e27282797f32018d0"
+    },
+    {
+      "file": "inventory-12.json",
+      "records": 35,
+      "sha256": "61fc1a27afade65cbef9b262a9ed6544c880f6919b40b301a6daeb83a5f4320c"
+    },
+    {
+      "file": "inventory-13.json",
+      "records": 35,
+      "sha256": "44804d719c4abba28f3dcd00f5765b374af1acf40077fc9e54924487391ffafc"
+    },
+    {
+      "file": "inventory-14.json",
+      "records": 35,
+      "sha256": "69edee9505f6787f7bb5511821f4c71250d6a22a9837599a121cb3f1f53bfe1a"
+    },
+    {
+      "file": "inventory-15.json",
+      "records": 35,
+      "sha256": "65b6e6d8eaa7787b51e4301b13e8746791c0d5ee9e4fa6e317ca5c061236e033"
+    },
+    {
+      "file": "inventory-16.json",
+      "records": 35,
+      "sha256": "ef58fa31c8288c09215aae91fd4784003d6ac2f903770ae8f2d51735e3157b45"
+    },
+    {
+      "file": "inventory-17.json",
+      "records": 35,
+      "sha256": "2f6b23e524f828666d7f4ebe61dcebddb2c6a02ca7a848e77b3fc391ccd9b0da"
+    },
+    {
+      "file": "inventory-18.json",
+      "records": 35,
+      "sha256": "427d1782e9ee28e31c338ee4bd765be9ecf7a758aebec29dc5ab98f041b7f17b"
+    },
+    {
+      "file": "inventory-19.json",
+      "records": 35,
+      "sha256": "5270e01c93c91383f68f3c5d26b13af4f6ce75da52ef9e66091e9744c789b8a4"
+    },
+    {
+      "file": "inventory-20.json",
+      "records": 35,
+      "sha256": "9b592af08eacd9165d4ba22424127564d77df75d55ff7b13b7fb8db88952d50c"
+    },
+    {
+      "file": "inventory-21.json",
+      "records": 35,
+      "sha256": "c83785c066f38024987408fd4e0ee4e1f5a6517e929e0c975ee5eafb8459aba3"
+    },
+    {
+      "file": "inventory-22.json",
+      "records": 35,
+      "sha256": "f3b06ef8b09ddabfa5f50a5e4d3fc0d64a7b72328f75c806435ccf8fc894e263"
+    },
+    {
+      "file": "inventory-23.json",
+      "records": 35,
+      "sha256": "6f050d1450d3a1a9bdc5acf795817ba6d1decbf97839a3dc6d95a228db17b7a6"
+    },
+    {
+      "file": "inventory-24.json",
+      "records": 35,
+      "sha256": "aa461e766749c13dd84bf86d5d8017462df87cfb7ede042a046045c0876f808a"
+    },
+    {
+      "file": "inventory-25.json",
+      "records": 35,
+      "sha256": "e8396818c92feccc1ed92f199147743816be45caf0b401e228b150d722ca83b4"
+    },
+    {
+      "file": "inventory-26.json",
+      "records": 35,
+      "sha256": "1b0ac7cf6265462d7411e77326741da9aca1ab5d4a744e2722273569ae4d9f73"
+    },
+    {
+      "file": "inventory-27.json",
+      "records": 15,
+      "sha256": "19f170262dbbc7689e69983a6012ef699ac9162920a566d941e5b6a4f46e7177"
+    }
+  ],
+  "scope": "Custody of supplied sources, raw investigations, failed attempts, narrow verification and reports; no blanket review credit.",
+  "rawBytes": 78108828,
+  "independentAuthorshipCredit": 0
+}

@@ -3,6 +3,7 @@
 //!
 //! The JavaScript twin is `rust/tests/web/pull-request-1188-cifix.test.mjs`.
 
+use formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
 
@@ -32,9 +33,9 @@ fn first_write(prompt: &str, path: &str, source: &str) -> Option<String> {
             call.arguments.clone(),
         )]));
         let result = if call.tool == "read" && read_path == Some(path) {
-            source
+            complete_owned_source_read_frame(source)
         } else {
-            ""
+            String::new()
         };
         messages.push(ChatMessage::tool_result(id, &call.tool, result));
     }

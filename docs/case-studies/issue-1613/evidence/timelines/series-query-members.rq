@@ -1,0 +1,22 @@
+SELECT ?subject ?film (MIN(?date) AS ?firstRelease)
+       (SAMPLE(COALESCE(?english, ?default)) AS ?title)
+       (SAMPLE(?localized) AS ?localTitle) WHERE {
+  BIND(wd:{subject} AS ?subject)
+  { SELECT DISTINCT ?film WHERE {
+      { wd:{subject} wdt:P527 ?film }
+      UNION {
+        { VALUES ?series { wd:{subject} } } UNION { wd:{subject} wdt:P527 ?series }
+        ?film wdt:P179 ?series .
+      }
+      ?film wdt:P31/wdt:P279* wd:Q11424 ; wdt:P750 ?distributor .
+      FILTER NOT EXISTS { ?film wdt:P449 ?broadcaster }
+      FILTER NOT EXISTS { ?film wdt:P31/wdt:P279* wd:Q24862 }
+      FILTER NOT EXISTS { ?film wdt:P31/wdt:P279* wd:Q914242 }
+  } LIMIT 101 }
+  OPTIONAL { ?film wdt:P577 ?date }
+  OPTIONAL { ?film rdfs:label ?english FILTER(LANG(?english) = "en") }
+  OPTIONAL { ?film rdfs:label ?default FILTER(LANG(?default) = "mul") }
+  OPTIONAL { ?film rdfs:label ?localized FILTER(LANG(?localized) = "{language}") }
+}
+GROUP BY ?subject ?film
+ORDER BY ?firstRelease ?film

@@ -1,155 +1,100 @@
-// User-facing TRIZ/contradiction solver (issue #901), mirroring
-// rust/src/triz_solver.rs. Every family, benchmark task and cue phrase is a
-// record of data/seed/triz-principles.lino; the answer renders through the
-// `triz_resolution_map` template of data/seed/multilingual-responses-triz.lino.
+// Derive a TRIZ worksheet from the caller's demands, as in rust/src/triz_solver.rs.
 
-/** The range-selection note (Rust `LINK_NOTE`). */
-const TRIZ_LINK_NOTE = "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.";
+let cachedTrizRules = null;
 
-let cachedTrizRecords = null;
-
-/**
- * The top-level records of the TRIZ seed.
- * @returns {{name: string, value: string, children: object[]}[]}
- */
-function trizRecords() {
-  if (cachedTrizRecords) return cachedTrizRecords;
-  const text = seedRawText(SEED_RAW, "triz-principles.lino");
-  if (!text) return [];
-  cachedTrizRecords = parseLinoTree(text).children;
-  return cachedTrizRecords;
+function trizChildValue(record, name) {
+  return record.children.find((child) => child.name === name)?.value || "";
 }
 
-/**
- * @param {{children: object[]}} node
- * @param {string} name
- * @returns {string}
- */
-function trizChildValue(node, name) {
-  const child = (node.children || []).find((candidate) => candidate.name === name);
-  return child ? String(child.value || "") : "";
-}
-
-/**
- * The seed records of one type. The seed names its records individually
- * (`triz_family_range_selection`, `triz_task_umbrella_crowd`) and types them
- * with a `record_type` field, so the type is read from that field; a record
- * literally named after the type is accepted as well. (The native
- * `records_named` compares the record *name* only, which selects none of
- * the typed family/task rows — see the parity notes of issue #901.)
- * @param {string} recordType
- * @param {string} recordName
- * @returns {object[]}
- */
-function trizRecordsOfType(recordType, recordName) {
-  return trizRecords().filter((record) =>
-    record.name === recordName || trizChildValue(record, "record_type") === recordType);
-}
-
-/**
- * The general resolution families, in seed order.
- * @returns {{methodId: string, name: string, mechanism: string}[]}
- */
-function trizFamilies() {
-  return trizRecordsOfType("triz_resolution_family", "triz_resolution_family")
-    .map((record) => ({
-      methodId: trizChildValue(record, "method_id").trim(),
-      name: trizChildValue(record, "name"),
-      mechanism: trizChildValue(record, "mechanism"),
+function trizRules() {
+  if (cachedTrizRules) return cachedTrizRules;
+  const records = parseLinoTree(seedRawText(SEED_RAW, "triz-principles.lino")).children;
+  const families = records
+    .filter((row) => trizChildValue(row, "record_type") === "triz_resolution_family")
+    .map((row) => ({
+      methodId: trizChildValue(row, "method_id").trim(),
+      name: trizChildValue(row, "name"),
+      mechanism: trizChildValue(row, "mechanism"),
     }))
     .filter((family) => family.methodId !== "");
+  const grammar = records.find((row) => row.name === "triz_cues");
+  const phrases = (name) => (grammar?.children ?? [])
+    .filter((child) => child.name === name && child.value.trim())
+    .map((child) => child.value);
+  const alternation = (values) => values.map((value) =>
+    value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")).join("|");
+  const cues = phrases("phrase");
+  cachedTrizRules = {
+    families,
+    cues,
+    cue: new RegExp(alternation(cues), "iu"),
+    pair: new RegExp(alternation(phrases("separator")), "iu"),
+    prefix: new RegExp(`^(?:${alternation(phrases("prefix"))})`, "iu"),
+    balancedPrefix: new RegExp(`^(?:${alternation(phrases("balanced_prefix"))})`, "iu"),
+    balancedSeparator: new RegExp(alternation(phrases("balanced_separator")), "iu"),
+  };
+  return cachedTrizRules;
 }
 
-/**
- * The top-20 benchmark corpus, in seed order.
- * @returns {{taskId: string, domain: string, statement: string, contradiction: string, methods: string[]}[]}
- */
-function trizBenchmarkTasks() {
-  return trizRecordsOfType("triz_benchmark_task", "triz_benchmark_task")
-    .map((record) => ({
-      taskId: trizChildValue(record, "task_id").trim(),
-      domain: trizChildValue(record, "domain"),
-      statement: trizChildValue(record, "statement"),
-      contradiction: trizChildValue(record, "contradiction"),
-      methods: trizChildValue(record, "methods").split(/\s+/u).filter((method) => method !== ""),
-    }))
-    .filter((task) => task.taskId !== "");
+function trizFamilies() {
+  return trizRules().families;
 }
 
-/**
- * The cue phrases that mark a contradiction question.
- * @returns {string[]}
- */
-function trizCues() {
-  const cues = [];
-  for (const record of trizRecordsOfType("triz_intent_cues", "triz_cues")) {
-    for (const child of record.children) {
-      if (child.name !== "phrase") continue;
-      const phrase = String(child.value || "").trim().toLowerCase();
-      if (phrase !== "") cues.push(phrase);
-    }
+function trizDemand(text) {
+  const trimmed = text.replace(/^[\s:：?？.。!！]+|[\s:：?？.。!！]+$/gu, "");
+  return /[\p{Alphabetic}\p{N}]/u.test(trimmed) ? trimmed : null;
+}
+
+// A letter, digit or Devanagari sign of a script that separates words with spaces.
+function trizSpacedWordChar(character) {
+  if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af]/u.test(character)) return false;
+  return /[\p{Alphabetic}\p{N}\u0900-\u097f]/u.test(character);
+}
+
+function trizDemands(prompt) {
+  const rules = trizRules();
+  const cue = rules.cue.exec(prompt);
+  if (!cue) return null;
+  // Stem cues ("противоречи", "contradiction") can stop inside a word, so the
+  // demands begin after the rest of that word ("противоречие: ..."), never
+  // inside it. Han and other unspaced scripts have no word end to skip to.
+  let rest = Array.from(prompt.slice(cue.index + cue[0].length));
+  if (trizSpacedWordChar(Array.from(cue[0]).at(-1) ?? "")) {
+    const end = rest.findIndex((character) => !trizSpacedWordChar(character));
+    rest = end === -1 ? [] : rest.slice(end);
   }
-  return cues;
+  const tail = rest.join("").trimStart();
+  const tailFrame = tail.replace(/^[:：]\s*/u, "").replace(rules.prefix, "");
+  const balanced = rules.balancedPrefix.exec(tailFrame);
+  const frame = balanced ? tailFrame.slice(balanced[0].length) : tailFrame;
+  const separator = (balanced ? rules.balancedSeparator : rules.pair).exec(frame);
+  if (!separator) return null;
+  const left = trizDemand(frame.slice(0, separator.index));
+  const right = trizDemand(frame.slice(separator.index + separator[0].length));
+  if (!left || !right || left.toLowerCase() === right.toLowerCase()) return null;
+  return [left, right];
 }
 
-/**
- * Benchmark tasks sharing a five-plus-character word with the prompt, best
- * match first (Rust `relevant_tasks`).
- * @param {string} prompt
- * @param {object[]} tasks
- * @returns {object[]}
- */
-function trizRelevantTasks(prompt, tasks) {
-  const words = String(prompt || "")
-    .split(/\s+/u)
-    .map((word) => word.replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, ""))
-    .filter((word) => Array.from(word).length >= 5);
-  const scored = [];
-  for (const task of tasks) {
-    const haystack = `${task.domain} ${task.statement}`.toLowerCase();
-    const score = words.filter((word) => haystack.includes(word.toLowerCase())).length;
-    if (score > 0) scored.push({ score, task });
-  }
-  scored.sort((left, right) => {
-    if (left.score !== right.score) return right.score - left.score;
-    if (left.task.taskId < right.task.taskId) return -1;
-    return left.task.taskId > right.task.taskId ? 1 : 0;
-  });
-  return scored.map((entry) => entry.task);
-}
-
-/**
- * `triz_resolution` precedence row (Rust `handle_triz`).
- * @param {string} prompt
- * @param {string} normalized
- * @returns {object|null}
- */
 function tryTrizResolution(prompt, normalized) {
-  const lower = String(prompt || "").toLowerCase();
-  const text = String(normalized || "");
-  const cued = trizCues().some((cue) => text.includes(cue) || lower.includes(cue));
-  if (!cued) return null;
-  const families = trizFamilies();
-  const tasks = trizBenchmarkTasks();
-  const relevant = trizRelevantTasks(prompt, tasks);
+  const rules = trizRules();
+  if (!rules.cues.length || !(rules.cue.test(prompt) || rules.cue.test(normalized))) return null;
+  const language = detectLanguage(prompt);
   const evidence = ["handler:triz_resolution", "triz_solver:cued:contradiction question"];
-  for (const task of relevant) evidence.push(`triz_solver:precedent:${task.taskId}`);
-  if (relevant.length === 0) evidence.push("triz_resolution:refusal:no overlapping precedent"); // #1175 R3
-  const cited = (relevant.length === 0 ? tasks : relevant).slice(0, 3);
-  const familiesText = families
-    .map((family) => `- ${family.name}: ${family.mechanism}`)
-    .join("\n");
-  const precedentsText = cited
-    .map((task) =>
-      `- ${task.statement} (${task.domain}: ${task.contradiction}) — methods: ${task.methods.join(", ")}`)
-    .join("\n");
-  const table = MULTILINGUAL_ANSWERS.triz_resolution_map || {};
-  const raw = table.en || table.unknown;
-  const template = raw ? (typeof raw === "string" ? raw : String(raw.text || "")) : "";
-  const content = template
-    .split("{families}").join(familiesText)
-    .split("{precedents}").join(precedentsText)
-    .split("{link_note}").join(TRIZ_LINK_NOTE);
-  evidence.push("response:triz_resolution_map");
+  const demands = trizDemands(prompt);
+  if (!demands) {
+    evidence.push("triz_resolution:refusal:two demands required", "response:triz_resolution_missing_demands");
+    return {
+      intent: "triz_resolution",
+      content: answerFor("triz_resolution_missing_demands", language),
+      confidence: 0.45,
+      evidence,
+    };
+  }
+  const [left, right] = demands;
+  const families = trizFamilies().map((family) => `- ${family.name}: ${family.mechanism}`).join("\n");
+  const values = { left, right, families };
+  const content = answerFor("triz_resolution_map", language)
+    .replace(/\{(left|right|families)\}/gu, (_, name) => values[name]);
+  evidence.push(`triz_solver:demands:${left} / ${right}`, "response:triz_resolution_map");
   return { intent: "triz_resolution", content, confidence: 0.7, evidence };
 }

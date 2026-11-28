@@ -1,0 +1,139 @@
+{
+  "head": "9451c81b5e14f118301f2e571f4a651fb8da79d0",
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "newCompleteDiffsRead": [
+    {
+      "path": ".cargo/audit.toml",
+      "diff": "0000.diff",
+      "sha256": "4038afcc520d8b48e3ad56a5576ba64ae5a57dc2e162d36d6e022889231300c3",
+      "bytes": 4447,
+      "lines": 75,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actionlint.yaml",
+      "diff": "0001.diff",
+      "sha256": "bae1e3b33356c91915f0ab0794599c2e999cdc9ee38c850997139c7120f92ea9",
+      "bytes": 511,
+      "lines": 11,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/deploy-pages/LICENSE",
+      "diff": "0002.diff",
+      "sha256": "9c5270f18acf3a61d31d7d9d96436808125ffb450222ce204a27eec7a58e0154",
+      "bytes": 1446,
+      "lines": 30,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/deploy-pages/action.yml",
+      "diff": "0003.diff",
+      "sha256": "4609f1f003a9d35e36af9441fd51e9ec4fef0d8da71a7bf5fa0dd965b9ff50b3",
+      "bytes": 903,
+      "lines": 27,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/deploy-pages/deploy.mjs",
+      "diff": "0004.diff",
+      "sha256": "b1e3525efac018980625313e7f9b60bea737a58741e448003401520dc047d868",
+      "bytes": 13202,
+      "lines": 298,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/deploy-pages/index.mjs",
+      "diff": "0005.diff",
+      "sha256": "32f6ab631b03ac8ca64f4b2c74be4442a53f407a8559be0265636d6d3baa8022",
+      "bytes": 374,
+      "lines": 10,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/download-artifact/action.yml",
+      "diff": "0006.diff",
+      "sha256": "5dfe89180b490256d431c253155c82201bfd407b7252701b68365807ef636968",
+      "bytes": 5204,
+      "lines": 133,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/download-formal-ai-binary/action.yml",
+      "diff": "0007.diff",
+      "sha256": "d86f5c70d9f345acf9d403708fa52d4550c294ff8cea7e612d5cad13d64245d5",
+      "bytes": 582,
+      "lines": 15,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/release-web/action.yml",
+      "diff": "0008.diff",
+      "sha256": "a143359d14139e0f065b0e59d5115e6404d6a4e600301cff3616f85f19a26380",
+      "bytes": 644,
+      "lines": 16,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/actions/setup-buildx-resilient/action.yml",
+      "diff": "0009.diff",
+      "sha256": "d889c91d3736a74dde89525f4a48f66c8675c18193a8a678a0a387066520c592",
+      "bytes": 9182,
+      "lines": 177,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": ".github/workflows/documentation-policy.yml",
+      "diff": "0019.diff",
+      "sha256": "fe35d98eaf493872a937df57487ebad186cf03a44c662a06c85d72f717a151ec",
+      "bytes": 1546,
+      "lines": 32,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": "data/meta/ci-gates/check-required-documentation.lino",
+      "diff": "0056.diff",
+      "sha256": "53c2b86247c06ac583831f6c484cc01b60db4588de789250cc0ddd1823bc91f5",
+      "bytes": 734,
+      "lines": 12,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": "data/meta/required-documentation.json",
+      "diff": "0058.diff",
+      "sha256": "c88159ca958273a02d4d4952c1187d0f6c4e2e5edba109a2ce41ee6235f60c2a",
+      "bytes": 393,
+      "lines": 11,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": "data/seed/terminal-commands.lino",
+      "diff": "0099.diff",
+      "sha256": "df835a6d5e6439821794936e114262a75eb28f93fc2101f1bbecf0430fa9a84c",
+      "bytes": 333,
+      "lines": 12,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": "experiments/formal_ai_subagent/ci-durations.mjs",
+      "diff": "0102.diff",
+      "sha256": "10a7634d37e8cba5d429721ae75ec74319a6ae72b62f9caacda0706658493abc",
+      "bytes": 1006,
+      "lines": 20,
+      "carriedExactDiffReview": false
+    },
+    {
+      "path": "experiments/formal_ai_subagent/local-gates.mjs",
+      "diff": "0126.diff",
+      "sha256": "f93047936fc74e55af4af2d285bb285bb2568bd12e242aead07934224a5389c2",
+      "bytes": 2429,
+      "lines": 41,
+      "carriedExactDiffReview": false
+    }
+  ],
+  "previousExactDiffReviewsCarried": 83,
+  "currentProductionDiffsInventoried": 524,
+  "wholePullRequestReviewed": false,
+  "allPriorFeaturesProvenPreserved": false,
+  "independentAuthorshipCredit": 0
+}

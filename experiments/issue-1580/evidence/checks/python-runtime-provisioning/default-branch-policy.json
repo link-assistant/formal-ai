@@ -1,0 +1,15 @@
+{
+  "name": "default-branch-policy",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 0,
+  "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/default-branch-policy.log.gz",
+  "uncompressedSha256": "aecbd4c0591c58525d7d3fa442cd18dd99da76e3e4c5bd28d6651edb1120f4fd"
+}

@@ -257,10 +257,11 @@ fn meta_recipe_integration_is_wired_into_the_loop_with_budget_controls() {
 
     // The compute budget is a real config field, CLI flag, and environment
     // variable, so the search depth is controllable.
-    let solver = read("rust/src/solver.rs");
+    // `SolverConfig` lives in the extracted `solver/configuration.rs` module.
+    let solver = read("rust/src/solver/configuration.rs");
     assert!(
         solver.contains(&format!("pub {}: u32", integration.require("budget_field"))),
-        "rust/src/solver.rs should expose the {} config field",
+        "rust/src/solver/configuration.rs should expose the {} config field",
         integration.require("budget_field"),
     );
     let main = read("rust/src/main.rs");

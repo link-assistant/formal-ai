@@ -1,0 +1,32 @@
+✔ the claim rows are read from the capability table (550.221187ms)
+✔ every row names browser functions and evidence kinds the worker knows (1.241877ms)
+✔ the native-only rows read the same structure in the worker (277.021022ms)
+✔ a surface word alone is not admitted (76.196414ms)
+✔ the structural evidence admits (108.066144ms)
+✔ a numeric handler answers only where its row admits (107.422644ms)
+✔ a handler with no claim row is admitted as before (4.504812ms)
+✔ R1175-3 refusal lane: a cued request without its operand keeps only its named refusal (1272.181083ms)
+✔ R1175-3: the refusal-group evidence reads the handlers' own operands (3.853617ms)
+✔ R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone (18.097404ms)
+✔ R1175-3 class c: a composer without its specification is admitted to its refusal lane only (27.294066ms)
+✔ R1175-3 class e: a lookup or policy admits on the subject or shape its reader extracts (9.497033ms)
+✔ R1173-3: a trailing sentence that only shapes the answer leaves the question to the concept reader (270.624271ms)
+✔ R1173-3: the legality frame reads an act and the object class of its object phrase (91.842114ms)
+✔ R1175-3: a class handler answers only where its row admits (257.969369ms)
+✔ R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only (81.134063ms)
+✔ R1175-3 follow-up round: the assistant is the subject unless another is named (4.843533ms)
+✔ R1173-3: a comma after the advice verb still reaches the advice handler (154.30276ms)
+✔ R1175-3 last five rows: every precedence handler carries a claim row (0.785004ms)
+✔ R1175-3 last five rows: the documented method is read from the prompt (6.959321ms)
+✔ R1175-3 last five rows: the idiom claims only as the whole utterance (31.002894ms)
+✔ R1175-3 last five rows: a source conflict names its attributed alternatives (27.745468ms)
+✔ R1175-3 last five rows: a traffic answer names the repository the prompt names (72.282103ms)
+✔ R1175-3 last five rows: a formalization claims only with a statement (59.598377ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8252.414352

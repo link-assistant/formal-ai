@@ -1,0 +1,32 @@
+{
+  "reports": [
+    {
+      "language": "js",
+      "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+      "url": "https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/307",
+      "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67",
+      "preparedBodySha256": "503ef2b5b33e13495aa5d48dc0303751fd3668aba1c18d608446e42ac78bd7ad",
+      "postedBodySha256": "503ef2b5b33e13495aa5d48dc0303751fd3668aba1c18d608446e42ac78bd7ad",
+      "createdAt": "2026-11-17T19:17:19Z"
+    },
+    {
+      "language": "python",
+      "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+      "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/160",
+      "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67",
+      "preparedBodySha256": "7a5df82e0259ec8037b69a009aca882b992a660adb7069b8104c593b526890e8",
+      "postedBodySha256": "7a5df82e0259ec8037b69a009aca882b992a660adb7069b8104c593b526890e8",
+      "createdAt": "2026-11-17T19:17:21Z"
+    },
+    {
+      "language": "cpp",
+      "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+      "url": "https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/36",
+      "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67",
+      "preparedBodySha256": "2bc723745692c6bddd27a2e494d4ecab92148779202a563be8129527793f4278",
+      "postedBodySha256": "2bc723745692c6bddd27a2e494d4ecab92148779202a563be8129527793f4278",
+      "createdAt": "2026-11-17T19:17:23Z"
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

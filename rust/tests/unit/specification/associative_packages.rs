@@ -139,6 +139,11 @@ fn permission_gate_denies_tools_without_package_grant() {
 
 #[test]
 fn chat_tool_gate_requires_agent_mode_and_package_permission() {
+    // The tool is advertised but not forced: since issue #1590 a forced
+    // `tool_choice` naming a plain client function (one the capability router
+    // does not classify, like `calculator`) is returned to the caller as a
+    // validated function call in either agent mode, so the agent-mode gate is
+    // exercised through an advertised, unforced tool.
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-ai",
         "messages": [{
@@ -152,11 +157,7 @@ fn chat_tool_gate_requires_agent_mode_and_package_permission() {
                 "description": "Evaluate local deterministic math",
                 "parameters": {"type": "object"}
             }
-        }],
-        "tool_choice": {
-            "type": "function",
-            "function": {"name": "calculator"}
-        }
+        }]
     }))
     .unwrap();
 

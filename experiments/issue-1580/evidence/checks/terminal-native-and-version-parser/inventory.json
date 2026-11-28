@@ -1,0 +1,30 @@
+{
+  "records": 170,
+  "parts": [
+    {
+      "file": "inventory-01.json",
+      "records": 35,
+      "sha256": "4f51d93974b934f349b194e67e93dd13e7a134f63689773750714e6924244456"
+    },
+    {
+      "file": "inventory-02.json",
+      "records": 35,
+      "sha256": "5454f7a6e3dfeb4551700ed22f520419c9d59c9fe5b10f7ccb140e7fc92d481a"
+    },
+    {
+      "file": "inventory-03.json",
+      "records": 35,
+      "sha256": "ce4735e8fe6c02ba9de0cde5d60f52f07c36546d8722134b2670cd16f84eda21"
+    },
+    {
+      "file": "inventory-04.json",
+      "records": 35,
+      "sha256": "470fdac762fe55f596b062d7e5cfe0ea9a109cac4cbb4920898dfcbe9e580721"
+    },
+    {
+      "file": "inventory-05.json",
+      "records": 30,
+      "sha256": "1f485f36de196b11420746699e2ad742ca04934eb8f91a43decbaf13442fdf69"
+    }
+  ]
+}

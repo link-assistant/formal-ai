@@ -9,8 +9,8 @@
 
 mod digest_verification;
 pub(super) use digest_verification::{
-    plan_digest_verification, plan_edit_failure, plan_edit_preimage_gap,
-    plan_edit_read_verification, plan_write_digest_verification,
+    plan_bound_write_digest_verification, plan_digest_verification, plan_edit_failure,
+    plan_edit_preimage_gap, plan_edit_read_verification, plan_write_digest_verification,
 };
 
 use serde_json::{Value, json};

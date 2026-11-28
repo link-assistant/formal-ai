@@ -1,3 +1,4 @@
+import {readCanonicalSource} from './canonical-release-source.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,7 +12,10 @@ const YAML = createRequire(path.join(root, 'package.json'))('yaml');
 const issued = new WeakMap();
 export function compileMaintainedStagedAuthority() {
   const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
+  const canonicalSource=readCanonicalSource(root);
   const paths = {
+    canonicalReader:'scripts/canonical-release-source.mjs',
+    ...Object.fromEntries(canonicalSource.files.map((file,n)=>['retainedSource'+n,file.path])),
     canonical: '.github/workflows/release.yml',
     callerDraft: evidence + 'candidate-release-caller.yml',
     staged: '.github/workflows/release-staged.yml',
@@ -106,7 +110,8 @@ export async function observeCurrentMaintainedStagedContext(receipt, selection) 
 // Deployment is checked against retained source, separately from ordinary inline checks.
 export function compileDeployedStagedAuthority() {
   const evidence='experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
-  const paths={canonical:evidence+'original-release-workflow.yml',deployedCaller:'.github/workflows/release.yml',
+  const canonicalSource=readCanonicalSource(root);
+  const paths={canonical:evidence+'original-release-workflow.yml',canonicalReader:'scripts/canonical-release-source.mjs',...Object.fromEntries(canonicalSource.files.slice(1).map((file,n)=>['canonicalPart'+n,file.path])),deployedCaller:'.github/workflows/release.yml',
     callerDraft:evidence+'candidate-release-caller.yml',staged:'.github/workflows/release-staged.yml',
     packet:evidence+'stage-source-coverage.json',bindings:evidence+'candidate-output-bindings.json',
     generator:'scripts/generate-staged-release.mjs',generatorReader:'scripts/lib/ci-speed-workflows.mjs',
@@ -114,12 +119,12 @@ export function compileDeployedStagedAuthority() {
     provider:'scripts/governed-github-command-provider.mjs',maintainedValidator:'scripts/maintained-staged-authority.mjs'};
   const bytes=Object.fromEntries(Object.entries(paths).map(([key,file])=>[key,fs.readFileSync(path.join(root,file),'utf8')]));
   const packet=JSON.parse(bytes.packet);
-  const projection=buildStagedReleaseProjection(bytes.canonical,packet);
+  const projection=buildStagedReleaseProjection(canonicalSource.text,packet,{partitioned:canonicalSource.files.length===3});
   assert.equal(projection.operations,52);assert.equal(projection.binding.length,104);
   for(const [file,expected] of projection.outputs)assert.equal(fs.readFileSync(path.join(root,file),'utf8'),expected,'retained-source projection differs');
   assert.equal(bytes.deployedCaller,bytes.callerDraft,'deployed caller differs from checked original projection');
   for(const [key,file] of Object.entries(paths))assert.equal(fs.readFileSync(path.join(root,file),'utf8'),bytes[key],'source changed during deployed compilation');
-  const contract=compileContract({canonical:bytes.canonical,callerDraft:bytes.callerDraft,staged:bytes.staged,packet,YAML,retainedSourceProof:{originalSource:bytes.canonical,packetSource:bytes.packet}});
+  const contract=compileContract({canonical:canonicalSource.text,callerDraft:bytes.callerDraft,staged:bytes.staged,packet,YAML,retainedSourceProof:{originalSource:canonicalSource.text,physicalSourceFiles:canonicalSource.files,packetSource:bytes.packet}});
   const source=Object.freeze(Object.fromEntries(Object.entries(paths).map(([key,file])=>[file,createHash('sha256').update(bytes[key]).digest('hex')])));
   const receipt=Object.freeze({});issued.set(receipt,{contract,source});return receipt;
 }

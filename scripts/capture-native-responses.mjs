@@ -21,7 +21,7 @@ export async function captureOriginalTests({cwd,directory,binary,outputDirectory
  assert.ok(Array.isArray(selections)&&selections.length>0);
  assert.equal(new Set(selections).size,selections.length,'duplicate selected native source case');
  const graph=readNativeTestModuleGraph(cwd);
- const cases=selections.map(id=>{assert.match(id,/^(rust\/tests\/(unit|integration|source)\/[\w/.-]+\.rs)::([A-Za-z_][A-Za-z_0-9]*)$/u,'explicit original source case required');return {id,...bindOriginalSourceCase(graph,id)};});
+ const cases=selections.map(id=>{assert.match(id,/^(rust\/tests\/(unit|integration|source)\/[\w/.-]+\.rs)::([A-Za-z_][A-Za-z_0-9]*)(?:@[A-Za-z_][\w-]*)?$/u,'explicit original source case required');return {id,...bindOriginalSourceCase(graph,id)};});
  const executables=new Map(),listing=new Map();
  for(const target of new Set(cases.map(c=>c.target))){const path=resolve(directory,target);chmodSync(path,0o755);executables.set(target,path);
   const text=execFileSync(path,['--list','--format','terse'],{cwd,encoding:'utf8',maxBuffer:10e6});

@@ -97,7 +97,7 @@ language half needed a second **recorded frontier**, not new learning logic.
    a prompt that already routes never reaches the frontier. A candidate language
    with no corpus is preserved as an explicit `frontier_gap` naming what is
    missing — the same honesty rule as `language_gap`.
-3. `formal-ai learn cycle --frontier language-gap` replays the record through
+3. `formal-ai learn cycle --frontier language-gap --from data/meta/learning-frontier-language-gap.lino` replays the record through
    the *same* cycle the trends frontier uses. `--frontier` is an open registry
    (`learning_cycle::recorded_frontiers`), not a closed Rust enum, so a third
    frontier is a registration, not a refactor. Over the Spanish corpus it

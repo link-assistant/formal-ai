@@ -1,0 +1,36 @@
+{
+  "complete": true,
+  "observedAt": "2026-11-18T11:21:06.942972+00:00",
+  "checks": [
+    {
+      "name": "answer-regressions",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-algebra-substitution.test.mjs"
+      ],
+      "exitCode": 0,
+      "rawLines": 16,
+      "rawSha256": "ddfc6e5b8c3851e0e5e46cc4ab57c445ac7241f8738dcdd17b5e928a336a03a9",
+      "archiveSha256": "979d934ad14d02ebcf1480ff9655f012da7b973460006d7151800031c2d08a32"
+    },
+    {
+      "name": "answer-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -3,33 +3,24 @@
 use crate::coding::ProgramSpec;
 use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
 
-pub fn apply_inline_hello_world_output_replacement(
-    prompt: &str,
-    answer: &str,
-    spec: ProgramSpec,
-) -> Option<String> {
-    if spec.task.slug != "hello_world" {
-        return None;
-    }
-    let replacement = inline_hello_world_replacement(prompt)?;
-    Some(answer.replace("Hello, world!", &replacement))
-}
-
 pub fn apply_inline_hello_world_source_replacement(
     prompt: &str,
     source: &str,
-    spec: ProgramSpec,
+    spec: ProgramSpec<'_>,
 ) -> String {
     if spec.task.slug != "hello_world" {
         return source.to_owned();
     }
     inline_hello_world_replacement(prompt).map_or_else(
         || source.to_owned(),
-        |replacement| source.replace("Hello, world!", &replacement),
+        |replacement| {
+            crate::coding::catalog::literal_output_program(spec.language.slug, &replacement)
+                .unwrap_or_else(|| source.to_owned())
+        },
     )
 }
 
-fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
+pub(crate) fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
     let prompt = unwrap_transport_quotes(prompt);
     if prompt.contains('?') || prompt.contains('？') {
         return None;
@@ -42,7 +33,12 @@ fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
     // supplied code inside the generated program's output call.
     let quoted: Vec<String> = quoted_segments(prompt)
         .into_iter()
-        .filter(|segment| !segment.is_empty() && !segment.contains('\n'))
+        .filter(|segment| {
+            !segment.is_empty()
+                && !segment
+                    .chars()
+                    .any(|character| character.is_control() && character != '\t')
+        })
         .collect();
     match quoted.as_slice() {
         [] => None,
@@ -51,7 +47,10 @@ fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
             .as_chunks::<2>()
             .0
             .iter()
-            .find(|[old, _]| old == "Hello, world!")
+            .find(|[old, _]| {
+                crate::coding::program_task_by_slug("hello_world")
+                    .is_some_and(|task| old == task.output)
+            })
             .map(|[_, new]| new.clone())
             .or_else(|| values.last().cloned()),
         _ => None,

@@ -1,0 +1,58 @@
+{
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "writerExitCode": 0,
+  "writerStdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "writerStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "total": 1185,
+  "supported": 221,
+  "unsupported": 964,
+  "parents": [
+    {
+      "parent": "f6ecab596c331da59c40abd07d69c431beba1066",
+      "previousSha256": "95c727a8b3d0312dbf948e804f6776c4c6fa2aeed1d80b54934abb3d36e01fba",
+      "currentSha256": "5f31387779dd9ee3a9b0ca674562e60ae1c49774a82d3a052a81b2bf4e5658e2",
+      "completeObjectEqualAfterSourceHashUpdates": false,
+      "hashChanges": [
+        {
+          "path": "inventory/cases/79/program/fixtures/7/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3",
+          "after": "56d73aea99f97082bc5ff97914bcbfb0ad2ea4c17f5e6cb8bf1735ee9ed5532b"
+        },
+        {
+          "path": "inventory/cases/81/program/fixtures/3/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3",
+          "after": "56d73aea99f97082bc5ff97914bcbfb0ad2ea4c17f5e6cb8bf1735ee9ed5532b"
+        },
+        {
+          "path": "inventory/cases/190/program/fixtures/7/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3",
+          "after": "56d73aea99f97082bc5ff97914bcbfb0ad2ea4c17f5e6cb8bf1735ee9ed5532b"
+        },
+        {
+          "path": "inventory/cases/193/program/fixtures/8/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3",
+          "after": "56d73aea99f97082bc5ff97914bcbfb0ad2ea4c17f5e6cb8bf1735ee9ed5532b"
+        },
+        {
+          "path": "sourceManifest/129/sha256",
+          "source": "rust/tests/unit/specification/unknown_reasoning.rs",
+          "before": "42ad3d57c94a9072cae8611954c92eed344c967fdd73a6d217b96395128538cd",
+          "after": "980380b04b0a4734b23eed1cc40a915bfc1e583bdb5d011286041f44abdc523c"
+        }
+      ],
+      "differences": [
+        {
+          "path": "inventory/unsupported/947/reason",
+          "before": "unsupported native call answer",
+          "after": "unsupported native call answer_offline"
+        }
+      ]
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "nativeExecutionVerified": false
+}

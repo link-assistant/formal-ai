@@ -90,11 +90,7 @@ impl OutputPolicy {
 }
 
 fn list(value: &str) -> Vec<String> {
-    value
-        .split('|')
-        .filter(|part| !part.is_empty())
-        .map(str::to_owned)
-        .collect()
+    grammar::list(value)
 }
 
 /// JavaScript `Number(text) || null` for a positive word count.
@@ -165,7 +161,7 @@ pub fn parse_output_policy_with(
                     .filter(|item| item.name == "form")
                     .map(|item| OutputForm {
                         text: item.id.clone(),
-                        mode: item.find_child_value("mode").to_owned(),
+                        mode: grammar::reference_values(item.find_child_value("mode")).join("|"),
                     })
                     .collect(),
             }),

@@ -1,0 +1,115 @@
+{
+  "state": "complete",
+  "rows": [
+    {
+      "file": "rust/tests/web/issue-1168-workflow-render-parity.test.mjs",
+      "exitCode": 0,
+      "seconds": 5.115,
+      "rawBytes": 297,
+      "rawLines": 10,
+      "rawSha256": "6939d69f7d79ef07bd97bf39741d59fb4bdb71d4ea1de61d7ee21252ed38d546",
+      "log": "issue-1168-workflow-render-parity.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1168-source-cache.test.mjs",
+      "exitCode": 0,
+      "seconds": 4.176,
+      "rawBytes": 678,
+      "rawLines": 14,
+      "rawSha256": "5ac03e1cce528f13ac3af4e19af094b37b3cf9c87bc874140950fb07a0a86112",
+      "log": "issue-1168-source-cache.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1580-client-output-constraints.test.mjs",
+      "exitCode": 0,
+      "seconds": 11.793,
+      "rawBytes": 691,
+      "rawLines": 14,
+      "rawSha256": "246087b360053bfd9c471d295a600f374c584a502c96e258c7bb64df5ddc5307",
+      "log": "issue-1580-client-output-constraints.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1582-defaults.test.mjs",
+      "exitCode": 0,
+      "seconds": 24.359,
+      "rawBytes": 1035,
+      "rawLines": 20,
+      "rawSha256": "83feae6c4822bab5c61692a4456f67c1e807e55e3e97e0133ca2897f2a75aa0f",
+      "log": "issue-1582-defaults.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1582-permissions.test.mjs",
+      "exitCode": 0,
+      "seconds": 8.634,
+      "rawBytes": 3107,
+      "rawLines": 44,
+      "rawSha256": "4b9607b9343a64207e7b1b3b979b8ecbcfdf2bd0d2029a6d13b2aa1d3316723f",
+      "log": "issue-1582-permissions.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/issue-1587-request-context.test.mjs",
+      "exitCode": 0,
+      "seconds": 9.99,
+      "rawBytes": 452,
+      "rawLines": 12,
+      "rawSha256": "6d9f2d4b01ba5dc2f117922f70a427a9f59c8882d750d2d9ac41cf2f3e34a445",
+      "log": "issue-1587-request-context.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/recipe-resume-policy-notation.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.913,
+      "rawBytes": 349,
+      "rawLines": 10,
+      "rawSha256": "6c2e1297b4d9b9aca1002953296d6e18402080b26fede2b5a8e66ba911865796",
+      "log": "recipe-resume-policy-notation.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/browser-engine-release-integration.test.mjs",
+      "exitCode": 0,
+      "seconds": 1.824,
+      "rawBytes": 2780,
+      "rawLines": 30,
+      "rawSha256": "c1db592edc0f8a76e15340a23b1c718f0e90dea2d3bda6bbab6bd39c9a8a1476",
+      "log": "browser-engine-release-integration.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+      "exitCode": 0,
+      "seconds": 14.947,
+      "rawBytes": 2950,
+      "rawLines": 42,
+      "rawSha256": "2c9a5afd30c05e8076a4944d5d793688355e4f07a63a386cc4dc11f7fc5e060f",
+      "log": "rust-specification-unicode-identifiers.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/rust-specification-fixture-integrity.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.325,
+      "rawBytes": 308,
+      "rawLines": 10,
+      "rawSha256": "531757cb04de89d4ae4218b1d9d09f7cdb42dd542faa445b1861a564552b8dae",
+      "log": "rust-specification-fixture-integrity.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "exitCode": 0,
+      "seconds": 4.478,
+      "rawBytes": 1733,
+      "rawLines": 23,
+      "rawSha256": "dff708293934456abb9521ba24058a83c55bba2bbe236f417b968a9357f6cf3e",
+      "log": "fast-pull-request-production-profile.test-final.log.gz"
+    },
+    {
+      "file": "rust/tests/web/main-only-regression-ledger.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.298,
+      "rawBytes": 438,
+      "rawLines": 12,
+      "rawSha256": "00541ab2c457a9fbc0a047518f2dcd208cb3c61a28c52148bea00145c093723f",
+      "log": "main-only-regression-ledger.test-final.log.gz"
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

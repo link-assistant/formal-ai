@@ -1,0 +1,105 @@
+{
+  "stage": "before any push or evidence commit",
+  "failure": "Raw diff context whitespace reported by git diff --cached --check",
+  "sourceHash": "459151bd287915f477da6a445d2b712e27a3a4c7eabcf8b8228a04efe0798e6e",
+  "losslessArtifactRepair": true,
+  "records": [
+    {
+      "file": "archive-commands.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "archive-commands.stdout.gz",
+      "rawBytes": 97,
+      "rawSha256": "641694577d1b17e4a178cc09a9f9f120faf51bdb9c549bd0060d3babb012a77e"
+    },
+    {
+      "file": "archive-supplied.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "archive-supplied.stdout.gz",
+      "rawBytes": 93,
+      "rawSha256": "3fd646d40177083b4eb77cb801818eef10b28c0e12051a8f6e797eeedaac5b2e"
+    },
+    {
+      "file": "branch.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "branch.stdout.gz",
+      "rawBytes": 24,
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195"
+    },
+    {
+      "file": "code-head.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "code-head.stdout.gz",
+      "rawBytes": 41,
+      "rawSha256": "a360a01589807c31bbb447f8a5073098f28ca2950d69225d3abd5079bd47b3a2"
+    },
+    {
+      "file": "final-staged-gates.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "final-staged-gates.stdout.gz",
+      "rawBytes": 93,
+      "rawSha256": "4fc06cc4fafb85ca5f9044b4d8b73f3b8671eee90830b8175a26f6afee29889f"
+    },
+    {
+      "file": "outcome.json.gz",
+      "rawBytes": 2786,
+      "rawSha256": "df7f266490b9ac1f2107bead73e9250a37ba9cc44b06397b97cbdedb101ded29"
+    },
+    {
+      "file": "stage-evidence.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "stage-evidence.stdout.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "staged-files.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "staged-files.stdout.gz",
+      "rawBytes": 17075,
+      "rawSha256": "9cc51b61e472aa2764ba0fd98ff14f4cfa0d239fe77b2366e92a183b9e7d5da2"
+    },
+    {
+      "file": "staged-whitespace.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "staged-whitespace.stdout.gz",
+      "rawBytes": 215,
+      "rawSha256": "7dc0d19fb9cb9c7249afef3b1c4e6cfae8bdf65977bc2cf57e00a4552937c815"
+    },
+    {
+      "file": "worker.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "bd69123bacdf39538cd8746c3e3d54dd8ba24ccdaa0c07d4c1c3424f71c2cc62"
+    },
+    {
+      "file": "worker.log.gz",
+      "rawBytes": 2580,
+      "rawSha256": "45aac3139071f219e751ef3080a22be4917c717f5686812b48687b2b62a0238b"
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

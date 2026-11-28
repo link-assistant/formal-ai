@@ -1,0 +1,25 @@
+{
+  "reports": [
+    {
+      "label": "manual-dispatch",
+      "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/34",
+      "number": 34,
+      "title": "CI: manual release dispatch skips lint but can still admit build and release",
+      "bodySha256": "2d07dd1ad32b8e12337419c8577abc5fba27ecff73d5379e3d52cc60c8f05037",
+      "bodyVerified": true
+    },
+    {
+      "label": "fragment-preservation",
+      "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/35",
+      "number": 35,
+      "title": "Changelog collector deletes unparsed CRLF or malformed fragments while reporting success",
+      "bodySha256": "63a3a3e1ced20e48c3f203bc93235b23a5a034191234b5929b4ba26f19008515",
+      "bodyVerified": true
+    }
+  ],
+  "payloadCount": 27,
+  "archiveSha256": "b4a4f64c4609559d58ef232cc99b2dff051533bf31c701fd877ca22e8066bbf5",
+  "roundTripVerified": true,
+  "upstreamRepairClaimed": false,
+  "independentAuthorshipCredit": 0
+}

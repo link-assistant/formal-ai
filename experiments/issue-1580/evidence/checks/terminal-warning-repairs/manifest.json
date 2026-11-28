@@ -1,0 +1,38 @@
+{
+  "schema": "issue-1580-terminal-warning-repairs/v1",
+  "utc": "2026-11-21T22:35:57.085005+00:00",
+  "baseSource": "3b8a5ab75b7e5b87116a525f9e80b7b469c76a4c",
+  "publishedSource": "d1d11e6039845ead74f1cb229266acb9ea42823d",
+  "workflowCount": 34,
+  "workflowConclusions": {
+    "success": 30,
+    "skipped": 1,
+    "failure": 3
+  },
+  "checkCount": 173,
+  "annotationCount": 31,
+  "fileCount": 178,
+  "parts": [
+    {
+      "file": "manifest-files-1.json",
+      "files": 80,
+      "sha256": "d5554f920c442b84d0b7a34653b82cb4dd7ed0acd5c0eb07fbc0402fbcde1e9f"
+    },
+    {
+      "file": "manifest-files-2.json",
+      "files": 80,
+      "sha256": "b3ec1e898dac93a218ffa9760d3b6e0814200f1fdcdcd3b78e28a45800797d79"
+    },
+    {
+      "file": "manifest-files-3.json",
+      "files": 18,
+      "sha256": "071896b2d74afe14b6dd5d7fd121929e2239c236e498266608ec9929500bc543"
+    }
+  ],
+  "maintainedCases": 335,
+  "authorshipCredit": 0,
+  "reasoningCredit": 0,
+  "localRuntime": "Node 26.13.0; not proof of the newly selected hosted Node 24.22.3",
+  "hostedQualification": "pending next source and actual worker compilation",
+  "readScope": "All complete workflow streams scanned for diagnostics; selected diagnostics and contexts reviewed. No claim that all 68,174 Pipeline lines were literally read."
+}

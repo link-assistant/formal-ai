@@ -1,0 +1,610 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      release_mode:
+        description: 'Release mode'
+        required: true
+        default: 'changeset'
+        type: choice
+        options:
+          - changeset
+          - instant
+          - changeset-pr
+      bump_type:
+        description: 'Version bump type (for instant mode or changeset-pr)'
+        required: false
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      description:
+        description: 'Change description (for changeset-pr mode)'
+        required: false
+        type: string
+
+env:
+  JAVA_VERSION: '27.0.1'
+  JAVA_DISTRIBUTION: 'temurin'
+
+jobs:
+  # =============================================================================
+  # Detect Changes - determines which jobs should run
+  # =============================================================================
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-26.04
+    if: github.event_name != 'workflow_dispatch'
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-detect-changes
+      cancel-in-progress: true
+    outputs:
+      java-changed: ${{ steps.changes.outputs.java-changed }}
+      pom-changed: ${{ steps.changes.outputs.pom-changed }}
+      mjs-changed: ${{ steps.changes.outputs.mjs-changed }}
+      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+      workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Detect changes
+        id: changes
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: bun scripts/detect-code-changes.mjs
+
+  # =============================================================================
+  # Lint and Format Check
+  # Runs independently of changeset-check - it's a fast check that should always run
+  # See: https://github.com/link-foundation/js-ai-driven-development-pipeline-template/pull/18
+  # =============================================================================
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-26.04
+    needs: [detect-changes]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-lint
+      cancel-in-progress: true
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
+      needs.detect-changes.outputs.java-changed == 'true' ||
+      needs.detect-changes.outputs.pom-changed == 'true' ||
+      needs.detect-changes.outputs.mjs-changed == 'true' ||
+      needs.detect-changes.outputs.docs-changed == 'true' ||
+      needs.detect-changes.outputs.workflow-changed == 'true'
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '26.13.1'
+          package-manager-cache: false
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v6.2.0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Check code formatting (Spotless)
+        run: ./mvnw spotless:check -B
+
+      - name: Run SpotBugs static analysis
+        run: ./mvnw spotbugs:check -B
+
+      - name: Check file sizes
+        run: bun scripts/check-file-size.mjs
+
+      - name: Run CI regression tests
+        run: node --test scripts/*.test.mjs experiments/*.test.mjs
+
+      - name: Lint GitHub Actions workflows
+        uses: docker://rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
+        with:
+          # GitHub supports concurrency.queue, pending actionlint support:
+          # https://github.com/rhysd/actionlint/issues/657
+          args: -color -ignore unexpected.key.*queue
+
+  # =============================================================================
+  # Build and Test
+  # =============================================================================
+  test:
+    name: Test (Java ${{ matrix.java }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: [detect-changes, changeset-check]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.java }}
+      cancel-in-progress: true
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    # Run if: push event, workflow_dispatch, OR changeset-check succeeded, OR changeset-check was skipped (docs-only PR)
+    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || needs.changeset-check.result == 'success' || needs.changeset-check.result == 'skipped') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-26.04, macos-26, windows-2025]
+        java: ['27.0.1']
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v6.2.0
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Run tests with coverage
+        run: ./mvnw test jacoco:report -B
+
+      - name: Upload coverage to Codecov
+        if: matrix.os == 'ubuntu-26.04' && matrix.java == '27.0.1' && env.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@v7.1.1
+        with:
+          token: ${{ env.CODECOV_TOKEN }}
+          files: target/site/jacoco/jacoco.xml
+          disable_search: true
+          flags: unittests
+          fail_ci_if_error: true
+
+      - name: Note that coverage was not uploaded
+        if: matrix.os == 'ubuntu-26.04' && matrix.java == '27.0.1' && env.CODECOV_TOKEN == ''
+        run: echo "::notice::CODECOV_TOKEN is not configured, so coverage was not uploaded"
+
+  # =============================================================================
+  # Build Package
+  # =============================================================================
+  build:
+    name: Build Package
+    runs-on: ubuntu-26.04
+    needs: [lint, test]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-build
+      cancel-in-progress: true
+    # Run only if lint and test succeeded (handles skipped lint gracefully)
+    if: ${{ !cancelled() && (needs.lint.result == 'success' || needs.lint.result == 'skipped') && needs.test.result == 'success' }}
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v6.2.0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Build with Maven
+        run: ./mvnw package -DskipTests -B
+
+      - name: Verify JAR contents
+        run: |
+          echo "=== JAR contents ==="
+          jar tf target/*.jar | head -50
+          echo "..."
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: build-artifacts
+          path: |
+            target/*.jar
+            target/site/jacoco/
+          retention-days: 7
+
+  # =============================================================================
+  # Changeset Validation (PRs only, skipped for docs-only changes)
+  # Docs-only PRs (./docs folder, markdown files) don't require changesets
+  # =============================================================================
+  changeset-check:
+    name: Changeset Check
+    runs-on: ubuntu-26.04
+    needs: [detect-changes]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-changeset-check
+      cancel-in-progress: true
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Validate changeset
+        run: bun scripts/validate-changeset.mjs
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+
+  # =============================================================================
+  # Auto Release (new changesets or recovery of a missing GitHub release)
+  # =============================================================================
+  auto-release:
+    name: Auto Release
+    runs-on: ubuntu-26.04
+    needs: [build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    concurrency:
+      group: main-writer-${{ github.repository }}-main
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: write
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '26.13.1'
+          package-manager-cache: false
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v6.2.0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Check for changesets
+        id: changesets
+        run: |
+          CHANGESET_COUNT=$(find .changeset -name "*.md" ! -name "README.md" 2>/dev/null | wc -l)
+          echo "count=$CHANGESET_COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$CHANGESET_COUNT" -gt 0 ]; then
+            echo "has_changesets=true" >> "$GITHUB_OUTPUT"
+            echo "Found $CHANGESET_COUNT changeset(s)"
+          else
+            echo "has_changesets=false" >> "$GITHUB_OUTPUT"
+            echo "No changesets found"
+          fi
+
+      - name: Merge changesets (if multiple)
+        if: steps.changesets.outputs.has_changesets == 'true' && steps.changesets.outputs.count > 1
+        run: bun scripts/merge-changesets.mjs
+
+      - name: Run version and commit script
+        id: release
+        run: bun scripts/version-and-commit.mjs --mode changeset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build release artifacts
+        if: steps.release.outputs.released == 'true'
+        env:
+          SKIP_BUMP: ${{ steps.release.outputs.skip_bump }}
+          RELEASE_VERSION: ${{ steps.release.outputs.new_version }}
+        run: |
+          if [ "$SKIP_BUMP" = 'true' ]; then
+            RELEASE_SOURCE="$(mktemp -d)"
+            trap 'git worktree remove --force "$RELEASE_SOURCE"' EXIT
+            git worktree add --detach "$RELEASE_SOURCE" "refs/tags/v$RELEASE_VERSION"
+            ./mvnw -f "$RELEASE_SOURCE/pom.xml" package source:jar javadoc:jar -DskipTests -B
+            mkdir -p target
+            cp "$RELEASE_SOURCE"/target/*.jar target/
+          else
+            ./mvnw package source:jar javadoc:jar -DskipTests -B
+          fi
+
+      - name: Create GitHub Release
+        if: steps.release.outputs.released == 'true'
+        run: |
+          bun scripts/create-github-release.mjs \
+            --release-version "${{ steps.release.outputs.new_version }}" \
+            --repository "${{ github.repository }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifacts
+        if: steps.release.outputs.released == 'true'
+        run: |
+          TAG="v${{ steps.release.outputs.new_version }}"
+          gh release upload "$TAG" target/*.jar --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify published release artifacts
+        if: steps.release.outputs.released == 'true'
+        run: |
+          TAG="v${{ steps.release.outputs.new_version }}"
+          VERIFY_DIRECTORY="$(mktemp -d)"
+          trap 'rm -rf -- "$VERIFY_DIRECTORY"' EXIT
+          gh release download "$TAG" --pattern '*.jar' --dir "$VERIFY_DIRECTORY"
+          for artifact in target/*.jar; do
+            downloaded="$VERIFY_DIRECTORY/$(basename "$artifact")"
+            test -f "$downloaded"
+            cmp -- "$artifact" "$downloaded"
+          done
+          echo "Verified that every release JAR is downloadable and byte-identical."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =============================================================================
+  # Manual Release - Changeset Mode (workflow dispatch)
+  # =============================================================================
+  manual-release-changeset:
+    name: Manual Release (Changeset)
+    runs-on: ubuntu-26.04
+    needs: [build]
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changeset'
+    concurrency:
+      group: main-writer-${{ github.repository }}-main
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: write
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '26.13.1'
+          package-manager-cache: false
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v6.2.0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Merge changesets (if multiple)
+        run: bun scripts/merge-changesets.mjs
+
+      - name: Run version and commit script
+        id: release
+        run: bun scripts/version-and-commit.mjs --mode changeset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build release artifacts
+        if: steps.release.outputs.released == 'true'
+        env:
+          SKIP_BUMP: ${{ steps.release.outputs.skip_bump }}
+          RELEASE_VERSION: ${{ steps.release.outputs.new_version }}
+        run: |
+          if [ "$SKIP_BUMP" = 'true' ]; then
+            RELEASE_SOURCE="$(mktemp -d)"
+            trap 'git worktree remove --force "$RELEASE_SOURCE"' EXIT
+            git worktree add --detach "$RELEASE_SOURCE" "refs/tags/v$RELEASE_VERSION"
+            ./mvnw -f "$RELEASE_SOURCE/pom.xml" package source:jar javadoc:jar -DskipTests -B
+            mkdir -p target
+            cp "$RELEASE_SOURCE"/target/*.jar target/
+          else
+            ./mvnw package source:jar javadoc:jar -DskipTests -B
+          fi
+
+      - name: Create GitHub Release
+        if: steps.release.outputs.released == 'true'
+        run: |
+          bun scripts/create-github-release.mjs \
+            --release-version "${{ steps.release.outputs.new_version }}" \
+            --repository "${{ github.repository }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifacts
+        if: steps.release.outputs.released == 'true'
+        run: |
+          TAG="v${{ steps.release.outputs.new_version }}"
+          gh release upload "$TAG" target/*.jar --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify published release artifacts
+        if: steps.release.outputs.released == 'true'
+        run: |
+          TAG="v${{ steps.release.outputs.new_version }}"
+          VERIFY_DIRECTORY="$(mktemp -d)"
+          trap 'rm -rf -- "$VERIFY_DIRECTORY"' EXIT
+          gh release download "$TAG" --pattern '*.jar' --dir "$VERIFY_DIRECTORY"
+          for artifact in target/*.jar; do
+            downloaded="$VERIFY_DIRECTORY/$(basename "$artifact")"
+            test -f "$downloaded"
+            cmp -- "$artifact" "$downloaded"
+          done
+          echo "Verified that every release JAR is downloadable and byte-identical."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =============================================================================
+  # Manual Release - Instant Mode (workflow dispatch)
+  # =============================================================================
+  manual-release-instant:
+    name: Manual Release (Instant)
+    runs-on: ubuntu-26.04
+    needs: [build]
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant'
+    concurrency:
+      group: main-writer-${{ github.repository }}-main
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: write
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '26.13.1'
+          package-manager-cache: false
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v6.2.0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Run version and commit script
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUMP_TYPE: ${{ inputs.bump_type }}
+        run: bun scripts/version-and-commit.mjs --mode instant --bump-type "$BUMP_TYPE"
+
+      - name: Build release artifacts
+        if: steps.release.outputs.released == 'true'
+        run: ./mvnw package source:jar javadoc:jar -DskipTests -B
+
+      - name: Create GitHub Release
+        if: steps.release.outputs.released == 'true'
+        run: |
+          bun scripts/create-github-release.mjs \
+            --release-version "${{ steps.release.outputs.new_version }}" \
+            --repository "${{ github.repository }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifacts
+        if: steps.release.outputs.released == 'true'
+        run: |
+          TAG="v${{ steps.release.outputs.new_version }}"
+          gh release upload "$TAG" target/*.jar --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify published release artifacts
+        if: steps.release.outputs.released == 'true'
+        run: |
+          TAG="v${{ steps.release.outputs.new_version }}"
+          VERIFY_DIRECTORY="$(mktemp -d)"
+          trap 'rm -rf -- "$VERIFY_DIRECTORY"' EXIT
+          gh release download "$TAG" --pattern '*.jar' --dir "$VERIFY_DIRECTORY"
+          for artifact in target/*.jar; do
+            downloaded="$VERIFY_DIRECTORY/$(basename "$artifact")"
+            test -f "$downloaded"
+            cmp -- "$artifact" "$downloaded"
+          done
+          echo "Verified that every release JAR is downloadable and byte-identical."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =============================================================================
+  # Manual Changeset PR (workflow dispatch)
+  # =============================================================================
+  changeset-pr:
+    name: Create Changeset PR
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changeset-pr'
+    concurrency:
+      group: main-writer-${{ github.repository }}-main
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: write
+      pull-requests: write
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: '1.4.4'
+
+      - name: Create changeset file
+        env:
+          BUMP_TYPE: ${{ inputs.bump_type }}
+          DESCRIPTION_INPUT: ${{ inputs.description }}
+        run: |
+          DESCRIPTION="$DESCRIPTION_INPUT"
+          if [ -z "$DESCRIPTION" ]; then
+            DESCRIPTION="Manual release"
+          fi
+          bun scripts/create-manual-changeset.mjs \
+            --bump-type "$BUMP_TYPE" \
+            --description "$DESCRIPTION"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8.1.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: add changeset for ${{ inputs.bump_type }} release"
+          branch: changeset-manual-release-${{ github.run_id }}
+          delete-branch: true
+          title: "chore: ${{ inputs.bump_type }} release changeset"
+          body: |
+            ## Summary
+
+            This PR adds a changeset for a **${{ inputs.bump_type }}** release.
+
+            ${{ inputs.description }}
+
+            ---
+            *This PR was automatically created by the changeset-pr workflow.*
+          labels: |
+            release
+            automated

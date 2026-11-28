@@ -1,0 +1,19 @@
+{
+  "cases": 221,
+  "unsupported": 964,
+  "branchParentChanges": 4,
+  "branchParentChange": "Four Cargo manifest fixture hashes from the incoming calendar_currency test target",
+  "branchNativeManifestUnchanged": true,
+  "incomingParentChanges": 36,
+  "incomingParentGroups": {
+    "repo:rust/src/solver.rs": 19,
+    "desktop/package.json initial source": 3,
+    "repo:desktop/package.json": 3,
+    "vscode/package.json initial source": 5,
+    "repo:vscode/package.json": 5,
+    "rust/tests/unit/specification/debug_session.rs": 1
+  },
+  "allChangedHashesAndSourceValuesMatchWorkingFiles": true,
+  "allOtherLeavesUnchanged": true,
+  "nativeExecuted": false
+}

@@ -1,0 +1,64 @@
+{
+  "observedAt": "2026-11-20T02:15:19.785108+00:00",
+  "head": "7fce5c19a7297a121d92eb09e7fefa99ca649eaf",
+  "runId": 44652802985,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44652802985",
+  "allWorkflowsTerminal": true,
+  "workflowCount": 23,
+  "workflowSuccesses": 22,
+  "pipelineConclusion": "cancelled",
+  "actionableFailures": [
+    {
+      "jobId": 136011692143,
+      "group": "interfaces",
+      "conclusion": "failure",
+      "passed": 77,
+      "failed": 1,
+      "logFile": "job-136011692143.stdout.gz",
+      "panicLines": [
+        1330,
+        1334
+      ],
+      "error": "server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only: invalid_typed_log_record at http_server.rs:505:22",
+      "rootCause": "The startup health probe and explicit health probe append multiple physical typed-log records to one health file. The assertion decoded the whole file as one record. Conversation and transport rows have distinct typed schemas.",
+      "repair": "Decode every physical record and deserialize each expected public schema. Keep capture, marker, path, file-count and ephemeral-memory assertions.",
+      "verification": "Rustfmt passes locally; the existing native regression must pass in hosted CI."
+    },
+    {
+      "jobId": 136011692528,
+      "group": "hive",
+      "conclusion": "cancelled",
+      "completedPasses": 30,
+      "listedCases": 36,
+      "unverifiedCases": 6,
+      "logFile": "job-136011692528.stdout.gz",
+      "testLines": [
+        1304,
+        1334
+      ],
+      "cancellationLine": 1335,
+      "rootCause": "Sequential family exceeded the 20-minute job clock while making progress; 30 cases completed with no observed assertion failure. Several cases take 55-178 seconds.",
+      "repair": "Use the existing longest-first shard planner on the compiled live listing, with three exact-filter shards and unchanged 20-minute job clocks. Derive 30 measured weights from the retained sequential log and assign unseen cases a stated 60-second planning estimate.",
+      "verification": "Mock-Cargo controls verify coverage and failure propagation only. Every native case still needs hosted execution."
+    }
+  ],
+  "passedNativeFamilies": {
+    "core": "success",
+    "coding": 32,
+    "reasoning": 141,
+    "benchmarks": 11
+  },
+  "originalAcceptance": {
+    "passed": 27,
+    "total": 53,
+    "changedCasesEarnNoOriginalCredit": true
+  },
+  "acceptedIndependentReasoning": {
+    "passed": 0,
+    "total": 20
+  },
+  "fullLogReadCompletely": false,
+  "targetedFailureRangesRead": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

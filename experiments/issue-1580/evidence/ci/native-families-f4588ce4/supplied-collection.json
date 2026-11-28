@@ -1,0 +1,188 @@
+{
+  "files": [
+    {
+      "file": "assess-reasoning-budget-terminal-ci.log",
+      "bytes": 4933,
+      "sha256": "5c84d6069ec82304d16196f67c3dae215bd1bb4382dc18b0948c439d3cdabf55"
+    },
+    {
+      "file": "assess-reasoning-budget-terminal-ci.py",
+      "bytes": 4740,
+      "sha256": "23482ce49d2f17b08db313dec5efac88615ea61fb3ce4140a89573cd39a2eb83"
+    },
+    {
+      "file": "collect-reasoning-budget-head-ci.py",
+      "bytes": 6277,
+      "sha256": "85ba1405ac4307b58604fe60378c6186f593fb4505042bbddf81cf7b17bfa3ad"
+    },
+    {
+      "file": "inspect-reasoning-budget-head-jobs-current.log",
+      "bytes": 3404,
+      "sha256": "94e9423b50e3fd2c6344977e236c7a3894b04dd931184287821fa6eeb394e0bd"
+    },
+    {
+      "file": "read-terminal-native-diagnostics.log",
+      "bytes": 248,
+      "sha256": "274af363ab58268c628442d07a2b742d14de036aea4af9e296b92539054cc760"
+    },
+    {
+      "file": "read-terminal-native-diagnostics.py",
+      "bytes": 1003,
+      "sha256": "92a7fab96be1f0a9507d58d44f26a897a4b4e63cecb3295670a37838617c542f"
+    },
+    {
+      "file": "reasoning-budget-head-ci/outcome.json",
+      "bytes": 199,
+      "sha256": "86a82d9ee033ae99bc0801b12f76525cc57c32172b5bc5a4b3e4fc460da131f7"
+    },
+    {
+      "file": "reasoning-budget-head-ci/worker.log",
+      "bytes": 17405,
+      "sha256": "db823658cc6e96c23211b7e9e32f94cba9c5b45d213fd9182af70b268ed1f31c"
+    },
+    {
+      "file": "record-terminal-reasoning-budget-ci.py",
+      "bytes": 5353,
+      "sha256": "1a7a15fbce925ffc7000146cbd6f88054d43b4986d44905433fb17b5b5ef07fa"
+    },
+    {
+      "file": "seal-client-entropy-review.log",
+      "bytes": 213,
+      "sha256": "25cdf427c511f45634989d308a4e6f3ad22a3032429cf9e9c2d67113319a3a7d"
+    },
+    {
+      "file": "seal-client-entropy-review.py",
+      "bytes": 4132,
+      "sha256": "b61a904d3b25ffc5669c005f80e78a1b610aa1fb73cd5562456166b14fa24850"
+    },
+    {
+      "file": "sealed-client-entropy-review/branch.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/branch.stdout",
+      "bytes": 24,
+      "sha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195"
+    },
+    {
+      "file": "sealed-client-entropy-review/commit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/commit.stdout",
+      "bytes": 2175,
+      "sha256": "9ac30b0dc78f94e88919a71c34368f104e5401db3183346b1c0a25fa62de167c"
+    },
+    {
+      "file": "sealed-client-entropy-review/gates.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/gates.stdout",
+      "bytes": 158,
+      "sha256": "61184b9eeab26899a909daf21827ee020be81994aaf1002a24d66202c8e68ae3"
+    },
+    {
+      "file": "sealed-client-entropy-review/head.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/head.stdout",
+      "bytes": 41,
+      "sha256": "a121e97da65488e48727951832245c0b5526222ee61f1b51699dc783d0f084b1"
+    },
+    {
+      "file": "sealed-client-entropy-review/outcome.json",
+      "bytes": 168,
+      "sha256": "10577973718685941bfd50c44bfa7004bcfefd8aee6a27998a2db4b56aae95ff"
+    },
+    {
+      "file": "sealed-client-entropy-review/records.json",
+      "bytes": 3904,
+      "sha256": "8dfe24b4d121bbc98bb603752ab7da25024e31085dc496600293e50777933a0b"
+    },
+    {
+      "file": "sealed-client-entropy-review/seal-secrets.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/seal-secrets.stdout",
+      "bytes": 232,
+      "sha256": "dd398cc8857cdeca809d0c07d815440bbcb3e45fb690b3ed2dc0bea4caabc42e"
+    },
+    {
+      "file": "sealed-client-entropy-review/secrets.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/secrets.stdout",
+      "bytes": 231,
+      "sha256": "e6f7359f1134540642cbbfa222a95c95da05e60b71ca991b5ab0729c6816deba"
+    },
+    {
+      "file": "sealed-client-entropy-review/selection.json",
+      "bytes": 1909,
+      "sha256": "f5b743d275191785776fe7d459a7da5c59baeb9c93aea211b7eda7af33519e1e"
+    },
+    {
+      "file": "sealed-client-entropy-review/stage.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/stage.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/staged-whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/staged-whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sealed-client-entropy-review/worker.log",
+      "bytes": 282,
+      "sha256": "b59b1bbabd717e324a431ddcb1ee69f1f087cba17109c543dd00390a493f05bd"
+    },
+    {
+      "file": "terminal-native-diagnostics/checkout.read.txt",
+      "bytes": 44564,
+      "sha256": "a430bd848060ecb6593aff0831454c3b64fcd4cc6ca89e85f766459cef52f55e"
+    },
+    {
+      "file": "terminal-native-diagnostics/publication.read.txt",
+      "bytes": 12220,
+      "sha256": "881e516bd370d86fbcf9d2475984f46083ed411c380046fe38f1b224547a2311"
+    },
+    {
+      "file": "terminal-native-diagnostics/size-warnings.json",
+      "bytes": 35202,
+      "sha256": "8831f414db73b8633532bb564e03a1727e2507799d1c476d3cdd936d8d26208f"
+    }
+  ],
+  "rawSha256": "2463d05f489df8bc6453d5f7f96d3ee02d688a74f23bf6e3c4450b503126eeba",
+  "archiveSha256": "ab9bdbcc0937bfd3396992f93ec581a1ef036687d5bbb5258915f7bd15d4d073",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

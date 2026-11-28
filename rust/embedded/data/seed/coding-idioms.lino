@@ -1,10 +1,14 @@
 coding_idioms
-  description "Per-language code composition knowledge for the universal list coding algorithm (issue #395). Each language defines scaffolds (one per operation family) and idioms (named fragments with cases selected by operation and value class). The composer discovers the coding algorithm at execution time: it picks the scaffold for the operation family, then recursively expands {slot} placeholders by matching idiom cases against the requested operation and the value class of the list items. Computed slots (literal, count, tab, list, transformed, reduced, type) are resolved from the program data; every other slot names an idiom defined here. Languages inherit scaffolds, types, names, and idioms through extends, nearest definition wins."
+  description "Per-language code composition knowledge for the universal list coding algorithm (issue #395). Each language defines scaffolds for supported operation families and optional callable and test forms and idioms (named fragments with cases selected by operation and value class). The composer discovers the coding algorithm at execution time: it picks the scaffold for the operation family, then recursively expands {slot} placeholders by matching idiom cases against the requested operation and the value class of the list items. Computed slots (literal, expected, count, tab, list, transformed, reduced, type) are resolved from the program data; every other slot names an idiom defined here. Languages inherit scaffolds, types, names, and idioms through extends, nearest definition wins."
   defaults
     list "numbers"
     transformed "sorted"
     reduced "result"
   language "javascript"
+    scaffold "list_function"
+      code 'function sort({list}) {\n  return {action};\n}'
+    scaffold "list_function_test"
+      code 'function test_sort() {\n  const expected = [{expected}];\n  const actual = sort([{literal}]);\n  if (actual.length !== expected.length || actual.some((value, index) => value !== expected[index])) {\n    throw new Error("Unexpected order");\n  }\n}\n\ntest_sort();'
     scaffold "list_transformation"
       code 'const {list} = [{literal}];\nconst {transformed} = {action};\nconsole.log({transformed}.join(", "));'
     scaffold "list_reduction"
@@ -46,6 +50,8 @@ coding_idioms
       integer "number"
       float "number"
       string "string"
+    scaffold "list_function"
+      code 'function sort({list}: {type}[]): {type}[] {\n  return {action};\n}'
     scaffold "list_transformation"
       code 'const {list}: {type}[] = [{literal}];\nconst {transformed} = {action};\nconsole.log({transformed}.join(", "));'
     scaffold "list_reduction"
@@ -53,6 +59,10 @@ coding_idioms
   language "python"
     names
       transformed "sorted_numbers"
+    scaffold "list_function"
+      code 'def sort({list}):\n    return {action}'
+    scaffold "list_function_test"
+      code 'def test_sort():\n    assert sort([{literal}]) == [{expected}]'
     scaffold "list_transformation"
       code '{list} = [{literal}]\n{transformed} = {action}\nprint(", ".join(str(n) for n in {transformed}))'
     scaffold "list_reduction"
@@ -93,6 +103,10 @@ coding_idioms
       integer "i64"
       float "f64"
       string "&str"
+    scaffold "list_function"
+      code 'fn sort({list}: &mut [{type}]) {\n    {action}\n}'
+    scaffold "list_function_test"
+      code '#[test]\nfn test_sort() {\n    let mut {list} = [{literal}];\n    sort(&mut {list});\n    assert_eq!({list}, [{expected}]);\n}'
     scaffold "list_transformation"
       code 'fn main() {\n    let mut {list}: Vec<{type}> = vec![{literal}];\n    {action}\n    let rendered: Vec<String> = {list}.iter().map(|n| n.to_string()).collect();\n    println!("{}", rendered.join(", "));\n}'
     scaffold "list_reduction"
@@ -146,6 +160,10 @@ coding_idioms
       integer "int"
       float "float64"
       string "string"
+    scaffold "list_function"
+      code 'package sorting\n\nimport "sort"\n\nfunc sortValues({list} []{type}) {\n{tab}{action}\n}'
+    scaffold "list_function_test"
+      code 'package sorting\n\nimport (\n{tab}"reflect"\n{tab}"testing"\n)\n\nfunc TestSort(t *testing.T) {\n{tab}{list} := []{type}{{literal}}\n{tab}sortValues({list})\n{tab}if !reflect.DeepEqual({list}, []{type}{{expected}}) {\n{tab}{tab}t.Fatalf("unexpected order: %v", {list})\n{tab}}\n}'
     scaffold "list_transformation"
       code 'package main\n\nimport (\n{imports}\n)\n\nfunc main() {\n{tab}{list} := []{type}{{literal}}\n{tab}{action}\n{tab}parts := make([]string, len({list}))\n{tab}for i, n := range {list} {\n{tab}{tab}parts[i] = {format_item}\n{tab}}\n{tab}fmt.Println(strings.Join(parts, ", "))\n}'
     scaffold "list_reduction"
@@ -210,6 +228,10 @@ coding_idioms
         for "maximum"
         code "{reduced} := {list}[0]\n{tab}for _, n := range {list}[1:] {\n{tab}{tab}if n > {reduced} {\n{tab}{tab}{tab}{reduced} = n\n{tab}{tab}}\n{tab}}"
   language "ruby"
+    scaffold "list_function"
+      code 'def sort({list})\n  {action}\nend'
+    scaffold "list_function_test"
+      code 'raise "Unexpected order" unless sort([{literal}]) == [{expected}]'
     scaffold "list_transformation"
       code '{list} = [{literal}]\n{transformed} = {action}\nputs {transformed}.join(", ")'
     scaffold "list_reduction"
@@ -243,6 +265,10 @@ coding_idioms
       integer "int"
       float "double"
       string "String"
+    scaffold "list_function"
+      code 'import java.util.Arrays;\nimport java.util.Collections;\n\nclass ListAlgorithm {\n    static void sort({type}[] {list}) {\n        {action}\n    }\n}'
+    scaffold "list_function_test"
+      code 'class ListAlgorithmTest {\n    public static void main(String[] args) {\n        {type}[] {list} = {{literal}};\n        ListAlgorithm.sort({list});\n        if (!java.util.Arrays.equals({list}, new {type}[]{{expected}})) {\n            throw new AssertionError("Unexpected order");\n        }\n    }\n}'
     scaffold "list_transformation"
       code 'import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.StringJoiner;\n\npublic class Main {\n    public static void main(String[] args) {\n        {type}[] {list} = {{literal}};\n        {action}\n        StringJoiner joiner = new StringJoiner(", ");\n        for ({type} n : {list}) joiner.add(String.valueOf(n));\n        System.out.println(joiner.toString());\n    }\n}'
     scaffold "list_reduction"

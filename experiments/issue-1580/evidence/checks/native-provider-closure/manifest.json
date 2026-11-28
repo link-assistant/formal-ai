@@ -1,0 +1,91 @@
+{
+  "cleanGateHead": "c0bec336d4cfc2dbe628ff72feb20c51c61f214d",
+  "cleanGates": {
+    "complete": true,
+    "head": "c0bec336d4cfc2dbe628ff72feb20c51c61f214d",
+    "headAfter": "c0bec336d4cfc2dbe628ff72feb20c51c61f214d",
+    "cleanBefore": true,
+    "cleanAfter": true,
+    "statusAfter": "",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 0,
+    "pass": 89,
+    "failure": 0,
+    "hostedOnlySkip": 54,
+    "seconds": 597.5698240539059,
+    "startedAt": "2026-11-22T22:45:38.198490+00:00",
+    "finishedAt": "2026-11-22T22:55:35.768737+00:00",
+    "localRustExecution": false,
+    "qualified": true
+  },
+  "providerFocusedChecks": {
+    "complete": true,
+    "allPassed": true,
+    "results": [
+      {
+        "index": 0,
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "experiments/issue-1580/native-regression-groups.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "index": 1,
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "index": 2,
+        "command": [
+          "timeout",
+          "600",
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "index": 3,
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "rust/src/solver_handlers/documentation_method.rs",
+          "rust/tests/unit/reasoning_contracts.rs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "index": 4,
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exitCode": 0
+      }
+    ]
+  },
+  "providerNativeExecution": "pending hosted CI",
+  "independentAuthorshipCredit": 0,
+  "payloadCount": 109,
+  "archiveSha256": "410c8863b144c669f649ec3beeb2760ac73d042ab3d13f25d1db2d2f51664350"
+}

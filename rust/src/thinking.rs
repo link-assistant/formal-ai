@@ -51,6 +51,9 @@ pub struct ThinkingStep {
     pub summary: String,
     pub level: String,
     pub source_event: String,
+    /// Recorded append-site identity when an event kind has multiple emitters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source_origin: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_id: Option<String>,
 }
@@ -81,6 +84,7 @@ impl ThinkingStep {
             summary,
             level,
             source_event,
+            source_origin: None,
             parent_id: None,
         }
     }

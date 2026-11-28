@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q34010": {
+      "type": "item",
+      "id": "Q34010",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Haskell"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हैस्केल"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "purely functional programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "функциональный язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "函數式編程語言"
+        },
+        "es": {
+          "language": "es",
+          "value": "lenguaje de programación"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Haskell programming language"
+          },
+          {
+            "language": "en",
+            "value": "hs"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Хаскел"
+          },
+          {
+            "language": "ru",
+            "value": "Хаскелл"
+          },
+          {
+            "language": "ru",
+            "value": "Хаскель"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Haskell语言"
+          },
+          {
+            "language": "zh",
+            "value": "Haskell程式語言"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Haskell 98"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

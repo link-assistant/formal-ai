@@ -12,48 +12,22 @@
 //! cargo run --manifest-path rust/Cargo.toml --example regenerate_agent_cli_sessions
 //! ```
 //!
-//! Historical evidence sessions (issue #839, #842, #982, ...) are recorded
-//! from real external agent runs and are deliberately not in this table.
+//! Publisher-backed sessions retain the historical responses and use explicit
+//! test captures for their current replays. The projection does not overwrite
+//! those records.
 
 use formal_ai::agentic_coding::{
-    ASSOCIATIVE_LEARNING_TASK, DIAGRAM_TASK, DREAMING_AUDIT_TASK, GOOGLE_TRENDS_CATALOG_TASK,
-    GOOGLE_TRENDS_LEARNING_TASK, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK, QUESTION_CATALOG_TASK,
+    ASSOCIATIVE_LEARNING_TASK, DREAMING_AUDIT_TASK, QUESTION_CATALOG_TASK,
     run_agentic_task_with_tools,
 };
 
 fn main() {
-    let sessions: [(&str, &str); 13] = [
-        (
-            MEANING_DETAIL_TASK,
-            "docs/case-studies/issue-538/agent-cli-session.json",
-        ),
-        (
-            POTATO_DETAIL_TASK,
-            "docs/case-studies/issue-538/agent-cli-session-potato.json",
-        ),
-        (
-            DIAGRAM_TASK,
-            "docs/case-studies/issue-538/agent-cli-session-diagram.json",
-        ),
+    let sessions: [(&str, &str); 7] = [
         (
             // Retain the historical input verbatim. The current recipe must answer it
             // with full recursive source content; canonical AST_TASK is tested separately.
             "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation.",
             "docs/case-studies/issue-538/agent-cli-session-self-ast.json",
-        ),
-        (
-            GOOGLE_TRENDS_CATALOG_TASK,
-            "docs/case-studies/issue-498/agent-cli-session-google-trends.json",
-        ),
-        (
-            GOOGLE_TRENDS_LEARNING_TASK,
-            "docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json",
-        ),
-        (
-            // The reported directive the issue-499 case study pins (kept in
-            // sync with tests/unit/issue_499_learn_from_source.rs).
-            "Обратясь сюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&&geo=US",
-            "docs/case-studies/issue-499/agent-cli-session-learn-from-source.json",
         ),
         (
             QUESTION_CATALOG_TASK,

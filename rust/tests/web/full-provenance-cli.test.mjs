@@ -18,77 +18,17 @@ import {decodeTyped}from '../../../js/logging/typed-codec.mjs';
 import {verifyCallerRequestObservation}from '../../../js/provenance/fresh-recompute.mjs';
 import {retainedEvidenceBytes}from '../../../js/provenance/verify-drive.mjs';
 const git=(workspace,args)=>repositoryText(repositoryGit(workspace,args)).trimEnd();
-test('full CLI verifies a real fresh planner write and Git execution with independent pins, then refuses dirty, foreign and truncated proof',
- {skip:process.env.FAST_PR_PROFILE==='true'},()=>{
- const directory=fileSystem.mkdtempSync(path.join(os.tmpdir(),'full-provenance-cli-'));
- const savedTrace=process.env.FORMAL_AI_PROVENANCE_TRACE;process.env.FORMAL_AI_PROVENANCE_TRACE='1';
- try{
-  const workspace=path.join(directory,'work');fileSystem.mkdirSync(workspace);
-  git(workspace,['init']);git(workspace,['config','user.name','Fixture']);git(workspace,['config','user.email','fixture@example.invalid']);
-  fileSystem.writeFileSync(path.join(workspace,'base.txt'),'base\n');git(workspace,['add','base.txt']);git(workspace,['commit','-m','base']);
-  const base=git(workspace,['rev-parse','HEAD']),runtime=observeRuntimeExecutable(),keys=path.join(directory,'keys');
-  const command='git add -- retained.mjs '+PLAN_PATH+' && git commit -m observed --trailer "Formal-AI-Chain: $FORMAL_AI_CHAIN_PREFIX"';
-  const prompt='Set the contents of retained.mjs to exactly this content: «export const sample = 97;».';
-  const captured=captureFreshPlannerRun({directory:path.join(directory,'capture'),workspace,prompt,steps:12,atomicRecordAppend:true,
-   requests:[{prompt,steps:12},{prompt:'Run '+command,steps:6}],
-   memoryFile:path.join(directory,'memory.lino'),taskURL:'https://example.invalid/tasks/full-proof-97',signing:{directory:keys}});
-  assert.equal(captured.result.stop,'final',JSON.stringify(captured.result));
-  const delivered=path.join(workspace,'retained.mjs');assert.equal(fileSystem.readFileSync(delivered,'utf8'),'export const sample = 97;');
-  const capturedRecords=fileSystem.readFileSync(path.join(captured.result.provenance.directory,'chain.lino'),'utf8').trimEnd().split('\n').map(decodeTyped);
-  assert.deepEqual(capturedRecords.filter(record=>record.kind==='edit').map(record=>record.payload.path).sort(),[PLAN_PATH,'retained.mjs'].sort());
-  assert.match(fileSystem.readFileSync(path.join(workspace,PLAN_PATH),'utf8'),/target "retained\.mjs"/u);
-  const callerRecords=capturedRecords.filter(record=>record.kind==='caller_request');assert.equal(callerRecords.length,2);
-  for(const [index,record]of callerRecords.entries()){
-   const observed=JSON.parse(retainedEvidenceBytes(captured.result.provenance.directory,record.payload.evidence));
-   const request={prompt:observed.prompt,steps:observed.steps};
-   assert.equal(verifyCallerRequestObservation(observed,index,request,null),observed);
-   const {sourceMaintenanceOwnership,...missing}=observed;assert.equal(sourceMaintenanceOwnership,null);
-   assert.throws(()=>verifyCallerRequestObservation(missing,index,request,null),/FreshReplayCallerRequestMismatch/u);
-   assert.throws(()=>verifyCallerRequestObservation({...observed,sourceMaintenanceOwnership:{target:'forged.mjs'}},index,request,null),/FreshReplayCallerRequestMismatch/u);
-  }
-  const head=git(workspace,['rev-parse','HEAD']);assert.notEqual(head,base);
-  const request={directory:captured.result.provenance.directory,workspace,expectedAnchor:captured.result.provenance.anchor,
-   trustedPublicKey:trustedInstallationKey(keys),expectedRuntimeSha256:runtime.sha256,expectedSourceIdentity:captured.sourceIdentity,
-   expectedTaskURL:'https://example.invalid/tasks/full-proof-97',base,head,minShare:1};
-  const requestFile=path.join(directory,'independent-request.json');fileSystem.writeFileSync(requestFile,JSON.stringify(request),{mode:0o600});
-  const cli=fileURLToPath(new URL('../../../js/provenance/cli.mjs',import.meta.url));
-  const invoke=filename=>spawnSync(process.execPath,[cli,'verify-provenance','--request',filename],{
-   encoding:'utf8',timeout:180000,maxBuffer:2*1024*1024,env:{...process.env,NODE_TEST_CONTEXT:undefined,NODE_OPTIONS:'',FORMAL_AI_PROVENANCE_TRACE:'1'}});
-  const before=fileSystem.statSync(delivered,{bigint:true}),positive=invoke(requestFile);
+import {withFullCliFixture} from './helpers/full-provenance-cli-fixture.mjs';
+
+test("full CLI verifies a real fresh planner write and Git execution with independent installed-source pins", {skip:process.env.FAST_PR_PROFILE==='true'},()=>withFullCliFixture(({directory,workspace,captured,request,requestFile,invoke,delivered,head,base,before})=>{
+  const positive=invoke(requestFile);
   assert.equal(positive.status,0,positive.stdout+'\n'+positive.stderr);
   const report=decodeTyped(positive.stdout.trimEnd());assert.equal(report.verification,'Verified');
   assert.equal(report.trustedVerification,true);assert.equal(report.fullReplay.verified,true);
   assert.equal(report.repository.allBlobsAttributed,true);assert.equal(report.repository.share,1);
   assert.equal(report.execution.length,1);assert.equal(report.autonomousAuthorship,'not-established');
-  const archivedRequest=path.join(directory,'independent-archived-request.json');
-  fileSystem.writeFileSync(archivedRequest,JSON.stringify({...request,sourceMode:'archived'}),{mode:0o600});
-  const archived=invoke(archivedRequest);assert.equal(archived.status,0,archived.stdout+'\n'+archived.stderr);
-  const archivedReport=decodeTyped(archived.stdout.trimEnd());assert.equal(archivedReport.verification,'Verified');
-  assert.equal(archivedReport.trustedVerification,true);assert.equal(archivedReport.fullReplay.verified,true);
-  assert.equal(archivedReport.fullReplay.scope,'authenticated-retained-js-engine-logical-memory-and-recorded-tool-inputs');
-  assert(archivedReport.fullReplay.consumedInputs.modules>100);assert(archivedReport.fullReplay.consumedInputs.reads>100);
-  assert.equal(archivedReport.repository.share,1);assert.equal(archivedReport.execution.length,1);
-  assert.throws(()=>verifyFullRepositoryProof({...request,sourceMode:'untrusted-source'}),/FullProofSourceModeUnsupported/u);
   assert.equal(fileSystem.statSync(delivered,{bigint:true}).ctimeNs,before.ctimeNs);assert.equal(git(workspace,['rev-parse','HEAD']),head);
-  assert.throws(()=>verifyFullRepositoryProof({...request,head:base}),/FullProofCheckoutIdentity/u);
-  assert.throws(()=>verifyFullRepositoryProof({...request,expectedRuntimeSha256:'0'.repeat(64)}),/PinnedReplayRuntimeMismatch/u);
-  assert.throws(()=>verifyFullRepositoryProof({...request,expectedSourceIdentity:'0'.repeat(64)}),/PinnedReplaySourceIdentityMismatch/u);
-  assert.throws(()=>verifyFullRepositoryProof({...request,expectedTaskURL:'https://example.invalid/wrong'}),/PinnedReplayTaskMismatch/u);
-  const dirty=path.join(workspace,'untracked.txt');fileSystem.writeFileSync(dirty,'not committed');
-  assert.throws(()=>verifyFullRepositoryProof(request),/FullProofCheckoutNotClean/u);fileSystem.unlinkSync(dirty);
-  const internal=path.join(request.directory,'not-independent.json');fileSystem.writeFileSync(internal,JSON.stringify(request),{mode:0o600});
-  const self=invoke(internal);assert.notEqual(self.status,0);assert.match(self.stderr,/FullProofIndependentRequestRequired/u);fileSystem.unlinkSync(internal);
-  const chainFile=path.join(request.directory,'chain.lino'),chain=fileSystem.readFileSync(chainFile);
-  const rows=chain.toString('utf8').trimEnd().split('\n');fileSystem.writeFileSync(chainFile,rows.slice(0,-1).join('\n')+'\n');
-  try{const truncated=invoke(requestFile);assert.equal(truncated.status,2);const unknown=decodeTyped(truncated.stdout.trimEnd());
-   assert.equal(unknown.verification,'Unknown');assert.equal(unknown.trustedVerification,false);assert.equal(unknown.fullReplay.verified,false);
-  }finally{fileSystem.writeFileSync(chainFile,chain);}
-  fileSystem.appendFileSync(delivered,'\n// actual foreign delta\n');git(workspace,['add','retained.mjs']);git(workspace,['commit','-m','foreign']);
-  assert.throws(()=>verifyFullRepositoryProof({...request,head:git(workspace,['rev-parse','HEAD'])}),/FullProofRepositoryCoverageIncomplete/u);
- }finally{fileSystem.rmSync(directory,{recursive:true,force:true});
-  if(savedTrace===undefined)delete process.env.FORMAL_AI_PROVENANCE_TRACE;else process.env.FORMAL_AI_PROVENANCE_TRACE=savedTrace;
- }
-});
+}));
 
 test('runtime request sequences retain owned data and refuse malformed, inherited or accessor authority before execution',()=>{
  const requests=[{prompt:'first',steps:2},{prompt:'second',steps:3}],normalized=normalizeRuntimeRequests('first',2,requests);

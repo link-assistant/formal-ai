@@ -1,0 +1,36 @@
+{
+  "sourceHead": "863516afa71a835465875ea4ee0621b339f9eaea",
+  "incomingMain": "ffd50eb404a9734984b117db4868f137ea2fa1e5",
+  "archives": [
+    {
+      "path": "experiments/issue-1580/evidence/checks/main-ffd50eb4-integration/terminal-b838-cohort.tar.gz",
+      "bytes": 4332129,
+      "sha256": "baef60f06bbb10ce2b29754fae15a70fa519cfd98ee0088cc55a120386669e1e",
+      "payloads": 533,
+      "rawBytes": 65540698,
+      "payloadIndex": "experiments/issue-1580/evidence/checks/main-ffd50eb4-integration/terminal-b838-cohort-payloads.json.gz",
+      "verifiedRoundTrip": true
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/main-ffd50eb4-integration/main-source-merge.tar.gz",
+      "bytes": 6046904,
+      "sha256": "f8bfdd6116d44ad3e4114dfe44a6c4abf9cb9f2988410874d0b6d54f872b8aeb",
+      "payloads": 333,
+      "rawBytes": 24643151,
+      "payloadIndex": "experiments/issue-1580/evidence/checks/main-ffd50eb4-integration/main-source-merge-payloads.json.gz",
+      "verifiedRoundTrip": true
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/main-ffd50eb4-integration/reviewed-generations.tar.gz",
+      "bytes": 1770768,
+      "sha256": "10370ab201330bb8455c66489f5726351b6405ba541fd665067a2f7a9ac93789",
+      "payloads": 221,
+      "rawBytes": 5390266,
+      "payloadIndex": "experiments/issue-1580/evidence/checks/main-ffd50eb4-integration/reviewed-generations-payloads.json.gz",
+      "verifiedRoundTrip": true
+    }
+  ],
+  "nativeExecutedLocally": false,
+  "autonomousAuthorshipCredit": 0,
+  "reviewLimits": "The full incoming diff is retained; complete unchanged-source and aggregate PR review remain unfinished. Stale previous constant witnesses are recorded explicitly; current witness bytes are verified."
+}

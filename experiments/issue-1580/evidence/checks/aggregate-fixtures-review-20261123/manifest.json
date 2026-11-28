@@ -1,0 +1,24 @@
+{
+  "source": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "base": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "reviewedPaths": 25,
+  "literalDiffChunksRead": 20,
+  "diffBytes": 148692,
+  "diffLines": 3532,
+  "diffSha256": "8030912ebf2c48374e5f99d366da20bd728a8f89fdd5625efa148a5a88c86a03",
+  "sourceSubsetReviewComplete": true,
+  "binaryFixtureSelectedFieldReview": true,
+  "descriptiveCargoMetadataLiteralReview": false,
+  "fullAggregateReviewComplete": false,
+  "newRuntimeExecutionCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 55932,
+    "sha256": "a77c42ecb26d3f06ae758d4d88d498d32da6aaf61491e533b992a2342df8dc49"
+  },
+  "members": 30,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T12:41:05.332745+00:00"
+}

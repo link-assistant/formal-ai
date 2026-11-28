@@ -1,0 +1,163 @@
+{
+  "head": "e6627385d3ef58435df22ec61d4dfdc4551c9d28",
+  "observedAt": "2026-11-17T12:38:42.675970+00:00",
+  "workflowRuns": 24,
+  "completedSuccess": 24,
+  "failed": 0,
+  "active": 0,
+  "verificationLimit": "Includes successful scope gates. Main-only native runtimes, native detector fixtures, benchmark capability and live qualification remain unexecuted on this PR. The subsequent Java changes require their own hosted results.",
+  "files": [
+    {
+      "file": "runs.json.gz",
+      "bytes": 5791,
+      "sha256": "1f3dfde4fc025a3fa041e379acb33826cc6b8510589fb1cdf9284d4736a4ec2c",
+      "compressedSha256": "59f64c08320a968e89e0e49575edbb4352a5f4e4bb1cc53b160189c40bdf1446"
+    }
+  ],
+  "runs": [
+    {
+      "id": 44082205627,
+      "name": "Desktop Release",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205627"
+    },
+    {
+      "id": 44082205521,
+      "name": "Publish VS Code extension",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205521"
+    },
+    {
+      "id": 44082205788,
+      "name": "Security",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205788"
+    },
+    {
+      "id": 44082205698,
+      "name": "Proactive failure report Agent CLI E2E",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205698"
+    },
+    {
+      "id": 44082205559,
+      "name": "Agentic CLI Matrix",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205559"
+    },
+    {
+      "id": 44082205565,
+      "name": "container-images",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205565"
+    },
+    {
+      "id": 44082205639,
+      "name": "Verify full readable source content",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205639"
+    },
+    {
+      "id": 44082205619,
+      "name": "Self-hosting evidence",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205619"
+    },
+    {
+      "id": 44082205711,
+      "name": "Benchmark Corpus Gate",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205711"
+    },
+    {
+      "id": 44082205782,
+      "name": "External Benchmarks",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205782"
+    },
+    {
+      "id": 44082205908,
+      "name": "CI/CD Pipeline",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205908"
+    },
+    {
+      "id": 44082205238,
+      "name": "Stock Rust Install",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205238"
+    },
+    {
+      "id": 44082205184,
+      "name": "Publish browser engine",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205184"
+    },
+    {
+      "id": 44082205166,
+      "name": "Broken Link Checker",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205166"
+    },
+    {
+      "id": 44082205295,
+      "name": "Documentation policy",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205295"
+    },
+    {
+      "id": 44082205180,
+      "name": "Guarded staged release authority refusal",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205180"
+    },
+    {
+      "id": 44082205380,
+      "name": "Source scanner qualification and debt inventory",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205380"
+    },
+    {
+      "id": 44082205337,
+      "name": "Coverage",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205337"
+    },
+    {
+      "id": 44082205318,
+      "name": "Workflows",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205318"
+    },
+    {
+      "id": 44082205202,
+      "name": "Regenerate native session projections",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205202"
+    },
+    {
+      "id": 44082205440,
+      "name": "Self-development status",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205440"
+    },
+    {
+      "id": 44082205464,
+      "name": "Question necessity ratchet",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205464"
+    },
+    {
+      "id": 44082205434,
+      "name": "Publish source networks",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205434"
+    },
+    {
+      "id": 44082205469,
+      "name": "Layered CI",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44082205469"
+    }
+  ]
+}

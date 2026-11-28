@@ -1,0 +1,25 @@
+{
+  "label": "after",
+  "createdAt": "2026-11-18T00:44:52.107131+00:00",
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 4.25,
+  "counts": {
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "skipped": 0
+  },
+  "rawSha256": "d925cc0c4b204fa17f229d2bbe071671d4626511dbd6571fb9eae650a8b9b09b",
+  "rawBytes": 1837,
+  "rawLines": 24,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,342 @@
+{
+  "recordType": "native-direct-log-panic-coverage/v1",
+  "inputSource": "authenticated direct per-job logs; full literal and semantic review unfinished",
+  "distinctPanics": 53,
+  "earlierAggregateIndexPanics": 39,
+  "absentFromEarlierAggregateIndex": [
+    "capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses",
+    "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+    "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+    "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+    "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+    "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+    "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+    "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+    "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+    "issue_706_any_language::a_language_without_localized_openers_reports_a_gap_not_english",
+    "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap",
+    "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+    "specification::synthesis::renumbered_word_problem_recomputes_from_quantities",
+    "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker"
+  ],
+  "panics": {
+    "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506413.log.gz",
+        "line": 3372
+      }
+    ],
+    "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506413.log.gz",
+        "line": 3402
+      }
+    ],
+    "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506413.log.gz",
+        "line": 3432
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506413.log.gz",
+        "line": 3462
+      }
+    ],
+    "issue_706_any_language::a_language_without_localized_openers_reports_a_gap_not_english": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506413.log.gz",
+        "line": 3489
+      }
+    ],
+    "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506413.log.gz",
+        "line": 3519
+      }
+    ],
+    "data_files::meaning_slugs_are_globally_unique": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 2938
+      }
+    ],
+    "data_files::seed_lino_values_never_pipe_pack_multi_values": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 2967
+      }
+    ],
+    "data_files::lino_data_files_are_parseable_human_readable_and_bounded": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 3000
+      }
+    ],
+    "agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 3856
+      }
+    ],
+    "capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 3886
+      }
+    ],
+    "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 3916
+      }
+    ],
+    "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 3943
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 3969
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 3995
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 4021
+      }
+    ],
+    "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 4053
+      }
+    ],
+    "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+        "line": 4083
+      }
+    ],
+    "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3075
+      }
+    ],
+    "specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3101
+      }
+    ],
+    "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3131
+      }
+    ],
+    "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3162
+      }
+    ],
+    "specification::synthesis::decomposed_sub_results_are_composed_for_algebra": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3196
+      }
+    ],
+    "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3226
+      }
+    ],
+    "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3256
+      }
+    ],
+    "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+        "line": 3286
+      }
+    ],
+    "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506408.log.gz",
+        "line": 3076
+      }
+    ],
+    "specification::synthesis::renumbered_word_problem_recomputes_from_quantities": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506408.log.gz",
+        "line": 3106
+      }
+    ],
+    "formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506466.log.gz",
+        "line": 3370
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506466.log.gz",
+        "line": 3397
+      }
+    ],
+    "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506466.log.gz",
+        "line": 3423
+      }
+    ],
+    "web_requests::source_search_prompts_still_cover_supported_languages": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506466.log.gz",
+        "line": 3453
+      }
+    ],
+    "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506466.log.gz",
+        "line": 3556
+      }
+    ],
+    "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506466.log.gz",
+        "line": 3586
+      }
+    ],
+    "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506701.log.gz",
+        "line": 3323
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506701.log.gz",
+        "line": 3349
+      }
+    ],
+    "issue_1138_retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506701.log.gz",
+        "line": 3379
+      }
+    ],
+    "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506701.log.gz",
+        "line": 3522
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506330.log.gz",
+        "line": 3336
+      }
+    ],
+    "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506330.log.gz",
+        "line": 3362
+      }
+    ],
+    "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506330.log.gz",
+        "line": 3389
+      }
+    ],
+    "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506330.log.gz",
+        "line": 3485
+      }
+    ],
+    "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506330.log.gz",
+        "line": 3511
+      }
+    ],
+    "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506330.log.gz",
+        "line": 3578
+      }
+    ],
+    "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+        "line": 3098
+      }
+    ],
+    "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+        "line": 3130
+      }
+    ],
+    "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+        "line": 3158
+      }
+    ],
+    "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+        "line": 3186
+      }
+    ],
+    "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+        "line": 3214
+      }
+    ],
+    "specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+        "line": 3246
+      }
+    ],
+    "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+        "line": 3276
+      }
+    ],
+    "specification::synthesis::object_counting_filters_items_by_requested_category": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506752.log.gz",
+        "line": 3081
+      }
+    ],
+    "specification::unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss": [
+      {
+        "file": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506752.log.gz",
+        "line": 3117
+      }
+    ]
+  }
+}

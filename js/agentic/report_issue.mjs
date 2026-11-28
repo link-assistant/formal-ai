@@ -160,14 +160,16 @@ function askOrRender(toolNames, language, id, questionIntent, optionsIntent, mul
         id,
         question,
         options: options.map(([label, description]) => ({ label, description })),
+        // OpenCode's `question` reads `multiple`; Claude Code's AskUserQuestion
+        // reads `multiSelect` (issue #1632). Each client ignores the other's field.
         multiple,
+        multiSelect: multiple,
       }],
     }));
   }
-  let text = question;
-  options.forEach(([label, description], index) => {
-    text += `\n${index + 1}. ${label} — ${description}`;
-  });
+  // Keep every choice and its description within clients' concise output limits.
+  const text = question + '\n' + options.map(([label, description], index) =>
+    `${index + 1}. ${label} — ${description}`).join('  ');
   return finalAnswer(text);
 }
 

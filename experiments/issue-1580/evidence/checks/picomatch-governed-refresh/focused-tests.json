@@ -1,0 +1,32 @@
+[
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 12.638,
+    "rawSha256": "53a53432ed06635180c979dbe0f4b3c1514e1afb0616ce748c99985cbad472cc",
+    "log": "experiments/issue-1580/evidence/checks/picomatch-governed-refresh/rust-specification-unicode-identifiers.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.36,
+    "rawSha256": "4f0ea250ecefaa267836cf4a665990d70b99210958b8ed93fdfeebf484b9f12e",
+    "log": "experiments/issue-1580/evidence/checks/picomatch-governed-refresh/rust-specification-fixture-integrity.log.gz"
+  }
+]

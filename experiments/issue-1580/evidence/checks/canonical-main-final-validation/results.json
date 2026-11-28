@@ -1,0 +1,218 @@
+[
+  {
+    "name": "default-branch-build-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 3.955,
+    "file": "default-branch-build-policy.log.gz",
+    "rawSha256": "dc466de5f3dfe4171acf27afeda164f5397c50678a9b95c48c13ba7180377b1f",
+    "archiveSha256": "11eba0860616ae92611d89a2a033255121654e750e12060a589b2a38175f998a",
+    "lines": 34
+  },
+  {
+    "name": "focused-test-map",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.804,
+    "file": "focused-test-map.log.gz",
+    "rawSha256": "2193d3fbb8d0c049c0481b95c7524955eb3eea934e65b92d5d25b7c8adc10cbf",
+    "archiveSha256": "1c970021e754882ea3e91991c45e63b34900862a82b29c0b2ff89235f30e44f3",
+    "lines": 16
+  },
+  {
+    "name": "rust-specification-unicode-identifiers",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 10.561,
+    "file": "rust-specification-unicode-identifiers.log.gz",
+    "rawSha256": "4c189f325825002e9e45fa39ab686057b198ce10ec11622e3e99dd79fd98c7d5",
+    "archiveSha256": "96140379ee7bd8ef295c0310e5656c93bbca64da608c924c6e6088c664f6bc69",
+    "lines": 42
+  },
+  {
+    "name": "rust-specification-fixture-integrity",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.402,
+    "file": "rust-specification-fixture-integrity.log.gz",
+    "rawSha256": "a8fc7abe3e660f0e0cf34b477b736617ca1f021b57c99bd9d5aa70b7203e47ed",
+    "archiveSha256": "1d9bd09a2085761561910b650dda581592dca8f7d956727564803cf219e75709",
+    "lines": 10
+  },
+  {
+    "name": "issue-1364-restart-hygiene",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1364-restart-hygiene.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 12.434,
+    "file": "issue-1364-restart-hygiene.log.gz",
+    "rawSha256": "f396fc41f738163073b14c5b7d47fe87ceb7d42e6ff3f3d5c2ba419db93bdfcb",
+    "archiveSha256": "9d800738051ab11c1dc7f2c166ad538a2c056159ee04beb4607600a586006fb0",
+    "lines": 19
+  },
+  {
+    "name": "scripts-js-twins-checks",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/scripts-js-twins-checks.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.943,
+    "file": "scripts-js-twins-checks.log.gz",
+    "rawSha256": "c1c444a99a155c2f41e04d8af88467705b55018113cfb102416ed8a9654ded34",
+    "archiveSha256": "19a5cf44876d837842ffaf3302a757cbe575c3b7181db9a8d81562a70dc8888c",
+    "lines": 34
+  },
+  {
+    "name": "issue-991-how-to-synthesis",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 19.55,
+    "file": "issue-991-how-to-synthesis.log.gz",
+    "rawSha256": "ce5d89904bceef8494da4523a9540eeb966cfc4a031edd79b350b2b759f3dc09",
+    "archiveSha256": "ba43eff99d43ad0a568a000d15d5b25018f96ae9c84f34ed12437ba1528aa3a4",
+    "lines": 16
+  },
+  {
+    "name": "procedural-runtime-parity",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/procedural-runtime-parity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 66.814,
+    "file": "procedural-runtime-parity.log.gz",
+    "rawSha256": "be6d459daebce8539f03ee48b7827ffe25da33500b607d896123160bd13eeaf9",
+    "archiveSha256": "14642d4d4e9f7fd03e52ed4ad1e27454b7dfaad4c83d90715843426f25ceca3a",
+    "lines": 21
+  },
+  {
+    "name": "rustfmt",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/cnl_output.rs",
+      "rust/src/cnl_output/grammar.rs",
+      "rust/tests/unit/scheduling_contracts.rs",
+      "rust/src/how_to_guide.rs",
+      "rust/src/how_to_guide/extract.rs",
+      "rust/src/meta_method_dispatch.rs",
+      "rust/src/solver_dispatch.rs",
+      "rust/src/solver_handler_how.rs",
+      "rust/src/solver_handler_how_synthesis.rs",
+      "rust/src/source_walk.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.529,
+    "file": "rustfmt.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "0f8c178ca9c4a2c6fd9bf07e67a2babd450436bb",
+      "HEAD",
+      "--",
+      ".",
+      ":(exclude)dev/log/issues/1586/pulls/1598/sessions/ses_e16a64b32ffeT7gcIqGmGFfoQY/solve.log"
+    ],
+    "exitCode": 0,
+    "seconds": 0.123,
+    "file": "whitespace.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "typescript-runtime",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/check-typescript-runtime.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 29.69,
+    "file": "typescript-runtime.log.gz",
+    "rawSha256": "c842403fadf3dbee8557029b75541eb39289b10b6ef2d1bfe87689514a29d15e",
+    "archiveSha256": "f9688f76f443325b800792619feb0b2cbb7ab58088e075c4f69ea0f4bb22fd65",
+    "lines": 1
+  },
+  {
+    "name": "all-local-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 704.965,
+    "file": "all-local-gates.log.gz",
+    "rawSha256": "0df50c9bfc52f6ab741830a36ea7ba8ad48b8b74c74cd9b9af5db66c5a601ab0",
+    "archiveSha256": "8cf92c2cba9ca3fcf08afcb3cb2228a992c58a8cdf3ada3483aaf6bd27e7e796",
+    "lines": 141
+  }
+]

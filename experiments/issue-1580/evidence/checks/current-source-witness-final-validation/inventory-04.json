@@ -1,0 +1,210 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/current-source-witness-gates/worker.log",
+    "file": "106-worker.log.gz",
+    "bytes": 280,
+    "lines": 1,
+    "rawSha256": "33020d2a9e1c2bd1fd303d77275e0414e3c695e81c8738d13172820c00d186a7",
+    "archiveSha256": "b0388fb973ffb9b82932d4586056a9584c1d88180000761e590593ca4ebc0ba5"
+  },
+  {
+    "source": "/tmp/issue-1580-research/inspect-current-repair-run-state-03-57.log",
+    "file": "107-inspect-current-repair-run-state-03-57.log.gz",
+    "bytes": 5655,
+    "lines": 5,
+    "rawSha256": "49291ec02c7cd70b353b291b1038a90f55c025dbc33e875765734b16e4d6d649",
+    "archiveSha256": "f1d8160cbdbe0a17970edac463189c97cabedb5c64fccb6ba19815dccf9175e0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/command-stream-dependencies.json",
+    "file": "108-command-stream-dependencies.json.gz",
+    "bytes": 4617,
+    "lines": 1,
+    "rawSha256": "71c3ce2abb3a0e620b4b8ad1ef955ac5fbd9145dc5b66de1db49edf41d73e9b4",
+    "archiveSha256": "42d089d91b0a6e5595457fe8754e6ae70bd5f74bdbc492e58d14cb01238cab91"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/command-stream-registry.json",
+    "file": "109-command-stream-registry.json.gz",
+    "bytes": 93442,
+    "lines": 1,
+    "rawSha256": "4eafc26d7947ec2998e58f49c0aa9aa27f0a461aac5ec9c39029e76a9689a849",
+    "archiveSha256": "0070fd6d48a31a3ddfecc653c6bfba72cdbe98f304ab300e86be72f5fd059dc1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-assistant--calculator-265-comments.json",
+    "file": "110-link-assistant--calculator-265-comments.json.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-assistant--calculator-265-comments.stderr",
+    "file": "111-link-assistant--calculator-265-comments.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-assistant--calculator-265-issue.json",
+    "file": "112-link-assistant--calculator-265-issue.json.gz",
+    "bytes": 4405,
+    "lines": 1,
+    "rawSha256": "af904eb5e3bd5dd90829f41c47c2fb618a57cd1f9aa1f429596dd1c184231b99",
+    "archiveSha256": "dac0f9dbc8c618d6fa952fb4e7b346513f2948d41c930655cfb1022534302dc3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-assistant--calculator-265-issue.stderr",
+    "file": "113-link-assistant--calculator-265-issue.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-calculator-dependencies.json",
+    "file": "114-link-calculator-dependencies.json.gz",
+    "bytes": 3673,
+    "lines": 1,
+    "rawSha256": "f332e0e90205f19d85c5880e562b886b6d085038e043454860c33c7a22937ce2",
+    "archiveSha256": "5d34dc293ddcf46b2cd1f28f3779460985d2c137c42fd43637dd97edb7b2fcb9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-calculator-registry.json",
+    "file": "115-link-calculator-registry.json.gz",
+    "bytes": 131816,
+    "lines": 1,
+    "rawSha256": "4ff9f9a679ba860aa652257a91b39aabad8b8e10ea21851fe9ba0c67d23307a6",
+    "archiveSha256": "73f1f06ebc68fc83a3f2ed9e74a25dc156a51d3dd11c1b14938c8f46dabedb17"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-foundation--command-stream-238-comments.json",
+    "file": "116-link-foundation--command-stream-238-comments.json.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-foundation--command-stream-238-comments.stderr",
+    "file": "117-link-foundation--command-stream-238-comments.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-foundation--command-stream-238-issue.json",
+    "file": "118-link-foundation--command-stream-238-issue.json.gz",
+    "bytes": 5467,
+    "lines": 1,
+    "rawSha256": "37ca62374ff987590697a6f035e110a9089f8a58bd348b7b984a53609ce54678",
+    "archiveSha256": "a02638a78863f0777a2b428d016d7173553b91cedfaeb554431473fd74e5d0fb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/link-foundation--command-stream-238-issue.stderr",
+    "file": "119-link-foundation--command-stream-238-issue.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/meta-language-dependencies.json",
+    "file": "120-meta-language-dependencies.json.gz",
+    "bytes": 13743,
+    "lines": 1,
+    "rawSha256": "a6c1b98f864ade52134726f2ce5efcfe365c34e22d7231a641093778d70e80ce",
+    "archiveSha256": "e4217eefadd16432bd68c61be8a170d04c569db25b53a30ebc678f3c279358c2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/meta-language-registry.json",
+    "file": "121-meta-language-registry.json.gz",
+    "bytes": 76573,
+    "lines": 1,
+    "rawSha256": "0812781f9cac9c6baec66e3fbef66662d9505a45314a7de914bbd6233ce180f5",
+    "archiveSha256": "cddce167fd8c8aaba39f1fc727a1f461fe1429e6470b1b2eed1939b150dc5984"
+  },
+  {
+    "source": "/tmp/issue-1580-research/maintenance-publications-2026-11-21/outcome.json",
+    "file": "122-outcome.json.gz",
+    "bytes": 4455,
+    "lines": 159,
+    "rawSha256": "a0df82d2aac04a80957e155c0fed839843c3e8e63b0e9ffe7e3c828206d7f0fc",
+    "archiveSha256": "7c479d8e66f44441ce868a6184ecbe1c30bf8a8ece45e3844f1c43feb7e4b4dc"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-rust-pinned-source-range.py",
+    "file": "123-read-rust-pinned-source-range.py.gz",
+    "bytes": 759,
+    "lines": 5,
+    "rawSha256": "aa413aca9bc87833eb868784290c4c986c807a3bfc2ee63594e1454e0477c785",
+    "archiveSha256": "effae7b5ae93d7ad64835c7e0fcdd89d74911a40b1004b47972eccbbb712b811"
+  },
+  {
+    "source": "/tmp/issue-1580-research/record-rust-npm-release-review.log",
+    "file": "124-record-rust-npm-release-review.log.gz",
+    "bytes": 301,
+    "lines": 4,
+    "rawSha256": "0340a1216260fa845aa05f82f3f86428ebf165814fc8562673b8ed398fca2c14",
+    "archiveSha256": "fa972296b78fd64987ae11e2fc4b2a3deddfb2442a4679236550f4fe1e90f8fe"
+  },
+  {
+    "source": "/tmp/issue-1580-research/record-rust-npm-release-review.py",
+    "file": "125-record-rust-npm-release-review.py.gz",
+    "bytes": 4317,
+    "lines": 56,
+    "rawSha256": "e4323d50f4ebd2f7deb33fffbedfb5183b05c73bae5e4658946d49956404c806",
+    "archiveSha256": "09a5e8c5a5fb54dedeeec2552448b70ae346cd0d65d45dc9faa118ecaf65f2e3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-maintenance-publications-2026-11-21.log",
+    "file": "126-refresh-maintenance-publications-2026-11-21.log.gz",
+    "bytes": 1406,
+    "lines": 10,
+    "rawSha256": "c3641212855783dc4c20dd22a2b7befa8581f67aeb9f3fd2d64fadb45b433c83",
+    "archiveSha256": "4d0423529151552c926d7ef7f04741c4b816948bea93bb5a29a1d80237b42c3e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-maintenance-publications-2026-11-21.py",
+    "file": "127-refresh-maintenance-publications-2026-11-21.py.gz",
+    "bytes": 2784,
+    "lines": 44,
+    "rawSha256": "98bd994e0f39515606d2f0afdcc0d10413e5082481c0d008573f8bcb67cdd9b8",
+    "archiveSha256": "2e6236586872d510d32694bb32567266e310056d2d785122bfbce3caa7d8e74b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/run-current-source-witness-gates.log",
+    "file": "128-run-current-source-witness-gates.log.gz",
+    "bytes": 214,
+    "lines": 4,
+    "rawSha256": "7c2cbff456449206015a0fb2a5957c8458019da90ff25cf502ee0be3fb00e012",
+    "archiveSha256": "96c6e277a3c4c394cbe772e68738947b58bc2454ed2011a15b011bc82b131caf"
+  },
+  {
+    "source": "/tmp/issue-1580-research/run-current-source-witness-gates.py",
+    "file": "129-run-current-source-witness-gates.py.gz",
+    "bytes": 2736,
+    "lines": 49,
+    "rawSha256": "0abb41adfd5bc1063f3b772eac017307e378f424094b2a44e25b8c7811f722da",
+    "archiveSha256": "4a53e900f0df9a0feb139120922f91a2473d024022d234086ed54225a31c8d9b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-witness-gates-and-npm-review.log",
+    "file": "130-seal-current-witness-gates-and-npm-review.log.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-witness-gates-and-npm-review.py",
+    "file": "131-seal-current-witness-gates-and-npm-review.py.gz",
+    "bytes": 6947,
+    "lines": 113,
+    "rawSha256": "adff660051bd7071b5ac9add391796d8f3c2d4ca294c73a141ae7179b8bd3a35",
+    "archiveSha256": "d6dead6ba25e12ac2cbbcbe47ac87cf6d501c6050244d2fe424d5352c9d52d00"
+  }
+]

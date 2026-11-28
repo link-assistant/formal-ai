@@ -1,0 +1,18 @@
+{
+  "source": "origin/main",
+  "path": "dev/log/issues/1588/pulls/1596/sessions/ses_e16a7588cffeISx6F2xlD6K08b/solve.log",
+  "exactIncomingBytesRetained": true,
+  "sha256": "6e1f8f7f04748dedbf75c007c55f26fa6ab7534050f43ae6fd423b5f812912a4",
+  "warningCount": 160,
+  "log": "inherited-log-whitespace.log.gz",
+  "rawSha256": "3644d97a468b4e7db3ed1c9fb4e01b101a1ade02eb48cf94cdd2fec54e5980d2",
+  "reviewScopeCheck": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)dev/log/issues/1588/pulls/1596/sessions/ses_e16a7588cffeISx6F2xlD6K08b/solve.log"
+  ]
+}

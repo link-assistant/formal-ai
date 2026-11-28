@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-required-documentation
+  stage web
+  description "Required public documents exist and retain the level-two sections declared in data/meta/required-documentation.json."
+  run "node scripts/check-required-documentation.mjs"
+  justification "Issue #1580 and Hive Mind CI/CD best practice 12 require documentation files and headings; policy-only and rustdoc checks cannot detect a deleted README or contribution section."

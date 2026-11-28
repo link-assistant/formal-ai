@@ -1,0 +1,160 @@
+{
+  "hostedBefore": {
+    "head": "624812120feee0180bf9df8164f87e73326b5cb8",
+    "run": 44104975691,
+    "allWorkflowsPassed": 24,
+    "skippedPythonCases": 5,
+    "fullLogLines": [
+      4877,
+      4893,
+      4894,
+      4895,
+      4896
+    ],
+    "fullLogSha256": "64832534932cf4b4d1007bbd5c1c1465d2ffb031b2b8a7320d016bb5d8aff5e4"
+  },
+  "runtime": {
+    "upstreamPin": "3.15.2",
+    "minimumSyntaxVersion": "3.14",
+    "officialManifest": "https://github.com/actions/python-versions/blob/main/versions-manifest.json",
+    "manifestSha256": "036beb1ca605c3cbc208ef44b9867cff68a9cdc07c9dd711b080ef31a258f363",
+    "stable": true,
+    "linuxUbuntu2404Asset": {
+      "filename": "python-3.15.2-linux-24.04-x64.tar.gz",
+      "arch": "x64",
+      "platform": "linux",
+      "platform_version": "24.04",
+      "download_url": "https://github.com/actions/python-versions/releases/download/3.15.2-40340363276/python-3.15.2-linux-24.04-x64.tar.gz"
+    }
+  },
+  "regressionBefore": {
+    "exitCode": 1,
+    "reason": "Hosted missing runtime incorrectly returned success with four skips.",
+    "log": "before.log.gz"
+  },
+  "localAfter": {
+    "maintainedTests": 31,
+    "failed": 0,
+    "skipped": 0,
+    "fastProfileTests": 15,
+    "defaultBranchPolicyTests": 21
+  },
+  "limits": {
+    "childNodeHeapMiB": 64,
+    "childWallMilliseconds": 10000,
+    "testWallMilliseconds": 30000,
+    "shellPlans": 4
+  },
+  "retainedFailures": [
+    "initial harness inherited NODE_TEST_CONTEXT and suppressed child TAP; the corrected regression reproduces the actual skip bug",
+    "draft policy assertions still pointed at the old run step; both now inspect the actual planning step",
+    "existing VM evaluation exceeded its unchanged 100 ms bound once; unchanged retry passed",
+    "combined check command exceeded the Formal AI shell 60-second budget; no result from its orphaned child is counted; final focused checks ran separately",
+    "local shell lint requires absent shellcheck; no shell scripts changed, and hosted lint remains required"
+  ],
+  "upstreamSourceChanged": false,
+  "defaultBranchBuildPolicyChanged": false,
+  "benchmarkFloorsChanged": false,
+  "issueComplete": false,
+  "autonomousAuthorshipCredit": 0,
+  "logs": [
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/before.log.gz",
+      "bytes": 2358,
+      "lines": 68,
+      "uncompressedSha256": "f8c9cd7792dcdc334d8c760125b9909ccde3af05b00a66a1f3188ac66e779be5",
+      "compressedSha256": "52a4d6ce2d2c061100377cc81ac3a86dcb5252833212ebff1f8d3a89e0aadc0a"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/checkout-policy.log.gz",
+      "bytes": 1686,
+      "lines": 42,
+      "uncompressedSha256": "d9423da6bf64f7ae7cb4780fd2398f2408458a1cd9d3369a0681e0b9291c0789",
+      "compressedSha256": "da4e1cc77ab11be86cbf5ae3bbd1649623e7fd97d1d462488e58e20ee2fbf5a7"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/default-branch-policy.log.gz",
+      "bytes": 5049,
+      "lines": 136,
+      "uncompressedSha256": "aecbd4c0591c58525d7d3fa442cd18dd99da76e3e4c5bd28d6651edb1120f4fd",
+      "compressedSha256": "d416cae20925034f40e84a5e9f2b2b3bdd32bbe9a15372184fadd7ee9ff57085"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/draft-fast-profile.log.gz",
+      "bytes": 7621,
+      "lines": 172,
+      "uncompressedSha256": "fbe9ae57ab1baf84515caa57e43aa89c183fad0412bbc09693e9a4a6dc4584a8",
+      "compressedSha256": "05dca23736b22593ba5483eeecfd3b7a9809d2450ac26e278450cd8d69b78eca"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/draft-maintained-observations.log.gz",
+      "bytes": 6957,
+      "lines": 184,
+      "uncompressedSha256": "6b4e10f190c6b2e825430984033cc970762ea62f5deec02ebc173c1e282e2eb5",
+      "compressedSha256": "b8788e6e5b4578b8dffc15a9634d912872dde0dcc94a83c0461ca4fddff72802"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/fast-profile.log.gz",
+      "bytes": 3867,
+      "lines": 100,
+      "uncompressedSha256": "21c15c5b169ffa574ce1ae2e72b2c6f5ec1e86da0d7048b59466880833f18dd9",
+      "compressedSha256": "ff802a79fa3a2174e0948a6ea2d780f921bec95b2b37098717de48b507eadfdd"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/gates-basic.log.gz",
+      "bytes": 127,
+      "lines": 5,
+      "uncompressedSha256": "22521d8150aa9b43404a9904cf0c81476e93c00c5275c751953be49badbcff7a",
+      "compressedSha256": "db435c19f74595126913fcdb7fa265e24c8d7a914bcf5360596287b9566ef298"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/gates-readable.log.gz",
+      "bytes": 68,
+      "lines": 3,
+      "uncompressedSha256": "54319afeab0e810814247c591776555bfec4239f8f997ebb8526482f23a60722",
+      "compressedSha256": "89aaac530c236f86687d32203653684856c00b3376b99d900cce082c721f8b24"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/gates-workflow.log.gz",
+      "bytes": 208,
+      "lines": 5,
+      "uncompressedSha256": "ee969b2b6ff3ddb5cc085534c6454eb67f5895c3c1486686e0eeda698ec5096c",
+      "compressedSha256": "81cc7fa207dd57cb706b8f2b78b4ba0c82625b7d2056841edbe9bcdfb61fe23c"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/initial-harness-failure.log.gz",
+      "bytes": 1077,
+      "lines": 34,
+      "uncompressedSha256": "bd4faee2e2810808dc0138bccc94322bfa319107f1962b90c9608272fe066e57",
+      "compressedSha256": "82281f746d025ff9553113eb6081d3c23752bc3c92e44977eb1741e12e19acf3"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/local-shellcheck-unavailable.log.gz",
+      "bytes": 134,
+      "lines": 3,
+      "uncompressedSha256": "3226df62106e9b2168bc0718ae866d6acd48ea4bc3c2853c86cb1017e11e1493",
+      "compressedSha256": "fee53a6177cd98abc6f33c40c515b7642cc00d6be88aaaf0694657819d3ff3d9"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/maintained-observations.log.gz",
+      "bytes": 7441,
+      "lines": 196,
+      "uncompressedSha256": "cc9688ab5809e78a5bba6cee91c1e2f15eb10b63d3f92ab455f5756e1b15bbf1",
+      "compressedSha256": "748192a54b375a2979c54a379cdc79c4aebee29777faea5776460273df70ef82"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/previous-fast-profile.log.gz",
+      "bytes": 4698,
+      "lines": 113,
+      "uncompressedSha256": "3f2dddbe85a82c8e4c70efa91aee4e9023eb8cc0cc43c666d1327e96b74b3c3d",
+      "compressedSha256": "29c30b59f610093be7ba47862c78538f026b29e7111d54666ce0aa10a7ef732b"
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/runtime-regression.log.gz",
+      "bytes": 604,
+      "lines": 22,
+      "uncompressedSha256": "ed984bbd6ba153cb1dc63c1ae408e88743d12447d7133187701ce87b6d07c546",
+      "compressedSha256": "db15900b9d0a5cad5f26a70a61a058911dbad5825af456de23431af8a477cb51"
+    }
+  ]
+}

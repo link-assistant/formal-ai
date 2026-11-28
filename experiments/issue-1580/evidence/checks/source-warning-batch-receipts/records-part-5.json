@@ -1,0 +1,322 @@
+[
+  {
+    "file": "captured-output-0161.gz",
+    "capturedPath": "tool-result-quotation-extraction/commit.stdout",
+    "rawSha256": "2e23b50c079ce2e6b15bbf418cfe6bb3f242a5b0d664e5a0e40808b710053e62",
+    "archiveSha256": "54b4dc304840de727bbc664ab079c708680e47ee79fda1590721d030b837f846",
+    "bytes": 2254,
+    "lines": 20
+  },
+  {
+    "file": "captured-output-0162.gz",
+    "capturedPath": "tool-result-quotation-extraction/head.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0163.gz",
+    "capturedPath": "tool-result-quotation-extraction/head.stdout",
+    "rawSha256": "334579c143d028d5e70e84c95a0213994aedfebcd78280d599143801c5ef39e7",
+    "archiveSha256": "a1ec9b3db64583141baf00a82672383618bde9af87134b49298405c467396462",
+    "bytes": 41,
+    "lines": 1
+  },
+  {
+    "file": "captured-output-0164.gz",
+    "capturedPath": "tool-result-quotation-extraction/index-before.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0165.gz",
+    "capturedPath": "tool-result-quotation-extraction/index-before.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0166.gz",
+    "capturedPath": "tool-result-quotation-extraction/inverse-proof.json",
+    "rawSha256": "09d5abd963e42d4ba6604882b94d827f1c61e6bdab0abb275a5f65b07362dc02",
+    "archiveSha256": "c07034794f05cdab53bcbf6f16493a32fb2dfccdeb8c507fd6ccfa93fe8dc4c5",
+    "bytes": 487,
+    "lines": 13
+  },
+  {
+    "file": "captured-output-0167.gz",
+    "capturedPath": "tool-result-quotation-extraction/original-source.rs.gz",
+    "rawSha256": "fefd6f585afe2b3965e60b38ed551ccde876fd93adcb45997a602d239d8ef8eb",
+    "archiveSha256": "518ce94362ea0e257cbe0ccff137cb37a23e21af0a044cf379ec66936aa1c2a1",
+    "bytes": 8539,
+    "lines": 66
+  },
+  {
+    "file": "captured-output-0168.gz",
+    "capturedPath": "tool-result-quotation-extraction/outcome.json",
+    "rawSha256": "10351f35cd6ffeb97c97b63d6820e90d0d1489f544a4198214de161aa0a67d28",
+    "archiveSha256": "b8d4cc28e2398d73fea241b8a2a7b5844ff4433b0aeb5c082fca097bc7298cca",
+    "bytes": 208,
+    "lines": 9
+  },
+  {
+    "file": "captured-output-0169.gz",
+    "capturedPath": "tool-result-quotation-extraction/rust-format.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0170.gz",
+    "capturedPath": "tool-result-quotation-extraction/rust-format.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0171.gz",
+    "capturedPath": "tool-result-quotation-extraction/secrets.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0172.gz",
+    "capturedPath": "tool-result-quotation-extraction/secrets.stdout",
+    "rawSha256": "b5947b492eacd0bb295cbb484501a0afbf082d6da096078c290ea64bec94b7a1",
+    "archiveSha256": "e2a8b9ed9f7f856f65ad8e8fd12a22fc85008a097f9401613d1ccb9d3dc36b34",
+    "bytes": 232,
+    "lines": 5
+  },
+  {
+    "file": "captured-output-0173.gz",
+    "capturedPath": "tool-result-quotation-extraction/size-and-readability-gates.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0174.gz",
+    "capturedPath": "tool-result-quotation-extraction/size-and-readability-gates.stdout",
+    "rawSha256": "35c23d76d53dc09d1f1d19d69ffaae43b8411fbbe06a767c5852d11052944632",
+    "archiveSha256": "06e0136f94a4491e30b209ed5f4ee8a43a3bbf4d03122c456a175c0bb23ef3cc",
+    "bytes": 159,
+    "lines": 6
+  },
+  {
+    "file": "captured-output-0175.gz",
+    "capturedPath": "tool-result-quotation-extraction/stage-source-evidence.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0176.gz",
+    "capturedPath": "tool-result-quotation-extraction/stage-source-evidence.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0177.gz",
+    "capturedPath": "tool-result-quotation-extraction/tool-result-outcomes-javascript.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0178.gz",
+    "capturedPath": "tool-result-quotation-extraction/tool-result-outcomes-javascript.stdout",
+    "rawSha256": "41143695bf5ed47c0ad0a9285ee38921fd8c89c2b2d288a9a94e371fc86aacb0",
+    "archiveSha256": "9e8c6de5848b147d3f7939e5f2bd13d8d3a2510027fa29fc3c1e65304efe209e",
+    "bytes": 1425,
+    "lines": 21
+  },
+  {
+    "file": "captured-output-0179.gz",
+    "capturedPath": "tool-result-quotation-extraction/tool-result-streams-javascript.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0180.gz",
+    "capturedPath": "tool-result-quotation-extraction/tool-result-streams-javascript.stdout",
+    "rawSha256": "ab880e09e95ff42ba16006c2456b4e7b9119f7ed12a4097cf7f1ff529ab495db",
+    "archiveSha256": "320e181973612556f47de2664814fbfdb37224ddb9293ee1109cab09ec4a9bcd",
+    "bytes": 304,
+    "lines": 10
+  },
+  {
+    "file": "captured-output-0181.gz",
+    "capturedPath": "tool-result-quotation-extraction/translation-current.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0182.gz",
+    "capturedPath": "tool-result-quotation-extraction/translation-current.stdout",
+    "rawSha256": "90aed8bda8b21c7aa680e4a45bd86a1a9b72fcd87d27782ec19d86d8dfcb40c4",
+    "archiveSha256": "e49d5aae5ac9baef68b9660805d75bc20ab1dfb914063e838009a00740af9463",
+    "bytes": 188,
+    "lines": 1
+  },
+  {
+    "file": "captured-output-0183.gz",
+    "capturedPath": "tool-result-quotation-extraction/whitespace.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0184.gz",
+    "capturedPath": "tool-result-quotation-extraction/whitespace.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0185.gz",
+    "capturedPath": "tool-result-quotation-extraction/worker.log",
+    "rawSha256": "fe07b8a7e385b1c212d160ea3c414ee301c322a8e1ed59b61355cf1f5d61b8e1",
+    "archiveSha256": "c6c63fca467edbb7c17128d487d28ac4cbe2c94f7b6c241f54dd104de04c0389",
+    "bytes": 219,
+    "lines": 12
+  },
+  {
+    "file": "captured-output-0186.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/commands.json",
+    "rawSha256": "98eb1b57a827f9a94d43dccfd6b30f2f1a3bdc98705777a46b7634f34e0332a8",
+    "archiveSha256": "e4f5db36088b6ad70cb9d189394bafb89a172d5c51e604bfcfcaa69bb5dc4869",
+    "bytes": 4430,
+    "lines": 121
+  },
+  {
+    "file": "captured-output-0187.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/commit.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0188.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/commit.stdout",
+    "rawSha256": "7ef72edfafaa3c1440a3a3d68728ac8790f966f1d28d43b65581935fc2c79648",
+    "archiveSha256": "467106fb66d9929b17d85a141611a11e4c8d68e951fd6177cf352a23a9580459",
+    "bytes": 2886,
+    "lines": 25
+  },
+  {
+    "file": "captured-output-0189.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/extract-unknown-reasoning-text.log",
+    "rawSha256": "d0a7add21d1ae534413a8da99acc706314f65667e825e70146a96a898b4be0eb",
+    "archiveSha256": "9d23af08c667462f2f06e75f631c1fcfba23cfac040a759f14c8a7d19c1e52fa",
+    "bytes": 183,
+    "lines": 4
+  },
+  {
+    "file": "captured-output-0190.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/extract-unknown-reasoning-text.py",
+    "rawSha256": "7b0f2a51a16ccd6388084fdf067230c0298b1017714ffda01f5411b136a4a0fa",
+    "archiveSha256": "7e7bf065f54196d3b027ad03435ab67699a2957934e8372de1cb0f86104b2a1e",
+    "bytes": 6491,
+    "lines": 81
+  },
+  {
+    "file": "captured-output-0191.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/head.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0192.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/head.stdout",
+    "rawSha256": "ef1030ea250f8074259d95bbda0d78d051bfae662953e51f631360fc7d44e6ae",
+    "archiveSha256": "698e6fe206fdc9aa1005ae3241a176dec87704c3c650a4beaf8dfb208755b6ed",
+    "bytes": 41,
+    "lines": 1
+  },
+  {
+    "file": "captured-output-0193.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/index-before.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0194.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/index-before.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0195.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/inverse-proof.json",
+    "rawSha256": "a033d57251ff95315b5c058e3e0c1f329aca808445b46b091eb954b237a513a9",
+    "archiveSha256": "7ae209e76d2b56904bbc2dfec21b7941c46bbc4a0dc429bb449050d11f418f73",
+    "bytes": 522,
+    "lines": 14
+  },
+  {
+    "file": "captured-output-0196.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/outcome.json",
+    "rawSha256": "1dd9ab65890e46690b2bb6cc546f528807884770c416bb3e0a2fffb019976215",
+    "archiveSha256": "c4643297fd84b88ebb825ba9eb58670c785195061ba51e31e1d20dbc2fba9c03",
+    "bytes": 208,
+    "lines": 9
+  },
+  {
+    "file": "captured-output-0197.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/rust-format.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0198.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/rust-format.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0199.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/secrets.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "captured-output-0200.gz",
+    "capturedPath": "unknown-reasoning-text-extraction-second/secrets.stdout",
+    "rawSha256": "d7805a5bf5d3732e2e940279aa34f55f973b0f75006165c541a58dd885484016",
+    "archiveSha256": "b6c3ebf1d5d5df4ed58c23d9fe369b23500fe961fa01d18ac17d53a6d52ab5b3",
+    "bytes": 232,
+    "lines": 5
+  }
+]

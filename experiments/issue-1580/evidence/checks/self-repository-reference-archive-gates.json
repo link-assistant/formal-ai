@@ -1,0 +1,10 @@
+{
+  "command": "node experiments/formal_ai_subagent/local-gates.mjs --only check-file-size,check-file-size-js-twin",
+  "pass": 2,
+  "fail": 0,
+  "skip": 0,
+  "file": "self-repository-reference-archive-gates.log.gz",
+  "sha256": "5f124c756088cf42e897069ba7734ab9bb55404e8c82010ad97a0cca13e61b29",
+  "compressedSha256": "b5976f8e86c01f882f34cdfcfd6db9723e4177cd87636412df8d9cb2eb351bea",
+  "limits": "Archive-size checks only; substantive source checks retained separately."
+}

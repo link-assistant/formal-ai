@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=benchmark derivations retain their complete native input closure",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 1,
+  "payloads": {
+    "stdout": {
+      "file": "stdout.log.gz",
+      "bytes": 1007,
+      "lines": 30,
+      "rawSha256": "41e5a1679d7e71907d7d109e902bcbb2c4cbeb4bdbc0d79454d49285b05d9ac4",
+      "archiveSha256": "08eb5c142b259a5aa84b028e8c8c987785393d951ba932e89b6869330251202b"
+    },
+    "stderr": {
+      "file": "stderr.log.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  "expectedFailure": "The benchmark source is not admitted to the focused native lane.",
+  "fullIssueComplete": false
+}

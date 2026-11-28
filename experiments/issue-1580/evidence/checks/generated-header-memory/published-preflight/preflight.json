@@ -1,0 +1,16 @@
+{
+  "head": "d0b8b895661c6b5e809810c4da8a3db9f79138b3",
+  "previousHead": "1cc2d536ac11e26602cc55a40dffb61716233aa6",
+  "checkedAt": "2026-11-17T17:10:13.602208+00:00",
+  "feedback": {
+    "feedback-issue-comments": 1,
+    "feedback-pull-request-comments": 9,
+    "feedback-inline-comments": 0,
+    "feedback-reviews": 0
+  },
+  "activeRuns": {
+    "in_progress": [],
+    "queued": []
+  },
+  "previousHeadSuccessfulWorkflows": 24
+}

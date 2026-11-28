@@ -1,0 +1,17 @@
+{
+  "entities": {
+    "Q28937563": {
+      "id": "Q28937563",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Грэйдон Хор"
+        },
+        "mul": {
+          "language": "mul",
+          "value": "Graydon Hoare"
+        }
+      }
+    }
+  }
+}

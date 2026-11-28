@@ -1,0 +1,71 @@
+{
+  "total": 138,
+  "passed": 86,
+  "skipped": 52,
+  "failed": 0,
+  "complete": true,
+  "initialInvocation": {
+    "exitCode": 1,
+    "outcomes": {
+      "file": "all-local-gates-fifth-outcomes/initial.json",
+      "sha256": "54e067c71167af568bf8825139105fb555acf5589efa208b478be95f6de23b10",
+      "entries": 138
+    }
+  },
+  "recheck": {
+    "exitCode": 0,
+    "gate": "lint-shell-scripts",
+    "reason": "verified ShellCheck 0.11.0 added to PATH"
+  },
+  "outcomes": {
+    "file": "all-local-gates-fifth-outcomes/combined.json",
+    "sha256": "2db0f1e6f851015ba861a6c0e51a5f1aea975aefbf50e32968778b5c8bdb361c",
+    "entries": 138
+  },
+  "files": [
+    {
+      "file": "cargo-audit-blocked-proof.log.gz",
+      "sha256": "300652ba613b537ecbab4e6fcaae98e52c465d67beb9b1b58512b4946f5ea3ad",
+      "compressedSha256": "6799b7943ae06820681d83bff48c7772ad36e6f405876d47867ac37c57bf08e5",
+      "bytes": 408
+    },
+    {
+      "file": "template-observations.log.gz",
+      "sha256": "0acafec96d04293eab8f5e81a0785f336efb711330f341215bdb9abc84fcdabe",
+      "compressedSha256": "9d46076882a4db2da0489c314785a64f037bb063bb9756860b8696cdd4eae631",
+      "bytes": 997
+    },
+    {
+      "file": "release-pending-pipeline-current.log.gz",
+      "sha256": "e997c81d72ea7f2c384f4a09d4c2db028a7986be64501588d844676d9a597cde",
+      "compressedSha256": "f712c45a17679617283e81ea19d3296dbe32ee54d69a0b327a94d46f2e1c9993",
+      "bytes": 376
+    },
+    {
+      "file": "all-local-gates-fifth.log.gz",
+      "sha256": "91e97e13cd9a62738c94b4d77c6653521a269224bdd4dec9068f1bc79d7a09cb",
+      "compressedSha256": "eb3db68b6076c10de5e5f9b73b18281201b986c71e092f718240fc234d714625",
+      "bytes": 6869
+    },
+    {
+      "file": "lint-shell-scripts-fifth-failure.log.gz",
+      "sha256": "3226df62106e9b2168bc0718ae866d6acd48ea4bc3c2853c86cb1017e11e1493",
+      "compressedSha256": "fee53a6177cd98abc6f33c40c515b7642cc00d6be88aaaf0694657819d3ff3d9",
+      "bytes": 134
+    },
+    {
+      "file": "lint-shell-scripts-fifth-recheck.log.gz",
+      "sha256": "e01529ce4e4f0593c3f4c0b5ccf1968ead97629ff105a89bf1ede63a405e2fa5",
+      "compressedSha256": "0571f64936b20171221796c81c9411a256abca95ea58dce5d25c4775325211ee",
+      "bytes": 66
+    }
+  ],
+  "partition": {
+    "schema": "issue-1580-retained-gate-outcomes/v1",
+    "originalFile": "all-local-gates-fifth-outcomes/original-summary.json.gz",
+    "originalSha256": "494e1dbf92ceae0d1a8d3e4e6211fa71a4b79de03618a4dec31b5ed398ad572d",
+    "archiveSha256": "913bef514a1dcdd97c955a8d88d458723b7d8749c32c2468491de217b9db5612",
+    "originalBytes": 35650,
+    "originalLines": 1437
+  }
+}

@@ -1,0 +1,15 @@
+▶ meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ✔ recognises_the_meaning_detail_task / routes concepts (49.336919ms)
+  ✔ does not substitute a registered concept for an unrelated word (4340.661466ms)
+  ✔ enriched blocks match the seed byte for byte, fetched or not (11.285983ms)
+  ✔ replays the committed agent-cli-session.json step for step (54.120492ms)
+  ✔ replays the committed agent-cli-session-potato.json step for step (25.314841ms)
+✔ meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs) (4757.822162ms)
+ℹ tests 5
+ℹ suites 1
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8222.483361

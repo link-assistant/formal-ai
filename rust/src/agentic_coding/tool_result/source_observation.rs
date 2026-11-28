@@ -278,6 +278,45 @@ pub fn complete_owned_source_read_frame(source: &str) -> String {
     )
 }
 
+/// Decode only the exact path-bound OpenCode Read transport envelope.
+fn opencode_source_read(raw: &str, expected_path: &str) -> Option<(String, bool)> {
+    let (path, body) = raw
+        .strip_prefix("<path>")?
+        .split_once("</path>\n<type>file</type>\n<content>\n")?;
+    if path != expected_path || path.contains('\n') {
+        return None;
+    }
+    let body = body.strip_suffix("\n</content>")?;
+    let (numbered, footer) = body.rsplit_once("\n\n(End of file - total ")?;
+    let total = footer.strip_suffix(" lines)")?.parse::<usize>().ok()?;
+    // Match JavaScript's exact-integer range when reading untrusted line counts.
+    if total as u128 > 9_007_199_254_740_991 {
+        return None;
+    }
+    let rows = if numbered.is_empty() {
+        Vec::new()
+    } else {
+        numbered.split('\n').collect::<Vec<_>>()
+    };
+    let mut first = 1;
+    let mut source = Vec::new();
+    for (index, row) in rows.iter().enumerate() {
+        let (number, text) = row.split_once(": ")?;
+        if number.is_empty() || !number.bytes().all(|byte| byte.is_ascii_digit()) {
+            return None;
+        }
+        let number = number.parse::<usize>().ok()?;
+        if index == 0 {
+            first = number;
+        }
+        if first == 0 || first.checked_add(index)? != number || number > total {
+            return None;
+        }
+        source.push(text);
+    }
+    Some((source.join("\n"), first == 1 && rows.len() == total))
+}
+
 /// A bare payload never declares provider success; typed metadata owns raw completeness.
 #[must_use]
 pub fn source_read_observation(
@@ -309,6 +348,10 @@ pub fn source_read_observation(
     } else {
         SourceReadStatus::Unknown
     };
+    let opencode = metadata
+        .is_none()
+        .then(|| opencode_source_read(raw, expected_path))
+        .flatten();
     let framed = metadata
         .is_none()
         .then(|| super::super::code_artifact::source_from_agent_read_result(raw))
@@ -332,6 +375,7 @@ pub fn source_read_observation(
             });
     let complete = error.is_none()
         && (whole_frame
+            || opencode.as_ref().is_some_and(|(_, complete)| *complete)
             || (status == SourceReadStatus::ReportedSuccess
                 && bound
                     .and_then(|value| value.get("format"))
@@ -344,9 +388,11 @@ pub fn source_read_observation(
                 && receipt
                     .as_deref()
                     .is_some_and(|receipt| !incomplete_receipt(receipt))));
-    let source = error
-        .is_none()
-        .then(|| framed.unwrap_or_else(|| raw.to_owned()));
+    let source = error.is_none().then(|| {
+        framed
+            .or_else(|| opencode.map(|(source, _)| source))
+            .unwrap_or_else(|| raw.to_owned())
+    });
     let absent = error.is_some()
         && bound.is_some_and(|metadata| {
             metadata.get("success").and_then(Value::as_bool) == Some(false)
@@ -383,3 +429,7 @@ pub fn source_read_observation(
         error,
     }
 }
+
+#[cfg(test)]
+#[path = "../../../tests/source/source_tests/agentic_coding/tool_result/source_observation/opencode_tests.rs"]
+mod opencode_tests;

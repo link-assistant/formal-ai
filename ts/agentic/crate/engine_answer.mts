@@ -6,10 +6,14 @@ export function asksForClarification(answer) {
   return answer.intent.startsWith('clarify');
 }
 
+const VERIFIABLE_TASK_EXECUTION_LINK = 'verifiable_task:executed:';
+
 /** Mirrors `SymbolicAnswer::is_inconclusive`. */
 export function isInconclusive(answer) {
   return ['unknown', 'ill_formed', 'punctuation_only_prompt', 'concept_lookup_unresolved', 'meta_reasoning_open', 'meta_reasoned_program_unverified'].includes(answer.intent)
-    || asksForClarification(answer);
+    || asksForClarification(answer)
+    || (answer.intent === 'verifiable_task'
+      && !answer.evidence_links?.some(link => link.startsWith(VERIFIABLE_TASK_EXECUTION_LINK)));
 }
 
 /** Mirrors `SymbolicAnswer::defers_to_the_open_web`. */

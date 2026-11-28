@@ -1,0 +1,95 @@
+{
+  "observedAt": "2026-11-18T17:52:40.020360+00:00",
+  "records": [
+    {
+      "name": "issue",
+      "argv": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "title,body,updatedAt"
+      ],
+      "sha256": "78ca801391fe6f96cf51079d478ee455318e37cea4c7a656b273b13b60d3b36f",
+      "bytes": 10564,
+      "count": null
+    },
+    {
+      "name": "issue-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate"
+      ],
+      "sha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "bytes": 4475,
+      "count": 1
+    },
+    {
+      "name": "pull-request-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate"
+      ],
+      "sha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302",
+      "bytes": 31784,
+      "count": 9
+    },
+    {
+      "name": "inline-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate"
+      ],
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2,
+      "count": 0
+    },
+    {
+      "name": "reviews",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate"
+      ],
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2,
+      "count": 0
+    },
+    {
+      "name": "sub-issues",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues",
+        "--paginate"
+      ],
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2,
+      "count": 0
+    },
+    {
+      "name": "pull-request",
+      "argv": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "title,body,isDraft,headRefOid,mergeStateStatus"
+      ],
+      "sha256": "cf660a810cc59881d5330ddc5ddba63d0fa725814cb15ac1d098a8c77ad216f0",
+      "bytes": 10678,
+      "count": null
+    }
+  ]
+}

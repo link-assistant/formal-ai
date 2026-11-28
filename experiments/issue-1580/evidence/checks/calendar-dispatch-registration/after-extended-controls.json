@@ -1,0 +1,18 @@
+{
+  "exitCode": 0,
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/calendar-act-paraphrases.test.mjs"
+  ],
+  "seconds": 6.803,
+  "rawSha256": "9ecfca0ce1123768e248ab671552ac791c0c6b78747af442c598518dfb907ee3",
+  "archiveSha256": "b099f19c499914c087fc6f7f710a1e9710875920ed1af7e68714b1d8dfc0c49b",
+  "lines": 38,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

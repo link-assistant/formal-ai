@@ -1,0 +1,5 @@
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-changed=/tmp/formal-ai-1613-evidence/legacy-build-probe.oh7ZXV/rust/src
+cargo:rerun-if-changed=/tmp/formal-ai-1613-evidence/legacy-build-probe.oh7ZXV/rust/src/lib.rs
+cargo:rerun-if-changed=/tmp/formal-ai-1613-evidence/legacy-build-probe.oh7ZXV/rust/Cargo.toml
+cargo:rustc-env=FORMAL_AI_CRATE_EDITION=2024

@@ -1,0 +1,66 @@
+{
+  "head": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "workflowRun": 44262999525,
+  "jobId": 134660858273,
+  "archive": "native-job-134660858273.log.gz",
+  "rawBytes": 268248,
+  "rawLines": 1830,
+  "rawSha256": "ee1b839370bdad84e2e9bd94fd38bf1f1777677c37d816a4af195ff033aef481",
+  "archiveSha256": "9e0895c60b9729be36bed53074c7073b739c74e3144ebd9d1515c96ec9ec7015",
+  "markers": [
+    {
+      "line": 1278,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:00:49.6165927Z ##[group]Run cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity -- --test-threads=1"
+    },
+    {
+      "line": 1279,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:00:49.6167127Z ^[[36;1mcargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity -- --test-threads=1^[[0m"
+    },
+    {
+      "line": 1632,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:04:47.5925432Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 140.81s"
+    },
+    {
+      "line": 1634,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:04:47.6034179Z ^[[1m^[[92m     Running^[[0m tests/unit/meta_executor_parity.rs (rust/target/debug/build/formal-ai/01a995c4b5986933/out/meta_executor_parity-01a995c4b5986933)"
+    },
+    {
+      "line": 1637,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:04:47.6217347Z test every_fixture_case_replays_to_the_javascript_event_sequence ... ok"
+    },
+    {
+      "line": 1638,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:04:47.6228466Z test production_composition_preserves_concrete_output_obligations ... ok"
+    },
+    {
+      "line": 1639,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:04:47.6233364Z test production_composition_still_solves_untyped_independent_tasks ... ok"
+    },
+    {
+      "line": 1640,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:05:06.9920152Z test validated_prime_candidates_keep_their_intent_in_every_response_language ... ok"
+    },
+    {
+      "line": 1642,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:05:06.9921192Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 19.38s"
+    },
+    {
+      "line": 1649,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:05:07.7988800Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.79s"
+    },
+    {
+      "line": 1711,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:05:13.3684955Z # tests 2"
+    },
+    {
+      "line": 1713,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:05:13.3687915Z # pass 2"
+    },
+    {
+      "line": 1714,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-18T08:05:13.3688554Z # fail 0"
+    }
+  ],
+  "completeLiteralLogRead": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,161 @@
+{
+  "baselineFailed": true,
+  "baselineLog": "before-native-headroom.stdout",
+  "initialHarnessFailureRetained": true,
+  "changes": [
+    {
+      "path": "experiments/issue-1580/metadata-storage-headroom.test.mjs",
+      "before": "/tmp/issue-1580-research/c55-file-size-consumer-repair/metadata-storage-headroom.test.before.mjs"
+    },
+    {
+      "path": "experiments/issue-1580/native-test-headroom.test.mjs",
+      "before": "/tmp/issue-1580-research/c55-file-size-consumer-repair/native-test-headroom.test.before.mjs"
+    },
+    {
+      "path": "experiments/issue-1580/seed-record-readers.test.mjs",
+      "before": "/tmp/issue-1580-research/c55-file-size-consumer-repair/seed-record-readers.test.before.mjs"
+    },
+    {
+      "path": "experiments/issue-1580/final-native-headroom.test.mjs",
+      "before": "/tmp/issue-1580-research/c55-file-size-consumer-repair/final-native-headroom.test.before.mjs"
+    },
+    {
+      "path": "experiments/issue-1580/desktop-manifest-headroom.test.mjs",
+      "before": "/tmp/issue-1580-research/c55-file-size-consumer-repair/desktop-manifest-headroom.test.before.mjs"
+    },
+    {
+      "path": "experiments/issue-1580/documentation-headroom.test.mjs",
+      "before": "/tmp/issue-1580-research/c55-file-size-consumer-repair/documentation-headroom.test.before.mjs"
+    },
+    {
+      "path": "experiments/issue-1580/runtime-module-headroom.test.mjs",
+      "before": "/tmp/issue-1580-research/c55-file-size-consumer-repair/runtime-module-headroom.test.before.mjs"
+    }
+  ],
+  "commands": [
+    {
+      "path": "rust/tests/web/seed-registry-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/seed-registry-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "rust/tests/web/seed-data-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/seed-data-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "rust/tests/web/scripts-js-twins-checks.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/scripts-js-twins-checks.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "rust/tests/web/seed-and-workflow-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/seed-and-workflow-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "experiments/issue-1580/metadata-storage-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/metadata-storage-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "experiments/issue-1580/native-test-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-test-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "experiments/issue-1580/seed-record-readers.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/seed-record-readers.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "experiments/issue-1580/final-native-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/final-native-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "experiments/issue-1580/desktop-manifest-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/desktop-manifest-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "experiments/issue-1580/documentation-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/documentation-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "experiments/issue-1580/runtime-module-headroom.test.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/runtime-module-headroom.test.mjs"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "hostedFailuresClassified": 63,
+  "passed": true,
+  "nativeExecutionClaim": false
+}

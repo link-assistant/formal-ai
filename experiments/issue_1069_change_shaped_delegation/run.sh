@@ -34,7 +34,7 @@ git -C "$WORKSPACE" add -A
 git -C "$WORKSPACE" commit --quiet -m "test: seed change-shaped delegation probe"
 BASE_COMMIT="$(git -C "$WORKSPACE" rev-parse HEAD)"
 
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$RUN_DIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
 server_pid=$!

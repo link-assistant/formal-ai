@@ -1,10 +1,13 @@
 // Provider-owned source observations keep raw file bytes separate from status.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { before, test } from 'node:test';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { SourceReadStatus, sourceReadObservation, observedBytesMatch, observedDigestMatches, failureMessage } from '../../../js/agentic/tool_result.mjs';
 import { Progress } from '../../../js/agentic/progress.mjs';
+import { toolResultRecords } from '../../../js/agentic/file_read/records.mjs';
+import { readObservation } from '../../../js/agentic/file_read/source.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
 before(async () => { await installNodeHost(new WorkerHost()); });
 const path = '.formal-ai/general-change-plan.lino';
@@ -93,4 +96,24 @@ test('a later declined Read observation cannot retain an older source certificat
   const messages=history(source,{source_read:metadata});
   messages.push({...messages[2],name:'read_file'});
   assert.equal(Progress.scan(messages).sourceReadFor(path),null);
+});
+
+const opencodeRows = JSON.parse(readFileSync(new URL('../../../data/parity/issue-1580-opencode-read-envelope.json', import.meta.url)));
+for (const row of opencodeRows) {
+  test('OpenCode path-bound source envelope: ' + row.id, () => {
+    const observation = sourceReadObservation(row.raw, row.failed ?? false, row.metadata ?? null, row.path);
+    assert.equal(observation.source, row.source);
+    assert.equal(observation.complete, row.complete);
+    assert.equal(observation.status, row.failed ? SourceReadStatus.Failure : row.metadata?.success ? SourceReadStatus.Success : SourceReadStatus.Unknown);
+  });
+}
+
+test('relative file rendering uses the actual client Read path without discarding raw metadata', () => {
+  const row = opencodeRows.find(row => row.id === 'whole');
+  for (const raw of [false, true]) {
+    const messages = history(row.raw, raw ? { source_read: { path: row.path, success: true, complete: true, format: 'raw' } } : {}, { filePath: row.path });
+    const observed = readObservation(toolResultRecords(messages), Progress.scan(messages), 'source.txt');
+    assert.equal(observed.source, raw ? row.raw : row.source);
+    assert.equal(observed.complete, false, 'legacy path aliases cannot certify the exact planned source');
+  }
 });

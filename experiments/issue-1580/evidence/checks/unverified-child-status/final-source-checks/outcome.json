@@ -1,0 +1,145 @@
+{
+  "complete": true,
+  "checks": [
+    {
+      "name": "archive-supplied",
+      "command": [
+        "python3",
+        "/tmp/issue-1580-research/archive-round-bootstrap.py"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 2.466,
+      "rawLines": 1,
+      "rawSha256": "7f3fe305fedb1d341913aa9425068fca7b3bf750a4da95aff2c78ca0b1753701",
+      "archiveSha256": "e79edfdcd70280504c95b2f0cbc612953d133245e909a6c476c1120212da72db"
+    },
+    {
+      "name": "archive-commands",
+      "command": [
+        "python3",
+        "experiments/issue-1580/archive-evidence.py"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 0.282,
+      "rawLines": 1,
+      "rawSha256": "0b827d99a8bbae68fedf828990490b041e1c04ae956490004815a2dab020c360",
+      "archiveSha256": "2c746ff3f5c592887cf08a5f7ba1d1ddac01492f7a5c56188a4288200dfde16f"
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 8.797,
+      "rawLines": 3,
+      "rawSha256": "83432230a493268f2e5aa232aa89ad815f332cf07dbe5babf376dc865b4ec687",
+      "archiveSha256": "d50d51aae3dea1409c3ac1f03ae95f30f65298bca787b9725b844c14463c6a79"
+    },
+    {
+      "name": "check-file-size",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 5.282,
+      "rawLines": 3,
+      "rawSha256": "ea6bfbe710a80fc554603778594708ad15f35e0b11a76820081e87dcf86ffc9b",
+      "archiveSha256": "700568e344ded5b04a66ca30af94c0244012e1a3c342fe96e5d1ef28bc845726"
+    },
+    {
+      "name": "check-readable-code",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-readable-code"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 16.449,
+      "rawLines": 3,
+      "rawSha256": "a3b40d5fb9ae5ecae4967f39c5d779cf82a5162abdf8d8a3dd0e93be4db6a108",
+      "archiveSha256": "4097167c121afd9a476059ec518eb3361851d6dda4543890753eca2ae2295ed4"
+    },
+    {
+      "name": "check-abbreviations",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 5.407,
+      "rawLines": 3,
+      "rawSha256": "ff266c76de879f66fba4d7cab90f3b2414032643f582d74d11e1a92800f26862",
+      "archiveSha256": "36a54d9bcb0618ad024d8e49ec3ba86d608b20c3e446631342812b76213f9ed9"
+    },
+    {
+      "name": "check_js_rust_translation",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check_js_rust_translation"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 4.429,
+      "rawLines": 3,
+      "rawSha256": "33ef2673bd82df96955fcf817ab037aacac2524d53a6409400cf11a693228aa3",
+      "archiveSha256": "c37b2e4e91545d58a06851fdd6c5eedc48e27863fcbced72c0babfbf8a30d6cf"
+    },
+    {
+      "name": "check-changelog-fragment-js-twin",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 1.955,
+      "rawLines": 3,
+      "rawSha256": "b346a927d702f1814ced2b15a5dacc2edd3c77f6cbf61d4286a490c973f61007",
+      "archiveSha256": "51e899e212622cf68337adb1c2153ee7d2c3a4ac5a62d736a188add14ebf0dcd"
+    },
+    {
+      "name": "check-package-self-containment",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-package-self-containment"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 1.974,
+      "rawLines": 3,
+      "rawSha256": "64a03318635338652d7d52995b088db91578b8f36e2d4df88be7f691c505777e",
+      "archiveSha256": "0a32ea7f75908b1a097eb808dabc3c18916779265713034a7f371e92ee7809d9"
+    },
+    {
+      "name": "git-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 0.32,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 140760,
+  "rustBuildsEnabled": false,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

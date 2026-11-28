@@ -7,16 +7,59 @@ import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.
 import { specificationCases } from "../../../scripts/lib/rust-specification-cases.mjs";
 import { executeTypedProgram } from "../../../scripts/lib/rust-specification-programs.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
+import { bookPage, bookSearch, procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
+import { everydayMethodReply, wikiHowMethodsCapture } from "./support/wiki-how-method-capture.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const CACHE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/issue-991/source-cache");
+
+test("ranked Wikibooks procedures verify the page title, required words, and procedure section", async () => {
+  const requested = [];
+  const captures = new Map();
+  for (const [index, book] of procedureBooks.entries()) {
+    for (const [url, body] of procedureBookCaptures(book, index === 0)) captures.set(url, { body });
+  }
+  const pancakes = procedureBooks[1];
+  const qualified = "prepare pancakes north american without milk";
+  captures.set(bookPage("Prepare Pancakes North American Without Milk"), captures.get(pancakes.page));
+  captures.set(bookSearch(qualified), captures.get(pancakes.search));
+  captures.set(bookSearch("pancakes north american without milk", "&srnamespace=102"), captures.get(pancakes.scoped));
+  const context = await bootWorker(captures, requested);
+  const run = async (task, extra = {}) => {
+    context.__bookPrompt = "How to " + task + "?";
+    context.__bookPreferences = { externalServiceWikihow: false, ...extra };
+    return plain(await evaluate(context, 'tryProceduralHowTo(__bookPrompt, "en", __bookPreferences)'));
+  };
+  for (const book of procedureBooks) {
+    const start = requested.length;
+    const result = await run(book.task);
+    assert.ok(result.guide?.steps.length >= 2, result.content);
+    assert.match(result.guide.steps[0].text, book.firstStep);
+    assert.deepEqual(result.guide.steps.map(step => step.sourceUrl), result.guide.steps.map(() => book.page));
+    assert.ok(result.guide.steps.every(step =>
+      step.sha256 === createHash("sha256").update(captures.get(book.page).body).digest("hex")));
+    assert.deepEqual(requested.slice(start).filter(url => new URL(url).hostname === "en.wikibooks.org"),
+      [book.direct, book.search, book.scoped, book.page]);
+    assert.doesNotMatch(result.content, /unrelated instruction/u);
+  }
+  const rejected = await run(qualified);
+  assert.equal(rejected.guide, undefined, rejected.content);
+  assert.ok(!rejected.evidence.includes("source:" + pancakes.page));
+  const count = requested.length;
+  const offline = await run(procedureBooks[0].task, { offline: true });
+  assert.equal(offline.guide.steps[0].sourceUrl, procedureBooks[0].page);
+  assert.equal(requested.length, count);
+  const disabled = await run(procedureBooks[0].task, { offline: true, externalServiceMediawikiFamily: false });
+  assert.equal(disabled.guide, undefined);
+  assert.ok(!disabled.evidence.some(line => line === "source:" + procedureBooks[0].page));
+});
 const originals = [
   ["greeting_prefixed_russian_connect_how_to_composes_procedure", 7, 11],
   ["procedural_elaboration_followup_rebinds_to_prior_how_to", 4, 6],
   ["procedural_elaboration_followup_covers_supported_languages", 4, 16],
 ];
 for (const [name, macroCount, executedCount] of originals) {
-  test("unchanged native procedural assertions: " + name, async () => {
+  test("native procedural assertions replay on JavaScript: " + name, async () => {
     const native = specificationCases(REPO_ROOT).cases.find(item => item.id.endsWith("::" + name));
     assert.ok(native?.program, "the complete native body must parse");
     assert.equal(native.program.nativeAssertions, macroCount);
@@ -71,24 +114,31 @@ async function bootWorker(captures, requested) {
       if (!capture) {
         return Promise.resolve({ ok: false, status: 404, text: () => Promise.resolve("") });
       }
-      return Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve(capture.body) });
+      const status = capture.status ?? 200;
+      return Promise.resolve({ ok: status === 200, status, text: () => Promise.resolve(capture.body) });
     },
   });
   await evaluate(context, "loadSeed()");
   return context;
 }
 
-test("no-source plans retain transport encoding and producer-owned typed stages", async () => {
+test("an unverified reply retains transport encoding and source-routing evidence", async () => {
   const requested = [];
   const context = await bootWorker(new Map(), requested);
   const result = plain(await evaluate(context, 'tryProceduralHowTo("как подключить redis к ruby", "ru", {})'));
   assert.equal(result.intent, "procedural_how_to");
-  assert.match(result.content, /ru\.wikihow\.com.*page=подключить-redis-к-ruby&/u);
+  assert.equal(result.content, "Не удалось найти проверенные инструкции по запросу «подключить redis к ruby». Если у вас есть ссылка на руководство, пришлите её.");
   assert.ok(requested.some(url => url.includes("page=%D0%BF")));
   assert.ok(result.solverEvents.some(event => event.kind === "procedural_how_to:request"
     && event.payload === "подключить redis к ruby"));
   assert.ok(result.solverEvents.some(event => event.kind === "web_search:fusion_planned"));
   assert.ok(!result.solverEvents.some(event => /(?:capture|source):accepted/u.test(event.kind)));
+});
+
+test("an unverified Spanish reply gives the localized evidence gap", async () => {
+  const context = await bootWorker(new Map());
+  const answer = await evaluate(context, 'tryProceduralHowTo("Cómo puedo preparar té?", "es", { offline: true })');
+  assert.equal(answer.content, "No pude verificar los pasos para «preparar té». Si tienes una guía, comparte el enlace y puedo ayudarte a seguirla.");
 });
 
 test("disabled source services keep their actual outcome and skip wikiHow requests", async () => {
@@ -110,7 +160,7 @@ test("a procedural followup requires an actual prior procedural dialogue", async
   assert.equal(await evaluate(context, 'tryProceduralHowToFollowup("tell me more", "en", [], {})'), null);
 });
 
-test("genuine captured source steps survive discovery-plan rendering", async () => {
+test("verified steps and citations reach the reply with full provenance in evidence", async () => {
   const captures = loadCaptures();
   const requested = [];
   const context = await bootWorker(captures, requested);
@@ -118,9 +168,11 @@ test("genuine captured source steps survive discovery-plan rendering", async () 
   assert.equal(result.intent, "procedural_how_to");
   assert.ok(result.guide.steps.length >= 2);
   assert.match(result.content, /Sources/u);
+  assert.doesNotMatch(result.content, /sha256|max_depth=|page\(s\)/u);
   for (const step of result.guide.steps) {
     assert.equal(captures.get(step.sourceUrl)?.sha256, step.sha256);
     assert.ok(requested.includes(step.sourceUrl));
+    assert.ok(result.evidence.some(line => line.startsWith("how_to:step ") && line.includes(step.sha256)));
   }
 });
 
@@ -146,6 +198,15 @@ const RUSSIAN_REQUEST = "Как хорошо покакать?";
 const RUSSIAN_SLUG = encodeURIComponent("хорошо-покакать");
 const RUSSIAN_ARTICLE = `https://ru.wikihow.com/${RUSSIAN_SLUG}`;
 const RUSSIAN_API = `https://ru.wikihow.com/api.php?action=parse&page=${RUSSIAN_SLUG}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
+const wikiSearch = (task) => `https://ru.wikihow.com/api.php?action=query&list=search&srsearch=${encodeURIComponent(task)}&srlimit=5&format=json&origin=*`;
+const wikiParse = (title) => RUSSIAN_API.replace(RUSSIAN_SLUG, encodeURIComponent(title));
+const publisherSearch = (query) => `https://ru.wikihow.com/Special:LSearch?fulltext=Search&search=${encodeURIComponent(query)}`;
+const linkResult = (title, origin = "https://ru.wikihow.com") =>
+  `<a class="result_link" href="${origin}/${encodeURIComponent(title.replaceAll(" ", "-"))}">Result</a>`;
+const missingTitle = { body: JSON.stringify({ error: { code: "missingtitle" } }) };
+const searchCapture = (...titles) => ({ body: JSON.stringify({ query: { search: titles.map(title => ({ title })) } }) });
+const RUSSIAN_SHORT_TASK = "какать";
+const RUSSIAN_DISCOVERED_TITLE = "хорошо покакать";
 const WAYBACK_INDEX = `https://archive.org/wayback/available?url=${encodeURIComponent(RUSSIAN_ARTICLE)}`;
 const SNAPSHOT = "20241222160007";
 const WAYBACK_REPLAY = `https://web.archive.org/web/${SNAPSHOT}id_/${RUSSIAN_ARTICLE}`;
@@ -175,21 +236,141 @@ test("an unregistered Russian how-to uses the localized CORS API and quotes its 
   assert.ok(!requested.includes(WAYBACK_INDEX));
 });
 
+test("a contributing stale procedure retains its capture-age warning", async () => {
+  const context = await bootWorker(new Map([[RUSSIAN_API, { body: RUSSIAN_CAPTURE }]]));
+  const initial = plain(await answerRussian(context));
+  assert.equal(initial.guide.steps.length, 2, initial.content);
+  const retained = await evaluate(context, `
+    for (const [url, capture] of sourceWalkCaptureCache) {
+      sourceWalkCaptureCache.set(url, { ...capture, fetchedAt: "1" });
+    }
+    sourceWalkCaptureCache.size
+  `);
+  assert.ok(retained > 0);
+  const stale = plain(await answerRussian(context, { offline: true }));
+  assert.equal(stale.guide.steps.length, 2, stale.content);
+  assert.ok(stale.guide.steps.every(step => step.fetchedAt === "1"));
+  const outcome = stale.guide.outcomes.find(row => row.sourceId === "wikihow");
+  assert.equal(outcome.status, "contributed");
+  assert.match(outcome.detail, /stale_capture age_seconds=/u);
+  assert.ok(outcome.detail.includes(RUSSIAN_API), outcome.detail);
+});
+
+test("a recovered procedure reports the accepted article after rejecting an unrelated capture", async () => {
+  const unrelated = JSON.parse(RUSSIAN_CAPTURE);
+  unrelated.parse.title = "Домашние растения";
+  const title = "хорошо покакать";
+  const matching = wikiParse(title);
+  const captures = new Map([
+    [RUSSIAN_API, { body: JSON.stringify(unrelated) }],
+    [wikiSearch(title), searchCapture(title)],
+    [matching, { body: RUSSIAN_CAPTURE }],
+  ]);
+  const answer = await answerRussian(await bootWorker(captures));
+  assert.equal(answer.guide.steps.length, 2, answer.content);
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === matching));
+  assert.ok(!answer.content.includes(RUSSIAN_API), answer.content);
+  const outcome = answer.guide.outcomes.find(row => row.sourceId === "wikihow");
+  assert.equal(outcome.status, "contributed");
+  assert.ok(outcome.detail.includes(matching), outcome.detail);
+});
+
 test("the browser uses a matching archival capture for the short Russian question after a live request fails", async () => {
   const requested = [];
   const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}"><ul><li>This unrelated navigation entry is long enough to look like a step.</li></ul>${WIKIHOW_STEPS}`;
   const captures = new Map([
+    [wikiSearch(RUSSIAN_SHORT_TASK), searchCapture("Домашние растения", RUSSIAN_DISCOVERED_TITLE)],
     [WAYBACK_INDEX, { body: archiveIndex(RUSSIAN_ARTICLE) }],
     [WAYBACK_REPLAY, { body }],
   ]);
   const answer = await answerRussian(await bootWorker(captures, requested), {}, "Как какать?");
-  assert.deepEqual(requested.filter((url) => [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY].includes(url)),
-    [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY]);
+  assert.deepEqual(requested.filter((url) => [wikiParse(RUSSIAN_SHORT_TASK), wikiSearch(RUSSIAN_SHORT_TASK),
+    wikiParse(RUSSIAN_DISCOVERED_TITLE), WAYBACK_INDEX, WAYBACK_REPLAY].includes(url)),
+    [wikiParse(RUSSIAN_SHORT_TASK), wikiSearch(RUSSIAN_SHORT_TASK),
+      wikiParse(RUSSIAN_DISCOVERED_TITLE), WAYBACK_INDEX, WAYBACK_REPLAY]);
+  assert.equal(answer.guide.task, RUSSIAN_SHORT_TASK);
   assert.match(answer.content, /1\. Не откладывайте/u);
   assert.doesNotMatch(answer.content, /unrelated navigation entry/u);
   for (const step of answer.guide.steps) {
     assert.equal(step.sourceUrl, WAYBACK_REPLAY);
     assert.equal(step.sha256, createHash("sha256").update(body).digest("hex"));
+  }
+});
+
+test("publisher search recovers the reported article when MediaWiki search returns 500", async () => {
+  const requested = [];
+  const search = publisherSearch("какать покакать");
+  const exact = wikiParse(RUSSIAN_SHORT_TASK);
+  const fullText = wikiSearch(RUSSIAN_SHORT_TASK);
+  const article = wikiParse(RUSSIAN_DISCOVERED_TITLE);
+  const body = wikiHowMethodsCapture();
+  const captures = new Map([
+    [exact, missingTitle],
+    [fullText, { status: 500, body: "" }],
+    [search, { body: linkResult("Домашние растения") + linkResult(RUSSIAN_DISCOVERED_TITLE) }],
+    [article, { body }],
+  ]);
+  const context = await bootWorker(captures, requested);
+  const run = (preferences) => answerRussian(context, preferences, "Как какать?");
+  const answer = await run({});
+  assert.deepEqual(requested.filter(url => new URL(url).hostname === "ru.wikihow.com"), [exact, fullText, search, article]);
+  assert.equal(answer.content, everydayMethodReply(RUSSIAN_ARTICLE));
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === article && step.depth === 2
+    && step.sha256 === createHash("sha256").update(body).digest("hex")));
+  const count = requested.length;
+  const offline = await run({ offline: true });
+  assert.equal(offline.content, answer.content);
+  assert.ok(offline.guide.steps.every(step => step.cached));
+  const disabled = await run({ offline: true, externalServiceWikihow: false });
+  assert.equal(disabled.guide, undefined);
+  assert.equal(requested.length, count);
+});
+
+test("publisher recovery works through the capture component when a browser cannot read the site", async () => {
+  const context = await bootWorker(new Map());
+  const search = publisherSearch("какать покакать");
+  const article = wikiParse(RUSSIAN_DISCOVERED_TITLE);
+  const captures = { [search]: linkResult(RUSSIAN_DISCOVERED_TITLE), [article]: wikiHowMethodsCapture() };
+  evaluate(context, `self.FormalAIWebSearchComponent = { fetchUrl: async url => {
+    const body = ${JSON.stringify(captures)}[url];
+    return body ? { ok: true, text: async () => body } : { ok: false, status: 404 };
+  } }`);
+  const answer = await answerRussian(context, {}, "Как какать?");
+  assert.match(answer.content, /1\. Не откладывайте[^\n]+\n2\. Сядьте/u);
+  const offline = await answerRussian(context, { offline: true }, "Как какать?");
+  assert.equal(offline.content, answer.content);
+  assert.ok(offline.guide.steps.every(step => step.cached));
+});
+
+test("an explicit scope selects its method over the everyday one", async () => {
+  const task = "какать быстро";
+  const url = wikiParse(task.replaceAll(" ", "-"));
+  const context = await bootWorker(new Map([[url, { body: wikiHowMethodsCapture(task) }]]));
+  const answer = await answerRussian(context, {}, "Как какать быстро?");
+  assert.match(answer.content, /1\. Сначала выберите[^\n]+\n2\. Уточните/u);
+  assert.doesNotMatch(answer.content, /Не откладывайте/u);
+});
+
+test("publisher search discovers a held-out title and rejects foreign, negated and off-topic suggestions", async () => {
+  const task = "читать вслух";
+  const title = "Как почитать вслух с друзьями";
+  const irrelevant = "Как читать по диагонали";
+  const negated = "Как не читать вслух";
+  const requested = [];
+  const steps = "<ol class=\"steps_list_2\"><li>Выберите короткий текст и сначала прочтите его про себя.</li><li>Теперь прочтите текст группе, делая паузы между предложениями.</li></ol>";
+  const captures = new Map([
+    [wikiParse(task.replaceAll(" ", "-")), missingTitle],
+    [wikiSearch(task), { status: 500, body: "" }],
+    [publisherSearch(task + " почитать"), { body: linkResult(irrelevant) + linkResult(negated)
+      + linkResult("Как почитать вслух на сцене", "https://foreign.invalid") + linkResult(title) }],
+    [wikiParse(title), { body: JSON.stringify({ parse: { title, text: { "*": steps } } }) }],
+  ]);
+  const answer = await answerRussian(await bootWorker(captures, requested), {}, "Как читать вслух?");
+  assert.equal(answer.guide.task, task);
+  assert.match(answer.content, /1\. Выберите короткий текст/u);
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === wikiParse(title)));
+  for (const value of [irrelevant, negated, "Как почитать вслух на сцене"]) {
+    assert.ok(!requested.includes(wikiParse(value)));
   }
 });
 
@@ -223,6 +404,31 @@ test("the browser tries the web capture component when the archive is unavailabl
   assert.ok(answer.guide.steps.every((step) => step.sourceUrl === RUSSIAN_ARTICLE));
 });
 
+test("the capture component can discover and verify a source after browser transport fails", async () => {
+  const context = await bootWorker(new Map());
+  const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}">${WIKIHOW_STEPS}`;
+  const captures = {
+    [wikiSearch(RUSSIAN_SHORT_TASK)]: searchCapture("Домашние растения", RUSSIAN_DISCOVERED_TITLE).body,
+    [RUSSIAN_ARTICLE]: body,
+  };
+  evaluate(context, `
+    self.componentRequests = [];
+    self.FormalAIWebSearchComponent = {
+      fetchUrl: async (url) => {
+        self.componentRequests.push(url);
+        const body = ${JSON.stringify(captures)}[url];
+        return body ? { ok: true, text: async () => body } : { ok: false, status: 404 };
+      },
+    };`);
+  const answer = await answerRussian(context, {}, "Как какать?");
+  assert.deepEqual(plain(evaluate(context, "self.componentRequests")), [
+    wikiSearch(RUSSIAN_SHORT_TASK), RUSSIAN_ARTICLE,
+  ]);
+  assert.equal(answer.guide.task, RUSSIAN_SHORT_TASK);
+  assert.equal(answer.guide.steps.length, 2);
+  assert.ok(answer.guide.steps.every((step) => step.sourceUrl === RUSSIAN_ARTICLE));
+});
+
 test("offline and wikiHow opt-out prevent both live and archived wikiHow requests", async () => {
   const requested = [];
   const context = await bootWorker(new Map(), requested);
@@ -230,4 +436,28 @@ test("offline and wikiHow opt-out prevent both live and archived wikiHow request
   assert.equal(requested.length, 0);
   await answerRussian(context, { externalServiceWikihow: false });
   assert.ok(!requested.some((url) => url.includes("wikihow.com") || url.includes("/wayback/available")));
+});
+
+test("the network opt-out covers provider recovery, indexed search and practical help", async () => {
+  const requested = [];
+  const context = await bootWorker(new Map(), requested);
+  context.FormalAIWebSearchComponent = {
+    fetchUrl(url) {
+      requested.push(String(url));
+      throw new Error("network disabled");
+    },
+  };
+  for (const prompt of ["How to install Raku on Alpine Linux?", "How to buy extra baggage on IndiGo?"]) {
+    context.__howToPrompt = prompt;
+    const answer = plain(await evaluate(context, 'tryProceduralHowTo(__howToPrompt, "en", { allowNetwork: false })'));
+    assert.equal(answer.intent, "procedural_how_to");
+    assert.ok(answer.evidence.includes("how_to:insufficient_evidence steps=0 required=2"));
+  }
+  const help = plain(await evaluate(context, 'tryPracticalHelp("I need to poop", "en", { allowNetwork: false })'));
+  assert.ok(help?.evidence.includes("practical_help:source_mode:unavailable"));
+  const fact = plain(await evaluate(context, 'solve("What is the capital of Portugal?", [], { allowNetwork: false })'));
+  assert.doesNotMatch(fact.content, /Lisbon/i);
+  const unknown = plain(await evaluate(context, 'solve("What is the zigotted fliver?", [], { allowNetwork: false })'));
+  assert.notEqual(unknown.intent, "explanation_research");
+  assert.deepEqual(requested, []);
 });

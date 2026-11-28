@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "experiments/issue-1580/template-csharp-changeset-integrity.test.mjs"
+  ],
+  "exitCode": 1,
+  "testSha256": "707e4b06cb949059083c3c70cd9b99282ace94680b469b659130f8211124636f",
+  "claim": "The candidate preservation assertion runs against the unchanged pinned merger and must fail. The supplied random source chooses one existing valid input filename deterministically. No network or .NET runtime is involved.",
+  "logSha256": "67fbd9ee848eaa69c276c3f760e68fb0361482e4aae78905e35ec3b6ae49302f",
+  "assertionsVerified": true,
+  "harnessCorrections": "Initial harness assumed TAP output; explicit TAP reporting was added. TAP escapes C# as C\\#; a subsequent check of the preserved log uses the escaped label. Both captured test runs show the same 3 passing / 1 failing preservation test; no application or fixture input changed between those runs.",
+  "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/before.tap.gz",
+  "compression": "gzip; hashes refer to original uncompressed bytes"
+}

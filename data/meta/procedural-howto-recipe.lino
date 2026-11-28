@@ -163,10 +163,10 @@ fn_correct_common_procedural_typos
   function "correct_common_procedural_typos"
   source_file "src/solver_handler_how.rs"
   kind "extractor"
-fn_render_procedural_how_to_body
+fn_answer_markdown
   record_type "meta_function"
-  function "render_procedural_how_to_body"
-  source_file "src/solver_handler_how.rs"
+  function "answer_markdown"
+  source_file "src/how_to_guide/render.rs"
   kind "renderer"
 stage_wikipedia
   record_type "meta_stage"

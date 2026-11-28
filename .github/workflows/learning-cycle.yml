@@ -1,15 +1,14 @@
 name: Learning cycle (proposal only)
 
 # Issue #701 §5: the auto-learning loop must run *periodically*, in proposal
-# mode, honouring the human gate. This workflow replays the recorded learning
-# frontier on a schedule and publishes the proposals as an artifact; it never
+# mode, honouring the human gate. This workflow captures the current learning
+# frontier on a schedule and publishes the run and its proposals; it never
 # writes a seed file, never opens a pull request, and never adopts anything.
 # Adoption stays with the human-gated issue-#656 promotion protocol.
 
 on:
   schedule:
-    # Daily, off-peak. The run is deterministic and offline, so the schedule
-    # only decides *when* a human is handed a fresh proposal set.
+    # Daily, off-peak. The cycle runs over the source report for that day.
     - cron: '17 3 * * *'
   workflow_dispatch:
 
@@ -21,11 +20,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  cycle:
+  build:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
-    name: Replay the recorded frontier in proposal mode
+    name: Build the learning commands
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    outputs:
+      artifact-id: ${{ steps.commands.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -39,28 +40,118 @@ jobs:
         with:
           workspaces: rust -> target
 
-      - name: Run one learning cycle
+      - name: Build the learning commands once
+        env:
+          TEST_BUDGET_SECONDS: 720
         run: |
           set -euo pipefail
           mkdir -p learning-cycle
-          # stderr is captured for the artifact; print it on every exit so a
-          # failed build or run shows its error instead of a bare exit 101.
-          trap 'cat learning-cycle/run.log 2>/dev/null || true' EXIT
-          cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
-            learn cycle --frontier google-trends --dry-run \
-            > learning-cycle/run.lino 2> learning-cycle/run.log
-          cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
-            learn cycle --frontier google-trends --dry-run --proposals \
-            > learning-cycle/proposals.lino 2>> learning-cycle/run.log
+          scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Build the learning commands" \
+            cargo build --manifest-path rust/Cargo.toml --release --locked \
+            --example dump_google_trends_learning --bin formal-ai 2>&1 | tee learning-cycle/build.log
+
+      - name: Upload the built learning commands
+        id: commands
+        uses: actions/upload-artifact@v7
+        with:
+          name: learning-cycle-commands-${{ github.run_attempt }}
+          path: |
+            rust/target/release/formal-ai
+            rust/target/release/examples/dump_google_trends_learning
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Preserve build failure diagnostics
+        if: failure() && hashFiles('learning-cycle/build.log') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: learning-cycle-build-failure-${{ github.run_attempt }}
+          path: learning-cycle/build.log
+          if-no-files-found: error
+          retention-days: 30
+
+  cycle:
+    name: Inspect the current frontier in proposal mode
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Require the current build artifact ID
+        env:
+          ARTIFACT_ID: ${{ needs.build.outputs.artifact-id }}
+        run: |
+          if [[ ! "$ARTIFACT_ID" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::error::Learning command build returned no artifact ID."
+            exit 1
+          fi
+
+      - name: Download the learning commands from this run
+        uses: ./.github/actions/download-artifact
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          path: rust/target/release
+
+      - name: Check both learning commands before running either
+        run: |
+          set -euo pipefail
+          for command in rust/target/release/formal-ai rust/target/release/examples/dump_google_trends_learning; do
+            if [[ ! -f "$command" || ! -s "$command" ]]; then
+              echo "::error::Missing learning command in the build artifact: $command"
+              exit 1
+            fi
+          done
+          chmod u+x rust/target/release/formal-ai rust/target/release/examples/dump_google_trends_learning
+
+      # Redirect the child's stdout inside the wrapper. The wrapper's own
+      # timing summaries belong in the run log, outside the LiNo documents.
+      # Periodic progress lines are opt-in like every other CI diagnostic
+      # (issue #1076): set the FORMAL_AI_CI_VERBOSE repository variable.
+      - name: Capture the live Google Trends frontier
+        id: capture
+        env:
+          FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+          TEST_BUDGET_SECONDS: 720
+        run: |
+          set -euo pipefail
+          mkdir -p learning-cycle
+          FORMAL_AI_SOURCE_CACHE_DIR="$RUNNER_TEMP/learning-cycle-source" \
+            scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Capture the live Google Trends frontier" \
+            bash -c 'exec "$@" > learning-cycle/frontier.lino' bash \
+            rust/target/release/examples/dump_google_trends_learning 2>&1 | tee -a learning-cycle/run.log >&2
+
+      - name: Replay the frontier
+        env:
+          TEST_BUDGET_SECONDS: 90
+        run: |
+          set -euo pipefail
+          scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Replay the frontier" \
+            bash -c 'exec "$@" > learning-cycle/run.lino' bash \
+            rust/target/release/formal-ai \
+            learn cycle --frontier google-trends --from learning-cycle/frontier.lino --dry-run \
+            2>&1 | tee -a learning-cycle/run.log >&2
+
+      - name: Render the proposals
+        env:
+          TEST_BUDGET_SECONDS: 90
+        run: |
+          set -euo pipefail
+          scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Render the proposals" \
+            bash -c 'exec "$@" > learning-cycle/proposals.lino' bash \
+            rust/target/release/formal-ai \
+            learn cycle --frontier google-trends --from learning-cycle/frontier.lino --dry-run --proposals \
+            2>&1 | tee -a learning-cycle/run.log >&2
 
       - name: Assert the run stayed proposal-only and human-gated
         run: |
           set -euo pipefail
           grep -q 'mode "proposal_only"' learning-cycle/run.lino
           grep -q 'human_gated "true"' learning-cycle/run.lino
-          # A cycle that stops proposing anything is a regression in the loop,
-          # not a quiet success — fail loudly rather than publish an empty set.
-          grep -q 'promotion_proposal' learning-cycle/proposals.lino
+          grep -q '^promotion_proposals' learning-cycle/proposals.lino
+          grep -q 'source_sha256' learning-cycle/frontier.lino
           # Nothing may be written into the tracked seed by the cycle itself.
           git diff --exit-code -- data/seed
 
@@ -69,4 +160,13 @@ jobs:
         with:
           name: learning-cycle-proposals
           path: learning-cycle/
+          retention-days: 30
+
+      - name: Preserve failure diagnostics for investigation
+        if: failure() && hashFiles('learning-cycle/run.log') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: learning-cycle-failure
+          path: learning-cycle/
+          if-no-files-found: error
           retention-days: 30

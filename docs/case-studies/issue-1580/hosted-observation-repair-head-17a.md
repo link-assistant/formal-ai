@@ -1,0 +1,15 @@
+# Terminal hosted observation: 17a3431f1
+
+All 34 observed runs for source 17a3431f187c7dd5a12d71ce1aa6bcd966d62994 are terminal as of 2026-11-23T03:50:35Z: 31 succeeded, two failed, and one was explicitly skipped. The [CI/CD Pipeline](https://github.com/link-assistant/formal-ai/actions/runs/45103300864) and [Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/45103301043) are the two failed workflows.
+
+The pipeline producer compiled and every native behavior group succeeded. Native admission then exposed one stale audit-command selector after 250 passing controls; original failed-job lines 2090–2093 and 2162–2169 identify the assertion. The pipeline-status failure propagates this failure. The local correction selects the actual wrapped invocation and retains the warning and yank assertions.
+
+Layered CI passed eight of nine JavaScript groups. Group three identified stale generated TypeScript at original failed-job lines 2602–2627. The maintained generator refreshed both affected projections; the exact runtime regression and translation currency then passed locally. Both fixes have separate retained before/after checkpoints and still require the next hosted head.
+
+Both actual current-head Cargo audit jobs completed all three tracked lockfiles without incomplete registry errors. They retain the independently allowed historical warning and the primary advisory exception, which is checked against current published upstream dependencies. This observation does not establish publication of the missing upstream fix.
+
+The manually dispatched [Security run](https://github.com/link-assistant/formal-ai/actions/runs/45103329305) succeeded. Original Actions and Rust SARIF reports contain zero findings and no warning/error notifications. However, the actual included-source query still contains 541 empty expansions for existing nonempty source inputs. Exact immutable source spans and JSON-compatible literals support that count; query contexts are not unique calls or a percentage of security coverage. The independently reported extractor defect remains open at https://github.com/github/codeql/issues/23198.
+
+The [evidence manifest](../../../experiments/issue-1580/evidence/checks/observation-repair-hosted-head-17a/manifest.json) retains complete original failed-workflow logs, terminal job metadata, both audit jobs, all three original CodeQL ZIP artifacts with immutable artifact identities, every artifact member hash, and the exact-source comparison. Every outer archive member round trips. The initial failed artifact-selection observation is preserved separately inside the same archive.
+
+This is an observation checkpoint, not full issue acceptance. Next-head CI, both real native-artifact rerun paths, actual maintenance behavior, remaining template practices, semantic extraction coverage, upstream published dependency closure, and serving-identity custody remain unfinished. Supplied work receives zero independent-authorship credit. PR: https://github.com/link-assistant/formal-ai/pull/1581.

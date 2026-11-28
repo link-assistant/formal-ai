@@ -18,6 +18,7 @@ import { EventLog, buildEvidenceLinks, evidenceLink } from "../../../js/server/e
 import { executionReport, nativeProgramAnswer } from "../../../js/server/program-report.mjs";
 import { REPO_ROOT, WorkerHost } from "../../../js/server/worker-host.mjs";
 import { solveSymbolic, solverEvidenceLinks } from "../../../js/server/solve.mjs";
+import { codingDocumentationReplay } from "./support/coding-documentation-replay.mjs";
 
 let host;
 before(async () => {
@@ -91,23 +92,16 @@ test("the Responses evidence projects the worker's native log", async () => {
 });
 
 const RUST_REPORT_RU = [
-  "Статус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».",
+  "Статус выполнения: не проверялось в этой среде.",
   "Check command: `rustc main.rs -o main`",
   "Run command: `./main`",
-  "Вывод:",
-  "```text",
-  "README.md",
-  "data.txt",
-  "main.rs",
-  "```",
-  "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
 ].join("\n");
 
-test("execution_report renders the recorded toolchain run", () => {
-  const program = { language: "rust", checkCommand: "rustc main.rs -o main", runCommand: "./main", output: "README.md\ndata.txt\nmain.rs" };
+test("execution_report shows the run contract without inferring output from a toolchain probe", () => {
+  const program = { language: "rust", checkCommand: "rustc main.rs -o main", runCommand: "./main", output: null };
   assert.equal(executionReport(program, "ru"), RUST_REPORT_RU);
-  assert.match(executionReport({ ...program, language: "go", checkCommand: null, runCommand: "go run main.go" }, "en"),
-    /^Execution status: compiled and ran in issue-8 local verification harness \(isolated sandbox\)\.\nRun command: `go run main\.go`\nOutput:\n/);
+  assert.equal(executionReport({ ...program, language: "go", checkCommand: null, runCommand: "go run main.go" }, "en"),
+    "Execution status: not probed in this environment.\nRun command: `go run main.go`");
   assert.equal(nativeProgramAnswer("a\nBLOCK\nb", { ...program, block: "BLOCK", responseLanguage: "ru" }), `a\n${RUST_REPORT_RU}\nb`);
   assert.equal(nativeProgramAnswer("unchanged", undefined), "unchanged");
 });
@@ -129,9 +123,19 @@ test("a rediscovered program reports its page, not the language's recorded run",
   ].join("\n"));
   assert.equal(executionReport(program, "es").split("\n")[0],
     `Estado de ejecución: no ejecutado; este programa se redescubrió en ${page} y su contrato de salida se comprobó por descomposición, no ejecutándolo.`);
-  const answer = await solveSymbolic({ worker: host }, "write me hello world program in Python", []);
+  const replay = codingDocumentationReplay();
+  const sourced = new WorkerHost({}, { networkFetch: replay.networkFetch });
+  const answer = await solveSymbolic({ worker: sourced }, "write me hello world program in Python", []);
   assert.ok(answer.answer.includes(`Execution status: not run; this program was rediscovered from ${page}`), answer.answer);
   assert.ok(!answer.answer.includes("compiled and ran"), answer.answer);
+});
+
+test("a cold composed program reports the expected output without a historical run", async () => {
+  const offline = new WorkerHost({}, { networkFetch: async () => { throw new Error("offline"); } });
+  const answer = await solveSymbolic({ worker: offline }, 'Write a Python program that prints "Another greeting"', []);
+  assert.ok(answer.answer.includes('print("Another greeting")'));
+  assert.ok(answer.answer.includes("Execution status: not probed in this environment."));
+  assert.ok(!answer.answer.includes("issue-8 local verification harness"));
 });
 
 test("a follow-up program edit carries the native execution report", async () => {
@@ -139,8 +143,7 @@ test("a follow-up program edit carries the native execution report", async () =>
   const line = corpus.split("\n").find((entry) => entry.includes("Сделай сортировку результатов")).trim();
   const { messages } = JSON.parse(line.replace(/^body '/, "").replace(/'$/, ""));
   const answer = await solveSymbolic({ worker: host }, messages.at(-1).content, messages.slice(0, -1));
-  const report = RUST_REPORT_RU.replace("README.md\ndata.txt\nmain.rs", "main.rs\ndata.txt\nREADME.md");
-  assert.ok(answer.answer.includes(`\`\`\`\n\n${report}\n\nКак это работает:\n`), answer.answer);
+  assert.ok(answer.answer.includes(`\`\`\`\n\n${RUST_REPORT_RU}\n\nКак это работает:\n`), answer.answer);
   assert.ok(!answer.answer.includes("браузерная песочница"));
 });
 

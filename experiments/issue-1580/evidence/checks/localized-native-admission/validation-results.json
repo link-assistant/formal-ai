@@ -1,0 +1,146 @@
+[
+  {
+    "name": "focused-test-map",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.88,
+    "file": "focused-test-map.log.gz",
+    "rawSha256": "c369f9b7ef1427d365732f0b933bb919007219d32df8003e447ad74816c9811d",
+    "archiveSha256": "702b872fa6ac53ed6d6c335414169d155f30993386ca6244a4cc5ee46b042a72",
+    "lines": 16
+  },
+  {
+    "name": "scripts-js-twins-checks",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/scripts-js-twins-checks.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.531,
+    "file": "scripts-js-twins-checks.log.gz",
+    "rawSha256": "499fd2d66706b85d64ce33d1bbb1edc2cc92f4ebf9c0f94442ec723567771f24",
+    "archiveSha256": "0d1f086e560af10c4501545427c493d55688be9a2a5d70dc66a420f78856c0ab",
+    "lines": 34
+  },
+  {
+    "name": "affected-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-ci-speed,check-abbreviations,check-changelog-fragment-js-twin,check-file-size-js-twin,check-file-size,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+    ],
+    "exitCode": 0,
+    "seconds": 35.916,
+    "file": "affected-gates.log.gz",
+    "rawSha256": "525956eca1033623355572093275d6ceb03210743b874919b514437f0bf0b810",
+    "archiveSha256": "d1c46bcae424f9037771099674202dd4d9905f0beff03b264e337dedb0d72678",
+    "lines": 9
+  },
+  {
+    "name": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exitCode": 0,
+    "seconds": 0.01,
+    "file": "branch.log.gz",
+    "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+    "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+    "lines": 1
+  },
+  {
+    "name": "stage",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "scripts/ci-pull-request-admission.mjs",
+      "rust/tests/web/default-branch-build-policy.test.mjs",
+      "changelog.d/issue-1580-localized-native-admission.md"
+    ],
+    "exitCode": 0,
+    "seconds": 0.308,
+    "file": "stage.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "staged-names",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--name-only"
+    ],
+    "exitCode": 0,
+    "seconds": 0.039,
+    "file": "staged-names.log.gz",
+    "rawSha256": "803931a42ec7e3da64702b618ee84168152311661b458f135354a03a2f7d926a",
+    "archiveSha256": "6b5c4c6f72b93bb85e949ef3d5f30f2fc190f6de8d332d62b277afe63b4ac33f",
+    "lines": 3
+  },
+  {
+    "name": "staged-whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.047,
+    "file": "staged-whitespace.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "commit",
+    "argv": [
+      "git",
+      "-c",
+      "gc.auto=0",
+      "commit",
+      "-m",
+      "Run localized native replay for test and fixture changes"
+    ],
+    "exitCode": 0,
+    "seconds": 0.565,
+    "file": "commit.log.gz",
+    "rawSha256": "e07fe5cc4b9c25449a7a822744be43b2894a41648d00b738b0767988b2910fe8",
+    "archiveSha256": "3fbf0d26cdc9356a05fb980049df1ae7de98efbdd96dc99bb8ed50ac75b1df47",
+    "lines": 3
+  },
+  {
+    "name": "head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "seconds": 0.008,
+    "file": "head.log.gz",
+    "rawSha256": "752949252edd517e5fffd012f5f9ad7e727947232dab0ad4bedc82c72a13c39d",
+    "archiveSha256": "329f4a8929e32f577ea3b534c9c718b072985ea3186b7eed003b0c362208050e",
+    "lines": 1
+  }
+]

@@ -1,0 +1,65 @@
+{
+  "sourceCommit": "bbc0ac4d86dec65f8fe47378befe16c1c8776ffb",
+  "run": 45006097030,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/45006097030",
+  "runConclusion": "success",
+  "completeObservations": 914,
+  "modeledWorkers": 4,
+  "warningSeconds": 270,
+  "budgetSeconds": 360,
+  "runnerOverheadAllowanceSeconds": 30,
+  "unobservedFallbackSeconds": 0.34,
+  "schedulingFactor": 1.35,
+  "rawLogSha256": "7252d09be7fee2c4443007fb026022b9b5b2c7b9f496569078782da87992c9ba",
+  "warnings": [
+    {
+      "shard": 5,
+      "seconds": 319,
+      "rawLogLine": 5979
+    }
+  ],
+  "jobs": [
+    {
+      "job": "js tier (node --check over js, suite group 6)",
+      "id": 137157991045,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 5)",
+      "id": 137157991058,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 3)",
+      "id": 137157991065,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 4)",
+      "id": 137157991081,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 1)",
+      "id": 137157991118,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 8)",
+      "id": 137157991126,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 7)",
+      "id": 137157991144,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 2)",
+      "id": 137157991151,
+      "conclusion": "success"
+    }
+  ],
+  "executionProof": false,
+  "autonomousAuthorshipCredit": 0
+}

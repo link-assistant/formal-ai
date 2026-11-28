@@ -25,6 +25,7 @@ const RUNTIMES = {
       'rust/src/solver.rs',
       'rust/src/meta_executor.rs',
       'rust/src/meta_executor/production.rs',
+      'rust/src/meta_executor/selection.rs',
       'rust/src/least_action.rs',
       'rust/src/recursive_execution.rs',
     ],

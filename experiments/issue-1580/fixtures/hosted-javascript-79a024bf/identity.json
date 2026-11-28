@@ -1,0 +1,84 @@
+{
+  "sourceCommit": "79a024bffdcee2dd94149d929e81b4b65496ed2d",
+  "run": 45011615137,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/45011615137",
+  "runConclusion": "failure",
+  "completeObservations": 915,
+  "modeledWorkers": 4,
+  "warningSeconds": 270,
+  "budgetSeconds": 360,
+  "runnerOverheadAllowanceSeconds": 30,
+  "unobservedFallbackSeconds": 0.34,
+  "schedulingFactor": 1.4,
+  "rawLogSha256": "0d7001a45feb193af0ef1e8944d29e46655536e611dd1fa77d62e49e925e81b3",
+  "durationsSha256": "2f4c554d6647a759682d58bbde49b0e2b2ec904df5fccd66dcd603309dc09822",
+  "warnings": [
+    {
+      "shard": 8,
+      "seconds": 302,
+      "rawLogLine": 3693
+    },
+    {
+      "shard": 7,
+      "seconds": 283,
+      "rawLogLine": 6595
+    }
+  ],
+  "jobs": [
+    {
+      "job": "js tier (node --check over js, suite group 8)",
+      "id": 137175000957,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 7)",
+      "id": 137175000960,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 4)",
+      "id": 137175000968,
+      "conclusion": "failure"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 5)",
+      "id": 137175000977,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 1)",
+      "id": 137175000999,
+      "conclusion": "failure"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 6)",
+      "id": 137175001010,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 2)",
+      "id": 137175001029,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 3)",
+      "id": 137175001058,
+      "conclusion": "success"
+    }
+  ],
+  "executionProof": false,
+  "autonomousAuthorshipCredit": 0,
+  "failedObservations": [
+    {
+      "file": "rust/tests/web/translate-es.test.mjs",
+      "job": "js tier (node --check over js, suite group 4)",
+      "rawLogLine": 10224
+    },
+    {
+      "file": "rust/tests/web/typescript-runtime.test.mjs",
+      "job": "js tier (node --check over js, suite group 1)",
+      "rawLogLine": 15287
+    }
+  ],
+  "correction": "The prior supplied fixture writer hardcoded success despite both API and job failures. Retain original archive; current receipt is source-derived."
+}

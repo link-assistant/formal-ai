@@ -1,0 +1,83 @@
+{
+  "observedAt": "2026-11-18T04:38:42.443495+00:00",
+  "records": [
+    {
+      "label": "issue",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580"
+      ],
+      "rawBytes": 13290,
+      "rawSha256": "65e68241dbd56474d58a6033d4aba87fd9490b96ab9c6e5e81fa689a917b2cab"
+    },
+    {
+      "label": "pull-request",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581"
+      ],
+      "rawBytes": 26455,
+      "rawSha256": "ae3d58e2b571c90074a67135bb1c7713298cee8bfcfd7ce7ebce615a2e5f15a8"
+    },
+    {
+      "label": "issue-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "rawBytes": 4477,
+      "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2"
+    },
+    {
+      "label": "pull-request-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "rawBytes": 31786,
+      "rawSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb"
+    },
+    {
+      "label": "inline-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "rawBytes": 4,
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "reviews",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate",
+        "--slurp"
+      ],
+      "rawBytes": 4,
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "main",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/commits/main"
+      ],
+      "rawBytes": 381214,
+      "rawSha256": "c120e2026a4796c271fa525d5f7081f53672f3a96592573b05161adc3092f8a5"
+    }
+  ]
+}

@@ -1,0 +1,1062 @@
+{
+  "observedAt": "2026-11-18T09:04:30.204515+00:00",
+  "head": "bfe5ac0f3babe512f1bf0a03935bd1d220f9e40f",
+  "workflowCount": 23,
+  "success": 23,
+  "failed": [],
+  "jobs": [
+    {
+      "jobId": 134683648501,
+      "name": "js tier (node --check over js, suite group 1)",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T08:46:55Z",
+          "completed_at": "2026-11-18T08:46:57Z"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T08:46:57Z",
+          "completed_at": "2026-11-18T08:47:16Z"
+        },
+        {
+          "name": "Report DRY review and language coverage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T08:47:16Z",
+          "completed_at": "2026-11-18T08:47:19Z"
+        },
+        {
+          "name": "Regenerate canonical seed projection for JavaScript consumers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T08:47:19Z",
+          "completed_at": "2026-11-18T08:47:19Z"
+        },
+        {
+          "name": "Syntax-check every committed js file",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T08:47:19Z",
+          "completed_at": "2026-11-18T08:47:23Z"
+        },
+        {
+          "name": "Native diagnostics use the shared structured logger (R1220)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T08:47:23Z",
+          "completed_at": "2026-11-18T08:47:23Z"
+        },
+        {
+          "name": "Native-only handler rows only fall (R998)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-18T08:47:23Z",
+          "completed_at": "2026-11-18T08:47:23Z"
+        },
+        {
+          "name": "Syntax-check the JavaScript server and its parity runner (R1013)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-18T08:47:23Z",
+          "completed_at": "2026-11-18T08:47:25Z"
+        },
+        {
+          "name": "Natural-language literals in the worker and server only fall (R1010, R1013)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-18T08:47:25Z",
+          "completed_at": "2026-11-18T08:47:26Z"
+        },
+        {
+          "name": "Check out relative-meta-logic for the rml export step (R1186-4)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-18T08:47:26Z",
+          "completed_at": "2026-11-18T08:47:27Z"
+        },
+        {
+          "name": "Install rml and name it in RML_BIN (R1186-6)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T08:47:27Z",
+          "completed_at": "2026-11-18T08:47:29Z"
+        },
+        {
+          "name": "Setup the pinned web dependency installer",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-18T08:47:29Z",
+          "completed_at": "2026-11-18T08:47:30Z"
+        },
+        {
+          "name": "Install actual locked UI test dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-18T08:47:30Z",
+          "completed_at": "2026-11-18T08:47:31Z"
+        },
+        {
+          "name": "Install the isolated patched matcher test dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-18T08:47:31Z",
+          "completed_at": "2026-11-18T08:47:31Z"
+        },
+        {
+          "name": "Provision the real agentic search adapter",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-18T08:47:31Z",
+          "completed_at": "2026-11-18T08:48:07Z"
+        },
+        {
+          "name": "Provision the actual pinned source-model frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-18T08:48:07Z",
+          "completed_at": "2026-11-18T08:48:10Z"
+        },
+        {
+          "name": "Plan this shard of the JavaScript suites",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-18T08:48:10Z",
+          "completed_at": "2026-11-18T08:48:10Z"
+        },
+        {
+          "name": "Set up Python for the pinned template observations",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-18T08:48:10Z",
+          "completed_at": "2026-11-18T08:48:10Z"
+        },
+        {
+          "name": "Run the focused tests for the changed components first",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-18T08:48:10Z",
+          "completed_at": "2026-11-18T08:50:27Z"
+        },
+        {
+          "name": "Run this shard of the JavaScript suites",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-18T08:50:27Z",
+          "completed_at": "2026-11-18T08:53:22Z"
+        },
+        {
+          "name": "Post Set up Python for the pinned template observations",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-18T08:53:22Z",
+          "completed_at": "2026-11-18T08:53:22Z"
+        },
+        {
+          "name": "Post Provision the actual pinned source-model frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-18T08:53:22Z",
+          "completed_at": "2026-11-18T08:53:22Z"
+        },
+        {
+          "name": "Post Setup the pinned web dependency installer",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 38,
+          "started_at": "2026-11-18T08:53:22Z",
+          "completed_at": "2026-11-18T08:53:22Z"
+        },
+        {
+          "name": "Post Check out relative-meta-logic for the rml export step (R1186-4)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 39,
+          "started_at": "2026-11-18T08:53:22Z",
+          "completed_at": "2026-11-18T08:53:22Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 40,
+          "started_at": "2026-11-18T08:53:22Z",
+          "completed_at": "2026-11-18T08:53:23Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 41,
+          "started_at": "2026-11-18T08:53:23Z",
+          "completed_at": "2026-11-18T08:53:23Z"
+        }
+      ],
+      "rawLines": 4997,
+      "rawSha256": "b201dc3f89a35ce0e9668e377129e086c3c270484735d0caa902f84d16bd659c",
+      "selectedLines": [
+        {
+          "line": 615,
+          "text": "2026-11-18T08:47:19.8319409Z \u001b[36;1m  echo \"::error::the js tier found no js files -- the tier predicate is wrong\"\u001b[0m"
+        },
+        {
+          "line": 622,
+          "text": "2026-11-18T08:47:19.8349872Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        },
+        {
+          "line": 630,
+          "text": "2026-11-18T08:47:23.8631047Z Native diagnostic bypass guard passed"
+        },
+        {
+          "line": 641,
+          "text": "2026-11-18T08:47:23.9058669Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        },
+        {
+          "line": 826,
+          "text": "2026-11-18T08:47:27.1850603Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        },
+        {
+          "line": 1109,
+          "text": "2026-11-18T08:48:10.3176871Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        },
+        {
+          "line": 1227,
+          "text": "2026-11-18T08:48:28.6651302Z # tests 6"
+        },
+        {
+          "line": 1229,
+          "text": "2026-11-18T08:48:28.6651940Z # pass 6"
+        },
+        {
+          "line": 1230,
+          "text": "2026-11-18T08:48:28.6652202Z # fail 0"
+        },
+        {
+          "line": 1316,
+          "text": "2026-11-18T08:48:42.9650135Z # tests 13"
+        },
+        {
+          "line": 1318,
+          "text": "2026-11-18T08:48:42.9650729Z # pass 13"
+        },
+        {
+          "line": 1319,
+          "text": "2026-11-18T08:48:42.9650955Z # fail 0"
+        },
+        {
+          "line": 1399,
+          "text": "2026-11-18T08:48:47.1419921Z # tests 12"
+        },
+        {
+          "line": 1401,
+          "text": "2026-11-18T08:48:47.1420676Z # pass 12"
+        },
+        {
+          "line": 1402,
+          "text": "2026-11-18T08:48:47.1420952Z # fail 0"
+        },
+        {
+          "line": 1428,
+          "text": "2026-11-18T08:48:49.0562034Z # tests 3"
+        },
+        {
+          "line": 1430,
+          "text": "2026-11-18T08:48:49.0562743Z # pass 3"
+        },
+        {
+          "line": 1431,
+          "text": "2026-11-18T08:48:49.0563032Z # fail 0"
+        },
+        {
+          "line": 1452,
+          "text": "2026-11-18T08:48:53.1241829Z # tests 2"
+        },
+        {
+          "line": 1454,
+          "text": "2026-11-18T08:48:53.1242518Z # pass 2"
+        },
+        {
+          "line": 1455,
+          "text": "2026-11-18T08:48:53.1242817Z # fail 0"
+        },
+        {
+          "line": 1528,
+          "text": "2026-11-18T08:48:56.8330460Z # Subtest: full process streams and errors are retained; capture budgets fail explicitly"
+        },
+        {
+          "line": 1529,
+          "text": "2026-11-18T08:48:56.8331162Z ok 12 - full process streams and errors are retained; capture budgets fail explicitly"
+        },
+        {
+          "line": 1558,
+          "text": "2026-11-18T08:48:56.8342908Z # Subtest: invalid provenance, timestamps, caps and regressing clocks fail closed"
+        },
+        {
+          "line": 1559,
+          "text": "2026-11-18T08:48:56.8343369Z ok 17 - invalid provenance, timestamps, caps and regressing clocks fail closed"
+        },
+        {
+          "line": 1619,
+          "text": "2026-11-18T08:48:56.9019542Z # tests 26"
+        },
+        {
+          "line": 1621,
+          "text": "2026-11-18T08:48:56.9020046Z # pass 26"
+        },
+        {
+          "line": 1622,
+          "text": "2026-11-18T08:48:56.9020266Z # fail 0"
+        },
+        {
+          "line": 1736,
+          "text": "2026-11-18T08:49:29.4932472Z # tests 13"
+        },
+        {
+          "line": 1738,
+          "text": "2026-11-18T08:49:29.4933359Z # pass 13"
+        },
+        {
+          "line": 1739,
+          "text": "2026-11-18T08:49:29.4933790Z # fail 0"
+        },
+        {
+          "line": 1783,
+          "text": "2026-11-18T08:49:35.8898709Z # tests 6"
+        },
+        {
+          "line": 1785,
+          "text": "2026-11-18T08:49:35.8899380Z # pass 6"
+        },
+        {
+          "line": 1786,
+          "text": "2026-11-18T08:49:35.8899662Z # fail 0"
+        },
+        {
+          "line": 1830,
+          "text": "2026-11-18T08:50:03.8109804Z # tests 6"
+        },
+        {
+          "line": 1832,
+          "text": "2026-11-18T08:50:03.8110445Z # pass 6"
+        },
+        {
+          "line": 1833,
+          "text": "2026-11-18T08:50:03.8110767Z # fail 0"
+        },
+        {
+          "line": 1852,
+          "text": "2026-11-18T08:50:06.0619655Z # Subtest: stale preimage and symlink paths fail without credit or altered source"
+        },
+        {
+          "line": 1853,
+          "text": "2026-11-18T08:50:06.0620263Z ok 3 - stale preimage and symlink paths fail without credit or altered source"
+        },
+        {
+          "line": 1883,
+          "text": "2026-11-18T08:50:06.0905978Z # tests 7"
+        },
+        {
+          "line": 1885,
+          "text": "2026-11-18T08:50:06.0906319Z # pass 7"
+        },
+        {
+          "line": 1886,
+          "text": "2026-11-18T08:50:06.0906480Z # fail 0"
+        },
+        {
+          "line": 1924,
+          "text": "2026-11-18T08:50:12.9667441Z # tests 5"
+        },
+        {
+          "line": 1926,
+          "text": "2026-11-18T08:50:12.9667757Z # pass 5"
+        },
+        {
+          "line": 1927,
+          "text": "2026-11-18T08:50:12.9667896Z # fail 0"
+        },
+        {
+          "line": 1965,
+          "text": "2026-11-18T08:50:24.5796111Z # tests 5"
+        },
+        {
+          "line": 1967,
+          "text": "2026-11-18T08:50:24.5796518Z # pass 5"
+        },
+        {
+          "line": 1968,
+          "text": "2026-11-18T08:50:24.5796690Z # fail 0"
+        },
+        {
+          "line": 2048,
+          "text": "2026-11-18T08:50:24.6639612Z # tests 12"
+        },
+        {
+          "line": 2050,
+          "text": "2026-11-18T08:50:24.6639960Z # pass 12"
+        },
+        {
+          "line": 2051,
+          "text": "2026-11-18T08:50:24.6640108Z # fail 0"
+        },
+        {
+          "line": 2107,
+          "text": "2026-11-18T08:50:24.7541250Z # tests 8"
+        },
+        {
+          "line": 2109,
+          "text": "2026-11-18T08:50:24.7541601Z # pass 8"
+        },
+        {
+          "line": 2110,
+          "text": "2026-11-18T08:50:24.7541764Z # fail 0"
+        },
+        {
+          "line": 2232,
+          "text": "2026-11-18T08:50:25.4458342Z # tests 19"
+        },
+        {
+          "line": 2234,
+          "text": "2026-11-18T08:50:25.4458750Z # pass 19"
+        },
+        {
+          "line": 2235,
+          "text": "2026-11-18T08:50:25.4458945Z # fail 0"
+        },
+        {
+          "line": 2285,
+          "text": "2026-11-18T08:50:25.5302618Z # tests 7"
+        },
+        {
+          "line": 2287,
+          "text": "2026-11-18T08:50:25.5303053Z # pass 7"
+        },
+        {
+          "line": 2288,
+          "text": "2026-11-18T08:50:25.5303247Z # fail 0"
+        },
+        {
+          "line": 2343,
+          "text": "2026-11-18T08:50:25.7213557Z # Subtest: check alerts with ::error only on a sustained regression and samples only executed runs"
+        },
+        {
+          "line": 2344,
+          "text": "2026-11-18T08:50:25.7214224Z ok 9 - check alerts with ::error only on a sustained regression and samples only executed runs"
+        },
+        {
+          "line": 2350,
+          "text": "2026-11-18T08:50:25.7382816Z # tests 9"
+        },
+        {
+          "line": 2352,
+          "text": "2026-11-18T08:50:25.7383291Z # pass 9"
+        },
+        {
+          "line": 2353,
+          "text": "2026-11-18T08:50:25.7383491Z # fail 0"
+        },
+        {
+          "line": 2533,
+          "text": "2026-11-18T08:50:26.0018925Z # tests 24"
+        },
+        {
+          "line": 2535,
+          "text": "2026-11-18T08:50:26.0019369Z # pass 24"
+        },
+        {
+          "line": 2536,
+          "text": "2026-11-18T08:50:26.0019598Z # fail 0"
+        },
+        {
+          "line": 2645,
+          "text": "2026-11-18T08:50:27.0712087Z # Subtest: base source reads fail closed on transport, redirects, oversized bodies and invalid UTF8"
+        },
+        {
+          "line": 2646,
+          "text": "2026-11-18T08:50:27.0712526Z ok 18 - base source reads fail closed on transport, redirects, oversized bodies and invalid UTF8"
+        },
+        {
+          "line": 2670,
+          "text": "2026-11-18T08:50:27.0841707Z # tests 21"
+        },
+        {
+          "line": 2672,
+          "text": "2026-11-18T08:50:27.0842370Z # pass 21"
+        },
+        {
+          "line": 2673,
+          "text": "2026-11-18T08:50:27.0842549Z # fail 0"
+        },
+        {
+          "line": 2711,
+          "text": "2026-11-18T08:50:27.1562928Z # tests 5"
+        },
+        {
+          "line": 2713,
+          "text": "2026-11-18T08:50:27.1563302Z # pass 5"
+        },
+        {
+          "line": 2714,
+          "text": "2026-11-18T08:50:27.1563474Z # fail 0"
+        },
+        {
+          "line": 2746,
+          "text": "2026-11-18T08:50:28.7024234Z Ran 41 tests in 0.031s"
+        },
+        {
+          "line": 2772,
+          "text": "2026-11-18T08:50:51.1395885Z \u2714 mixed goals cannot bypass the original nested-quote refusal (112.302997ms)"
+        },
+        {
+          "line": 2854,
+          "text": "2026-11-18T08:51:10.4853077Z \u2714 queued aggregate cannot substitute controller identity or bypass the observation deadline (282.505793ms)"
+        },
+        {
+          "line": 2860,
+          "text": "2026-11-18T08:51:10.4858647Z \u2714 in_progress aggregate cannot substitute controller identity or bypass the observation deadline (277.42827ms)"
+        },
+        {
+          "line": 2866,
+          "text": "2026-11-18T08:51:10.4864045Z \u2714 waiting aggregate cannot substitute controller identity or bypass the observation deadline (245.90759ms)"
+        },
+        {
+          "line": 2872,
+          "text": "2026-11-18T08:51:10.4869263Z \u2714 pending aggregate cannot substitute controller identity or bypass the observation deadline (261.264934ms)"
+        },
+        {
+          "line": 2878,
+          "text": "2026-11-18T08:51:10.4905108Z \u2714 requested aggregate cannot substitute controller identity or bypass the observation deadline (260.098742ms)"
+        },
+        {
+          "line": 2967,
+          "text": "2026-11-18T08:51:25.2179355Z \u2714 complete ownership does not turn explicit execution or preservation tails into verified tests (9.304129ms)"
+        },
+        {
+          "line": 3161,
+          "text": "2026-11-18T08:52:22.4553091Z \u2714 every captured replay is complete and its failure family has focused tests (1954.170998ms)"
+        },
+        {
+          "line": 3189,
+          "text": "2026-11-18T08:52:22.4897162Z \u2714 full process streams and errors are retained; capture budgets fail explicitly (2.336599ms)"
+        },
+        {
+          "line": 3194,
+          "text": "2026-11-18T08:52:22.4900859Z \u2714 invalid provenance, timestamps, caps and regressing clocks fail closed (0.312465ms)"
+        },
+        {
+          "line": 3279,
+          "text": "2026-11-18T08:52:22.7463660Z \u2714 live Node SWE-bench, solve and ladder callers observe source, named tests and shared trace (2780.82905ms)"
+        },
+        {
+          "line": 3290,
+          "text": "2026-11-18T08:52:23.3576413Z \u2714 unknown endpoints, invalid UTF-8 and oversized responses fail closed (10.129305ms)"
+        },
+        {
+          "line": 3377,
+          "text": "2026-11-18T08:52:28.7575518Z \u2714 stale preimage and symlink paths fail without credit or altered source (98.411079ms)"
+        },
+        {
+          "line": 3384,
+          "text": "2026-11-18T08:52:28.7648158Z \u2714 deleted, reordered, altered chain records and an untrusted signer fail before attribution (308.139398ms)"
+        },
+        {
+          "line": 3993,
+          "text": "2026-11-18T08:52:39.3985821Z \u2714 base source reads fail closed on transport, redirects, oversized bodies and invalid UTF8 (6.213902ms)"
+        },
+        {
+          "line": 4056,
+          "text": "2026-11-18T08:52:39.4939762Z \u2714 check alerts with ::error only on a sustained regression and samples only executed runs (2.141592ms)"
+        },
+        {
+          "line": 4065,
+          "text": "2026-11-18T08:52:39.5136363Z \u2714 canonical binding, capture, language and pure repair decisions remain fail closed (0.351846ms)"
+        },
+        {
+          "line": 4088,
+          "text": "2026-11-18T08:52:39.5445084Z \u2714 unknown absence, malformed responses and uncertain read cleanup fail closed (0.800213ms)"
+        },
+        {
+          "line": 4096,
+          "text": "2026-11-18T08:52:39.5451601Z \u2714 captured nested source and build outputs fail before installer creation (1.240158ms)"
+        },
+        {
+          "line": 4131,
+          "text": "2026-11-18T08:52:40.0951701Z \u2714 native admission unit tests run in CI before their outputs select the tiers (0.168436ms)"
+        },
+        {
+          "line": 4144,
+          "text": "2026-11-18T08:52:40.1162485Z \u2714 tests run in parallel, and only files that share state stay in one worker (12.442321ms)"
+        },
+        {
+          "line": 4178,
+          "text": "2026-11-18T08:52:41.5764780Z \u2714 foreign workflow, source changes, active jobs and incomplete step evidence fail closed (0.531089ms)"
+        },
+        {
+          "line": 4241,
+          "text": "2026-11-18T08:52:50.9295270Z \u2714 the records are computed from the turn: executed tests and their verdicts (335.799149ms)"
+        },
+        {
+          "line": 4521,
+          "text": "2026-11-18T08:53:21.7963369Z \u2714 declared source tests must equal the compiled inventory without missing or duplicate names (1.62085ms)"
+        },
+        {
+          "line": 4576,
+          "text": "2026-11-18T08:53:21.7991002Z \u2714 real signing defects fail on the first attempt with their complete diagnostic (18.134439ms)"
+        },
+        {
+          "line": 4579,
+          "text": "2026-11-18T08:53:21.7992350Z \u2714 workflow uploads packaging consoles even after failure and before smoke tests or post hooks (0.650298ms)"
+        },
+        {
+          "line": 4612,
+          "text": "2026-11-18T08:53:21.8005776Z \u2714 invalid trailers still fail before the optional positive-authoring step (43.582219ms)"
+        },
+        {
+          "line": 4613,
+          "text": "2026-11-18T08:53:21.8006249Z \u2714 measurement and debt failures still fail before the optional prospective floor (8.904479ms)"
+        },
+        {
+          "line": 4679,
+          "text": "2026-11-18T08:53:21.8028716Z \u2714 the next pass is the lowest non-empty level, listed by shard (1.708386ms)"
+        },
+        {
+          "line": 4689,
+          "text": "2026-11-18T08:53:21.8033059Z \u2714 real checks, unknown schedules and publisher retries still fail closed with diagnostics (0.484201ms)"
+        },
+        {
+          "line": 4783,
+          "text": "2026-11-18T08:53:21.8100473Z \u2714 browser message ownership and dynamic response shapes fail closed (0.847ms)"
+        },
+        {
+          "line": 4850,
+          "text": "2026-11-18T08:53:21.8127679Z \u2714 aggregate request/byte budgets fail closed instead of endlessly repeating a transport (0.481775ms)"
+        },
+        {
+          "line": 4938,
+          "text": "2026-11-18T08:53:21.8167215Z \u2139 tests 1444"
+        },
+        {
+          "line": 4940,
+          "text": "2026-11-18T08:53:21.8167592Z \u2139 pass 1440"
+        },
+        {
+          "line": 4941,
+          "text": "2026-11-18T08:53:21.8167782Z \u2139 fail 0"
+        }
+      ],
+      "wholeLogLiterallyRead": false
+    },
+    {
+      "jobId": 134683648625,
+      "name": "js tier (node --check over js, suite group 2)",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T08:46:57Z",
+          "completed_at": "2026-11-18T08:46:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T08:46:59Z",
+          "completed_at": "2026-11-18T08:47:16Z"
+        },
+        {
+          "name": "Report DRY review and language coverage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 3,
+          "started_at": "2026-11-18T08:47:16Z",
+          "completed_at": "2026-11-18T08:47:16Z"
+        },
+        {
+          "name": "Regenerate canonical seed projection for JavaScript consumers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T08:47:16Z",
+          "completed_at": "2026-11-18T08:47:20Z"
+        },
+        {
+          "name": "Syntax-check every committed js file",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-18T08:47:20Z",
+          "completed_at": "2026-11-18T08:47:20Z"
+        },
+        {
+          "name": "Native diagnostics use the shared structured logger (R1220)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6,
+          "started_at": "2026-11-18T08:47:20Z",
+          "completed_at": "2026-11-18T08:47:20Z"
+        },
+        {
+          "name": "Native-only handler rows only fall (R998)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-18T08:47:20Z",
+          "completed_at": "2026-11-18T08:47:20Z"
+        },
+        {
+          "name": "Syntax-check the JavaScript server and its parity runner (R1013)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-18T08:47:20Z",
+          "completed_at": "2026-11-18T08:47:20Z"
+        },
+        {
+          "name": "Natural-language literals in the worker and server only fall (R1010, R1013)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T08:47:20Z",
+          "completed_at": "2026-11-18T08:47:20Z"
+        },
+        {
+          "name": "Check out relative-meta-logic for the rml export step (R1186-4)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-18T08:47:20Z",
+          "completed_at": "2026-11-18T08:47:21Z"
+        },
+        {
+          "name": "Install rml and name it in RML_BIN (R1186-6)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T08:47:21Z",
+          "completed_at": "2026-11-18T08:47:24Z"
+        },
+        {
+          "name": "Setup the pinned web dependency installer",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-18T08:47:24Z",
+          "completed_at": "2026-11-18T08:47:27Z"
+        },
+        {
+          "name": "Install actual locked UI test dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-18T08:47:27Z",
+          "completed_at": "2026-11-18T08:47:28Z"
+        },
+        {
+          "name": "Install the isolated patched matcher test dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-18T08:47:28Z",
+          "completed_at": "2026-11-18T08:47:28Z"
+        },
+        {
+          "name": "Provision the real agentic search adapter",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-18T08:47:28Z",
+          "completed_at": "2026-11-18T08:47:50Z"
+        },
+        {
+          "name": "Provision the actual pinned source-model frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-18T08:47:50Z",
+          "completed_at": "2026-11-18T08:47:54Z"
+        },
+        {
+          "name": "Plan this shard of the JavaScript suites",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-18T08:47:54Z",
+          "completed_at": "2026-11-18T08:47:55Z"
+        },
+        {
+          "name": "Set up Python for the pinned template observations",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18,
+          "started_at": "2026-11-18T08:47:55Z",
+          "completed_at": "2026-11-18T08:47:55Z"
+        },
+        {
+          "name": "Run the focused tests for the changed components first",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19,
+          "started_at": "2026-11-18T08:47:55Z",
+          "completed_at": "2026-11-18T08:47:55Z"
+        },
+        {
+          "name": "Run this shard of the JavaScript suites",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-18T08:47:55Z",
+          "completed_at": "2026-11-18T08:50:51Z"
+        },
+        {
+          "name": "Post Provision the actual pinned source-model frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-18T08:50:51Z",
+          "completed_at": "2026-11-18T08:50:51Z"
+        },
+        {
+          "name": "Post Setup the pinned web dependency installer",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 38,
+          "started_at": "2026-11-18T08:50:51Z",
+          "completed_at": "2026-11-18T08:50:52Z"
+        },
+        {
+          "name": "Post Check out relative-meta-logic for the rml export step (R1186-4)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 39,
+          "started_at": "2026-11-18T08:50:52Z",
+          "completed_at": "2026-11-18T08:50:52Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 40,
+          "started_at": "2026-11-18T08:50:52Z",
+          "completed_at": "2026-11-18T08:50:52Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 41,
+          "started_at": "2026-11-18T08:50:52Z",
+          "completed_at": "2026-11-18T08:50:52Z"
+        }
+      ],
+      "rawLines": 2745,
+      "rawSha256": "7a10f9b14f16d666630899be628a7ed8a444a47f3894248565fc3ce65f526e88",
+      "selectedLines": [
+        {
+          "line": 685,
+          "text": "2026-11-18T08:47:21.8486070Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        },
+        {
+          "line": 969,
+          "text": "2026-11-18T08:47:54.6998115Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+        },
+        {
+          "line": 1036,
+          "text": "2026-11-18T08:48:13.9668032Z   \u2714 Run the tests in m.test.mjs. (714.417303ms)"
+        },
+        {
+          "line": 1038,
+          "text": "2026-11-18T08:48:13.9668930Z   \u2714 Run the tests in test_m.py. (374.911748ms)"
+        },
+        {
+          "line": 1344,
+          "text": "2026-11-18T08:49:31.7816012Z \u2714 forged admission, altered pass and ledger drift refuse before task effects and retain failures (23.861693ms)"
+        },
+        {
+          "line": 1683,
+          "text": "2026-11-18T08:50:12.7455789Z \u2714 architecture pin and missing capability fail closed (9.358029ms)"
+        },
+        {
+          "line": 1697,
+          "text": "2026-11-18T08:50:15.5218571Z \u2714 missing or wrong events, wrong purposes and false PR stable authority fail real CLI sealing (596.977611ms)"
+        },
+        {
+          "line": 1776,
+          "text": "2026-11-18T08:50:21.9629793Z \u2714 npm publishes only on a real missing-version response; transport/auth errors fail (0.496478ms)"
+        },
+        {
+          "line": 1968,
+          "text": "2026-11-18T08:50:30.3865881Z \u2714 unrelated build and tests do not establish source targets (1.687974ms)"
+        },
+        {
+          "line": 2002,
+          "text": "2026-11-18T08:50:30.4315019Z \u2714 parallel jobs are not summed, dependencies are, and unknown bounds fail closed (0.712661ms)"
+        },
+        {
+          "line": 2015,
+          "text": "2026-11-18T08:50:30.4545416Z   \u2714 gives a shard with other work fewer tests (0.296605ms)"
+        },
+        {
+          "line": 2050,
+          "text": "2026-11-18T08:50:30.4594154Z \u2714 a useful deletion and a short mathematical answer never fail for lack of growth (0.337033ms)"
+        },
+        {
+          "line": 2072,
+          "text": "2026-11-18T08:50:30.4614087Z \u2714 recognized malformed or duplicate fields fail closed across existing receipt frames (48.757829ms)"
+        },
+        {
+          "line": 2079,
+          "text": "2026-11-18T08:50:30.4620447Z \u2714 replays main run 41317019358: literal predicates above the ceiling fail before merge (0.249968ms)"
+        },
+        {
+          "line": 2080,
+          "text": "2026-11-18T08:50:30.4621444Z \u2714 replays main run 41804771645: language-parity gaps above the ceiling fail before merge (0.215948ms)"
+        },
+        {
+          "line": 2098,
+          "text": "2026-11-18T08:50:30.4670972Z \u2714 nonfinite owner identifiers fail before any API IO (1.620142ms)"
+        },
+        {
+          "line": 2122,
+          "text": "2026-11-18T08:50:30.4699162Z \u2714 qualified success requires exact image/source/input, complete original obligations and a genuinely unchanged second pass (1.176521ms)"
+        },
+        {
+          "line": 2191,
+          "text": "2026-11-18T08:50:30.4777324Z \u2714 a failed sccache download does not fail the job, in its main or post stage (43.004689ms)"
+        },
+        {
+          "line": 2198,
+          "text": "2026-11-18T08:50:30.4783206Z \u2714 the hive attempt tests pass without printing workflow commands (253.50504ms)"
+        },
+        {
+          "line": 2589,
+          "text": "2026-11-18T08:50:51.0611642Z \u2714 a missing public surface and malformed package fail independently (1.422439ms)"
+        },
+        {
+          "line": 2631,
+          "text": "2026-11-18T08:50:51.0632975Z \u2714 required publishers must still exist, finish and pass at the exact source (1.51761ms)"
+        },
+        {
+          "line": 2642,
+          "text": "2026-11-18T08:50:51.0638312Z \u2714 the crate under rust/src carries no inline unit tests (818.004537ms)"
+        },
+        {
+          "line": 2643,
+          "text": "2026-11-18T08:50:51.0638763Z \u2714 replay of the main-only failure: an inline mod tests in work_item_leads.rs fails (87.878189ms)"
+        },
+        {
+          "line": 2644,
+          "text": "2026-11-18T08:50:51.0639294Z \u2714 the moved work_item_leads tests live under tests/ and the module keeps none inline (10.969445ms)"
+        },
+        {
+          "line": 2653,
+          "text": "2026-11-18T08:50:51.0643503Z \u2714 a loose-only test is flagged; exact and one-of answers pass (29.870698ms)"
+        },
+        {
+          "line": 2654,
+          "text": "2026-11-18T08:50:51.0644086Z \u2714 tests without answer assertions, answer methods and diagnostics are ignored (14.417338ms)"
+        },
+        {
+          "line": 2680,
+          "text": "2026-11-18T08:50:51.0656620Z \u2714 candidate custody flags changed tests and rename sources outside the guide (1.124047ms)"
+        },
+        {
+          "line": 2687,
+          "text": "2026-11-18T08:50:51.0659878Z \u2139 tests 1266"
+        },
+        {
+          "line": 2689,
+          "text": "2026-11-18T08:50:51.0660340Z \u2139 pass 1253"
+        },
+        {
+          "line": 2690,
+          "text": "2026-11-18T08:50:51.0660520Z \u2139 fail 0"
+        }
+      ],
+      "wholeLogLiterallyRead": false
+    }
+  ],
+  "records": [
+    {
+      "name": "resume-completed-head-runs",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs?branch=issue-1580-8d61a32a61e1&head_sha=bfe5ac0f3babe512f1bf0a03935bd1d220f9e40f&per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "94e6b012393ae70c584a3f1c84f6826ac05bc142a31a9b4ac700dc1a756bd88a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "resume-jobs-44269762053",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs/44269762053/jobs?per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "7fdeeeb1d29965d23008792a326dc94b67afda02f2f9dd476ac253fcf37a391d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "resume-job-134683648501",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/jobs/134683648501/logs",
+        "--allow-escape-sequences"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "b201dc3f89a35ce0e9668e377129e086c3c270484735d0caa902f84d16bd659c",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "resume-job-134683648625",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/jobs/134683648625/logs",
+        "--allow-escape-sequences"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "7a10f9b14f16d666630899be628a7ed8a444a47f3894248565fc3ce65f526e88",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

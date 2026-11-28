@@ -1,3 +1,4 @@
+// @worker-prerequisite js/seed-record-readers.js
 // @worker-prerequisite js/parser-cache-primordials.js
 // Shared Links Notation seed loader for the demo.
 //
@@ -566,14 +567,12 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
     return match ? match.id : "";
   }
   function findChildValueAlias(node, primary, fallback) {
-    var value = findChildValue(node, primary);
-    return value || findChildValue(node, fallback);
+    return findChildValue(node, primary) || findChildValue(node, fallback);
   }
-  // Project the ordered, uniform browser-handler bindings from seed data.
-  // Executable symbols are stored as node names (`argument_prompt`,
-  // `context_binding_writeProgram`, …) so the meaning-closure audit does not
-  // mistake JavaScript identifiers for natural-language references. A bare
-  // `rule_set` field marks a row the seed rule interpreter runs by its name.
+  // Project ordered browser bindings and their shared named argument lists.
+  // Executable symbols are node names (`argument_prompt`,
+  // `context_binding_writeProgram`, …), not natural-language references.
+  // A bare `rule-set` field selects the seed rule interpreter.
   function extractBrowserHandlerPrecedence(root) {
     if (!root) return [];
     var section = root.name === "browser-handler-precedence"
@@ -589,8 +588,12 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         resultIntent: "",
         evidenceKind: "",
       };
-      for (var i = 0; i < handler.children.length; i += 1) {
-        var field = handler.children[i].name;
+      var reference = findChildValue(handler, "arguments");
+      var shared = findChildren(section, "arguments").find(function (list) { return list.id === reference; });
+      if (reference && !shared) throw new Error("unknown browser handler arguments: " + reference);
+      var fields = handler.children.concat(shared ? shared.children : []);
+      for (var i = 0; i < fields.length; i += 1) {
+        var field = fields[i].name;
         if (field.indexOf("argument_") === 0) {
           record.arguments.push(field.slice("argument_".length));
         } else if (field.indexOf("context_binding_") === 0) {
@@ -685,119 +688,10 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
     }
     return responses;
   }
-  function extractConcepts(root) {
-    if (!root || !Array.isArray(root.children)) return [];
-    // Concept files are flat — each top-level child is one record.
-    var concepts = [];
-    var iterate = function (item) {
-      if (!item || !item.name) return;
-      if (!item.name.startsWith("concept_")) return;
-      var aliases = findChildValue(item, "aliases");
-      var contexts = findChildValue(item, "contexts");
-      var contextLinks = findChildValue(item, "context_links");
-      var localized = findChildren(item, "localized").map(function (loc) {
-        var locAliases = findChildValue(loc, "aliases");
-        return {
-          language: loc.id,
-          term: findChildValue(loc, "term"),
-          aliases: splitRefList(locAliases),
-          summary: findChildValue(loc, "summary"),
-          source: findChildValue(loc, "source"),
-          sourceKind: findChildValue(loc, "source_kind"),
-        };
-      });
-      concepts.push({
-        slug: item.name,
-        term: findChildValue(item, "term"),
-        category: findChildValue(item, "category") || "concept",
-        summary: findChildValue(item, "summary"),
-        source: findChildValue(item, "source"),
-        sourceKind: findChildValue(item, "source_kind") || "project-docs",
-        wikidata: findChildValue(item, "wikidata"),
-        aliases: splitRefList(aliases),
-        contexts: splitRefList(contexts),
-        contextLinks: splitRefList(contextLinks),
-        localized: localized,
-      });
-    };
-    if (root.name && root.name.startsWith("concept_")) {
-      iterate(root);
-    } else if (Array.isArray(root.children)) {
-      root.children.forEach(iterate);
-    }
-    return concepts;
-  }
-  // Extract disambiguating context records (`concept-contexts.lino`).
-  // Each context is anchored by a Wikidata Q-ID and carries per-language
-  // localized labels plus a `|`-separated alias list (free-text phrases the
-  // user might type in the four supported languages).
-  function extractConceptContexts(root) {
-    if (!root || !Array.isArray(root.children)) return [];
-    var out = [];
-    var visit = function (parent) {
-      var entries = findChildren(parent, "context");
-      for (var i = 0; i < entries.length; i += 1) {
-        var entry = entries[i];
-        if (!entry.id) continue;
-        var aliases = findChildValue(entry, "aliases");
-        var labels = findChildren(entry, "label").map(function (label) {
-          return { language: label.id, text: findChildValue(label, "text") };
-        });
-        out.push({
-          slug: entry.id,
-          wikidata: findChildValue(entry, "wikidata"),
-          aliases: splitRefList(aliases),
-          labels: labels,
-        });
-      }
-    };
-    visit(root);
-    for (var i = 0; i < root.children.length; i += 1) {
-      visit(root.children[i]);
-    }
-    return out;
-  }
-  function extractFacts(root) {
-    if (!root || !Array.isArray(root.children)) return [];
-    var facts = [];
-    var visit = function (item) {
-      if (!item || !item.name || item.name.indexOf("fact_") !== 0) return;
-      var localized = findChildren(item, "localized").map(function (loc) {
-        return {
-          language: loc.id,
-          subjectLabel: findChildValue(loc, "subject_label"),
-          valueLabel: findChildValue(loc, "value_label"),
-          summary: findChildValue(loc, "summary"),
-          source: findChildValue(loc, "source"),
-          sourceKind: findChildValue(loc, "source_kind"),
-        };
-      });
-      facts.push({
-        slug: item.name,
-        intent: findChildValue(item, "intent") || "fact_lookup",
-        category: findChildValue(item, "category"),
-        wikidata: splitList(findChildValue(item, "wikidata")),
-        relation: findChildValue(item, "relation"),
-        subjectQid: findChildValue(item, "subject_qid"),
-        valueQid: findChildValue(item, "value_qid"),
-        subjectLabel: findChildValue(item, "subject_label"),
-        valueLabel: findChildValue(item, "value_label"),
-        subjectAliases: splitList(findChildValue(item, "subject_aliases")).map(toLower),
-        questionKeywords: splitList(findChildValue(item, "question_keywords")).map(toLower),
-        summary: findChildValue(item, "summary"),
-        releaseTimeline: findChildValue(item, "release_timeline"),
-        source: findChildValue(item, "source"),
-        sourceKind: findChildValue(item, "source_kind"),
-        localized: localized,
-      });
-    };
-    if (root.name && root.name.indexOf("fact_") === 0) {
-      visit(root);
-    } else {
-      root.children.forEach(visit);
-    }
-    return facts;
-  }
+  var recordReaders = formalAiSeedRecordReaders(findChildren, findChildValue, splitRefList, splitList, toLower);
+  var extractConcepts = recordReaders.extractConcepts;
+  var extractConceptContexts = recordReaders.extractConceptContexts;
+  var extractFacts = recordReaders.extractFacts;
   // Mirrors ProjectStatement::parse: a complete decimal u8, including zero.
   function projectStatementWeight(value) {
     var text = String(value ?? "").replace(/^\p{White_Space}+|\p{White_Space}+$/gu, "");
@@ -840,6 +734,8 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         name: findChildValue(item, "name"),
         displayName: findChildValue(item, "display_name"),
         url: findChildValue(item, "url"),
+        assistantProject: findChildValue(item, "assistant-project") === "true",
+        originDeclaration: findChildValue(item, "origin-declaration"),
         language: findChildValue(item, "language"),
         category: findChildValue(item, "category"),
         aliases: splitList(findChildValue(item, "aliases")).map(normalizeProjectAlias),
@@ -858,27 +754,27 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
     return projects;
   }
   function extractBrainstormSeeds(root) {
-    var seeds = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
+    var seeds = { triggers: [], topicPrefixes: [], categories: [], defaultCount: 0, countCardinal: "" };
     if (!root || !Array.isArray(root.children)) return seeds;
     var section = root.name === "brainstorm_seeds" ? root : findChildren(root, "brainstorm_seeds")[0];
     if (!section) return seeds;
     seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
+    seeds.topicPrefixes = splitList(findChildValue(section, "topic_prefix")).map(function (prefix) { return prefix.trim() + " "; });
     seeds.defaultCount = Number(findChildValue(section, "default_count")) || 0;
     seeds.countCardinal = findChildValue(section, "count_cardinal") || "";
     var categories = findChildren(section, "category");
     for (var i = 0; i < categories.length; i += 1) {
       var category = categories[i];
-      var items = findChildren(category, "item")
+      var operations = findChildren(category, "operation")
         .map(function (item) {
           return item.id || "";
         })
         .filter(Boolean);
-      if (!items.length) continue;
       seeds.categories.push({
         slug: category.id,
         intent: findChildValue(category, "intent"),
         detectionKeywords: splitList(findChildValue(category, "detection_keywords")).map(toLower),
-        items: items,
+        operations: operations,
       });
     }
     return seeds;
@@ -886,19 +782,12 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
   function extractPersonas(root) {
     var seeds = {
       triggers: [],
-      defaultPersona: "",
-      bodyTemplate: "",
-      fallbackBody: "",
       personas: [],
-      topics: [],
     };
     if (!root || !Array.isArray(root.children)) return seeds;
     var section = root.name === "personas" ? root : findChildren(root, "personas")[0];
     if (!section) return seeds;
     seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
-    seeds.defaultPersona = findChildValue(section, "default_persona");
-    seeds.bodyTemplate = findChildValue(section, "body_template");
-    seeds.fallbackBody = findChildValue(section, "fallback_body");
     var personaEntries = findChildren(section, "persona");
     for (var i = 0; i < personaEntries.length; i += 1) {
       var persona = personaEntries[i];
@@ -906,15 +795,6 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         displayName: persona.id,
         aliases: splitList(findChildValue(persona, "aliases")).map(toLower),
         wikidata: findChildValue(persona, "wikidata"),
-      });
-    }
-    var topicEntries = findChildren(section, "topic");
-    for (var j = 0; j < topicEntries.length; j += 1) {
-      var topic = topicEntries[j];
-      seeds.topics.push({
-        slug: topic.id,
-        detectionKeywords: splitList(findChildValue(topic, "detection_keywords")).map(toLower),
-        body: findChildValue(topic, "body"),
       });
     }
     return seeds;

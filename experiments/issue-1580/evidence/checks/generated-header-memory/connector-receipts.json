@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/connector-work-item-receipts.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 18.803,
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 289220,
+  "rawSha256": "7d166958b41c887f95b049dc977cea0796e53ae0cd2c52345bf1cad94b2317cd",
+  "rawBytes": 2099,
+  "log": "connector-receipts.log.gz",
+  "independentAuthorshipCredit": 0
+}

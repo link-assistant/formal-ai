@@ -1,0 +1,8 @@
+{
+  "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "commit": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+  "path": "scripts/unacquired-jobs.py",
+  "sha256": "cc9acc34a63b60a7193132ea59215c22a9de38542720c3722d501a743227c076",
+  "license": "LICENSE",
+  "purpose": "Read-only upstream classification reproduction; no production retry or publication"
+}

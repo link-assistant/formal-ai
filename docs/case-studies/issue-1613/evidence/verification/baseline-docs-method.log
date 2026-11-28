@@ -1,0 +1,24 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: null
++ actual - expected
+
++ []
+- [
+-   'https://pandas.pydata.org/docs/reference/api/pandas.Series.diff.html'
+- ]
+
+    at file:///tmp/formal-ai-1613-evidence/practical-help/docs-method/baseline.mjs:15:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [],
+  expected: [
+    'https://pandas.pydata.org/docs/reference/api/pandas.Series.diff.html'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.13.0

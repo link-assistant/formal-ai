@@ -1,0 +1,114 @@
+[
+  {
+    "ordinal": 510,
+    "path": "ts/worker/formal_ai_worker_crate_solver_event_projection.ts",
+    "diffSha256": "a2187e672cfdc97bab998f9260b83d8128e6839072a57c0f8291859ffbefdc64",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_solver_event_projection.js",
+    "sha256": "57a9fe6035414689ca306d357e50ae4d4d9f9ff421bc0ee2d68934f0ec5cb908"
+  },
+  {
+    "ordinal": 511,
+    "path": "ts/worker/formal_ai_worker_crate_task_decomposition_cues.ts",
+    "diffSha256": "bcea280c72f741c89fb9272c015b9e6e8b2ec14db5db394b561a8c0a6c36b911",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_task_decomposition_cues.js",
+    "sha256": "47316904ae0f5bb82df28b4ec82081ea7850a4ed0a0e0ad95ccefb4037174722"
+  },
+  {
+    "ordinal": 512,
+    "path": "ts/worker/formal_ai_worker_crate_text_formalization.ts",
+    "diffSha256": "5e9be6e1a6698b7188bb48c868d66f7acddd96bd6acd6dbb0926b5720fee3c04",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_text_formalization.js",
+    "sha256": "5c111e3f521b889dc6f6a1ded935e5c0b9c8919c8353ebffcc006199858216fd"
+  },
+  {
+    "ordinal": 513,
+    "path": "ts/worker/formal_ai_worker_meaning_lexicon.ts",
+    "diffSha256": "89e3185f0db80869e4c2b20a92fbef070e86c321f4ed16ba777296e433fd9b2a",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_meaning_lexicon.js",
+    "sha256": "be5969bd48c23208b7bef489e99c60efecc52bf6e07b477ccef7acacff28021e"
+  },
+  {
+    "ordinal": 514,
+    "path": "ts/worker/formal_ai_worker_notation.ts",
+    "diffSha256": "5fd7d851e4837b95edb2df1961f1caf4d610e352c1e551fcc86d1ad2c5869afd",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_notation.js",
+    "sha256": "80eafdb70c144820f886eb46dd8e3bf673a5665a0ffdbe87bba763a86dc33fcc"
+  },
+  {
+    "ordinal": 515,
+    "path": "ts/worker/formal_ai_worker_prompt_data.ts",
+    "diffSha256": "08d923d69e6bcfec99eadfd363086a50296e42646153701943ce7781e9191473",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_prompt_data.js",
+    "sha256": "a50206d8274007e04fc1259f49a9aa982f7fb8715348c12eda1ec8dca65ecbd2"
+  },
+  {
+    "ordinal": 516,
+    "path": "ts/worker/formal_ai_worker_quantity_constraints.ts",
+    "diffSha256": "ce512be84da47091651f51e857bac4eecab1efe9a19973aaf0b697a333fb13a2",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_quantity_constraints.js",
+    "sha256": "775dc8cabc99382bc740040c787387093c6a307c34befc3af2dbe6dce628bf33"
+  },
+  {
+    "ordinal": 517,
+    "path": "ts/worker/formal_ai_worker_seed_responses_and_language.ts",
+    "diffSha256": "0045c535ced2dc63cab4210ca6dfe0749b5991dbe1a1dc1aa274747ed37b50fb",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_seed_responses_and_language.js",
+    "sha256": "299df7f3d5867650f491096d1ef9b81cd7e48ba151bf6d681ce7d1c0ba7e7b3a"
+  },
+  {
+    "ordinal": 518,
+    "path": "ts/worker/formal_ai_worker_solve.ts",
+    "diffSha256": "382a2e2d85e8ff3340f1e7439213a199678f7203aec66da94e1e8835a61f226c",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_solve.js",
+    "sha256": "d0e5d308d805ab7adbfebbed07787fc0506ff0ed1a340e5a1b62534b7c0b0770"
+  },
+  {
+    "ordinal": 519,
+    "path": "ts/worker/formal_ai_worker_solver_events.ts",
+    "diffSha256": "21cd20a801f4b6d4e2a880af138b552c8bd1bd3a26c6bbf5eefbdbe3cfb92014",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_solver_events.js",
+    "sha256": "3a4a96d3aa7898c9f848ee411cba2bef4ee5af44730d25af862208fb9c830a5f"
+  },
+  {
+    "ordinal": 520,
+    "path": "ts/worker/formal_ai_worker_source_endpoints.ts",
+    "diffSha256": "518199ad9476cd999e49267722c67ee5e26c4755543ef2b830049f648d8da8b1",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_source_endpoints.js",
+    "sha256": "af9d28a0f508dde226c4b36f8c4b1dd69b35b61235c9332d3e84cee297ce89b9"
+  },
+  {
+    "ordinal": 521,
+    "path": "ts/worker/formal_ai_worker_unknown_language.ts",
+    "diffSha256": "40e77cd1a227190788856c07b7bc4054bc490fb8872c5f0133241b157186e5c3",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_unknown_language.js",
+    "sha256": "cd3df8009683e191e57a14d4843a3a03b4fdf4d67f9b6e205dc746a19367f72a"
+  },
+  {
+    "ordinal": 522,
+    "path": "ts/worker/formal_ai_worker_web_formalize.ts",
+    "diffSha256": "597cc7ba843ed890ff0823b4f07a2ffc5eafa43e689daeee68716b4d618f59e0",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_web_formalize.js",
+    "sha256": "1c9dbffe797473ed8544e748dc0a137c300056001e3b8aa904ff87eaae964967"
+  },
+  {
+    "ordinal": 523,
+    "path": "ts/worker/formal_ai_worker_write_program_and_research.ts",
+    "diffSha256": "15b06066caa5e4ee96e0fbc0dba8775db02352297041d63ff9a488a83c04a20e",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_write_program_and_research.js",
+    "sha256": "84e82e18c08b7916624b16a535801a993e012590a5ae94c23d8a37e91e79b04d"
+  }
+]

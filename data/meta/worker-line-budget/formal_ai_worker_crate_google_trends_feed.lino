@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_google_trends_feed.js"
+  ceiling 83
+  rationale "Generated projection of the CLI's regional publisher feed parser and prompt template reader. The browser and Node agent use the same source selection and RSS projection."

@@ -1,0 +1,15 @@
+{
+  "parent": "ca68d929474b129bc56500ce93cf189ce3fc7023",
+  "priorAttemptFailure": "The helper incorrectly required at least one changed admitted source identity; the unchanged writer produced a byte-identical baseline. Complete object equality and every inventory count remain required.",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "writerExitCode": 0,
+  "previousSha256": "3c7c7e7c1309feadae29e33c9a2fb9c4cfecab19137f6179039aef3f9eedcb79",
+  "currentSha256": "3c7c7e7c1309feadae29e33c9a2fb9c4cfecab19137f6179039aef3f9eedcb79",
+  "completeObjectEqualAfterReviewedSourceChanges": true,
+  "hashChanges": [],
+  "total": 1185,
+  "supported": 221,
+  "unsupported": 964,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0
+}

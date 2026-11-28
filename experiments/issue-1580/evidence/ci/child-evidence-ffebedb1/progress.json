@@ -1,0 +1,108 @@
+{
+  "snapshots": [
+    {
+      "observedAt": "2026-11-18T09:33:42.938205+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-11-18T09:34:14.245002+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-11-18T09:34:45.259675+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-11-18T09:35:16.370087+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-11-18T09:35:47.453026+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-11-18T09:36:18.451424+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-11-18T09:36:49.654313+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-11-18T09:37:20.581934+00:00",
+      "head": "ffebedb16802b73499db4a5bc937808c51ef533d",
+      "workflowCount": 23,
+      "completed": 23,
+      "failed": [
+        {
+          "id": 44276631643,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    }
+  ]
+}

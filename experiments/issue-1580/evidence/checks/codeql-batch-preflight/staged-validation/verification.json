@@ -1,0 +1,140 @@
+{
+  "complete": true,
+  "sourceIdentitiesUnchanged": true,
+  "records": [
+    {
+      "label": "archive-command-records",
+      "argv": [
+        "python3",
+        "/tmp/issue-1580-research/archive-evidence.py"
+      ],
+      "exitCode": 0,
+      "file": "archive-command-records.log.gz",
+      "rawSha256": "6858eb162e4dfb17a7024f2e1e8526b92298d290ef74538d8893b681ed14697c",
+      "archiveSha256": "f7972c9ce70a9a11cde2377054158167c49c699c57e59f11c46e33a58d4456a5"
+    },
+    {
+      "label": "stage-final-evidence",
+      "argv": [
+        "git",
+        "add",
+        "--all"
+      ],
+      "exitCode": 0,
+      "file": "stage-final-evidence.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "label": "documentation-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "documentation-policy.log.gz",
+      "rawSha256": "5419f87109c6047662ebc5228f2092790bcc00f2d3013e4934cf77665859c3f5",
+      "archiveSha256": "b51cf1a7dc76f89f24e7d85d75059abb82ab0117e4e25aebab964105314e9d30"
+    },
+    {
+      "label": "release-fixture-admission",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/release-fixture-caller-admission.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "release-fixture-admission.log.gz",
+      "rawSha256": "eca2e1ef4f25e8138ad9b30a67e9323d6126104573e9e49d2d79a46dabbb4b0a",
+      "archiveSha256": "13b32a356c058238bedf18cc2bbe4e32e8f00155390c473caabca22842a24121"
+    },
+    {
+      "label": "registry-fixture",
+      "argv": [
+        "python3",
+        "experiments/issue-1580/release-registry/check_fixture.py"
+      ],
+      "exitCode": 0,
+      "file": "registry-fixture.log.gz",
+      "rawSha256": "df5bb6b0eda1758137ebcef5b062c13611bf4f2564cc3debdc1b77682d15d369",
+      "archiveSha256": "5502dcf304490cb7cbe2160eb24b81b0dcc5a7a39f2885b2084163af54229ffd"
+    },
+    {
+      "label": "check-abbreviations",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "file": "check-abbreviations.log.gz",
+      "rawSha256": "d35dcf2ab0d2275b06bdb3337913ceac3809d03c2c4f7c7a4378885fc4c30794",
+      "archiveSha256": "9faf24f41dc0e72c08ed97a596514a4b15be23c0b83d6fa05278945f36c25bc2"
+    },
+    {
+      "label": "check-file-size",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "file": "check-file-size.log.gz",
+      "rawSha256": "b870b40e26c055e273d82d81849dae361df7ca3e3725433673a83a1bac93c894",
+      "archiveSha256": "302ff7c425b8c6d481cb54a344799cd84af8d13bae4b09e0a8bc1a943c0cf664"
+    },
+    {
+      "label": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "file": "check-file-size-js-twin.log.gz",
+      "rawSha256": "3695b0c34f14409bfb353959c338ad194ac7098c0cabd88d02772b60259172dd",
+      "archiveSha256": "386f35bc8fe07a5f8f5dd2b02285b2b5605f040e629f0f538f52369969f55da6"
+    },
+    {
+      "label": "working-difference-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "file": "working-difference-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "label": "staged-difference-check",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "file": "staged-difference-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeCompilationExecuted": false,
+  "liveCodeqlExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

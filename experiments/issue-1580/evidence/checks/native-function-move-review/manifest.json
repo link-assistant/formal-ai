@@ -1,0 +1,214 @@
+{
+  "at": "2026-11-22T07:52:43.157774+00:00",
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "sourceHead": "33322a8c18d5c4eee7555989db1efe0a50fd5130",
+  "files": [
+    {
+      "path": "rust/src/agentic_coding/capability_router.rs",
+      "file": "0235.diff.gz",
+      "sha256": "0148053f9c66ee7f37291af8a6f50f872ec0c6f106a928a022174f938822398e",
+      "gzipSHA256": "20716ff086115a5536cd7999329a5dabd391521f6531902d2114e3691c2f43bf",
+      "lines": 287,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/capability_router/tool_classification.rs",
+      "file": "0236.diff.gz",
+      "sha256": "654933135322ba288775b4b4543a97d2ea68cbb2f479b04ce4fdeab9f4bf533a",
+      "gzipSHA256": "ad05dbe593cba865dcd4ff81f2a8e751c0c49a132851d55113e39d7478ba85c2",
+      "lines": 278,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/general_execution.rs",
+      "file": "0242.diff.gz",
+      "sha256": "94e51ce78801f4f1ab3411d3d6364c3e73e3e8e8f0ee3a6e17a3f4748d0fcce6",
+      "gzipSHA256": "c1f58350e399ce13baaf68f6cfa62452e8b2662a159e8aab876ccb0c7516ac5f",
+      "lines": 134,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/general_execution/work_item_delivery.rs",
+      "file": "0243.diff.gz",
+      "sha256": "85f01b7af2ae3805d4d2e82af11245dfe9e8dda560578cc30b5760f38a459ce8",
+      "gzipSHA256": "d4492350f7478227a245d25beb690a9f3dbec5d0476368da47b10a00ea43147f",
+      "lines": 121,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/owned_goals.rs",
+      "file": "0244.diff.gz",
+      "sha256": "40ef696b845162ac8e028d69443f32024e46f5be5543a9a5194a6cd2bc066a22",
+      "gzipSHA256": "eb3a2f4bc4fc20c3b3097fa1e9de6d657b12b93421d63f8c0fe4719f25fad2dc",
+      "lines": 89,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/owned_goals/collection_ownership.rs",
+      "file": "0245.diff.gz",
+      "sha256": "51dff4abbf2ec9857885cbd3861dd576c27856f5013d473ca1c00b4013f936c0",
+      "gzipSHA256": "c06d82bdcaeaba14355560288c669357481780587785c3178ffd6bc0693fa5df",
+      "lines": 83,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/module_function.rs",
+      "file": "0246.diff.gz",
+      "sha256": "434eb0e96bbbd4d3fe3afb7034c58ad2eca331b02174fba6b33e12f2b205fd98",
+      "gzipSHA256": "c6eea2e733e5a8178406de0aa8ac3dfb6a9aeea0f905fcf895f383cd9e4ee1c9",
+      "lines": 138,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/module_function/arithmetic_declaration.rs",
+      "file": "0247.diff.gz",
+      "sha256": "1306992b7112f345c41e0ea14b0d038ad98b42df61c1315fd0215adda753fc65",
+      "gzipSHA256": "31f1ea019d7626370efd00cc9670330850747cc5110db7c2d162b61cc2e0cf2a",
+      "lines": 132,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/planner.rs",
+      "file": "0248.diff.gz",
+      "sha256": "0e0044875318d53e8099fe75580b7ac13558c2c00b5101d7d6a1d7b99d5c0237",
+      "gzipSHA256": "a049281d643c7c52c234e7ac0bb991c2c795efb69efad0cd77e40d0e22566652",
+      "lines": 134,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/planner/request_routes.rs",
+      "file": "0249.diff.gz",
+      "sha256": "10d767b937c5a57568dca69e3995376e89f59a482f0786763c39577c18d6dbd2",
+      "gzipSHA256": "14f2671d7688f927ef75daf308d89347e6807fdf9a5442ceaae32be6e6651532",
+      "lines": 128,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/positional_edit.rs",
+      "file": "0250.diff.gz",
+      "sha256": "dca94ccf2053831065673c9420794b95566090dbfa855f1657d666cc547e18ea",
+      "gzipSHA256": "a035b77dac2a069d81e5892a9fa7af18dc177cbd146364c7f3806da5a1ab9b60",
+      "lines": 159,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/positional_edit/clause_insertion.rs",
+      "file": "0251.diff.gz",
+      "sha256": "44c131d245d18105242c55f696f4298eb683588e476a653c742b08f869c6d45d",
+      "gzipSHA256": "5ab118cf2ced4b816679b6227325119d75fd14d09a20ef9ec96738eea355e2d3",
+      "lines": 153,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/progress.rs",
+      "file": "0252.diff.gz",
+      "sha256": "f2d5c9f85570695a682fda1ce2a775f488fc5901928d86fcaf6e57d5626f7c66",
+      "gzipSHA256": "31acd6820cbc8fb6b4fec0e0006239f60ffdb0f8c23fa254d0f9621452a90758",
+      "lines": 135,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/progress/fetch_read_receipt.rs",
+      "file": "0253.diff.gz",
+      "sha256": "2f70534038da3b4a76b8719384f63627eb95296c877ba99153384ce9fb42f114",
+      "gzipSHA256": "94cde6fb91018c651efca71efde93222afb64c67b39c3424d9a7a8a140d66556",
+      "lines": 57,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/progress/work_item_read_receipt.rs",
+      "file": "0254.diff.gz",
+      "sha256": "ab8c68a5f5726095a22192fa80b02bb4373996a146c806bc57d53201b5ef9975",
+      "gzipSHA256": "9eefb221fefbe0dbd835afb7f2ad3039424c41f43ee6c0ada4248e9aeec40f7b",
+      "lines": 70,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/repair_loop.rs",
+      "file": "0256.diff.gz",
+      "sha256": "f6065616255b33d1a4c8b4ac65f4c3a8ff1d40f7369a994bcf1458808492b4f6",
+      "gzipSHA256": "14d2dc62070e20c5ce13b1983a8de02ed96b3a8aaa99c18885b1cdfb9933dfb0",
+      "lines": 91,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/repair_loop/notes.rs",
+      "file": "0257.diff.gz",
+      "sha256": "4860451cda93b20915fd3bfeb8084d46f5280fb4a7b48d2f5d1c7eb3bffdd161",
+      "gzipSHA256": "0de585c96d7e75ca3c435ce282e968811bcf48c2fb4309b170005a67893bd207",
+      "lines": 82,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/shell_command.rs",
+      "file": "0259.diff.gz",
+      "sha256": "e94ab4e6ae7f9f99268ead3f99a8ab08835b7606bae3048ff250fa3c71144b3d",
+      "gzipSHA256": "eed1b299bde5cc4401d92a906882825ef3b6cb78b47f00dc869138f32cb570c6",
+      "lines": 156,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/shell_command/prose_classification.rs",
+      "file": "0260.diff.gz",
+      "sha256": "56e49e71b802a2b3b469a7cd944caa82b5e98bde74e43aa00643c2cae57a9760",
+      "gzipSHA256": "e571c51897789ba60db7837739cf0ac733f6d1683b9e6a8b1f1ef5765219f6d4",
+      "lines": 139,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/tool_result.rs",
+      "file": "0264.diff.gz",
+      "sha256": "a8113b18202c3c6a405427c5dae69781c285309477b4c9b9f92a061f098f001d",
+      "gzipSHA256": "56b0d3c3a7630153e92286bb0f58b56746ed486a4bcd394bf4ed9a6991109ed8",
+      "lines": 66,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/tool_result/quotation.rs",
+      "file": "0265.diff.gz",
+      "sha256": "5b4f0bd54575e4ec49710b1b75a37f52d42b2317191bcf00fc5d75b7a820dc67",
+      "gzipSHA256": "ea2820d01deaa067b6b49fe33f2bb1a69bb9221da70071d1b0da8b0e28c0b820",
+      "lines": 47,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/web_research.rs",
+      "file": "0267.diff.gz",
+      "sha256": "74460c16bef4d63c491cb175239328f5582ca6a401d708c08b50c3ae5dce6f00",
+      "gzipSHA256": "ef8bd486b6152b9997828c0147fc629a128be5f611add86a1c5b131cbcd4c414",
+      "lines": 112,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/web_research/answer_selection.rs",
+      "file": "0268.diff.gz",
+      "sha256": "a833c79c7fafd635da6aa150ea6b41591343bd83931eb196e4b125b07895982d",
+      "gzipSHA256": "9d4f38dc5232d59fd06e6c5ad2f2b68782319cf9fa1c8df9c0d8a14c9e49e870",
+      "lines": 103,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/work_item_file_io.rs",
+      "file": "0269.diff.gz",
+      "sha256": "cbf2bacc6c00f8bcb12908af1755d62aef7ec87389164e7917cb0cde21ca75bd",
+      "gzipSHA256": "8bf5367c47229e3a075ab5155c1212c2a41a6efc405b608538f9368d8eb29ab1",
+      "lines": 85,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/work_item_file_io/command_ownership.rs",
+      "file": "0270.diff.gz",
+      "sha256": "c71a05afc4384ab2101904ee037987533780f98c4480194eeddb0acbf3fae791",
+      "gzipSHA256": "0186992fee1c86360b4854ec2c7180daeafc9851e6d191961e677c7b0f964bea",
+      "lines": 79,
+      "literalDiffFullyReviewed": true
+    }
+  ],
+  "fileCount": 25,
+  "diffLines": 3058,
+  "finding": "Complete paired review finds the same helper bodies and comments moved into child modules. Reexports, restricted visibility, imports and relative module paths match the new location. No new defect found in these diffs.",
+  "wholePullRequestReviewed": false,
+  "runtimeValidation": "Current published-head hosted family checks are still being collected.",
+  "localRustCompilation": false,
+  "autonomousAuthorshipCredit": 0
+}

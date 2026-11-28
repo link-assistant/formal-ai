@@ -1,0 +1,77 @@
+[
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 13.922,
+    "rawSha256": "540f295e6bdc6dfd9e3e85fd36deff2d4a0a2c5951e042c5643465e1a9b53b9d",
+    "log": "rust-specification-unicode-identifiers.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.328,
+    "rawSha256": "ff1887b5d29970c5b6e987fe83b2e54b5920fd6158a884b0e21d8b33bdd21cbb",
+    "log": "rust-specification-fixture-integrity.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1587-request-context.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 9.737,
+    "rawSha256": "f75db67cd2470d689a5fe998bd68861859da9a026c013600713d142cd3d5250a",
+    "log": "issue-1587-request-context.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-clock-preservation.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 12.967,
+    "rawSha256": "51b7adc4550db051191043cdc5b1f12fb13bd0cbf4c8ada7bccdebf01bc780ce",
+    "log": "calendar-clock-preservation.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 3.622,
+    "rawSha256": "44c654b545b6726cca2a003a2a5f07796352cc1f407f8906096f695e3ee075c4",
+    "log": "fast-pull-request-production-profile.log.gz"
+  }
+]

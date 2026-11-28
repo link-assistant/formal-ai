@@ -1,0 +1,40 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "sourceHashes": {
+    "rust/src/solver_handlers/calendar_create.rs": "2b984c1e19f76557b8f08b196a6db67ec19d7fa6e5159eff9e9784e2d4e8ac43",
+    "js/worker/formal_ai_worker_calendar_and_proofs.js": "d70eff1e967c3a4f11e42d2cb9a5da39955bd2d0079d8de4ee9473fe83ebf523",
+    "ts/worker/formal_ai_worker_calendar_and_proofs.ts": "d70eff1e967c3a4f11e42d2cb9a5da39955bd2d0079d8de4ee9473fe83ebf523",
+    "scripts/lib/generated-native-programs.mjs": "58c0ac523b7553e5c9327e76828742147a605ad29c235882542d5743326a2b23",
+    "data/benchmarks/fast-pull-request-javascript-tests.json": "95552263a82f986580018585f7185b6bc7d623561d4e5aec8ee1a23b69816262",
+    "rust/tests/web/calendar-act-paraphrases.test.mjs": "7355136870bde7694d5c42fd71ca1899afd103075004bf17a6a2d168f4d39f56",
+    "changelog.d/issue-1580-seeded-scheduling-acts.md": "f032de36ca8d28e46a0670a7172fbfff56e0b3cf507a887c1e55ce98b3b3d167"
+  },
+  "testFiles": 8,
+  "localRustExecuted": false,
+  "pushExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "focusedCounts": {
+    "tests": 111,
+    "pass": 111,
+    "fail": 0,
+    "skipped": 0
+  },
+  "gateCounts": {
+    "PASS": 87,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "allCheckPayloadHashesVerified": 12,
+  "detailedGatePayloadHashesVerified": 87,
+  "sourceUnchangedDuringValidation": true,
+  "focusedAndAggregateLogsLiterallyRead": true,
+  "detailedGatePayloadsLiterallyRead": false,
+  "initialWholeRunCounts": {
+    "PASS": 83,
+    "FAIL": 4,
+    "SKIP": 52
+  },
+  "ratchetsChanged": false,
+  "fullIssueComplete": false
+}

@@ -28,7 +28,7 @@ trap cleanup EXIT
 
 FAKE_BIN="$ROOT/experiments/issue_714_agentic_mode/fixtures"
 
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_MEMORY_PATH="$MEMORY" \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace FORMAL_AI_MEMORY_PATH="$MEMORY" \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SERVER_PID=$!
 curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \

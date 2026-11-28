@@ -11,7 +11,12 @@ export function readObservation(records, progress, path) {
   if (bound !== null) return bound;
   const legacy = readRecordForPath(records, path);
   if (legacy === null) return null;
-  const read = sourceReadObservation(legacy.content, legacy.is_error, null, path);
+  // The client may have absolutized a relative planned path. Decode only against
+  // its validated call argument, while retaining this legacy alias as incomplete.
+  const recordedPath = ['path', 'filePath', 'file_path', 'absolute_path']
+    .map(key => legacy.arguments[key]).find(value => typeof value === 'string');
+  const read = progress.sourceReadFor(recordedPath)
+    ?? sourceReadObservation(legacy.content, legacy.is_error, null, recordedPath);
   return { ...read, complete: false };
 }
 /** Mirrors fn source_read_answer in file_read/source.rs. */

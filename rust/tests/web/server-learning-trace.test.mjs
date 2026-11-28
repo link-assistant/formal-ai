@@ -4,13 +4,18 @@
 // the conversation `learn` route stages from a recorded dialog.
 
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
+import { benchmarkGatePolicies } from "../../../js/server/benchmark-gate-policy.mjs";
 import { learnFromConversation } from "../../../js/server/conversations.mjs";
 import { stableId } from "../../../js/server/ids.mjs";
+import { childrenNamed, childValue, parseLino, readRepoFile } from "../../../js/server/lino.mjs";
 import {
   BenchmarkGateReport,
   eventPayload,
@@ -20,6 +25,7 @@ import {
   learningTraceFromSymbolicAnswer,
   unknownTrace,
 } from "../../../js/server/self-improvement.mjs";
+import { collectDemands } from "../../../scripts/mirror-package-data.mjs";
 
 const PROMPT = "Сделай сортировку результатов в обратном порядке";
 const CANDIDATE = [
@@ -36,9 +42,8 @@ const CANDIDATE = [
 const VERIFICATION = [
   "rule_verification",
   "  candidate reverse_sort_list_files_arg",
-  "  fixture list_files_output_order",
-  "  input a.txt,b.txt,c.txt",
-  "  expected_order c.txt,b.txt,a.txt",
+  "  verification_basis algorithm_structure",
+  "  expected_order descending",
   "  lowering_check passed",
   "  render_check passed",
   "  status passed",
@@ -92,6 +97,58 @@ test("event_payload stops at the next step and keeps only known fields", () => {
   assert.equal(eventPayload(links, "rule_synthesis_candidate"), null);
 });
 
+test("promotion reads thresholds without packaging the benchmark cases", () => {
+  const fixtures = [
+    "data/benchmarks/coding-modification-suite.lino",
+    "data/benchmarks/industry-suite.lino",
+  ];
+  const expected = fixtures.map((filename) => {
+    const [suite] = parseLino(readRepoFile(filename)).children;
+    return {
+      id: childValue(suite, "id"),
+      runner: childValue(suite, "runner"),
+      minimumPassCount: Number(childValue(suite, "minimum_pass_count")),
+    };
+  });
+  assert.deepEqual(benchmarkGatePolicies(), expected);
+  const root = fileURLToPath(new URL("../../../", import.meta.url));
+  const rust = path.join(root, "rust");
+  const demands = collectDemands(path.join(rust, "src"), rust, root);
+  assert.ok(demands.has("data/meta/benchmark-promotion-gates.lino"));
+  for (const filename of fixtures) assert.ok(!demands.has(filename), filename);
+  assert.ok(!demands.has("data/seed/demo-dialogs.lino"));
+});
+
+test("Formal AI reproduces the pre-extraction coding benchmark promotion contract", () => {
+  const evidence = new URL("../../../docs/case-studies/issue-1613/evidence/formal-development/promotion-oracle/", import.meta.url);
+  const expected = readFileSync(new URL("../fixtures/benchmark-promotion/coding-modification-contract.lino", import.meta.url));
+  const manifest = gunzipSync(readFileSync(new URL("coding-modification-suite.lino.gz", evidence)));
+  const prompt = readFileSync(new URL("request.txt", evidence), "utf8").trim();
+  const oracle = parseLino(expected.toString("utf8"));
+  assert.equal(oracle.name, "promotion_contract");
+  const [observation] = childrenNamed(oracle, "source_observation");
+  const [contract] = childrenNamed(oracle, "derived_formalization");
+  const [suite] = parseLino(manifest.toString("utf8")).children;
+  const policy = parseLino(readRepoFile("data/meta/benchmark-promotion-gates.lino"));
+  const coding = childrenNamed(policy, "gate").find((gate) => gate.id === childValue(suite, "id"));
+  assert.ok(coding);
+  for (const field of ["runner", "minimum_pass_count", "pass_rate_basis_points"]) {
+    assert.equal(childValue(coding, field), childValue(contract, field), field);
+  }
+
+  const workdir = mkdtempSync(path.join(os.tmpdir(), "formal-ai-promotion-contract-"));
+  const manifestPath = path.join(workdir, childValue(observation, "path"));
+  const drive = fileURLToPath(new URL("../../../experiments/js_dogfood/drive.mjs", import.meta.url));
+  try {
+    mkdirSync(path.dirname(manifestPath), { recursive: true });
+    writeFileSync(manifestPath, manifest);
+    execFileSync(process.execPath, [drive, "--dir", workdir, "--steps", "5", prompt], { stdio: "pipe" });
+    assert.deepEqual(readFileSync(path.join(workdir, "promotion-contract.lino")), expected);
+  } finally {
+    rmSync(workdir, { recursive: true, force: true });
+  }
+});
+
 test("a reported conversation stages one proposal against an absent gate", () => {
   const staged = learnFromReportedConversation({
     messages: [{ role: "user", content: "ignored when the trace names its prompt" }],
@@ -106,12 +163,12 @@ test("a reported conversation stages one proposal against an absent gate", () =>
   assert.equal(proposal.rule_id, "reverse_sort_list_files_arg");
   assert.equal(proposal.base_task, "list_files_arg");
   assert.equal(proposal.resolved_task, "list_files_arg_reverse_sort");
-  assert.equal(proposal.fixture, "list_files_output_order");
+  assert.equal(proposal.fixture, "algorithm_structure");
   assert.equal(proposal.adoption, "blocked_by_benchmark");
   assert.equal(proposal.id, stableId("learned_rule", `${staged.trace.id}:reverse_sort_list_files_arg:list_files_arg:reverse_sort:list_files_arg_reverse_sort`));
   assert.equal(
     proposal.summary,
-    "Learn `reverse_sort` for `list_files_arg` by rewriting to `list_files_arg_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is absent (0/4).",
+    "Learn `reverse_sort` for `list_files_arg` by rewriting to `list_files_arg_reverse_sort`; verification `algorithm_structure` passed; benchmark `issue_362_multilingual_coding_modification` is absent (0/4).",
   );
   assert.match(proposal.seed_rule_lino, /^substitution_rules\n {2}id "learned_program_plan_rules"\n {2}rule "reverse_sort_list_files_arg"\n/);
   const lino = learningRunLinksNotation(staged.learning);

@@ -1,0 +1,198 @@
+{
+  "head": "193546c746ab6a88aed96f58ff5d2c4f7a11ff3a",
+  "completeWorkflowCollection": true,
+  "workflows": 23,
+  "success": 22,
+  "nonPassing": [
+    {
+      "run": 44573034091,
+      "conclusion": "cancelled"
+    }
+  ],
+  "verifiedCollectionPayloads": 96,
+  "additionalVerifiedJavascriptAndStatusPayloads": 6,
+  "nativeRun": 44573034091,
+  "nativeJob": 135733285291,
+  "nativeResultRows": [
+    {
+      "line": 1633,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1648,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "line": 1656,
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "line": 1684,
+      "passed": 22,
+      "failed": 0
+    },
+    {
+      "line": 1698,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "line": 1705,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1715,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "line": 1844,
+      "passed": 81,
+      "failed": 4
+    },
+    {
+      "line": 1869,
+      "passed": 18,
+      "failed": 0
+    }
+  ],
+  "nativeCompletedTargetsPassed": 146,
+  "nativeAdditionalPartialTargetPasses": 1,
+  "nativeFailed": 4,
+  "nativeHttpPassed": 0,
+  "nativeHttpExecuted": false,
+  "reasoningPassed": 81,
+  "reasoningFailed": 4,
+  "passedModuleCounts": {
+    "pronoun_topic_follow_up": 7,
+    "page_formalization_route": 6,
+    "live_fact_answer": 7,
+    "debug_session": 9,
+    "event_source_origin": 4
+  },
+  "strictOriginalPassingReplayUnion": 18,
+  "originalPanicsWithoutQualifyingReplay": 35,
+  "originalBudgetFailuresStillOpen": 3,
+  "javascript": [
+    {
+      "job": 135733085897,
+      "totals": {
+        "tests": 1741,
+        "pass": 1734,
+        "fail": 0
+      }
+    },
+    {
+      "job": 135733085685,
+      "totals": {
+        "tests": 1390,
+        "pass": 1380,
+        "fail": 0
+      }
+    }
+  ],
+  "registryCurrencyHostedPassed": true,
+  "failureInventory": [
+    {
+      "run": 44573034091,
+      "job": 135733285291,
+      "name": "web_requests::information_search_variants_route_to_web_search_handler",
+      "jobLogLines": [
+        1810,
+        1813
+      ],
+      "cause": "Default solver fetched live provider data while the unchanged routing assertion expects a committed offline capture refusal.",
+      "repair": "Set FORMAL_AI_OFFLINE=1 only on the isolated native behavior step; fixture clients opt in explicitly and CLI HTTP policy remains unchanged.",
+      "hostedRepairVerified": false
+    },
+    {
+      "run": 44573034091,
+      "job": 135733285291,
+      "name": "web_requests::latest_news_routes_to_wikinews_search_across_supported_languages",
+      "jobLogLines": [
+        1818,
+        1821
+      ],
+      "cause": "Default solver fetched live provider data while the unchanged routing assertion expects a committed offline capture refusal.",
+      "repair": "Set FORMAL_AI_OFFLINE=1 only on the isolated native behavior step; fixture clients opt in explicitly and CLI HTTP policy remains unchanged.",
+      "hostedRepairVerified": false
+    },
+    {
+      "run": 44573034091,
+      "job": 135733285291,
+      "name": "web_requests::source_search_prompts_still_cover_supported_languages",
+      "jobLogLines": [
+        1825,
+        1828
+      ],
+      "cause": "Default solver fetched live provider data while the unchanged routing assertion expects a committed offline capture refusal.",
+      "repair": "Set FORMAL_AI_OFFLINE=1 only on the isolated native behavior step; fixture clients opt in explicitly and CLI HTTP policy remains unchanged.",
+      "hostedRepairVerified": false
+    },
+    {
+      "run": 44573034091,
+      "job": 135733285291,
+      "name": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+      "jobLogLines": [
+        1832,
+        1835
+      ],
+      "cause": "Default solver fetched live provider data while the unchanged routing assertion expects a committed offline capture refusal.",
+      "repair": "Set FORMAL_AI_OFFLINE=1 only on the isolated native behavior step; fixture clients opt in explicitly and CLI HTTP policy remains unchanged.",
+      "hostedRepairVerified": false
+    },
+    {
+      "run": 44573034091,
+      "job": 135733285291,
+      "jobLogLines": [
+        1871,
+        1875
+      ],
+      "cause": "Job reached its unchanged 20-minute clock after slow network-dependent behavior tests; synthesis unfinished.",
+      "repair": "Isolate deterministic routing from live provider requests; do not increase deadline.",
+      "hostedRepairVerified": false
+    },
+    {
+      "run": 44573034091,
+      "job": 135746524610,
+      "jobLogLines": [
+        211,
+        214
+      ],
+      "cause": "Pipeline Status reports all required jobs succeeded despite native-type-check=cancelled on current PR head.",
+      "repair": "Make a cancelled required dependency fail on every branch, with actual shell regression coverage retaining success/skipped behavior.",
+      "hostedRepairVerified": false
+    }
+  ],
+  "literalReviewSpans": [
+    {
+      "record": "job-135733285291",
+      "lines": [
+        1620,
+        1955
+      ]
+    },
+    {
+      "record": "javascript-confirmation/job-135746524610",
+      "lines": [
+        1,
+        215
+      ]
+    },
+    {
+      "record": "javascript-confirmation/job-135733085685",
+      "lines": [
+        1325,
+        1333
+      ]
+    }
+  ],
+  "fullWorkflowLogLiteralReviewClaim": false,
+  "nativeRepairVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

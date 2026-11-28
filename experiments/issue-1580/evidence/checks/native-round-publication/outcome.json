@@ -1,0 +1,120 @@
+{
+  "records": [
+    {
+      "name": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 4.266,
+      "log": "check-abbreviations.log.gz",
+      "rawBytes": 67,
+      "rawLines": 3,
+      "rawSha256": "ae7984b716ee3f2e1d62b3e701ecf2b5099b01b26211150941139cba3def9e27"
+    },
+    {
+      "name": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 4.246,
+      "log": "check-file-size.log.gz",
+      "rawBytes": 63,
+      "rawLines": 3,
+      "rawSha256": "45166100a08b495da00bbeb79fc5901891e8f613c01e58f1e0a4b96cc69fb839"
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 3.861,
+      "log": "check-file-size-js-twin.log.gz",
+      "rawBytes": 71,
+      "rawLines": 3,
+      "rawSha256": "af90b874e2896a860382f9bb0f8e50343e16895b7c451c7ad5cb45ed177c7c4f"
+    },
+    {
+      "name": "check-changelog-fragment-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 1.921,
+      "log": "check-changelog-fragment-js-twin.log.gz",
+      "rawBytes": 80,
+      "rawLines": 3,
+      "rawSha256": "2ed5e4fe6c34aece2c65ea12524c1118fe89d5d189748cbcb6225f8a1a682001"
+    },
+    {
+      "name": "release#1",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "release#1"
+      ],
+      "exitCode": 0,
+      "seconds": 1.53,
+      "log": "release-1.log.gz",
+      "rawBytes": 57,
+      "rawLines": 3,
+      "rawSha256": "cc1ff6e499e6e3174213d095555ed182762b635134096af22d9b95ea31c407c1"
+    },
+    {
+      "name": "formatting",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/solver_handlers/verifiable_task.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+        "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+        "rust/tests/unit/specification/formalization.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.112,
+      "log": "formatting.log.gz",
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "diff",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.24,
+      "log": "diff.log.gz",
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "complete": true,
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

@@ -84,13 +84,28 @@ fn offline_mode_preserves_the_explicit_no_network_boundary() {
     })
     .solve("Calibrate the snorflax against silent teal weather");
 
-    assert_eq!(response.intent, "unknown");
+    // Issue #1580 (be175ba74): a seeded action request stays a research
+    // trigger offline too, but offline research may only read cached captures
+    // through the shared source client. The no-network boundary is therefore
+    // the absence of any executed search (an empty cache cannot claim captured
+    // sources), not a terminal `unknown` answer. The nominal-phrase twin that
+    // still ends in `unknown` lives in `offline_instruction_research.rs`.
+    assert_eq!(response.intent, "web_search", "{}", response.answer);
     assert!(
         response
-            .links_notation
-            .contains("reasoning:candidate_source allowed_external_api:skipped_offline"),
-        "{}",
-        response.links_notation
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:query_kind:unknown_reasoning_fallback"),
+        "{:?}",
+        response.evidence_links
+    );
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("web_search:executed")),
+        "an offline cache miss cannot claim an executed search: {:?}",
+        response.evidence_links
     );
 }
 

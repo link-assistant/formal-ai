@@ -1,0 +1,13 @@
+{
+  "purpose": "Refresh maintained worker prerequisite source identities after shared-draft source edit. Recovery driver uses the already recorded immutable a748854 snapshot; no identity checks are disabled.",
+  "argv": [
+    "node",
+    "scripts/generate-worker-prerequisites.mjs",
+    "--write"
+  ],
+  "exitCode": 0,
+  "rawSha256": "455db6888ec97cc795f41ea54c73396409b023abfc63bea41c873d57e7d31c9d",
+  "snapshot": "/tmp/issue-1580-research/frozen-formal-driver-a748854",
+  "independentAuthorshipCredit": 0,
+  "validationCredit": 0
+}

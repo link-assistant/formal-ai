@@ -1,0 +1,180 @@
+[
+  {
+    "originalTest": "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+            "line": 61737,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:20.1589134Z test meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+            "line": 70253,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:25:16.8557615Z test with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+            "line": 70261,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:25:20.4630634Z test with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui",
+            "line": 70222,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:24:57.0796944Z test issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+        "method": "exact focused-module source registration; multiline libtest output retained where present",
+        "matches": [
+          {
+            "name": "benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+            "line": 69404,
+            "endLine": 69406,
+            "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:17:25.8033426Z test benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts ... benchmark pass/fail counts: passed=13 failed=0 total=13 minimum_pass_count=13",
+            "completeContext": [
+              "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:15:14.2988662Z test benchmarks::issue_304_benchmark_fixture_parses_with_windows_line_endings ... ok",
+              "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:15:14.2989219Z test benchmarks::issue_304_benchmark_research_note_records_provenance ... ok",
+              "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:17:25.8033426Z test benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts ... benchmark pass/fail counts: passed=13 failed=0 total=13 minimum_pass_count=13",
+              "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:17:25.8034599Z ",
+              "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:17:25.8035075Z ok",
+              "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:17:31.3358606Z test benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace ... ok",
+              "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:17:54.2703903Z test benchmarks::issue_315_program_synthesis_accepts_supported_language_wrappers ... ok"
+            ]
+          }
+        ],
+        "uniqueMatch": true,
+        "sourceBinding": {
+          "head": "e93881cb64a78a19253088c19f09a1f1b816229c",
+          "testFile": "rust/tests/unit/specification/benchmarks.rs",
+          "testFileSha256": "d258e048c3dc81f26df48a1167170065c0f71bacea59b307b8e7dc3d65284fed",
+          "moduleFile": "rust/tests/unit/reasoning_contracts.rs",
+          "moduleFileSha256": "25485d514ce9280eaebf07bab39c7c6b8c9239c469d81e75bf964bb2fcd09062",
+          "moduleDeclaration": "mod benchmarks;"
+        }
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+            "line": 69407,
+            "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:17:31.3358606Z test benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+            "line": 69410,
+            "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:18:57.6275849Z test benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+            "line": 69414,
+            "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T04:22:13.1380488Z test benchmarks::issue_704_portfolio_rescues_the_industry_search_case ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  }
+]

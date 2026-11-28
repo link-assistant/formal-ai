@@ -442,70 +442,7 @@ const RELATION_SEED: &str = "data/seed/formalization-relations.lino";
 /// that would pass whatever was written.
 #[test]
 fn the_relation_seed_declares_how_a_gloss_is_read_and_never_what_a_word_means() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("the repository root sits one level above the crate");
-    let text = fs::read_to_string(root.join(RELATION_SEED))
-        .unwrap_or_else(|error| panic!("{RELATION_SEED}: {error}"));
-
-    let relations = [
-        "is_a",
-        "has_property",
-        "part_of",
-        "requires",
-        "produces",
-        "precedes",
-        "excludes",
-        "measured_in",
-    ];
-    let schema = [
-        "relations",
-        "determiners",
-        "kind",
-        "inverse",
-        "grounding",
-        "lexeme",
-        "surface",
-        "text",
-    ];
-
-    let mut declared: Vec<String> = Vec::new();
-    for line in text.lines() {
-        let trimmed = line.trim();
-        if trimmed.is_empty() {
-            continue;
-        }
-        let head = trimmed.split_whitespace().next().unwrap_or_default();
-        if schema.contains(&head) {
-            continue;
-        }
-        assert!(
-            relations.contains(&head),
-            "{RELATION_SEED} declares `{head}`, which is neither the relation schema \
-             nor one of the eight declared relations: a subject matter may not enter \
-             this file under any record kind"
-        );
-        declared.push(head.to_owned());
-    }
-    declared.sort();
-    let mut expected: Vec<String> = relations.iter().map(|name| (*name).to_owned()).collect();
-    expected.sort();
-    assert_eq!(
-        declared, expected,
-        "the relation vocabulary is the eight the plan declares, no more and no fewer"
-    );
-
-    for line in text.lines() {
-        let trimmed = line.trim();
-        let Some(surface) = trimmed.strip_prefix("text ") else {
-            continue;
-        };
-        let surface = surface.trim().trim_matches('"');
-        assert!(
-            surface.split_whitespace().count() <= 4,
-            "a cue is a fragment, not a definition: {surface:?} in {RELATION_SEED}"
-        );
-    }
+    relation_schema::the_relation_seed_declares_how_a_gloss_is_read_and_never_what_a_word_means();
 }
 
 /// The seed surfaces the nine code-task handlers of issue #1177 render their
@@ -762,40 +699,12 @@ fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
     );
 }
 
-/// Verbatim Hello World program literals still stored under `data/` (issue
-/// #1165 R8). Each is the output literal of one per-language Hello World
-/// template in `data/seed/hello-world-programs.lino`, the seed bundle the
-/// Rust catalog tests hold equal to the catalog tables. The JavaScript
-/// catalog (`data/meta/agentic-coding-catalog.lino`) used to carry a second
-/// copy of every program; it now names its templates and reads their text
-/// from that bundle, so each program is stored once. The ceiling only goes
-/// down: a verified procedure that reproduces a language's program replaces
-/// its stored template, and the ceiling drops with it until it reaches zero.
-/// It fell from 14 to 11 when the Rust, Go and Kotlin rows moved to the
-/// documentation route (R1165-4): their programs are rediscovered from the
-/// documentation captures at answer time and no longer stored. It fell from
-/// 11 to 4 when the Python, JavaScript, TypeScript, C, C++, C# and Ruby rows
-/// followed them, and from 4 to 1 when Java and Scala bound their documented
-/// class and object names into the run contract and PHP's page example was
-/// answered with its missing trailing newline recorded as a deviation. The
-/// one left is Laravel: the Laravel docs show no Hello World command (their
-/// routing page returns `Hello World` as an HTTP response body, not the
-/// standard output the catalog's `php artisan hello:world` contract checks)
-/// and the catalog carries no Laravel grammar.
-const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
+/// Publisher examples are loaded by explicit replay tests. Hold runtime data
+/// and other authored tables at zero verbatim Hello World output literals.
+const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 0;
 
-/// Data captured from a source, each with the Hello World literals it may
-/// hold: source data, not programs. A path ending in `/` names a directory.
-///
-/// The documentation captures seed (R1165-1) holds the code blocks the page
-/// formalizer reads from byte-for-byte captures of documentation pages, each
-/// pinned by SHA-256 and re-derived from the capture by
-/// `documentation_captures_are_the_formalized_fixtures`, so a Hello World it
-/// holds is what a real page shows, not an authored answer. Its ceiling rose
-/// from 7 to 19 with the eight captures of 2026-10-08 (Python wiki, MDN, the
-/// TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org and
-/// the Swift book), to 22 with Oracle's Java tutorial and php.net's first
-/// page, and to 23 with lua.org's Programming in Lua.
+/// Independent ceilings for captured source data under data/. A path ending
+/// in a slash names a directory.
 ///
 /// The requirement-extraction corpus (PR #1188 R1188-U20) holds issue bodies
 /// as their authors wrote them; the 5 are code the issues quote (issues 408,
@@ -808,8 +717,7 @@ const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
 ///
 /// Each is counted on its own ratchet so the source data stays visible and
 /// cannot grow without a new capture.
-const SOURCE_CAPTURES: [(&str, usize); 3] = [
-    ("data/seed/coding-documentation-captures.lino", 23),
+const SOURCE_CAPTURES: [(&str, usize); 2] = [
     ("data/benchmarks/issue-requirements/", 5),
     (
         "data/benchmarks/fixtures/issue-1558/agent-cli-request.json",
@@ -936,8 +844,8 @@ fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
             }
         }
     }
-    assert!(
-        total <= HELLO_WORLD_PROGRAM_LITERALS_MAX,
+    assert_eq!(
+        total, HELLO_WORLD_PROGRAM_LITERALS_MAX,
         "data/ stores {total} verbatim Hello World program literals, above the ratchet of \
          {HELLO_WORLD_PROGRAM_LITERALS_MAX}: {offenders:?}"
     );
@@ -948,3 +856,6 @@ fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
         );
     }
 }
+
+#[path = "no_memorization/relation_schema.rs"]
+mod relation_schema;

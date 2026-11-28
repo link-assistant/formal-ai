@@ -16,7 +16,50 @@ pub(super) fn registered_paths(root: &Path, directory: &Path) -> Result<BTreeSet
     for entry in ["src/lib.rs", "src/main.rs"] {
         walk_file(&root, &crate_root.join(entry), None, &mut visited)?;
     }
+    // Issue #1637: a `[[test]]`, `[[bin]]`, `[[example]]` or `[[bench]]`
+    // target in Cargo.toml is a crate root of its own. A file it owns, or a
+    // module that root declares, is registered even though no `mod` line in
+    // the library names it.
+    for entry in cargo_target_roots(crate_root) {
+        walk_file(&root, &crate_root.join(entry), None, &mut visited)?;
+    }
     Ok(visited)
+}
+
+/// The `path` of every explicit Cargo target table in `<crate>/Cargo.toml`.
+fn cargo_target_roots(crate_root: &Path) -> Vec<String> {
+    let Ok(manifest) = fs::read_to_string(crate_root.join("Cargo.toml")) else {
+        return Vec::new();
+    };
+    let mut in_target = false;
+    let mut paths = Vec::new();
+    for line in manifest.lines() {
+        let line = line.trim();
+        if line.starts_with('[') {
+            in_target = matches!(
+                line,
+                "[[test]]" | "[[bin]]" | "[[example]]" | "[[bench]]"
+            );
+            continue;
+        }
+        if !in_target {
+            continue;
+        }
+        let Some((key, value)) = line.split_once('=') else {
+            continue;
+        };
+        if key.trim() != "path" {
+            continue;
+        }
+        let value = value.trim();
+        if let Some(path) = value
+            .strip_prefix('"')
+            .and_then(|value| value.strip_suffix('"'))
+        {
+            paths.push(path.to_owned());
+        }
+    }
+    paths
 }
 
 fn walk_file(
@@ -220,6 +263,43 @@ fn binary_root_owns_external_test_children_without_a_library() {
         !registered_paths(&root, &root.join("tests/unit"))
             .unwrap()
             .contains(&child)
+    );
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[cfg(test)]
+#[test]
+fn cargo_test_targets_own_their_files_and_declared_modules() {
+    let stamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let root = std::env::temp_dir().join(format!("cargo-target-owner-{stamp}"));
+    fs::create_dir_all(root.join("src")).unwrap();
+    fs::create_dir_all(root.join("tests/unit/specification")).unwrap();
+    fs::write(root.join("src/lib.rs"), "").unwrap();
+    fs::write(
+        root.join("Cargo.toml"),
+        "[package]\nname = \"x\"\n\n[[test]]\nname = \"contracts\"\npath = \"tests/unit/contracts.rs\"\n",
+    )
+    .unwrap();
+    fs::write(
+        root.join("tests/unit/contracts.rs"),
+        "#[path = \"specification/origin.rs\"]\nmod origin;\n",
+    )
+    .unwrap();
+    fs::write(root.join("tests/unit/specification/origin.rs"), "").unwrap();
+    fs::write(root.join("tests/unit/orphan.rs"), "").unwrap();
+    let targets = registered_paths(&root, &root.join("tests/unit")).unwrap();
+    for owned in ["tests/unit/contracts.rs", "tests/unit/specification/origin.rs"] {
+        assert!(
+            targets.contains(&root.join(owned).canonicalize().unwrap()),
+            "{owned} is registered by a Cargo [[test]] root"
+        );
+    }
+    assert!(
+        !targets.contains(&root.join("tests/unit/orphan.rs").canonicalize().unwrap()),
+        "a file no target reaches stays unregistered"
     );
     fs::remove_dir_all(root).unwrap();
 }

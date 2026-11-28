@@ -1,0 +1,86 @@
+{
+  "complete": true,
+  "seconds": 104.556,
+  "records": [
+    {
+      "name": "clean-read-cache-release",
+      "command": [
+        "python3",
+        "/tmp/issue-1580-research/release-quotation-read-cache.py"
+      ],
+      "exitCode": 0,
+      "seconds": 5.65,
+      "rawBytes": 249,
+      "rawLines": 1,
+      "rawSha256": "214ef8ad7252c86d46959863e26cdb1f359aea902447934975e7e441b099d602"
+    },
+    {
+      "name": "bootstrap-archive",
+      "command": [
+        "python3",
+        "/tmp/issue-1580-research/archive-round-bootstrap.py"
+      ],
+      "exitCode": 0,
+      "seconds": 1.654,
+      "rawBytes": 93,
+      "rawLines": 1,
+      "rawSha256": "7bd0fe2790c02fed9c785a325a46212fca91acc05669689ba13ccddb4e6365db"
+    },
+    {
+      "name": "command-archive",
+      "command": [
+        "python3",
+        "/tmp/issue-1580-research/archive-evidence.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.35,
+      "rawBytes": 97,
+      "rawLines": 1,
+      "rawSha256": "21280d8d04455a20ff4bfe1f8b3b2e31a93413f51bda2989714bfd1b4597c609"
+    },
+    {
+      "name": "gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-changelog-fragment-js-twin,check-fragment-release-map,check-file-size,check-reconstructed-changelog"
+      ],
+      "exitCode": 0,
+      "seconds": 94.21,
+      "rawBytes": 215,
+      "rawLines": 7,
+      "rawSha256": "86693356f3c81c9d0dca07593e3c39d9759806f861fa9082547ff8e7e2fe3c24"
+    },
+    {
+      "name": "typescript-projection",
+      "command": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 2.417,
+      "rawBytes": 28,
+      "rawLines": 1,
+      "rawSha256": "40592cfcdab6b346d44ae208101465c4ea472938567aed877078bf67523bb684"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.271,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 1042540,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

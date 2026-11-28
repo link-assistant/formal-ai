@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "--max-old-space-size=64",
+    "experiments/issue-1580/browser-deadline-descendant.mjs",
+    "--reap-child"
+  ],
+  "status": 0,
+  "durationSeconds": 1.179,
+  "rawSha256": "488977d770f8076fc5772b778b570d8812562640103d2c3557338d7753bbb091",
+  "log": "descendant-reaped.log.gz",
+  "independentAuthorshipCredit": 0
+}

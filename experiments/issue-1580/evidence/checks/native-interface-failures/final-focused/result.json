@@ -1,0 +1,200 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "witness-authorize",
+      "argv": [
+        "node",
+        "/tmp/issue-1580-research/authorize-native-witness-v2.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.122,
+      "file": "witness-authorize.log.gz",
+      "rawSha256": "2cd5138b0cfe428d0f988557f8319f3acaae257b386c675e539e9f087ad5125a",
+      "archiveSha256": "b51d48f9d2a6ba9de13e0156a4ccc284f28db64d4f20e2d880c02c0593745041",
+      "lines": 28
+    },
+    {
+      "name": "witness-guarded-refresh",
+      "argv": [
+        "node",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+        "--refresh-reviewed-baseline",
+        "--reviewed-reader-sha=861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+        "--previous-baseline-sha=0400d5b28de6935a20287deb569468c5abd40faed5bc998e584e4756cc7cdb09"
+      ],
+      "exitCode": 0,
+      "seconds": 8.936,
+      "file": "witness-guarded-refresh.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "witness-after-review",
+      "argv": [
+        "node",
+        "/tmp/issue-1580-research/review-current-native-witness.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.517,
+      "file": "witness-after-review.log.gz",
+      "rawSha256": "a6d1b060defd44da88c73f4218b45ff4b7da2e3a86ac173e7d9c84bcb1ba15aa",
+      "archiveSha256": "d1ad09312b4513d602920df8b8e9b8163e5fc6e59dc4cb4c950b0d2b949bbd5f",
+      "lines": 14
+    },
+    {
+      "name": "unicode-identifiers",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 9.217,
+      "file": "unicode-identifiers.log.gz",
+      "rawSha256": "251d3b5a3c802286e041b1eb2cc40219da529ffa1be69a169217a294c9764801",
+      "archiveSha256": "12c0ed1a9143e0ba170bd03526023a72c0bf0821b459c957dfc42bd53e7464c7",
+      "lines": 42
+    },
+    {
+      "name": "fixture-integrity",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.212,
+      "file": "fixture-integrity.log.gz",
+      "rawSha256": "5d4f6e73bbd0ff5a9383b4073948d1b487fbd6329c2df62d603dce46a4d2564e",
+      "archiveSha256": "6ef15d123073e77a32ef0e22a97d40e24392d8e0fd9ccf16da6555f416a03b97",
+      "lines": 10
+    },
+    {
+      "name": "default-branch-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.831,
+      "file": "default-branch-policy.log.gz",
+      "rawSha256": "16e32006313f974c37dc428384b1974861d9e2a0899cf1795b8b720185a00330",
+      "archiveSha256": "e69910099e6603da083f5c8ad360d33d38b5e66077211a1440fe1c71ea36c64e",
+      "lines": 61
+    },
+    {
+      "name": "focused-test-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.719,
+      "file": "focused-test-map.log.gz",
+      "rawSha256": "ae2f55620a513a0f05fa7c7a570c8ebf43223b7176c818ff37235ca48b11a1fd",
+      "archiveSha256": "53e152d7d38d8661eeecf9cd72be1be97274fe299877917976bf79f998155c89",
+      "lines": 16
+    },
+    {
+      "name": "seven-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-file-size,check-minimal-core-boundary-js-twin,check-minimal-core-boundary,check-runtime-feature-inventory,check-worker-line-budget-js-twin,check-worker-line-budget"
+      ],
+      "exitCode": 0,
+      "seconds": 15.279,
+      "file": "seven-gates.log.gz",
+      "rawSha256": "0faf9e9634ed330f85732920852092835c91c5cd959af31509ca3dc254c88669",
+      "archiveSha256": "8d12f5cc96e9b1e2dcf692763d5b0fdacd42192651e2aac27622d245e8ea47fe",
+      "lines": 9
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/coding/composition.rs",
+        "rust/src/coding/composition/ir_draft.rs",
+        "rust/src/coding/composition_search/binders.rs",
+        "rust/src/coding/composition_search/pool.rs",
+        "rust/src/solver_handlers/web_requests/url_parse.rs",
+        "rust/tests/integration/with_formal_ai.rs",
+        "rust/tests/integration/with_formal_ai/verbosity.rs",
+        "rust/tests/unit/coding_contracts.rs",
+        "rust/tests/unit/coding_discovery/composition.rs",
+        "rust/tests/unit/coding_discovery/composition/rejected_ir.rs",
+        "rust/tests/unit/coding_discovery/composition_search.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.19,
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "shell-parse",
+      "argv": [
+        "bash",
+        "-n",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.005,
+      "file": "shell-parse.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "shellcheck",
+      "argv": [
+        "shellcheck",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.064,
+      "file": "shellcheck.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.214,
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  ],
+  "allChecksPassed": true,
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false
+}

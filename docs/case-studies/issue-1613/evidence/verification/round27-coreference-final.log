@@ -1,0 +1,20 @@
+✔ the diagnostic marker is a seed table row, not a literal in code (523.039921ms)
+✔ a marked prompt answers the unmarked answer with its evidence and trace under the marker (2646.645039ms)
+✔ only the exact seeded marker is recognized, so an upper-case one never re-enters itself (121.299947ms)
+✔ a pronoun resolves to the nearest earlier antecedent and exposes the resolution (542.397136ms)
+✔ resolved follow-ups expose the referent without inventing an answer (216.655464ms)
+✔ a pronoun with no antecedent in any earlier user turn is not a coreference (250.236887ms)
+✔ a word that only contains a pronoun is no coreference; the pronoun itself still is (491.862244ms)
+✔ a tool call outside agent mode is refused with the native seeded sentence (106.148058ms)
+✔ an allowed calculator call renders the native report (46.290196ms)
+✔ a tool the browser cannot run is refused explicitly in the prompt language (97.508904ms)
+✔ an installation guide converts to both scripts from the seed tables (529.422206ms)
+✔ a translation gap answers the seeded wording (114.635316ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8949.179379

@@ -1,0 +1,12 @@
+{
+  "head": "f6c1647704cb5ebc6d9af0fe9ad4a9458f81bfba",
+  "published": false,
+  "javascriptPassed": 72,
+  "affectedGatesPassed": 14,
+  "initialGateFailuresRetained": 2,
+  "nativeExecutedLocally": false,
+  "procedureTestUnchangedFromPublishedHead": true,
+  "originalWholeFileReplayCredit": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

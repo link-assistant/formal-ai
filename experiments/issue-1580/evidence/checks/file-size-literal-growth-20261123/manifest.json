@@ -1,0 +1,26 @@
+{
+  "subject": "Literal NUL Git warning-growth ownership and conservative incomplete observations",
+  "headBeforeRepair": "2ab74598933f4a3878e1d7240d9cc0e0a5996750",
+  "beforeFocusedFailures": 3,
+  "afterFocusedPasses": 4,
+  "maintainedTwinPasses": 22,
+  "affectedJavaScriptGatesPassed": 11,
+  "rustFormatPassed": true,
+  "nativeParserCasesAdded": 2,
+  "nativeParserExecutionPending": true,
+  "hostedCurrentRepairPending": true,
+  "fullLiteralTemplateReadThisSubstep": false,
+  "targetedTemplateComparisonRead": true,
+  "failedDraftRetained": true,
+  "targetedFinalReviewComplete": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 51305,
+    "sha256": "17914d37ffe22fbe850e35d5b5e729bd830e0581fe53005e6c5e288e55e5f83b"
+  },
+  "members": 43,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T14:28:57.403944+00:00"
+}

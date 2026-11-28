@@ -24,6 +24,9 @@ test('ordered JavaScript runner preserves file order and inherited context and f
   delete environment.NODE_TEST_CONTEXT;
   const options = {encoding: 'utf8', timeout: 8000, maxBuffer: 512 * 1024, env: environment};
   function assertSummaries(result, expectedFiles, expectedState) {
+    const queued = result.stderr.split('\n').filter(line => line.startsWith('[test-file] queued '))
+      .map(line => resolve(line.slice('[test-file] queued '.length)));
+    assert.deepEqual(queued, expectedFiles, 'record the explicit queue once before Node can emit synchronous events');
     // Local Node20 checks order/environment/TODO/status; hosted Node22+ also qualifies summary events.
     if (Number(process.versions.node.split('.')[0]) < 22) return;
     const lines = result.stderr.split('\n').filter(line => /^\[test-file\] (completed|failed) /u.test(line));
@@ -61,4 +64,65 @@ test('ordered JavaScript runner preserves file order and inherited context and f
   } finally {
     rmSync(directory, {recursive: true, force: true});
   }
+});
+
+test('ordered runner records its queue when enqueue events precede listener attachment', {timeout: 12000}, () => {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-synchronous-enqueue-'));
+  try {
+    const runner = resolve('scripts/run-ordered-javascript-tests.mjs');
+    const fixture = join(directory, 'finite.test.mjs');
+    const loader = join(directory, 'enqueue-loader.mjs');
+    writeFileSync(fixture, "import {test} from 'node:test';test('finite fixture', () => {});\n");
+    // Keep the real runner and real test execution; model only the absent
+    // later enqueue callback seen in the retained hosted job logs.
+    const wrapper = "import {createRequire} from 'node:module';" +
+      "const original=createRequire(process.cwd()+'/package.json')('node:test').run;" +
+      "export function run(options){const stream=original(options),on=stream.on;" +
+      "stream.on=function(event,listener){return event==='test:enqueue'?this:on.call(this,event,listener)};return stream;}";
+    const url = 'data:text/javascript;base64,' + Buffer.from(wrapper).toString('base64');
+    writeFileSync(loader, 'export function resolve(specifier,context,next){if(specifier==="node:test"&&context.parentURL===' +
+      JSON.stringify(new URL('file://' + runner).href) + ')return {url:' + JSON.stringify(url) +
+      ',shortCircuit:true};return next(specifier,context); }\n');
+    const env = {...process.env}; delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(process.execPath, ['--max-old-space-size=128', '--experimental-loader', loader,
+      runner, '--concurrency', '1', fixture], {env, encoding: 'utf8', timeout: 8000, maxBuffer: 512 * 1024});
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+    const queued = result.stderr.split('\n').filter(line => line.startsWith('[test-file] queued '))
+      .map(line => resolve(line.slice('[test-file] queued '.length)));
+    assert.deepEqual(queued, [fixture]);
+    assert.match(result.stdout, /finite fixture/u);
+  } finally { rmSync(directory, {recursive: true, force: true}); }
+});
+
+
+test('ordered runner completes assertion-only files without confusing file-named cases with file results', {timeout:12000}, () => {
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-file-result-'));
+  try {
+    const first=join(directory,'assertions-only.test.mjs');
+    const failure=join(directory,'throw-only.test.mjs');
+    const named=join(directory,'file-named-cases.test.mjs');
+    writeFileSync(first,"import assert from 'node:assert/strict'; assert.equal(2+2,4);\n");
+    writeFileSync(failure,"throw Error('controlled top-level assertion failure');\n");
+    writeFileSync(named,"import test from 'node:test'; test("+JSON.stringify(named)+",()=>{});"+
+      "test('later case',async()=>{await new Promise(resolve=>setTimeout(resolve,60));});\n");
+    const env={...process.env}; delete env.NODE_TEST_CONTEXT;
+    const result=spawnSync(process.execPath,['--max-old-space-size=128',resolve('scripts/run-ordered-javascript-tests.mjs'),
+      '--concurrency','1',first,named,failure],{env,encoding:'utf8',timeout:8000,maxBuffer:512*1024});
+    assert.equal(result.error,undefined);
+    assert.equal(result.status,1,result.stdout+result.stderr);
+    const records=result.stderr.split('\n').flatMap(line=>{
+      const match=/^\[test-file\] (completed|failed) (.+) (\{.+\})$/u.exec(line);
+      return match?[{state:match[1],file:resolve(match[2]),duration:JSON.parse(match[3]).duration_ms}]:[];
+    });
+    assert.equal(records.length,3,result.stderr);
+    assert.equal(new Set(records.map(row=>row.file)).size,3);
+    assert.equal(records.find(row=>row.file===first)?.state,'completed');
+    assert.equal(records.find(row=>row.file===failure)?.state,'failed');
+    const actualFile=records.find(row=>row.file===named);
+    assert.equal(actualFile?.state,'completed');
+    assert(actualFile.duration>=60,'file completion includes the later case, not its file-named predecessor');
+    assert(records.every(row=>Number.isFinite(row.duration)&&row.duration>=0));
+    assert.match(result.stdout,/controlled top-level assertion failure/u);
+  } finally {rmSync(directory,{recursive:true,force:true});}
 });

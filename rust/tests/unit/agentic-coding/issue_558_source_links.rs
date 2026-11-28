@@ -15,6 +15,9 @@
 //! deliberately slow); since issue #1167 a deterministic twenty-file sample of the
 //! same invariant runs unconditionally in CI.
 
+#[allow(clippy::duplicate_mod)]
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
 use formal_ai::agentic_coding::{
     AgenticPlan, DRIVER_TOOLS, PlannedToolCall, plan_chat_step, run_agentic_task, source_links,
 };
@@ -23,6 +26,7 @@ use formal_ai::{
     owned_manifest_content_id, owned_manifest_notation, owned_source_files, owned_total_bytes,
 };
 use lino_objects_codec::format::parse_indented;
+use repair_fixture::SELF_HEAL_TASK;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
     match plan_chat_step(messages, tools) {
@@ -217,9 +221,7 @@ fn recognises_the_source_links_task() {
     assert!(!source_links::is_source_links_task(
         "store the cst/ast of our meta algorithm so it can reason about itself"
     ));
-    assert!(!source_links::is_source_links_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
+    assert!(!source_links::is_source_links_task(SELF_HEAL_TASK));
     // The source-links task itself must not trip the sibling routers.
     assert!(!formal_ai::agentic_coding::is_self_ast_task(
         source_links::SOURCE_LINKS_TASK

@@ -1,0 +1,44 @@
+{
+  "head": "e120c05b4d8e35d51e4c1efb95e9b0c46c8d42b5",
+  "run": 44112040276,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44112040276",
+  "log": "44112040276.log.gz",
+  "rawSha256": "0e2740d967a5d2f94af7af42b20bfc90ef27aea461ff136e9dfb69bb5c644f62",
+  "observations": [
+    {
+      "test": "python: failed Git is reported as a successful no-code observation",
+      "line": 4931,
+      "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:18:49.9688234Z \u2714 python: failed Git is reported as a successful no-code observation (560.676129ms)"
+    },
+    {
+      "test": "Python pinned manual fragment creation silently replaces an earlier same-second change",
+      "line": 4947,
+      "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:18:49.9701035Z \u2714 Python pinned manual fragment creation silently replaces an earlier same-second change (206.407444ms)"
+    },
+    {
+      "test": "Python candidate rejects a same-second collision and preserves the earlier bytes",
+      "line": 4948,
+      "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:18:49.9701860Z \u2714 Python candidate rejects a same-second collision and preserves the earlier bytes (163.710484ms)"
+    },
+    {
+      "test": "Python separate timestamps retain both descriptions before and after the guard",
+      "line": 4949,
+      "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:18:49.9702705Z \u2714 Python separate timestamps retain both descriptions before and after the guard (220.885151ms)"
+    },
+    {
+      "test": "Python invalid bump remains a fatal nonmutating argument error before and after the guard",
+      "line": 4950,
+      "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:18:49.9707915Z \u2714 Python invalid bump remains a fatal nonmutating argument error before and after the guard (123.713005ms)"
+    },
+    {
+      "test": "missing or old Python fails hosted observations while remaining optional locally",
+      "line": 4951,
+      "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:18:49.9708826Z \u2714 missing or old Python fails hosted observations while remaining optional locally (697.022929ms)"
+    },
+    {
+      "test": "the selected JavaScript shard provisions Python before executing the pinned observations",
+      "line": 4952,
+      "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:18:49.9709936Z \u2714 the selected JavaScript shard provisions Python before executing the pinned observations (295.61576ms)"
+    }
+  ]
+}

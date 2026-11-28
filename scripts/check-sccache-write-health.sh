@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Report the share of sccache cache writes that the backend rejected.
+# Report the share of sccache cache writes that recorded an error.
 #
 # Issue #1081 (D9). `sccache --show-stats` prints `Cache write errors` as one
 # row among twenty, nothing reads it, and no threshold exists -- so a run in
@@ -18,9 +18,9 @@
 #                                     ---------------------------------
 #                                     843 writes / 868 errors   50.7%
 #
-# A write that fails is a crate the next run recompiles, so this is the cheapest
-# available explanation for the budget pressure that issues #1017, #1021 and
-# #1081 all landed on from the other end.
+# A write error may leave an artifact unavailable, but it can also mean another
+# writer already stored the same key. These counters alone establish neither
+# future cache misses nor how much compilation time was lost.
 #
 # Two hypotheses fit the shape of that table, and this script does not claim to
 # choose between them:
@@ -34,13 +34,14 @@
 #      crates; the two macOS jobs run alone at 07:52 and 08:06, in a key space
 #      nobody else is writing, and report ~0%.
 #
-# Both predict error rates that rise with simultaneity, which is what was
-# measured -- note that the rate does NOT rise with finishing order, so "someone
-# else got there first" in the sequential sense is already refuted. The evidence
-# that separates them is the backend's own response, which sccache logs only
-# under `SCCACHE_LOG=debug`. That is wired to the `FORMAL_AI_CI_VERBOSE`
+# Neither the counts nor job finishing order distinguish these hypotheses.
+# The evidence that separates them is the backend's own response, which sccache logs only
+# under debug logging. The shared setup filters the producer by the exact
+# `Error executing cache write:` message so large compiler arguments cannot
+# displace the backend response. That is wired to `FORMAL_AI_CI_VERBOSE`
 # repository variable in `.github/actions/setup-sccache/action.yml` and is off by
-# default; set it to `true` and rerun to collect the discriminating evidence.
+# default; set it to `true` and rerun. The EXIT diagnostic below retains a
+# bounded, URL-redacted tail in the hosted job log, including when stats fail.
 #
 # Until then this script does the one thing that was missing: it makes the
 # counter visible, with a threshold, in the run that produced it.
@@ -53,6 +54,8 @@
 #   SCCACHE_WRITE_MIN_ATTEMPTS        stay quiet below this many attempts (20)
 #   SCCACHE_HEALTH_LABEL              prefix for the annotation title ("")
 #   SCCACHE_PATH                      sccache binary to ask (found on PATH)
+#   FORMAL_AI_CI_VERBOSE               true retains opt-in backend diagnostics
+#   SCCACHE_ERROR_LOG                  server log configured before startup
 #
 # Exit status is always 0: this is a visibility audit, and a diagnostic that
 # fails a step replaces the finding with a worse one.
@@ -62,6 +65,27 @@ warn_percent="${SCCACHE_WRITE_ERROR_WARN_PERCENT:-25}"
 min_attempts="${SCCACHE_WRITE_MIN_ATTEMPTS:-20}"
 label="${SCCACHE_HEALTH_LABEL:-}"
 source="${1:-}"
+
+# The daemon writes this file instead of the job's output. Without retaining it,
+# an opt-in rerun loses the response needed to diagnose cache write failures.
+# Read at most 64 KiB and print at most 80 lines; URL values can be signed.
+# Suspend workflow commands with a fresh 128-bit token while printing backend
+# text. A display prefix alone is not an execution boundary.
+# shellcheck disable=SC2329  # invoked by the EXIT trap, including early exits
+emit_backend_diagnostics() {
+  [ "${FORMAL_AI_CI_VERBOSE:-false}" = true ] || return 0
+  local backend_log="${SCCACHE_ERROR_LOG:-}" token
+  [ -n "$backend_log" ] && [ -f "$backend_log" ] && [ -r "$backend_log" ] || return 0
+  token="$(od -An -N16 -tx1 /dev/urandom 2> /dev/null | tr -d '[:space:]')" || return 0
+  [[ "$token" =~ ^[0-9a-f]{32}$ ]] || return 0
+  printf '::stop-commands::%s\n' "$token" >&2
+  echo '[sccache] opt-in backend log tail (at most 64 KiB / 80 lines; URLs redacted):' >&2
+  tail -c 65536 -- "$backend_log" 2> /dev/null | tail -n 80 |
+    sed -E 's#https?://[^[:space:]]+#<cache-url-redacted>#g; s/^/[sccache] /' >&2 || true
+  printf '::%s::\n' "$token" >&2
+  return 0
+}
+trap emit_backend_diagnostics EXIT
 
 read_stats() {
   if [ -n "$source" ] && [ "$source" != "-" ]; then
@@ -81,13 +105,13 @@ read_stats() {
   "$sccache" --show-stats --stats-format=json 2> /dev/null
 }
 
-# The counters are flat integers in a single-line JSON object, so a targeted
+# The counters are integers, so a targeted
 # match is enough and does not add a python/jq dependency to every runner that
 # compiles Rust. `"cache_writes":` and `"cache_write_errors":` are distinct keys
 # and the trailing colon keeps the shorter one from matching the longer.
 field() {
   local name="$1" body="$2" value
-  value="$(printf '%s' "$body" | grep -o "\"${name}\":[0-9]\+" | head -n 1 | cut -d: -f2)"
+  value="$(printf '%s' "$body" | grep -o "\"${name}\"[[:space:]]*:[[:space:]]*[0-9]\+" | head -n 1 | cut -d: -f2 | tr -d '[:space:]')"
   printf '%s' "${value:-}"
 }
 
@@ -111,9 +135,9 @@ fi
 share=$((errors * 100 / attempts))
 [ "$share" -ge "$warn_percent" ] || exit 0
 
-title="Compiler cache rejected ${share}% of its writes"
+title="Compiler cache reported errors for ${share}% of its writes"
 [ -z "$label" ] || title="${label}: ${title}"
-echo "::warning title=${title}::sccache offered ${attempts} compiled artifacts to the GitHub Actions Cache and ${errors} were refused (${writes} stored). Every refused write is a crate the next run compiles again, so this is build time the cache is not saving. Set the FORMAL_AI_CI_VERBOSE repository variable to true and rerun to capture the backend's own response (SCCACHE_LOG=debug), which is what separates rate limiting from concurrent writers of the same key -- see scripts/check-sccache-write-health.sh." >&2
+echo "::warning title=${title}::sccache attempted ${attempts} cache writes: ${errors} recorded errors and ${writes} were stored. These counters do not establish future cache misses; another writer may already have stored the same key. Set the FORMAL_AI_CI_VERBOSE repository variable to true and rerun to capture the backend's own response (SCCACHE_LOG=debug), which is what separates rate limiting from concurrent writers of the same key -- see scripts/check-sccache-write-health.sh." >&2
 
 if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
   {
@@ -121,7 +145,7 @@ if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
     # a bare leading `-` is argument-parsed away before it reaches the output.
     printf -- '- Compiler cache writes'
     [ -z "$label" ] || printf ' (%s)' "$label"
-    printf ': %s stored, %s refused, %s%% refused.\n' "$writes" "$errors" "$share"
+    printf ': %s stored, %s write errors, %s%% errors.\n' "$writes" "$errors" "$share"
   } >> "$GITHUB_STEP_SUMMARY"
 fi
 

@@ -1,0 +1,22 @@
+{
+  "beforeSha256": "733a055f7c4eddd74b39f8ccf93b72063632f0248a9b43df87d8bc01439db7a0",
+  "afterSha256": "90c063838182ef6c99ac719f45d586f90c8dfcf7b523b392eae753d32ada9297",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "readerUnchanged": true,
+  "total": 1185,
+  "supported": 221,
+  "unsupported": 964,
+  "completeInventoryDeepEqual": true,
+  "completeWitnessDeepEqualAfterExactlyOneReviewedHash": true,
+  "changes": [
+    {
+      "path": "sourceManifest/116/sha256",
+      "source": "rust/tests/unit/specification/synthesis.rs",
+      "before": "257e83c8d00c70af9ce40adeb4708cc63fb778b103487d4accb0da9545e872b9",
+      "after": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93"
+    }
+  ],
+  "sourceAssertionsVerifiedByHostedRun": 44314403754,
+  "sourceTestCount": 12,
+  "independentAuthorshipCredit": 0
+}

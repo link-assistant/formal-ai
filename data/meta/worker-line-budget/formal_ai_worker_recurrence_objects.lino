@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_recurrence_objects.js"
+  ceiling 184
+  rationale "Issue #1613 validates publisher function, expression, operator and tester objects before passing a bounded recurrence to the language renderer."

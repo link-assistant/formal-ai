@@ -26,7 +26,8 @@ use std::path::{Path, PathBuf};
 /// The assembled register, split into parts under the 1500-line cap.
 const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
 const REQUIREMENT_SHARDS: &str = "docs/requirements";
-const TRACEABILITY: &str = "docs/requirements-traceability.md";
+#[path = "lib/requirements-traceability.rs"]
+mod requirements_traceability;
 const MANIFEST: &str = "data/meta/requirement-status-ledger.lino";
 const LEDGER_DIRECTORY: &str = "data/meta/requirement-status-ledger";
 
@@ -272,10 +273,7 @@ fn read_register(root: &Path) -> Result<String, String> {
 fn requirement_rows(root: &Path) -> Result<Vec<Requirement>, String> {
     let assembled = read_register(root)?;
     let expected = defined_requirement_ids(&assembled);
-    let trace = trace_rows(
-        &fs::read_to_string(root.join(TRACEABILITY)).unwrap_or_default(),
-        root,
-    );
+    let trace = trace_rows(&requirements_traceability::read_traceability(root)?, root);
     let mut ownership: BTreeMap<String, (String, String)> = BTreeMap::new();
     let mut paths: Vec<PathBuf> = fs::read_dir(root.join(REQUIREMENT_SHARDS))
         .map_err(|error| format!("cannot read {REQUIREMENT_SHARDS}: {error}"))?

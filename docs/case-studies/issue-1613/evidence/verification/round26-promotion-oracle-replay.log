@@ -1,0 +1,17 @@
+✔ a verified candidate in the worker trace yields the Rust learning_trace (4.584282ms)
+✔ the native solver event log is read verbatim once it carries the candidate (0.803509ms)
+✔ no learning_trace without both a candidate and a verification (0.619205ms)
+✔ event_payload stops at the next step and keeps only known fields (0.334915ms)
+✔ promotion reads thresholds without packaging the benchmark cases (163.490816ms)
+✔ Formal AI reproduces the pre-extraction coding benchmark promotion contract (11164.690301ms)
+✔ a reported conversation stages one proposal against an absent gate (26.663195ms)
+✔ a failed verification is a rejection, not a proposal (22.880868ms)
+✔ the learn route counts the proposals of a recorded dialog (28.757752ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12186.111362

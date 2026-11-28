@@ -15,13 +15,21 @@ import { seedFiles, parseLexiconText, words as meaningWords } from './crate/seed
 
 /** Mirrors `fn resolve_requirement_target`: `{module_path, symbol, kind}` or null. */
 export function resolveRequirementTarget(requirement) {
+  return resolveRequirementTargets([requirement])[0];
+}
+
+/** Resolve a group against the same source closure observation. */
+export function resolveRequirementTargets(requirements) {
   const census = workspace();
-  const scoped = explicitModuleScope(census, requirement);
   const complete = hasHost() && typeof host().censusSourceClosureComplete === 'function'
     && host().censusSourceClosureComplete() === true;
-  const resolved = scoped === census && !complete ? null : resolveIn(census, requirement);
-  // Observed declarations can refuse fallback without authorizing an unqualified target.
-  return resolved !== null ? resolved : resolveGeneratedSeedTarget(census, requirement);
+  return requirements.map(requirement => {
+    if (requirement === null) return null;
+    const scoped = explicitModuleScope(census, requirement);
+    const resolved = scoped === census && !complete ? null : resolveIn(census, requirement);
+    // Observed declarations can refuse fallback without authorizing an unqualified target.
+    return resolved !== null ? resolved : resolveGeneratedSeedTarget(census, requirement);
+  });
 }
 
 /** Mirrors `fn resolve_in`. */

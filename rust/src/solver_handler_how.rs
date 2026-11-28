@@ -136,15 +136,10 @@ pub fn try_how_to_procedure(
         "explicit_steps_only".to_owned(),
     );
 
-    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
-    let body = render_procedural_how_to_body(
-        &task,
-        &wikihow_candidate,
-        &wikihow_api_url,
-        &search_query,
-        &fallback_query,
-        &provider_summary,
+    let body = how_response(
+        "procedural_how_to_unverified",
         language,
+        &[("task", &task.task)],
     );
 
     Some(finalize_simple(
@@ -162,11 +157,25 @@ pub fn try_how_to_procedure(
 ///
 /// Exposed so the executed synthesis path
 /// ([`crate::solver_handler_how_synthesis`]) recognises exactly the same
-/// prompts, in exactly the same normalised form, as the discovery plan it falls
-/// back to — the two can never disagree about what the task is.
+/// prompts, in exactly the same normalised form, as the unverified reply.
 #[must_use]
 pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
     extract_procedural_how_to_task(normalized).map(|task| task.task)
+}
+
+pub(super) fn procedural_index_queries(normalized: &str) -> Vec<String> {
+    let Some(task) = extract_procedural_how_to_task(normalized) else {
+        return Vec::new();
+    };
+    let mut queries = vec![procedural_search_query(&task)];
+    if task.action == "install" {
+        queries.push(how_policy(
+            "procedural_how_to",
+            "fallback-query",
+            &[("task", &task.task)],
+        ));
+    }
+    queries
 }
 
 /// Handles follow-up requests for the concrete steps of an active procedure —
@@ -193,9 +202,6 @@ pub(crate) fn try_procedural_how_to_followup_with(
     log: &mut EventLog,
     solve: impl FnOnce(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>,
 ) -> Option<SymbolicAnswer> {
-    if let Some(answer) = practical_help::followup(prompt, normalized, log) {
-        return Some(answer);
-    }
     // The dispatch loop passes a lightly-cleaned `prompt.to_lowercase()` whose
     // punctuation survives, so "Can you give me specific instructions?" keeps its
     // trailing "?" and a phrase surface would miss. Canonicalise first, exactly
@@ -206,14 +212,17 @@ pub(crate) fn try_procedural_how_to_followup_with(
     } else {
         canonical.as_str()
     };
+    let prior_user = last_user_turn(log)?.to_owned();
+    let prior_normalized = normalize_prompt(&prior_user);
+    if practical_help::followup_goal(canonical, &prior_user).is_some() {
+        return solve(&prior_user, &prior_normalized, log);
+    }
     if !is_procedural_elaboration_request(canonical) {
         return None;
     }
     // The prior exchange must have been a how-to procedure: the previous user
     // turn re-parses as a procedural request and the assistant answered it.
     last_assistant_turn(log)?;
-    let prior_user = last_user_turn(log)?.to_owned();
-    let prior_normalized = normalize_prompt(&prior_user);
     let task = extract_procedural_how_to_task(&prior_normalized)?;
     log.append("procedural_how_to:followup", canonical.to_owned());
     log.append("procedural_how_to:followup_task", task.task);
@@ -577,6 +586,10 @@ fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTas
 }
 
 fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<ProceduralHowToTask> {
+    // A seeded opinion lead ("как ты думаешь, есть ли …") outranks the infinitive guess.
+    if crate::rule_interpreter::handler_matches("opinion_question", clean_prompt) {
+        return None;
+    }
     for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD) {
         let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) else {
             continue;
@@ -754,44 +767,6 @@ fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrectio
         .join(" ");
 
     (corrected, corrections)
-}
-
-fn render_procedural_how_to_body(
-    task: &ProceduralHowToTask,
-    wikihow_candidate: &str,
-    wikihow_api_url: &str,
-    search_query: &str,
-    fallback_query: &str,
-    provider_summary: &str,
-    language: &str,
-) -> String {
-    let install_gate = if task.action == "install" {
-        how_response(
-            "procedural_how_to_install_gate",
-            language,
-            &[
-                ("search_query", search_query),
-                ("fallback_query", fallback_query),
-            ],
-        )
-    } else {
-        String::new()
-    };
-    how_response(
-        "procedural_how_to_plan",
-        language,
-        &[
-            ("task", &task.task),
-            ("action", &task.action),
-            ("object", &task.object),
-            ("install_gate", &install_gate),
-            ("candidate", wikihow_candidate),
-            ("api_url", wikihow_api_url),
-            ("search_query", search_query),
-            ("providers", provider_summary),
-            ("k", &WEB_SEARCH_RRF_K.to_string()),
-        ],
-    )
 }
 
 /// A seeded response with its `{name}` slots filled in one pass, so a value

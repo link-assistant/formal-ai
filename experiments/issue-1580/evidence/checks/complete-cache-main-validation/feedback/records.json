@@ -1,0 +1,74 @@
+[
+  {
+    "name": "issue",
+    "argv": [
+      "gh",
+      "issue",
+      "view",
+      "https://github.com/link-assistant/formal-ai/issues/1580",
+      "--json",
+      "title,body,state,updatedAt"
+    ],
+    "rawSha256": "66a4c04fd4fde0fe2130f5e12a11b56a70293617c43cba37abdf8a87284f201a",
+    "exitCode": 0
+  },
+  {
+    "name": "issue-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1580/comments",
+      "--paginate"
+    ],
+    "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+    "exitCode": 0
+  },
+  {
+    "name": "pull-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1581/comments",
+      "--paginate"
+    ],
+    "rawSha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302",
+    "exitCode": 0
+  },
+  {
+    "name": "pull-inline-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/comments",
+      "--paginate"
+    ],
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "exitCode": 0
+  },
+  {
+    "name": "pull-reviews",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/reviews",
+      "--paginate"
+    ],
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "exitCode": 0
+  },
+  {
+    "name": "pull",
+    "argv": [
+      "gh",
+      "pr",
+      "view",
+      "1581",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--json",
+      "title,body,headRefOid,isDraft,url,mergeStateStatus"
+    ],
+    "rawSha256": "1f78ed7fd06486d5b52b404aa8e5b6fd62e24a87897985d907dd90f3f4925806",
+    "exitCode": 0
+  }
+]
