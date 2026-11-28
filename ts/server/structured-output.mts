@@ -9,6 +9,7 @@ import { ensureNodeHost } from './node-host-install.mjs';
 import { stableId } from './ids.mjs';
 import { isMap } from './protocol-values.mjs';
 import { thinkingStep } from './thinking.mjs';
+import { stringArrayEvidence, stringArrayItems } from './structured-array.mjs';
 import { portableValue, schemaIssue, schemaReference, validOutput } from './structured-schema.mjs';
 
 const JSON_OBJECT = { type: 'object' };
@@ -89,15 +90,26 @@ function evidenceFor(name, field, description, source, answer, number, key) {
   return undefined;
 }
 
+function objectFields(schema) {
+  return schema.properties ? schema : schemaReference(schema, schema.$ref) ?? schema;
+}
+
+function fieldDescription(field, resolved) {
+  return typeof field?.description === 'string' ? field.description : resolved?.description;
+}
+
 function fillObject(schema, source, answer, number, supplied) {
-  const fields = schema.properties ? schema : schemaReference(schema, schema.$ref) ?? schema;
+  const fields = objectFields(schema);
   const key = KEY.exec(source)?.[1];
   const result = new Map();
   for (const [name, field] of Object.entries(fields.properties ?? {})) {
     const resolved = schemaReference(schema, field?.$ref) ?? field;
-    const description = typeof field?.description === 'string' ? field.description : resolved?.description;
+    const description = fieldDescription(field, resolved);
+    const items = stringArrayItems(resolved, schema);
     let value = supplied ? (Object.hasOwn(supplied, name) ? supplied[name] : undefined)
-      : evidenceFor(name, resolved, description, source, answer, number, key);
+      : items ? stringArrayEvidence(source, name, description, items, normalizeKey)
+        : evidenceFor(name, resolved, description, source, answer, number, key);
+    if (!supplied && items && value === undefined && validOutput([], field, schema)) value = [];
     if (value === undefined && (fields.required ?? []).includes(name)) {
       if (validOutput(null, field, schema)) value = null;
       else if (resolved?.enum?.includes(UNKNOWN) && validOutput(UNKNOWN, field, schema)) value = UNKNOWN;
@@ -147,7 +159,8 @@ export async function structuredAnswerFromSource(ctx, format, chat, source) {
 
 export async function projectStructuredOutput(ctx, obligation, source, answer, refusal) {
   const { schema, issue } = obligation;
-  const value = !refusal && schema ? await derive(ctx, schema, source, answer, parsed(source)) : undefined;
+  const supplied = parsed(source);
+  const value = !refusal && schema ? await derive(ctx, schema, source, answer, supplied) : undefined;
   if (!refusal && value === undefined) {
     await ensureNodeHost(ctx);
     refusal = agenticMessage(schema ? 'structured-output-underivable' : 'structured-output-schema-unsupported');
@@ -157,7 +170,9 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
     }
   }
   const content = refusal ? '' : jsonText(value);
-  const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : { value }) });
+  const noEvidence = value ? await missingArrayEvidence(ctx, schema, source, supplied, value) : [];
+  const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : { value }),
+    ...(noEvidence.length ? { no_evidence: noEvidence } : {}) });
   const identifier = stableId('answer', refusal ? detail : content);
   const events = [
     { kind: RECOMPOSE_BIND_KIND, payload: detail },
@@ -174,6 +189,22 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
     }
   }
   return { content, refusal, detail, id: identifier, evidence };
+}
+
+async function missingArrayEvidence(ctx, schema, source, supplied, value) {
+  if (isMap(supplied) || Buffer.byteLength(source) > 8192) return [];
+  const missing = [];
+  for (const [name, field] of Object.entries(objectFields(schema).properties ?? {})) {
+    if (!Array.isArray(value[name]) || value[name].length) continue;
+    const resolved = schemaReference(schema, field?.$ref) ?? field;
+    const items = stringArrayItems(resolved, schema);
+    if (!items) continue;
+    await ensureNodeHost(ctx);
+    if (stringArrayEvidence(source, name, fieldDescription(field, resolved), items, normalizeKey) === undefined) {
+      missing.push(name);
+    }
+  }
+  return missing.sort();
 }
 
 export function structuredThinkingStep(steps, result) {

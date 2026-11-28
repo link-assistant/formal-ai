@@ -1,4 +1,6 @@
 //! Shared response-format obligation and projection for Chat and Responses.
+mod arrays;
+
 use super::{
     ChatCompletion, ChatCompletionRequest, MessageContent, ResponseObject, ResponseOutputContent,
     ResponseOutputItem, ResponsesRequest, chat_prompt_and_history,
@@ -107,8 +109,16 @@ impl<'a> Obligation<'a> {
             })
         });
         let content = value.as_ref().map_or_else(String::new, Value::to_string);
+        let no_evidence = self
+            .schema
+            .zip(value.as_ref())
+            .map_or_else(Vec::new, |(schema, value)| {
+                missing_array_evidence(schema, source, value)
+            });
         let detail = if let Some(reason) = &refusal {
             json!({"format": self.format, "refusal": reason})
+        } else if !no_evidence.is_empty() {
+            json!({"format": self.format, "value": value, "no_evidence": no_evidence})
         } else {
             json!({"format": self.format, "value": value})
         }
@@ -262,6 +272,59 @@ fn evidence(
     sentiment_label(&Value::Null, name, field, source).map(|label| Value::String(label.to_owned()))
 }
 
+fn resolved_field<'a>(root: &'a Value, field: &'a Value) -> &'a Value {
+    field
+        .get("$ref")
+        .and_then(Value::as_str)
+        .and_then(|pointer| schema::reference(root, pointer))
+        .unwrap_or(field)
+}
+
+fn object_fields(schema: &Value) -> &Value {
+    if schema.get("properties").is_some() {
+        schema
+    } else {
+        resolved_field(schema, schema)
+    }
+}
+
+fn field_description<'a>(field: &'a Value, resolved: &'a Value) -> Option<&'a str> {
+    field
+        .get("description")
+        .and_then(Value::as_str)
+        .or_else(|| resolved.get("description").and_then(Value::as_str))
+}
+
+fn missing_array_evidence<'a>(schema: &'a Value, source: &str, value: &Value) -> Vec<&'a str> {
+    if source.len() > 8192
+        || serde_json::from_str::<Value>(source).is_ok_and(|value| value.is_object())
+    {
+        return Vec::new();
+    }
+    let mut missing: Vec<_> = object_fields(schema)
+        .get("properties")
+        .and_then(Value::as_object)
+        .into_iter()
+        .flatten()
+        .filter_map(|(name, field)| {
+            if !value
+                .get(name)
+                .and_then(Value::as_array)
+                .is_some_and(Vec::is_empty)
+            {
+                return None;
+            }
+            let resolved = resolved_field(schema, field);
+            let items = arrays::item_rule(resolved, schema)?;
+            arrays::evidence(source, name, field_description(field, resolved), items)
+                .is_none()
+                .then_some(name.as_str())
+        })
+        .collect();
+    missing.sort_unstable();
+    missing
+}
+
 fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
     let satisfies = |value: &Value| {
         value.is_object() && schema::portable(value, 0) && schema::valid(value, schema, schema)
@@ -295,15 +358,7 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
         .filter(|expression| expression.len() <= 80)
         .and_then(|expression| crate::arithmetic::evaluate_fallback_formatted(&expression).ok())
         .and_then(|number| serde_json::from_str::<Value>(&number).ok());
-    let fields = if schema.get("properties").is_some() {
-        schema
-    } else {
-        schema
-            .get("$ref")
-            .and_then(Value::as_str)
-            .and_then(|pointer| schema::reference(schema, pointer))
-            .unwrap_or(schema)
-    };
+    let fields = object_fields(schema);
     let mut output = Map::new();
     if let Some(properties) = fields.get("properties").and_then(Value::as_object) {
         for (name, field) in properties {
@@ -311,27 +366,29 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
                 .get("required")
                 .and_then(Value::as_array)
                 .is_some_and(|keys| keys.iter().any(|key| key == name.as_str()));
-            let resolved = field
-                .get("$ref")
-                .and_then(Value::as_str)
-                .and_then(|pointer| schema::reference(schema, pointer))
-                .unwrap_or(field);
+            let resolved = resolved_field(schema, field);
             let mut value = if let Some(supplied) = &supplied {
                 supplied.get(name).cloned()
             } else {
-                let description = field
-                    .get("description")
-                    .and_then(Value::as_str)
-                    .or_else(|| resolved.get("description").and_then(Value::as_str));
-                evidence(
-                    name,
-                    resolved,
-                    description,
-                    text,
-                    answer,
-                    number.as_ref(),
-                    key,
-                )
+                let description = field_description(field, resolved);
+                if let Some(items) = arrays::item_rule(resolved, schema) {
+                    arrays::evidence(text, name, description, items)
+                        .map(Value::Array)
+                        .or_else(|| {
+                            let empty = Value::Array(Vec::new());
+                            schema::valid(&empty, field, schema).then_some(empty)
+                        })
+                } else {
+                    evidence(
+                        name,
+                        resolved,
+                        description,
+                        text,
+                        answer,
+                        number.as_ref(),
+                        key,
+                    )
+                }
             };
             if value.is_none() && is_required {
                 let unknown = Value::String(UNKNOWN.to_owned());
