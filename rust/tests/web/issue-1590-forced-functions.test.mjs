@@ -69,6 +69,8 @@ for (const agentMode of [false, true]) {
         const context = `${route} / ${row.id}`;
         const choice = body.choices?.[0];
         const output = body.output?.[0];
+        const metadata = chat ? choice.message.formal_ai : body.formal_ai;
+        assert.deepEqual(metadata, { status: row.expected ? 'answered' : 'refused', provenance: ['local_rules'] }, context);
         if (row.expected) {
           assert.equal(chat ? choice.finish_reason : output.type, chat ? 'tool_calls' : 'function_call', context);
           assert.equal(chat ? choice.message.tool_calls.length : body.output.length, 1, context);

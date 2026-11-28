@@ -20,6 +20,7 @@ import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './requ
 import { ensureNodeHost } from './node-host-install.mjs';
 import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
+import { answerMetadata, symbolicAnswerMetadata, withNetworkObservation } from './answer-metadata.mjs';
 
 /** `response_reasoning_item`: the rendered trace as a `reasoning` output item. */
 function responseReasoningItem(prompt, thinkingSteps) {
@@ -42,11 +43,12 @@ export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
   const inputTokens = messageInputTokens(chatRequest.messages);
   const outputTokens = estimateTokens(symbolic.answer);
   const steps = symbolic.thinking_steps;
+  const formal_ai = symbolicAnswerMetadata(symbolic);
   const message = {
     id: stableId('msg', symbolic.answer),
     type: 'message',
     role: 'assistant',
-    content: structured && symbolic.intent === 'tool_call_refused'
+    content: (structured && formal_ai.status === 'refused') || (!structured && formal_ai.status === 'unanswered')
       ? [{ type: 'refusal', refusal: symbolic.answer }]
       : [{ type: 'output_text', text: symbolic.answer }],
   };
@@ -59,6 +61,7 @@ export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
     object: 'response',
     created_at: responseTimestamp(),
     status: 'completed',
+    formal_ai,
     model: resolveModelId(request.model),
     output,
     usage: {
@@ -77,10 +80,20 @@ export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
 
 /** `create_response_with_solver_and_memory`. */
 export async function createResponse(ctx, request) {
+  return withNetworkObservation(() => projectResponse(ctx, request), response => {
+    response.formal_ai.provenance.push('network_retrieval');
+  });
+}
+
+async function projectResponse(ctx, request) {
   const response = await createUnstructuredResponse(ctx, request);
+  response.formal_ai ??= answerMetadata();
   const obligation = outputObligation(request.text?.format, false);
   if (!obligation) return response;
   response.text = { format: obligation.format };
+  if (response.output.some(item => ['function_call', 'custom_tool_call', 'web_search_call'].includes(item.type))) {
+    return response;
+  }
   const message = response.output.find(item => item.type === 'message');
   if (!message) return response;
   const source = chatPromptAndHistory(toChatCompletionRequest(request).messages).prompt;
@@ -89,6 +102,7 @@ export async function createResponse(ctx, request) {
     message.content.find(part => part.type === 'refusal')?.refusal);
   message.content = result.refusal ? [{ type: 'refusal', refusal: result.refusal }]
     : [{ type: 'output_text', text: result.content }];
+  response.formal_ai = result.formal_ai;
   message.id = stableId('msg', result.refusal ?? result.content);
   const steps = [...(message.thinking_steps ?? [])];
   steps.push(structuredThinkingStep(steps, result));
@@ -119,7 +133,8 @@ async function createUnstructuredResponse(ctx, request) {
     const inputTokens = messageInputTokens(chatRequest.messages);
     return {
       id: stableId('resp', prompt), object: 'response', created_at: responseTimestamp(),
-      status: 'completed', model: resolveModelId(request.model), output: [item], evidence_links: [],
+      status: 'completed', formal_ai: answerMetadata(forced.refusal ? 'refused' : 'answered'),
+      model: resolveModelId(request.model), output: [item], evidence_links: [],
       usage: { input_tokens: inputTokens, output_tokens: outputTokens, total_tokens: inputTokens + outputTokens },
     };
   }

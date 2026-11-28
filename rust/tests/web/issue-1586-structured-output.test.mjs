@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { test } from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { installHost } from '../../../js/agentic/host.mjs';
@@ -27,9 +28,48 @@ const zodEmailSchema = zodEmail(zodCurrentPattern);
 const zodLegacyEmailSchema = zodEmail(zodLegacyPattern);
 const cases = [
   {
+    name: 'verdict_placeholder', prompt: 'Criterion: at least 3 years of Go. Resume: Go developer since 2018.',
+    schema: object({ verdict: { type: 'string', enum: ['met', 'not_met', 'unknown'] } }),
+    expected: { verdict: 'unknown' }, placeholders: ['/verdict'], rules: {}, stream: true,
+  },
+  {
+    name: 'seniority_placeholder', prompt: 'We are hiring a warehouse supervisor.',
+    schema: object({ seniority: nullableString }), expected: { seniority: null },
+    placeholders: ['/seniority'], rules: {}, stream: true,
+  },
+  {
+    name: 'experience_rule', prompt: 'at least 3 years of experience',
+    schema: object({ min_years_of_experience: integer }), expected: { min_years_of_experience: 3 },
+    placeholders: [], rules: { '/min_years_of_experience': 'experience_years' }, stream: true,
+  },
+  {
+    name: 'explicit_unknown_and_null', prompt: 'verdict: unknown; seniority: null',
+    schema: object({ verdict: { enum: ['met', 'unknown'] }, seniority: nullableString }),
+    expected: { verdict: 'unknown', seniority: null }, placeholders: [],
+    rules: { '/verdict': 'labeled_clause', '/seniority': 'labeled_clause' },
+  },
+  {
+    name: 'explicit_enum', prompt: 'unknown',
+    schema: object({ verdict: { enum: ['met', 'unknown'] } }), expected: { verdict: 'unknown' },
+    placeholders: [], rules: { '/verdict': 'enum_label' },
+  },
+  {
+    name: 'escaped_pointers', prompt: '{"a/b~c":[{"nested":null}],"verdict":"unknown"}',
+    schema: object({ 'a/b~c': { type: 'array' }, verdict: { enum: ['met', 'unknown'] } }),
+    expected: { 'a/b~c': [{ nested: null }], verdict: 'unknown' },
+    placeholders: [], rules: { '/a~1b~0c/0/nested': 'input_json', '/verdict': 'input_json' },
+  },
+  {
+    name: 'partial_input_json', prompt: '{"verdict":"unknown"}',
+    schema: object({ verdict: { enum: ['met', 'unknown'] }, seniority: nullableString }),
+    expected: { verdict: 'unknown', seniority: null },
+    placeholders: ['/seniority'], rules: { '/verdict': 'input_json' },
+  },
+  {
     name: 'job', prompt: 'Warehouse supervisor wanted in Springfield. At least 3 years of experience required.',
     instructions: 'Extract the city and the minimum years of experience. Reply with JSON only.',
     schema: object({ city, min_years: integer }), expected: { city: 'Springfield', min_years: 3 },
+    placeholders: [], rules: { '/city': 'location_clause', '/min_years': 'experience_years' },
   },
   {
     name: 'new_location', prompt: 'Office manager wanted in New York. Minimum of 7 years of experience.',
@@ -90,6 +130,7 @@ const cases = [
   {
     name: 'json_mode', prompt: 'Return a JSON object with key "answer" equal to the sum of 2 and 3.',
     chat: true, expected: { answer: 5 },
+    placeholders: [], rules: { '/answer': 'arithmetic' },
   },
   {
     name: 'calculation', prompt: 'Return the sum of 2 and 3.',
@@ -238,6 +279,13 @@ function formatFor(row, chat) {
 
 function checkResult(row, format, chat, envelope, content, refusal, steps, env) {
   assert.deepEqual(chat ? envelope.response_format : envelope.text.format, format);
+  const metadata = chat ? (envelope.choices[0].message ?? envelope.choices[0].delta).formal_ai : envelope.formal_ai;
+  assert.equal(metadata.status, row.expected ? (metadata.placeholders.length ? 'unanswered' : 'answered') : 'refused');
+  assert.deepEqual(metadata.provenance, ['structured_derivation']);
+  if (row.rules) {
+    assert.deepEqual(metadata.placeholders, row.placeholders);
+    assert.deepEqual(metadata.rules, row.rules);
+  }
   if (row.expected) {
     assert.equal(refusal, undefined);
     const value = JSON.parse(content);
@@ -250,7 +298,9 @@ function checkResult(row, format, chat, envelope, content, refusal, steps, env) 
   }
   const step = steps.find(step => step.step === 'structured_output');
   const detail = JSON.parse(step.detail);
-  assert.deepEqual(detail, row.expected ? { format, value: row.expected } : { format, refusal });
+  assert.deepEqual(detail, row.expected
+    ? { format, value: row.expected, placeholders: metadata.placeholders, rules: metadata.rules }
+    : { format, refusal });
   assert.match(envelope.derivation_id, /^answer_[a-f0-9]{16}$/u);
   const locator = envelope.evidence_links.find(link => link.startsWith('derivation_record:'));
   assert.ok(locator, JSON.stringify(envelope.evidence_links));
@@ -278,6 +328,43 @@ test('anchored structured patterns bound repetition without changing matches', (
   assert.equal(anchoredPattern('^(?=abc)abc$'), null);
 });
 
+test('both OpenAI endpoints report network retrieval for the request that used it', { timeout: 40_000 }, async t => {
+  const paths = [];
+  const source = createServer((request, response) => {
+    paths.push(request.url);
+    response.writeHead(200, { 'content-type': 'text/plain' });
+    response.end('Fixture source body.');
+  });
+  await new Promise(resolve => source.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => source.close(resolve)));
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    env: { PATH: process.env.PATH, FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false' },
+    lifetime: 40_000,
+  });
+  await run.ready();
+  for (const [endpoint, chat] of [['chat/completions', true], ['responses', false]]) {
+    const path = '/' + endpoint;
+    for (const [prompt, provenance] of [
+      [`Fetch http://127.0.0.1:${source.address().port}${path}`, ['local_rules', 'network_retrieval']],
+      ['2 + 2', ['local_rules']],
+    ]) {
+      const body = chat ? { messages: [{ role: 'user', content: prompt }] } : { input: prompt };
+      const response = await fetch(run.url + '/api/openai/v1' + path, {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ...body, model: 'formal-ai' }),
+      });
+      assert.equal(response.status, 200);
+      const payload = await response.json();
+      const metadata = chat ? payload.choices[0].message.formal_ai : payload.formal_ai;
+      assert.deepEqual(metadata, { status: 'answered', provenance }, prompt);
+      const content = chat ? payload.choices[0].message.content : payload.output[0].content[0].text;
+      if (provenance.includes('network_retrieval')) assert.ok(content.includes('Fixture source body.'), prompt);
+    }
+  }
+  assert.deepEqual(paths, ['/chat/completions', '/responses']);
+});
+
 test('OpenAI requests constrain final JSON across endpoint and streaming shapes', { timeout: 120_000 }, async t => {
   const parserContext = { self: {} };
   for (const script of ['parser-cache-primordials.js', 'seed-record-readers.js', 'seed_loader.js']) {
@@ -286,7 +373,7 @@ test('OpenAI requests constrain final JSON across endpoint and streaming shapes'
   installHost({ parseLino: parserContext.self.FormalAiSeed.parse });
   const run = await startCli(t, {
     binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
-    env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false' },
+    env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false', FORMAL_AI_OFFLINE: '1', FORMAL_AI_NETWORK: 'denied' },
     lifetime: 120_000,
   });
   await run.ready();
@@ -330,6 +417,64 @@ test('OpenAI requests constrain final JSON across endpoint and streaming shapes'
           }
         } catch (error) {
           throw new Error(`${chat ? 'Chat' : 'Responses'} ${row.name} (stream=${stream})`, { cause: error });
+        }
+      }
+    }
+  }
+});
+
+test('both OpenAI endpoints distinguish unsupported replies from local answers', { timeout: 60_000 }, async t => {
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false', FORMAL_AI_OFFLINE: '1', FORMAL_AI_NETWORK: 'denied' },
+    args: ['--ephemeral'],
+    lifetime: 60_000,
+  });
+  await run.ready();
+  const prompts = [
+    'Summarise in one sentence: the applicant answered every screening question and asked about remote work.',
+    'Кратко перескажи в одном предложении: соискатель ответил на все вопросы и спросил про удалённую работу.',
+    '用一句话总结：申请人回答了所有问题，并询问了远程工作。',
+    'Resume en una frase: el solicitante respondió a todas las preguntas y preguntó por el trabajo remoto.',
+  ];
+  for (const chat of [true, false]) {
+    for (const [prompt, status] of [...prompts.map(prompt => [prompt, 'unanswered']), ['2 + 2', 'answered']]) {
+      for (const stream of [false, true]) {
+        const body = chat ? { messages: [{ role: 'user', content: prompt }] } : { input: prompt };
+        const result = await fetch(run.url + (chat ? '/v1/chat/completions' : '/v1/responses'), {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ ...body, model: 'formal-ai', stream }),
+        });
+        assert.equal(result.status, 200);
+        let metadata, content, refusal;
+        if (!stream) {
+          const payload = await result.json();
+          if (chat) {
+            ({ formal_ai: metadata, content, refusal } = payload.choices[0].message);
+          } else {
+            metadata = payload.formal_ai;
+            ({ text: content, refusal } = payload.output.find(item => item.type === 'message').content[0]);
+          }
+        } else {
+          const frames = events(await result.text());
+          if (chat) {
+            const deltas = frames.map(frame => frame.choices[0].delta);
+            metadata = deltas.at(-1).formal_ai;
+            content = deltas.map(delta => delta.content).join('');
+            refusal = deltas.find(delta => delta.refusal)?.refusal;
+          } else {
+            metadata = frames.at(-1).response.formal_ai;
+            content = frames.find(frame => frame.type === 'response.output_text.done')?.text;
+            refusal = frames.find(frame => frame.type === 'response.refusal.done')?.refusal;
+          }
+        }
+        assert.deepEqual(metadata, { status, provenance: ['local_rules'] }, prompt);
+        if (status === 'unanswered') {
+          assert.ok(refusal, prompt);
+          assert.ok(!content, prompt);
+        } else {
+          assert.ok(content.includes('4'), prompt);
+          assert.equal(refusal, undefined, prompt);
         }
       }
     }

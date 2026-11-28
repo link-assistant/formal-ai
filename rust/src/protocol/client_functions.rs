@@ -320,11 +320,17 @@ pub(super) fn client_function_response(
             thinking_steps: vec![],
         }),
     };
+    let formal_ai = if matches!(&item, ResponseOutputItem::Message(_)) {
+        super::AnswerMetadata::new(super::AnswerStatus::Refused)
+    } else {
+        super::AnswerMetadata::default()
+    };
     Some(ResponseObject {
         id: stable_id("resp", prompt),
         object: "response".into(),
         created_at: response_timestamp(),
         status: "completed".into(),
+        formal_ai,
         model: resolved_request_model(request.model.as_deref()),
         output: vec![item],
         usage: ResponseUsage {

@@ -23,6 +23,7 @@ import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, 
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 import { recipePrompt } from './dynamic-meta/wire.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
+import { answerMetadata, symbolicAnswerMetadata, withNetworkObservation } from './answer-metadata.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
 export function responseTimestamp() {
@@ -56,6 +57,7 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
   const promptTokens = messageInputTokens(request.messages);
   const completionTokens = estimateTokens(symbolic.answer);
   const reasoning = renderThinkingSteps(symbolic.thinking_steps);
+  const formal_ai = symbolicAnswerMetadata(symbolic);
   return {
     ...(symbolic.output_projection ? {output_projection:symbolic.output_projection} : {}),
     id: stableId('chatcmpl', prompt),
@@ -67,7 +69,8 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
       message: {
         role: 'assistant',
         content: symbolic.answer,
-        ...(structured && symbolic.intent === 'tool_call_refused' ? { refusal: symbolic.answer } : {}),
+        ...(structured && formal_ai.status === 'refused' ? { refusal: symbolic.answer } : {}),
+        formal_ai,
         tool_calls: [],
         thinking_steps: symbolic.thinking_steps,
         reasoning_content: reasoning,
@@ -93,6 +96,12 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
  * @param {object} request a parsed `ChatCompletionRequest`
  */
 export async function createChatCompletion(ctx, request, options = {}) {
+  return withNetworkObservation(() => projectChatCompletion(ctx, request, options), completion => {
+    for (const { message } of completion.choices) message.formal_ai.provenance.push('network_retrieval');
+  });
+}
+
+async function projectChatCompletion(ctx, request, options) {
   const original = chatPromptAndHistory(request.messages);
   const turn = requestOutputTurn(original.prompt, original.history, request, ctx.outputConfiguration);
   const selected = {...ctx, outputConfiguration:turn.config};
@@ -120,14 +129,16 @@ export async function createChatCompletion(ctx, request, options = {}) {
     completion = await createUnprojectedChatCompletion(selected, planningRequest, options);
   }
   const choice = completion.choices[0];
+  const message = choice.message;
+  message.formal_ai ??= answerMetadata(message.refusal ? 'refused' : 'answered');
   const obligation = outputObligation(request.response_format, true);
   if (obligation) {
     completion.response_format = obligation.format;
-    if (choice?.finish_reason !== 'stop' || choice.message.tool_calls?.length) return completion;
-    const message = choice.message;
-    const result = await projectStructuredOutput(ctx, obligation, original.prompt, plainText(message.content), message.refusal);
+    if (choice.finish_reason !== 'stop' || message.tool_calls?.length) return completion;
+    const result = await projectStructuredOutput(ctx, obligation, turn.prompt, plainText(message.content), message.refusal);
     message.content = result.content;
     if (result.refusal) message.refusal = result.refusal;
+    message.formal_ai = result.formal_ai;
     const steps = [...(message.thinking_steps ?? [])];
     steps.push(structuredThinkingStep(steps, result));
     message.thinking_steps = steps;
@@ -136,6 +147,12 @@ export async function createChatCompletion(ctx, request, options = {}) {
     delete completion.output_projection;
     completion.usage.completion_tokens = estimateTokens(result.refusal ?? result.content);
     completion.usage.total_tokens = completion.usage.prompt_tokens + completion.usage.completion_tokens;
+    return completion;
+  }
+  if (message.formal_ai.status === 'unanswered' && options.forcedClientFunctions !== false) {
+    message.refusal = plainText(message.content);
+    message.content = '';
+    delete completion.output_projection;
     return completion;
   }
   if (choice?.finish_reason === 'stop' && typeof choice.message.content === 'string' && choice.message.content !== '') {
@@ -266,13 +283,13 @@ export function chatCompletionSse(completion, includeUsage) {
     });
   }
   const metadata = { ...base };
-  let delta = {};
+  const delta = choice?.message.formal_ai ? { formal_ai: choice.message.formal_ai } : {};
   if (completion.output_projection) metadata.output_projection = completion.output_projection;
   if (completion.response_format !== undefined) metadata.response_format = completion.response_format;
   if (completion.derivation_id) {
     metadata.derivation_id = completion.derivation_id;
     metadata.evidence_links = completion.evidence_links;
-    delta = { thinking_steps: choice.message.thinking_steps };
+    delta.thinking_steps = choice.message.thinking_steps;
   }
   body += sseChunk(metadata, { index: 0, delta, finish_reason: choice ? choice.finish_reason : 'stop' });
   if (includeUsage) {

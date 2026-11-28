@@ -106,6 +106,9 @@ pub(super) fn chat_completion_sse_response(
         "delta": {},
         "finish_reason": finish_reason,
     });
+    if let Some(metadata) = choice.and_then(|choice| choice.message.formal_ai.as_ref()) {
+        final_chunk["delta"]["formal_ai"] = json!(metadata);
+    }
     if let Some(projection) = &completion.output_projection {
         base["output_projection"] = projection.clone();
     }

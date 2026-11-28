@@ -47,6 +47,20 @@ function unique(values) {
   return values.length && values.every(value => Object.is(value, values[0])) ? values[0] : undefined;
 }
 
+function evidence(value, rule) {
+  return value === undefined ? undefined : { value, rule };
+}
+
+function fieldPointer(parent, key) {
+  return parent + '/' + String(key).replaceAll('~', '~0').replaceAll('/', '~1');
+}
+
+function recordRules(rules, pointer, value, rule) {
+  const fields = value !== null && typeof value === 'object' ? Object.entries(value) : [];
+  if (!fields.length) rules.set(pointer, rule);
+  for (const [key, item] of fields) recordRules(rules, fieldPointer(pointer, key), item, rule);
+}
+
 function labeledEvidence(source, label) {
   return source.split(/[\n;,]/u).map(clause => LABEL.exec(clause.trimStart()))
     .filter(match => match && normalizeKey(match[1]) === label)
@@ -60,63 +74,82 @@ function labeledEvidence(source, label) {
 function evidenceFor(name, field, description, source, answer, number, key) {
   const normalized = normalizeKey(name);
   const labeled = labeledEvidence(source, normalized);
-  if (labeled.length) return unique(labeled);
+  if (labeled.length) return evidence(unique(labeled), 'labeled_clause');
   const described = () => {
     const label = typeof description === 'string' ? normalizeKey(description) : '';
     return label ? labeledEvidence(source, label) : [];
   };
-  if (number !== undefined && (name === key || (!key && ['answer', 'result', 'sum', 'total'].includes(normalized)))) return number;
+  if (number !== undefined && (name === key || (!key && ['answer', 'result', 'sum', 'total'].includes(normalized)))) {
+    return evidence(number, 'arithmetic');
+  }
   if (normalized === 'city') {
     const locations = source.split(/[.!?;\n]/u).filter(clause => LOCATION.test(clause))
       .flatMap(clause => Array.from(clause.matchAll(CITY), match => match[1]));
-    return unique(locations.length ? locations : described());
+    return locations.length ? evidence(unique(locations), 'location_clause') : evidence(unique(described()), 'labeled_clause');
   }
   if (/^(?:min|minimum) (?:years(?: of experience)?|experience years)$/u.test(normalized)) {
     const years = cached('structured-output-experience-pattern', () => new RegExp(
       '\\b' + agenticMessage('structured-output-experience-qualifier') + '\\s+('
       + NUMBER + ')\\s+years?\\s+(?:of\\s+)?experience\\b', 'gu'));
     const matches = Array.from(source.matchAll(years), match => Number(match[1]));
-    return unique(matches.length ? matches : described());
+    return matches.length ? evidence(unique(matches), 'experience_years') : evidence(unique(described()), 'labeled_clause');
   }
   const alternate = described();
-  if (alternate.length) return unique(alternate);
+  if (alternate.length) return evidence(unique(alternate), 'labeled_clause');
   const choices = field?.enum;
   if (Array.isArray(choices)) {
-    if (answer && choices.includes(answer.trim())) return answer.trim();
-    if (choices.includes(source.trim())) return source.trim();
-    return sentimentLabel({}, name, field, source);
+    if (answer.trim() && choices.includes(answer.trim())) return evidence(answer.trim(), 'enum_label');
+    if (source.trim() && choices.includes(source.trim())) return evidence(source.trim(), 'enum_label');
+    return evidence(sentimentLabel({}, name, field, source), 'sentiment_label');
   }
   return undefined;
 }
 
-function fillObject(schema, source, answer, number, supplied) {
+function fillObject(schema, source, answer, number, supplied, suppliedRule) {
   const fields = schema.properties ? schema : schemaReference(schema, schema.$ref) ?? schema;
   const key = KEY.exec(source)?.[1];
   const result = new Map();
+  const fieldRules = new Map();
+  const placeholders = [];
   for (const [name, field] of Object.entries(fields.properties ?? {})) {
     const resolved = schemaReference(schema, field?.$ref) ?? field;
     const description = typeof field?.description === 'string' ? field.description : resolved?.description;
-    let value = supplied ? (Object.hasOwn(supplied, name) ? supplied[name] : undefined)
+    const pointer = fieldPointer('', name);
+    const fieldEvidence = supplied ? (Object.hasOwn(supplied, name) ? evidence(supplied[name], suppliedRule) : undefined)
       : evidenceFor(name, resolved, description, source, answer, number, key);
-    if (value === undefined && (fields.required ?? []).includes(name)) {
+    let value = fieldEvidence?.value;
+    if (fieldEvidence) {
+      fieldRules.set(name, fieldEvidence.rule);
+    } else if ((fields.required ?? []).includes(name)) {
       if (validOutput(null, field, schema)) value = null;
       else if (resolved?.enum?.includes(UNKNOWN) && validOutput(UNKNOWN, field, schema)) value = UNKNOWN;
+      if (value !== undefined) placeholders.push(pointer);
     }
     if (value !== undefined) result.set(name, value);
   }
-  if (!result.size && number !== undefined && !fields.properties) result.set(key ?? 'answer', number);
-  const candidate = Object.fromEntries(result);
-  return result.size && validOutput(candidate, schema) ? candidate : undefined;
+  if (!result.size && number !== undefined && !fields.properties) {
+    const name = key ?? 'answer';
+    result.set(name, number);
+    fieldRules.set(name, 'arithmetic');
+  }
+  const value = Object.fromEntries(result);
+  return result.size ? { value, placeholders, fieldRules } : undefined;
 }
 
 async function derive(ctx, schema, source, answer, supplied) {
   const satisfies = candidate => isMap(candidate) && portableValue(candidate) && validOutput(candidate, schema);
   const formal = parsed(answer);
-  const observed = isMap(formal) ? formal : supplied;
-  if (satisfies(observed)) return observed;
-  let value;
+  const fromSolver = isMap(formal);
+  const observed = fromSolver ? formal : supplied;
+  const suppliedRule = fromSolver ? 'solver_json' : 'input_json';
+  if (satisfies(observed)) {
+    const rules = new Map();
+    recordRules(rules, '', observed, suppliedRule);
+    return { value: observed, placeholders: [], rules: Object.fromEntries(rules) };
+  }
+  let result;
   if (isMap(observed)) {
-    value = fillObject(schema, '', '', undefined, observed);
+    result = fillObject(schema, '', '', undefined, observed, suppliedRule);
   } else if (Buffer.byteLength(source) <= 8192) {
     await ensureNodeHost(ctx);
     const [sumPattern, arithmeticPattern] = cached('structured-output-arithmetic-patterns', () =>
@@ -128,9 +161,14 @@ async function derive(ctx, schema, source, answer, supplied) {
     if (expression && expression.length <= 80) {
       try { number = Number(realm().evaluateArithmetic(expression)); } catch { /* Underivable. */ }
     }
-    value = fillObject(schema, source, answer, number);
+    result = fillObject(schema, source, answer, number);
   }
-  return satisfies(value) ? value : undefined;
+  if (!result || !satisfies(result.value)) return undefined;
+  const { value, placeholders, fieldRules } = result;
+  placeholders.sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)));
+  const rules = new Map();
+  for (const [name, rule] of fieldRules) recordRules(rules, fieldPointer('', name), value[name], rule);
+  return { value, placeholders, rules: Object.fromEntries(rules) };
 }
 
 export async function structuredAnswerFromSource(ctx, format, chat, source) {
@@ -140,15 +178,17 @@ export async function structuredAnswerFromSource(ctx, format, chat, source) {
   const value = obligation.schema && await derive(ctx, obligation.schema, source, '', supplied);
   if (!value && obligation.schema && !isMap(supplied)) return null;
   return {
-    intent: 'structured_output', answer: value ? jsonText(value) : '', confidence: 1,
+    // The final projection reads the original source so inferred values cannot
+    // be mistaken for JSON supplied as evidence.
+    intent: 'structured_output', answer: '', confidence: 1,
     evidence_links: [], thinking_steps: [], links_notation: '',
   };
 }
 
 export async function projectStructuredOutput(ctx, obligation, source, answer, refusal) {
   const { schema, issue } = obligation;
-  const value = !refusal && schema ? await derive(ctx, schema, source, answer, parsed(source)) : undefined;
-  if (!refusal && value === undefined) {
+  const derived = !refusal && schema ? await derive(ctx, schema, source, answer, parsed(source)) : undefined;
+  if (!refusal && !derived) {
     await ensureNodeHost(ctx);
     refusal = agenticMessage(schema ? 'structured-output-underivable' : 'structured-output-schema-unsupported');
     if (issue) {
@@ -156,8 +196,14 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
       refusal += ' ' + agenticMessage(key, { keyword: JSON.stringify(issue.keyword), pointer: issue.pointer || '""' });
     }
   }
-  const content = refusal ? '' : jsonText(value);
-  const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : { value }) });
+  const content = derived ? jsonText(derived.value) : '';
+  const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : derived) });
+  const formal_ai = derived ? {
+    status: derived.placeholders.length ? 'unanswered' : 'answered',
+    provenance: ['structured_derivation'],
+    placeholders: derived.placeholders,
+    rules: derived.rules,
+  } : { status: 'refused', provenance: ['structured_derivation'] };
   const identifier = stableId('answer', refusal ? detail : content);
   const events = [
     { kind: RECOMPOSE_BIND_KIND, payload: detail },
@@ -173,7 +219,7 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
       evidence.push('derivation:persistence_failed:' + error.message);
     }
   }
-  return { content, refusal, detail, id: identifier, evidence };
+  return { content, refusal, detail, id: identifier, evidence, formal_ai };
 }
 
 export function structuredThinkingStep(steps, result) {

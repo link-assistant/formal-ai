@@ -2,8 +2,8 @@ use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize};
 
 use super::{
-    ChatMessage, ResponsesRequest, request_context, resolved_request_model, response_timestamp,
-    responses_input_tokens,
+    AnswerMetadata, AnswerStatus, ChatMessage, ResponsesRequest, request_context,
+    resolved_request_model, response_timestamp, responses_input_tokens,
 };
 use crate::engine::{
     SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
@@ -54,6 +54,8 @@ pub struct ResponseObject {
     pub object: String,
     pub created_at: u64,
     pub status: String,
+    #[serde(default)]
+    pub formal_ai: AnswerMetadata,
     pub model: String,
     pub output: Vec<ResponseOutputItem>,
     pub usage: ResponseUsage,
@@ -289,7 +291,9 @@ pub(super) fn response_from_symbolic(
     let input_tokens = responses_input_tokens(request);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
     let derivation_id = symbolic_answer.derivation_id();
-    let refused = structured && symbolic_answer.intent == "tool_call_refused";
+    let formal_ai = AnswerMetadata::from_symbolic(&symbolic_answer);
+    let refused = (structured && formal_ai.status == AnswerStatus::Refused)
+        || (!structured && formal_ai.status == AnswerStatus::Unanswered);
     let answer = symbolic_answer.answer;
     let thinking_steps = symbolic_answer.thinking_steps;
     let message_identifier = stable_id("msg", &answer);
@@ -322,6 +326,7 @@ pub(super) fn response_from_symbolic(
         object: String::from("response"),
         created_at: response_timestamp(),
         status: String::from("completed"),
+        formal_ai,
         model,
         output,
         usage: ResponseUsage {

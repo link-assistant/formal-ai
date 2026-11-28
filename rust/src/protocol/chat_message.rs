@@ -10,9 +10,11 @@ pub struct ChatMessage {
     pub role: String,
     #[serde(default, deserialize_with = "deserialize_null_content")]
     pub content: MessageContent,
-    /// Machine-readable reason a forced client function could not be called.
+    /// Explanation for a refusal or an unanswered reply.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refusal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub formal_ai: Option<super::AnswerMetadata>,
     /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tool_calls: Vec<ToolCall>,

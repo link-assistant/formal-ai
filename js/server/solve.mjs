@@ -93,6 +93,7 @@ export function symbolicFromWorker(result, history = [], { readOnly = false } = 
   return {
     ...(result?.outputProjection ? {output_projection:result.outputProjection} : {}),
     intent: String(result?.intent ?? 'unknown'),
+    ...(result?.evidence?.includes('summarization:refusal:unresolved_subject') ? { unresolved_summary: true } : {}),
     answer,
     confidence: Number(result?.confidence ?? 0),
     evidence_links: solverEvidenceLinks(result, history)
