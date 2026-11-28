@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import path from "node:path";
@@ -7,10 +7,11 @@ import assert from "node:assert/strict";
 import { promisify } from "node:util";
 import { startCli, temporaryHome } from "./support/structured-log-fixture.mjs";
 import { startServer } from "../../../js/server/main.mjs";
+import { decodeTyped } from "../../../js/server/structured-log.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { indexedProcedure, indexedProcedureBody, unrelatedProcedure } from "./support/indexed-procedure-capture.mjs";
 import { procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
-import { everydayMethodReply, wikiHowMethodsCapture } from "./support/wiki-how-method-capture.mjs";
+import { everydayMethodReply, wikiHowArticleCapture, wikiHowMethodsCapture } from "./support/wiki-how-method-capture.mjs";
 
 import { recurrenceCases, recurrenceNativeCaptures } from "./support/recurrence-publisher-captures.mjs";
 
@@ -177,22 +178,26 @@ test("native offline chat reads ranked publisher pages before giving procedural 
   assert.doesNotMatch(content, /sha256|max_depth=|page\(s\)/u);
 });
 
-async function startNativeProcedureReplay(t, { agentMode = false, publisherSearch = false, lifetime = NATIVE_CASE.timeout } = {}) {
+async function startNativeProcedureReplay(t, {
+  agentMode = false, publisherSearch = false, publicArticle = false, lifetime = NATIVE_CASE.timeout,
+} = {}) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
   storeCapture(cache, NHS_SOURCE, NHS_CAPTURE);
-  if (publisherSearch) {
+  if (publisherSearch || publicArticle) {
     storeCapture(cache, SHORT_PARSE, MISSING_TITLE);
     storeCapture(cache, PUBLISHER_SEARCH, PUBLISHER_RESULTS);
   } else {
     storeCapture(cache, SHORT_SEARCH, sourceResults("Домашние растения", "хорошо покакать"));
   }
-  storeCapture(cache, DISCOVERED_API, publisherSearch ? wikiHowMethodsCapture() : RUSSIAN_CAPTURE);
+  if (publicArticle) storeCapture(cache, RUSSIAN_ARTICLE, wikiHowArticleCapture(RUSSIAN_ARTICLE));
+  else storeCapture(cache, DISCOVERED_API, publisherSearch ? wikiHowMethodsCapture() : RUSSIAN_CAPTURE);
   const run = await startCli(t, {
     binary: NATIVE_CLI,
     args: agentMode ? ["--agent-mode"] : [],
-    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_OFFLINE: "1" },
+    silent: !publicArticle,
+    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_OFFLINE: "1", FORMAL_AI_LOG_LEVEL: "debug" },
     lifetime,
   });
   await run.ready();
@@ -249,6 +254,85 @@ async function assertGreetingProcedureStream(url, signal) {
 test("native streaming chat recovers the Russian guide after a greeting with only publisher search captured", NATIVE_CASE, async (t) => {
   const { url } = await startNativeProcedureReplay(t, { agentMode: true, publisherSearch: true });
   await assertGreetingProcedureStream(url, t.signal);
+});
+
+async function assertAnthropicProcedureStream(url, signal) {
+  const turn = (role, text) => ({ role, content: [{ type: "text", text }] });
+  const hello = turn("user", "Привет");
+  const markdownSystem = "Text you output outside of tool use is displayed to the user as Github-flavored markdown in a terminal.";
+  async function ask(messages, system = markdownSystem) {
+    const response = await fetch(`${url}/api/anthropic/v1/messages?beta=true`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "anthropic-version": "2023-06-01" },
+      signal,
+      body: JSON.stringify({
+        model: "formal-ai", max_tokens: 8192, stream: true, messages,
+        system: [{ type: "text", text: system }],
+        thinking: { type: "adaptive", display: "updates" },
+        tools: [{ name: "AskUserQuestion", input_schema: { type: "object" } }],
+      }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    const events = (await response.text()).split(/\r?\n/u).filter(line => line.startsWith("data: "))
+      .map(line => JSON.parse(line.slice(6)));
+    assert.equal(events.at(-1).type, "message_stop");
+    assert.ok(!events.some(event => event.content_block?.type === "tool_use"));
+    assert.doesNotMatch(JSON.stringify(events), /sha256|max_depth=|publisher_parse_failed|publisher_article_failed|api\.php/u);
+    return events.filter(event => event.delta?.type === "text_delta").map(event => event.delta.text).join("");
+  }
+  const greeting = await ask([hello]);
+  assert.equal(greeting, "Здравствуйте! Чем могу помочь?");
+  const messages = [hello, turn("assistant", greeting), turn("user", CODEX_REQUEST)];
+  const markdown = everydayMethodReply(RUSSIAN_ARTICLE);
+  assert.equal(await ask(messages), markdown);
+  assert.equal(await ask(messages, "Reply in Markdown."), markdown);
+  assert.equal(await ask(messages, "Output all communication in your response text instead."), markdown);
+  assert.equal(await ask(messages, "Reply in plain text."), markdown.replace(/^#{2,3} /gmu, ""));
+}
+
+function assertProcedureLogs(log) {
+  assert.match(log, /how_to:bounds/);
+  assert.match(log, /publisher_parse_failed/);
+  assert.match(log, /how_to:step/);
+  const digest = createHash("sha256").update(wikiHowArticleCapture(RUSSIAN_ARTICLE)).digest("hex");
+  assert.ok(log.includes(digest), "logs preserve the article capture's full SHA-256");
+}
+
+test("native Anthropic stream recovers the public wikiHow article without a MediaWiki capture", NATIVE_MULTI_TURN_CASE, async (t) => {
+  const { url, run } = await startNativeProcedureReplay(t, {
+    agentMode: true, publicArticle: true, lifetime: NATIVE_MULTI_TURN_CASE.timeout,
+  });
+  await assertAnthropicProcedureStream(url, t.signal);
+  const logs = run.records().filter(record => record.component === "procedure.retrieval");
+  assertProcedureLogs(JSON.stringify(logs));
+});
+
+test("JavaScript Anthropic stream recovers the public wikiHow article when MediaWiki is unavailable", {
+  timeout: 30_000,
+}, async (t) => {
+  const dir = temporaryHome(t);
+  const captures = new Map([
+    [SHORT_PARSE, MISSING_TITLE],
+    [PUBLISHER_SEARCH, PUBLISHER_RESULTS],
+    [RUSSIAN_ARTICLE, wikiHowArticleCapture(RUSSIAN_ARTICLE)],
+  ]);
+  const networkFetch = async (url) => captures.has(String(url))
+    ? new Response(captures.get(String(url))) : new Response(null, { status: 503 });
+  const { server, url } = await startServer({
+    agentMode: true,
+    env: {
+      FORMAL_AI_CACHE_DIR: dir, FORMAL_AI_MEMORY_PATH: path.join(dir, "memory.lino"),
+      FORMAL_AI_DREAMING: "false", FORMAL_AI_RECORD_CHAT: "0", FORMAL_AI_LOG_DIR: dir,
+      FORMAL_AI_LOG_LEVEL: "debug", FORMAL_AI_ALLOW_NETWORK: "true", FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: "false",
+    },
+    worker: new WorkerHost({ navigator: { onLine: true } }, { networkFetch }),
+  });
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  await assertAnthropicProcedureStream(url, t.signal);
+  const logs = readdirSync(dir).filter(file => /^serve-.*\.lino$/u.test(file))
+    .flatMap(file => readFileSync(path.join(dir, file), "utf8").trim().split("\n").map(decodeTyped))
+    .filter(record => record.component === "procedure.retrieval");
+  assertProcedureLogs(JSON.stringify(logs));
 });
 
 test("native wikiHow extraction uses the method requested by the user", NATIVE_CASE, async (t) => {

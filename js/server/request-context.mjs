@@ -45,10 +45,12 @@ export function formalizeRequest(messages) {
         const match = captures(kind, text);
         if (!match) continue;
         let value = match[1].toLowerCase();
-        if (kind === 'language' && rules.formats.includes(value)) continue;
+        if (kind === 'language' && (rules.formats.includes(value)
+          || (value === 'plain' && captures('format', text)))) continue;
         covered.push([match.index, match.index + match[0].length]);
         if (kind === 'labels') value += `|${match[2].toLowerCase()}`;
         if (kind === 'length') value += `|${rules.numberWords[match[2].toLowerCase()] ?? match[2]}`;
+        if (kind === 'format') value = value.replace(/\s+/gu, ' ');
         add(kind, value);
         recognized = true;
       }
@@ -64,7 +66,8 @@ export function formalizeRequest(messages) {
   }
   const active = kind => constraints.find(item => item.kind === kind && item.status !== 'superseded');
   const format = active('format')?.value;
-  const preserveAnswerBody = Boolean(titleTask || active('labels') || active('length') || (format && format !== rules.plainFormat));
+  const preserveAnswerBody = Boolean(titleTask || active('labels') || active('length') || (format
+    && ![rules.plainFormat, rules.plainTextFormat].includes(format)));
   const answerText = format === rules.supportedFormat ? body => JSON.parse(body)[rules.jsonAnswerKey] : body => body;
   return { prompt, history, constraints, active, titleTask, preserveAnswerBody, answerText, language: active('language')?.value === rules.sameLanguage ? detect(prompt) : languageOf(active('language')?.value) };
 }
@@ -145,8 +148,10 @@ export function composeRequestAnswer(messages, symbolic) {
   if (!context.constraints.length) return symbolic;
   const projection = symbolic.output_projection;
   let text = context.preserveAnswerBody && projection?.content === symbolic.answer ? projection.text : symbolic.answer;
+  const format = context.active('format')?.value;
+  if (format === rules.plainTextFormat && symbolic.intent === 'procedural_how_to') text = text.replace(/^#{2,3} /gmu, '');
   const languageText = text;
-  if (context.active('format')?.value === rules.supportedFormat) text = JSON.stringify({ [rules.jsonAnswerKey]: text });
+  if (format === rules.supportedFormat) text = JSON.stringify({ [rules.jsonAnswerKey]: text });
   const unmet = [];
   for (const item of context.constraints) {
     if (item.status === 'superseded') continue;
@@ -180,7 +185,7 @@ export function composeRequestAnswer(messages, symbolic) {
       const comparison = compareDecimals(String(length), count);
       satisfied = mode === 'exactly' ? comparison === 0 : comparison <= 0;
     }
-    if (item.kind === 'format') satisfied = [rules.supportedFormat, rules.plainFormat].includes(item.value);
+    if (item.kind === 'format') satisfied = [rules.supportedFormat, rules.plainFormat, rules.plainTextFormat, rules.markdownFormat].includes(item.value);
     item.status = satisfied ? 'applied' : 'unmet';
     if (!satisfied) unmet.push(item);
   }

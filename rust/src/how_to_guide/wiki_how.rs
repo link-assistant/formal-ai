@@ -1,4 +1,4 @@
-//! Fall back to wikiHow's public search when its MediaWiki API yields no guide.
+//! Recover guides through wikiHow's public search and canonical articles.
 
 use std::collections::BTreeSet;
 use std::sync::LazyLock;
@@ -8,7 +8,7 @@ use url::Url;
 
 use super::{
     CaptureExtractor, GuideStep, MIN_ACCEPTED_STEPS, SourceRecord, SourceTransport, StepExtractor,
-    Walk, WalkSourceOutcome, matches_wiki_title, parse_url, percent_encode,
+    Walk, WalkSourceOutcome, matches_wiki_title, parse_url, percent_encode, push_steps,
 };
 
 const ARTICLE_DEPTH: usize = 2;
@@ -35,31 +35,103 @@ pub(super) fn recover<T: SourceTransport>(
             percent_encode(&query)
         ))
         .ok()?;
-    let capture = walk.client.fetch(search.as_str()).ok()?;
-    outcome.pages += 1;
-    let mut seen = BTreeSet::new();
-    let titles = result_titles(std::str::from_utf8(capture.bytes()).ok()?, &endpoint)
-        .filter(|title| matches_wiki_title(extractor.task, title, extractor.language))
-        .map(|title| parse_url(entry, &title))
-        .filter(|url| url != entry && seen.insert(url.clone()));
-    for url in titles.take(remaining - 1) {
-        let Ok(capture) = walk.client.fetch(&url) else {
-            continue;
-        };
-        outcome.pages += 1;
-        let steps = extractor
-            .read(record, &capture, ARTICLE_DEPTH, 0, walk.bounds)
-            .items;
-        if steps.len() >= MIN_ACCEPTED_STEPS {
-            let detail = crate::trace_record::line(
-                "publisher_search",
-                &[("search", search.to_string()), ("url", url)],
+    let capture = match walk.client.fetch(search.as_str()) {
+        Ok(capture) => capture,
+        Err(error) => {
+            note_failure(
+                outcome,
+                "publisher_search_failed",
+                search.as_str(),
+                &error.to_string(),
             );
-            outcome.detail = crate::trace_record::join(&outcome.detail, &detail);
-            return Some(steps);
+            return None;
         }
+    };
+    outcome.pages += 1;
+    let mut attempts = remaining - 1;
+    let mut seen = BTreeSet::new();
+    let articles = result_articles(std::str::from_utf8(capture.bytes()).ok()?, &endpoint)
+        .filter(|(title, _)| matches_wiki_title(extractor.task, title, extractor.language))
+        .map(|(title, article)| (parse_url(entry, &title), article));
+    for (api, article) in articles {
+        if attempts == 0 {
+            break;
+        }
+        if !seen.insert(article.clone()) {
+            continue;
+        }
+        let mut items = if api == entry {
+            Vec::new()
+        } else {
+            attempts -= 1;
+            match walk.client.fetch(&api) {
+                Ok(capture) => {
+                    outcome.pages += 1;
+                    let read = extractor.read(record, &capture, ARTICLE_DEPTH, 0, walk.bounds);
+                    if read.items.len() < MIN_ACCEPTED_STEPS {
+                        let reason = read.detail.as_deref().unwrap_or("insufficient_steps");
+                        note_failure(outcome, "publisher_parse_failed", &api, reason);
+                    }
+                    read.items
+                }
+                Err(error) => {
+                    note_failure(outcome, "publisher_parse_failed", &api, &error.to_string());
+                    Vec::new()
+                }
+            }
+        };
+        let mut source = api.as_str();
+        if items.len() < MIN_ACCEPTED_STEPS {
+            if attempts == 0 {
+                break;
+            }
+            attempts -= 1;
+            source = article.as_str();
+            let capture = match walk.client.fetch(source) {
+                Ok(capture) => capture,
+                Err(error) => {
+                    note_failure(
+                        outcome,
+                        "publisher_article_failed",
+                        source,
+                        &error.to_string(),
+                    );
+                    continue;
+                }
+            };
+            outcome.pages += 1;
+            let steps = std::str::from_utf8(capture.bytes()).map_or_else(
+                |_| Vec::new(),
+                |body| article_steps(body, &article, extractor, walk.bounds.max_items),
+            );
+            if steps.len() < MIN_ACCEPTED_STEPS {
+                note_failure(
+                    outcome,
+                    "publisher_article_failed",
+                    source,
+                    "no_matching_steps",
+                );
+                continue;
+            }
+            items.clear();
+            push_steps(record, &capture, ARTICLE_DEPTH, &steps, &mut items);
+        }
+        let detail = crate::trace_record::line(
+            "publisher_search",
+            &[("search", search.to_string()), ("url", source.to_owned())],
+        );
+        outcome.detail = crate::trace_record::join(&outcome.detail, &detail);
+        return Some(items);
     }
     None
+}
+
+fn note_failure(outcome: &mut WalkSourceOutcome, event: &str, url: &str, reason: &str) {
+    let detail = crate::trace_record::line(
+        event,
+        &[("url", url.to_owned()), ("reason", reason.to_owned())],
+    );
+    outcome.detail = crate::trace_record::join(&outcome.detail, &detail);
 }
 
 /// Include one alternate aspect where the language's title policy declares one.
@@ -89,7 +161,10 @@ fn search_query(task: &str, language: &str) -> String {
     format!("{task} {alternate}")
 }
 
-fn result_titles<'a>(html: &'a str, endpoint: &'a Url) -> impl Iterator<Item = String> + 'a {
+fn result_articles<'a>(
+    html: &'a str,
+    endpoint: &'a Url,
+) -> impl Iterator<Item = (String, Url)> + 'a {
     static RESULT: LazyLock<Regex> = LazyLock::new(|| {
         Regex::new(r#"<a\s+class="result_link"\s+href="([^"]+)""#)
             .expect("valid result-link pattern")
@@ -104,22 +179,60 @@ fn result_titles<'a>(html: &'a str, endpoint: &'a Url) -> impl Iterator<Item = S
         {
             return None;
         }
-        let slug = url.path().strip_prefix('/')?;
-        // Decode a single path segment without treating '+' as a form space.
-        let escaped = slug
-            .replace('+', "%2B")
-            .replace('&', "%26")
-            .replace('=', "%3D");
-        let (title, _) = url::form_urlencoded::parse(escaped.as_bytes()).next()?;
-        if title.is_empty() || title.contains(['/', ':', '\u{fffd}']) {
-            return None;
-        }
-        Some(title.replace(['-', '_'], " "))
+        let slug = article_slug(&url)?;
+        Some((slug.replace(['-', '_'], " "), url))
     })
+}
+
+fn article_slug(url: &Url) -> Option<String> {
+    let slug = url.path().strip_prefix('/')?;
+    // Decode a single path segment without treating '+' as a form space.
+    let escaped = slug
+        .replace('+', "%2B")
+        .replace('&', "%26")
+        .replace('=', "%3D");
+    let (title, _) = url::form_urlencoded::parse(escaped.as_bytes()).next()?;
+    (!title.is_empty() && !title.contains(['/', ':', '\u{fffd}'])).then(|| title.into_owned())
+}
+
+fn article_steps(
+    html: &str,
+    expected: &Url,
+    extractor: &StepExtractor<'_>,
+    limit: usize,
+) -> Vec<String> {
+    static CANONICAL: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r#"(?i)<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']([^"']+)["']"#)
+            .expect("valid canonical-link pattern")
+    });
+    let canonical = CANONICAL
+        .captures(html)
+        .and_then(|link| Url::parse(&link[1]).ok());
+    if !canonical.is_some_and(|url| {
+        url.origin() == expected.origin()
+            && url.username().is_empty()
+            && url.password().is_none()
+            && url.query().is_none()
+            && url.fragment().is_none()
+            && article_slug(&url) == article_slug(expected)
+    }) {
+        return Vec::new();
+    }
+    step_lists(html, extractor.task, extractor.language, limit, false)
 }
 
 /// Select a complete method for the requested scope and keep its top-level order.
 pub(super) fn steps(html: &str, task: &str, language: &str, limit: usize) -> Vec<String> {
+    step_lists(html, task, language, limit, true)
+}
+
+fn step_lists(
+    html: &str,
+    task: &str,
+    language: &str,
+    limit: usize,
+    allow_legacy: bool,
+) -> Vec<String> {
     use super::extract::{compact_step_text, extract_steps, step_text};
     static TAG: LazyLock<Regex> = LazyLock::new(|| {
         Regex::new(r"(?is)<h[1-6](?:\s[^>]*)?>(.*?)</h[1-6]>|<(/?)(ol|ul|li)(?:\s([^>]*))?>")
@@ -169,7 +282,11 @@ pub(super) fn steps(html: &str, task: &str, language: &str, limit: usize) -> Vec
                     item_start = Some(span.end());
                 } else if let Some(start) = item_start.take()
                     && items.len() < limit
-                    && let Some(text) = step_text(&html[start..span.start()])
+                    && let Some(text) = if allow_legacy {
+                        step_text(&html[start..span.start()])
+                    } else {
+                        article_step_text(&html[start..span.start()])
+                    }
                     && !items.contains(&text)
                 {
                     items.push(text);
@@ -192,17 +309,37 @@ pub(super) fn steps(html: &str, task: &str, language: &str, limit: usize) -> Vec
             if depth == 0 && kind == "ol" {
                 saw_ordered_list = true;
                 let attributes = tag.get(4).map_or("", |attributes| attributes.as_str());
-                if attributes.trim().is_empty() || attributes.contains("steps_list_2") {
+                if attributes.contains("steps_list_2")
+                    || (allow_legacy && attributes.trim().is_empty())
+                {
                     current = Some(Vec::new());
                 }
             }
             depth += 1;
         }
     }
-    if saw_ordered_list {
-        best
-    } else {
+    if allow_legacy && !saw_ordered_list {
         extract_steps(html, limit)
+    } else {
+        best
+    }
+}
+
+fn article_step_text(item: &str) -> Option<String> {
+    use super::extract::{MIN_STEP_CHARS, compact_step_text, step_text};
+    static BODY: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r#"(?i)<div\b[^>]*\bclass=["']step["'][^>]*>"#)
+            .expect("valid public step pattern")
+    });
+    static REFERENCE: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r#"(?is)<sup\b[^>]*\bclass=["']reference\b[^>]*>.*?</sup>"#)
+            .expect("valid public reference pattern")
+    });
+    if let Some(body) = BODY.find(item) {
+        let text = compact_step_text(&REFERENCE.replace_all(&item[body.end()..], ""));
+        (text.chars().count() >= MIN_STEP_CHARS).then_some(text)
+    } else {
+        step_text(item)
     }
 }
 

@@ -18,6 +18,14 @@ export function wikiHowMethodsCapture(title = fixture.parse.title) {
   return JSON.stringify({ parse: { title, text: { "*": everydayAndQuickMethods } } });
 }
 
+export function wikiHowArticleCapture(canonical) {
+  const body = everydayAndQuickMethods.replace(
+    /<li>(Не откладывайте[^.]+\.)/u,
+    '<li><div class="step_num">1</div><div class="step">$1<sup class="reference"><span>Hidden source popup</span></sup></div>',
+  );
+  return `<link rel="canonical" href="${canonical}"><ol><li>Unrelated page navigation must not become a step.</li></ol>${body}`;
+}
+
 export function everydayMethodReply(source) {
   return `## Как какать
 

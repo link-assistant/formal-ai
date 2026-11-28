@@ -1,6 +1,6 @@
 {
   "language": ["^(?:answer|respond|reply)\\s+in\\s+the\\s+(same)\\s+language\\s+as\\s+the\\s+user['’]s\\s+input$", "^(?:[-*]\\s+)?(?:(?:(?:you\\s+)?(?:must\\s+)?(?:always\\s+)?)|(?:do\\s+not\\s+|never\\s+|don't\\s+))(?:answer|respond|reply|write)\\s+(?:only\\s+)?in\\s+([\\p{L}-]+)", "^(?:[-*]\\s+)?(?:не\\s+)?(?:отвечай|отвечайте|ответь)\\s+(?:только\\s+)?(?:на\\s+|по-)?([\\p{L}-]+)"],
-  "format": ["(?:answer|respond|reply|output|return)\\s+(?:only\\s+)?(?:in|as)\\s+(json|xml|csv|markdown)(?:\\s|$)", "(?:output|response|answer)\\s+format\\s*:?\\s*(json|xml|csv|markdown)", "(?:use|return)\\s+(json|xml|csv|markdown)", "^(?:output|return)(?:\\s+all)?\\s+(?:communication|output)\\s+(?:directly\\s+)?in\\s+(?:your\\s+|the\\s+)?response\\s+(text)(?:\\s+instead)?$"],
+  "format": ["^(?:answer|respond|reply|output|return)\\s+(?:only\\s+)?(?:in|as)\\s+(plain\\s+text)$", "^use\\s+(plain\\s+text)$", "(?:answer|respond|reply|output|return)\\s+(?:only\\s+)?(?:in|as)\\s+(json|xml|csv|markdown)(?:\\s|$)", "(?:output|response|answer)\\s+format\\s*:?\\s*(json|xml|csv|markdown)", "(?:use|return)\\s+(json|xml|csv|markdown)", "^(?:output|return)(?:\\s+all)?\\s+(?:communication|output)\\s+(?:directly\\s+)?in\\s+(?:your\\s+|the\\s+)?response\\s+(text)(?:\\s+instead)?$"],
   "labels": ["(?:one word\\s*:|only with|only one of|one of\\s*:)\\s*([\\p{L}-]+)\\s+(?:or|/)\\s+([\\p{L}-]+)"],
   "length": ["(exactly|at most|no more than)\\s+(one|[0-9]+)\\s+words?"],
   "outputCue": "^(?:you\\s+)?(?:must\\s+)?(?:always\\s+)?(?:answer|respond|reply|output|return|be brief|отвечай|ответь)(?:\\s|$)|^(?:your|the)\\s+(?:answer|response|output)\\s+(?:must|should)|^(?:use\\s+(?:json|xml|csv|markdown|yaml|plain text)|(?:keep|limit)\\s+(?:your\\s+|the\\s+)?(?:answer|response|output))(?:\\s|$)",
@@ -13,6 +13,8 @@
   "formats": ["json","xml","csv","markdown"],
   "supportedFormat": "json",
   "plainFormat": "text",
+  "plainTextFormat": "plain text",
+  "markdownFormat": "markdown",
   "binaryLabels": ["yes","no"],
   "numberWords": {"one":1},
   "comparison": "^is\\s+(-?[0-9]+(?:\\.[0-9]+)?)\\s+(greater than|less than|equal to)\\s+(-?[0-9]+(?:\\.[0-9]+)?)\\s*[?]?$",

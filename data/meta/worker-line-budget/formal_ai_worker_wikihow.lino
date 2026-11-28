@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_wikihow.js"
-  ceiling 256
-  rationale "wikiHow publisher discovery, article verification, and method selection."
+  ceiling 281
+  rationale "wikiHow publisher discovery, canonical article fallback, and method selection."
