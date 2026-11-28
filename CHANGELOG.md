@@ -21,6 +21,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.357.5] - 2026-11-28
+
+### Added
+
+- Extract verbatim source quotes for structured OpenAI fields and per-criterion evidence arrays in English and Russian. Text requests can also quote the sentence that mentions a target.
+
 ## [0.357.4] - 2026-11-28
 
 ### Added
