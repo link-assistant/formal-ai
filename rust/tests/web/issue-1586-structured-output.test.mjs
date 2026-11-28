@@ -14,6 +14,8 @@ const city = { type: 'string' };
 const integer = { type: 'integer' };
 const nullableInteger = { type: ['integer', 'null'] };
 const nullableString = { type: ['string', 'null'] };
+const stringArray = { type: 'array', items: { type: 'string' } };
+const skills = ['Python', 'SQL', 'Apache Airflow'];
 const experience = 'Backend developer, at least 3 years of experience with Go.';
 const jobTitle = 'job title: storekeeper';
 // z.toJSONSchema(z.object({ email: z.string().email() }), { target: 'draft-7' }).
@@ -86,6 +88,78 @@ const cases = [
     name: 'description_ambiguity', prompt: 'Job title: storekeeper; Job title: cashier; Position name: porter',
     schema: object({ jobTitle: { ...nullableString, description: 'Position name' } }),
     expected: { jobTitle: null },
+  },
+  {
+    name: 'skills_en', prompt: 'We need a data engineer with Python, SQL and Apache Airflow experience.',
+    strict: null, schema: { type: 'object', properties: { skills: stringArray }, required: ['skills'] },
+    expected: { skills }, stream: true,
+  },
+  {
+    name: 'skills_ru', prompt: 'Нужен инженер данных с опытом Python, SQL и Apache Airflow.',
+    schema: object({ skills: stringArray }), expected: { skills }, stream: true,
+  },
+  {
+    name: 'list_topics',
+    prompt: 'Requirements: write reports or mentor teammates. Инструменты:\n- Helm\n- Node.js\nЯзыки: Go или Rust.',
+    schema: object({
+      requirements: stringArray,
+      stack: { ...stringArray, description: 'Development tools named in the text' },
+      languages: stringArray,
+    }),
+    expected: { requirements: ['write reports', 'mentor teammates'], stack: ['Helm', 'Node.js'], languages: ['Go', 'Rust'] },
+  },
+  {
+    name: 'list_concepts',
+    prompt: 'We work with vendor services and custom builds. We experiment with Links Notation and Wikipedia.',
+    schema: object({ topics: stringArray }), expected: { topics: ['Links Notation', 'Wikipedia'] },
+  },
+  {
+    name: 'list_concept_boundaries', prompt: 'They have experience in links notation, Wikipedia, and event log as examples.',
+    schema: object({ skills: stringArray }), expected: { skills: ['links notation', 'Wikipedia', 'event log'] },
+  },
+  {
+    name: 'list_enum', prompt: 'Tools: python, Rust, c++, or sql.',
+    schema: {
+      ...object({ tools: { ...stringArray, items: { $ref: '#/$defs/tool' } } }),
+      $defs: { tool: { enum: ['SQL', 'Python', 'C++', 'C#'] } },
+    },
+    expected: { tools: ['Python', 'C++', 'SQL'] },
+  },
+  {
+    name: 'list_missing', prompt: 'We need a data engineer who communicates clearly and works independently.',
+    schema: object({ skills: stringArray }), expected: { skills: [] }, noEvidence: ['skills'], stream: true,
+  },
+  {
+    name: 'list_missing_ru', prompt: 'Ищем инженера данных с опытом работы.',
+    schema: object({ skills: stringArray }), expected: { skills: [] }, noEvidence: ['skills'],
+  },
+  {
+    name: 'list_wrong_topic', prompt: 'Benefits: insurance and flexible hours.',
+    schema: object({ skills: stringArray }), expected: { skills: [] }, noEvidence: ['skills'],
+  },
+  {
+    name: 'list_min_items', prompt: 'An experienced data engineer is needed.',
+    schema: object({ skills: { ...stringArray, minItems: 1 } }),
+  },
+  {
+    name: 'list_explicit_empty', prompt: '{"skills":[]}',
+    schema: object({ skills: stringArray }), expected: { skills: [] },
+  },
+  {
+    name: 'list_labeled_json', prompt: 'Skills: ["C#", "C++", "Node.js", "Version 1. Beta"]',
+    schema: object({ skills: stringArray }), expected: { skills: ['C#', 'C++', 'Node.js', 'Version 1. Beta'] },
+  },
+  {
+    name: 'list_labeled_empty', prompt: 'Skills: []',
+    schema: object({ skills: stringArray }), expected: { skills: [] },
+  },
+  {
+    name: 'list_field_ref', prompt: 'Benefits: insurance and a pension. Skills: analysis, writing, and coaching.',
+    schema: {
+      ...object({ focus: { $ref: '#/$defs/list', description: 'Skills' } }),
+      $defs: { list: { ...stringArray, description: 'Benefits' } },
+    },
+    expected: { focus: ['analysis', 'writing', 'coaching'] },
   },
   {
     name: 'json_mode', prompt: 'Return a JSON object with key "answer" equal to the sum of 2 and 3.',
@@ -220,6 +294,10 @@ function assertSchema(value, schema, root = schema) {
   if (schema.type === 'null') assert.equal(value, null);
   if (schema.type === 'string') assert.equal(typeof value, 'string');
   if (schema.type === 'integer') assert.ok(Number.isInteger(value));
+  if (schema.type === 'array') {
+    assert.ok(Array.isArray(value));
+    value.forEach(item => assertSchema(item, schema.items, root));
+  }
   if (schema.type !== 'object') return;
   assert.ok(value && typeof value === 'object' && !Array.isArray(value));
   for (const key of schema.required ?? []) assert.ok(Object.hasOwn(value, key));
@@ -250,7 +328,8 @@ function checkResult(row, format, chat, envelope, content, refusal, steps, env) 
   }
   const step = steps.find(step => step.step === 'structured_output');
   const detail = JSON.parse(step.detail);
-  assert.deepEqual(detail, row.expected ? { format, value: row.expected } : { format, refusal });
+  const noEvidence = row.noEvidence ? { no_evidence: row.noEvidence } : {};
+  assert.deepEqual(detail, row.expected ? { format, value: row.expected, ...noEvidence } : { format, refusal });
   assert.match(envelope.derivation_id, /^answer_[a-f0-9]{16}$/u);
   const locator = envelope.evidence_links.find(link => link.startsWith('derivation_record:'));
   assert.ok(locator, JSON.stringify(envelope.evidence_links));
@@ -333,5 +412,36 @@ test('OpenAI requests constrain final JSON across endpoint and streaming shapes'
         }
       }
     }
+  }
+});
+
+test('Offline ephemeral Chat Completions extracts skills and identifies absent evidence', { timeout: 120_000 }, async t => {
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    args: ['--ephemeral'],
+    env: {
+      FORMAL_AI_EPHEMERAL: '1', FORMAL_AI_OFFLINE: '1', FORMAL_AI_NETWORK: 'denied',
+      FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false',
+    },
+    lifetime: 120_000,
+  });
+  await run.ready();
+  const rows = ['skills_en', 'skills_ru', 'list_missing'].map(name => cases.find(row => row.name === name));
+  const format = formatFor(rows[0], true);
+  for (const row of rows) {
+    const http = await fetch(run.url + '/v1/chat/completions', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model: 'formal-ai', response_format: format, messages: [{ role: 'user', content: row.prompt }],
+      }),
+    });
+    assert.equal(http.status, 200, row.name);
+    const reply = await http.json();
+    const message = reply.choices[0].message;
+    assert.equal(message.refusal, undefined, row.name);
+    assert.deepEqual(JSON.parse(message.content), row.expected, row.name);
+    const step = message.thinking_steps.find(step => step.step === 'structured_output');
+    assert.deepEqual(JSON.parse(step.detail).no_evidence, row.noEvidence, row.name);
+    assert.ok(reply.evidence_links.every(link => !link.startsWith('derivation_record:')));
   }
 });

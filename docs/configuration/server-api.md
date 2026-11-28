@@ -48,6 +48,15 @@ as `HTTPStatus`. If the property name yields no evidence, an explicit source
 label can match the property's `description`. The output uses the original
 property names from the schema.
 
+String-array properties can extract comma-separated, coordinated, and
+bulleted lists in English and Russian. The server uses the property name and
+description to select the relevant list. It prefers recognized concepts
+among otherwise comparable lists and returns matching enum labels in source
+order. If no list can be established and the schema allows an empty array,
+the server returns an empty array and records the property name in
+the derivation's `no_evidence` array. An explicitly supplied empty JSON array
+needs no evidence marker.
+
 Formal AI validates both strict and non-strict requests. It can return a
 schema-allowed `null` or `"unknown"` for a missing required value.
 If the schema uses unsupported constraints or the result cannot be
