@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import { test } from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { installHost } from '../../../js/agentic/host.mjs';
+import { chatCompletionJson, chatCompletionSse } from '../../../js/server/openai.mjs';
 import { loadRuntimeDerivation } from '../../../js/server/runtime-cache.mjs';
 import { anchoredPattern } from '../../../js/server/structured-pattern.mjs';
 import { startCli } from './support/structured-log-fixture.mjs';
@@ -404,6 +405,17 @@ function events(text) {
   return text.split('\n').filter(line => line.startsWith('data: ') && line !== 'data: [DONE]')
     .map(line => JSON.parse(line.slice(6)));
 }
+
+test('Chat Completions preserves an empty refusal in JSON and SSE', () => {
+  const message = {
+    role: 'assistant', content: '', refusal: '',
+    formal_ai: { status: 'unanswered', provenance: ['local_rules'] },
+  };
+  const completion = { choices: [{ index: 0, message, finish_reason: 'stop' }] };
+  assert.equal(chatCompletionJson(completion).choices[0].message.refusal, '');
+  const deltas = events(chatCompletionSse(completion, false).body).map(frame => frame.choices[0].delta);
+  assert.equal(deltas.find(delta => typeof delta.refusal === 'string')?.refusal, '');
+});
 
 test('anchored structured patterns bound repetition without changing matches', () => {
   for (const source of ['^(?:a?)*b$', '^[ab]{2,}(?:ab+)?x?$', zodCurrentPattern, zodLegacyPattern]) {
