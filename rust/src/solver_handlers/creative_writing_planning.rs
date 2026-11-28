@@ -2,69 +2,63 @@
 // Planning
 // ---------------------------------------------------------------------------
 
-/// One `planning_place_cache` row: a place with the facts it cites.
+/// A visit window supported by an observation supplied with the request.
 #[derive(Clone)]
 struct Place {
-    id: String,
     name: String,
     district: String,
     category: String,
     hours: String,
-    #[allow(dead_code)] // seed provenance, carried but not yet rendered
-    closed_days: String,
+    open: u32,
+    close: u32,
     visit_minutes: u32,
     source_url: String,
 }
 
-/// One `destination_surface` record: the surfaces naming a destination.
-fn destinations() -> Vec<(String, Vec<String>)> {
-    rules_records_named("destination_surface")
-        .map(|record| {
-            (
-                record.find_child_value("destination").to_string(),
-                record
-                    .children
-                    .iter()
-                    .filter(|child| child.name == "surface")
-                    .map(|child| child.id.clone())
-                    .filter(|surface| !surface.is_empty())
-                    .collect(),
-            )
-        })
-        .filter(|(destination, _)| !destination.is_empty())
-        .collect()
+fn supplied_places(prompt: &str) -> Option<(String, Vec<Place>)> {
+    let evidence = creative_evidence(prompt, "planning")?;
+    let destination = evidence_text(&evidence, "destination")?.to_owned();
+    let records = evidence.get("places")?.as_array()?;
+    if records.len() > 64 {
+        return None;
+    }
+    let mut places = Vec::new();
+    for record in records {
+        // One observation must state the common opening window applicable
+        // to the requested days. Do not discard date-specific closures.
+        if record.get("closed_days").is_some() {
+            continue;
+        }
+        let place = || {
+            let hours = evidence_text(record, "hours")?;
+            let (open, close) = hours.split_once('-')?;
+            let (open, close) = (parse_hhmm(open)?, parse_hhmm(close)?);
+            let visit = record.get("visit_minutes")?.as_u64()?;
+            if open >= close || !(1..=u64::from(close - open)).contains(&visit) {
+                return None;
+            }
+            Some(Place {
+                name: evidence_text(record, "name")?.to_owned(),
+                district: evidence_text(record, "district")?.to_owned(),
+                category: evidence_text(record, "category")?.to_owned(),
+                hours: hours.to_owned(),
+                open,
+                close,
+                visit_minutes: u32::try_from(visit).ok()?,
+                source_url: evidence_source(record)?.to_owned(),
+            })
+        };
+        if let Some(place) = place() {
+            places.push(place);
+        }
+    }
+    (!places.is_empty()).then_some((destination, places))
 }
 
-/// Whether the request names a destination whose places are cached.
-///
-/// The `cached_destination` claim evidence of issue #1175 R3.
+/// Claim evidence exists when the request supplies usable cited places.
 #[must_use]
-pub fn names_cached_destination(normalized: &str) -> bool {
-    destinations().iter().any(|(_, surfaces)| {
-        surfaces
-            .iter()
-            .any(|surface| normalized.contains(&surface.to_lowercase()))
-    })
-}
-
-fn places(destination: &str) -> Vec<Place> {
-    rules_records_named("planning_place_cache")
-        .filter(|record| record.find_child_value("destination") == destination)
-        .map(|record| Place {
-            id: record.find_child_value("id").to_string(),
-            name: record.find_child_value("name").to_string(),
-            district: record.find_child_value("district").to_string(),
-            category: record.find_child_value("category").to_string(),
-            hours: record.find_child_value("hours").to_string(),
-            closed_days: record.find_child_value("closed_days").to_string(),
-            visit_minutes: record
-                .find_child_value("visit_minutes")
-                .parse()
-                .unwrap_or(60),
-            source_url: record.find_child_value("source_url").to_string(),
-        })
-        .filter(|place| !place.id.is_empty() && !place.source_url.is_empty())
-        .collect()
+pub fn has_planning_evidence(prompt: &str) -> bool {
+    supplied_places(prompt).is_some()
 }
 
 /// The `plan_constraint` record: windows, travel times, caps.
@@ -127,7 +121,9 @@ fn plan_constraints() -> PlanConstraints {
 /// Parse "HH:MM" into minutes past midnight.
 fn parse_hhmm(text: &str) -> Option<u32> {
     let (hours, minutes) = text.split_once(':')?;
-    Some(hours.trim().parse::<u32>().ok()? * 60 + minutes.trim().parse::<u32>().ok()?)
+    let hours = hours.trim().parse::<u32>().ok()?;
+    let minutes = minutes.trim().parse::<u32>().ok()?;
+    ((hours < 24 && minutes < 60) || (hours == 24 && minutes == 0)).then(|| hours * 60 + minutes)
 }
 
 /// The opening and closing minutes of an "HH:MM-HH:MM" window, with the
@@ -157,8 +153,7 @@ struct ScheduledItem {
 
 /// Schedule `places` across `days` days under the plan constraints.
 ///
-/// Days take whole districts in seed order (ancient, vatican, centro,
-/// trastevere round-robin), items sort early-closing first, and the
+/// Days take districts in input order, round-robin, items sort early-closing first, and the
 /// simulator enforces the windows: an item starts after travel from the
 /// previous item (and after the lunch window once it crosses into it),
 /// ends before closing, respects the daily cap, and never follows an item
@@ -170,7 +165,7 @@ fn schedule_days(
     limits: &PlanConstraints,
 ) -> (Vec<Vec<ScheduledItem>>, Vec<String>) {
     let mut skips: Vec<String> = Vec::new();
-    // Group the places by district, preserving seed order.
+    // Group the places by district, preserving input order.
     let mut district_order: Vec<String> = Vec::new();
     for place in available {
         if !district_order.contains(&place.district) {
@@ -184,15 +179,7 @@ fn schedule_days(
             .filter(|place| place.district == *district)
             .collect();
         // Early-closing places first (markets), long visits before short.
-        bucket.sort_by_key(|place| {
-            let close = place
-                .hours
-                .split('-')
-                .next_back()
-                .and_then(parse_hhmm)
-                .unwrap_or(limits.day_end);
-            (close, u32::MAX - place.visit_minutes)
-        });
+        bucket.sort_by_key(|place| (place.close, std::cmp::Reverse(place.visit_minutes)));
         for (slot, place) in bucket.iter().enumerate() {
             let day = (index + slot) % day_plans.len();
             day_plans[day].push((*place).clone());
@@ -203,14 +190,17 @@ fn schedule_days(
     for mut day_places in day_plans {
         if day_places.len() > limits.max_items {
             for place in day_places.drain(limits.max_items..) {
-                skips.push(template("planning_skip_over_cap", &[("place", &place.name)]));
+                skips.push(template(
+                    "planning_skip_over_cap",
+                    &[("place", &place.name)],
+                ));
             }
         }
         let mut items: Vec<ScheduledItem> = Vec::new();
         let mut cursor = limits.day_start;
         let mut previous_district: Option<String> = None;
-        let mut lunch_taken = false;
         for place in day_places {
+            let mut travel = 0;
             if let Some(previous) = &previous_district {
                 // The category-spread constraint: no two consecutive items
                 // of one category on a day.
@@ -224,33 +214,18 @@ fn schedule_days(
                     ));
                     continue;
                 }
-                let travel = if previous == &place.district {
+                travel = if previous == &place.district {
                     limits.travel_intra
                 } else {
                     limits.travel_cross
                 };
-                cursor += travel;
             }
-            let open = place
-                .hours
-                .split('-')
-                .next()
-                .and_then(parse_hhmm)
-                .unwrap_or(limits.day_start);
-            let close = place
-                .hours
-                .split('-')
-                .next_back()
-                .and_then(parse_hhmm)
-                .unwrap_or(limits.day_end);
-            let mut start = cursor.max(open);
-            if !lunch_taken && start + 30 > limits.lunch_start {
-                // The lunch window: one hour, once a day.
-                start = start.max(limits.lunch_end);
-                lunch_taken = true;
+            let mut start = (cursor + travel).max(place.open);
+            if start < limits.lunch_end && start + place.visit_minutes > limits.lunch_start {
+                start = limits.lunch_end;
             }
             let end = start + place.visit_minutes;
-            if end > close.min(limits.day_end) {
+            if end > place.close.min(limits.day_end) {
                 skips.push(template(
                     "planning_skip_past_closing",
                     &[("place", &place.name), ("hours", &place.hours)],
@@ -312,21 +287,7 @@ fn check_schedule(schedule: &[Vec<ScheduledItem>], limits: &PlanConstraints) -> 
             }
         }
         for item in items {
-            let open = item
-                .place
-                .hours
-                .split('-')
-                .next()
-                .and_then(parse_hhmm)
-                .unwrap_or(limits.day_start);
-            let close = item
-                .place
-                .hours
-                .split('-')
-                .next_back()
-                .and_then(parse_hhmm)
-                .unwrap_or(limits.day_end);
-            if item.start < open || item.end > close {
+            if item.start < item.place.open || item.end > item.place.close {
                 failures.push(template(
                     "planning_outside_hours",
                     &[("place", &item.place.name), ("hours", &item.place.hours)],
@@ -341,71 +302,45 @@ fn check_schedule(schedule: &[Vec<ScheduledItem>], limits: &PlanConstraints) -> 
 /// schedule.
 ///
 /// Returns `None` when the prompt is not a planning
-/// request; a destination without seeded places gets the honest refusal,
-/// never the canned web-search paragraph or a terminal command.
+/// request; a destination without usable cited places needs more information.
 pub fn handle_planning_request(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     // The canonical reading folds punctuation, as the browser twin's
     // normalized prompt does, so the hyphen of "a 2-day trip" does not hide
     // the seeded "day trip" surface (issue #1175 p213/p214).
-    let canonical = crate::engine::normalize_prompt(prompt);
-    let normalized = if canonical.is_empty() {
-        normalized
-    } else {
-        canonical.as_str()
-    };
-    if !crate::seed::lexicon().mentions_role(ROLE_PLANNING, normalized) {
+    let request = creative_request_text(prompt);
+    let normalized = crate::engine::normalize_prompt(request);
+    if !crate::seed::lexicon().mentions_role(ROLE_PLANNING, &normalized) {
         return None;
     }
-    let language = crate::language::detect(prompt).slug();
-    let destination = destinations()
-        .into_iter()
-        .find(|(_, surfaces)| {
-            surfaces
-                .iter()
-                .any(|surface| normalized.contains(&surface.to_lowercase()))
-        })
-        .map(|(destination, _)| destination);
-    let Some(destination) = destination else {
-        let fallback = topic_words(normalized, language)
-            .into_iter()
-            .next()
-            .unwrap_or_default();
-        let cached = destinations()
-            .into_iter()
-            .map(|(destination, _)| destination)
-            .collect::<Vec<_>>()
-            .join(", ");
-        log.append("planning:refusal", "destination not cached".to_owned());
+    let language = crate::language::detect(request).slug();
+    let Some((destination, available)) = supplied_places(prompt) else {
+        log.append("planning:refusal", "missing_places".to_owned());
         return Some(finalize_simple(
             prompt,
             log,
             "planning",
             "response:planning",
-            &template(
-                "planning_refusal",
-                &[
-                    ("destination", &fallback),
-                    ("cached_destinations", &cached),
-                ],
-            ),
+            &template("planning_refusal", &[]),
             0.4,
         ));
     };
     log.append("planning:destination", destination.clone());
-    let days = requested_count(normalized, language)
+    let days = requested_count(&normalized, language)
         .unwrap_or(3)
         .clamp(1, 7) as usize;
     log.append("planning:days", days.to_string());
     let limits = plan_constraints();
-    let available = places(&destination);
     for place in &available {
         log.append(
             "planning:place",
-            format!("{} ({} min, {})", place.name, place.visit_minutes, place.hours),
+            format!(
+                "{} ({} min, {})",
+                place.name, place.visit_minutes, place.hours
+            ),
         );
     }
     let (schedule, skips) = schedule_days(&available, days, &limits);
@@ -413,6 +348,17 @@ pub fn handle_planning_request(
         log.append("planning:skipped", skip.clone());
     }
     let failures = check_schedule(&schedule, &limits);
+    if schedule.iter().all(Vec::is_empty) {
+        log.append("planning:refusal", "no_feasible_visit".to_owned());
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "planning",
+            "response:planning",
+            &template("planning_no_fit", &[]),
+            0.4,
+        ));
+    }
     if !failures.is_empty() {
         log.append("planning:infeasible", failures.join("; "));
         return Some(finalize_simple(
@@ -468,7 +414,8 @@ pub fn handle_planning_request(
             ("destination", &destination),
             ("schedule", &rendered),
             ("feasibility", &feasibility),
-            ("cache_note", &limits.note),
+            ("input_note", &limits.note),
+            ("skips", &skips.join("; ")),
         ],
     );
     Some(finalize_simple(

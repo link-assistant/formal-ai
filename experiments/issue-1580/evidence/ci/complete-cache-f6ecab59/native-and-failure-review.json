@@ -1,0 +1,111 @@
+{
+  "publishedHead": "f6ecab596c331da59c40abd07d69c431beba1066",
+  "observedAt": "2026-11-18T17:53:44.468740+00:00",
+  "workflowCount": 23,
+  "success": 21,
+  "failedWorkflows": [
+    {
+      "id": 44359971827,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44359971827"
+    },
+    {
+      "id": 44359973125,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44359973125"
+    }
+  ],
+  "actionableFailureClasses": [
+    {
+      "workflow": "Layered CI",
+      "job": 134998560232,
+      "originalLogLine": 1175,
+      "error": "select-focused-tests.mjs git diff exceeds the default execFileSync buffer",
+      "repairCommit": "ae1a9cb1be1d10d60f515a604f5179d3b9eb2f60"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "job": 134998332563,
+      "originalLogLines": [
+        774,
+        775
+      ],
+      "error": "role-namespace: role registry differs from runtime meanings",
+      "repairCommit": "dc618e45c5372edbd742f500105ac5e3a72a9737"
+    }
+  ],
+  "nativeJob": {
+    "id": 134998807242,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44359973125/job/134998807242",
+    "rawSha256": "a2c9a5f943d97145046ebccb7ebf2fda2e719800f9b997a06ec7534428758fa9",
+    "lines": 1965,
+    "literalReviewedSpans": [
+      [
+        1600,
+        1870
+      ]
+    ],
+    "allLinesLiterallyRead": false,
+    "rustTestsPassed": 47,
+    "capturedSourceTests": [
+      {
+        "name": "solver_unknown_reasoning::tests::a_bare_cached_concept_keeps_its_complete_attributed_answer",
+        "line": 1722
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::a_cached_concept_mention_cannot_replace_an_operative_question",
+        "line": 1723
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::a_definition_request_cannot_use_a_different_retrieved_term",
+        "line": 1724
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::a_word_in_an_unparsed_question_is_still_only_a_word_definition",
+        "line": 1725
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::an_about_clause_cannot_replace_a_link_memory_question",
+        "line": 1726
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::an_about_clause_cannot_replace_the_complete_operative_request",
+        "line": 1727
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::an_explicit_cached_concept_request_keeps_its_complete_attributed_answer",
+        "line": 1728
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::an_unrelated_higher_tier_sense_cannot_replace_the_requested_definition",
+        "line": 1729
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::operative_question_cannot_be_replaced_by_a_retrieved_word_definition",
+        "line": 1730
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::public_cache_answers_require_the_complete_requested_subject",
+        "line": 1731
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::supported_definition_keeps_its_attributed_retrieved_answer",
+        "line": 1732
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::unparsed_spanish_question_keeps_its_full_body_despite_a_retrieved_word",
+        "line": 1733
+      },
+      {
+        "name": "solver_unknown_reasoning::tests::unsupported_bare_term_keeps_its_attributed_retrieved_answer",
+        "line": 1734
+      }
+    ],
+    "httpReplayTestsPassed": 3
+  },
+  "newUnknownTargetExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

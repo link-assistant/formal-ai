@@ -1,0 +1,18 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "experiments/issue-1580/template-python-release-formatting.test.mjs"
+  ],
+  "status": 1,
+  "expectedFailure": true,
+  "candidateDisabled": true,
+  "durationSeconds": 2.512,
+  "rawSha256": "5e253a74d930edb768cd42732034d72e1e1755d939f07710f97d16d8ddb0c6d7",
+  "log": "candidate-disabled.log.gz",
+  "testRestoredSha256": "e269362f74c5a9e3d817b66989f439959321d010998516742145710bb4c09750"
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "governed-witness",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "/tmp/issue-1580-research/refresh-cnl-canonical-witness.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 13.19,
+    "file": "governed-witness.log.gz",
+    "rawSha256": "6bc674cd586162443414cf1e9dc727f110fe9fb828f6f58b8168019196cdbae8",
+    "archiveSha256": "1665964cf36e88fc2443e7eeffce70b4a6b09e515d3379a0fa26ee65985d5afd",
+    "lines": 21
+  }
+]

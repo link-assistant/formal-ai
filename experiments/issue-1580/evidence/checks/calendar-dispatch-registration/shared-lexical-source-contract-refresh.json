@@ -1,0 +1,17 @@
+{
+  "changedSourceIdentities": [
+    {
+      "path": "js/seed_loader.js",
+      "before": "62e9682efeb745471a8c81b19adccbb2d6d03250823883bb0b221f61ca1a73d7",
+      "after": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666"
+    },
+    {
+      "path": "ts/seed_loader.ts",
+      "before": "62e9682efeb745471a8c81b19adccbb2d6d03250823883bb0b221f61ca1a73d7",
+      "after": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666"
+    }
+  ],
+  "allOtherContractBytesUnchanged": true,
+  "reason": "Browser argument-list projection changes, lexical lowering and facet extraction remain unchanged",
+  "independentAuthorshipCredit": 0
+}

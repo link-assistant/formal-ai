@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "scope": "Retained historical native histograms; not current SDK parser parity",
+  "source": "Exact Git blobs matching committed source_module FNV-1a identities",
+  "generator": "experiments/issue-1580/capture-retained-census-sources.py",
+  "nativeCountsRegenerated": false,
+  "captureCount": 167,
+  "archive": "sources.json.gz",
+  "archiveBytes": 554798,
+  "uncompressedBytes": 2145305,
+  "archiveSha256": "cdcc1f7873acb793e3fa71a5facc060adbdd54dadafd97e1624e4d49f696ec22"
+}

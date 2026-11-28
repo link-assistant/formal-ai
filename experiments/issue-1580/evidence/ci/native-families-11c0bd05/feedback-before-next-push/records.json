@@ -1,0 +1,121 @@
+{
+  "observedAt": "2026-11-20T05:01:57.671067+00:00",
+  "records": [
+    {
+      "name": "issue",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "number,title,body,updatedAt,url"
+      ],
+      "rawSha256": "fdc9408c4dc7805894a240269e2728abdf57d12f51d719c3ddde7907a9d56123",
+      "archiveSha256": "0b8d6102a911b2c4492d6c2702b1a3835b813588cc1327f7061f48e06e7e36d2"
+    },
+    {
+      "name": "issue-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate"
+      ],
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "archiveSha256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25"
+    },
+    {
+      "name": "pr-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate"
+      ],
+      "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
+    },
+    {
+      "name": "pr-inline",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate"
+      ],
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "name": "pr-reviews",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate"
+      ],
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "name": "recent-runs",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,conclusion,createdAt,headSha"
+      ],
+      "rawSha256": "b9ec28c20ad110c4c09e925700b4a9ae2cd5ee56b210de3e9a4097200ae77adc",
+      "archiveSha256": "1a25f1cf694fc9f180c1ac537c632094e88343086f7cedfa1c1ddebdea0b51b6"
+    },
+    {
+      "name": "in-progress",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "in_progress",
+        "--limit",
+        "100",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    {
+      "name": "queued",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "queued",
+        "--limit",
+        "100",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    }
+  ],
+  "fullIssueComplete": false
+}

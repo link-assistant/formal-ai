@@ -36,6 +36,6 @@ test('persistent real 408 stays broken and real 404 is final',async()=>{
   assert.equal(results.get(base+'/timeout').outcome,'retryable');assert.equal(results.get(base+'/timeout').attempts,3);
   assert.equal(results.get(base+'/missing').outcome,'rejected');assert.equal(results.get(base+'/missing').attempts,1);assert.equal(requests,4);
   assert.equal(classifyFailures([{url:base,marker:'404',detail:'Rejected status code: 408'}]).answered.length,1);
-  assert.equal(ACCEPTED_STATUS,'200..=204,429,500..=599');
+  assert.equal(ACCEPTED_STATUS,'200..=204');
  } finally {server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
 });

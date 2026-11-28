@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { applicableWorkflows,
@@ -891,14 +892,14 @@ test('source-event relocation preserves exact readonly producer semantics withou
   const retained = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
   for (const name of ['.github/workflows/release.yml', retained + 'original-release-workflow.yml',
       retained + 'candidate-release-caller.yml']) {
-    assert.deepEqual(YAML.parse(read(name)).jobs['hive-source-provenance'], expectedCaller);
+    assert.deepEqual(YAML.parse(name===retained+'original-release-workflow.yml'?readCanonicalSource(new URL('../../../',import.meta.url)).text:read(name)).jobs['hive-source-provenance'], expectedCaller);
   }
   const reusable = YAML.parse(read(called));
   assert.deepEqual(Object.keys(reusable.on), ['workflow_call']);
   assert.deepEqual(reusable.permissions, {contents:'read'});
   assert.deepEqual(reusable.concurrency, {
-    group:'${{ github.workflow }}-${{ github.ref }}-hive-source-provenance',
-    'cancel-in-progress':"${{ github.ref != 'refs/heads/main' }}"
+    group:"${{ github.workflow }}-${{ github.ref }}-hive-source-provenance${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}",
+    'cancel-in-progress':"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}"
   });
   assert.deepEqual(Object.keys(reusable.jobs), ['hive-source-provenance']);
   const expectedJob = {

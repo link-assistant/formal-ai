@@ -1,0 +1,41 @@
+{
+  "source": "17a3431f187c7dd5a12d71ce1aa6bcd966d62994",
+  "hostedRun": 45103301043,
+  "failedJob": 137459110140,
+  "jobUrl": "https://github.com/link-assistant/formal-ai/actions/runs/45103301043/job/137459110140",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 135362,
+    "sha256": "203bb5121170e4c9b65e2e0ab97116c87f1109835a5468511efdddf5ad7d9a18"
+  },
+  "members": 27,
+  "roundTripVerified": true,
+  "identities": [
+    {
+      "source": "js/worker/formal_ai_worker_how_to_guide.js",
+      "sourceSha256": "122e3dce0770baade26a6dc0778be33cd8fbce7a4da788625cff1c78b9ffbb8f",
+      "projection": "ts/worker/formal_ai_worker_how_to_guide.ts",
+      "beforeSha256": "528e29ab45a1a8ca0b9078504342682fe29bac3aac57f6550413fce47864f62e",
+      "afterSha256": "122e3dce0770baade26a6dc0778be33cd8fbce7a4da788625cff1c78b9ffbb8f"
+    },
+    {
+      "source": "js/worker/formal_ai_worker_source_walk.js",
+      "sourceSha256": "4d247a841817509d283ee860505f66e1371663c0e35b93b4a74a429db50cbd59",
+      "projection": "ts/worker/formal_ai_worker_source_walk.ts",
+      "beforeSha256": "06dee81739cdf404147aa16a66a10dcfa8e654668d5709b8de391f0868c94d52",
+      "afterSha256": "4d247a841817509d283ee860505f66e1371663c0e35b93b4a74a429db50cbd59"
+    }
+  ],
+  "reproduction": {
+    "beforeRuntimeExit": 1,
+    "beforeCurrencyExit": 1,
+    "afterRuntimeExit": 0,
+    "afterCurrencyExit": 0,
+    "translatorCases": 12,
+    "touchedGatesPassed": 2
+  },
+  "scope": "Canonical regeneration of two stale TypeScript worker projections. Actual TypeScript runtime and adjacent translator controls; next-head hosted execution remains pending.",
+  "nativeExecution": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

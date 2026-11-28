@@ -1,0 +1,22 @@
+{
+  "head": "c5b6850813d20fa7d3d5e9f4a496b6b8c5220009",
+  "job": 136142391919,
+  "argv": [
+    "gh",
+    "api",
+    "repos/link-assistant/formal-ai/actions/jobs/136142391919/logs"
+  ],
+  "exitCode": 1,
+  "logs": [
+    {
+      "file": "early-registry-job-136142391919.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "early-registry-job-136142391919.stderr.gz",
+      "rawSha256": "8b6407b2fdbca54bf3d53fb93e79a3560dbe59567fa5044cfee4bed1b5b6e467",
+      "archiveSha256": "024e7809ed40977e233e2ebf8923eefa40525e1307a3da284a16a4b463fdcc8c"
+    }
+  ]
+}

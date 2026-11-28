@@ -2,8 +2,13 @@ use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_chan
 use formal_ai::agentic_coding::work_item_report::{
     parses_as_json_object, reported_work_item_record,
 };
-use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
+use formal_ai::agentic_coding::{
+    AgenticPlan, plan_chat_step, run_agentic_task, run_agentic_task_with_source_fetch,
+};
 use formal_ai::protocol::{ChatMessage, ToolCall};
+
+#[path = "agentic_general_planner/command_capture.rs"]
+mod command_capture;
 
 use crate::observed_plan_tools;
 
@@ -261,7 +266,17 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     );
     assert!(report.contains("could not be read"), "{report}");
 
-    let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
+    let issue_url = "https://github.com/link-assistant/formal-ai/issues/698";
+    let body = include_str!("../../../../data/benchmarks/issue-requirements/issue-698.md");
+    assert!(formal_ai::agentic_coding::corpus::web_fetch_result(issue_url).is_err());
+    let outcome = run_agentic_task_with_source_fetch(ISSUE_698_WORK_ITEM, |url| {
+        if url == issue_url {
+            Ok(body.to_owned())
+        } else {
+            formal_ai::agentic_coding::corpus::web_fetch_result(url)
+        }
+    })
+    .expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
     // The driver advertises a shell, but its sandbox refuses gh. The hosted
     // fallback owns the unchanged issue body. Statements inside a fetched issue
@@ -277,14 +292,7 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     );
     let fetched: serde_json::Value =
         serde_json::from_str(&outcome.steps[1].arguments).expect("fetch arguments");
-    assert_eq!(
-        fetched["url"],
-        "https://github.com/link-assistant/formal-ai/issues/698"
-    );
-    let body = formal_ai::agentic_coding::corpus::web_fetch_result(
-        fetched["url"].as_str().expect("the fetched issue URL"),
-    )
-    .expect("the owned offline issue body");
+    assert_eq!(fetched["url"], issue_url);
     assert_eq!(outcome.steps[1].result, body);
     // A fetched issue body never refuses a read on the user's behalf (#1560):
     // the read is planned, and its observed failure is the answer instead of a
@@ -883,106 +891,4 @@ fn a_multi_line_payload_survives_a_marker_that_shares_its_line() {
         bounded.content, "planner fallback works",
         "a payload that stays on one line is bounded exactly as before"
     );
-}
-
-#[test]
-fn command_capture_parent_file_is_a_real_failure_without_false_completion() {
-    let prompt = "Run 'printf learned-output' and write its exact stdout to reports/learned.txt";
-    let plan = compose_general_change_plan(prompt).expect("declared output plan");
-    let mut workspace = observed_plan_tools::ToolWorkspace::new(prompt);
-    workspace
-        .write_initial(PLAN_PATH, "")
-        .expect("empty auxiliary journal");
-    workspace
-        .write_initial("reports", "existing file")
-        .expect("real obstructing parent");
-    let tools = ["read", "write", "run_shell_command"];
-    let mut messages = vec![ChatMessage::user(prompt)];
-    for turn in 0..8 {
-        match plan_chat_step(&messages, &tools).expect("planned output task") {
-            AgenticPlan::ToolCalls(calls) => {
-                let call = &calls[0];
-                let id = format!("blocked-parent-{turn}");
-                let observation = workspace.execute(&id, call);
-                let failed = observation.is_error;
-                messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-                    &id,
-                    &call.tool,
-                    call.arguments.clone(),
-                )]));
-                messages.push(observation);
-                if failed {
-                    assert!(workspace.read(&plan.target).is_err());
-                    assert!(
-                        matches!(plan_chat_step(&messages, &tools), Some(AgenticPlan::Final(answer)) if !answer.contains("Completed the general change request"))
-                    );
-                    return;
-                }
-            }
-            AgenticPlan::Final(_) => {
-                panic!("the blocked parent must be observed as a failed tool call")
-            }
-        }
-    }
-    panic!("bounded real capture did not observe the parent error");
-}
-
-#[test]
-fn command_capture_cold_auxiliary_absence_is_not_the_parent_failure() {
-    let prompt = "Run 'printf learned-output' and write its exact stdout to reports/learned.txt";
-    let plan = compose_general_change_plan(prompt).expect("declared output plan");
-    let mut workspace = observed_plan_tools::ToolWorkspace::new(prompt);
-    workspace
-        .write_initial("reports", "existing file")
-        .expect("real obstructing parent");
-    let tools = ["read", "write", "run_command"];
-    let mut messages = vec![ChatMessage::user(prompt)];
-    let mut cold_auxiliary_absence = false;
-    for turn in 0..8 {
-        match plan_chat_step(&messages, &tools).expect("planned output task") {
-            AgenticPlan::ToolCalls(calls) => {
-                let call = &calls[0];
-                let id = format!("blocked-parent-{turn}");
-                let observation = workspace.execute(&id, call);
-                let failed = observation.is_error;
-                messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-                    &id,
-                    &call.tool,
-                    call.arguments.clone(),
-                )]));
-                messages.push(observation);
-                if failed
-                    && observation_path_is_auxiliary_missing(
-                        messages.last().expect("actual observation"),
-                    )
-                {
-                    assert!(!cold_auxiliary_absence);
-                    cold_auxiliary_absence = true;
-                    continue;
-                }
-                if failed {
-                    assert!(cold_auxiliary_absence);
-                    assert!(workspace.read(&plan.target).is_err());
-                    assert!(
-                        matches!(plan_chat_step(&messages, &tools), Some(AgenticPlan::Final(answer)) if !answer.contains("Completed the general change request"))
-                    );
-                    return;
-                }
-            }
-            AgenticPlan::Final(_) => {
-                panic!("the blocked parent must be observed as a failed tool call")
-            }
-        }
-    }
-    panic!("bounded real capture did not observe the parent error");
-}
-
-fn observation_path_is_auxiliary_missing(observation: &ChatMessage) -> bool {
-    observation.source_read.as_ref().is_some_and(|read| {
-        read["path"] == PLAN_PATH
-            && read["success"] == false
-            && read["complete"] == false
-            && read["format"] == "raw"
-            && read["error_code"] == "ENOENT"
-    })
 }

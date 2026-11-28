@@ -1,0 +1,553 @@
+{
+  "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+  "commit": "65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+  "scope": "All 42 repository blobs read and compared by behavior/role, including all three workflows and their local scripts, tests and configuration. This is source review, not a claim that the upstream pipeline or every upstream test ran.",
+  "limits": [
+    "Seven other complete template reviews remain unfinished.",
+    "External action/runtime implementation is outside this repository-source review.",
+    "Lexical graph unresolved entries are reviewed as references, not automatically counted as defects.",
+    "Native regression execution and broader issue-1580 criteria remain open.",
+    "Externally supplied review/reproduction code receives zero independent Formal AI reasoning/authorship credit."
+  ],
+  "verification": "Pinned blob hashes checked per read page and again for all 42 records; Go regression file passes five cases and the maintained fast-PR entrypoint passes eleven, with zero failures/skips. Current/stale integrity negative controls use injected lookup/verification boundaries. No upstream workflow or complete upstream suite execution is claimed.",
+  "files": [
+    {
+      "path": ".changeset/README.md",
+      "gitBlob": "e2acfe234784e2dd4dc536801ac4a7cbb37d9bf4",
+      "bytes": 1393,
+      "sha256": "47c78135845368cf4917bea4401c2cfb0977b3f1db85ccacf1a90cc3b3fbca05",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": ".changeset/add-changeset-workflow.md",
+      "gitBlob": "705684f4955baecc8ae7eef61d843a144a820db2",
+      "bytes": 391,
+      "sha256": "6ca18b2fa9e2260f0a142a720fb9bac51e1b2b8710d0310ba6521baa76e17ca1",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": ".changeset/config.json",
+      "gitBlob": "17a8556c2ae963b8607b666e2472863990db82a1",
+      "bytes": 137,
+      "sha256": "592cb5e935b6119f9c0802dfcdb95424f984d7985212cec91eb5a56e3c1d8bbd",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": ".changeset/fix-ci-workflow-dependencies.md",
+      "gitBlob": "8c9c6c75e5848ddfda8fb9554bf7e2bbe52f5bc3",
+      "bytes": 526,
+      "sha256": "784ddcb7c1a305397e4b55c1c1d3adafd640f9768adea064c37bbeb57f0acff3",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": ".changeset/gate-external-state-and-rerun-unacquired.md",
+      "gitBlob": "282870b317074c564cad166436544d4d196a94d9",
+      "bytes": 474,
+      "sha256": "6696809e70babcae5c5c1fdbfdfc96b7414c44db52bd658341322efffe151441",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": ".changeset/harden-release-workflow.md",
+      "gitBlob": "3e500be242b701a0a5a5e3da8e05fd103b53ac2b",
+      "bytes": 376,
+      "sha256": "08bd88bf7ef63f3aacea47a257c919584b95eb67ec69c5cff24ca0cbcb9540ff",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": ".changeset/recover-releases-and-pin-ci.md",
+      "gitBlob": "47b853c1868eea2a7f90a36c59a61575acf52b06",
+      "bytes": 355,
+      "sha256": "4c1c8312b901b775ea51103d5068f0004419ac040043f1331c75e3b14c0931b6",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "gitBlob": "9b5ab57dcb59c83f6777a6d7121a3c99fd310517",
+      "bytes": 728,
+      "sha256": "2ce33634245d2a10be94226ce2bd89ec839fa5d443599515fdc2cc225b041cf0",
+      "completeSourceRead": true,
+      "role": "dependency update proposals",
+      "formalAiComparison": [
+        ".github/workflows/dependencies-latest.yml",
+        "scripts/check-dependencies-latest.rs"
+      ],
+      "decision": "The Go template uses weekly grouped Dependabot proposals; Formal AI instead has its own dependency workflow, with publication controls. A freshness warning must never suppress integrity checks; the new offline probe demonstrates the Go early-continue defect. Formal AI retains strict findings/unverifiable receipts."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "0b3253abfe7828bc5dfaa63af10bd114e064502d",
+      "bytes": 15833,
+      "sha256": "55f4d8c4e7a2508067c0a69958f10e25362eb10fd86c02fe62147241f0a924df",
+      "completeSourceRead": true,
+      "role": "test/build/release admission and serialization",
+      "formalAiComparison": [
+        ".github/workflows/release.yml",
+        ".github/workflows/layered-ci.yml",
+        "scripts/ci-pull-request-admission.mjs"
+      ],
+      "decision": "Compared all 453 lines: pinned runners, read-first permissions, per-job check cancellation, non-cancelling serialized writers, optional Codecov notice, and verify-before-announcement. Manual skipped dependencies reproduce Go #18. Do not copy PR Go builds into Formal AI: its PR application-build policy remains binding. Missing job timeouts already have upstream #17."
+    },
+    {
+      "path": ".github/workflows/rerun-unacquired.yml",
+      "gitBlob": "9911e5b99ec98618cc50da170cccf365b25dc67a",
+      "bytes": 2324,
+      "sha256": "809c1fb4c0e376e922e0ff804c571ac2470e0055099b28115c4684167f0ca462",
+      "completeSourceRead": true,
+      "role": "runner acquisition classification and bounded retry",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here."
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "gitBlob": "777aa295841d6867e5a0428b9751943e2faa6e1b",
+      "bytes": 1760,
+      "sha256": "c7050b925affcdfbd03f446f175da9b53287a8c8ee7af1fa6ce99224a8ff89a6",
+      "completeSourceRead": true,
+      "role": "workflow source policy",
+      "formalAiComparison": [
+        "scripts/check-runner-labels.mjs",
+        ".github/workflows/layered-ci.yml"
+      ],
+      "decision": "Pinned actionlint/container/tool/runners and scheduled checks are applicable. The Go policy suite mainly matches source text and misses the modeled skip chain. Preserve behavioral negative controls. Its queue compatibility ignore is source-reviewed, with no additional executed defect claimed."
+    },
+    {
+      "path": ".gitignore",
+      "gitBlob": "06ca9f7e9b339c0b747156a65e4925e06c26569a",
+      "bytes": 659,
+      "sha256": "4a94928d2441e7f2fd53d207c07f837926b4f85611e6bf5af0ceb90acd17892a",
+      "completeSourceRead": true,
+      "role": "workspace exclusions",
+      "formalAiComparison": [
+        ".gitignore"
+      ],
+      "decision": "Go binaries/vendor/coverage exclusions are ecosystem-specific. Preserve Formal AI scratch exclusions and do not commit agent state."
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "gitBlob": "c9b9fdc87d7d731edb0ee0466a2ac0e60341fc90",
+      "bytes": 941,
+      "sha256": "b8310abb4d278d80cea4779aef4c3e7b505834173dc3196df560ebdcde5b3d19",
+      "completeSourceRead": true,
+      "role": "contributor and consumer workflow",
+      "formalAiComparison": [
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Read complete setup/test/release guidance. Go format/vet/race/build hooks describe that repository. Retain Formal AI focused JavaScript checks, rustfmt-only local validation, and CI native policy rather than importing expensive local hooks."
+    },
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "4fba9ac2f9651db23a449930dd0351de25865da8",
+      "bytes": 916,
+      "sha256": "595d11253262c517530f421e9f53499a8ff57b0aa804226509459d4ab4da146d",
+      "completeSourceRead": true,
+      "role": "release metadata and historical descriptions",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep the existing changelog.d release trigger. Historical descriptions are context, not proof that a workflow ran. Go package frontmatter is language-specific."
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "gitBlob": "51c7d95cd23172b792aa09ecc3e2a0bf3c167a68",
+      "bytes": 6445,
+      "sha256": "2073c2fc6370a6508c8e5c52c03071cec3b86f25001853d245c6db0b0be7b0ce",
+      "completeSourceRead": true,
+      "role": "contributor and consumer workflow",
+      "formalAiComparison": [
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Read complete setup/test/release guidance. Go format/vet/race/build hooks describe that repository. Retain Formal AI focused JavaScript checks, rustfmt-only local validation, and CI native policy rather than importing expensive local hooks."
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "bytes": 1211,
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "completeSourceRead": true,
+      "role": "source redistribution",
+      "formalAiComparison": [
+        "LICENSE"
+      ],
+      "decision": "Read the Unlicense; retain the original LICENSE with every copied Go fixture and immutable source hashes."
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "22be8262e9efd1391779993043e181d0334d9c80",
+      "bytes": 9687,
+      "sha256": "baa327938e2ccd8803aa01e5f9cbbf3d698bb0ad36cabb737a8fa5b0b3c78f49",
+      "completeSourceRead": true,
+      "role": "contributor and consumer workflow",
+      "formalAiComparison": [
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Read complete setup/test/release guidance. Go format/vet/race/build hooks describe that repository. Retain Formal AI focused JavaScript checks, rustfmt-only local validation, and CI native policy rather than importing expensive local hooks."
+    },
+    {
+      "path": "examples/basic_usage.go",
+      "gitBlob": "fb3f878cca63d5802604fc8cfb12a29608257ee1",
+      "bytes": 1491,
+      "sha256": "d94d902eaec0cade3e07ac1a3c67594e10a0aa37e524403f97579a09ed89c8a3",
+      "completeSourceRead": true,
+      "role": "consumer example, module metadata and demonstration application",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/examples"
+      ],
+      "decision": "Read all source and tests. Go module minimum 1.21 differs intentionally from pinned CI 1.27.3. Addition/greeting/context-delay examples are demonstration application behavior, not reusable CI logic. No Go application build was run or imported."
+    },
+    {
+      "path": "experiments/issue-14-live-dry-run.sh",
+      "gitBlob": "741562ca7d0fc8e617b8156a98631011ed93e9dd",
+      "bytes": 691,
+      "sha256": "73397c57af735e057782a2cd7e700d0190ac2818a35bc48570eeb1a8640d0d82",
+      "completeSourceRead": true,
+      "role": "live diagnostic example",
+      "formalAiComparison": [
+        "experiments/issue-1580"
+      ],
+      "decision": "Read bounded read-only job/annotation inspection and --dry-run rerun invocation. It does not prove an actual workflow rerun. Preserve distinction between modeled observations and hosted execution."
+    },
+    {
+      "path": "go.mod",
+      "gitBlob": "8ac673484105f30a12e799c6aa9c2c9240da9416",
+      "bytes": 86,
+      "sha256": "ef3b6229e5141a227c2ed3bc484500e771bc8eea92223c4419984d35ef889b3d",
+      "completeSourceRead": true,
+      "role": "consumer example, module metadata and demonstration application",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/examples"
+      ],
+      "decision": "Read all source and tests. Go module minimum 1.21 differs intentionally from pinned CI 1.27.3. Addition/greeting/context-delay examples are demonstration application behavior, not reusable CI logic. No Go application build was run or imported."
+    },
+    {
+      "path": "pkg/mypackage/mypackage.go",
+      "gitBlob": "fc6014f63298607f23c856576081f6cff02f5c7d",
+      "bytes": 1209,
+      "sha256": "9e1da70469848eae1f562a5b301c354b45cad3f4491490ff8996b898a9e288ff",
+      "completeSourceRead": true,
+      "role": "consumer example, module metadata and demonstration application",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/examples"
+      ],
+      "decision": "Read all source and tests. Go module minimum 1.21 differs intentionally from pinned CI 1.27.3. Addition/greeting/context-delay examples are demonstration application behavior, not reusable CI logic. No Go application build was run or imported."
+    },
+    {
+      "path": "pkg/mypackage/mypackage_test.go",
+      "gitBlob": "acf8d42a4a2e6696fbdb417f57de475470086c18",
+      "bytes": 3109,
+      "sha256": "bad454aa533caa8e8739c6e3f4b3c6ced3baec43f2b7a062e45acfa8260c6769",
+      "completeSourceRead": true,
+      "role": "consumer example, module metadata and demonstration application",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/examples"
+      ],
+      "decision": "Read all source and tests. Go module minimum 1.21 differs intentionally from pinned CI 1.27.3. Addition/greeting/context-delay examples are demonstration application behavior, not reusable CI logic. No Go application build was run or imported."
+    },
+    {
+      "path": "scripts/check-file-size.mjs",
+      "gitBlob": "d5ef1f947e1940b8380871e24a99facba0d55370",
+      "bytes": 2326,
+      "sha256": "175c78af5ff661e83b182f1c5ca22949c41bf83ac5fb3ea2b9ec148127333cc0",
+      "completeSourceRead": true,
+      "role": "size policy",
+      "formalAiComparison": [
+        "scripts/check-file-size.rs",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "decision": "Recursive Go-only size check retains a 1,000-line default. Formal AI keeps its existing language-wide thresholds and real gate selection. Invalid custom numeric input is an unexecuted review concern; no new defect report or fix is claimed for it."
+    },
+    {
+      "path": "scripts/check-release-needed.mjs",
+      "gitBlob": "24be5f0c67a68361fca1c7ce03519e883fe1b3ff",
+      "bytes": 2189,
+      "sha256": "0f943d703bffa24b177de0d9bd5b7f38d201e784a0c607bc16b6c5a869c93ea4",
+      "completeSourceRead": true,
+      "role": "missing release recovery",
+      "formalAiComparison": [
+        "scripts/check-release-needed.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Distinguishes exact missing-release response from API/auth/network errors and requires a tag. Unknown lookup warns and suppresses recovery. Formal AI preserves richer unknown/failed receipts and immutable source identity; do not reduce these to a successful publication claim. Read real-Git mocked-GitHub recovery tests; not executed here."
+    },
+    {
+      "path": "scripts/check-release-needed.test.mjs",
+      "gitBlob": "cf23279979742bbd37234cbd3c6ae01429875ae5",
+      "bytes": 5629,
+      "sha256": "a4e824eec26a0caf2c589047b96b747b0c03b1ebc44ac078ac4115e957eadc2d",
+      "completeSourceRead": true,
+      "role": "missing release recovery",
+      "formalAiComparison": [
+        "scripts/check-release-needed.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Distinguishes exact missing-release response from API/auth/network errors and requires a tag. Unknown lookup warns and suppresses recovery. Formal AI preserves richer unknown/failed receipts and immutable source identity; do not reduce these to a successful publication claim. Read real-Git mocked-GitHub recovery tests; not executed here."
+    },
+    {
+      "path": "scripts/ci/check-dependencies.mjs",
+      "gitBlob": "62397dcfdd1b1173b16bcb2e750903066695d4e4",
+      "bytes": 9274,
+      "sha256": "bfe46ba816f2d452675b0bd5a700e56ea144396fda071ffdac809f4b2fe11d39",
+      "completeSourceRead": true,
+      "role": "freshness and pin integrity",
+      "formalAiComparison": [
+        "scripts/check-dependencies-latest.rs",
+        "scripts/check-dependencies-action-release.rs"
+      ],
+      "decision": "Read discovery, tag/digest verification, bounded tag dereference and event reporting. Executed unmodified checker: stale versions bypass verification and pass push/schedule/dispatch even with a supplied integrity failure; current pins fail. Removing only the early continue in a disposable copy restores integrity failures and retains freshness-only warnings. Existing upstream tests miss this combined case. No production template repair is claimed."
+    },
+    {
+      "path": "scripts/ci/check-dependencies.test.mjs",
+      "gitBlob": "63c4f230bd2969a270e08c99d7984e46fabc5194",
+      "bytes": 6101,
+      "sha256": "c1596f6367dbc9db55202a60d85f0c444bd82b5dcd1964f93a1de9ff5d0ae30e",
+      "completeSourceRead": true,
+      "role": "freshness and pin integrity",
+      "formalAiComparison": [
+        "scripts/check-dependencies-latest.rs",
+        "scripts/check-dependencies-action-release.rs"
+      ],
+      "decision": "Read discovery, tag/digest verification, bounded tag dereference and event reporting. Executed unmodified checker: stale versions bypass verification and pass push/schedule/dispatch even with a supplied integrity failure; current pins fail. Removing only the early continue in a disposable copy restores integrity failures and retains freshness-only warnings. Existing upstream tests miss this combined case. No production template repair is claimed."
+    },
+    {
+      "path": "scripts/ci/check-pipeline-status.mjs",
+      "gitBlob": "999317eee3979f4e3be31afdaf318d04c4c9c36b",
+      "bytes": 4757,
+      "sha256": "8a6ec08b65997133c8d378e00ab68580dda33c4fd84aaf481f8290bd12b22488",
+      "completeSourceRead": true,
+      "role": "aggregate result integrity",
+      "formalAiComparison": [
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Failure/cancelled needs block; skipped needs pass. Actual helper accepts modeled all-skipped manual release prerequisites, as reported in Go #18. Do not claim every skip is a defect: expected optional jobs legitimately skip. API details are diagnostic and cannot turn blocking needs into success."
+    },
+    {
+      "path": "scripts/ci/rerun-unacquired.mjs",
+      "gitBlob": "921ed8ac7debdad9bf774535387a936e6dffe9b7",
+      "bytes": 5233,
+      "sha256": "8273220d5388d38ba1d939bd1b61bfa959fb7b7a2cc2f78e3faaaa88171626e3",
+      "completeSourceRead": true,
+      "role": "runner acquisition classification and bounded retry",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here."
+    },
+    {
+      "path": "scripts/ci/runner-acquisition.mjs",
+      "gitBlob": "6dfec1d449f69d31c256f44712217a6235042cdf",
+      "bytes": 3602,
+      "sha256": "de9903c89fae9e10ac0743916f9f0964a8db7fa3d50e44bd987c321c25f55a86",
+      "completeSourceRead": true,
+      "role": "runner acquisition classification and bounded retry",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here."
+    },
+    {
+      "path": "scripts/ci/runner-acquisition.test.mjs",
+      "gitBlob": "ff0f715371ab274798767c9dabe871e416c31377",
+      "bytes": 7518,
+      "sha256": "9539edba46a4884464b411bd1e0c264c6cdcfc32494becf7a5117039887ee331",
+      "completeSourceRead": true,
+      "role": "runner acquisition classification and bounded retry",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here."
+    },
+    {
+      "path": "scripts/create-github-release.mjs",
+      "gitBlob": "86b63802976a0253fe98a7704957174a2a96ba25",
+      "bytes": 3121,
+      "sha256": "1a13992e928fa8d7f0751e36af151662c7baf143e8953981384d1dbcbfefd28c",
+      "completeSourceRead": true,
+      "role": "release announcement",
+      "formalAiComparison": [
+        "scripts/create-github-release.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Requires strict numeric version and existing tag, supplies notes through stdin, and treats already-exists as recovery. Retain Formal AI source-freshness and publication observation contracts; the Go helper alone does not establish tag target or consumed-artifact identity. Upstream source/tests read, not executed."
+    },
+    {
+      "path": "scripts/create-github-release.test.mjs",
+      "gitBlob": "6d33c93ca7fddf7a7377b354d4585a48616b88d7",
+      "bytes": 2002,
+      "sha256": "44e7ec5095a4a56c99749a1bb40c5f96f5b9c19bed6110da4d06ed0085338f91",
+      "completeSourceRead": true,
+      "role": "release announcement",
+      "formalAiComparison": [
+        "scripts/create-github-release.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Requires strict numeric version and existing tag, supplies notes through stdin, and treats already-exists as recovery. Retain Formal AI source-freshness and publication observation contracts; the Go helper alone does not establish tag target or consumed-artifact identity. Upstream source/tests read, not executed."
+    },
+    {
+      "path": "scripts/detect-code-changes.mjs",
+      "gitBlob": "24d680619faca711ab32ceafb6570be17ba97df9",
+      "bytes": 6493,
+      "sha256": "e468151784ecfaf53cad97dec66e6d6f888226c0e0b1a125e6005f1d89b8d138",
+      "completeSourceRead": true,
+      "role": "Git comparison and outputs",
+      "formalAiComparison": [
+        "scripts/detect-code-changes.rs",
+        "scripts/ci-pull-request-admission.mjs"
+      ],
+      "decision": "Executed failed-Git, code/docs, and real initial-commit controls reproduce Go #19. Formal AI native detector propagates unknown comparisons and output errors and establishes an initial commit before tree fallback; its added native regressions remain unexecuted under pre-merge native policy. Existing JavaScript admission checks run on PRs."
+    },
+    {
+      "path": "scripts/github-actions-log.mjs",
+      "gitBlob": "cdc8d636d7eafe24c58bb811dad3d17c9d073ac4",
+      "bytes": 1192,
+      "sha256": "29d1a076b214deb7f9ade9636ecd1263aca13514c7a1ada48253c95c743c8182",
+      "completeSourceRead": true,
+      "role": "untrusted log output",
+      "formalAiComparison": [
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Read random 128-bit stop/resume guard and contributor changeset/filename tests. Keep contributor data out of command interpolation and classify diagnostics without treating printed text as execution. Copied helper remains unchanged in the regression fixture."
+    },
+    {
+      "path": "scripts/github-actions-log.test.mjs",
+      "gitBlob": "90546efaab0ca9de736a868560c96cb331776fda",
+      "bytes": 4917,
+      "sha256": "5e7fef3768c42481c1c80759200f702e2bdc027c51da83920ae1673407b066c7",
+      "completeSourceRead": true,
+      "role": "untrusted log output",
+      "formalAiComparison": [
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Read random 128-bit stop/resume guard and contributor changeset/filename tests. Keep contributor data out of command interpolation and classify diagnostics without treating printed text as execution. Copied helper remains unchanged in the regression fixture."
+    },
+    {
+      "path": "scripts/merge-changesets.mjs",
+      "gitBlob": "5d367c5b3083e428cd41e8d732d3cba9fbd6a2aa",
+      "bytes": 6553,
+      "sha256": "f329f5f1f05d0415464580b1a3a1772bdbf003e30cdfd1a1066dd338f15948f4",
+      "completeSourceRead": true,
+      "role": "changeset validation and release writes",
+      "formalAiComparison": [
+        "scripts/check-changelog-fragment.rs",
+        "scripts/check-release-needed.rs"
+      ],
+      "decision": "Read every parse/fallback/write/tag/push path. The template uses regex frontmatter, file mtime ordering, PR-diff fallbacks and separate branch/tag pushes; these are not a basis to replace Formal AI fragment validation, publication receipts or source-freshness guards. Unknown diff fallback and broad git add -A deserve care; no unexecuted candidate is claimed fixed. Writers remain serialized by workflow."
+    },
+    {
+      "path": "scripts/validate-changeset.mjs",
+      "gitBlob": "64018fef3439fea2210ec26a68341c6735864908",
+      "bytes": 8734,
+      "sha256": "1da93f75e8933ba38a3d716bc76cabbf7b3c32dbcee509c25406b14efade2e15",
+      "completeSourceRead": true,
+      "role": "changeset validation and release writes",
+      "formalAiComparison": [
+        "scripts/check-changelog-fragment.rs",
+        "scripts/check-release-needed.rs"
+      ],
+      "decision": "Read every parse/fallback/write/tag/push path. The template uses regex frontmatter, file mtime ordering, PR-diff fallbacks and separate branch/tag pushes; these are not a basis to replace Formal AI fragment validation, publication receipts or source-freshness guards. Unknown diff fallback and broad git add -A deserve care; no unexecuted candidate is claimed fixed. Writers remain serialized by workflow."
+    },
+    {
+      "path": "scripts/verify-module-availability.mjs",
+      "gitBlob": "18bd22c0be7560995352889b70516f5f52a331b3",
+      "bytes": 2223,
+      "sha256": "3c31273f59175e802ad661eed16a04bb6ca77b2ddd00cafa7633aadb1ae0b1fe",
+      "completeSourceRead": true,
+      "role": "consumer publication verification",
+      "formalAiComparison": [
+        "scripts/verify-public-release-downloads.mjs",
+        "scripts/release-publication-observation.mjs"
+      ],
+      "decision": "Read exact version polling, proxy module-path escaping, finite attempt count and injected-fetch tests. Apply verify-before-announcement and bounded retry concepts; Go proxy polling is not a Rust/npm publication verifier. Fetch lacks a per-request deadline; source observation only, no new executed defect claimed."
+    },
+    {
+      "path": "scripts/verify-module-availability.test.mjs",
+      "gitBlob": "05504f23e22f173a96b0eb6c63d04a516e2a7abc",
+      "bytes": 1597,
+      "sha256": "0e25e56c16a1833b005250b671d638455d47938b0e13a59d79a9e47340db5a38",
+      "completeSourceRead": true,
+      "role": "consumer publication verification",
+      "formalAiComparison": [
+        "scripts/verify-public-release-downloads.mjs",
+        "scripts/release-publication-observation.mjs"
+      ],
+      "decision": "Read exact version polling, proxy module-path escaping, finite attempt count and injected-fetch tests. Apply verify-before-announcement and bounded retry concepts; Go proxy polling is not a Rust/npm publication verifier. Fetch lacks a per-request deadline; source observation only, no new executed defect claimed."
+    },
+    {
+      "path": "scripts/version-and-commit.mjs",
+      "gitBlob": "eec295b38a29c5eb804606b7e6b3847915c4c7e8",
+      "bytes": 9404,
+      "sha256": "e4b49c05212c2d0abeeec59b6f262e779d8c40eff58ac2e2598cf39c4e035032",
+      "completeSourceRead": true,
+      "role": "changeset validation and release writes",
+      "formalAiComparison": [
+        "scripts/check-changelog-fragment.rs",
+        "scripts/check-release-needed.rs"
+      ],
+      "decision": "Read every parse/fallback/write/tag/push path. The template uses regex frontmatter, file mtime ordering, PR-diff fallbacks and separate branch/tag pushes; these are not a basis to replace Formal AI fragment validation, publication receipts or source-freshness guards. Unknown diff fallback and broad git add -A deserve care; no unexecuted candidate is claimed fixed. Writers remain serialized by workflow."
+    },
+    {
+      "path": "scripts/workflow-policy.test.mjs",
+      "gitBlob": "f82b97cbe0b5807e23cd15d1b86dce01cc7d9d7e",
+      "bytes": 8215,
+      "sha256": "51395c317e06d40802d3ef83c3b0bc08fb8f1a888221c4692d258c5a68055a8c",
+      "completeSourceRead": true,
+      "role": "workflow source policy",
+      "formalAiComparison": [
+        "scripts/check-runner-labels.mjs",
+        ".github/workflows/layered-ci.yml"
+      ],
+      "decision": "Pinned actionlint/container/tool/runners and scheduled checks are applicable. The Go policy suite mainly matches source text and misses the modeled skip chain. Preserve behavioral negative controls. Its queue compatibility ignore is source-reviewed, with no additional executed defect claimed."
+    }
+  ]
+}

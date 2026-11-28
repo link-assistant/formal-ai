@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-11-18T11:42:19.085064+00:00",
+  "records": [
+    {
+      "name": "recent-runs",
+      "exitCode": 0,
+      "rawSha256": "d7ce2b3c653be34ccc573b412e62a63931ca6ab0cea49547cfeb112ab185c82a"
+    },
+    {
+      "name": "pipeline-jobs",
+      "exitCode": 0,
+      "rawSha256": "0faf6f019edddb6d586a56ae7290a97b5d664034ffe03ca3f9cb5fabe76c70a7"
+    },
+    {
+      "name": "security-jobs",
+      "exitCode": 0,
+      "rawSha256": "62a3e5d15cdf51514d784b48676507499f3cb706b970c2c8bb46a5f28432b8ac"
+    }
+  ],
+  "nativeExecutionClaimed": false
+}

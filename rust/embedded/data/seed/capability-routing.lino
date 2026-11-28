@@ -518,15 +518,15 @@ capability_routing
   claim
     handler advice_request
     browser_handler tryAdviceRequest
-    admits_on advice_topic
+    admits_on advice_observations
     refusal_event "advice:refusal"
-    because "issue 1175 R3: advice is given only on a topic the cited recommendation table covers; any other topic is admitted to the refusal lane"
+    because "issue 1175 R3: cited recommendations come from the request; missing evidence is admitted to the refusal lane"
   claim
     handler planning_request
     browser_handler tryPlanningRequest
-    admits_on cached_destination
+    admits_on destination_observations
     refusal_event "planning:refusal"
-    because "issue 1175 R3: an itinerary is planned only for a destination whose places are cached; any other is admitted to the refusal lane"
+    because "issue 1175 R3: a feasible itinerary needs cited place observations; missing evidence is admitted to the refusal lane"
   claim
     handler regex_synthesis
     browser_handler tryRegexSynthesis
@@ -554,7 +554,7 @@ capability_routing
     handler write_script
     browser_handler tryWriteScript
     admits_on script_language
-    because "issue 1175 R3: a minimal script is written only in a catalogued language the request names"
+    because "issue 1175 R3: a print script binds the language and the literal that the caller names"
   claim
     handler document_generation_plan
     browser_handler tryDocumentGenerationPlan
@@ -784,15 +784,15 @@ capability_routing
   claim
     handler brainstorming
     browser_handler tryBrainstormingRequest
-    admits_on brainstorm_category
+    admits_on brainstorm_topic
     refusal_event "brainstorming:refusal"
-    because "issue 1175 R3: a brainstorm list claims with the category its keywords name; the default category is admitted to the refusal lane"
+    because "issue 1175 R3: a brainstorm transforms the topic the caller named and asks for one when it is missing"
   claim
     handler roleplay
     browser_handler tryRoleplayRequest
-    admits_on persona_or_topic
+    admits_on roleplay_facts
     refusal_event "roleplay:refusal"
-    because "issue 1175 R3: a roleplay claims with the persona or topic it names; the default persona on the fallback topic is admitted to the refusal lane"
+    because "issue 1175 R3: a roleplay claims with a caller-supplied role and facts; missing input takes the refusal lane"
   claim
     handler document_originality_check
     browser_handler tryDocumentOriginalityCheck
@@ -808,9 +808,9 @@ capability_routing
   claim
     handler triz_resolution
     browser_handler tryTrizResolution
-    admits_on triz_precedent
+    admits_on triz_demands
     refusal_event "triz_resolution:refusal"
-    because "issue 1175 R3: a contradiction question claims with the precedent its words overlap; with none it is admitted to the refusal lane"
+    because "issue 1175 R3: a contradiction question admits a worksheet when the prompt supplies two distinct demands; if either side is absent it admits the request for details"
   claim
     handler algorithm
     browser_handler tryAlgorithm
@@ -852,13 +852,13 @@ capability_routing
   claim
     handler fact_lookup
     admits_on fact_subject
-    because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison of seeded subjects, the gated record, a live relation and subject, or the concept an explanation researches"
+    because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison, the gated record, a publisher series, a live relation and subject, or the concept an explanation researches"
   claim_note "Issue 1175 R3 last five rows: each handler that read nothing but its cue now reads the operand its answer is about, through a reader the rule interpreter also captures the operand with (value <name> operand <kind>), so the row and the answer read the same thing."
   claim
     handler docs_method_explanation
-    browser_handler tryDocsMethodExplanation
+    browser_handler tryDocumentationMethodExplanation
     admits_on documented_method
-    because "issue 1175 R3: a documentation explanation claims only when the prompt names the project and the method of a seeded documentation page, never on an explanation lead alone"
+    because "issue 1175 R3: a documentation explanation claims only when the prompt names a registered publisher and a method selector, never on an explanation lead alone"
   claim
     handler kupi_slona
     browser_handler tryKupiSlona

@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "head": "58a35f7d9ecdd0cb6af89778e910dcc347afba60",
+  "workflowCount": 23,
+  "success": 22,
+  "failed": [
+    {
+      "id": 44413122357,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44413122357"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

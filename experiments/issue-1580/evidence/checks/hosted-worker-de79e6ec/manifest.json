@@ -1,0 +1,40 @@
+{
+  "source": "de79e6ece67142fe8c6012059e6eb2bc0300e7bd",
+  "run": "44962282997",
+  "files": [
+    {
+      "file": "artifacts.json.gz",
+      "bytes": 782,
+      "sha256": "a91b5c84da45b32693482ec5929e6925f0163a82e93855164db879eb6dd82cff"
+    },
+    {
+      "file": "currency-after.log.gz",
+      "bytes": 117,
+      "sha256": "0b79857a90289b1a9e9116c9bfa1cbfdd9698da7cc844c95cd25d2f0352d3dc3"
+    },
+    {
+      "file": "run.json.gz",
+      "bytes": 5077,
+      "sha256": "b756bb40e23d27f6281e1e938c62e4c44b2c0a6ff548342aa4f6a3ed6de0d6ce"
+    },
+    {
+      "file": "verification.json.gz",
+      "bytes": 967,
+      "sha256": "16664a7ed925abd2455892daba9eba840b3e9c49d6dde56d5e94b41031fbddc0"
+    },
+    {
+      "file": "verification.log.gz",
+      "bytes": 967,
+      "sha256": "16664a7ed925abd2455892daba9eba840b3e9c49d6dde56d5e94b41031fbddc0"
+    },
+    {
+      "file": "workflow.log.gz",
+      "bytes": 81992,
+      "sha256": "cdd915d0bbbb050f2a7653116959e8f1afd41f13ebb152a3998ed62146d0967b"
+    }
+  ],
+  "nativeCompilationVerified": true,
+  "workerCurrencyPassed": true,
+  "localRustExecuted": false,
+  "authorshipCredit": 0
+}

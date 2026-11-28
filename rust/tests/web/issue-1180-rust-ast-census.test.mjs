@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as childProcess from 'node:child_process';
+import { gunzipSync } from 'node:zlib';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -131,28 +131,40 @@ test('historical planner histograms cannot supply current recursive source conte
   // independent grammar reparse, never refreshed historical histogram counts.
 });
 
-test('every full-AST census of a current source matches the native histogram', async () => {
+test('every retained full-AST census replays its captured source bytes against the native histogram', async () => {
+  const directory = path.join(REPO, 'experiments/issue-1580/fixtures/retained-ast-census');
+  const manifest = JSON.parse(fs.readFileSync(path.join(directory, 'manifest.json'), 'utf8'));
+  const archive = fs.readFileSync(path.join(directory, manifest.archive));
+  const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+  assert.equal(archive.length, manifest.archiveBytes);
+  assert.equal(sha256(archive), manifest.archiveSha256);
+  const raw = gunzipSync(archive);
+  assert.equal(raw.length, manifest.uncompressedBytes);
+  const captures = JSON.parse(raw);
+  assert.equal(captures.length, manifest.captureCount);
+  assert.equal(manifest.nativeCountsRegenerated, false);
+  const documents = censusDocuments(path.join(REPO, 'data/meta/self-ast/src'))
+    .filter(file => committedKinds(fs.readFileSync(file, 'utf8'), 6) !== null)
+    .map(file => path.relative(REPO, file).split(path.sep).join('/')).sort();
+  assert.deepEqual(captures.map(capture => capture.document).sort(), documents,
+    'every retained histogram has exactly one source capture');
+  assert.ok(captures.length >= 80, `only ${captures.length} retained full-AST census documents`);
   const census = await rustAstCensus();
-  const compared = [];
-  const drifted = [];
-  for (const file of censusDocuments(path.join(REPO, 'data/meta/self-ast/src'))) {
-    const document = fs.readFileSync(file, 'utf8');
-    const kinds = committedKinds(document, 6);
-    if (kinds === null) continue;
-    const target = document.match(/^ {2}target (\S+)$/mu)[1];
-    const source = fs.readFileSync(path.join(REPO, 'rust', target), 'utf8');
-    if (document.match(/content_id source_module_([0-9a-f]{16})/u)[1] !== fnv1a(source)) continue;
-    compared.push(target);
-    const result = census(source);
-    try {
-      assert.deepEqual(result.node_kinds, kinds);
-      assert.equal(result.named_node_count, Number(document.match(/^ {4}named_node_count (\d+)$/mu)[1]));
-    } catch {
-      drifted.push(target);
-    }
+  for (const capture of captures) {
+    const document = fs.readFileSync(path.join(REPO, capture.document), 'utf8');
+    assert.equal(sha256(Buffer.from(document)), capture.documentSha256, capture.document);
+    assert.equal(document.match(/^ {2}target (\S+)$/mu)[1], capture.target);
+    assert.match(capture.captureCommit, /^[0-9a-f]{40}$/u);
+    const source = Buffer.from(capture.source, 'utf8');
+    assert.equal(sha256(source), capture.sourceSha256, capture.target);
+    const gitBlob = createHash('sha1').update(Buffer.from(`blob ${source.length}\0`)).update(source).digest('hex');
+    assert.equal(gitBlob, capture.sourceBlob, capture.target);
+    assert.equal(fnv1a(capture.source), capture.sourceId, capture.target);
+    assert.equal(document.match(/content_id source_module_([0-9a-f]{16})/u)[1], capture.sourceId);
+    const result = census(capture.source);
+    assert.deepEqual(result.node_kinds, committedKinds(document, 6), capture.target);
+    assert.equal(result.named_node_count, Number(document.match(/^ {4}named_node_count (\d+)$/mu)[1]), capture.target);
   }
-  assert.ok(compared.length >= 80, `only ${compared.length} current full-AST census documents`);
-  assert.deepEqual(drifted, []);
 });
 
 test('the history importer records the histogram delta through io.astCensus', async () => {

@@ -1,0 +1,80 @@
+{
+  "basePublishedHead": "5f64ad16450a84ae1384d6fba753ab0efbd47866",
+  "focusedJavaScriptPassed": 101,
+  "gateCounts": {
+    "PASS": 87,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "verifiedFinalPayloads": 98,
+  "sourcePaths": [
+    "scripts/lib/generated-native-programs.mjs",
+    "changelog.d/issue-1580-native-registry-currency.md",
+    "rust/src/solver_handlers/fact_live_answer.rs",
+    "rust/tests/unit/reasoning_contracts.rs",
+    "rust/tests/web/default-branch-build-policy.test.mjs",
+    "scripts/ci-pull-request-admission.mjs",
+    "changelog.d/issue-1580-contextual-explanation.md",
+    "changelog.d/issue-1580-web-native-replay.md",
+    "experiments/issue-1580/probe-web-contracts.mjs"
+  ],
+  "sourceHashes": {
+    "scripts/lib/generated-native-programs.mjs": "67c10fcc4810fb2163144fbb8baaf8e83aa96b9cb2964a8ea155639fe07fa831",
+    "changelog.d/issue-1580-native-registry-currency.md": "e4f6885cac568ef3cc92b6f4d904214c2418dc3dea532c733f627e845c086a5e",
+    "rust/src/solver_handlers/fact_live_answer.rs": "892ec39bd894acbe9734eb381e92d8e58e95451eb8b841ef038a08a2b31d2649",
+    "rust/tests/unit/reasoning_contracts.rs": "3b810605b5a5fb4f4403ec3fb4555af1c0ad1d3c018977988195b2465e4aa141",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "1e09d122a40e51f88eaa1c2514df6d0e3af344ec074407dbec19fe8d3d628504",
+    "scripts/ci-pull-request-admission.mjs": "d16cc4e506ad819fc75cca421b0783352336ccbdeee4d7a0827953a34b8c8545",
+    "changelog.d/issue-1580-contextual-explanation.md": "879edff6deb666a2d49a1e6eac3af4f6fcb979b8f8ff032edb45adbbf3afaf58",
+    "changelog.d/issue-1580-web-native-replay.md": "9df421bc876b21d16c3d95963460cf0f907d4adec73190650745938f608ed20e",
+    "experiments/issue-1580/probe-web-contracts.mjs": "4bdebcf7c71fb97af378c028f243e13f44d4aa6d688bc37e237d8faadc50344e"
+  },
+  "existingNativeSourceIdentities": [
+    {
+      "path": "rust/tests/unit/specification/pronoun_topic_follow_up.rs",
+      "sha256": "85740d6c2fc1e6a87ddc4d7a6362a95c57f689893a6b8cbf425bd1ab043ebfe7",
+      "completeFileByteIdenticalToPriorPublishedHead": true,
+      "nativeTests": 7,
+      "completeFileByteIdenticalToOriginalFailureHead": true
+    },
+    {
+      "path": "rust/tests/unit/web_requests.rs",
+      "sha256": "b201b4bcc5fb9c74e1bf209612a820091b1559d85caef6553a068c2e52e17b15",
+      "completeFileByteIdenticalToPriorPublishedHead": true,
+      "nativeTests": 17
+    },
+    {
+      "path": "rust/tests/unit/web_requests/extended.rs",
+      "sha256": "2231d20abcaffcafa5af52cfec5cffdc229c03fbce120c0d3116c894f0d7f4e2",
+      "completeFileByteIdenticalToPriorPublishedHead": true,
+      "nativeTests": 7
+    },
+    {
+      "path": "rust/tests/unit/page_formalization_route.rs",
+      "sha256": "3f5b90614851c906716c9f2808cc5e9abfc25039641021103ffd97985d2e2477",
+      "completeFileByteIdenticalToPriorPublishedHead": true,
+      "nativeTests": 6
+    },
+    {
+      "path": "rust/tests/unit/seed/issue_1172_live_fact_answer.rs",
+      "sha256": "8f9474b58c77388aff5019f2405e964f39beef53278f4f5891152bdc8de28394",
+      "completeFileByteIdenticalToPriorPublishedHead": true,
+      "nativeTests": 7
+    }
+  ],
+  "newlyAdmittedExistingNativeCases": 37,
+  "expectedNativeReasoningCases": 85,
+  "expectedTotalNativeRustCases": 185,
+  "expectedNativeHttpCases": 4,
+  "nativeExecutedLocally": false,
+  "hostedNativeRepairVerification": "pending after publication",
+  "governedCounts": {
+    "total": 1189,
+    "supported": 221,
+    "unsupported": 968
+  },
+  "governedBaselineByteIdentical": true,
+  "literalReviewLimits": "All eight focused logs, failed-before registry log and the complete aggregate inventory are read. Detailed gate payloads are hash verified, not claimed all literally reviewed. No local native execution. The whole historical PR diff and broad acceptance inventory remain unfinished.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

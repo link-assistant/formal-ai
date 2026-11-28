@@ -42,7 +42,7 @@ export function remedy(missing, {repo, branch}) {
   return [
     `The ${branch} branch of ${repo} does not require these status checks: ${missing.map(name => `"${name}"`).join(', ')}.`,
     'This needs a repository admin (issue #1191, requirement 7). Before you apply it:',
-    '  1. release.yml ignores docs-only paths, and a check that never reports stays pending. Make sure every pull request reports these checks, or keep docs-only pull requests mergeable some other way.',
+    '  1. Keep the docs-only PR reporting regression green: release.yml must report all three contexts, while unchanged compile inputs skip the compiler inside its reporting job.',
     '  2. external-benchmarks.yml pushes its ledger straight to main. Keep a bypass actor for that push (repository role 5 = admin in the example), or move it to a pull request.',
     `Then run: gh api -X POST repos/${repo}/rulesets --input - <<'JSON'`,
     body,

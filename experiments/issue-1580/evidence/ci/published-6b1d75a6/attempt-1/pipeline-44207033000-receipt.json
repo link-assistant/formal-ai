@@ -1,0 +1,22 @@
+{
+  "run": 44207033000,
+  "head": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "attempt": 1,
+  "rawSha256": "f4013a3c3e9fe9c9709d1cdf7b8c0ccf110bd05857b74882dfe86318cb7274e4",
+  "rawBytes": 1892431,
+  "rawLines": 12225,
+  "log": "pipeline-44207033000.log.gz",
+  "failures": [
+    {
+      "databaseId": 134475516431,
+      "name": "Fast Linux source and requirement checks",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 134478311028,
+      "name": "Pipeline Status",
+      "conclusion": "failure"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

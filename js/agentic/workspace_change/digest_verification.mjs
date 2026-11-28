@@ -86,10 +86,11 @@ function targets(argumentsText, target) {
 }
 
 /** Mirrors `fn write_window`: later writes own the mutation, even when they failed. */
-function writeWindow(messages, target, expected) {
+function writeWindow(messages, target, expected, matchesTarget) {
   for (let index = messages.length - 1; index >= 0; index -= 1) {
     const call = receiptCall(messages, index);
-    if (call === null || classifyTool(call.function.name) !== Capability.Write || !targets(call.function.arguments, target)) continue;
+    if (call === null || classifyTool(call.function.name) !== Capability.Write
+      || !matchesTarget(call.function.arguments, target)) continue;
     const message = messages[index], argumentsValue = JSON.parse(call.function.arguments);
     if (argumentsValue.content !== expected || message.is_error === true || message.isError === true
       || stepOutcome(plainText(message.content)) === StepOutcome.Failed) return null;
@@ -99,8 +100,8 @@ function writeWindow(messages, target, expected) {
 }
 
 /** Mirrors `fn plan_write_digest_verification`: freshness and outer failures precede digest matching. */
-export function planWriteDigestVerification(task, messages, toolNames, change) {
-  const current = writeWindow(messages, change.target, change.expected);
+export function planWriteDigestVerification(task, messages, toolNames, change, matchesTarget = targets) {
+  const current = writeWindow(messages, change.target, change.expected, matchesTarget);
   if (current === null) return failed(task, change.target);
   const command = 'sha256sum -- ' + change.target;
   for (let index = current.length - 1; index >= 0; index -= 1) {

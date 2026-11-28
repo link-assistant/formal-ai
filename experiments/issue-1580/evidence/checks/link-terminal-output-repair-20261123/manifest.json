@@ -1,0 +1,37 @@
+{
+  "sourceBefore": "aa84dfc247891313dc5dc20847950e91c9528064",
+  "repairCommit": "9f81c231de67871c8fd7f105b94df93c1f5c7268",
+  "focusedControls": {
+    "originalPass": 33,
+    "newBeforeFailures": 2,
+    "afterPass": 35
+  },
+  "maintainedOwnerPass": 440,
+  "verificationCommandsPass": 12,
+  "officialEngine": {
+    "name": "@actions/expressions",
+    "version": "0.3.62",
+    "gitHead": "8e5973b4c9a14ebd526a44799823ac168dbcd291"
+  },
+  "expressionComparisons": 120,
+  "originalFalseNegativeControls": 15,
+  "actualActionsRunnerExecuted": false,
+  "liveLinkHealthVerified": false,
+  "sources": {
+    ".github/workflows/links.yml": "ec579ea2c9de9064c362fabd8b54b04ed74dabfd4b70d8726cd9bee9f600fab6",
+    "experiments/issue-1580/link-observation-boundaries.test.mjs": "98052fd7859422c14f70dda3a3917c494b484df9ee8b0b738ce2cd0bc621b679",
+    "experiments/issue-1580/link-terminal-official-engine.mjs": "43d25bde9a59e9cf677e2f8baff637b7e9dcb547376129caaa4ed97e4b73978f",
+    "docs/case-studies/issue-1580/link-terminal-output.md": "75c51298f7c16132384d837320d7d2ce8760fb95c6590db5e7ee98cc69d65b31",
+    "docs/case-studies/issue-1580/templates/rust-source-review-progress.json": "9c78a0d8b5dcdeb447ad66d8c6eed135b85466777ca47efd495a5c06e00df42d"
+  },
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 132519,
+    "sha256": "45c298afdce6592cce089d4136fa13b7ab6568a2e5af611b3d3aaab4db58feca"
+  },
+  "members": 57,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T21:59:08.333582+00:00"
+}

@@ -1,16 +1,15 @@
 //! Agentic recipe for issue #498: turn Google Trends into multilingual test prompts.
 //!
-//! The live Google Trends feed is captured as `data/seed/google-trends-snapshot.lino`.
-//! This recipe lets an agentic CLI ask Formal AI to convert that snapshot into a
-//! reviewable catalog: the top 10 topics, two request variants per supported language,
-//! and the answer Formal AI gives for every generated prompt.
+//! The recipe renders requests and answers from the regional publisher feed.
 
 use std::fmt::Write as _;
 
-use crate::google_trends_catalog::{GoogleTrendsCatalog, google_trends_catalog};
+use crate::google_trends_catalog::{
+    GoogleTrendsCatalog, answer_google_trends_catalog, feed_for_task,
+};
+use crate::seed::{agentic_message, parser::parse_lino};
 
-/// The workspace path the planner writes, mirrored by the committed artifact under
-/// `data/meta/`.
+/// The workspace path the planner writes.
 pub const GOOGLE_TRENDS_CATALOG_PATH: &str = "google-trends-catalog.lino";
 
 /// A differently worded task for the Google Trends catalog recipe.
@@ -38,31 +37,36 @@ pub fn is_google_trends_catalog_task(prompt: &str) -> bool {
             || lower.contains("test"))
 }
 
-/// Render the deterministic Google Trends prompt/answer catalog.
+/// Render the requested regional catalog from the publisher capture.
+pub(super) fn document_for_task(task: &str) -> Option<String> {
+    let catalog = answer_google_trends_catalog(feed_for_task(task)?);
+    Some(render_catalog(&catalog))
+}
+
+/// Render the default regional report, or an empty document if the feed is unavailable.
 #[must_use]
 pub fn render_document() -> String {
-    render_catalog(&google_trends_catalog())
+    document_for_task("").unwrap_or_default()
 }
 
 /// The self-contained final answer for the agentic loop.
 #[must_use]
 pub fn final_answer(document: &str) -> String {
-    let catalog = google_trends_catalog();
-    let prompt_count: usize = catalog.topics.iter().map(|topic| topic.prompts.len()).sum();
-    let answer_count: usize = catalog
-        .topics
-        .iter()
-        .map(|topic| topic.answered.len())
-        .sum();
-    format!(
-        "Generated the Google Trends catalog from {topic_count} top searches in {geo}: \
-         produced {prompt_count} multilingual request variants and answered {answer_count} \
-         of them through the standard Formal AI engine. The catalog is generated from the \
-         checked-in Trends RSS snapshot, so tests stay offline while the converter can refresh \
-         the seed from the live RSS feed.\n\nGenerated document ({GOOGLE_TRENDS_CATALOG_PATH}):\n\n{document}",
-        topic_count = catalog.topics.len(),
-        geo = catalog.geo,
-        document = document.trim_end(),
+    let parsed = parse_lino(document);
+    let Some(catalog) = parsed.children.first() else {
+        return agentic_message("google_trends_source_unavailable", &[]);
+    };
+    agentic_message(
+        "google_trends_catalog_final_answer",
+        &[
+            ("topic_count", catalog.find_child_value("topic_count")),
+            ("geo", catalog.find_child_value("geo")),
+            ("prompt_count", catalog.find_child_value("prompt_count")),
+            ("answer_count", catalog.find_child_value("answered_count")),
+            ("source_url", catalog.find_child_value("source_url")),
+            ("path", GOOGLE_TRENDS_CATALOG_PATH),
+            ("document", document.trim_end()),
+        ],
     )
 }
 
@@ -78,7 +82,8 @@ pub fn verification_command() -> String {
     )
 }
 
-fn render_catalog(catalog: &GoogleTrendsCatalog) -> String {
+/// Render answers together with their source identity.
+pub fn render_catalog(catalog: &GoogleTrendsCatalog) -> String {
     let prompt_count: usize = catalog.topics.iter().map(|topic| topic.prompts.len()).sum();
     let answer_count: usize = catalog
         .topics
@@ -93,6 +98,9 @@ fn render_catalog(catalog: &GoogleTrendsCatalog) -> String {
     field(&mut out, 2, "geo", &catalog.geo);
     field(&mut out, 2, "locale", &catalog.locale);
     field(&mut out, 2, "collected_at", &catalog.collected_at);
+    if let Some(digest) = &catalog.source_sha256 {
+        field(&mut out, 2, "source_sha256", digest);
+    }
     let _ = writeln!(out, "  topic_count \"{}\"", catalog.topics.len());
     let _ = writeln!(out, "  prompt_count \"{prompt_count}\"");
     let _ = writeln!(out, "  answered_count \"{answer_count}\"");
@@ -147,6 +155,7 @@ fn escape_value(value: &str) -> String {
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ")
+        .replace('\\', "\\\\")
         .replace('"', "'")
 }
 

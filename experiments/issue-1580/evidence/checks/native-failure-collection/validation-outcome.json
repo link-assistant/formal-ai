@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "head": "9913960e5779a4b527fcf687ca9342aacf6b6763",
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "f080f9ed9992707cb9f2e1a2463c3c7e1ed88025eccebc0628f0beccc302ecf3",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "32e388b629a2e571e20cd87554a1bae91d3ed19e2010b9bdcee3206623a8c3eb",
+    "changelog.d/issue-1580-native-failure-collection.md": "6cff80348e0d4c92361dd035d64b2fe3ff7c845e8c71ef0cc7503aa543419908"
+  },
+  "adjacentTestsPassed": 22,
+  "affectedGatesPassed": 9,
+  "nativeExecutedLocally": false,
+  "pushExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,264 @@
+{
+  "beforeSha256": "3e384770ca9427c5ebb90e5aabc4358987399775b672dae4b00b9a0907c4772b",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "beforeCases": 221,
+  "afterCases": 221,
+  "changes": [
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "58",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "59",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "60",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "61",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "62",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "63",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "64",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "65",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "160",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "161",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "162",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "163",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "164",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "165",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "166",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "167",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "171",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "172",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "inventory",
+        "cases",
+        "173",
+        "program",
+        "fixtures",
+        "2",
+        "sha256"
+      ],
+      "before": "72a3b16349bbeab2d5d636caee762feddbc31653643c817f1bc64a0d65bcb8a9",
+      "after": "a3fa66737960b28998094fc768c9769684dcba7239c50a940dff7a28bad8fa92"
+    },
+    {
+      "path": [
+        "sourceManifest",
+        "27",
+        "sha256"
+      ],
+      "before": "8da5534f8a41bab9b89b8dbd25bc93baa1d1e76f2c041c0f70a05e90b39dcaac",
+      "after": "8faf53bf31998b6212a4ae5feb8eaaa103f9b9c4fa9d7ad82de45dfb8827b680"
+    }
+  ]
+}

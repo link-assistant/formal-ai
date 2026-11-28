@@ -1,0 +1,192 @@
+{
+  "checks": [
+    {
+      "name": "issue-1550-procedure-census",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-procedure-census.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 18.956,
+      "file": "issue-1550-procedure-census.log.gz",
+      "rawSha256": "5663d571be4fe95dc734fb2ee88fe356eebc3c3a754004ae5736715eaccc2780",
+      "lines": 16
+    },
+    {
+      "name": "worker-unknown-language",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/worker-unknown-language.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 14.283,
+      "file": "worker-unknown-language.log.gz",
+      "rawSha256": "349ed01a53abea2db1f41c0768479e2ca41ff9c8e1b8149f3322c3a09e81de1b",
+      "lines": 18
+    },
+    {
+      "name": "cnl-output",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/cnl-output.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.034,
+      "file": "cnl-output.log.gz",
+      "rawSha256": "e95136d6d85c4cfcdaa34e4e563f96a1948c0f2830e04583e92952725f80319d",
+      "lines": 21
+    },
+    {
+      "name": "cnl-output-http",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/cnl-output-http.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 11.225,
+      "file": "cnl-output-http.log.gz",
+      "rawSha256": "282cb61e1637b712139ab36ac73295de270a784b84a2c7188bc843f35442a94c",
+      "lines": 12
+    },
+    {
+      "name": "cnl-solver-dialogue",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/cnl-solver-dialogue.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 261.97,
+      "file": "cnl-solver-dialogue.log.gz",
+      "rawSha256": "a9b3306f356a77bdee4aa58428938555235de69b2603b4e25292ca3bbc826ca2",
+      "lines": 15
+    },
+    {
+      "name": "cnl-parity",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/cnl-parity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 54.689,
+      "file": "cnl-parity.log.gz",
+      "rawSha256": "923d9cb9cd4c3d11dfce5035b08a998529b0c33e69d988da2f841570f810aefc",
+      "lines": 14
+    },
+    {
+      "name": "cnl-grammar-matrix",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/cnl-grammar-matrix.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 81.426,
+      "file": "cnl-grammar-matrix.log.gz",
+      "rawSha256": "0f813b4262cf35d6f3e9d4cc669bcdbe3f1375df3ec67a8123392834bb8d63a6",
+      "lines": 16
+    },
+    {
+      "name": "issue-1587-request-context",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1587-request-context.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.946,
+      "file": "issue-1587-request-context.log.gz",
+      "rawSha256": "2f01517395429b5d2b556d162942183157efb81a21d60be872876971bc3eb910",
+      "lines": 12
+    },
+    {
+      "name": "rustfmt",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/solver_unknown_reasoning.rs",
+        "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.091,
+      "file": "rustfmt.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.275,
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    {
+      "name": "all-local-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 778.532,
+      "file": "all-local-gates.log.gz",
+      "rawSha256": "5b0f20c50c11e3e333c0bed06f5628f54ef63a6c46dd70649b5ef4e162a0580b",
+      "lines": 140
+    }
+  ],
+  "sourceHashesBefore": {
+    "rust/src/solver_unknown_reasoning.rs": "a84e6790fc0d81fa8730aeddf761cbc0697ee3733f67b8e53afa73e53683d558",
+    "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs": "c9e8aea5dada5df2cd393eb570f5e04a0e7ff0167fcb188880a2873cfc057dfe",
+    "js/worker/formal_ai_worker_solve.js": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287",
+    "ts/worker/formal_ai_worker_solve.ts": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287",
+    "js/server/worker-script-prerequisites.mjs": "c0965048ab511da7b5570afa1d479beefbda8ee7799bba996a658b8fd494002d",
+    "js/worker-script-prerequisites.js": "a44a88e0e407b6bffae5199dc629da8790c74a0610078f7bd3e02f17dff7287e",
+    "data/meta/runtime-feature-coverage.json": "f1364fe50708557c0f75eedb211f440a1ca18d2a330eb43e94a9818cab691b9a"
+  },
+  "independentAuthorshipCredit": 0
+}

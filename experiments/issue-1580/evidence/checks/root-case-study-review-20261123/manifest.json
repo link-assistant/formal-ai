@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "repository": "link-assistant/formal-ai",
+  "reviewedSourceHead": "c35849c5352cc834a7ec39fefa64181da2dc95b4",
+  "scope": "All root-level case-study Markdown files, including README, excluding nested reports and all other PR files.",
+  "filesRead": 218,
+  "linesRead": 10969,
+  "sourceHashesVerified": true,
+  "allAffectedJavaScriptGatesPassed": 8,
+  "duplicatesRemoved": 1,
+  "wholePullRequestReviewComplete": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 22190,
+    "sha256": "40917e6be452e35a8afa8aaf5412a642872f5ff2b78fce5fb8321da9d5631633"
+  },
+  "members": 23,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T17:17:25.709272+00:00"
+}

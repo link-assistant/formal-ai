@@ -1,0 +1,330 @@
+[
+  {
+    "source": "included-string-evaluator-bbda05c0/action-version.json",
+    "file": "action-version.json.gz",
+    "rawSha256": "51a720256c737cfb909ddc4c52036a208886401977e650756ddb3201ab637020",
+    "archiveSha256": "003ab02dbd42ff6bcb3269f9b5e461b5392fc1141a65fb2909287b02f7b45740",
+    "bytes": 442,
+    "lines": 10
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/analyze-action.stderr",
+    "file": "analyze-action.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/analyze-action.stdout",
+    "file": "analyze-action.stdout.gz",
+    "rawSha256": "46967f21b52b5f78ba49192d432bca6c6b8a1027b3d2eb8b29d33c3f3012ec78",
+    "archiveSha256": "6700cbb36d00ea679bb65992c83b2047b063a2824843a1e1121407e3eeb7448e",
+    "bytes": 5295,
+    "lines": 99
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/analyze-queries-source.stderr",
+    "file": "analyze-queries-source.stderr.gz",
+    "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+    "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac",
+    "bytes": 25,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/analyze-queries-source.stdout",
+    "file": "analyze-queries-source.stdout.gz",
+    "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+    "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2",
+    "bytes": 127,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/analyze-source.stderr",
+    "file": "analyze-source.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/analyze-source.stdout",
+    "file": "analyze-source.stdout.gz",
+    "rawSha256": "00e22576301ef514950c5e26e190a9a37ad09224f9a9679510d037dd2c00e7e4",
+    "archiveSha256": "d1ba508429238fd39a287ec6e1bab7994e1f3d4c2b3e48384602f5379c2e9f05",
+    "bytes": 26855,
+    "lines": 754
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cache-lookup-assessment.json",
+    "file": "cache-lookup-assessment.json.gz",
+    "rawSha256": "f972c520de3845e57807ca33d2c680950038aeee18c0628469c6f31f7f2fdf35",
+    "archiveSha256": "25e8ebef2188a2e8cc6b5f17ae4a718edb2fcbee2bb11c97ef35d0cf55680901",
+    "bytes": 3343,
+    "lines": 130
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-generated-directory.stderr",
+    "file": "control-flow-generated-directory.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-generated-directory.stdout.json",
+    "file": "control-flow-generated-directory.stdout.json.gz",
+    "rawSha256": "17a7bb6b16c77e159b144723e73e9f8b4716f8779ec7a5eb565cb2bc154fb8d7",
+    "archiveSha256": "e3cea0805ef3630487ec61f6e37a52ddb7b8067ba018e8213d61e58f35e97f72",
+    "bytes": 1125,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-graph.qll",
+    "file": "control-flow-graph.qll.gz",
+    "rawSha256": "80e4e2797d71242dcea7c9cbabe8209e78885b4cc9f2ea0504b2beb45f1952b7",
+    "archiveSha256": "aa9653847ea43e6f8085e3fafd4004ae7540ee13ec62615efa9e090759b2d610",
+    "bytes": 256,
+    "lines": 9
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-graph.stderr",
+    "file": "control-flow-graph.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-graph.stdout.json",
+    "file": "control-flow-graph.stdout.json.gz",
+    "rawSha256": "9943956fd449b7eb7874ad632dc61029e3b82ed2136e903bac52b7f66478cfda",
+    "archiveSha256": "88c2e1b8a92e3c3f46f84b269d119d441a2696b33e733b0e68bee0d3db402435",
+    "bytes": 1451,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-implementation.qll",
+    "file": "control-flow-implementation.qll.gz",
+    "rawSha256": "8059a3400ecc1f7311cb409101cb7f1505c521a071740ab603ef3721de31c18f",
+    "archiveSha256": "3229f2d1b68356e9812475d310cf5f2804e9ec70995f03d8d31415da69e7ee17",
+    "bytes": 22705,
+    "lines": 681
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-implementation.stderr",
+    "file": "control-flow-implementation.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-implementation.stdout.json",
+    "file": "control-flow-implementation.stdout.json.gz",
+    "rawSha256": "65b619250cabcf881a32185ebb424d3c955cecf370c10d4c989bb51ea1c29020",
+    "archiveSha256": "211ff21befe012e29fc747504fa016d3ea146909df434b70950cc7573efb568f",
+    "bytes": 32465,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-internal-directory.stderr",
+    "file": "control-flow-internal-directory.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-internal-directory.stdout.json",
+    "file": "control-flow-internal-directory.stdout.json.gz",
+    "rawSha256": "89ac1a70cdb4a9fc791f8fbb21cdacfe3676e07c9075be29aebae32240d77bf5",
+    "archiveSha256": "4e047b839b0a2483ba48c6b2bc39369a8dd8d1ad0aee5c1b5dee5a6450c68eb6",
+    "bytes": 7418,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-internal-nodes.qll",
+    "file": "control-flow-internal-nodes.qll.gz",
+    "rawSha256": "8bdb8a315533084d5ee88db32213ff50274fccbdf53936ac42e1505ba1791222",
+    "archiveSha256": "e44f01f7d0a2270190f372c45d2ee13267df5a7a38a5d0c1b3161c722bf6463b",
+    "bytes": 5284,
+    "lines": 156
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-internal-nodes.stderr",
+    "file": "control-flow-internal-nodes.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-internal-nodes.stdout.json",
+    "file": "control-flow-internal-nodes.stdout.json.gz",
+    "rawSha256": "33f4d5e3e5a55010cdd34ff08f6fb189a15de59a5051128ef10e6bcb3ec4e874",
+    "archiveSha256": "8aece632ec4d4661757088e33d5fea0157a9cba39522c0edae30255a3b255bc5",
+    "bytes": 8378,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-nodes.qll",
+    "file": "control-flow-nodes.qll.gz",
+    "rawSha256": "eb655ddebf32c27854edcee644021cd4b9e967b65ce8115e6b480b89ae4778b8",
+    "archiveSha256": "a7f943440fad9958844e167ba86d9f61a591e8480810622de73cfc89c85e1d85",
+    "bytes": 9161,
+    "lines": 361
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-nodes.stderr",
+    "file": "control-flow-nodes.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/cfg-nodes.stdout.json",
+    "file": "control-flow-nodes.stdout.json.gz",
+    "rawSha256": "26b4a3af135c879b4938a6272ef1b0b4197a6100b7141e5e1ff19fa31580aa04",
+    "archiveSha256": "589e55fa3a93ac4687529d762391e549d5ed85b32688cf5cf1c6ad688e2e2470",
+    "bytes": 13664,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/codeql-cli-source.stderr",
+    "file": "codeql-cli-source.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/codeql-cli-source.stdout",
+    "file": "codeql-cli-source.stdout.gz",
+    "rawSha256": "b4c09776023580510ef9a55fdcf93f6492ceee6f195183db8cac4c59eca12329",
+    "archiveSha256": "526742a1f80f52df16422af8e0c568762407ef5af644539f19ecd7f4bb431e99",
+    "bytes": 43590,
+    "lines": 1321
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/controlflow-directory.stderr",
+    "file": "controlflow-directory.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/controlflow-directory.stdout.json",
+    "file": "controlflow-directory.stdout.json.gz",
+    "rawSha256": "e8295dfb9c392a9d52146582f7a98cdc017ce9d9d1adaa9b64c6c726e5426e3d",
+    "archiveSha256": "2c4c06b0db657c65b64caa16ecb001cc9d6217ac69aed634b3b5b450e126b2b8",
+    "bytes": 3968,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/elements-cfg.stderr",
+    "file": "elements-control-flow.stderr.gz",
+    "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+    "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac",
+    "bytes": 25,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/elements-cfg.stdout.json",
+    "file": "elements-control-flow.stdout.json.gz",
+    "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+    "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2",
+    "bytes": 127,
+    "lines": 1
+  },
+  {
+    "source": "included-string-evaluator-bbda05c0/producer-cache-log-excerpts.json",
+    "file": "producer-cache-log-excerpts.json.gz",
+    "rawSha256": "74513e52e8c608065ab1e2aae5902eafee0375fe79745061735efb4768a68b0b",
+    "archiveSha256": "0dae044cb3210224382dcf2684a029996b4f294c68cfb265f9e6a87b6b335996",
+    "bytes": 107448,
+    "lines": 1766
+  },
+  {
+    "source": "assess-included-string-evaluator.py",
+    "file": "assess-included-string-evaluator.py.gz",
+    "rawSha256": "221a464a504f305fe9af00949379919aa1c1efa9bb502c21d1e8ba2bc5f3714e",
+    "archiveSha256": "2c9c78481c5231b9e347b594b9ac408434b13e826a3ce2b6f120f7471b5eeeee",
+    "bytes": 5458,
+    "lines": 66
+  },
+  {
+    "source": "research-codeql-cache-contract.py",
+    "file": "research-codeql-cache-contract.py.gz",
+    "rawSha256": "b3ccaacfbec1a5c7a1c614ebea4bec612d0431f7a6990fb75f0c2581faf42bca",
+    "archiveSha256": "c2fc276b29258d7f46fa93b251aafd03f1e8716612da177fdabaffaf739fa181",
+    "bytes": 1628,
+    "lines": 24
+  },
+  {
+    "source": "assess-codeql-cold-cache.py",
+    "file": "assess-codeql-cold-cache.py.gz",
+    "rawSha256": "ac49c638710d776a2e2bdd93d9eb6ea5cab9fabe918ff32b65ede303b8f58cfa",
+    "archiveSha256": "61c24679abc27ae07b8eafeca0646fddbc49e2fe3c91adc3289075babd0e8eca",
+    "bytes": 1792,
+    "lines": 25
+  },
+  {
+    "source": "assess-current-macro-observation.py",
+    "file": "assess-current-macro-observation.py.gz",
+    "rawSha256": "445638ada4480a046ffa1654da2d4f0a8b93c242ed954f619941adae62e4df44",
+    "archiveSha256": "a1dd3320b2e3bdbae6ee461835d6cf14ed74e49b7a7d5f5d4078216d23d4c805",
+    "bytes": 542,
+    "lines": 6
+  },
+  {
+    "source": "assess-source-warning-macro-observations.py",
+    "file": "assess-source-warning-macro-observations.py.gz",
+    "rawSha256": "63f4ef196794398f7953d65d6045a3e1bc78c6de7d648ea1a43e385280d257da",
+    "archiveSha256": "a02a1580d7dcdda76699cf4196db5ebc9207d22f821bcaa863b5ef298329a925",
+    "bytes": 7464,
+    "lines": 148
+  },
+  {
+    "source": "assess-bbda-terminal-ci.py",
+    "file": "assess-bbda-terminal-ci.py.gz",
+    "rawSha256": "11ccf81ec37f9324dc8144187d3ede1207736fe4072016cd412bcd048ad22ce7",
+    "archiveSha256": "add5295e452681ed28f3d6ab5e7a7cc3521d5f89bd1f2fd19bc37d7ce1657a44",
+    "bytes": 391,
+    "lines": 6
+  },
+  {
+    "source": "assess-artifact-and-child-memory-parent-ci.py",
+    "file": "assess-artifact-and-child-memory-parent-ci.py.gz",
+    "rawSha256": "5c59e874ce3ac41b2cdbcd3734f2abb54ca985363b1637e568ece3d21ed4b37c",
+    "archiveSha256": "4eef96b56e3dbce0be6e1ca17c6f95650c67fded850199169a220ec42da06fc1",
+    "bytes": 4511,
+    "lines": 37
+  },
+  {
+    "source": "inventory-link-record-warning-checkpoint.py",
+    "file": "inventory-link-record-warning-checkpoint.py.gz",
+    "rawSha256": "33f8ec40a18c2b051b461e60d6c89fdbab0e0a7217deeb04c8b64dced589cb58",
+    "archiveSha256": "cba9e839c1d39fece879c89b23f1bfeee2829edca46da98a7f9c66a3bd4ceec8",
+    "bytes": 2219,
+    "lines": 26
+  },
+  {
+    "source": "inventory-world-algorithm-warning-checkpoint.py",
+    "file": "inventory-world-algorithm-warning-checkpoint.py.gz",
+    "rawSha256": "bd668900d23ec10545f3aa18861f4073d239fcced20296a6a84698dd7551d5dc",
+    "archiveSha256": "12bb3563c6ba35ed5a035da75029eba630f9a63878cabd91d98c9784a1ed49ef",
+    "bytes": 677,
+    "lines": 6
+  },
+  {
+    "source": "record-bbda-cache-warning-checkpoint.py",
+    "file": "record-bbda-cache-warning-checkpoint.py.gz",
+    "rawSha256": "0fd8401b29eb321110521c2e5911c2cca9d4fc58852ddaec50ddf0110678f53a",
+    "archiveSha256": "df82900ccb2a2e5696f2f4c192012c1a6cd66db2a6cc1efbcec3350cb87251cb",
+    "bytes": 12775,
+    "lines": 149
+  }
+]

@@ -1,4 +1,4 @@
-//! Refresh the seeded raw-API-response cache from the live Wikipedia /
+//! Refresh the raw API response cache from the live Wikipedia /
 //! Wikidata / Wiktionary APIs.
 //!
 //! Run with:
@@ -11,13 +11,9 @@
 //! `source → formalize → meaning → deformalize → target` pipeline against
 //! a curated set of source surfaces, populates the gitignored on-disk
 //! accelerator under `data/wikidata-cache/` and `data/wiktionary-cache/`
-//! with the verbatim API bodies, then bundles those bodies into the legacy
-//! `.lino` replay files at `data/seed/api-cache/*.lino`.
-//!
-//! Issue #398 removed those replay files from the committed seed data in favor
-//! of explicit source snapshots under `data/cache/wikidata/`. This example is
-//! still useful for local cache refresh experiments or older checkouts, but its
-//! output is not the current reviewed seed source.
+//! with verbatim API bodies. It also writes `.lino` replay fixtures under
+//! `http-cache/translation-replay/` within the chosen cache directory.
+//! Tests can supply these captures explicitly through their HTTP transport.
 //!
 //! Caps (issue #221):
 //! - At most [`MAX_SEED_RECORDS_PER_BUCKET`] records per bucket.
@@ -30,7 +26,7 @@ use std::path::{Path, PathBuf};
 
 use formal_ai::translation::cache::{
     CacheLocation, MAX_SEED_LINES_PER_FILE, MAX_SEED_RECORDS_PER_BUCKET, SEED_BODY_CHUNK_CHARS,
-    SEED_CACHE_DIR, cache_location, escape_lino_string, split_body_into_chunks,
+    cache_location, escape_lino_string, split_body_into_chunks,
 };
 use formal_ai::translation::{CachedHttpClient, CurlClient, TranslationPipeline};
 
@@ -72,8 +68,9 @@ fn main() {
         }
     }
 
-    println!("\nBundling on-disk accelerator into seed bundle at {SEED_CACHE_DIR}...");
-    match bundle_disk_cache_into_seed(&cache_dir) {
+    let replay_dir = Path::new(&cache_dir).join("http-cache/translation-replay");
+    println!("\nWriting replay fixtures at {}...", replay_dir.display());
+    match bundle_disk_cache_into_seed(&cache_dir, &replay_dir) {
         Ok(report) => {
             for line in &report {
                 println!("{line}");
@@ -157,7 +154,7 @@ fn curated_pairs() -> Vec<(String, &'static str, &'static str)> {
 /// queries to `wikidata-search`, SPARQL queries to `wikidata-sparql`,
 /// and Wiktionary pages to `wiktionary-pages`. Records inside each
 /// bucket are sorted by URL so the bundle is deterministic.
-fn bundle_disk_cache_into_seed(cache_dir: &str) -> Result<Vec<String>, String> {
+fn bundle_disk_cache_into_seed(cache_dir: &str, seed_root: &Path) -> Result<Vec<String>, String> {
     let root = Path::new(cache_dir);
     if !root.is_dir() {
         return Err(format!(
@@ -183,7 +180,6 @@ fn bundle_disk_cache_into_seed(cache_dir: &str) -> Result<Vec<String>, String> {
         }
     }
 
-    let seed_root = Path::new(SEED_CACHE_DIR);
     fs::create_dir_all(seed_root).map_err(|e| format!("create {}: {e}", seed_root.display()))?;
 
     let mut report: Vec<String> = Vec::new();
@@ -221,8 +217,7 @@ fn walk_cache_entries(root: &Path) -> Vec<(PathBuf, PathBuf)> {
         for entry in entries.flatten() {
             let path = entry.path();
             if path.is_dir() {
-                // Skip the seed directory itself — we are *writing* to it.
-                if path == Path::new(SEED_CACHE_DIR) || path.ends_with("seed") {
+                if path.ends_with("seed") {
                     continue;
                 }
                 stack.push(path);

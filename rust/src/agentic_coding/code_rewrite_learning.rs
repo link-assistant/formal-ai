@@ -16,18 +16,12 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("normal_algorithm_laws_multilingual_slots_and_agent_cli_e2e_pass"),
     path: CODE_REWRITE_LEARNING_PATH,
     task: CODE_REWRITE_LEARNING_TASK,
-    memory: include_str!("../../embedded/data/meta/issue-715-code-rewrite-learning.lino"),
     subject: "workspace-rewrite observations and amendments",
 };
 
 #[must_use]
 pub fn is_code_rewrite_learning_task(prompt: &str) -> bool {
     REPORT.matches(prompt)
-}
-
-#[must_use]
-pub fn render_document() -> String {
-    REPORT.render_document()
 }
 
 /// Derive a review artifact from any persisted rewrite-observation network.

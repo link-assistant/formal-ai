@@ -1,0 +1,22 @@
+{
+  "command": [
+    "rustfmt",
+    "--edition",
+    "2024",
+    "--check",
+    "rust/src/capability_routing/claims.rs",
+    "rust/src/event_log.rs",
+    "rust/src/meta_method_dispatch.rs",
+    "rust/src/solver_handlers/calculator_rate.rs",
+    "rust/src/solver_handlers/calendar.rs",
+    "rust/src/solver_handlers/calendar/month.rs",
+    "rust/src/solver_handlers/mod.rs",
+    "rust/src/solver_helpers/mod.rs",
+    "rust/tests/unit/calendar-currency.rs"
+  ],
+  "exitCode": 0,
+  "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "nativeExecuted": false,
+  "focusedChecks": 15,
+  "independentAuthorshipCredit": 0
+}

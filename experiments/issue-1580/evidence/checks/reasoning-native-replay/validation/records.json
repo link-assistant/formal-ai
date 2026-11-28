@@ -1,0 +1,70 @@
+[
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2024",
+      "rust/tests/unit/reasoning_contracts.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.388,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "candidate-validation",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/worker-candidate-validation.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 7.541,
+    "file": "candidate-validation.log.gz",
+    "rawSha256": "061ee85d286d42ff0b50d506f7dfba3b60a2848cedb5ec6d49d47b6b6e30cd56",
+    "archiveSha256": "19f788c17db2ef46643d15e71b95a16f5650aad56be9ba757d8ec1ae84bffc78",
+    "lines": 12
+  },
+  {
+    "name": "focused-test-map",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.929,
+    "file": "focused-test-map.log.gz",
+    "rawSha256": "44a1f9655205f6e0c40466179e19562fab24b70985d82e66846fabe2306a3542",
+    "archiveSha256": "902eac468f7f6e24efd88235ad36662f36966a0d952cff034bb98be24d74274a",
+    "lines": 16
+  },
+  {
+    "name": "relevant-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations,check-ci-speed,check-generated-files,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+    ],
+    "exitCode": 0,
+    "seconds": 37.054,
+    "file": "relevant-gates.log.gz",
+    "rawSha256": "e0cca573d8c104d81b8441db216643427c4eeba64294631ac52a6e709bd62a22",
+    "archiveSha256": "886e4690bfe5dc027acd83c92d7720c5c8bfed3754f653f279ad6b5ff52ce11a",
+    "lines": 10
+  }
+]

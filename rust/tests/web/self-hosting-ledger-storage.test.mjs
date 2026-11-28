@@ -63,3 +63,18 @@ test('archive and single-record bounds fail before rewriting the root',t=>{
   assert.throws(()=>appendLedger(g.file,'  release\n'+'    value "large"\n'.repeat(1500)),/limit/u);
   assert.equal(readFileSync(g.file,'utf8'),before);
 });
+
+test('new writes rotate before the unchanged 1400-line warning threshold',t=>{
+ const before='self_hosting_ledger\n'+Array.from({length:99},(_,i)=>row(i)).join('');
+ const f=fixture(t,before);appendLedger(f.file,row(99));
+ assert.deepEqual(records(readLedger(f.file)),records(before+row(99)));
+ for(const file of [f.file,...readdirSync(f.parts).map(name=>join(f.parts,name))])
+  assert(readFileSync(file,'utf8').trimEnd().split('\n').length<=1400);
+});
+test('legacy archives up to the existing hard limit remain readable',t=>{
+ const f=fixture(t,'self_hosting_ledger\n  archive "self-hosting-ledger-parts/0001.lino"\n'+row(107));mkdirSync(f.parts);
+ const archive='self-hosting-ledger-archive\n'+Array.from({length:107},(_,i)=>row(i)).join('');
+ assert.equal(archive.trimEnd().split('\n').length,1499);
+ writeFileSync(join(f.parts,'0001.lino'),archive);
+ assert.deepEqual(records(readLedger(f.file)),records(archive+row(107)));
+});

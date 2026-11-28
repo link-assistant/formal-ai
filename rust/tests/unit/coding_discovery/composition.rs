@@ -7,6 +7,8 @@ use formal_ai::fragment_catalog::FragmentCatalog;
 use formal_ai::needs::{NeedKind, NeedState};
 use formal_ai::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
 
+mod rejected_ir;
+
 fn parameter(name: &str, annotation: Option<&str>) -> Parameter {
     Parameter {
         name: name.to_owned(),
@@ -106,6 +108,16 @@ fn map(structure_ids: &[&str], candidates: Vec<CandidatePart>) -> ConceptMap {
         )],
         evidence: Vec::new(),
     }
+}
+
+fn recurrence_replay_candidate(
+    task: &formal_ai::coding_task_spec::CodingTaskSpec,
+) -> CandidatePart {
+    use formal_ai::coding_recurrence::cache::{records_from, source_recurrence_candidate};
+    let records = records_from(include_str!(
+        "../../fixtures/coding-discovery/wikifunctions/recurrence-replay.lino"
+    ));
+    source_recurrence_candidate(task, &records).expect("the explicit fixture covers the request")
 }
 
 #[test]
@@ -322,6 +334,22 @@ fn runnable_programs_are_composed_from_output_and_range_observations() {
     assert!(range.source.contains("for number in range(1, 5 + 1)"));
     assert!(range.source.contains("print(number)"));
     assert!(range.composition.starts_with("typed_search("));
+}
+
+#[test]
+fn a_large_derived_range_is_not_executed_to_verify_stdout() {
+    let outcome = compose(
+        &program("Count to 1001 inclusive.", None),
+        &map(&["range_inclusive"], Vec::new()),
+    );
+    assert!(outcome.selected.is_none());
+    assert!(
+        outcome
+            .attempts
+            .iter()
+            .any(|attempt| attempt.detail == "no bounded expected stdout"),
+        "{outcome:#?}"
+    );
 }
 
 #[test]
@@ -542,8 +570,7 @@ fn source_owned_body_reads_compete_with_actual_typed_ir_under_a_provisional_sign
         formal_ai::coding_task_spec::CallableBindingOrigin::Provisional
     );
     assert_eq!(task.parameters[0].name, "input");
-    let source_candidate =
-        formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let source_candidate = recurrence_replay_candidate(&task);
     let contract = source_candidate.callable_contract.as_ref().unwrap();
     assert_eq!(contract.parameter, "n");
     assert_eq!(contract.read_positions(), Some(vec![0]));
@@ -636,8 +663,7 @@ fn source_ast_binding_keeps_explicit_signature_and_self_recursion() {
         &task.callable_binding_origin,
         formal_ai::coding_task_spec::CallableBindingOrigin::Declared { .. }
     ));
-    let candidate =
-        formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let candidate = recurrence_replay_candidate(&task);
     let outcome = compose_with_ir(
         &task,
         &map(&[], vec![candidate]),
@@ -666,8 +692,7 @@ fn unsupported_explicit_source_bindings_are_rejected_before_execution() {
             "def {signature}:\n    \"\"\"Return the factorial of x.\"\"\""
         ))
         .unwrap();
-        let candidate =
-            formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+        let candidate = recurrence_replay_candidate(&task);
         assert!(
             candidate
                 .callable_contract
@@ -698,8 +723,7 @@ fn observed_calls_bind_identity_without_using_literal_arguments_as_formal_names(
         formal_ai::coding_task_spec::CallableBindingOrigin::Observed
     );
     assert_eq!(task.parameters[0].name, "arg1");
-    let candidate =
-        formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let candidate = recurrence_replay_candidate(&task);
     let bound = candidate
         .callable_contract
         .as_ref()
@@ -727,7 +751,7 @@ fn source_body_contract_must_match_the_callable_and_evaluated_program() {
         "Write a Python function that returns the factorial of n",
     )
     .unwrap();
-    let original = formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let original = recurrence_replay_candidate(&task);
     let mut missing = original.clone();
     missing.callable_contract = None;
     let mut changed_body = original.clone();

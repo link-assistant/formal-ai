@@ -1,0 +1,48 @@
+{
+  "files": [
+    {
+      "file": "compare-client-entropy-uses-corrected.log",
+      "bytes": 152,
+      "sha256": "ba5b75c63c2c68c30f074ac30596e96a94e946a274783aa9e864fea4235f8f48"
+    },
+    {
+      "file": "compare-client-entropy-uses.log",
+      "bytes": 592,
+      "sha256": "73ed69262d8d9ccbb1b4bca6200fb5ad173fca640281608af6cbf8f0fab18905"
+    },
+    {
+      "file": "read-rust-client-entropy-history.log",
+      "bytes": 688,
+      "sha256": "e12f8649e287004b52766b5514032cbeeb9b9306a8b11301a7bbbaf85946dd06"
+    },
+    {
+      "file": "read-rust-client-entropy-history.py",
+      "bytes": 970,
+      "sha256": "0003585ab0c460004f9a9ada474f663c5491f3366ec0933c8a3ceb36d0f67793"
+    },
+    {
+      "file": "record-rust-client-entropy-history.py",
+      "bytes": 6229,
+      "sha256": "df4d110a756413b990052c1b974552df90e3d9d8219197b1f983fdb1b961745b"
+    },
+    {
+      "file": "rust-client-entropy-history/getrandom-changelog.txt.read.txt",
+      "bytes": 34002,
+      "sha256": "7354602db6536a5dbaa477c0a2499906caecc982975267e3d864b5e6ef6f4e18"
+    },
+    {
+      "file": "rust-client-entropy-history/sources.json",
+      "bytes": 509,
+      "sha256": "6a0a08794c00a6b2f0d1c0487d2fb59ac1ce3a61765d91cdd80497d5d45df312"
+    },
+    {
+      "file": "rust-client-entropy-history/ureq-changelog.txt.read.txt",
+      "bytes": 24754,
+      "sha256": "00328e1dc3af93268fc657c81fbd6239a049982eb4af6747aa2ad81f3aba3697"
+    }
+  ],
+  "rawSha256": "cc3112b5a4b8b19ee08a070ad83ffb8e55d42d25c04e919d9ef91b7a4c8a9899",
+  "archiveSha256": "919c92254fe48037bd0321faf1bd8e7d8667e81efad381a44598093f50446f52",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

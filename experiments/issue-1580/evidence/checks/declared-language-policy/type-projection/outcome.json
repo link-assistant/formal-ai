@@ -1,0 +1,44 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "before",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 1,
+      "seconds": 2.742,
+      "rawBytes": 115,
+      "sha256": "5971c655fa4a53419110f9d4539b81e08200de27da2fd8533765534b785c86b5"
+    },
+    {
+      "name": "regenerate",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 2.197,
+      "rawBytes": 119,
+      "sha256": "b00f6d3fc936c5a0b16c33fe56360844ccb0e34fad1002e5e810db167801c953"
+    },
+    {
+      "name": "after",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 2.547,
+      "rawBytes": 28,
+      "sha256": "40592cfcdab6b346d44ae208101465c4ea472938567aed877078bf67523bb684"
+    }
+  ]
+}

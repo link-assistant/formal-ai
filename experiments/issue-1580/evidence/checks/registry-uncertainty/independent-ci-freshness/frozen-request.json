@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-11-20T06:53:50.671736+00:00",
+  "sourceCommit": "00f954c7bb7871606890e790a92cd85778a3d901",
+  "frozenSubstantiveUnit": "CI freshness/taxonomy",
+  "fixedDenominator": 20,
+  "maxAttempts": 1,
+  "maxSteps": 4,
+  "nodeHeapMiB": 256,
+  "request": "Assess the validation evidence for pull request 1581. The published commit is 14ef1b5f. Its completed native core job passed 102 workflow-contract tests, including changelog I/O behavior. A later local commit 899de4d12 changes registry failure handling in two release CLIs and adds a new native release-registry job. Another local commit 00f954c7b repairs its unpublished-candidate HTTP fixture. Neither local commit has been pushed. Is registry failure handling verified by the completed core job? Explain what the observed result establishes and what evidence is still needed for the local changes.",
+  "externallySuppliedConclusion": false,
+  "externallySuppliedPatch": false,
+  "acceptanceCriteria": [
+    "Distinguish the observed published-source core behavior from subsequent local source changes.",
+    "Explain whether the new registry behavior has actually executed and identify the needed source-bound evidence.",
+    "Produce an independent useful rationale rather than echoing the facts or an unknown/refusal response."
+  ]
+}

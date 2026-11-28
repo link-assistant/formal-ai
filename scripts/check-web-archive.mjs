@@ -22,8 +22,9 @@
  *   - all_archived: 'true' if all broken links have a web archive version
  *
  * Exit codes:
- *   - 0: All broken links have web archive versions (or no broken links)
- *   - 1: Some broken links have no web archive version
+ *   - 0: All broken links have archives, no links failed, or Wayback is unavailable
+ *        (unavailability keeps all_archived=false and emits a warning)
+ *   - 1: A broken link has no archive, cannot be archived, or the report is missing
  */
 
 import { readFileSync, appendFileSync, existsSync } from 'fs';
@@ -192,6 +193,33 @@ export function extractBrokenUrls(content) {
   return extractFailures(content).map((failure) => failure.url);
 }
 
+/** Preserve failures that cannot be recovered through HTTP or Wayback. */
+export function extractNonHttpFailures(content) {
+  return [...failingSections(content).matchAll(
+    /^\s*(?:[*-]\s+)?\[[^\]\s]+\]\s+<?([^\s>|)]+)/gmu,
+  )].map(match => match[1]).filter(target => !/^https?:\/\//iu.test(target));
+}
+
+/** Adapt the Rust template's report validation without dropping unknown sections. */
+export function validateLycheeReport(content, exitCode = process.env.LYCHEE_EXIT_CODE) {
+  const section = failingSections(content);
+  const entries = [...section.matchAll(/^\s*(?:[*-]\s+)?\[[^\]\s]+\]\s+<?[^\s>|)]+/gmu)];
+  const bullets = [...section.matchAll(/^\s*[*-]\s+\[/gmu)];
+  const counts = [...content.matchAll(/\|[^|\n]*(?:Errors|Timeouts)\s*\|\s*(\d+)\s*\|/gu)];
+  const reported = counts.length ? counts.reduce((sum, row) => sum + Number(row[1]), 0) : undefined;
+  const failed = exitCode !== undefined && exitCode !== '0';
+  if (failed && exitCode !== '2') {
+    throw new Error(`Lychee runtime/configuration failure (exit ${exitCode}); recovery is unverified`);
+  }
+  const healthySection = /^##\s+(?:Successes|Redirects|Excluded|Suggestions)\s+per input\s*$/imu.test(content);
+  if (!content.trim() || entries.length !== bullets.length ||
+      (reported !== undefined && reported !== entries.length) ||
+      (entries.length === 0 && (failed || (reported === undefined && !healthySection)))) {
+    throw new Error('Missing, empty, malformed or incomplete lychee report; re-run the checker');
+  }
+}
+
+
 /**
  * Check if a URL has an archived version in the Wayback Machine
  * Uses the Wayback Machine Availability API:
@@ -329,12 +357,24 @@ async function main() {
   console.log(`Reading lychee output from: ${lycheeOutput}\n`);
 
   if (!existsSync(lycheeOutput)) {
-    console.log('No lychee output file found. Skipping web archive check.');
-    setOutput('all_archived', 'true');
-    process.exit(0);
+    console.error('No lychee output file found; archive coverage is unverified.');
+    setOutput('all_archived', 'false');
+    process.exit(1);
   }
 
-  const content = readFileSync(lycheeOutput, 'utf-8');
+  let content;
+  try {
+    content = readFileSync(lycheeOutput, 'utf-8');
+    validateLycheeReport(content);
+  } catch (error) {
+    console.error(`Lychee report is unverified: ${error.message}`);
+    setOutput('all_archived', 'false');
+    process.exit(1);
+  }
+  const unsupported = extractNonHttpFailures(content);
+  if (unsupported.length > 0) {
+    console.error('Broken non-HTTP links require a local fix:', unsupported.join(', '));
+  }
   const recovered = readRecoveredUrls();
   const reported = extractBrokenUrls(content);
   const brokenUrls = reported.filter((url) => !recovered.has(url));
@@ -347,9 +387,9 @@ async function main() {
   }
 
   if (brokenUrls.length === 0) {
-    console.log('No broken URLs found in lychee output.');
-    setOutput('all_archived', 'true');
-    process.exit(0);
+    console.log('No broken HTTP URLs found in lychee output.');
+    setOutput('all_archived', unsupported.length === 0 ? 'true' : 'false');
+    process.exit(unsupported.length === 0 ? 0 : 1);
   }
 
   console.log(
@@ -448,11 +488,11 @@ async function main() {
     }
   }
 
-  const allArchived = withoutArchive.length === 0;
+  const allArchived = withoutArchive.length === 0 && undetermined.length === 0 && unsupported.length === 0;
   setOutput('all_archived', allArchived ? 'true' : 'false');
   setOutput('undetermined', String(undetermined.length));
 
-  if (!allArchived) {
+  if (withoutArchive.length > 0 || unsupported.length > 0) {
     console.log(
       '\nAction required: Fix or remove the broken links listed above.'
     );

@@ -32,8 +32,8 @@ const SOLVER_ENGINE_LINK_CALCULATOR = "link-calculator";
 const SOLVER_PROMOTIONS_FILE = "handler-promotions.lino";
 const SOLVER_CACHE_POLICY_FILE = "program-cache-policy.lino";
 
-function solverEvent(kind, payload) {
-  return { kind, payload: String(payload === undefined || payload === null ? "" : payload) };
+function solverEvent(kind, payload, sourceOrigin) {
+  return { kind, payload: String(payload === undefined || payload === null ? "" : payload), ...(sourceOrigin === undefined ? {} : { source_origin: sourceOrigin }) };
 }
 
 // ---------------------------------------------------------------- calculator
@@ -131,13 +131,20 @@ function linkCalculatorTrace(expression) {
 }
 
 // `try_arithmetic`: the calculator trace for one evaluated expression.
-function solverCalculationEvents(expression, content, backend) {
+function solverCalculationEvents(expression, content, backend, quantity = false) {
   const events = [solverEvent("calculation:request", expression)];
   const trace = /^js$|^wasm$/.test(String(backend)) ? linkCalculatorTrace(expression) : null;
   if (trace) {
-    events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR));
-    events.push(solverEvent("calculation:lino", trace.lino));
-    events.push(solverEvent("calculation:steps", trace.steps));
+    // A routed arithmetic method can reach either emitter; record the branch.
+    if (quantity) {
+      events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR, "calculation:quantity:engine"));
+      events.push(solverEvent("calculation:lino", trace.lino, "calculation:quantity:lino"));
+      events.push(solverEvent("calculation:steps", trace.steps, "calculation:quantity:steps"));
+    } else {
+      events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR, "calculation:arithmetic:engine"));
+      events.push(solverEvent("calculation:lino", trace.lino, "calculation:arithmetic:lino"));
+      events.push(solverEvent("calculation:steps", trace.steps, "calculation:arithmetic:steps"));
+    }
   }
   events.push(solverEvent("calculation", content));
   return events;
@@ -200,6 +207,11 @@ function promotedHandlerOrder(registry, prompt) {
   const concrete = (record) => record.contextBinding === "writeProgram" && record.resultIntent === "write_program";
   if (requested && requested.task && requested.language && writeProgramTemplate(requested.task, requested.language) !== null
     && tryPageQueryText(prompt) === null) return [...registry.filter(concrete), ...registry.filter((record) => !concrete(record))];
+  // Like the native solver, resolve a recognized program before the prose
+  // intent suggested by its output format or subject matter.
+  const blueprint = (record) => record.name === "tryProgramBlueprintFromPrompt";
+  if (requested?.language && selectBlueprint(normalizeProgramPrompt(prompt), requested.language)
+    && tryPageQueryText(prompt) === null) return [...registry.filter(blueprint), ...registry.filter((record) => !blueprint(record))];
   const bindings = typeof WORKER_HANDLER_REGISTRY === "object" ? WORKER_HANDLER_REGISTRY.workerHandlers : {};
   const names = [...new Set(solverPromotedHandlers(prompt).map((slug) => bindings[slug]).filter(Boolean))];
   const hoisted = names.flatMap((name) => registry.filter((record) => record.name === name)).map((record) => ({ ...record, hoisted: true }));
@@ -257,26 +269,25 @@ function solverWriteProgramEvents(answer, prompt) {
     solverEvent("program_parameters", `write_program(language=${language}, task=${task})`),
     solverEvent("legacy_intent", legacy),
     ...solverObligationGapEvents(prompt),
-    ...solverProcedureCacheEvents(prompt, language, task),
+    ...solverProcedureCacheEvents(prompt, language, task, answer.documented),
     // R1165-6: where each command shown comes from, and what the documented
     // program departs from (`documentation_events` in Rust).
-    ...documentationEvents(task, language).map((pair) => solverEvent(pair[0], pair[1])),
+    ...documentationEvents(task, language, answer.documented).map((pair) => solverEvent(pair[0], pair[1])),
   ];
 }
 
-// The `procedure_cache` event of the native `WriteProgram` branch (R1165-10).
-// The worker reads no cache file, so an unmodified catalog request either
-// rediscovers its program from the documentation captures (R1165-1,
-// `outcome=discovered`) or is the miss Rust logs, naming the `miss_route`
-// inputs a solve does not carry and why captured pages yielded nothing.
-function solverProcedureCacheEvents(prompt, language, task) {
-  const template = writeProgramTemplate(task, language);
-  if (!template || applyInlineHelloWorldOutputReplacement(prompt, task, template) !== template) return [];
-  const { recipe, rejected } = documentedProgram(task, language);
-  if (recipe) {
+// Mirror R1165-10 cache and discovery events from the selected documentation
+// result, or record why the answer used the local operation.
+function solverProcedureCacheEvents(prompt, language, task, documented) {
+  const { recipe, rejected } = documented || {};
+  if (recipe?.task === task) {
+    const outcome = documented.cached ? "hit" : "discovered";
     const fields = `rediscovery_source=${recipe.rediscovery_source} content_id=${recipe.content_id}`;
-    return [solverEvent("procedure_cache", `outcome=discovered language=${language} task=${task} ${fields}`)];
+    return [solverEvent("procedure_cache", `outcome=${outcome} language=${language} task=${task} ${fields}`)];
   }
+  if (WRITE_PROGRAM_TASKS[task]?.output == null) return [];
+  const template = writeProgramTemplate(task, language);
+  if (!template || writeProgramTemplateForPrompt(prompt, task, language, template) !== template) return [];
   const missing = solverMissResearchMissing().join(",") + (rejected ? ` documentation_rejected=${rejected}` : "");
   return [solverEvent("procedure_cache", `outcome=miss language=${language} task=${task} research_missing=${missing}`)];
 }
@@ -317,7 +328,7 @@ function solverEventLog(prompt, answer) {
   // Issue #1550: `record_answer_test` and `record_selection` of the turn.
   const procedure = crateModule(SOLVER_META_EXECUTOR_MODULE);
   if (!events.some((event) => event.kind === SOLVER_EVENT_VALIDATION)) {
-    events.push(solverEvent(SOLVER_EVENT_VALIDATION, procedure.answerValidation(answer.intent, answer.content)));
+    events.push(solverEvent(SOLVER_EVENT_VALIDATION, procedure.answerValidation(answer.intent, answer.content), "validation:answer"));
   }
   events.push(solverEvent("response", answer.responseLink || `${SOLVER_RESPONSE_PREFIX}${answer.intent}`));
   // The `finalize_simple` tail; the `trace` link is the Telegram `/trace` footer.
@@ -341,4 +352,62 @@ function recordSolverEventLog(result, prompt, answer) {
   if (!links) return;
   const present = new Set(result.evidence);
   result.evidence = [...result.evidence, ...links.filter((link) => !present.has(link))];
+}
+
+function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  // Issue #1173 R5: no answer may be the canned search-machinery description.
+  answer = guardCannedWebSearchAnswer(
+    answer,
+    (formalizationContext && formalizationContext.language) || "en",
+  );
+  const interpretations = collectInterpretations(formalizationContext, answer);
+  answer = applyVisibleInterpretations(answer, interpretations);
+  applyResolvedFormalization(events, steps, formalizationContext, answer);
+  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const projection = deformalizeProjection(formalizationContext, answer);
+  events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
+  // diagnostics panel; `answer` carries the clean composed answer so the
+  // human-readable thinking preview can show "Compose the answer: …" (issue
+  // #488) without leaking the tuple.
+  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
+  steps.push({
+    step: "deformalize",
+    detail: projection.summary,
+    projection,
+    answer: answerFirstLine,
+  });
+  const trace = events.map((event) => `trace:${event}`);
+  const result = {
+    intent: answer.intent,
+    content: answer.content,
+    confidence: answer.confidence,
+    evidence: [...evidence, ...trace],
+    steps: withThinkingLevels(steps),
+    toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
+  };
+  if (formalizationContext?.initial) {
+    const preceding = formalizationContext.solverEvents;
+    const traced = preceding ? { ...answer, solverEvents: [...preceding, ...(answer.solverEvents || [])] } : answer;
+    recordSolverEventLog(result, formalizationContext.initial.raw, traced); // R1013
+  }
+  if (formalizationContext && formalizationContext.meta) {
+    result.derivation = formalizationContext.meta.derivationLino;
+  }
+  if (answer.iframeUrl) {
+    result.iframeUrl = answer.iframeUrl;
+  }
+  if (answer.diagnostics) {
+    result.diagnostics = answer.diagnostics;
+  }
+  if (answer.programExecution) {
+    result.programExecution = answer.programExecution; // R1013
+  }
+  if (answer.synthesizedProgram) result.synthesizedProgram = answer.synthesizedProgram;
+  // Issue #529: carry a natural-language memory write (append/substitution) out
+  // to the app so it can apply the read+write transform to persistent storage.
+  if (answer.memoryOperation) {
+    result.memoryOperation = answer.memoryOperation;
+  }
+  return result;
 }

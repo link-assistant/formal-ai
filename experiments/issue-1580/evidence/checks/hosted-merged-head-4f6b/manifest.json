@@ -1,0 +1,45 @@
+{
+  "source": "4f6b611d6a4e158647dbe04b34e73fd7d149f9d3",
+  "workflowCounts": {
+    "success": 31,
+    "skipped": 1,
+    "failure": 1
+  },
+  "pipeline": {
+    "run": 45124435265,
+    "conclusion": "failure",
+    "wholeLogLines": 69484,
+    "wholeLogSha256": "ce53134cb057309810e29ebea900ca1d72dc4233a867c5789335be1cc0d7b21b",
+    "modulePathFailureLines": [
+      65693,
+      65694,
+      65695
+    ],
+    "unusedImportFailureLines": [
+      67538,
+      67547
+    ],
+    "nativeGroupsExecuted": 0
+  },
+  "layered": {
+    "run": 45124434785,
+    "conclusion": "success"
+  },
+  "sourceSizeWarnings": 0,
+  "credentialPreflight": {
+    "publicationVerified": false,
+    "cratesTokenAuthority": "unknown"
+  },
+  "nativeRerunsIssued": false,
+  "repairCommit": "795e76727e85a945f3df04f9f91c11583908cb54",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2507159,
+    "sha256": "42cbbf907ba8398beb6c90fdd977fc9b5eeeda5322c4e21efd85b0c817fe5683"
+  },
+  "members": 73,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T07:08:01.290039+00:00"
+}

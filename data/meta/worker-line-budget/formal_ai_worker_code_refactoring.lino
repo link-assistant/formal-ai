@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_code_refactoring.js"
+  ceiling 333
+  rationale "Existing promise-chain parser, rendering, bounded recording-stub checks and refactoring handlers extracted unchanged from code tasks; the combined ceiling does not grow."

@@ -1,0 +1,101 @@
+{
+  "checks": [
+    {
+      "name": "checkpoint",
+      "exit": 0,
+      "seconds": 0.943
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "exit": 0,
+      "seconds": 7.726
+    },
+    {
+      "name": "check-file-size",
+      "exit": 0,
+      "seconds": 3.95
+    },
+    {
+      "name": "check-readable-code",
+      "exit": 0,
+      "seconds": 10.512
+    },
+    {
+      "name": "check-abbreviations",
+      "exit": 0,
+      "seconds": 3.463
+    },
+    {
+      "name": "check-ci-speed",
+      "exit": 0,
+      "seconds": 0.416
+    },
+    {
+      "name": "workflows",
+      "exit": 0,
+      "seconds": 1.401
+    },
+    {
+      "name": "source-whitespace",
+      "exit": 0,
+      "seconds": 11.066
+    }
+  ],
+  "files": [
+    {
+      "file": "check-abbreviations.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/check-abbreviations.log",
+      "bytes": 67,
+      "sha256": "5b5df7ab0604527ffe142ebf0a904b41c3a4359934ed7f946fd0bcbc6d2cfd7c"
+    },
+    {
+      "file": "check-ci-speed.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/check-ci-speed.log",
+      "bytes": 62,
+      "sha256": "cba0a1228ced1c5dd5a7b9b444d1c25b7946725dd41d1cbe2f120fb89549bdde"
+    },
+    {
+      "file": "check-file-size-js-twin.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/check-file-size-js-twin.log",
+      "bytes": 71,
+      "sha256": "5f9fc585ed28a9104807344e4d3b9f86d448b71dcecc7d9d65301a4676806d5f"
+    },
+    {
+      "file": "check-file-size.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/check-file-size.log",
+      "bytes": 63,
+      "sha256": "220ef8795311acc13aa5e5773a3423718b325f031e4b6c71663b200003b82d46"
+    },
+    {
+      "file": "check-readable-code.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/check-readable-code.log",
+      "bytes": 68,
+      "sha256": "0bda263ce9bdb8fcdad5a9703be7666d90823987f9b08d703c95170b01ec309c"
+    },
+    {
+      "file": "checkpoint.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/checkpoint.log",
+      "bytes": 3483,
+      "sha256": "6a7ecec80a8ed7761ad71d50525cb74ceadb3848eb948da119cd532c677c9fd6"
+    },
+    {
+      "file": "outcome.json.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/outcome.json",
+      "bytes": 736,
+      "sha256": "67e4abd4e518319237f52eec4746036ea767b15fcab87013c3eea66ae18a0d3b"
+    },
+    {
+      "file": "source-whitespace.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/source-whitespace.log",
+      "bytes": 869,
+      "sha256": "3454e8adf5474c4cab6baf57bdf08dbe46f668cda5da90da8dc053533df52276"
+    },
+    {
+      "file": "workflows.log.gz",
+      "source": "/tmp/issue-1580-research/main-merge-final-gates/workflows.log",
+      "bytes": 57,
+      "sha256": "18953e9eabe4688d1fe6b36bb1deadf075186c50f4799b68d5ad089dcd623cfe"
+    }
+  ],
+  "authorshipCredit": 0
+}

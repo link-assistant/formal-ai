@@ -1,0 +1,755 @@
+        env:
+          # Issue #1085 (D3.3): the ledger row names who opened each qualifying
+          # pull request, read through `gh` with the job token.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
+        run: |
+          rust-script scripts/version-and-commit.rs \
+            --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
+            --resume-prepared \
+            --branch main
+      - name: Get current version
+        id: current_version
+        if: steps.check.outputs.should_release == 'true'
+        run: rust-script scripts/get-version.rs
+      - name: Recheck prepared release state
+        id: prepared
+        if: steps.check.outputs.should_release == 'true'
+        env:
+          HAS_FRAGMENTS: 'false'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: rust-script scripts/check-release-needed.rs
+      - name: Build release
+        if: steps.check.outputs.should_release == 'true'
+        env:
+          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
+      - name: Verify packaged crate archive
+        if: steps.check.outputs.should_release == 'true'
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
+      - name: Publish to Crates.io
+        if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'
+        id: publish-crate
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+        run: rust-script scripts/publish-crate.rs --verified-build true
+      - name: Wait for Crate availability on Crates.io
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
+      - name: Smoke test the published crate
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
+      - name: Free up runner disk space
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        run: bash scripts/free-runner-disk.sh
+      - name: Log in to GitHub Container Registry
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        uses: ./.github/actions/setup-buildx-resilient
+      - name: Expose actual BuildKit cache runtime
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        uses: actions/github-script@v9
+        with:
+          script: |
+            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
+              const value = process.env[key];
+              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);
+              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);
+              core.exportVariable(key, value);
+            }
+            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');
+      - name: Publish Docker image to GHCR
+        id: ghcr-publish
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        timeout-minutes: 45
+        env:
+          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+          BUILD_CACHE_SETTINGS: |
+            cache-from: type=gha,scope=docker-image
+            cache-to: type=gha,mode=max,scope=docker-image
+        run: node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
+      - name: Publish and verify the slim GHCR sidecar
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        timeout-minutes: 15
+        uses: ./.github/actions/publish-slim-image
+        with:
+          image: ${{ env.GHCR_IMAGE }}
+          version: ${{ steps.current_version.outputs.version }}
+      - name: Verify the published GHCR image is anonymously pullable
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        run: bash scripts/verify-ghcr-visibility.sh
+      - name: Verify anonymous access to the immutable published manifest
+        if: steps.ghcr-publish.outputs.digest != ''
+        timeout-minutes: 2
+        env:
+          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}
+        run: node scripts/verify-anonymous-image-manifest.mjs "$IMAGE_REFERENCE"
+      - name: Configure Docker Hub publishing
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        id: dockerhub
+        run: bash scripts/configure-dockerhub-publishing.sh
+      - name: Log in to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+      - name: Publish Docker image to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        timeout-minutes: 20
+        env:
+          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/release-image-factory.mjs mirror prepared-release "$RELEASE_VERSION" "$DOCKERHUB_IMAGE"
+      - name: Create GitHub Release
+        id: create-release
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
+        run: bash scripts/invoke-create-github-release.sh
+      - name: Attach the verified immutable slim image receipt
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
+        run: |
+          set -euo pipefail
+          test -s slim-image-release-receipt.json
+          test -s slim-image-release-receipt.json.sha256
+          gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
+          cp prepared-release/source/source-selection.json prepared-release-source.json
+          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json
+          cp prepared-release/prepared-build.json prepared-release-build.json
+          cp prepared-release/full-image.json prepared-release-full-image.json
+          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)
+          if [ "$MIRROR_ENABLED" = true ]; then
+            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json
+            files+=(prepared-release-dockerhub-image.json)
+          fi
+          sha256sum "${files[@]}" > prepared-release-SHA256SUMS.txt
+          gh release upload "v$RELEASE_VERSION" "${files[@]}" prepared-release-SHA256SUMS.txt --repo "$REPO" --clobber
+      - name: Resolve Pages deploy ref
+        id: release_pages_ref
+        if: always()
+        run: |
+          sha="$(git rev-parse HEAD)"
+          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+          rust-script scripts/get-version.rs
+  manual-release:
+    name: Instant Release
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
+    needs:
+      [
+        build,
+        secrets-scan,
+        release-preflight,
+      ]
+    if: |
+      !cancelled() &&
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.release_mode == 'instant' &&
+      github.ref == 'refs/heads/main' &&
+      needs.build.result == 'success' &&
+      needs.release-preflight.result == 'success' &&
+      needs.secrets-scan.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    outputs:
+      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+      pages_version: ${{ steps.release_pages_ref.outputs.version }}
+      container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', steps.version.outputs.new_version) || '' }}
+    env: {"DOCKERHUB_USERNAME":"${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}","DOCKERHUB_TOKEN":"${{ secrets.DOCKERHUB_TOKEN }}"}
+    permissions: {"contents":"write","packages":"write"}
+    steps:
+      # Version-and-commit pushes the version/tag after workflow_dispatch, so issue #1079 retains persist-credentials in this publishing job.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Configure git
+        run: rust-script scripts/git-config.rs
+      - name: Version and commit
+        id: version
+        env:
+          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+          DESCRIPTION: ${{ github.event.inputs.description }}
+        run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
+      - name: Build release
+        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
+      - name: Verify packaged crate archive
+        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
+      - name: Publish to Crates.io
+        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        id: publish-crate
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+        run: rust-script scripts/publish-crate.rs --verified-build true
+      - name: Wait for Crate availability on Crates.io
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
+      - name: Smoke test the published crate
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        run: scripts/smoke-test-published-crate.sh "${{ steps.version.outputs.new_version }}"
+      - name: Free up runner disk space
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        run: bash scripts/free-runner-disk.sh
+      - name: Log in to GitHub Container Registry
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        uses: ./.github/actions/setup-buildx-resilient
+      - name: Expose actual BuildKit cache runtime
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
+              const value = process.env[key];
+              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);
+              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);
+              core.exportVariable(key, value);
+            }
+            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');
+      - name: Publish Docker image to GHCR
+        id: ghcr-publish
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        timeout-minutes: 45
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+          BUILD_CACHE_SETTINGS: |
+            cache-from: type=gha,scope=docker-image
+            cache-to: type=gha,mode=max,scope=docker-image
+        run: node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
+      - name: Publish and verify the slim GHCR sidecar
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        timeout-minutes: 15
+        uses: ./.github/actions/publish-slim-image
+        with:
+          image: ${{ env.GHCR_IMAGE }}
+          version: ${{ steps.version.outputs.new_version }}
+      - name: Verify the published GHCR image is anonymously pullable
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        run: bash scripts/verify-ghcr-visibility.sh
+      - name: Verify anonymous access to the immutable published manifest
+        if: steps.ghcr-publish.outputs.digest != ''
+        timeout-minutes: 2
+        env:
+          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}
+        run: node scripts/verify-anonymous-image-manifest.mjs "$IMAGE_REFERENCE"
+      - name: Configure Docker Hub publishing
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        id: dockerhub
+        run: bash scripts/configure-dockerhub-publishing.sh
+      - name: Log in to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+      - name: Publish Docker image to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        timeout-minutes: 20
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/release-image-factory.mjs mirror prepared-release "$RELEASE_VERSION" "$DOCKERHUB_IMAGE"
+      - name: Create GitHub Release
+        id: create-release
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+        run: bash scripts/invoke-create-github-release.sh
+      - name: Attach the verified immutable slim image receipt
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+        run: |
+          set -euo pipefail
+          test -s slim-image-release-receipt.json
+          test -s slim-image-release-receipt.json.sha256
+          gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
+          cp prepared-release/source/source-selection.json prepared-release-source.json
+          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json
+          cp prepared-release/prepared-build.json prepared-release-build.json
+          cp prepared-release/full-image.json prepared-release-full-image.json
+          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)
+          if [ "$MIRROR_ENABLED" = true ]; then
+            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json
+            files+=(prepared-release-dockerhub-image.json)
+          fi
+          sha256sum "${files[@]}" > prepared-release-SHA256SUMS.txt
+          gh release upload "v$RELEASE_VERSION" "${files[@]}" prepared-release-SHA256SUMS.txt --repo "$REPO" --clobber
+      - name: Resolve Pages deploy ref
+        id: release_pages_ref
+        if: always()
+        run: |
+          sha="$(git rev-parse HEAD)"
+          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+          rust-script scripts/get-version.rs
+  changelog-pr:
+    name: Create Changelog PR
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Create-pull-request pushes the generated release branch after workflow_dispatch, so issue #1079 retains persist-credentials for that action.
+      - uses: actions/checkout@v7
+        with: {fetch-depth: 0}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Create changelog fragment
+        env:
+          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+          DESCRIPTION: ${{ github.event.inputs.description }}
+        run: rust-script scripts/create-changelog-fragment.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: add changelog for manual ${{ github.event.inputs.bump_type }} release'
+          branch: changelog-manual-release-${{ github.run_id }}
+          delete-branch: true
+          title: 'chore: manual ${{ github.event.inputs.bump_type }} release'
+          body: |
+            This PR was created by a manual workflow trigger to prepare a **${{ github.event.inputs.bump_type }}** release.
+            - **Type:** ${{ github.event.inputs.bump_type }}
+            - **Description:** ${{ github.event.inputs.description || 'Manual release' }}
+            - **Triggered by:** @${{ github.actor }}
+            1. Review the changelog fragment in this PR
+            2. Merge this PR to main
+            3. The automated release workflow will publish to crates.io and create a GitHub release
+  test-e2e-local:
+    name: E2E Tests (local web app)
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    needs: [detect-changes]
+    if: ${{ vars.FORMAL_AI_FULL_INTEGRATION == 'run' && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' )) }}
+    uses: ./.github/workflows/e2e-local.yml
+    permissions:
+      contents: read
+  test-agent-cli-e2e:
+    name: E2E Tests (agent CLI ↔ formal-ai)
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    needs: [detect-changes, build-artifacts]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
+    uses: ./.github/workflows/agent-cli-e2e.yml
+    with:
+      full-replay: ${{ vars.FORMAL_AI_FULL_AGENT_REPLAY == 'run' || (github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true') }}
+    permissions:
+      contents: read
+  build-artifacts:
+    name: Build binaries and tests
+    outputs: {source-commit: "${{ steps.source.outputs.commit }}"}
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    needs: [detect-changes]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
+    steps:
+      - uses: actions/checkout@v7
+        with: {persist-credentials: false}
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with: {prefix: artifacts-}
+      - name: Pin actual native test producer source commit
+        id: source
+        run: printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Build binaries and test executables
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features --message-format=json \
+            | tee "$RUNNER_TEMP/native-build-messages.jsonl"
+      - name: Run compiled native creation fixtures
+        run: |
+          FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 \
+            node scripts/run-native-coding-fixtures.mjs \
+            "$RUNNER_TEMP/native-build-messages.jsonl" "$RUNNER_TEMP/native-creation-fixtures.json"
+      - {name: Retain native creation fixture evidence, if: '${{ always() }}', uses: actions/upload-artifact@v7, with: {name: native-creation-fixture-qualification, path: "${{ runner.temp }}/native-build-messages.jsonl\n${{ runner.temp }}/native-creation-fixtures.json\n", if-no-files-found: warn, retention-days: 3}}
+      - name: Collect the build artifacts
+        run: bash scripts/collect-build-artifacts.sh
+      - name: Bind native test artifacts to their actual build inputs
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 300 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json
+      - name: Capture complete current native agentic protocols
+        timeout-minutes: 5
+        run: node scripts/capture-native-agentic-protocol.mjs "$RUNNER_TEMP/native-agentic-protocol-captures" dist/formal-ai
+      - name: Upload actual native agentic protocol captures
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-agentic-protocol-captures
+          path: ${{ runner.temp }}/native-agentic-protocol-captures
+          retention-days: 3
+      - name: Upload formal-ai binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-release-binary
+          path: dist/*
+          retention-days: 1
+      - name: Upload test executables
+        uses: actions/upload-artifact@v7
+        with: {name: formal-ai-test-executables, path: dist/tests, retention-days: 1}
+      - name: Upload the selected self-coding test executable and original receipt
+        uses: actions/upload-artifact@v7
+        with: {name: formal-ai-self-coding-test-executable, path: "dist/tests/unit\ndist/tests/native-build-receipt.json\n", retention-days: 1}
+  native-response-observations:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    needs: [build-artifacts]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
+    uses: ./.github/workflows/native-response-observations.yml
+    with:
+      source-commit: ${{ needs.build-artifacts.outputs.source-commit }}
+    permissions:
+      contents: read
+  box-language-projects:
+    name: Box Image Projects (${{ matrix.language }})
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: [detect-changes, build-artifacts]
+    if: ${{ vars.FORMAL_AI_FULL_INTEGRATION == 'run' && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Kept in step with `data/meta/box-language-projects.lino` by `tests/unit/ci-cd/box_language_release_legs.rs`.
+        language: [rust, python, javascript, typescript, go, java, ruby]
+    steps:
+      - uses: actions/checkout@v7
+        with: {persist-credentials: false}
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: box-project-${{ matrix.language }}
+          paths: >-
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
+      - name: Free up runner disk space
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
+      - uses: ./.github/actions/download-formal-ai-binary
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+      - name: Generate the ${{ matrix.language }} project from Formal-AI answers
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: scripts/generate-box-language-corpus.sh ${{ matrix.language }}
+      - name: Build and run it inside its link-foundation/box image
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: STRICT=1 SKIP_GENERATE=1 scripts/verify-box-language-projects.sh ${{ matrix.language }}
+      - name: Upload the generated project
+        if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: box-language-corpus-${{ matrix.language }}
+          path: target/box-language-corpus/${{ matrix.language }}/
+          retention-days: 7
+          # `always()` also covers a leg that failed before generating anything.
+          if-no-files-found: warn
+      - if: ${{ !cancelled() }}
+        run: scripts/prune-docker.sh
+  build-pages:
+    name: Build GitHub Pages artifact
+    concurrency:
+      group: formal-ai-pages-build-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    needs: [build, auto-release, manual-release]
+    if: |
+      !cancelled() &&
+      needs.build.result == 'success' && (
+        (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main' && needs.manual-release.result == 'success')
+      )
+    uses: ./.github/workflows/pages-artifact.yml
+    with:
+      sha: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
+    permissions:
+      contents: read
+  deploy-pages:
+    name: Deploy Web App to GitHub Pages
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
+    needs: [build-pages]
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+      pages_sha: ${{ needs.build-pages.outputs.pages_sha }}
+    if: |
+      !cancelled() &&
+      needs.build-pages.result == 'success' && (
+        (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main')
+      )
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout Pages deployment protocol
+        uses: actions/checkout@v7
+        with: {ref: '${{ github.workflow_sha }}', path: .formal-ai-pages-protocol, persist-credentials: false,
+          fetch-depth: 1, filter: 'blob:none', sparse-checkout-cone-mode: false, sparse-checkout: /.github/actions/deploy-pages/}
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: ./.formal-ai-pages-protocol/.github/actions/deploy-pages
+        with:
+          artifact_id: ${{ needs.build-pages.outputs.artifact_id }}
+          source_sha: ${{ needs.build-pages.outputs.pages_sha }}
+          timeout: 600000
+        env:
+          NODE_OPTIONS: --throw-deprecation
+  test-e2e-pages:
+    name: E2E Tests (GitHub Pages)
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-pages${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    needs: [deploy-pages]
+    if: |
+      !cancelled() &&
+      needs.deploy-pages.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with: {persist-credentials: false}
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+          cache: npm
+          cache-dependency-path: rust/tests/e2e/package-lock.json
+      - name: Install Playwright and dependencies
+        run: |
+          cd rust/tests/e2e
+          npm ci --no-audit --no-fund
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('rust/tests/e2e/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      - name: Install Playwright system dependencies (best effort)
+        timeout-minutes: 6
+        continue-on-error: true
+        run: |
+          cd rust/tests/e2e
+          bash ../../../scripts/with-ubuntu-apt-sources.sh npx playwright install-deps chromium
+      - name: Install Playwright browsers
+        timeout-minutes: 10
+        run: |
+          cd rust/tests/e2e
+          npx playwright install chromium
+      - name: Wait for GitHub Pages deployment
+        env:
+          PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}
+        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-pages.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
+      - name: Run GitHub Pages e2e tests
+        run: |
+          cd rust/tests/e2e
+          PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.smoke.config.js
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-pages
+          path: rust/tests/e2e/playwright-report/
+          retention-days: 7
+  native-container-images:
+    name: Native full and slim container publication
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-native-container-images
+      cancel-in-progress: false
+      queue: max
+    needs: [auto-release, manual-release]
+    if: |
+      !cancelled() && (
+        (github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+         needs.auto-release.result == 'success' && needs.auto-release.outputs.container-tag != '') ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' &&
+         github.ref == 'refs/heads/main' && needs.manual-release.result == 'success' && needs.manual-release.outputs.container-tag != '')
+      )
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/container-images.yml
+    with:
+      push: true
+      tag: ${{ needs.auto-release.outputs.container-tag || needs.manual-release.outputs.container-tag }}
+  pipeline-status:
+    name: Pipeline Status
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    if: always()
+    needs: [fast-pr-lint, native-type-check, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
+            version-check, release-preflight, base, lint, test, doc-tests, macos-core-tests, build,
+            auto-release, manual-release, native-container-images,
+            changelog-pr, test-e2e-local, test-agent-cli-e2e,
+            build-artifacts, native-response-observations, box-language-projects, build-pages, deploy-pages,
+            test-e2e-pages, server-parity]
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const p = 'scripts/check-pipeline-status.sh';
+            const {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});
+            if(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid status source');
+            const fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});
+      - name: Fail the run when a required job was cancelled or failed
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        run: bash scripts/check-pipeline-status.sh
+  self-authored-after-publication: {needs: ["auto-release","manual-release"], if: "${{ !cancelled() && github.ref == 'refs/heads/main' && (needs.auto-release.result == 'success' || needs.manual-release.result == 'success') }}",
+    uses: "./.github/workflows/self-authored-pull-request.yml", permissions: {"contents":"write","pull-requests":"write","issues":"write","actions":"write"},
+    with: {"production-run-id":"${{ github.run_id }}","production-run-attempt":"${{ github.run_attempt }}"},
+    secrets: {"AUTOMATION_APP_ID":"${{ secrets.AUTOMATION_APP_ID }}","AUTOMATION_APP_PRIVATE_KEY":"${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}","AUTOMATION_TOKEN":"${{ secrets.AUTOMATION_TOKEN }}"}}

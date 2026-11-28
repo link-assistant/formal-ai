@@ -1,0 +1,62 @@
+139284264998	Detect Changes	success
+139284265280	Release Preflight	success
+139284265884	hive-source-provenance / Hive source event provenance	success
+139284267352	Create Changelog PR	skipped
+139284267539	Fast Linux source and requirement checks	skipped
+139284267938	base / Pin base commit	skipped
+139284268346	Version Modification Check	skipped
+139294702249	Default-feature documentation tests	success
+139294702385	Build Package	success
+139294702468	Lint and Format Check (lane 1)	failure
+139294702523	Secrets Scan	success
+139294702655	Lint and Format Check (lane 4)	success
+139294702662	Lint and Format Check (lane 2)	success
+139294702689	Build binaries and tests	success
+139294702751	Lint and Format Check (lane 3)	success
+139294703550	Changelog Fragment Check	skipped
+139294704786	E2E Tests (local web app)	skipped
+139294705243	Native type and lint check	skipped
+139294706049	macOS Core Tests / Build macOS test archive	skipped
+139294707091	macOS Core Tests / Run macOS platform tests	skipped
+139301026067	Auto Release / auto prepare-source	success
+139301027519	Instant Release	skipped
+139301029745	Auto Release / manual prepare-source	skipped
+139301031003	Auto Release / manual compile-release	skipped
+139301032583	Auto Release / manual verify-package	skipped
+139301032891	Auto Release / manual publish-crate	skipped
+139301035411	Auto Release / manual registry-availability	skipped
+139301036001	Auto Release / manual published-crate-smoke	skipped
+139301037152	Auto Release / manual publish-verify-images	skipped
+139301039059	Auto Release / manual create-release	skipped
+139314984142	Auto Release / auto compile-release	success
+139322454090	Server parity (JavaScript vs Rust)	success
+139322454260	Test (ubuntu-24.04 / full) shard 8/8	failure
+139322454292	Docker Image Build & Runtime Check	success
+139322454392	Test (ubuntu-24.04 / full) shard 7/8	failure
+139322454395	Test (ubuntu-24.04 / specification) shard 1/4	success
+139322454545	Test (ubuntu-24.04 / full) shard 3/8	failure
+139322454648	Test (ubuntu-24.04 / full) shard 2/8	failure
+139322454668	Test (ubuntu-24.04 / specification) shard 2/4	failure
+139322454725	Test (ubuntu-24.04 / full)	failure
+139322454794	Test (ubuntu-24.04 / full) shard 6/8	failure
+139322454821	Test (ubuntu-24.04 / specification) shard 3/4	failure
+139322454978	Test (ubuntu-24.04 / full) shard 5/8	success
+139322455011	Test (ubuntu-24.04 / full) shard 4/8	failure
+139322455104	Test (ubuntu-24.04 / specification) shard 4/4	success
+139322455132	Slim Docker build and runtime / Slim Docker runtime	success
+139322455145	native-response-observations / Capture unchanged original native test answers	failure
+139322455628	E2E Tests (agent CLI ↔ formal-ai) / E2E Tests (agent CLI ↔ formal-ai) (computer-use-generalization)	failure
+139322455698	E2E Tests (agent CLI ↔ formal-ai) / E2E Tests (agent CLI ↔ formal-ai)	failure
+139322455805	Box Image Projects (${{ matrix.language }})	skipped
+139325680043	Auto Release / auto verify-package	failure
+139331056913	Auto Release / auto publish-crate	skipped
+139331058408	Auto Release / auto registry-availability	skipped
+139331059478	Auto Release / auto published-crate-smoke	skipped
+139331060219	Auto Release / auto publish-verify-images	skipped
+139331060253	Auto Release / auto create-release	skipped
+139331061683	Build GitHub Pages artifact / Build GitHub Pages artifact	success
+139331061701	Native full and slim container publication	skipped
+139331062750	self-authored-after-publication	skipped
+139337501847	Deploy Web App to GitHub Pages	failure
+139339397227	E2E Tests (GitHub Pages)	skipped
+139346123738	Pipeline Status	failure

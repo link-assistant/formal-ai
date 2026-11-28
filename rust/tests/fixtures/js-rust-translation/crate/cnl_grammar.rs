@@ -1,5 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9ca316a23d63c69b909671f758e16c146b560bb4934aaa5ff799f9efe659bfc1 bytes=21391
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=16720dc659d43025219b6f9e312941ada9ed0381871f546b1ccfce38f999c517 bytes=21981
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -8,6 +9,10 @@
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // meta-language:translated JavaScript export_statement items=1 sha256=5b12825948f4a6b4b426e4b72501e049a844a06601b5f08c8e1ac9de50fd870e
 // | export const CNL_LANGUAGE_PATH = 'data/seed/cnl-language-{language}.lino';
@@ -34,13 +39,17 @@ pub const INPUT_REGISTER: &str = "input";
 // | const MAXIMUM_SPAN = 24;
 pub const MAXIMUM_SPAN: f64 = 24f64;
 
-// meta-language:carried JavaScript function_declaration (unsupported)
+// meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal nullish coalescing
-// formal-ai:blockers global call String() | global value Boolean | method call .filter() | method call .split() | nullish coalescing
+// formal-ai:blockers call of an imported function | global call String() | method call .split() | nullish coalescing
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .filter()
+// formal-ai:blockers call of a sibling function | global value Boolean | method call .filter()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .indexOf()
-// formal-ai:blockers call of a sibling function | method call .indexOf() | method call .slice()
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .indexOf() | method call .slice()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()

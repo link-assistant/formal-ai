@@ -21,12 +21,21 @@ struct WikidataTransport;
 impl SourceTransport for WikidataTransport {
     fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
         let body = if url.contains("wbsearchentities") && url.contains("search=Australia") {
-            r#"{"search":[{"id":"Q408","label":"Australia"}]}"#.to_owned()
+            r#"{"search":[{"id":"Q123","label":"Australia Day"},{"id":"Q408","label":"Australia"}]}"#.to_owned()
+        } else if url.contains("wbsearchentities") && url.contains("search=Springfield") {
+            r#"{"search":[{"id":"Q123","label":"Springfield"},{"id":"Q408","label":"Springfield"}]}"#.to_owned()
+        } else if url.contains("wbsearchentities") && url.contains("search=Canterbury") {
+            r#"{"search":[{"id":"Q123","label":"Canterbury"},{"id":"Q345","label":"Canterbury"}]}"#
+                .to_owned()
         } else if url.contains("wbsearchentities") {
             r#"{"search":[]}"#.to_owned()
+        } else if url.ends_with("/Q345.json") {
+            r#"{"entities":{"Q345":{"id":"Q345","claims":{}}}}"#.to_owned()
+        } else if url.ends_with("/Q123.json") {
+            r#"{"entities":{"Q123":{"id":"Q123","claims":{"P36":[{"rank":"normal","mainsnak":{"datavalue":{"value":{"id":"Q3114"}}}}]}}}}"#.to_owned()
         } else if url.ends_with("/Q408.json") {
             format!(
-                r#"{{"entities":{{"Q408":{{"id":"Q408","labels":{{"en":{{"language":"en","value":"Australia"}}}},"claims":{{"P36":[{{"mainsnak":{{"datavalue":{{"value":{{"entity-type":"item","id":"Q3114"}},"type":"wikibase-entityid"}}}},"references":[{{"snaks":{{"P854":[{{"datavalue":{{"value":"{REFERENCE_URL}","type":"string"}}}}]}}}}]}}],"P1082":[{{"mainsnak":{{"datavalue":{{"value":{{"amount":"+27122411","unit":"1"}},"type":"quantity"}}}}}}]}}}}}}}}"#
+                r#"{{"entities":{{"Q408":{{"id":"Q408","labels":{{"en":{{"language":"en","value":"Australia"}}}},"claims":{{"P36":[{{"rank":"deprecated","mainsnak":{{"datavalue":{{"value":{{"id":"Q123"}}}}}}}},{{"rank":"preferred","mainsnak":{{"datavalue":{{"value":{{"entity-type":"item","id":"Q3114"}},"type":"wikibase-entityid"}}}},"references":[{{"snaks":{{"P854":[{{"datavalue":{{"value":"{REFERENCE_URL}","type":"string"}}}}]}}}}]}}],"P1082":[{{"mainsnak":{{"datavalue":{{"value":{{"amount":"+27122411","unit":"1"}},"type":"quantity"}}}}}}]}}}}}}}}"#
             )
         } else if url.ends_with("/Q3114.json") {
             r#"{"entities":{"Q3114":{"id":"Q3114","labels":{"en":{"language":"en","value":"Canberra"}}}}}"#
@@ -85,9 +94,22 @@ fn a_miss_is_none_and_offline_is_an_error() {
         resolve_fact_live(&client(), "capital", "Atlantis", "en").expect("search read"),
         None
     );
+    assert_eq!(
+        resolve_fact_live(&client(), "capital", "Springfield", "en").expect("search read"),
+        None
+    );
     let offline = CachedSourceClient::new(
         std::env::temp_dir().join("issue-1172-live-fact-offline-empty"),
         WikidataTransport,
     );
     assert!(resolve_fact_live(&offline, "capital", "Australia", "en").is_err());
+}
+
+#[test]
+fn the_relation_disambiguates_exact_matches() {
+    let statement = resolve_fact_live(&client(), "capital", "Canterbury", "en")
+        .expect("captures read")
+        .expect("only one subject states a capital");
+    assert_eq!(statement.subject_qid, "Q123");
+    assert_eq!(statement.captures.len(), 4);
 }

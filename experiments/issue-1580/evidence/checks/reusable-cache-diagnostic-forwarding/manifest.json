@@ -1,0 +1,22 @@
+{
+  "regressionFailedBefore": true,
+  "javascriptCasesPassedAfter": 13,
+  "backendFailureCauseKnown": false,
+  "diagnosticsEnabledForNewHostedRun": false,
+  "independentAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false,
+  "files": [
+    {
+      "file": "01.log.gz",
+      "source": "safe-creator-logging/cache-switch-before.log",
+      "bytes": 2335,
+      "sha256": "7b8d8716a7bed9268e664882fd4624fb1f98fc59805c997daa5bb5cabab901bf"
+    },
+    {
+      "file": "02.log.gz",
+      "source": "current-warning-checks/cache.log",
+      "bytes": 1261,
+      "sha256": "d9c94d92c7ab0f9cf673313995f00a8b4d07fd5d8692744d4ab9a29de2c5e960"
+    }
+  ]
+}

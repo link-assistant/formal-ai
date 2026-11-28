@@ -1,0 +1,31 @@
+{
+  "pushExecuted": false,
+  "failure": "New raw diff evidence contains legitimate Git context spaces; preserve the exact payload compressed.",
+  "payloads": [
+    {
+      "file": "evidence-whitespace.stdout.gz",
+      "rawSha256": "23de03fe2b4c06999e15ba7b7f9beedc95f29f0dda8a5b63050a4f56a100c786",
+      "archiveSha256": "c16ea6e3bf62cbd9c6014982920f9d7eca7261f51f302f15ca6478d674030279"
+    },
+    {
+      "file": "evidence-whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "documentation-gates.stdout.gz",
+      "rawSha256": "0a3fcdf1006558ac9a9bc059c4c99304d9fce6c876270dd8485a578c8dd49e58",
+      "archiveSha256": "f9312be73710f3ebd755cad7423283104e21078e1dbedcd70e7a93a9e96b874c"
+    },
+    {
+      "file": "documentation-gates.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "outcome.json.gz",
+      "rawSha256": "163e2c8e97731a8717ea83b5481fdb74de5fa802c990d6c7aa483c684d3474ea",
+      "archiveSha256": "6f8691e326f34f3c3c56f34116c7f6aadceee2c9ab47f58c865fdce1fb714ad6"
+    }
+  ]
+}

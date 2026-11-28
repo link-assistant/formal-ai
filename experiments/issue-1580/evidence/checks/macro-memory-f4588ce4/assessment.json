@@ -1,0 +1,14 @@
+{
+  "publishedHead": "f4588ce40023a1cc722cbed4ed7f977581fd4530",
+  "originalProducerFilesVerified": 124,
+  "actualThreeGiBQueryCompiledAndExecuted": true,
+  "actualThreeGiBWarningRemoved": false,
+  "measuredThreeGiBHeapMiB": 1698,
+  "nextRequestedEvaluatorMiB": 4096,
+  "nextActualHostedWarningRemovalVerified": false,
+  "negativeControlFailedAsExpected": true,
+  "localSecurityGroupsPassed": 19,
+  "localProfileGroupsPassed": 18,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

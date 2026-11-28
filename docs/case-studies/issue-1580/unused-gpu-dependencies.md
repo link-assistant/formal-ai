@@ -1,0 +1,7 @@
+# Unused provenance graphics dependencies
+
+Pipeline 44992281354 emitted real `cargo::unused_dependencies` warnings for `pollster` and `wgpu` (retained direct API log lines 1302 and 1309). Native source does not use either dependency: explicit GPU selection currently returns `provenance_gpu_backend_unavailable`. Adding an allowance or dummy import would conceal that limitation.
+
+The manifest and hosted dependency resolver now retain `provenance-gpu = []` as a compatibility flag and remove the unused dependency declarations. Cargo resolved the candidate lockfile offline in an external scratch manifest before refusing to download uncached `adler2 2.0.1`. That command exited 101; full metadata validation did not pass. No local compilation or network download was requested. The generated lock removes 61 packages, adds none, and changes no retained package version. Hosted locked resolution and native warning checks remain required.
+
+The maintained `provenance-native-dependencies.test.mjs` regression failed before the manifest change; all four tests pass afterward. Compressed before/after logs, the offline error and package inventory are in `experiments/issue-1580/evidence/checks/unused-gpu-dependencies/`. Existing CPU behavior and explicit GPU-unavailable behavior are unchanged. The original runtime GPU hashing and CPU/GPU equivalence requirement remains unfinished. No externally supplied edit receives autonomous authorship credit.

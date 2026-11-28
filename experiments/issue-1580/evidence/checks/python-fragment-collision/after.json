@@ -1,0 +1,20 @@
+{
+  "arguments": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "experiments/issue-1580/template-python-fragment-integrity.test.mjs"
+  ],
+  "exitCode": 0,
+  "rawBytes": 1079,
+  "rawSha256": "2576a70f44862e7e06bbfff8c5611a01de23d883d154f43b7e2752516a12f590",
+  "summary": [
+    "# tests 4",
+    "# pass 4",
+    "# fail 0",
+    "# skipped 0"
+  ]
+}

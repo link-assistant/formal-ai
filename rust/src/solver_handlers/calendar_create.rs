@@ -18,7 +18,8 @@ use crate::language::detect as detect_language;
 use crate::rule_interpreter::{handler_table_row, handler_table_rows, handler_table_value};
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_RELATIVE_DATE,
-    ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, lexicon, render_localized_once,
+    ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, ROLE_CAPABILITY_ACT_SCHEDULE,
+    ROLE_CAPABILITY_CLOCK_REFERENCE, lexicon, render_localized_once,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -41,18 +42,6 @@ pub fn try_calendar_create_event(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    // A software-authoring request (authoring verb plus software artifact)
-    // that mentions a schedule word is a build plan, not an event: "Build a
-    // bot ... that sends weekly notifications" schedules nothing. The claim
-    // declines here so the software-project handler answers it (issue #1138
-    // software-project corpus).
-    if super::software_project_claims(normalized) {
-        return None;
-    }
-    if !mentions_calendar_create_request(prompt) {
-        return None;
-    }
-
     try_routed_calendar_create_event(prompt, normalized, log)
 }
 
@@ -98,7 +87,10 @@ pub fn try_routed_calendar_create_event(
             (target.year, target.month, target.day)
         },
     );
-    let (hour, minute) = extract_clock_time(normalized).unwrap_or((17, 0));
+    // Clock punctuation belongs to the request span; normalization erases it.
+    let (hour, minute) = extract_clock_time(span)
+        .or_else(|| extract_clock_time(normalized))
+        .unwrap_or((17, 0));
     let place = resolve_timezone(normalized);
     let tz = place.as_ref().map_or("UTC", |place| place.zone.as_str());
     log.append(
@@ -181,41 +173,36 @@ pub fn calendar_claims(normalized: &str) -> bool {
     mentions_calendar_create_request(normalized)
 }
 
-fn has_calendar_anchor(normalized: &str) -> bool {
+fn has_calendar_anchor(span: &str, normalized: &str) -> bool {
     let lex = lexicon();
-    let has_day_ref = lex
-        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
-        .iter()
-        .any(|w| contains_term(normalized, w));
-    let has_clock = lex
-        .words_for_role(ROLE_CALENDAR_TIME)
-        .iter()
-        .any(|w| contains_term(normalized, w))
-        || extract_clock_time(normalized).is_some();
-    let has_relative_date = lex
-        .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
-        .iter()
-        .any(|w| contains_term(normalized, w));
-    // A named weekday ("on Friday") anchors the event to a day as well.
-    let has_weekday = lex
-        .words_for_role(ROLE_CALENDAR_WEEKDAY)
-        .iter()
-        .any(|w| contains_term(normalized, w));
-    let has_date_signal = has_day_ref || has_clock || has_relative_date || has_weekday;
-    if !has_date_signal {
-        return false;
-    }
-    let has_bound_day = lex
-        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
-        .iter()
-        .any(|word| {
-            normalized.find(word).is_some_and(|at| {
-                normalized[..at]
-                    .trim_end()
-                    .ends_with(|ch: char| ch.is_ascii_digit())
+    let has_time = extract_clock_time(span)
+        .or_else(|| extract_clock_time(normalized))
+        .is_some();
+    let has_role = [
+        ROLE_CALENDAR_TIME,
+        ROLE_CALENDAR_RELATIVE_DATE,
+        ROLE_CALENDAR_WEEKDAY,
+        ROLE_CAPABILITY_CLOCK_REFERENCE,
+    ]
+    .iter()
+    .any(|role| {
+        lex.words_for_role(role)
+            .iter()
+            .any(|word| contains_term(normalized, word))
+    });
+    has_time
+        || has_role
+        || lex
+            .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
+            .iter()
+            .any(|word| {
+                contains_term(normalized, word)
+                    && normalized.find(word).is_some_and(|at| {
+                        normalized[..at]
+                            .trim_end()
+                            .ends_with(|ch: char| ch.is_ascii_digit())
+                    })
             })
-        });
-    has_clock || has_relative_date || has_weekday || has_bound_day
 }
 
 fn calendar_request_span(text: &str) -> Option<&str> {
@@ -223,7 +210,7 @@ fn calendar_request_span(text: &str) -> Option<&str> {
     let mut candidates = Vec::new();
     for clause in super::unit_conversion::request::request_clauses(text) {
         let normalized = crate::engine::normalize_prompt(clause);
-        if !has_calendar_anchor(&normalized) {
+        if !has_calendar_anchor(clause, &normalized) {
             continue;
         }
         let mut request = clause;
@@ -241,13 +228,18 @@ fn calendar_request_span(text: &str) -> Option<&str> {
             }
         }
         let date_led = request.starts_with(|c: char| c.is_ascii_digit())
-            || [ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY]
-                .iter()
-                .any(|role| {
-                    lexicon().words_for_role(role).iter().any(|word| {
-                        request.starts_with(word.as_str()) && contains_term(request, word)
-                    })
-                });
+            || [
+                ROLE_CALENDAR_RELATIVE_DATE,
+                ROLE_CALENDAR_WEEKDAY,
+                ROLE_CAPABILITY_CLOCK_REFERENCE,
+            ]
+            .iter()
+            .any(|role| {
+                lexicon()
+                    .words_for_role(role)
+                    .iter()
+                    .any(|word| request.starts_with(word.as_str()) && contains_term(request, word))
+            });
         let action = cues.iter().any(|(word, position)| {
             let starts = request.strip_prefix(word.as_str()).is_some_and(|tail| {
                 contains_term(request, word)
@@ -286,10 +278,24 @@ fn calendar_request_span(text: &str) -> Option<&str> {
             }
         });
         let elliptical = courtesy
-            && extract_clock_time(&normalized).is_some()
+            && extract_clock_time(clause)
+                .or_else(|| extract_clock_time(&normalized))
+                .is_some()
             && resolve_timezone(&normalized).is_some()
             && extract_participant_title(&normalized).is_some();
-        if action || elliptical {
+        // The shared act lexicon already carries inflected stems. Keep its
+        // evidence within this date-led request or an inflected initial act,
+        // rather than copying another per-language imperative list here.
+        let seeded_act = lexicon()
+            .words_for_role(ROLE_CAPABILITY_ACT_SCHEDULE)
+            .iter()
+            .any(|word| {
+                (date_led && request.contains(word.as_str()))
+                    || request
+                        .strip_prefix(word.as_str())
+                        .is_some_and(|tail| tail.starts_with(is_word_character))
+            });
+        if action || elliptical || seeded_act {
             candidates.push(clause);
         }
     }
@@ -398,86 +404,77 @@ const fn compute_target_date_with_rollover(base: CalendarDate, day: u32) -> (i32
     (y, m, d)
 }
 
-fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
-    let bytes = normalized.as_bytes();
-    for i in 0..bytes.len().saturating_sub(3) {
-        if bytes[i].is_ascii_digit() && bytes[i + 1].is_ascii_digit() {
-            let h1 = u32::from(bytes[i] - b'0');
-            let h2 = u32::from(bytes[i + 1] - b'0');
-            let mut hour = h1 * 10 + h2;
-            let mut j = i + 2;
-            if j < bytes.len() && (bytes[j] == b':' || bytes[j] == b'.') {
-                j += 1;
+fn extract_clock_time(text: &str) -> Option<(u32, u32)> {
+    use crate::verifiable_task::quantities::{matching_offsets, quantity_matches};
+    let lowered = text.to_lowercase();
+    let text = lowered.as_str();
+    let markers = handler_table_rows("calendar_spoken_hour_marker");
+    let edge = |text: &str, surface: &str, beginning: bool| {
+        matching_offsets(text, surface).into_iter().any(|offset| {
+            if beginning {
+                offset == 0
+            } else {
+                offset + surface.len() == text.len()
             }
-            if j + 1 < bytes.len() && bytes[j].is_ascii_digit() && bytes[j + 1].is_ascii_digit() {
-                let m1 = u32::from(bytes[j] - b'0');
-                let m2 = u32::from(bytes[j + 1] - b'0');
-                let minute = m1 * 10 + m2;
-                if hour <= 23 && minute <= 59 {
-                    if hour == 0 {
-                        hour = 24; // treat 00:xx as end of previous day? keep as 0 for simplicity
-                    }
-                    if hour == 24 {
-                        hour = 0;
-                    }
-                    return Some((hour, minute));
-                }
-            }
-        }
-    }
-    if let Some(time) = extract_spoken_hour_time(normalized) {
-        return Some(time);
-    }
-    for lead in table_keys("calendar_clock_hour_lead") {
-        let Some(pos) = normalized.find(lead) else {
+        })
+    };
+    for found in quantity_matches(text, None) {
+        let before = text[..found.start].trim_end();
+        let lead = table_keys("calendar_clock_hour_lead")
+            .chain(table_keys("calendar_spoken_hour_lead"))
+            .any(|surface| edge(before, surface.trim(), false));
+        let Ok(value) = found.value.parse::<u32>() else {
             continue;
         };
-        let tail = &normalized[pos + lead.len()..];
-        let mut num = String::new();
-        for ch in tail.chars() {
-            if ch.is_ascii_digit() {
-                num.push(ch);
-            } else if !num.is_empty() {
-                break;
-            }
-        }
-        if let Ok(h) = num.parse::<u32>()
-            && h <= 23
-        {
-            return Some((h, 0));
-        }
-    }
-    None
-}
-
-fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
-    for marker in table_keys("calendar_spoken_hour_marker") {
-        for (pos, _) in normalized.match_indices(marker) {
-            let before = normalized[..pos].chars().next_back();
-            let after = normalized[pos + marker.len()..].chars().next();
-            if before.is_some_and(is_word_character) || after.is_some_and(is_word_character) {
+        let compact = found.end - found.start == 4
+            && text[found.start..found.end]
+                .bytes()
+                .all(|byte| byte.is_ascii_digit())
+            && lead;
+        let (mut hour, mut minute) = if compact {
+            (value / 100, value % 100)
+        } else {
+            (value, 0)
+        };
+        let mut end = found.end;
+        let tail = &text[end..];
+        let separated = tail.starts_with(':')
+            || (tail.starts_with('.') && tail.as_bytes().get(1).is_some_and(u8::is_ascii_digit));
+        if separated {
+            let digits: String = tail[1..].chars().take_while(char::is_ascii_digit).collect();
+            if digits.len() != 2 {
                 continue;
             }
-            let prefix_end = normalized[..pos].trim_end().len();
-            let prefix = &normalized[..prefix_end];
-            let start = prefix
-                .char_indices()
-                .rev()
-                .find(|(_, ch)| !ch.is_ascii_digit())
-                .map_or(0, |(idx, ch)| idx + ch.len_utf8());
-            let marker = normalized[..start].trim_end();
-            let allowed_marker = marker.split_whitespace().next_back().is_none_or(|word| {
-                table_keys("calendar_spoken_hour_lead").any(|lead| lead == word)
-            });
-            if start == prefix_end || !allowed_marker {
+            minute = digits.parse().ok()?;
+            end += 3;
+        }
+        if hour > 23 || minute > 59 {
+            continue;
+        }
+        let after = text[end..].trim_start();
+        let marker = markers
+            .iter()
+            .find(|(surface, _)| edge(after, surface, true));
+        let remainder = marker.map_or(after, |(surface, _)| after[surface.len()..].trim_start());
+        let period = markers.iter().find(|(surface, value)| {
+            matches!(value.as_str(), "am" | "pm")
+                && (edge(before, surface, false)
+                    || edge(after, surface, true)
+                    || edge(remainder, surface, true))
+        });
+        let clock_marker = marker
+            .is_some_and(|(_, value)| value == "clock" || (value == "hour" && before.is_empty()));
+        if !separated && !compact && !lead && !clock_marker && period.is_none() {
+            continue;
+        }
+        if let Some((_, period)) = period {
+            if (1..=12).contains(&hour) {
+                hour = hour % 12 + if period == "pm" { 12 } else { 0 };
+            } else if !separated && !compact {
                 continue;
             }
-            if let Ok(hour) = prefix[start..].parse::<u32>()
-                && hour <= 23
-            {
-                return Some((hour, 0));
-            }
         }
+        return Some((hour, minute));
     }
     None
 }

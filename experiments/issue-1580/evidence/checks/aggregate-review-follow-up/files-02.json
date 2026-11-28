@@ -1,0 +1,162 @@
+[
+  {
+    "path": ".github/workflows/write-effect-ladder.yml",
+    "diff": "0052.diff",
+    "sha256": "f299c47e342d31faf297121dc4f6520d6cff563238792385204e1443590f74e4",
+    "bytes": 720,
+    "lines": 15,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "CONTRIBUTING.md",
+    "diff": "0053.diff",
+    "sha256": "d9d15fb4c84a7dd54b1647868ea1f1f07291589f01974347d0428baa2936f42d",
+    "bytes": 7302,
+    "lines": 122,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/benchmarks/fast-pull-request-javascript-tests.json",
+    "diff": "0054.diff",
+    "sha256": "f259c1f14548807f4a71ba636b237ffcb053ae9080d02d63e212120b4af906fd",
+    "bytes": 2670,
+    "lines": 47,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/benchmarks/fast-pull-request-retained-jobs.json",
+    "diff": "0055.diff",
+    "sha256": "7d0378a23c9ed2917be220e5d02246062e90bfb67af5d53c8a775c6f1b22f1ae",
+    "bytes": 1911,
+    "lines": 40,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/meta/recipe-resume.lino",
+    "diff": "0057.diff",
+    "sha256": "5c4023f02d50e35a1e0ec8e132c472fd95e4924b9044f7ea0c7002c50c2fb041",
+    "bytes": 3933,
+    "lines": 48,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/browser-handler-precedence.lino",
+    "diff": "0062.diff",
+    "sha256": "05e1df4ada98fa899058392c4194ee07bddbc17857449eef77e77c76c087f98b",
+    "bytes": 978,
+    "lines": 29,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/client-integrations.lino",
+    "diff": "0063.diff",
+    "sha256": "6f01d03ca7203f0affd82a2aa7781d68b06394522a8db591be937df019b8070c",
+    "bytes": 2813,
+    "lines": 40,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/seed/code-review-rules.lino",
+    "diff": "0070.diff",
+    "sha256": "90458d0ad92f89093442a5d0ac01931b39c1af598f704ca677bfa3ac43b5ab4d",
+    "bytes": 724,
+    "lines": 16,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/code-task-cues.lino",
+    "diff": "0071.diff",
+    "sha256": "f30bf902b5aa488cbe62c6dcdd2aacfb0a5a6665f05811c8af4156e0abf0aca9",
+    "bytes": 712,
+    "lines": 17,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/entity-names.lino",
+    "diff": "0072.diff",
+    "sha256": "6ef2083aba27d864c0b3c1937ab7523c623d986fa72b393c3cc74f4d05ad4d30",
+    "bytes": 472,
+    "lines": 13,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/google-trends-prompts.lino",
+    "diff": "0073.diff",
+    "sha256": "2ca56fcabe92b43950a6219c06d9c77a5f498905380b19b2061d4dcda51467e6",
+    "bytes": 690,
+    "lines": 18,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/handler-promotions.lino",
+    "diff": "0074.diff",
+    "sha256": "5790d3cff3f8eb4155831f17774c7b59acca5171aa8180643db2c8ef526f9682",
+    "bytes": 1230,
+    "lines": 29,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/handler-rules.lino",
+    "diff": "0075.diff",
+    "sha256": "85513a749a199566ebb07b0c32ce98ebc7dc748ba757e85d422edd0e9820d515",
+    "bytes": 4383,
+    "lines": 156,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/seed/meanings-calendar.lino",
+    "diff": "0076.diff",
+    "sha256": "dddc9831017d12407275a1e787e3f424a7fdb546664d4ad6b0a85020cac2f1e5",
+    "bytes": 498,
+    "lines": 13,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/meanings-concept-lookup.lino",
+    "diff": "0077.diff",
+    "sha256": "0655e31edb603090f64dcbea05ac709aff5d4abe6080dd27d962da71e8e50dce",
+    "bytes": 870,
+    "lines": 17,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/meanings-how.lino",
+    "diff": "0078.diff",
+    "sha256": "5002b6589108a1de5a8ff004ab9820e3aad52f48373044738b7354610198b537",
+    "bytes": 899,
+    "lines": 24,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/seed/meanings-occupations.lino",
+    "diff": "0079.diff",
+    "sha256": "cdf657eda83d1e588abda13fb5bbfcd778907f24a80049d0e10e18001d65f521",
+    "bytes": 972,
+    "lines": 28,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/seed/meanings-translation.lino",
+    "diff": "0086.diff",
+    "sha256": "c09f13339fdf5a08325bb64762d2aa6026e57b3fd53c764ff2eb333b68df711b",
+    "bytes": 1551,
+    "lines": 61,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "data/seed/meta-reasoning.lino",
+    "diff": "0087.diff",
+    "sha256": "2d839c2398b836c942486e444d50d95e8254d44b6a6f8b3b899e52d9dbfcfc79",
+    "bytes": 810,
+    "lines": 22,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "data/seed/roles.lino",
+    "diff": "0098.diff",
+    "sha256": "c0fb0086da2fcc11cfd825849513a3e453b71773ac2228f29abc3b1e6df4730e",
+    "bytes": 340,
+    "lines": 13,
+    "carriedExactDiffReview": true
+  }
+]

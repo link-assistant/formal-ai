@@ -3,7 +3,7 @@
 // (rust/src/server.rs `dispatch_api_request_with_auth`).
 
 import { f64, sortedKeys } from './json.mjs';
-import { EMBEDDING_DIMENSIONS, EMBEDDING_MODEL } from './embeddings.mjs';
+import { EMBEDDING_DIMENSIONS, EMBEDDING_MODEL, MINIMUM_EMBEDDING_DIMENSIONS } from './embeddings.mjs';
 import { contextCapacity, memoryHealthStatus } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
 import { errorResponse, jsonResponse, linksNotationResponse, rawResponse, JSON_TYPE } from './response.mjs';
@@ -64,6 +64,7 @@ export function handleModels() {
     slug: EMBEDDING_MODEL,
     capabilities: ['embeddings'],
     dimensions: EMBEDDING_DIMENSIONS,
+    supported_dimensions: { min: MINIMUM_EMBEDDING_DIMENSIONS, max: EMBEDDING_DIMENSIONS },
   };
   const shared = {
     avg_utf8_bytes_per_char: capacity.avg_utf8_bytes_per_char,

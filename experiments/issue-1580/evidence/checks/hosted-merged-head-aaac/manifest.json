@@ -1,0 +1,98 @@
+{
+  "source": "aaac490e3087736f303434502f9710c3228aed4e",
+  "workflowCounts": {
+    "success": 31,
+    "skipped": 1,
+    "failure": 1
+  },
+  "pipeline": {
+    "run": 45129261558,
+    "conclusion": "success",
+    "nativeGroups": [
+      {
+        "name": "Native type and lint check / Native contracts (interfaces)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196008"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (coding-2)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196050"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (hive-4)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196066"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (coding-1)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196077"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (reasoning-1)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196097"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (hive-2)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196100"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (reasoning-2)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196122"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (hive-3)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196157"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (hive-1)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196176"
+      },
+      {
+        "name": "Native type and lint check / Native contracts (benchmarks)",
+        "conclusion": "success",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/45129261558/job/137542196440"
+      }
+    ]
+  },
+  "layered": {
+    "run": 45129261054,
+    "conclusion": "failure",
+    "staleWitnessAssertionLines": [
+      4521,
+      4542,
+      4563,
+      15343,
+      20595,
+      20616
+    ]
+  },
+  "wholeLogs": {
+    "45129261558": {
+      "lines": 78689,
+      "sha256": "5502d14c1bbf2caa4c9aafdf0d631e836e54e4b6ce13248404d2316be9830c69"
+    },
+    "45129261054": {
+      "lines": 27243,
+      "sha256": "c866efc73fd09f4916434d9596c5c7facdf43f0c50d26fb8617b375801aee27f"
+    }
+  },
+  "nativeArtifactRerunsIssued": false,
+  "repairCommit": "6ca491b2905aafafcdfabc2096ac8e0f4d0feb54",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 3241214,
+    "sha256": "e611632b9b77f68179e03936dc84a8722b98cac5da7be8a3d101abb1c46de5aa"
+  },
+  "members": 193,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T08:01:42.367342+00:00"
+}

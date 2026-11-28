@@ -19,6 +19,9 @@ use crate::web_engine_core::{
 /// variation. The seed answer is split on the first sentence terminator so
 /// the structured teaching instructions remain identical across variations.
 fn unknown_answer_with_variation(prompt: &str, language: &str, seed_text: &str) -> String {
+    if !has_unknown_opener_pool(language) {
+        return seed_text.to_owned();
+    }
     let opener = select_unknown_opener(prompt, language);
     let body = strip_leading_opener(seed_text, &unknown_openers_for(language));
     if body.is_empty() {
@@ -40,6 +43,28 @@ fn unknown_answer_with_variation(prompt: &str, language: &str, seed_text: &str) 
             " "
         };
     format!("{opener}{separator}{body}")
+}
+
+// The shared selector intentionally falls back to another language's pool.
+// A localized answer can vary only over its own pool; preserve the full seed
+// when that pool has not been authored yet.
+fn has_unknown_opener_pool(language: &str) -> bool {
+    use std::sync::OnceLock;
+    static REGISTRY: OnceLock<crate::seed::parser::LinoNode> = OnceLock::new();
+    let registry = REGISTRY.get_or_init(|| {
+        crate::seed::parse_lino(include_str!("../embedded/data/seed/unknown-openers.lino"))
+    });
+    registry.children.iter().any(|root| {
+        root.name == "unknown_openers"
+            && root.children.iter().any(|pool| {
+                pool.name == "pool"
+                    && pool.find_child_value("language") == language
+                    && pool
+                        .children
+                        .iter()
+                        .any(|field| field.name == "opener" && !field.id.is_empty())
+            })
+    })
 }
 
 fn strip_leading_opener(text: &str, openers: &[&str]) -> String {
@@ -81,3 +106,7 @@ pub fn language_aware_unknown_answer(prompt: &str, language: Language) -> String
     };
     unknown_answer_with_variation(prompt, slug, &seed_text)
 }
+
+#[cfg(test)]
+#[path = "../tests/source/unknown_opener_language_tests.rs"]
+mod tests;

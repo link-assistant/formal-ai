@@ -1,0 +1,45 @@
+== 45636781871
+Test (ubuntu-24.04 / full) shard 8/8	failure	663	0
+Test (ubuntu-24.04 / full) shard 7/8	failure	801	0
+Test (ubuntu-24.04 / specification) shard 1/4	success	0	108
+Test (ubuntu-24.04 / full) shard 3/8	failure	1083	0
+Test (ubuntu-24.04 / full) shard 2/8	failure	595	0
+Test (ubuntu-24.04 / specification) shard 2/4	failure	0	122
+Test (ubuntu-24.04 / full)	failure	1082	0
+Test (ubuntu-24.04 / full) shard 6/8	failure	1082	0
+Test (ubuntu-24.04 / specification) shard 3/4	failure	0	316
+Test (ubuntu-24.04 / full) shard 5/8	success	721	1
+Test (ubuntu-24.04 / full) shard 4/8	failure	593	0
+Test (ubuntu-24.04 / specification) shard 4/4	success	0	188
+== 45549993600
+Test (ubuntu-24.04 / full)	failure	912	0
+Test (ubuntu-24.04 / full) shard 5/8	failure	615	0
+Test (ubuntu-24.04 / specification) shard 1/4	failure	0	175
+Test (ubuntu-24.04 / full) shard 7/8	failure	1013	0
+Test (ubuntu-24.04 / full) shard 3/8	failure	1082	0
+Test (ubuntu-24.04 / full) shard 8/8	failure	807	0
+Test (ubuntu-24.04 / full) shard 6/8	failure	1082	0
+Test (ubuntu-24.04 / specification) shard 2/4	failure	0	124
+Test (ubuntu-24.04 / specification) shard 4/4	failure	0	1058
+Test (ubuntu-24.04 / specification) shard 3/4	failure	0	377
+Test (ubuntu-24.04 / full) shard 2/8	failure	643	0
+Test (ubuntu-24.04 / full) shard 4/8	failure	629	0
+== 45490077033
+Test (ubuntu-24.04 / full) shard 5/8	failure	805	0
+Test (ubuntu-24.04 / full) shard 7/8	failure	800	0
+Test (ubuntu-24.04 / full) shard 6/8	failure	827	0
+Test (ubuntu-24.04 / full) shard 4/8	failure	617	0
+Test (ubuntu-24.04 / full) shard 8/8	failure	630	0
+Test (ubuntu-24.04 / specification) shard 1/4	failure	0	387
+Test (ubuntu-24.04 / specification) shard 2/4	failure	0	145
+Test (ubuntu-24.04 / full) shard 3/8	failure	1082	0
+Test (ubuntu-24.04 / full)	failure	858	0
+Test (ubuntu-24.04 / full) shard 2/8	failure	737	0
+Test (ubuntu-24.04 / specification) shard 3/4	failure	0	306
+Test (ubuntu-24.04 / specification) shard 4/4	failure	0	208
+== 45463430673
+Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ ((matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards)) || '') }}	skipped
+== 45275490842
+Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ ((matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards)) || '') }}	skipped
+== 45118482226
+Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ ((matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards)) || '') }}	skipped

@@ -1,0 +1,7 @@
+{
+  "firstDraftBaselineAccepted": false,
+  "reason": "The Russian benchmark explicitly names Berlin; the supplied fixture incorrectly expected Tbilisi. Corrected to Europe/Berlin before the reproducing baseline.",
+  "completeRawPayloadPreserved": true,
+  "literalReviewOfHugeAssertionPayloadsComplete": false,
+  "independentAuthorshipCredit": 0
+}

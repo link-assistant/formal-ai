@@ -1,0 +1,155 @@
+[
+  {
+    "name": "policy-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "policy-before.stdout.gz",
+      "rawSha256": "9c513c6c007433d191cefa0c52aa53c25b8a1989a9403c15337544e325124650",
+      "archiveSha256": "29a346257066a0020a153835c8a05acd5df90389ad7198fd499b5cd2c8f8318b",
+      "bytes": 6054,
+      "lines": 64
+    },
+    "stderr": {
+      "file": "policy-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "policy-after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "policy-after.stdout.gz",
+      "rawSha256": "1671f3577c3caa14fcd2b92747022db68fd60cf11820d7d1c448136c940590c1",
+      "archiveSha256": "0a6f30ec4530365eeed939e9ee3d0c02d8f19bf6fd8dd27307d5aded29c923c6",
+      "bytes": 2533,
+      "lines": 32
+    },
+    "stderr": {
+      "file": "policy-after.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "rustfmt",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/unit/specification/unknown_reasoning.rs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "rustfmt.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "rustfmt.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "source-diff",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      ".github/workflows/native-type-check.yml",
+      "rust/Cargo.toml",
+      "scripts/ci-pull-request-admission.mjs",
+      "rust/tests/web/default-branch-build-policy.test.mjs",
+      "rust/tests/unit/specification/unknown_reasoning.rs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "source-diff.stdout.gz",
+      "rawSha256": "0ddc2feb0990755759e8f3ab6270b080bf5b9c7a8b049f142c0c58f26a4a280c",
+      "archiveSha256": "6e167a89694b497ab857c7845f762db3d5cc391a84398c8c00a038444c943c59",
+      "bytes": 5533,
+      "lines": 99
+    },
+    "stderr": {
+      "file": "source-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "original-source",
+    "argv": [
+      "git",
+      "show",
+      "015a6831:rust/tests/unit/specification/unknown_reasoning.rs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "original-source.stdout.gz",
+      "rawSha256": "42ad3d57c94a9072cae8611954c92eed344c967fdd73a6d217b96395128538cd",
+      "archiveSha256": "a17daa34c7975ed836d24a381a17fae48daf4da9bec5fef86f33df2a022f7258",
+      "bytes": 8216,
+      "lines": 237
+    },
+    "stderr": {
+      "file": "original-source.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "parent-source",
+    "argv": [
+      "git",
+      "show",
+      "f6ecab596c331da59c40abd07d69c431beba1066:rust/tests/unit/specification/unknown_reasoning.rs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "parent-source.stdout.gz",
+      "rawSha256": "42ad3d57c94a9072cae8611954c92eed344c967fdd73a6d217b96395128538cd",
+      "archiveSha256": "a17daa34c7975ed836d24a381a17fae48daf4da9bec5fef86f33df2a022f7258",
+      "bytes": 8216,
+      "lines": 237
+    },
+    "stderr": {
+      "file": "parent-source.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

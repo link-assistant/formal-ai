@@ -1,0 +1,23 @@
+{
+  "source": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "base": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "scope": "Complete literal diff review of 80 experiment test-source paths",
+  "paths": 80,
+  "literalChunksRead": 43,
+  "diffLines": 7624,
+  "diffBytes": 454363,
+  "diffSha256": "16e84a7869aec83455bb2e2a37e0ce06de84d042fbf11cdeed8162c33c85ac8f",
+  "completeReview": true,
+  "completeAggregateReview": false,
+  "newExecutionCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 223431,
+    "sha256": "39caed1914ae59067418971d57f198f347e12535fbb73d759d7a156678225b0f"
+  },
+  "members": 48,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T12:09:00.364877+00:00"
+}

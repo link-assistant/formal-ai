@@ -13,11 +13,27 @@
 mod code;
 pub use code::*;
 
-use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule, normalize_prompt};
+use crate::engine::{SelectedRule, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::intent_formalization::{IntentKind, formalize_intent};
 use crate::language::{Language, detect as detect_language, set_forced_language};
 use crate::solver::{BlueprintComposition, ExecutionSurface, SolverConfig};
+
+/// Keep caller-supplied data and its instructions in one work unit.
+pub fn meta_procedure_options(
+    answer: &crate::engine::SymbolicAnswer,
+) -> crate::meta_executor::RunOptions {
+    let mut options = crate::meta_executor::RunOptions::default();
+    if answer.evidence_links.iter().any(|link| {
+        matches!(
+            link.as_str(),
+            "prompt_text:network:none" | "prompt_data:network:none"
+        )
+    }) {
+        options.bounds.depth = Some(0);
+    }
+    options
+}
 
 /// Detect a caller-supplied operand independently of the response language.
 pub(crate) fn detect_input_language(text: &str) -> Language {
@@ -371,6 +387,7 @@ pub fn record_candidates(log: &mut EventLog, intent: &str) {
 
 #[derive(Debug, Clone)]
 pub struct ValidationChoice {
+    pub intent: String,
     pub answer: String,
 }
 
@@ -384,9 +401,14 @@ pub fn record_validation(log: &mut EventLog, prompt: &str) -> Option<ValidationC
     for candidate in low..=high {
         let passed = crate::solver_handlers::has_property(candidate);
         log.append("candidate", candidate.to_string());
-        log.append("validation", format!("{property}({candidate})={passed}"));
+        log.append_with_origin(
+            "validation",
+            "validation:candidate",
+            format!("{property}({candidate})={passed}"),
+        );
         if passed {
             return Some(ValidationChoice {
+                intent: property.to_owned(),
                 answer: candidate.to_string(),
             });
         }
@@ -398,8 +420,9 @@ pub fn record_validation(log: &mut EventLog, prompt: &str) -> Option<ValidationC
 /// the turn already recorded its own validation.
 pub fn record_answer_test(log: &mut EventLog, intent: &str, answer: &str) {
     if log.first_of("validation").is_none() {
-        log.append(
+        log.append_with_origin(
             "validation",
+            "validation:answer",
             crate::meta_executor::answer_validation(intent, answer),
         );
     }
@@ -648,8 +671,6 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
 /// ([`ROLE_HELLO_WORLD_REFERENCE`]), so those keep their richer formalization
 /// instead of collapsing into a bare script.
 ///
-/// Defers again — see [`names_no_task_beyond_the_minimal_script`] — when the
-/// prompt names a task the minimal script cannot render.
 ///
 /// [`ROLE_SCRIPT_AUTHORING_VERB`]: crate::seed::ROLE_SCRIPT_AUTHORING_VERB
 /// [`ROLE_SCRIPT_OR_CODE_ARTIFACT`]: crate::seed::ROLE_SCRIPT_OR_CODE_ARTIFACT
@@ -678,8 +699,7 @@ pub fn is_write_script_request(prompt: &str, _normalized: &str) -> bool {
 /// Return true when the minimal-script route can render everything the prompt
 /// names, and false when the prompt names a task it cannot.
 ///
-/// The route renders exactly one thing: the hello-world template for the
-/// language it recognizes. `handler:write_script` is hoisted to the front of
+/// The route renders a script that prints the caller's literal. `handler:write_script` is hoisted to the front of
 /// method selection by the bare tokens "script"/"code" in
 /// `data/meta/cue-lexicon.lino`, which without this check lets that one template
 /// answer any request merely ending in "give me the code" — jumping over the
@@ -702,58 +722,10 @@ fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bo
     if crate::meta_reasoner::request::names_file_noun(prompt, detect_language(prompt).slug()) {
         return false;
     }
-    let Some(program) = crate::engine::hello_world_program_by_alias(normalized) else {
-        // No catalogued language: the route declines on its own grounds.
-        return true;
-    };
-    if crate::coding::program_task_by_alias(normalized)
-        .is_some_and(|task| task.slug != program.task.slug)
-    {
+    if crate::coding::program_task_by_alias(normalized).is_some() {
         return false;
     }
     crate::solver_handlers::numeric_list::solve_numeric_list(prompt).is_none()
-}
-
-pub fn format_write_script_execution(program: ProgramSpec) -> String {
-    let execution = &program.language.execution;
-    let expected_output = program.expected_output();
-    let cmd = execution.check_command.as_deref().map_or_else(
-        || format!("Run command: `{}`", execution.run_command),
-        |check| {
-            format!(
-                "Check command: `{check}`\nRun command: `{}`",
-                execution.run_command
-            )
-        },
-    );
-    // Issue #1165: a documentation-sourced program no recorded run verified
-    // names its page and its decomposition check, never the language's run.
-    if let Some(page) = crate::engine::rediscovered_page(program) {
-        let status_line = crate::seed::render_response(
-            "program_execution_rediscovered",
-            "en",
-            &[("page", page.as_str())],
-        )
-        .unwrap_or_default();
-        return format!(
-            "{status_line}\n{cmd}\nExpected output after verification:\n```text\n{expected_output}\n```"
-        );
-    }
-    let status = program.language.execution_status();
-    let output_label = if matches!(status, ExecutionStatus::Verified) {
-        "Output"
-    } else {
-        "Expected output after verification"
-    };
-    format!(
-        "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
-        status.label(),
-        program.language.environment(),
-        cmd,
-        output_label,
-        expected_output,
-        program.language.execution_notes()
-    )
 }
 
 /// Parse the `FORMAL_AI_DEFINITION_FUSION` env switch into an explicit override.

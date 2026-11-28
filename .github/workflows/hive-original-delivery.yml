@@ -136,9 +136,7 @@ jobs:
       - name: Install frozen trusted admission dependencies
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
@@ -203,9 +201,7 @@ jobs:
       - name: Install frozen trusted admission dependencies
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
@@ -226,9 +222,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-same-source-formal-ai-binary
           path: rust/target/release
@@ -345,9 +339,7 @@ jobs:
       - name: Install frozen trusted admission dependencies
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
@@ -368,9 +360,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-same-source-formal-ai-binary
           path: rust/target/release
@@ -383,9 +373,7 @@ jobs:
       - name: Prepare reviewed Hive workflow-log transport
         run: node .hive-protocol/scripts/prepare-hive-original-delivery.mjs
       - name: Download the same-run task image delta
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-same-source-task-image
           path: ${{ runner.temp }}/hive-image-bundle
@@ -567,25 +555,19 @@ jobs:
       - name: Install frozen trusted admission dependencies
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-same-source-formal-ai-binary
           path: rust/target/release
       - name: Download the typed client outcome
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-outcome-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
@@ -597,17 +579,13 @@ jobs:
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs client-outcome
       - name: Download immutable pre-effect client claim
         if: ${{ steps.outcome.outputs.verify == 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-claim-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/hive-attempt
-      - uses: actions/download-artifact@v8
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         if: ${{ steps.outcome.outputs.verify == 'true' }}
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-original-${{ matrix.tool }}-staged-evidence
           path: ${{ runner.temp }}/hive-original-evidence
@@ -706,16 +684,12 @@ jobs:
       - name: Install frozen trusted admission dependencies
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
       - name: Download the typed client outcome
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-outcome-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
@@ -725,18 +699,14 @@ jobs:
         env:
           HIVE_CLIENT_OUTCOME: ${{ runner.temp }}/hive-outcome/outcome-${{ matrix.tool }}.json
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs client-outcome
-      - uses: actions/download-artifact@v8
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         if: ${{ steps.outcome.outputs.verify == 'true' }}
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-claim-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/hive-attempt
-      - uses: actions/download-artifact@v8
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         if: ${{ steps.outcome.outputs.verify == 'true' }}
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-result-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
@@ -785,17 +755,13 @@ jobs:
       - name: Install frozen trusted admission dependencies
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
       - name: Download every typed client outcome of this attempt
         if: ${{ needs.admission.outputs.execute == 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.hive-protocol/.github/actions/download-artifact
         with:
           pattern: hive-outcome-${{ needs.admission.outputs.scope }}-*-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}

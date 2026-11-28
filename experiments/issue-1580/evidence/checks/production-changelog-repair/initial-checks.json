@@ -1,0 +1,54 @@
+[
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--config",
+      "skip_children=true",
+      "scripts/release-changelog.rs",
+      "scripts/release-changelog/tests.rs",
+      "scripts/create-github-release.rs",
+      "rust/tests/unit/ci-cd/changelog_parsing.rs",
+      "rust/tests/unit/workflow_contracts.rs"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "rust-format-check",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "--config",
+      "skip_children=true",
+      "scripts/release-changelog.rs",
+      "scripts/release-changelog/tests.rs",
+      "scripts/create-github-release.rs",
+      "rust/tests/unit/ci-cd/changelog_parsing.rs",
+      "rust/tests/unit/workflow_contracts.rs"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "gate-list",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--list"
+    ],
+    "exitCode": 0
+  }
+]

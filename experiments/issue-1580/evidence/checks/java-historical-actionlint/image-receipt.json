@@ -1,0 +1,10 @@
+{
+  "sourceUrl": "https://github.com/user-attachments/assets/088d4459-fd2f-4ead-bd42-2676d9539677",
+  "image": "queue-diagnostic.png",
+  "sha256": "a9314fb15c813c9839134695540f1dc37f4e901daa83606d726922c10f30b413",
+  "bytes": 24161,
+  "fileIdentification": "PNG image data, 2192 x 134, 8-bit/color RGBA, non-interlaced",
+  "viewed": true,
+  "scope": "Historical actionlint diagnostic from the Java template evidence, not current UI or tool execution. Screenshot rejects concurrency.queue at line 60, column 7.",
+  "independentAuthorshipCredit": 0
+}

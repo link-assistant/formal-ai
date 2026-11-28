@@ -1,0 +1,712 @@
+[
+  {
+    "run": 31914675335,
+    "name": "Graph Update: pip in /dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template, /dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/docs, /dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template, /dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/docs #1526546600",
+    "sha": "d15d9658fb587433b2711e582301ca1b2da9ba30",
+    "created": "2026-08-15T23:25:11Z",
+    "conclusion": "success",
+    "lines": 1,
+    "logSha256": "b873acfec31c566991471d74d00b9f3a878c7d0fd6a83b562b6febc037b3ab4e",
+    "annotations": 1
+  },
+  {
+    "run": 38832657186,
+    "name": "container-images",
+    "sha": "f7718d8b87aa4f7f52bf2685351a0d169e146a3c",
+    "created": "2026-10-16T00:59:51Z",
+    "conclusion": "success",
+    "lines": 29567,
+    "logSha256": "9f90ae81c894e1ec682f1ac99fc15096c46c6e692f733e05ffa0f982e883321b",
+    "annotations": 0
+  },
+  {
+    "run": 39971329794,
+    "name": "Web UI boundary",
+    "sha": "ab146dfad11d246dd7bb447ea8234764eaa992f9",
+    "created": "2026-10-23T14:38:17Z",
+    "conclusion": "success",
+    "lines": 263,
+    "logSha256": "50fe9c759d04482d0a58877c961f5756a911e5e16af0d3ac537f08876835e03b",
+    "annotations": 0
+  },
+  {
+    "run": 41768761745,
+    "name": "Work-item useful-edit hosted qualification",
+    "sha": "e5ade3914a593fcf93a6a85a84e47bd18abd7793",
+    "created": "2026-11-04T03:42:23Z",
+    "conclusion": "failure",
+    "lines": 9528,
+    "logSha256": "542d7f102fa53043999c0071da8de8a9f29d95272a72b6d0dc7aaa915f59accc",
+    "annotations": 12
+  },
+  {
+    "run": 42621251488,
+    "name": "External Benchmarks",
+    "sha": "70935ad8e2a12bc2148eef74722749290c2edb66",
+    "created": "2026-11-09T12:57:09Z",
+    "conclusion": "failure",
+    "lines": 4732,
+    "logSha256": "1509c62096d6e67c8ec4683b8a5e01f51dc2ed473647373775c413a0d51a9851",
+    "annotations": 8
+  },
+  {
+    "run": 42621869456,
+    "name": "Cross-organization duplication",
+    "sha": "70935ad8e2a12bc2148eef74722749290c2edb66",
+    "created": "2026-11-09T13:01:39Z",
+    "conclusion": "success",
+    "lines": 2952,
+    "logSha256": "f8d878c6e498348585d8186786adb1a507a7df4f2573406a0a375198208893e5",
+    "annotations": 0
+  },
+  {
+    "run": 42624594054,
+    "name": "Job Headroom",
+    "sha": "70935ad8e2a12bc2148eef74722749290c2edb66",
+    "created": "2026-11-09T13:20:21Z",
+    "conclusion": "failure",
+    "lines": 835,
+    "logSha256": "aba6fdbfc65a61b6e47119d3d844353bec225516024e310280f08a238e4747fa",
+    "annotations": 7
+  },
+  {
+    "run": 43706083454,
+    "name": "Learning cycle (proposal only)",
+    "sha": "24dd1f232dbe3653a212ac191a00cb24cc520c91",
+    "created": "2026-11-15T10:51:24Z",
+    "conclusion": "failure",
+    "lines": 532,
+    "logSha256": "247ce98fba55eb4d087677188946aa2c5d23b438fed584ccf33de7b1c351f0b0",
+    "annotations": 1
+  },
+  {
+    "run": 43707981518,
+    "name": "Issue 1028 Agent CLI binary-tree ladder",
+    "sha": "24dd1f232dbe3653a212ac191a00cb24cc520c91",
+    "created": "2026-11-15T11:14:50Z",
+    "conclusion": "failure",
+    "lines": 1439,
+    "logSha256": "649f8470a32daa45748ba0f1b69f153eb55fcdb99af2a78ee65300f8c4c46c5b",
+    "annotations": 1
+  },
+  {
+    "run": 43715780047,
+    "name": "dependencies-latest",
+    "sha": "686367d201ca010a4c3dab3b4741e265038d925e",
+    "created": "2026-11-15T12:49:15Z",
+    "conclusion": "failure",
+    "lines": 5665,
+    "logSha256": "7896f1239562924022ee8d14082df69fbc74f70733bb36d51f8db85b1c2726e1",
+    "annotations": 127
+  },
+  {
+    "run": 43730396983,
+    "name": "Self-authored pull request",
+    "sha": "7837d5073c782658c5a1776ec873ca47e87c4abb",
+    "created": "2026-11-15T15:31:57Z",
+    "conclusion": "skipped",
+    "lines": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "annotations": 0
+  },
+  {
+    "run": 43738765561,
+    "name": "Hive Mind draft",
+    "sha": "7837d5073c782658c5a1776ec873ca47e87c4abb",
+    "created": "2026-11-15T17:01:49Z",
+    "conclusion": "failure",
+    "lines": 3789,
+    "logSha256": "912890c44c453e3944cdb6b0b5cddd9fb1c72b17bccb1b5329eb07f059e06947",
+    "annotations": 0
+  },
+  {
+    "run": 43741377292,
+    "name": "Retain Hive Mind draft job logs",
+    "sha": "7837d5073c782658c5a1776ec873ca47e87c4abb",
+    "created": "2026-11-15T17:29:25Z",
+    "conclusion": "success",
+    "lines": 215,
+    "logSha256": "0ac5dc670a1e4e647306797fed1046fa038d5e10fbbc1b669236adbf305f91e7",
+    "annotations": 0
+  },
+  {
+    "run": 43746601262,
+    "name": "Self-authored backlog",
+    "sha": "09d921174123eae831e7f83d3c3609a913678d31",
+    "created": "2026-11-15T18:24:37Z",
+    "conclusion": "success",
+    "lines": 269,
+    "logSha256": "3807fad79e591b1bb03a7199b92247a07170bfa6e6a339d26db23fadc6e77810",
+    "annotations": 0
+  },
+  {
+    "run": 43746601390,
+    "name": "Summarization Ratchet",
+    "sha": "09d921174123eae831e7f83d3c3609a913678d31",
+    "created": "2026-11-15T18:24:37Z",
+    "conclusion": "success",
+    "lines": 1542,
+    "logSha256": "48595dc659d274fb24f8a8fc6fae921ad613f378713207306285e6e2911777fc",
+    "annotations": 0
+  },
+  {
+    "run": 43763448491,
+    "name": "Workflows",
+    "sha": "78811f9f1a986d006f3bc7f1139d5bdda5ca9dff",
+    "created": "2026-11-15T21:23:45Z",
+    "conclusion": "success",
+    "lines": 1074,
+    "logSha256": "87c6f77516ed4ef3844d4f1ec8b54b4eceb5d71e069cc6b289b13bf5c7c337f1",
+    "annotations": 0
+  },
+  {
+    "run": 43805800467,
+    "name": "Publish VS Code extension",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 2364,
+    "logSha256": "04ba17b77bbf503605192d41881af76450e3c82fb7fc79fe197bb667965d3fb6",
+    "annotations": 1
+  },
+  {
+    "run": 43805800504,
+    "name": "Documentation policy",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 394,
+    "logSha256": "b449dbc16c59ea8265ac2c1c1be772967e1edf090419b7fa4778920c6f5ca9d3",
+    "annotations": 0
+  },
+  {
+    "run": 43805800525,
+    "name": "Broken Link Checker",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 328,
+    "logSha256": "a3cead410c96ba64dd32ae6b82a230d3b3a32d8dbc6c10b5b46f6be7d3d1cde9",
+    "annotations": 0
+  },
+  {
+    "run": 43805800527,
+    "name": "Write-Effect Ladder",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 1636,
+    "logSha256": "06bb028ca53a457fa31b00df2a71de90275f1b4d8f291c540a6333166d67edf6",
+    "annotations": 0
+  },
+  {
+    "run": 43805800537,
+    "name": "Coverage",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 2066,
+    "logSha256": "70566b1f7f31e88652841b1a5dc6be1504c148b8e8c61f0978556ac7247c72a7",
+    "annotations": 0
+  },
+  {
+    "run": 43805800538,
+    "name": "Security",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 5140,
+    "logSha256": "760f4c63055ff60da76493dea97156158a31f6f5251ead01df4ec893b2904134",
+    "annotations": 0
+  },
+  {
+    "run": 43805800552,
+    "name": "Source scanner qualification and debt inventory",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 1143,
+    "logSha256": "67deac92335b7c4352042b9c2578abda649f228ad8029695354a70eedfe1c58d",
+    "annotations": 0
+  },
+  {
+    "run": 43805800595,
+    "name": "Self-development status",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 2025,
+    "logSha256": "c18215afd0cf33c536ddef2b584c901f6198d800b8a05d426c1f907034a00657",
+    "annotations": 0
+  },
+  {
+    "run": 43805800607,
+    "name": "Question necessity ratchet",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 3121,
+    "logSha256": "6c306c9f9a01212f9b2606dad027afa82840e86ca955886bd4f205d326408eef",
+    "annotations": 0
+  },
+  {
+    "run": 43805800620,
+    "name": "Stock Rust Install",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 1051,
+    "logSha256": "29b63ec3545e701d1b5be82e9c4b022461b00a23960eb241106977fd4768eb3c",
+    "annotations": 0
+  },
+  {
+    "run": 43805800627,
+    "name": "Coding Ladder",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 41,
+    "logSha256": "2db8c1d5d5ed73ced73b799e5df51a9074182c7a0abb3731fb7ade8c2a751c9f",
+    "annotations": 0
+  },
+  {
+    "run": 43805800649,
+    "name": "Benchmark Corpus Gate",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 3339,
+    "logSha256": "9fb2db3d3ca912ee63dcb72ba06dde4eec0ccd1b980a9c312e82855db6be2dec",
+    "annotations": 1
+  },
+  {
+    "run": 43805800653,
+    "name": "Layered CI",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "failure",
+    "lines": 34443,
+    "logSha256": "8d84b4447491e5c405452baad55f7b99a1e7f445ed0d796a2639c5443b28929f",
+    "annotations": 7
+  },
+  {
+    "run": 43805800670,
+    "name": "Agentic CLI Matrix",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 7511,
+    "logSha256": "b73e4e5e19166abf6231bb09c5aa33c27789b54200632c28464a9f8041f26aac",
+    "annotations": 0
+  },
+  {
+    "run": 43805800770,
+    "name": "Task Ladder",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:31Z",
+    "conclusion": "success",
+    "lines": 1634,
+    "logSha256": "de269c75217908eca70d6181c8fbbc153c7e3b57aac90ab7cb6056dfea844d64",
+    "annotations": 0
+  },
+  {
+    "run": 43805800854,
+    "name": "CI/CD Pipeline",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T04:43:32Z",
+    "conclusion": "failure",
+    "lines": 81602,
+    "logSha256": "3bb730a2d2299604dd3a5583ffecec7801270a0ca43ce8bae339ea677ac90dc9",
+    "annotations": 51
+  },
+  {
+    "run": 43809218088,
+    "name": "Desktop Release",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:17:04Z",
+    "conclusion": "success",
+    "lines": 308,
+    "logSha256": "d68f02a19fd8891e1271493f30875c22e4095f3e21ee12f3bc78808bc849d412",
+    "annotations": 0
+  },
+  {
+    "run": 43809218117,
+    "name": "Publish browser engine",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:17:04Z",
+    "conclusion": "success",
+    "lines": 214,
+    "logSha256": "e0c1a8680167410f18ba13a5037cf886593046549c0b6c53c607dff3642af3a3",
+    "annotations": 0
+  },
+  {
+    "run": 43809218119,
+    "name": "Publish source networks",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:17:04Z",
+    "conclusion": "success",
+    "lines": 214,
+    "logSha256": "c0d9c3c2092bc35660b9b8919b4a96a83c187fc3adf68e22a8f87664c36c435b",
+    "annotations": 0
+  },
+  {
+    "run": 43809328378,
+    "name": "Verify Public Release Downloads",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:18:05Z",
+    "conclusion": "success",
+    "lines": 322,
+    "logSha256": "9dfa525816dd68cc008811eb018e71a913818db619f7217d6e90ef8c742affc8",
+    "annotations": 0
+  },
+  {
+    "run": 43809336713,
+    "name": "Hive CI phase timing",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:18:10Z",
+    "conclusion": "skipped",
+    "lines": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "annotations": 0
+  },
+  {
+    "run": 43809336887,
+    "name": "Finalize original Hive generated tasks",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:18:10Z",
+    "conclusion": "skipped",
+    "lines": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "annotations": 0
+  },
+  {
+    "run": 43809378310,
+    "name": "Original Hive Mind three-client delivery",
+    "sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "created": "2026-11-16T05:18:32Z",
+    "conclusion": "skipped",
+    "lines": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "annotations": 0
+  },
+  {
+    "run": 43815999091,
+    "name": "Documentation policy",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:47Z",
+    "conclusion": "success",
+    "lines": 394,
+    "logSha256": "6d3717b8f378bd5864bd0fb4619390b564977c2eeff66420b4059f2b44746ed2",
+    "annotations": 0
+  },
+  {
+    "run": 43815999095,
+    "name": "Source scanner qualification and debt inventory",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:47Z",
+    "conclusion": "success",
+    "lines": 1142,
+    "logSha256": "69043a5aef011613a6ca946233dbbac173d4cc1d389016e63471c8dd25c9f449",
+    "annotations": 0
+  },
+  {
+    "run": 43815999152,
+    "name": "Layered CI",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:47Z",
+    "conclusion": "failure",
+    "lines": 35205,
+    "logSha256": "17b710627496c91a59065932cfc69cead18a2d0d773e538514d4e2456f450c5b",
+    "annotations": 7
+  },
+  {
+    "run": 43815999191,
+    "name": "Stock Rust Install",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 1051,
+    "logSha256": "4c6385aaa664ca68c5d96fca1b09796d4824f91dba953906e6a6b1acb6263a55",
+    "annotations": 0
+  },
+  {
+    "run": 43815999210,
+    "name": "Publish VS Code extension",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 2349,
+    "logSha256": "8e30fafc79000b60149a88945e13ead256896d2f25abbad54912cd93e1fe296e",
+    "annotations": 1
+  },
+  {
+    "run": 43815999261,
+    "name": "Broken Link Checker",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 328,
+    "logSha256": "54b600adde1f5fe1bb079a39d45c058013bbfed0ae91f567ebda750b71f66827",
+    "annotations": 0
+  },
+  {
+    "run": 43815999264,
+    "name": "Coverage",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 2188,
+    "logSha256": "310b4f70153269ceb41674ebe4dc4da2450b0362533bf40bc8ad3536dfb5143f",
+    "annotations": 0
+  },
+  {
+    "run": 43815999299,
+    "name": "Coding Ladder",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 41,
+    "logSha256": "9b8dd5a7a51f3d46663c674d17b86059eece89c96bd1a8e06d391dcf8c1e7a6d",
+    "annotations": 0
+  },
+  {
+    "run": 43815999300,
+    "name": "Agentic CLI Matrix",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 7515,
+    "logSha256": "8177854bf2292f619aafc47677dd91cd218f89abf7796e16e8259c5c33a70f4e",
+    "annotations": 0
+  },
+  {
+    "run": 43815999349,
+    "name": "Question necessity ratchet",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 3125,
+    "logSha256": "d713093e118b2a11df34dbf2d871b9ab302092708cf790df8b6cef51bed8cc66",
+    "annotations": 0
+  },
+  {
+    "run": 43815999458,
+    "name": "Benchmark Corpus Gate",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "success",
+    "lines": 3348,
+    "logSha256": "6a0ce75b2fd157d85b2675e5a3515103d2428cab076e39644a320a9385d85697",
+    "annotations": 1
+  },
+  {
+    "run": 43815999666,
+    "name": "CI/CD Pipeline",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:19:48Z",
+    "conclusion": "failure",
+    "lines": 82365,
+    "logSha256": "02eb5303585c89b51911df49973e8ce3df2f93205084bc91dd7a1df312894217",
+    "annotations": 66
+  },
+  {
+    "run": 43820400312,
+    "name": "Desktop Release",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:57:50Z",
+    "conclusion": "success",
+    "lines": 309,
+    "logSha256": "565f0f80eb3594c32ea42615de4de9e75abb8aac087d030fd631cfce847ed935",
+    "annotations": 0
+  },
+  {
+    "run": 43820400313,
+    "name": "Publish browser engine",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:57:50Z",
+    "conclusion": "success",
+    "lines": 214,
+    "logSha256": "f753484e95ca7ad56da630b021717c4c424ef3ca5528884e1a8c488ce4cfe485",
+    "annotations": 0
+  },
+  {
+    "run": 43820400336,
+    "name": "Publish source networks",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:57:50Z",
+    "conclusion": "success",
+    "lines": 214,
+    "logSha256": "67e915616fa4906e5bbbe64514691d3f7920c390c94443338c2ee081ec94e9d2",
+    "annotations": 0
+  },
+  {
+    "run": 43820538086,
+    "name": "Verify Public Release Downloads",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T06:59:00Z",
+    "conclusion": "success",
+    "lines": 322,
+    "logSha256": "3127a457913fe15698d62f8819cceb60567a6c88223d5aa8c3962bd693e76350",
+    "annotations": 0
+  },
+  {
+    "run": 43856073946,
+    "name": "Learning cycle (proposal only)",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T11:15:03Z",
+    "conclusion": "success",
+    "lines": 1495,
+    "logSha256": "53e1fffb60e077800dbb651eb68b9aa2fcbae79d7857b4733012a1ff80be565f",
+    "annotations": 0
+  },
+  {
+    "run": 43870207134,
+    "name": "External Benchmarks",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T12:50:28Z",
+    "conclusion": "failure",
+    "lines": 5209,
+    "logSha256": "f8cf2ff791a04eec41b29b94526d926036bc120aec508fdcc810464d682ed09a",
+    "annotations": 11
+  },
+  {
+    "run": 43870813651,
+    "name": "Cross-organization duplication",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T12:54:34Z",
+    "conclusion": "success",
+    "lines": 2950,
+    "logSha256": "b10c193c7bd6e03dbf535ee2fd86726f522208def21ee57f16c7fee7a7f6c7f8",
+    "annotations": 0
+  },
+  {
+    "run": 43872809507,
+    "name": "Job Headroom",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T13:07:38Z",
+    "conclusion": "failure",
+    "lines": 840,
+    "logSha256": "762dab5c800d4618d20938df2d82391a109a3aeb3f5bcf109123e93eba35e848",
+    "annotations": 6
+  },
+  {
+    "run": 43873038861,
+    "name": "Write-Effect Ladder",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T13:09:07Z",
+    "conclusion": "success",
+    "lines": 524,
+    "logSha256": "3f4ac19926dcefe9a97de355b548f596919675ae1ef06ff5fc97429649f82b61",
+    "annotations": 0
+  },
+  {
+    "run": 43873285255,
+    "name": "Task Ladder",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T13:10:39Z",
+    "conclusion": "success",
+    "lines": 536,
+    "logSha256": "e9ab126c871b77438189fd837f80962424955017c60485dbb9d89277f770e30f",
+    "annotations": 0
+  },
+  {
+    "run": 43878821415,
+    "name": "dependencies-latest",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T13:45:18Z",
+    "conclusion": "failure",
+    "lines": 5678,
+    "logSha256": "a6fe34cfa352d96fb3164b00fe09f5d4a60725bb9efd071dadaa15d3419999f7",
+    "annotations": 128
+  },
+  {
+    "run": 43884311019,
+    "name": "Security",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T14:18:16Z",
+    "conclusion": "success",
+    "lines": 5139,
+    "logSha256": "04128079ff3dd955ec533d4c22024f8059b799f8a73549b3a1b1b13014580b81",
+    "annotations": 0
+  },
+  {
+    "run": 43899940237,
+    "name": "Self-authored pull request",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T15:46:01Z",
+    "conclusion": "skipped",
+    "lines": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "annotations": 0
+  },
+  {
+    "run": 43899940611,
+    "name": "Hive Mind draft",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T15:46:01Z",
+    "conclusion": "failure",
+    "lines": 4321,
+    "logSha256": "614835bfc4b4996edc801c369eeffa4b5557df3e03087871dc0c84831690499f",
+    "annotations": 0
+  },
+  {
+    "run": 43900904625,
+    "name": "Self-development status",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T15:51:08Z",
+    "conclusion": "success",
+    "lines": 2028,
+    "logSha256": "1be6b34fadfbddbe624bb4d71a7d110aa2d21e950af2138e096fd92368c8aa5b",
+    "annotations": 0
+  },
+  {
+    "run": 43904290290,
+    "name": "Retain Hive Mind draft job logs",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T16:09:08Z",
+    "conclusion": "success",
+    "lines": 215,
+    "logSha256": "9754d9132de78906a43d36ac302c1c44c4f2d949a25716cc044fea88f9c02790",
+    "annotations": 0
+  },
+  {
+    "run": 43913974614,
+    "name": "Self-authored backlog",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T17:01:53Z",
+    "conclusion": "success",
+    "lines": 271,
+    "logSha256": "dc5dabfed7f69be138060db4087e9178b7b0b5214d9350afb62211142da89d75",
+    "annotations": 0
+  },
+  {
+    "run": 43914162773,
+    "name": "Original Hive Mind three-client delivery",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T17:02:56Z",
+    "conclusion": "skipped",
+    "lines": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "annotations": 0
+  },
+  {
+    "run": 43914181957,
+    "name": "Hive CI phase timing",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-16T17:03:02Z",
+    "conclusion": "skipped",
+    "lines": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "annotations": 0
+  },
+  {
+    "run": 43990283167,
+    "name": "Finalize original Hive generated tasks",
+    "sha": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+    "created": "2026-11-17T00:46:05Z",
+    "conclusion": "success",
+    "lines": 367,
+    "logSha256": "bd7ef96f0ca95da0e0aaaaea2e2781ae54da48f36a782ce9cc6551826d38d439",
+    "annotations": 0
+  }
+]

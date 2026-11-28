@@ -1,0 +1,259 @@
+{
+  "mainHead": "512ce428029a92687628b4180309ee5ab660fe08",
+  "failedNativeTests": [
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 764,
+      "logLine": 35773,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 666,
+      "logLine": 35799,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+      "source": "tests/unit/issue_1138_place_timezone.rs",
+      "sourceLine": 49,
+      "logLine": 35826,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 666,
+      "logLine": 35856,
+      "runId": "44117975432"
+    },
+    {
+      "test": "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+      "source": "tests/unit/solver/issue_869_meeting_scheduling.rs",
+      "sourceLine": 65,
+      "logLine": 35883,
+      "runId": "44117975432"
+    },
+    {
+      "test": "ci_cd::ci_warning_audit::audited_warning_band_sources_stay_below_their_limits",
+      "source": "tests/unit/ci-cd/ci_warning_audit.rs",
+      "sourceLine": 299,
+      "logLine": 43214,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 533,
+      "logLine": 43240,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_hindi",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 666,
+      "logLine": 43266,
+      "runId": "44117975432"
+    },
+    {
+      "test": "pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written",
+      "source": "tests/unit/pull_request_1188_fix_gaps.rs",
+      "sourceLine": 357,
+      "logLine": 43293,
+      "runId": "44117975432"
+    },
+    {
+      "test": "capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses",
+      "source": "tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs",
+      "sourceLine": 268,
+      "logLine": 47757,
+      "runId": "44117975432"
+    },
+    {
+      "test": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+      "source": "tests/unit/ci-cd/workflow_release.rs",
+      "sourceLine": 67,
+      "logLine": 47787,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 193,
+      "logLine": 47814,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 666,
+      "logLine": 47840,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::synthesis::renumbered_word_problem_recomputes_from_quantities",
+      "source": "tests/unit/specification/synthesis.rs",
+      "sourceLine": 446,
+      "logLine": 51312,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints",
+      "source": "tests/unit/specification/reasoning_loop.rs",
+      "sourceLine": 216,
+      "logLine": 57802,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+      "source": "tests/unit/specification/spoken_hour_scheduling.rs",
+      "sourceLine": 183,
+      "logLine": 57828,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra",
+      "source": "tests/unit/specification/synthesis.rs",
+      "sourceLine": 280,
+      "logLine": 57859,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value",
+      "source": "tests/unit/specification/synthesis.rs",
+      "sourceLine": 478,
+      "logLine": 57889,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+      "source": "tests/unit/specification/synthesis.rs",
+      "sourceLine": 88,
+      "logLine": 57919,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order",
+      "source": "tests/unit/specification/synthesis.rs",
+      "sourceLine": 344,
+      "logLine": 57949,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+      "source": "tests/unit/specification/benchmarks.rs",
+      "sourceLine": 130,
+      "logLine": 57983,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs.rs",
+      "sourceLine": 224,
+      "logLine": 70215,
+      "runId": "44117975432"
+    },
+    {
+      "test": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+      "source": "tests/unit/ci-cd/network_download_retry.rs",
+      "sourceLine": 172,
+      "logLine": 74640,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 555,
+      "logLine": 74666,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 342,
+      "logLine": 74696,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs.rs",
+      "sourceLine": 158,
+      "logLine": 74722,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 22,
+      "logLine": 78483,
+      "runId": "44117975432"
+    },
+    {
+      "test": "issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands",
+      "source": "tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sourceLine": 433,
+      "logLine": 78514,
+      "runId": "44117975432"
+    },
+    {
+      "test": "solver::issue_869_meeting_scheduling::reported_meeting_prompt_names_participant_time_and_zone",
+      "source": "tests/unit/solver/issue_869_meeting_scheduling.rs",
+      "sourceLine": 52,
+      "logLine": 78541,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+      "source": "tests/unit/specification/benchmarks.rs",
+      "sourceLine": 803,
+      "logLine": 82129,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+      "source": "tests/unit/specification/benchmarks.rs",
+      "sourceLine": 890,
+      "logLine": 82161,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+      "source": "tests/unit/specification/benchmarks.rs",
+      "sourceLine": 890,
+      "logLine": 82189,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+      "source": "tests/unit/specification/benchmarks.rs",
+      "sourceLine": 890,
+      "logLine": 82217,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+      "source": "tests/unit/specification/debug_session.rs",
+      "sourceLine": 147,
+      "logLine": 82245,
+      "runId": "44117975432"
+    },
+    {
+      "test": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation",
+      "source": "tests/unit/specification/synthesis.rs",
+      "sourceLine": 408,
+      "logLine": 82277,
+      "runId": "44117975432"
+    }
+  ],
+  "nativeTestsFailedOnMain": 35,
+  "fullShard5Budget": {
+    "seconds": 1080,
+    "logLine": 39696,
+    "runId": "44117975432"
+  },
+  "branchNativeRerun": false,
+  "completionClaimed": false,
+  "independentAuthorshipCredit": 0
+}

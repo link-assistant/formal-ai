@@ -1,0 +1,77 @@
+{
+  "at": "2026-11-22T08:09:33.914175+00:00",
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "sourceHead": "604eb4b8e35301c3c696ec8a0cdd46f2f892b354",
+  "files": [
+    {
+      "path": "rust/src/agentic_coding/workspace_computed_change.rs",
+      "file": "0271.diff.gz",
+      "sha256": "8f2896b8c21cde075b367f0a2c4fc7b01b9c07d1b3c275b78155cad9211297ab",
+      "gzipSHA256": "c8d2bb8d4945b6f6dafcf43da193758355ba86367de8e0af1d3308ef9d7adffe",
+      "lines": 71,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/workspace_computed_change/end_edit.rs",
+      "file": "0272.diff.gz",
+      "sha256": "f5201286309b560b29925b4ed0872ade9627af8426bc417f1bec15965458cffb",
+      "gzipSHA256": "f5cd1ca6d76727ceedf62d33ed1d4c5edc78e59c707d6b9761f460b1f2485318",
+      "lines": 60,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/workspace_line_operation.rs",
+      "file": "0273.diff.gz",
+      "sha256": "c1d52d051f91ab19d8b93bd8cd67d5c649e95733f83f45f44acc2d6e837f9969",
+      "gzipSHA256": "b95279a5931b1c0cb084b46d6da7dd6a316529101aaaeb448c0b0b5f323dea74",
+      "lines": 122,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/workspace_line_operation/applied_changes.rs",
+      "file": "0274.diff.gz",
+      "sha256": "782525e661b3520ee7f76bb764a1859eca1f65b239b89be6b59de4b0e9922a75",
+      "gzipSHA256": "c28b7de6752bd4ee4053401c07aa676422afefb3535d2a08820c13136ef37a03",
+      "lines": 118,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/write_request.rs",
+      "file": "0275.diff.gz",
+      "sha256": "051df702b33bf708e8e97a4f60b37a8e7bf7619d4cbc54080504d4dc39edb825",
+      "gzipSHA256": "b9d6628f766908348f7755d17ca1c7c45c7ca116cea603c6de885411502438d5",
+      "lines": 150,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/agentic_coding/write_request/write_bindings.rs",
+      "file": "0276.diff.gz",
+      "sha256": "dde178d3d2ad6f04dea49698248461d8e63f2e2d200fc53d4d06487786e7d874",
+      "gzipSHA256": "d6b4d1a18a7b65e528ea472352ba66b725054adf53ccdada02666fe7bc1b0b58",
+      "lines": 137,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/algorithm_discovery.rs",
+      "file": "0277.diff.gz",
+      "sha256": "6190fd0c628df3b5e02a761f618ff9fe77df591e49d466dd907a9a071ec9a9c1",
+      "gzipSHA256": "7fe7fb21fb50fb3f0199558beb3d2a0e5ceea9c251dd8269a0b7b799871e4023",
+      "lines": 189,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/algorithm_discovery/evidence.rs",
+      "file": "0278.diff.gz",
+      "sha256": "2f7da0b13033969794bb350bebe28f97c1864e555fa54cbb6b963dc2822374bf",
+      "gzipSHA256": "a66f438d23a7a8799d33f481eb0178299340156e1f831ed9d7c3e8dc514bd43d",
+      "lines": 177,
+      "literalDiffFullyReviewed": true
+    }
+  ],
+  "fileCount": 8,
+  "diffLines": 1024,
+  "finding": "Paired complete diffs preserve computed workspace changes, end-edit anchor checks, line application, target bindings and algorithm evidence. Helper bodies/comments are unchanged; imports, parent reexports and restricted visibility match their callers. No new defect found.",
+  "wholePullRequestReviewed": false,
+  "localRustCompilation": false,
+  "autonomousAuthorshipCredit": 0
+}

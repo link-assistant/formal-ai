@@ -287,7 +287,7 @@ matrix_start_stack() {
   # requirement, and a re-run was answering partly from the run before it. A
   # matrix leg has to be hermetic to mean anything.
   ( cd "${WORKDIR:-$PWD}" \
-      && FORMAL_AI_TRACE_REQUESTS=1 \
+      && FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
          FORMAL_AI_MEMORY_PATH="$ARTIFACTS/$case_name/memory.lino" \
          exec "$BIN" serve --agent-mode \
       --host 127.0.0.1 --port "$port" ) \

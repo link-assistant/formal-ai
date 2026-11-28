@@ -1,0 +1,1326 @@
+Corpus shard 6	UNKNOWN STEP	﻿2026-11-25T05:02:53.9485345Z Current runner version: '2.338.2'
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9505872Z ##[group]Runner Image Provisioner
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9506821Z Hosted Compute Agent
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9507441Z Version: 20261111.635
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9508055Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9508807Z Build Date: 2026-11-11T01:49:01Z
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9509512Z Worker ID: {c2061524-4acd-45ba-812d-b965b69c9f63}
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9510198Z Region: us-east-1
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9511060Z Cloud: AWS
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9511575Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9513114Z ##[group]Operating System
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9513795Z Ubuntu
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9514295Z 24.04.5
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9514826Z LTS
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9515323Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9515852Z ##[group]Runner Image
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9516446Z Image: ubuntu-24.04
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9517002Z Version: 20261116.133.1
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9518414Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.133/images/ubuntu/Ubuntu2404-Readme.md
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9520108Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.133
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9521384Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9522589Z ##[group]GITHUB_TOKEN Permissions
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9525012Z Contents: read
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9525589Z Metadata: read
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9526230Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9528515Z Secret source: Actions
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9529501Z Cache mode: write
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9530190Z Prepare workflow directory
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9856428Z Prepare all required actions
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:53.9907807Z Getting action download info
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:54.1667510Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.2596687Z Complete job name: Corpus shard 6
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3349023Z ##[group]Run actions/checkout@v7
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3350204Z with:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3351334Z   persist-credentials: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3352307Z   repository: link-assistant/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3359512Z   token: ***
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3360271Z   ssh-strict: true
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3361222Z   ssh-user: git
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3361994Z   clean: true
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3362790Z   sparse-checkout-cone-mode: true
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3363771Z   fetch-depth: 1
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3364534Z   fetch-tags: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3365356Z   show-progress: true
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3366163Z   lfs: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3366909Z   submodules: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3367756Z   set-safe-directory: true
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3368797Z   allow-unsafe-pr-checkout: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:56.3369986Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.5287760Z Syncing repository: link-assistant/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.5289229Z ##[group]Getting Git version info
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.5289842Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.5290731Z [command]/usr/bin/git version
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.7997015Z git version 2.56.1
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8010268Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8018849Z Temporarily overriding HOME='/home/runner/work/_temp/2a10b6d4-758a-4a61-b127-f006a928d2a1' before making global git config changes
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8022969Z Adding repository directory to the temporary git global config as a safe directory
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8023710Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8432880Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8435475Z ##[group]Determining repository object format
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8436703Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8437416Z ##[group]Initializing the repository
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.8441145Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9101224Z hint: Using 'master' as the name for the initial branch. This default branch name
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9102058Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9103089Z hint: to use in all of your new repositories, which will suppress this warning,
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9103476Z hint: call:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9103755Z hint:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9104104Z hint: 	git config --global init.defaultBranch <name>
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9104457Z hint:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9104817Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9105262Z hint: 'development'. The just-created branch can be renamed via this command:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9105652Z hint:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9105911Z hint: 	git branch -m <name>
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9106180Z hint:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9106552Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9111406Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9120354Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9177827Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9178415Z ##[group]Disabling automatic garbage collection
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9180430Z [command]/usr/bin/git config --local gc.auto 0
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9205202Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9205862Z ##[group]Setting up auth
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9206337Z Removing SSH command configuration
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9209887Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:58.9238810Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2080995Z Removing HTTP extra header
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2081886Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2118176Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2264927Z Removing includeIf entries pointing to credentials config files
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2269618Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2294871Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2443936Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2473615Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2496519Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2520260Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2542439Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2565017Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2565618Z ##[group]Fetching the repository
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:02:59.2569548Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +eee485204ce192f8b15568ee86ea48b900e74185:refs/remotes/origin/main
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4153584Z From https://github.com/link-assistant/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4154557Z  * [new ref]             eee485204ce192f8b15568ee86ea48b900e74185 -> origin/main
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4163066Z [command]/usr/bin/git branch --list --remote origin/main
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4207920Z   origin/main
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4242025Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4242658Z eee485204ce192f8b15568ee86ea48b900e74185
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4243877Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4244415Z ##[group]Determining the checkout info
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4245097Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4245435Z [command]/usr/bin/git sparse-checkout disable
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4268421Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4289264Z ##[group]Checking out the ref
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:32.4292094Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:34.4217670Z Updating files:   7% (9690/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:34.5253032Z Updating files:   8% (10691/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:34.6985894Z Updating files:   8% (11284/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:34.8089604Z Updating files:   9% (12027/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:34.9391544Z Updating files:  10% (13364/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.0387253Z Updating files:  11% (14700/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.1817669Z Updating files:  12% (16036/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.4933068Z Updating files:  13% (17373/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.5251771Z Updating files:  14% (18709/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.6181793Z Updating files:  14% (19029/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.7262539Z Updating files:  15% (20045/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.8508189Z Updating files:  16% (21382/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:35.9416131Z Updating files:  17% (22718/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.0029533Z Updating files:  18% (24054/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.0538512Z Updating files:  19% (25391/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.1124460Z Updating files:  20% (26727/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.1976762Z Updating files:  21% (28063/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.2474453Z Updating files:  22% (29400/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.4505191Z Updating files:  23% (30736/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.4903340Z Updating files:  24% (32072/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.5294582Z Updating files:  25% (33409/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.5438964Z Updating files:  25% (34454/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.5927255Z Updating files:  26% (34745/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.6986176Z Updating files:  27% (36081/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.7395254Z Updating files:  28% (37418/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.7995858Z Updating files:  29% (38754/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.8262779Z Updating files:  30% (40090/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.8621389Z Updating files:  31% (41427/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.9187075Z Updating files:  32% (42763/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:36.9527438Z Updating files:  33% (44099/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.0324778Z Updating files:  34% (45436/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.0914324Z Updating files:  35% (46772/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.1442576Z Updating files:  36% (48108/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.2348763Z Updating files:  37% (49445/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.3109558Z Updating files:  38% (50781/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.3560986Z Updating files:  39% (52117/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.4523749Z Updating files:  40% (53454/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.4713441Z Updating files:  41% (54790/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.4970979Z Updating files:  42% (56126/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.5189703Z Updating files:  43% (57463/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.5248487Z Updating files:  44% (58799/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.5854614Z Updating files:  44% (59113/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.6642459Z Updating files:  45% (60135/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:37.8501414Z Updating files:  46% (61472/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.0033027Z Updating files:  47% (62808/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.1022981Z Updating files:  48% (64144/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.2075508Z Updating files:  49% (65481/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.3919586Z Updating files:  50% (66817/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.4773516Z Updating files:  51% (68153/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.5250704Z Updating files:  52% (69490/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.5326955Z Updating files:  52% (70573/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.5681353Z Updating files:  53% (70826/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.5937511Z Updating files:  54% (72162/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.6338166Z Updating files:  55% (73499/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.6846010Z Updating files:  56% (74835/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.7314207Z Updating files:  57% (76171/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.7664948Z Updating files:  58% (77508/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.8168423Z Updating files:  59% (78844/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.8680281Z Updating files:  60% (80180/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:38.9029226Z Updating files:  61% (81517/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.0217623Z Updating files:  62% (82853/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.0584625Z Updating files:  63% (84189/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.1088996Z Updating files:  64% (85526/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.1403734Z Updating files:  65% (86862/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.1885627Z Updating files:  66% (88198/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.2203521Z Updating files:  67% (89535/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.2445602Z Updating files:  68% (90871/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.2791364Z Updating files:  69% (92207/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.3169827Z Updating files:  70% (93544/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.3678890Z Updating files:  71% (94880/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.3922663Z Updating files:  72% (96216/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.4791415Z Updating files:  73% (97553/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.5250101Z Updating files:  74% (98889/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.5834217Z Updating files:  74% (99305/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.7470677Z Updating files:  75% (100225/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.7956751Z Updating files:  76% (101562/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.9388462Z Updating files:  77% (102898/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:39.9751783Z Updating files:  78% (104234/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.0031324Z Updating files:  79% (105571/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.0494644Z Updating files:  80% (106907/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.0827212Z Updating files:  81% (108243/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.1277133Z Updating files:  82% (109580/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.1684962Z Updating files:  83% (110916/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.2125781Z Updating files:  84% (112252/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.2572974Z Updating files:  85% (113589/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.2790398Z Updating files:  86% (114925/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.2991500Z Updating files:  87% (116261/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.3216585Z Updating files:  88% (117598/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.3434757Z Updating files:  89% (118934/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.3724551Z Updating files:  90% (120270/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.3939664Z Updating files:  91% (121607/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.4203579Z Updating files:  92% (122943/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.4920040Z Updating files:  93% (124279/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.5325704Z Updating files:  94% (125616/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.5603621Z Updating files:  94% (126178/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.6347610Z Updating files:  95% (126952/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.7660687Z Updating files:  96% (128288/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.8282911Z Updating files:  97% (129625/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.8881876Z Updating files:  98% (130961/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.9546096Z Updating files:  99% (132297/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.9546986Z Updating files: 100% (133633/133633)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:40.9547359Z Updating files: 100% (133633/133633), done.
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.0789065Z Switched to a new branch 'main'
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.0789562Z branch 'main' set up to track 'origin/main'.
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.0963195Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.0999612Z [command]/usr/bin/git log -1 --format=%H
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1022482Z eee485204ce192f8b15568ee86ea48b900e74185
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1029966Z ##[group]Removing auth
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1030764Z Removing SSH command configuration
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1033661Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1057915Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1387063Z Removing HTTP extra header
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1389691Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1418514Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1743090Z Removing includeIf entries pointing to credentials config files
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1743745Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1762266Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1762999Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1763573Z includeif.gitdir:/github/workspace/.git.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1764084Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1769516Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1787433Z /home/runner/work/_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1798064Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-ed0676ab\-4ad5\-42fa\-bc4f\-98bd93d4ed8d\.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1902567Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1922566Z /home/runner/work/_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.1929126Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-ed0676ab\-4ad5\-42fa\-bc4f\-98bd93d4ed8d\.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2014886Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2032370Z /github/runner_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2036443Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-ed0676ab\-4ad5\-42fa\-bc4f\-98bd93d4ed8d\.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2063425Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2081515Z /github/runner_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2085542Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-ed0676ab\-4ad5\-42fa\-bc4f\-98bd93d4ed8d\.config
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2149214Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2462470Z Removing credentials config '/home/runner/work/_temp/git-credentials-ed0676ab-4ad5-42fa-bc4f-98bd93d4ed8d.config'
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2469293Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2796599Z Prepare all required actions
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.2797585Z Getting action download info
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.3793984Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.5997971Z Download action repository 'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8632550Z ##[group]Run ./.github/actions/download-artifact
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8632872Z with:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8633123Z   name: corpus-gate-executable
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8633372Z   path: corpus-gate
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8633646Z   merge-multiple: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8633920Z   repository: link-assistant/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8634174Z   run-id: 45549993299
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8634386Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8687682Z ##[start-action display=Run actions/setup-python@v6;id=__self.python]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8773605Z ##[group]Run actions/setup-python@v6
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8773947Z with:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8774202Z   update-environment: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8774448Z   python-version: 3.14
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8774703Z   check-latest: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8776722Z   token: ***
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8776957Z   allow-prereleases: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8777454Z   freethreaded: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.8777727Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:41.9789806Z ##[group]Installed versions
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.1962108Z Successfully set up CPython (3.14.10)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.1962869Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.2055644Z ##[end-action id=__self.python;outcome=success;conclusion=success;duration_ms=336]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.2061624Z ##[start-action display=Allocate raw archive directory;id=__self.temporary]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.2106983Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.2107853Z ^[[36;1mecho "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4516043Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4516377Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4707853Z ##[end-action id=__self.temporary;outcome=success;conclusion=success;duration_ms=264]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4716316Z ##[start-action display=Prepare portable Node observation options;id=__self.observation_options]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4736767Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4737143Z ^[[36;1maction_directory="${ACTION_DIRECTORY//\\//}"^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4737639Z ^[[36;1mprintf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4762893Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4763194Z env:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4763652Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4764039Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4823737Z ##[end-action id=__self.observation_options;outcome=success;conclusion=success;duration_ms=10]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4827532Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_first]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4873635Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4873992Z with:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4874226Z   name: corpus-gate-executable
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4874510Z   repository: link-assistant/formal-ai
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4874778Z   run-id: 45549993299
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4875044Z   path: /home/runner/work/_temp/artifact-archives.LvDD4a
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4875369Z   merge-multiple: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4875610Z   skip-decompress: true
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4875858Z   digest-mismatch: error
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4876099Z env:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4876586Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4877455Z   ARTIFACT_RETRY_ATTEMPT: 1
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.4877719Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.5931655Z Downloading single artifact
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.7057732Z Preparing to download the following artifacts:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.7058687Z - corpus-gate-executable (ID: 14993292289, Size: 83119962, Expected Digest: sha256:edd2d0bdcf16848e735e7d7001a023b5758df6249218f0ac37396392289945aa)
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.9128266Z Redirecting to blob download url: https://productionresultssa19.blob.core.windows.net/actions-results/c3209a2d-7d6f-815f-90c1-7517ea8cc49a/workflow-job-run-bbe413fc-b12c-542e-a83b-810f36ebfd0e/artifacts/70ac6116724de0b317d84440ca144345ad73dba212b98960232671eac8654636.zip
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.9129309Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.LvDD4a
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:42.9548028Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.LvDD4a/corpus-gate-executable.zip
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7467766Z SHA256 digest of downloaded artifact is edd2d0bdcf16848e735e7d7001a023b5758df6249218f0ac37396392289945aa
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7468525Z Artifact download completed successfully.
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7469188Z Total of 1 artifact(s) downloaded
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7470433Z Download artifact has finished successfully
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7541786Z ##[end-action id=__self.download_first;outcome=success;conclusion=success;duration_ms=1271]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7546156Z ##[start-action display=Discard partial archives before the second download;id=__self.retry_second]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7557924Z ##[end-action id=__self.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7561584Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_second]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7566523Z ##[end-action id=__self.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7569676Z ##[start-action display=Discard partial archives before the third download;id=__self.retry_third]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7574711Z ##[end-action id=__self.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7577485Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_third]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7582364Z ##[end-action id=__self.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7587076Z ##[start-action display=Extract verified archives;id=__self.extract]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7657425Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7658436Z ^[[36;1m"$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7684977Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7685310Z env:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7685689Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7686193Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7686657Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.LvDD4a
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7687001Z   DESTINATION: corpus-gate
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7687264Z   MERGE_MULTIPLE: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7687536Z   ALLOW_EMPTY_SELECTION: false
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:43.7687798Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7244580Z Artifact extraction destination: /home/runner/work/formal-ai/formal-ai/corpus-gate
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7340841Z ##[end-action id=__self.extract;outcome=success;conclusion=success;duration_ms=2975]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7345483Z ##[start-action display=Remove temporary raw archives;id=__self.__run]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7366598Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7367075Z ^[[36;1mrm -rf -- "$RAW_DIRECTORY"^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7395560Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7395867Z env:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7396131Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.LvDD4a
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7396508Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7528029Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=18]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7834756Z ##[group]Run set -euo pipefail
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7835090Z ^[[36;1mset -euo pipefail^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7835411Z ^[[36;1mchmod +x corpus-gate/integration^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7835781Z ^[[36;1mexport FORMAL_AI_CORPUS_SHARD="$((SHARD_INDEX + 1))/${SHARD_TOTAL}"^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7836204Z ^[[36;1m# cargo runs an integration test from the package root; so does this.^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7836541Z ^[[36;1mcd rust^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7836814Z ^[[36;1m../scripts/run-with-budget-warning.sh \^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7837289Z ^[[36;1m  "$TEST_BUDGET_SECONDS" "Benchmark corpus gate shard" \^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7837707Z ^[[36;1m  ../corpus-gate/integration issue_1138_no_silent_unknown --nocapture \^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7838203Z ^[[36;1m  | tee ../corpus-shard.log^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7838690Z ^[[36;1m# A filter that matches nothing reports `ok` with zero tests; that^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7839152Z ^[[36;1m# is a shard that checked nothing, not a pass.^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7839639Z ^[[36;1mgrep -E '^test result: ok\. 1 passed' ../corpus-shard.log >/dev/null || {^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7840155Z ^[[36;1m  echo "::error title=Corpus shard ran no gate::the shard's filter matched no test, so no prompt was checked" >&2^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7840802Z ^[[36;1m  exit 1^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7841037Z ^[[36;1m}^[[0m
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7869155Z shell: /usr/bin/bash -e {0}
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7869413Z env:
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7869769Z   TEST_BUDGET_SECONDS: 900
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7870029Z   TEST_WARN_RATIO_PERCENT: 70
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7870307Z   SHARD_INDEX: 5
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7870699Z   SHARD_TOTAL: 6
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7870952Z ##[endgroup]
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7978046Z 
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:46.7978434Z running 1 test
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:03:47.3791084Z corpus shard 6/6: 233 of 1399 prompts
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:04:46.7982811Z test issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener has been running for over 60 seconds
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:10:08.3061747Z Terminated
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:10:08.3182803Z ##[error]The runner has received a shutdown signal. This can happen when the runner service is stopped, or a manually started runner is canceled.
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:10:08.3193049Z ##[error]Process completed with exit code 143.
+Corpus shard 6	UNKNOWN STEP	2026-11-25T05:10:08.3418394Z Cleaning up orphan processes
+Corpus shard 4	UNKNOWN STEP	﻿2026-11-25T05:03:31.9990256Z Current runner version: '2.338.2'
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0018369Z ##[group]Runner Image Provisioner
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0019520Z Hosted Compute Agent
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0020319Z Version: 20261111.635
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0021246Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0022317Z Build Date: 2026-11-11T01:49:01Z
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0023283Z Worker ID: {281d2351-6b9b-479e-9030-a84a989a7ee9}
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0024261Z Region: eastus3
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0025072Z Cloud: Azure
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0026116Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0028018Z ##[group]Operating System
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0028813Z Ubuntu
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0029640Z 24.04.5
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0030318Z LTS
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0031026Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0031836Z ##[group]Runner Image
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0032693Z Image: ubuntu-24.04
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0033448Z Version: 20261116.376.1
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0035584Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.376/images/ubuntu/Ubuntu2404-Readme.md
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0037973Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.376
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0039458Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0040965Z ##[group]GITHUB_TOKEN Permissions
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0043904Z Contents: read
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0044793Z Metadata: read
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0045865Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0048479Z Secret source: Actions
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0049734Z Cache mode: write
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0051086Z Prepare workflow directory
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0385832Z Prepare all required actions
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.0433575Z Getting action download info
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.2778943Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.4667484Z Complete job name: Corpus shard 4
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5521815Z ##[group]Run actions/checkout@v7
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5522919Z with:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5523721Z   persist-credentials: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5524671Z   repository: link-assistant/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5530986Z   token: ***
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5531705Z   ssh-strict: true
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5532362Z   ssh-user: git
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5533090Z   clean: true
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5533736Z   sparse-checkout-cone-mode: true
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5534599Z   fetch-depth: 1
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5535549Z   fetch-tags: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5536268Z   show-progress: true
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5536871Z   lfs: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5537339Z   submodules: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5537892Z   set-safe-directory: true
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5538498Z   allow-unsafe-pr-checkout: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.5539601Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.7941485Z Syncing repository: link-assistant/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.7943443Z ##[group]Getting Git version info
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.7944403Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.7945765Z [command]/usr/bin/git version
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8096331Z git version 2.56.1
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8118438Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8129585Z Temporarily overriding HOME='/home/runner/work/_temp/1d4f2f08-2b31-45ee-afc7-36caffb26186' before making global git config changes
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8131495Z Adding repository directory to the temporary git global config as a safe directory
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8135876Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8183407Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8186238Z ##[group]Determining repository object format
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8188379Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8190063Z ##[group]Initializing the repository
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8191658Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8288658Z hint: Using 'master' as the name for the initial branch. This default branch name
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8290604Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8292714Z hint: to use in all of your new repositories, which will suppress this warning,
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8294197Z hint: call:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8295554Z hint:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8296783Z hint: 	git config --global init.defaultBranch <name>
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8297916Z hint:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8299656Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8301449Z hint: 'development'. The just-created branch can be renamed via this command:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8302616Z hint:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8303279Z hint: 	git branch -m <name>
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8303849Z hint:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8304549Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8306165Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8308883Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8365162Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8366827Z ##[group]Disabling automatic garbage collection
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8369715Z [command]/usr/bin/git config --local gc.auto 0
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8407562Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8408869Z ##[group]Setting up auth
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8409592Z Removing SSH command configuration
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8416078Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8452224Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8774375Z Removing HTTP extra header
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8779308Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.8814903Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9029209Z Removing includeIf entries pointing to credentials config files
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9031355Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9063059Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9249025Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9285953Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9319597Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9351675Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9384105Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9414013Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9415467Z ##[group]Fetching the repository
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:32.9421682Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +eee485204ce192f8b15568ee86ea48b900e74185:refs/remotes/origin/main
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2752207Z From https://github.com/link-assistant/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2753887Z  * [new ref]             eee485204ce192f8b15568ee86ea48b900e74185 -> origin/main
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2762165Z [command]/usr/bin/git branch --list --remote origin/main
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2791948Z   origin/main
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2801107Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2827835Z eee485204ce192f8b15568ee86ea48b900e74185
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2832146Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2833355Z ##[group]Determining the checkout info
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2834570Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2838815Z [command]/usr/bin/git sparse-checkout disable
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2888506Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2925906Z ##[group]Checking out the ref
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:03:59.2929141Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:00.4345794Z Updating files:   6% (9115/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:01.4271644Z Updating files:   7% (9355/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:01.6943122Z Updating files:   7% (10484/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:02.0275134Z Updating files:   8% (10691/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:02.1660905Z Updating files:   9% (12027/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:02.3303903Z Updating files:  10% (13364/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:02.4247693Z Updating files:  11% (14700/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:02.4544483Z Updating files:  11% (15784/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:02.6358902Z Updating files:  12% (16036/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.0215132Z Updating files:  13% (17373/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.1804157Z Updating files:  14% (18709/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.3167638Z Updating files:  15% (20045/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.4162459Z Updating files:  16% (21382/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.4779520Z Updating files:  16% (22089/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.5855162Z Updating files:  17% (22718/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.6614809Z Updating files:  18% (24054/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.7247162Z Updating files:  19% (25391/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.7999924Z Updating files:  20% (26727/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.9147522Z Updating files:  21% (28063/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:03.9775596Z Updating files:  22% (29400/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.2181143Z Updating files:  23% (30736/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.2631336Z Updating files:  24% (32072/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.3243721Z Updating files:  25% (33409/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.3788266Z Updating files:  26% (34745/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.4167272Z Updating files:  27% (36081/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.5117302Z Updating files:  27% (36789/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.5641165Z Updating files:  28% (37418/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.6397219Z Updating files:  29% (38754/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.6748552Z Updating files:  30% (40090/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.7209758Z Updating files:  31% (41427/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.7925021Z Updating files:  32% (42763/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.8366763Z Updating files:  33% (44099/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:04.9363054Z Updating files:  34% (45436/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.0124377Z Updating files:  35% (46772/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.0743940Z Updating files:  36% (48108/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.1856285Z Updating files:  37% (49445/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.2844098Z Updating files:  38% (50781/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.3476005Z Updating files:  39% (52117/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.4202031Z Updating files:  40% (53454/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.6181017Z Updating files:  40% (54109/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.6465495Z Updating files:  41% (54790/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.6815095Z Updating files:  42% (56126/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.7167317Z Updating files:  43% (57463/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.8053586Z Updating files:  44% (58799/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:05.9086060Z Updating files:  45% (60135/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.1265938Z Updating files:  46% (61472/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.3164062Z Updating files:  47% (62808/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.4208927Z Updating files:  48% (64144/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.4410351Z Updating files:  48% (65174/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.5736674Z Updating files:  49% (65481/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.8015020Z Updating files:  50% (66817/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.9089397Z Updating files:  51% (68153/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:06.9792313Z Updating files:  52% (69490/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.0240272Z Updating files:  53% (70826/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.0570388Z Updating files:  54% (72162/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.1077325Z Updating files:  55% (73499/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.1686465Z Updating files:  56% (74835/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.2266359Z Updating files:  57% (76171/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.2721273Z Updating files:  58% (77508/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.3322842Z Updating files:  59% (78844/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.8258527Z Updating files:  60% (80180/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.8751379Z Updating files:  60% (80684/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:07.9178129Z Updating files:  61% (81517/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.0084104Z Updating files:  62% (82853/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.0534149Z Updating files:  63% (84189/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.1134058Z Updating files:  64% (85526/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.1535239Z Updating files:  65% (86862/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.2105202Z Updating files:  66% (88198/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.2501831Z Updating files:  67% (89535/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.2823764Z Updating files:  68% (90871/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.3259230Z Updating files:  69% (92207/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.3732704Z Updating files:  70% (93544/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.4160828Z Updating files:  71% (94880/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.4360619Z Updating files:  71% (95616/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.4664085Z Updating files:  72% (96216/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.5734221Z Updating files:  73% (97553/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.7017936Z Updating files:  74% (98889/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:08.9672419Z Updating files:  75% (100225/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.0748557Z Updating files:  76% (101562/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.1735597Z Updating files:  77% (102898/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.2203696Z Updating files:  78% (104234/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.2561895Z Updating files:  79% (105571/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.3151247Z Updating files:  80% (106907/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.3580481Z Updating files:  81% (108243/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.4159753Z Updating files:  82% (109580/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.4160278Z Updating files:  83% (110916/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.4683728Z Updating files:  83% (110920/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.5252771Z Updating files:  84% (112252/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.5818329Z Updating files:  85% (113589/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.6100032Z Updating files:  86% (114925/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.6365535Z Updating files:  87% (116261/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.6657103Z Updating files:  88% (117598/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.6945491Z Updating files:  89% (118934/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.7325050Z Updating files:  90% (120270/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.7603241Z Updating files:  91% (121607/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.7949480Z Updating files:  92% (122943/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.8858677Z Updating files:  93% (124279/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:09.9710478Z Updating files:  94% (125616/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.1475908Z Updating files:  95% (126952/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.2424141Z Updating files:  96% (128288/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.3182578Z Updating files:  97% (129625/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.3954638Z Updating files:  98% (130961/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.4162512Z Updating files:  99% (132297/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.4795409Z Updating files:  99% (132614/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.4796290Z Updating files: 100% (133633/133633)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.4796773Z Updating files: 100% (133633/133633), done.
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7376123Z Switched to a new branch 'main'
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7378985Z branch 'main' set up to track 'origin/main'.
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7575950Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7623450Z [command]/usr/bin/git log -1 --format=%H
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7655550Z eee485204ce192f8b15568ee86ea48b900e74185
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7665860Z ##[group]Removing auth
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7666451Z Removing SSH command configuration
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7667230Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.7697732Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8085912Z Removing HTTP extra header
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8088578Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8124222Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8512669Z Removing includeIf entries pointing to credentials config files
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8515168Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8537649Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8538222Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8538845Z includeif.gitdir:/github/workspace/.git.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8539367Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8546826Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8568404Z /home/runner/work/_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8578095Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-1b68cd6b\-ed47\-42b5\-8332\-944b9e530a57\.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8910836Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8933118Z /home/runner/work/_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.8941579Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-1b68cd6b\-ed47\-42b5\-8332\-944b9e530a57\.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9005716Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9028200Z /github/runner_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9033336Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-1b68cd6b\-ed47\-42b5\-8332\-944b9e530a57\.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9088896Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9111240Z /github/runner_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9124563Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-1b68cd6b\-ed47\-42b5\-8332\-944b9e530a57\.config
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9497328Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9891755Z Removing credentials config '/home/runner/work/_temp/git-credentials-1b68cd6b-ed47-42b5-8332-944b9e530a57.config'
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:10.9901580Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:11.0664427Z Prepare all required actions
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:11.0665101Z Getting action download info
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:11.1601442Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:11.5029795Z Download action repository 'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0207660Z ##[group]Run ./.github/actions/download-artifact
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0208053Z with:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0208384Z   name: corpus-gate-executable
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0208710Z   path: corpus-gate
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0209083Z   merge-multiple: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0209531Z   repository: link-assistant/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0209865Z   run-id: 45549993299
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0210165Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0274704Z ##[start-action display=Run actions/setup-python@v6;id=__self.python]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0525742Z ##[group]Run actions/setup-python@v6
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0526281Z with:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0526536Z   update-environment: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0526888Z   python-version: 3.14
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0527226Z   check-latest: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0529312Z   token: ***
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0529595Z   allow-prereleases: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0529891Z   freethreaded: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.0530208Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.1845662Z ##[group]Installed versions
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.1936405Z Successfully set up CPython (3.14.10)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.1937475Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2044460Z ##[end-action id=__self.python;outcome=success;conclusion=success;duration_ms=176]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2049972Z ##[start-action display=Allocate raw archive directory;id=__self.temporary]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2707268Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2708102Z ^[[36;1mecho "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2726094Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2726510Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2845579Z ##[end-action id=__self.temporary;outcome=success;conclusion=success;duration_ms=79]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2854672Z ##[start-action display=Prepare portable Node observation options;id=__self.observation_options]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2902635Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2903199Z ^[[36;1maction_directory="${ACTION_DIRECTORY//\\//}"^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2904007Z ^[[36;1mprintf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2916542Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2916998Z env:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2917441Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.2917975Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3021574Z ##[end-action id=__self.observation_options;outcome=success;conclusion=success;duration_ms=16]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3027388Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_first]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3096449Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3096953Z with:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3097324Z   name: corpus-gate-executable
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3097797Z   repository: link-assistant/formal-ai
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3098320Z   run-id: 45549993299
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3098801Z   path: /home/runner/work/_temp/artifact-archives.vSUkmQ
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3099187Z   merge-multiple: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3099490Z   skip-decompress: true
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3099794Z   digest-mismatch: error
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3100114Z env:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3100726Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3101515Z   ARTIFACT_RETRY_ATTEMPT: 1
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.3101842Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.4451101Z Downloading single artifact
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.6172810Z Preparing to download the following artifacts:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.6174064Z - corpus-gate-executable (ID: 14993292289, Size: 83119962, Expected Digest: sha256:edd2d0bdcf16848e735e7d7001a023b5758df6249218f0ac37396392289945aa)
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.8821732Z Redirecting to blob download url: https://productionresultssa19.blob.core.windows.net/actions-results/c3209a2d-7d6f-815f-90c1-7517ea8cc49a/workflow-job-run-bbe413fc-b12c-542e-a83b-810f36ebfd0e/artifacts/70ac6116724de0b317d84440ca144345ad73dba212b98960232671eac8654636.zip
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:12.8824459Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.vSUkmQ
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.0047783Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.vSUkmQ/corpus-gate-executable.zip
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8735921Z SHA256 digest of downloaded artifact is edd2d0bdcf16848e735e7d7001a023b5758df6249218f0ac37396392289945aa
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8736700Z Artifact download completed successfully.
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8737170Z Total of 1 artifact(s) downloaded
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8739735Z Download artifact has finished successfully
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8822378Z ##[end-action id=__self.download_first;outcome=success;conclusion=success;duration_ms=1579]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8828494Z ##[start-action display=Discard partial archives before the second download;id=__self.retry_second]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8841965Z ##[end-action id=__self.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8846164Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_second]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8852582Z ##[end-action id=__self.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8856009Z ##[start-action display=Discard partial archives before the third download;id=__self.retry_third]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8861362Z ##[end-action id=__self.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8864361Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_third]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8870760Z ##[end-action id=__self.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.8877030Z ##[start-action display=Extract verified archives;id=__self.extract]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9723932Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9725611Z ^[[36;1m"$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9741655Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9742154Z env:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9742528Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9743133Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9743744Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.vSUkmQ
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9744184Z   DESTINATION: corpus-gate
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9744535Z   MERGE_MULTIPLE: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9744853Z   ALLOW_EMPTY_SELECTION: false
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:13.9745197Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2469029Z Artifact extraction destination: /home/runner/work/formal-ai/formal-ai/corpus-gate
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2577648Z ##[end-action id=__self.extract;outcome=success;conclusion=success;duration_ms=1369]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2582748Z ##[start-action display=Remove temporary raw archives;id=__self.__run]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2814303Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2815053Z ^[[36;1mrm -rf -- "$RAW_DIRECTORY"^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2834961Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2835526Z env:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2836088Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.vSUkmQ
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.2836544Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3092901Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=50]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3219918Z ##[group]Run set -euo pipefail
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3220398Z ^[[36;1mset -euo pipefail^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3220793Z ^[[36;1mchmod +x corpus-gate/integration^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3221277Z ^[[36;1mexport FORMAL_AI_CORPUS_SHARD="$((SHARD_INDEX + 1))/${SHARD_TOTAL}"^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3221971Z ^[[36;1m# cargo runs an integration test from the package root; so does this.^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3222417Z ^[[36;1mcd rust^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3222764Z ^[[36;1m../scripts/run-with-budget-warning.sh \^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3223287Z ^[[36;1m  "$TEST_BUDGET_SECONDS" "Benchmark corpus gate shard" \^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3223793Z ^[[36;1m  ../corpus-gate/integration issue_1138_no_silent_unknown --nocapture \^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3224311Z ^[[36;1m  | tee ../corpus-shard.log^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3224776Z ^[[36;1m# A filter that matches nothing reports `ok` with zero tests; that^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3225461Z ^[[36;1m# is a shard that checked nothing, not a pass.^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3226107Z ^[[36;1mgrep -E '^test result: ok\. 1 passed' ../corpus-shard.log >/dev/null || {^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3226791Z ^[[36;1m  echo "::error title=Corpus shard ran no gate::the shard's filter matched no test, so no prompt was checked" >&2^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3227341Z ^[[36;1m  exit 1^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3227692Z ^[[36;1m}^[[0m
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3241000Z shell: /usr/bin/bash -e {0}
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3241423Z env:
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3241718Z   TEST_BUDGET_SECONDS: 900
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3242159Z   TEST_WARN_RATIO_PERCENT: 70
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3242485Z   SHARD_INDEX: 3
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3242755Z   SHARD_TOTAL: 6
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3243069Z ##[endgroup]
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3403109Z 
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:15.3403923Z running 1 test
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:04:16.0943899Z corpus shard 4/6: 233 of 1399 prompts
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:05:15.3405771Z test issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener has been running for over 60 seconds
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:11:41.7447943Z Terminated
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:11:41.8270238Z ##[error]The runner has received a shutdown signal. This can happen when the runner service is stopped, or a manually started runner is canceled.
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:11:41.8272690Z ##[error]Process completed with exit code 143.
+Corpus shard 4	UNKNOWN STEP	2026-11-25T05:11:41.9499396Z Cleaning up orphan processes
+Corpus shard 1	UNKNOWN STEP	﻿2026-11-25T05:04:25.5019769Z Current runner version: '2.338.2'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5055729Z ##[group]Runner Image Provisioner
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5057079Z Hosted Compute Agent
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5058347Z Version: 20261111.635
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5059506Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5060994Z Build Date: 2026-11-11T01:49:01Z
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5062298Z Worker ID: {95bb0e7e-722d-446e-9d56-57a387e9b13d}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5063584Z Region: eastus2
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5065167Z Cloud: Azure
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5066156Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5068557Z ##[group]Operating System
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5069793Z Ubuntu
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5070677Z 24.04.5
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5071629Z LTS
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5072485Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5073651Z ##[group]Runner Image
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5075262Z Image: ubuntu-24.04
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5076257Z Version: 20261116.376.1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5078645Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.376/images/ubuntu/Ubuntu2404-Readme.md
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5081796Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.376
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5083724Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5085897Z ##[group]GITHUB_TOKEN Permissions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5089226Z Contents: read
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5090257Z Metadata: read
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5091222Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5094809Z Secret source: Actions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5096438Z Cache mode: write
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5097867Z Prepare workflow directory
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5574552Z Prepare all required actions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.5645275Z Getting action download info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:25.7647879Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.0116683Z Complete job name: Corpus shard 1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.0998804Z ##[group]Run actions/checkout@v7
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.0999735Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1000227Z   persist-credentials: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1000837Z   repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1005156Z   token: ***
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1005639Z   ssh-strict: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1006116Z   ssh-user: git
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1006572Z   clean: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1007052Z   sparse-checkout-cone-mode: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1007634Z   fetch-depth: 1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1008096Z   fetch-tags: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1008576Z   show-progress: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1009060Z   lfs: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1009518Z   submodules: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1010007Z   set-safe-directory: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1010541Z   allow-unsafe-pr-checkout: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.1011383Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3340411Z Syncing repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3343434Z ##[group]Getting Git version info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3345180Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3347148Z [command]/usr/bin/git version
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3395018Z git version 2.56.1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3425049Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3431747Z Temporarily overriding HOME='/home/runner/work/_temp/5eb30471-8b14-4b64-a13d-53c174f7f3b1' before making global git config changes
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3435284Z Adding repository directory to the temporary git global config as a safe directory
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3437682Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3484604Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3488498Z ##[group]Determining repository object format
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3489828Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3490701Z ##[group]Initializing the repository
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3495644Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3599205Z hint: Using 'master' as the name for the initial branch. This default branch name
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3600984Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3602664Z hint: to use in all of your new repositories, which will suppress this warning,
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3604482Z hint: call:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3605309Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3606292Z hint: 	git config --global init.defaultBranch <name>
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3607302Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3607975Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3609921Z hint: 'development'. The just-created branch can be renamed via this command:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3611338Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3611870Z hint: 	git branch -m <name>
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3612425Z hint:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3613162Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3614719Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3618615Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3671422Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3672423Z ##[group]Disabling automatic garbage collection
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3675329Z [command]/usr/bin/git config --local gc.auto 0
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3712079Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3713847Z ##[group]Setting up auth
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3715345Z Removing SSH command configuration
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3718356Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.3758149Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4132405Z Removing HTTP extra header
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4139433Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4192608Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4463845Z Removing includeIf entries pointing to credentials config files
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4470094Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4514853Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4772932Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4823157Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4866639Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4911127Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.4956084Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.5000548Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.5002302Z ##[group]Fetching the repository
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:26.5009304Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +eee485204ce192f8b15568ee86ea48b900e74185:refs/remotes/origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3038098Z From https://github.com/link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3039295Z  * [new ref]             eee485204ce192f8b15568ee86ea48b900e74185 -> origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3042206Z [command]/usr/bin/git branch --list --remote origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3097876Z   origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3107459Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3145417Z eee485204ce192f8b15568ee86ea48b900e74185
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3150534Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3151470Z ##[group]Determining the checkout info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3152508Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3158584Z [command]/usr/bin/git sparse-checkout disable
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3228682Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3273631Z ##[group]Checking out the ref
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:47.3278247Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:48.5466610Z Updating files:   6% (8458/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:49.4650989Z Updating files:   7% (9355/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:49.6375763Z Updating files:   7% (10610/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:49.9562327Z Updating files:   8% (10691/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:50.1036903Z Updating files:   9% (12027/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:50.2654547Z Updating files:  10% (13364/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:50.3906798Z Updating files:  11% (14700/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:50.4675207Z Updating files:  12% (16036/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:50.5633180Z Updating files:  12% (16486/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:50.8966176Z Updating files:  13% (17373/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.0596800Z Updating files:  14% (18709/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.2038385Z Updating files:  15% (20045/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.3631382Z Updating files:  16% (21382/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.4646376Z Updating files:  17% (22718/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.4890940Z Updating files:  17% (23478/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.5812008Z Updating files:  18% (24054/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.6615437Z Updating files:  19% (25391/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.7500941Z Updating files:  20% (26727/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.8589366Z Updating files:  21% (28063/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:51.9387104Z Updating files:  22% (29400/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.1615391Z Updating files:  23% (30736/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.2308642Z Updating files:  24% (32072/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.3118137Z Updating files:  25% (33409/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.3905556Z Updating files:  26% (34745/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.4883514Z Updating files:  27% (36081/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.5346062Z Updating files:  27% (36836/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.6066772Z Updating files:  28% (37418/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.6956577Z Updating files:  29% (38754/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.7602342Z Updating files:  30% (40090/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.8285647Z Updating files:  31% (41427/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.9145414Z Updating files:  32% (42763/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:52.9807776Z Updating files:  33% (44099/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.0934812Z Updating files:  34% (45436/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.1832503Z Updating files:  35% (46772/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.2674233Z Updating files:  36% (48108/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.3956143Z Updating files:  37% (49445/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.4663107Z Updating files:  38% (50781/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.5077673Z Updating files:  38% (51516/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.5873329Z Updating files:  39% (52117/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.7096339Z Updating files:  40% (53454/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.7598802Z Updating files:  41% (54790/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.8154882Z Updating files:  42% (56126/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.8686513Z Updating files:  43% (57463/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:53.9644186Z Updating files:  44% (58799/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:54.0949293Z Updating files:  45% (60135/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:54.2808871Z Updating files:  46% (61472/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:54.4530205Z Updating files:  47% (62808/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:54.4644364Z Updating files:  48% (64144/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:54.5739860Z Updating files:  48% (64443/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:54.7074052Z Updating files:  49% (65481/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:54.9402775Z Updating files:  50% (66817/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.0615022Z Updating files:  51% (68153/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.1486051Z Updating files:  52% (69490/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.2126231Z Updating files:  53% (70826/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.2674109Z Updating files:  54% (72162/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.3355470Z Updating files:  55% (73499/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.4149283Z Updating files:  56% (74835/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.4645020Z Updating files:  57% (76171/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.4918973Z Updating files:  57% (76882/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.5551763Z Updating files:  58% (77508/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.6439572Z Updating files:  59% (78844/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.7488596Z Updating files:  60% (80180/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.8121326Z Updating files:  61% (81517/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.9141800Z Updating files:  62% (82853/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:55.9780683Z Updating files:  63% (84189/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.0587867Z Updating files:  64% (85526/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.1186602Z Updating files:  65% (86862/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.1953044Z Updating files:  66% (88198/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.2596582Z Updating files:  67% (89535/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.3205139Z Updating files:  68% (90871/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.3872921Z Updating files:  69% (92207/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.4576090Z Updating files:  70% (93544/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.4644276Z Updating files:  71% (94880/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.5427033Z Updating files:  71% (94957/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.6505948Z Updating files:  72% (96216/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.7773202Z Updating files:  73% (97553/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:56.9105335Z Updating files:  74% (98889/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.0929515Z Updating files:  75% (100225/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.1695776Z Updating files:  76% (101562/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.2753582Z Updating files:  77% (102898/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.3428657Z Updating files:  78% (104234/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.4014844Z Updating files:  79% (105571/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.4646690Z Updating files:  80% (106907/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.4774503Z Updating files:  80% (108052/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.5415328Z Updating files:  81% (108243/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.6166184Z Updating files:  82% (109580/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.6877978Z Updating files:  83% (110916/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.7616536Z Updating files:  84% (112252/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.8367263Z Updating files:  85% (113589/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.8905335Z Updating files:  86% (114925/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.9430958Z Updating files:  87% (116261/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:57.9974931Z Updating files:  88% (117598/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.0526021Z Updating files:  89% (118934/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.1162651Z Updating files:  90% (120270/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.1688128Z Updating files:  91% (121607/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.2290591Z Updating files:  92% (122943/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.3520590Z Updating files:  93% (124279/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.4529972Z Updating files:  94% (125616/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.4644412Z Updating files:  95% (126952/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.5635060Z Updating files:  95% (127123/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.6754899Z Updating files:  96% (128288/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.7770661Z Updating files:  97% (129625/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.8795752Z Updating files:  98% (130961/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.9790919Z Updating files:  99% (132297/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.9791379Z Updating files: 100% (133633/133633)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:58.9791800Z Updating files: 100% (133633/133633), done.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1241720Z Switched to a new branch 'main'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1244016Z branch 'main' set up to track 'origin/main'.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1580572Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1639350Z [command]/usr/bin/git log -1 --format=%H
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1686588Z eee485204ce192f8b15568ee86ea48b900e74185
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1697118Z ##[group]Removing auth
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1697582Z Removing SSH command configuration
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1698840Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.1745639Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2201529Z Removing HTTP extra header
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2205951Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2275992Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2730895Z Removing includeIf entries pointing to credentials config files
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2734789Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2778715Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2779908Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2781216Z includeif.gitdir:/github/workspace/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2782213Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2788619Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2827406Z /home/runner/work/_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2837218Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-ba445614\-beca\-46e9\-b4df\-29a5a033de63\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2889387Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2928147Z /home/runner/work/_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2936781Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-ba445614\-beca\-46e9\-b4df\-29a5a033de63\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.2986537Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3023494Z /github/runner_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3031334Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-ba445614\-beca\-46e9\-b4df\-29a5a033de63\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3077239Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3207414Z /github/runner_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3216444Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-ba445614\-beca\-46e9\-b4df\-29a5a033de63\.config
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3226130Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3642147Z Removing credentials config '/home/runner/work/_temp/git-credentials-ba445614-beca-46e9-b4df-29a5a033de63.config'
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.3651870Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.4112451Z Prepare all required actions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.4113094Z Getting action download info
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.6213845Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.6988235Z Download action repository 'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9230530Z ##[group]Run ./.github/actions/download-artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9230847Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9231055Z   name: corpus-gate-executable
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9231303Z   path: corpus-gate
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9231523Z   merge-multiple: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9231957Z   repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9232227Z   run-id: 45549993299
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9232431Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9292812Z ##[start-action display=Run actions/setup-python@v6;id=__self.python]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9380769Z ##[group]Run actions/setup-python@v6
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9381094Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9381303Z   update-environment: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9381552Z   python-version: 3.14
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9381771Z   check-latest: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9384873Z   token: ***
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9385099Z   allow-prereleases: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9385333Z   freethreaded: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:04:59.9385542Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.0740237Z ##[group]Installed versions
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.0826697Z Successfully set up CPython (3.14.10)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.0827485Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.0931460Z ##[end-action id=__self.python;outcome=success;conclusion=success;duration_ms=163]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.0936925Z ##[start-action display=Allocate raw archive directory;id=__self.temporary]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.0971070Z ##[group]Run echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.0971837Z ^[[36;1mecho "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1022957Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1023333Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1122036Z ##[end-action id=__self.temporary;outcome=success;conclusion=success;duration_ms=18]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1134075Z ##[start-action display=Prepare portable Node observation options;id=__self.observation_options]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1159321Z ##[group]Run action_directory="${ACTION_DIRECTORY//\\//}"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1159737Z ^[[36;1maction_directory="${ACTION_DIRECTORY//\\//}"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1160364Z ^[[36;1mprintf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1181058Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1181424Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1181829Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1182294Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1270699Z ##[end-action id=__self.observation_options;outcome=success;conclusion=success;duration_ms=13]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1275857Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_first]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1352186Z ##[group]Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1352580Z with:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1352777Z   name: corpus-gate-executable
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1353040Z   repository: link-assistant/formal-ai
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1353294Z   run-id: 45549993299
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1353567Z   path: /home/runner/work/_temp/artifact-archives.gwhsMh
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1353886Z   merge-multiple: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1354461Z   skip-decompress: true
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1354703Z   digest-mismatch: error
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1354918Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1355505Z   NODE_OPTIONS: --throw-deprecation --require="/home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact/retry-observations.cjs"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1356348Z   ARTIFACT_RETRY_ATTEMPT: 1
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.1356583Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.2800945Z Downloading single artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.4184539Z Preparing to download the following artifacts:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.4185462Z - corpus-gate-executable (ID: 14993292289, Size: 83119962, Expected Digest: sha256:edd2d0bdcf16848e735e7d7001a023b5758df6249218f0ac37396392289945aa)
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.5756774Z Redirecting to blob download url: https://productionresultssa19.blob.core.windows.net/actions-results/c3209a2d-7d6f-815f-90c1-7517ea8cc49a/workflow-job-run-bbe413fc-b12c-542e-a83b-810f36ebfd0e/artifacts/70ac6116724de0b317d84440ca144345ad73dba212b98960232671eac8654636.zip
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.5759578Z Starting download of artifact to: /home/runner/work/_temp/artifact-archives.gwhsMh
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:00.6876470Z Downloading raw file (non-zip) to: /home/runner/work/_temp/artifact-archives.gwhsMh/corpus-gate-executable.zip
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4560913Z SHA256 digest of downloaded artifact is edd2d0bdcf16848e735e7d7001a023b5758df6249218f0ac37396392289945aa
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4562028Z Artifact download completed successfully.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4562678Z Total of 1 artifact(s) downloaded
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4570274Z Download artifact has finished successfully
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4737858Z ##[end-action id=__self.download_first;outcome=success;conclusion=success;duration_ms=1346]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4744870Z ##[start-action display=Discard partial archives before the second download;id=__self.retry_second]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4758825Z ##[end-action id=__self.retry_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4763293Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_second]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4768451Z ##[end-action id=__self.download_second;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4771578Z ##[start-action display=Discard partial archives before the third download;id=__self.retry_third]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4777594Z ##[end-action id=__self.retry_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4782043Z ##[start-action display=Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333;id=__self.download_third]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4787716Z ##[end-action id=__self.download_third;outcome=skipped;conclusion=skipped;duration_ms=0]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4792809Z ##[start-action display=Extract verified archives;id=__self.extract]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4849501Z ##[group]Run "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4850952Z ^[[36;1m"$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4872634Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4872981Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4873280Z   ARTIFACT_PYTHON: /opt/hostedtoolcache/Python/3.14.10/x64/bin/python
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4873847Z   ACTION_DIRECTORY: /home/runner/work/formal-ai/formal-ai/./.github/actions/download-artifact
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4874599Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.gwhsMh
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4874960Z   DESTINATION: corpus-gate
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4875197Z   MERGE_MULTIPLE: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4875422Z   ALLOW_EMPTY_SELECTION: false
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:01.4875662Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.8860124Z Artifact extraction destination: /home/runner/work/formal-ai/formal-ai/corpus-gate
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.8956537Z ##[end-action id=__self.extract;outcome=success;conclusion=success;duration_ms=3416]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.8961003Z ##[start-action display=Remove temporary raw archives;id=__self.__run]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.8983784Z ##[group]Run rm -rf -- "$RAW_DIRECTORY"
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.8984485Z ^[[36;1mrm -rf -- "$RAW_DIRECTORY"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9004242Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9004586Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9004871Z   RAW_DIRECTORY: /home/runner/work/_temp/artifact-archives.gwhsMh
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9005232Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9129818Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=16]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9185106Z ##[group]Run set -euo pipefail
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9185455Z ^[[36;1mset -euo pipefail^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9185730Z ^[[36;1mchmod +x corpus-gate/integration^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9186133Z ^[[36;1mexport FORMAL_AI_CORPUS_SHARD="$((SHARD_INDEX + 1))/${SHARD_TOTAL}"^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9186832Z ^[[36;1m# cargo runs an integration test from the package root; so does this.^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9187230Z ^[[36;1mcd rust^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9187476Z ^[[36;1m../scripts/run-with-budget-warning.sh \^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9187853Z ^[[36;1m  "$TEST_BUDGET_SECONDS" "Benchmark corpus gate shard" \^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9188323Z ^[[36;1m  ../corpus-gate/integration issue_1138_no_silent_unknown --nocapture \^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9188737Z ^[[36;1m  | tee ../corpus-shard.log^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9189099Z ^[[36;1m# A filter that matches nothing reports `ok` with zero tests; that^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9189508Z ^[[36;1m# is a shard that checked nothing, not a pass.^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9189975Z ^[[36;1mgrep -E '^test result: ok\. 1 passed' ../corpus-shard.log >/dev/null || {^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9190611Z ^[[36;1m  echo "::error title=Corpus shard ran no gate::the shard's filter matched no test, so no prompt was checked" >&2^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9191108Z ^[[36;1m  exit 1^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9191312Z ^[[36;1m}^[[0m
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9209905Z shell: /usr/bin/bash -e {0}
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9210158Z env:
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9210358Z   TEST_BUDGET_SECONDS: 900
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9210600Z   TEST_WARN_RATIO_PERCENT: 70
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9210844Z   SHARD_INDEX: 0
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9211037Z   SHARD_TOTAL: 6
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9211230Z ##[endgroup]
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9328495Z 
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:04.9328712Z running 1 test
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:05:05.6445407Z corpus shard 1/6: 234 of 1399 prompts
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:06:04.9331645Z test issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener has been running for over 60 seconds
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:11:43.5171069Z Terminated
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:11:43.5853880Z ##[error]The runner has received a shutdown signal. This can happen when the runner service is stopped, or a manually started runner is canceled.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:11:43.5862022Z ##[error]Process completed with exit code 143.
+Corpus shard 1	UNKNOWN STEP	2026-11-25T05:11:43.7180400Z Cleaning up orphan processes
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	﻿2026-11-25T05:35:44.8629120Z Current runner version: '2.338.2'
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8647030Z ##[group]Runner Image Provisioner
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8647650Z Hosted Compute Agent
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8648109Z Version: 20261111.635
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8648624Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8649152Z Build Date: 2026-11-11T01:49:01Z
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8649678Z Worker ID: {79af6532-584f-475a-99a7-67c07edc41c0}
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8650181Z Region: us-east-1
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8650603Z Cloud: AWS
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8650974Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8651817Z ##[group]Operating System
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8652296Z Ubuntu
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8652658Z 24.04.5
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8653016Z LTS
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8653382Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8653756Z ##[group]Runner Image
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8654209Z Image: ubuntu-24.04
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8654635Z Version: 20261116.133.1
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8655538Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.133/images/ubuntu/Ubuntu2404-Readme.md
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8656871Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.133
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8657593Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8658399Z ##[group]GITHUB_TOKEN Permissions
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8660066Z Contents: read
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8660470Z Metadata: read
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8660908Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8662403Z Secret source: Actions
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8663036Z Cache mode: write
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8663543Z Prepare workflow directory
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8888015Z Prepare all required actions
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:44.8924715Z Getting action download info
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:45.0570760Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.0953517Z Complete job name: no benchmark prompt reaches the unknown opener (all shards)
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1676149Z ##[group]Run actions/checkout@v7
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1677422Z with:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1678266Z   persist-credentials: false
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1679176Z   fetch-depth: 1
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1679968Z   filter: blob:none
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1680794Z   sparse-checkout-cone-mode: false
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1681874Z   sparse-checkout: /scripts/check-shard-results.sh
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1683056Z   repository: link-assistant/formal-ai
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1689707Z   token: ***
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1690524Z   ssh-strict: true
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1691329Z   ssh-user: git
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1692103Z   clean: true
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1692892Z   fetch-tags: false
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1693703Z   show-progress: true
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1694514Z   lfs: false
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1695256Z   submodules: false
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1696209Z   set-safe-directory: true
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1697138Z   allow-unsafe-pr-checkout: false
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1698292Z env:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1699138Z   GIT_CONFIG_COUNT: 2
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1700007Z   GIT_CONFIG_KEY_0: http.lowSpeedLimit
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1700987Z   GIT_CONFIG_VALUE_0: 1024
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1701933Z   GIT_CONFIG_KEY_1: http.lowSpeedTime
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1702933Z   GIT_CONFIG_VALUE_1: 20
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:47.1703763Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.5970059Z Syncing repository: link-assistant/formal-ai
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.5971477Z ##[group]Getting Git version info
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.5971903Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.5972498Z [command]/usr/bin/git version
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8323143Z git version 2.56.1
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8350319Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8355471Z Temporarily overriding HOME='/home/runner/work/_temp/09a9037c-0185-42d8-a756-1d956f7fc910' before making global git config changes
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8356682Z Adding repository directory to the temporary git global config as a safe directory
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8357484Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8807478Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8809956Z ##[group]Determining repository object format
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8811208Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8811686Z ##[group]Initializing the repository
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.8815536Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9369088Z hint: Using 'master' as the name for the initial branch. This default branch name
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9369681Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9370412Z hint: to use in all of your new repositories, which will suppress this warning,
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9370797Z hint: call:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9371011Z hint:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9371330Z hint: 	git config --global init.defaultBranch <name>
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9371625Z hint:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9372058Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9372493Z hint: 'development'. The just-created branch can be renamed via this command:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9372838Z hint:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9373069Z hint: 	git branch -m <name>
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9373339Z hint:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9373640Z hint: Disable this message with "git config set advice.defaultBranchName false"
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9384896Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9394591Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9469562Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9470062Z ##[group]Disabling automatic garbage collection
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9472091Z [command]/usr/bin/git config --local gc.auto 0
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9498845Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9499256Z ##[group]Setting up auth
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9499737Z Removing SSH command configuration
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9504004Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:50.9537112Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.2701466Z Removing HTTP extra header
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.2706723Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.2739492Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.2886420Z Removing includeIf entries pointing to credentials config files
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.2891735Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.2919242Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3074610Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3105993Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3129018Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3151584Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3176982Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3198645Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3199132Z ##[group]Fetching the repository
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.3204131Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin +eee485204ce192f8b15568ee86ea48b900e74185:refs/remotes/origin/main
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9085846Z From https://github.com/link-assistant/formal-ai
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9086663Z  * [new ref]         eee485204ce192f8b15568ee86ea48b900e74185 -> origin/main
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9094851Z [command]/usr/bin/git branch --list --remote origin/main
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9142902Z   origin/main
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9148048Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9163593Z eee485204ce192f8b15568ee86ea48b900e74185
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9166033Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9166576Z ##[group]Determining the checkout info
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9167150Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9167723Z ##[group]Setting up sparse checkout
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9170556Z [command]/usr/bin/git config core.sparseCheckout true
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9195094Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9214173Z .git/info/sparse-checkout
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9219220Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9219771Z ##[group]Checking out the ref
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:51.9222396Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4796119Z Switched to a new branch 'main'
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4811301Z branch 'main' set up to track 'origin/main'.
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4825355Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4868204Z [command]/usr/bin/git log -1 --format=%H
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4890310Z eee485204ce192f8b15568ee86ea48b900e74185
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4899414Z ##[group]Removing auth
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4899731Z Removing SSH command configuration
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4900306Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.4926510Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5257281Z Removing HTTP extra header
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5260731Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5285257Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5601005Z Removing includeIf entries pointing to credentials config files
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5604144Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5632853Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5633565Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5634079Z includeif.gitdir:/github/workspace/.git.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5634450Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5639494Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5657850Z /home/runner/work/_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5664711Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-7d4228fd\-5559\-4af7\-a659\-5d28135dad13\.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5692389Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5710847Z /home/runner/work/_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5717037Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-7d4228fd\-5559\-4af7\-a659\-5d28135dad13\.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5741571Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5759684Z /github/runner_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5764894Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-7d4228fd\-5559\-4af7\-a659\-5d28135dad13\.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5789469Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5806634Z /github/runner_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5812260Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-7d4228fd\-5559\-4af7\-a659\-5d28135dad13\.config
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.5835842Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.6164302Z Removing credentials config '/home/runner/work/_temp/git-credentials-7d4228fd-5559-4af7-a659-5d28135dad13.config'
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.6184340Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.6373063Z ##[group]Run bash scripts/check-shard-results.sh
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.6373534Z ^[[36;1mbash scripts/check-shard-results.sh^[[0m
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.9911386Z shell: /usr/bin/bash -e {0}
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.9911739Z env:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.9912223Z   NEEDS_JSON: {
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	  "corpus-build": {
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	    "result": "success",
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	    "outputs": {}
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	  },
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	  "corpus-shard": {
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	    "result": "failure",
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	    "outputs": {}
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	  }
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	}
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.9912696Z   JOBS: corpus-build corpus-shard
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.9912961Z   CHECK: Benchmark corpus gate
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:52.9913195Z ##[endgroup]
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0082163Z ##[error]not every shard succeeded (corpus-shard=failure). A failed, timed-out (cancelled) or skipped shard is a missing measurement, never a pass.
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0090467Z ##[error]Process completed with exit code 1.
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0188265Z Post job cleanup.
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0856715Z [command]/usr/bin/git version
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0883708Z git version 2.56.1
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0909370Z Temporarily overriding HOME='/home/runner/work/_temp/21a685f0-3f07-451a-a50b-9e4653f810b6' before making global git config changes
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0910377Z Adding repository directory to the temporary git global config as a safe directory
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0913354Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0939818Z Removing SSH command configuration
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0944220Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.0971345Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.1324876Z Removing HTTP extra header
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.1329206Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.1378006Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.1725547Z Removing includeIf entries pointing to credentials config files
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.1730969Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.1755383Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+no benchmark prompt reaches the unknown opener (all shards)	UNKNOWN STEP	2026-11-25T05:35:53.2188037Z Cleaning up orphan processes

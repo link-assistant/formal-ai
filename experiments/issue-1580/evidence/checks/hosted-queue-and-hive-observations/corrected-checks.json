@@ -1,0 +1,65 @@
+[
+  {
+    "file": "corrected-checks/gates.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "corrected-checks/gates.stdout.gz",
+    "rawSha256": "5a305b4a0f16073311bdd4dc5b30f7f5a894ad763077390b4a966f08bf6cf916",
+    "archiveSha256": "938393b2a465ed4b7bbd31ae5d5045402238f111bb9f362d0df6d3b1b05c5e35",
+    "bytes": 213,
+    "lines": 8
+  },
+  {
+    "file": "corrected-checks/native-groups.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "corrected-checks/native-groups.stdout.gz",
+    "rawSha256": "d3e89f1cd7c2fe614e0c304c2d4923bab75000c57f9126f052c5de26c3996079",
+    "archiveSha256": "b7191cbd57ea9d40d464915fff1c5d2bb641c3c314a0fe17a2ab878d7c2f7dda",
+    "bytes": 5491,
+    "lines": 58
+  },
+  {
+    "file": "corrected-checks/outcome.json.gz",
+    "rawSha256": "00c7d3a0ed538e470655babfe8b7fea1baa4ba7f9494ae6f4791868b7b81e492",
+    "archiveSha256": "9ab317ca23f36f5ac1dfcb480a5a11eafbc3e29fe07b30788a283f9ef17e6c66",
+    "bytes": 103,
+    "lines": 1
+  },
+  {
+    "file": "corrected-checks/records.json.gz",
+    "rawSha256": "5feefab10ce9f3e2dc12730afe2a6e491ece9a86f12bb55b0f92cf75964ffc18",
+    "archiveSha256": "ef2a9957e4e39ef5945deca52ca81565f325020e714f23822db6141b4c2ce718",
+    "bytes": 600,
+    "lines": 31
+  },
+  {
+    "file": "corrected-checks/whitespace.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "corrected-checks/whitespace.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "corrected-checks/worker.log.gz",
+    "rawSha256": "9bd310078994cdaaa3ebfa8e848255e04f5760cb801a29b1258b8ff24945b968",
+    "archiveSha256": "3ed6cbac49b87c5ea28bfd53bcc5940f0c246d9b8a96e982523ee237b5a1a423",
+    "bytes": 46,
+    "lines": 3
+  }
+]

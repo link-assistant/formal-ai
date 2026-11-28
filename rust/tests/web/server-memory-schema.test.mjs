@@ -71,7 +71,7 @@ test('/health reports detected, minimum, maximum and target schema without migra
   const dir = fixtureDir('health');
   const file = path.join(dir, 'memory.lino');
   fs.writeFileSync(file, RELEASED);
-  assert.deepEqual(memoryHealthStatus(env(file)), {
+  const expected = {
     active_path: file,
     configured_path: file,
     compatible: true,
@@ -79,9 +79,16 @@ test('/health reports detected, minimum, maximum and target schema without migra
     migration_required: true,
     migration_state: 'upgrade_required',
     minimum_readable_schema_version: 1,
+    mode: 'read_write',
     schema_version: 1,
     target_schema_version: 2,
+  };
+  assert.deepEqual(memoryHealthStatus(env(file)), expected);
+  const originalPath = path.join(dir, 'configured-memory.lino');
+  assert.deepEqual(memoryHealthStatus(env(file), { originalPath }, true), {
+    ...expected, configured_path: originalPath, mode: 'read_only',
   });
+  assert.deepEqual(fs.readdirSync(dir), ['memory.lino']);
   assert.equal(fs.readFileSync(file, 'utf8'), RELEASED);
   fs.rmSync(dir, { recursive: true, force: true });
 });

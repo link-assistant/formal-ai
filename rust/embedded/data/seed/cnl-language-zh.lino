@@ -16,194 +16,289 @@
 # Input-only surfaces: a bare 鼠 names the rodent and, colloquially (无线鼠),
 # the computer mouse, so a question with it asks which one is meant.
 cnl-language zh
-  keys "bare|measure"
+  keys ("bare" "measure")
   sentence-space ""
-  grammar "的|了|吗|也|都|一|个|只|棵|片|根|台"
+  grammar ("的" "了" "吗" "也" "都" "一" "个" "只" "棵" "片" "根" "台")
   copula "是"
-  pronouns "它|他|她|这|那|此|其|该"
-  fillers "嗯|呃|啊|哎|哦|喂|哈|吧|呢|呀|啦|请|请问|问一下|一下|帮我|麻烦你|到底|究竟"
-  loose "个=只|棵=只|株=只|片=只|根=只|台=只|条=只|头=只|位=只|部=只"
-  typos "貓=猫|動=动|樹=树|葉=叶|電=电|腦=脑|恼=脑|帳=账|賬=账|帐=账|戶=户|碼=码|標=标|隻=只|這=这|嗎=吗|么=吗|麼=吗|嘛=吗|種=种|須=须|個=个|臺=台|類=类|屬=属|構=构|計=计|數=数|們=们|於=于|與=与|減=减|後=后|還=还|書=书|買=买|現=现|筆=笔|裡=里|裏=里|說=说|話=话|義=义|題=题|問=问|號=号|編=编|擇=择|選=选|體=体|塊=块|幾=几|來=来|蘋=苹|給=给|將=将|為=为|則=则|陣=阵|個=个|數=数|試=试|寫=写|碼=码|轉=转|單=单|兩=两|乘=乘|積=积|差=差|區=区|狀=状|長=长"
-  prime "I: 我"
-  prime "YOU: 你"
-  prime "SOMEONE: 某人|人"
-  prime "SOMETHING: 某物|东西"
-  prime "PEOPLE: 人们"
-  prime "BODY: 身体"
-  prime "KIND: 种"
-  prime "PART: 部分"
-  prime "THIS: 这"
-  prime "THE SAME: 一样|同"
-  prime "OTHER: 别的"
-  prime "ONE: 一"
-  prime "TWO: 两|二"
-  prime "SOME: 有些"
-  prime "ALL: 所有|都"
-  prime "MUCH: 多"
-  prime "LITTLE: 少"
-  prime "GOOD: 好"
-  prime "BAD: 坏"
-  prime "BIG: 大"
-  prime "SMALL: 小"
-  prime "THINK: 想"
-  prime "KNOW: 知道"
-  prime "WANT: 要"
-  prime "DON'T WANT: 不要"
-  prime "FEEL: 感觉"
-  prime "SEE: 看见"
-  prime "HEAR: 听见"
-  prime "SAY: 说"
-  prime "WORDS: 话"
-  prime "TRUE: 真"
-  prime "DO: 做"
-  prime "HAPPEN: 发生"
-  prime "MOVE: 动"
-  prime "BE SOMEWHERE: 在"
-  prime "THERE IS: 有"
-  prime "BE SOMEONE: 是"
-  prime "MINE: 我的"
-  prime "LIVE: 活"
-  prime "DIE: 死"
-  prime "WHEN: 时候"
-  prime "NOW: 现在"
-  prime "BEFORE: 以前"
-  prime "AFTER: 以后"
-  prime "A LONG TIME: 很久"
-  prime "A SHORT TIME: 一会儿"
-  prime "FOR SOME TIME: 一段时间"
-  prime "MOMENT: 片刻"
-  prime "WHERE: 地方"
-  prime "HERE: 这里"
-  prime "ABOVE: 上面"
-  prime "BELOW: 下面"
-  prime "FAR: 远"
-  prime "NEAR: 近"
-  prime "SIDE: 边"
-  prime "INSIDE: 里面"
-  prime "TOUCH: 碰"
-  prime "NOT: 不|没"
-  prime "MAYBE: 可能"
-  prime "CAN: 能|会"
-  prime "BECAUSE: 因为"
-  prime "IF: 如果"
-  prime "VERY: 很"
-  prime "MORE: 更"
-  prime "LIKE: 像"
-  list "ste: 是|对|不|没|每|种|类|部|分|必|须|有|需|要|所|都|猫|狗|动|物|植|树|叶|子|手|指|电|脑|家|老|鼠|标|账|户|密|码|问|题|可|能|含|义|回|答|用|编|号|你|想|选|择|按|属|于|构|成|并|非|真|假|这|个|请|的|一|我|知|道|切"
-  list "minimal: 是|对|不|没|每|种|部|分|必|须|有|需|要|都|猫|狗|动|物|植|树|叶|子|手|指|电|脑|家|老|鼠|标|账|户|密|码|问|题|可|能|含|义|回|答|用|编|号|你|想|选|择|按|属|于|类|构|成|并|非|真|假|这|个|请|的|一|我|知|道|切"
-  list "basic: 是|对|不|种|部|分|有|必|要|的|一|这|个|问|题|可|能|意|思|请|给|出|你|心|里|想|编|号|猫|狗|动|物|植|树|叶|子|手|指|电|脑|标|账|户|密|码|小|鼠|科|计|算|机|点|器|秘|词|我|知|道|切"
-  list "special: 是|对|不|种|部|分|必|须|有|需|要|的|一|这|个|问|题|可|能|含|义|请|用|你|想|编|号|回|答|猫|狗|动|物|植|树|叶|子|手|指|电|脑|老|鼠|标|账|户|密|码|住|在|房|里|小|握|控|制|器|我|知|道|切"
-  list "globish: 是|对|不|种|部|分|必|须|有|需|要|的|一|这|个|问|题|可|能|含|义|请|用|你|想|编|号|回|答|猫|狗|动|物|植|树|叶|子|手|指|电|脑|家|老|鼠|标|账|户|密|码|我|知|道|切"
-  list "gellish: 是|不|特|化|组|成|部|分|一|应|有|要|求|的|这|个|问|题|种|可|能|含|义|请|用|你|想|编|号|回|答|猫|狗|动|物|植|树|叶|子|手|指|电|脑|老|鼠|标|账|户|密|码"
-  tier "100: 的|一|是|不|了|在|人|有|我|他|这|个|们|中|来|上|大|为|和|到|以|说|时|要|就|出|会|可|也|你|对|生|能|子|那|得|于|下|后|里|用|道|所|家|种|事|成|方|多|如|都|同|现|没|动|面|看|分|好|小|部|些|样|心|本|前|因|只|想"
-  tier "200: 意|无|力|它|机|知|关|间|问|很|物|手|应|并|见|西|身|体|果|话|回|化|老|给|东|儿|真|义|题|活|更|别|电|少|感|做|必|计|指|非|听|像|定|然|特|点|制|科"
-  tier "500: 类|边|死|觉|候|每|近|远|台|算|需|器|须|片|吗|标|号|构|房|选|答|按|密|刻|段|求|规|许|组|思|切|住|属|久"
-  tier "1000: 含|编|择|控|词|植|码|狗|树|叶|根|坏|脑|户|秘|假|某|握|碰|允"
-  tier "2000: 猫|账|棵"
-  tier "3000: 鼠"
+  pronouns ("它" "他" "她" "这" "那" "此" "其" "该")
+  fillers ("嗯" "呃" "啊" "哎" "哦" "喂" "哈" "吧" "呢" "呀" "啦" "请" "请问" "问一下" "一下" "帮我" "麻烦你" "到底" "究竟")
+  loose ("个=只" "棵=只" "株=只" "片=只" "根=只" "台=只" "条=只" "头=只" "位=只" "部=只")
+  typos ("貓=猫" "動=动" "樹=树" "葉=叶" "電=电" "腦=脑" "恼=脑" "帳=账" "賬=账" "帐=账" "戶=户" "碼=码" "標=标" "隻=只" "這=这" "嗎=吗" "么=吗" "麼=吗" "嘛=吗" "種=种" "須=须" "個=个" "臺=台" "類=类" "屬=属" "構=构" "計=计" "數=数" "們=们" "於=于" "與=与" "減=减" "後=后" "還=还" "書=书" "買=买" "現=现" "筆=笔" "裡=里" "裏=里" "說=说" "話=话" "義=义" "題=题" "問=问" "號=号" "編=编" "擇=择" "選=选" "體=体" "塊=块" "幾=几" "來=来" "蘋=苹" "給=给" "將=将" "為=为" "則=则" "陣=阵" "個=个" "數=数" "試=试" "寫=写" "碼=码" "轉=转" "單=单" "兩=两" "乘=乘" "積=积" "差=差" "區=区" "狀=状" "長=长")
+  prime "I"
+    forms ("我")
+  prime "YOU"
+    forms ("你")
+  prime "SOMEONE"
+    forms ("某人" "人")
+  prime "SOMETHING"
+    forms ("某物" "东西")
+  prime "PEOPLE"
+    forms ("人们")
+  prime "BODY"
+    forms ("身体")
+  prime "KIND"
+    forms ("种")
+  prime "PART"
+    forms ("部分")
+  prime "THIS"
+    forms ("这")
+  prime "THE SAME"
+    forms ("一样" "同")
+  prime "OTHER"
+    forms ("别的")
+  prime "ONE"
+    forms ("一")
+  prime "TWO"
+    forms ("两" "二")
+  prime "SOME"
+    forms ("有些")
+  prime "ALL"
+    forms ("所有" "都")
+  prime "MUCH"
+    forms ("多")
+  prime "LITTLE"
+    forms ("少")
+  prime "GOOD"
+    forms ("好")
+  prime "BAD"
+    forms ("坏")
+  prime "BIG"
+    forms ("大")
+  prime "SMALL"
+    forms ("小")
+  prime "THINK"
+    forms ("想")
+  prime "KNOW"
+    forms ("知道")
+  prime "WANT"
+    forms ("要")
+  prime "DON'T WANT"
+    forms ("不要")
+  prime "FEEL"
+    forms ("感觉")
+  prime "SEE"
+    forms ("看见")
+  prime "HEAR"
+    forms ("听见")
+  prime "SAY"
+    forms ("说")
+  prime "WORDS"
+    forms ("话")
+  prime "TRUE"
+    forms ("真")
+  prime "DO"
+    forms ("做")
+  prime "HAPPEN"
+    forms ("发生")
+  prime "MOVE"
+    forms ("动")
+  prime "BE SOMEWHERE"
+    forms ("在")
+  prime "THERE IS"
+    forms ("有")
+  prime "BE SOMEONE"
+    forms ("是")
+  prime "MINE"
+    forms ("我的")
+  prime "LIVE"
+    forms ("活")
+  prime "DIE"
+    forms ("死")
+  prime "WHEN"
+    forms ("时候")
+  prime "NOW"
+    forms ("现在")
+  prime "BEFORE"
+    forms ("以前")
+  prime "AFTER"
+    forms ("以后")
+  prime "A LONG TIME"
+    forms ("很久")
+  prime "A SHORT TIME"
+    forms ("一会儿")
+  prime "FOR SOME TIME"
+    forms ("一段时间")
+  prime "MOMENT"
+    forms ("片刻")
+  prime "WHERE"
+    forms ("地方")
+  prime "HERE"
+    forms ("这里")
+  prime "ABOVE"
+    forms ("上面")
+  prime "BELOW"
+    forms ("下面")
+  prime "FAR"
+    forms ("远")
+  prime "NEAR"
+    forms ("近")
+  prime "SIDE"
+    forms ("边")
+  prime "INSIDE"
+    forms ("里面")
+  prime "TOUCH"
+    forms ("碰")
+  prime "NOT"
+    forms ("不" "没")
+  prime "MAYBE"
+    forms ("可能")
+  prime "CAN"
+    forms ("能" "会")
+  prime "BECAUSE"
+    forms ("因为")
+  prime "IF"
+    forms ("如果")
+  prime "VERY"
+    forms ("很")
+  prime "MORE"
+    forms ("更")
+  prime "LIKE"
+    forms ("像")
+  list "ste"
+    forms ("是" "对" "不" "没" "每" "种" "类" "部" "分" "必" "须" "有" "需" "要" "所" "都" "猫" "狗" "动" "物" "植" "树" "叶" "子" "手" "指" "电" "脑" "家" "老" "鼠" "标" "账" "户" "密" "码" "问" "题" "可" "能" "含" "义" "回" "答" "用" "编" "号" "你" "想" "选" "择" "按" "属" "于" "构" "成" "并" "非" "真" "假" "这" "个" "请" "的" "一" "我" "知" "道" "切")
+  list "minimal"
+    forms ("是" "对" "不" "没" "每" "种" "部" "分" "必" "须" "有" "需" "要" "都" "猫" "狗" "动" "物" "植" "树" "叶" "子" "手" "指" "电" "脑" "家" "老" "鼠" "标" "账" "户" "密" "码" "问" "题" "可" "能" "含" "义" "回" "答" "用" "编" "号" "你" "想" "选" "择" "按" "属" "于" "类" "构" "成" "并" "非" "真" "假" "这" "个" "请" "的" "一" "我" "知" "道" "切")
+  list "basic"
+    forms ("是" "对" "不" "种" "部" "分" "有" "必" "要" "的" "一" "这" "个" "问" "题" "可" "能" "意" "思" "请" "给" "出" "你" "心" "里" "想" "编" "号" "猫" "狗" "动" "物" "植" "树" "叶" "子" "手" "指" "电" "脑" "标" "账" "户" "密" "码" "小" "鼠" "科" "计" "算" "机" "点" "器" "秘" "词" "我" "知" "道" "切")
+  list "special"
+    forms ("是" "对" "不" "种" "部" "分" "必" "须" "有" "需" "要" "的" "一" "这" "个" "问" "题" "可" "能" "含" "义" "请" "用" "你" "想" "编" "号" "回" "答" "猫" "狗" "动" "物" "植" "树" "叶" "子" "手" "指" "电" "脑" "老" "鼠" "标" "账" "户" "密" "码" "住" "在" "房" "里" "小" "握" "控" "制" "器" "我" "知" "道" "切")
+  list "globish"
+    forms ("是" "对" "不" "种" "部" "分" "必" "须" "有" "需" "要" "的" "一" "这" "个" "问" "题" "可" "能" "含" "义" "请" "用" "你" "想" "编" "号" "回" "答" "猫" "狗" "动" "物" "植" "树" "叶" "子" "手" "指" "电" "脑" "家" "老" "鼠" "标" "账" "户" "密" "码" "我" "知" "道" "切")
+  list "gellish"
+    forms ("是" "不" "特" "化" "组" "成" "部" "分" "一" "应" "有" "要" "求" "的" "这" "个" "问" "题" "种" "可" "能" "含" "义" "请" "用" "你" "想" "编" "号" "回" "答" "猫" "狗" "动" "物" "植" "树" "叶" "子" "手" "指" "电" "脑" "老" "鼠" "标" "账" "户" "密" "码")
+  tier "100"
+    forms ("的" "一" "是" "不" "了" "在" "人" "有" "我" "他" "这" "个" "们" "中" "来" "上" "大" "为" "和" "到" "以" "说" "时" "要" "就" "出" "会" "可" "也" "你" "对" "生" "能" "子" "那" "得" "于" "下" "后" "里" "用" "道" "所" "家" "种" "事" "成" "方" "多" "如" "都" "同" "现" "没" "动" "面" "看" "分" "好" "小" "部" "些" "样" "心" "本" "前" "因" "只" "想")
+  tier "200"
+    forms ("意" "无" "力" "它" "机" "知" "关" "间" "问" "很" "物" "手" "应" "并" "见" "西" "身" "体" "果" "话" "回" "化" "老" "给" "东" "儿" "真" "义" "题" "活" "更" "别" "电" "少" "感" "做" "必" "计" "指" "非" "听" "像" "定" "然" "特" "点" "制" "科")
+  tier "500"
+    forms ("类" "边" "死" "觉" "候" "每" "近" "远" "台" "算" "需" "器" "须" "片" "吗" "标" "号" "构" "房" "选" "答" "按" "密" "刻" "段" "求" "规" "许" "组" "思" "切" "住" "属" "久")
+  tier "1000"
+    forms ("含" "编" "择" "控" "词" "植" "码" "狗" "树" "叶" "根" "坏" "脑" "户" "秘" "假" "某" "握" "碰" "允")
+  tier "2000"
+    forms ("猫" "账" "棵")
+  tier "3000"
+    forms ("鼠")
   term animal
-    forms "动物|只动物"
-    primes "能动的活东西|个能动的活东西"
+    forms ("动物" "只动物")
+    primes ("能动的活东西" "个能动的活东西")
   term plant
-    forms "植物|棵植物"
-    primes "不能动的活东西|个不能动的活东西"
+    forms ("植物" "棵植物")
+    primes ("不能动的活东西" "个不能动的活东西")
   term cat
-    forms "猫|只猫"
-    primes "能动、能在人们活的地方活的小活东西|个能动、能在人们活的地方活的小活东西"
+    forms ("猫" "只猫")
+    primes ("能动、能在人们活的地方活的小活东西" "个能动、能在人们活的地方活的小活东西")
   term dog
-    forms "狗|只狗"
-    primes "能动、能在人们活的地方活的大活东西|个能动、能在人们活的地方活的大活东西"
+    forms ("狗" "只狗")
+    primes ("能动、能在人们活的地方活的大活东西" "个能动、能在人们活的地方活的大活东西")
   term mouse-animal
-    forms "老鼠|只老鼠"
-    input "鼠|只鼠"
-    precise "家鼠|只家鼠"
-    ste "家鼠|只家鼠"
-    special "住在房子里的小动物|只住在房子里的小动物"
-    basic "鼠科的小动物|只鼠科的小动物"
-    primes "能动的很小的活东西|个能动的很小的活东西"
+    forms ("老鼠" "只老鼠")
+    input ("鼠" "只鼠")
+    precise ("家鼠" "只家鼠")
+    ste ("家鼠" "只家鼠")
+    special ("住在房子里的小动物" "只住在房子里的小动物")
+    basic ("鼠科的小动物" "只鼠科的小动物")
+    primes ("能动的很小的活东西" "个能动的很小的活东西")
   term tree
-    forms "树|棵树"
-    primes "不能动的很大的活东西|个不能动的很大的活东西"
+    forms ("树" "棵树")
+    primes ("不能动的很大的活东西" "个不能动的很大的活东西")
   term leaf
-    forms "叶子|片叶子"
-    primes "不能动的活东西的小部分|个不能动的活东西的小部分"
+    forms ("叶子" "片叶子")
+    primes ("不能动的活东西的小部分" "个不能动的活东西的小部分")
   term hand
-    forms "手|只手"
-    primes "身体能碰东西的部分|个身体能碰东西的部分"
+    forms ("手" "只手")
+    primes ("身体能碰东西的部分" "个身体能碰东西的部分")
   term finger
-    forms "手指|根手指"
-    primes "身体能碰东西的小部分|个身体能碰东西的小部分"
+    forms ("手指" "根手指")
+    primes ("身体能碰东西的小部分" "个身体能碰东西的小部分")
   term computer
-    forms "电脑|台电脑"
-    basic "计算机|台计算机"
-    primes "里面能有很多话的东西|个里面能有很多话的东西"
+    forms ("电脑" "台电脑")
+    basic ("计算机" "台计算机")
+    primes ("里面能有很多话的东西" "个里面能有很多话的东西")
   term mouse-device
-    forms "鼠标|个鼠标"
-    input "鼠|个鼠"
-    precise "电脑鼠标|个电脑鼠标"
-    ste "电脑鼠标|个电脑鼠标"
-    special "手握的电脑控制器|个手握的电脑控制器"
-    basic "指点器|个指点器"
-    primes "人们动了以后话也会动的小东西|个人们动了以后话也会动的小东西"
+    forms ("鼠标" "个鼠标")
+    input ("鼠" "个鼠")
+    precise ("电脑鼠标" "个电脑鼠标")
+    ste ("电脑鼠标" "个电脑鼠标")
+    special ("手握的电脑控制器" "个手握的电脑控制器")
+    basic ("指点器" "个指点器")
+    primes ("人们动了以后话也会动的小东西" "个人们动了以后话也会动的小东西")
   term account
-    forms "账户|个账户"
-    primes "有话的我的东西|个有话的我的东西"
+    forms ("账户" "个账户")
+    primes ("有话的我的东西" "个有话的我的东西")
   term password
-    forms "密码|个密码"
-    basic "秘密的词|个秘密的词"
-    primes "我知道、别人不知道的话|个我知道、别人不知道的话"
-  template "reply plain|ste|ace|gellish|sbvr|dense|basic statement"
+    forms ("密码" "个密码")
+    basic ("秘密的词" "个秘密的词")
+    primes ("我知道、别人不知道的话" "个我知道、别人不知道的话")
+  template "reply statement"
+    styles ("plain" "ste" "ace" "gellish" "sbvr" "dense" "basic")
     positive "是的。"
     negative "不是。"
-  template "reply eprime statement"
+  template "reply statement"
+    styles ("eprime")
     positive "对。"
     negative "不对。"
-  template "reply primes statement"
+  template "reply statement"
+    styles ("primes")
     positive "这是真的。"
     negative "这不是真的。"
-  template "kind-of plain|basic|primes statement"
+  template "kind-of statement"
+    styles ("plain" "basic" "primes")
     positive "{subject.bare}是一种{object.bare}。"
     negative "{subject.bare}不是一种{object.bare}。"
-  template "kind-of plain|basic|primes question"
+  template "kind-of question"
+    styles ("plain" "basic" "primes")
     positive "{subject.bare}是一种{object.bare}吗？"
     negative "{subject.bare}不是一种{object.bare}吗？"
-  template "kind-of ste statement"
+  template "kind-of statement"
+    styles ("ste")
     positive "{subject.bare}是{object.bare}的一种。"
     negative "{subject.bare}不是{object.bare}的一种。"
-  template "kind-of ste question"
+  template "kind-of question"
+    styles ("ste")
     positive "{subject.bare}是{object.bare}的一种吗？"
     negative "{subject.bare}不是{object.bare}的一种吗？"
-  template "kind-of ace statement"
+  template "kind-of statement"
+    styles ("ace")
     positive "每{subject.measure}都是{object.bare}。"
     negative "没有{subject.bare}是{object.bare}。"
-  template "kind-of ace question"
+  template "kind-of question"
+    styles ("ace")
     positive "每{subject.measure}都是{object.bare}吗？"
     negative "没有{subject.bare}是{object.bare}吗？"
-  template "kind-of gellish statement"
+  template "kind-of statement"
+    styles ("gellish")
     positive "{subject.bare}是{object.bare}的特化。"
     negative "{subject.bare}不是{object.bare}的特化。"
-  template "kind-of gellish question"
+  template "kind-of question"
+    styles ("gellish")
     positive "{subject.bare}是{object.bare}的特化吗？"
     negative "{subject.bare}不是{object.bare}的特化吗？"
-  template "kind-of sbvr statement"
+  template "kind-of statement"
+    styles ("sbvr")
     positive "必然每{subject.measure}都是{object.bare}。"
     negative "不可能有{subject.bare}是{object.bare}。"
-  template "kind-of sbvr question"
+  template "kind-of question"
+    styles ("sbvr")
     positive "必然每{subject.measure}都是{object.bare}吗？"
     negative "不可能有{subject.bare}是{object.bare}吗？"
-  template "kind-of eprime statement"
+  template "kind-of statement"
+    styles ("eprime")
     positive "{subject.bare}属于{object.bare}类。"
     negative "{subject.bare}不属于{object.bare}类。"
-  template "kind-of eprime question"
+  template "kind-of question"
+    styles ("eprime")
     positive "{subject.bare}属于{object.bare}类吗？"
     negative "{subject.bare}不属于{object.bare}类吗？"
-  template "kind-of dense statement"
+  template "kind-of statement"
+    styles ("dense")
     positive "{subject.bare}是{object.bare}。"
     negative "{subject.bare}不是{object.bare}。"
-  template "kind-of dense question"
+  template "kind-of question"
+    styles ("dense")
     positive "{subject.bare}是{object.bare}吗？"
     negative "{subject.bare}不是{object.bare}吗？"
-  template "kind-of colloquial question"
+  template "kind-of question"
+    styles ("colloquial")
     positive "{subject.bare}是{object.bare}吗"
     positive "{subject.bare}是不是{object.bare}"
     positive "一{subject.bare}是{object.bare}吗"
@@ -216,50 +311,64 @@ cnl-language zh
     positive "你觉得{subject.bare}是{object.bare}吗"
     positive "{subject.bare}也是{object.bare}吗"
     negative "{subject.bare}不算{object.bare}吗"
-  template "kind-of colloquial statement"
+  template "kind-of statement"
+    styles ("colloquial")
     positive "{subject.bare}是{object.bare}"
     positive "一{subject.bare}是一{object.bare}"
     positive "{subject.bare}算{object.bare}"
     positive "{subject.bare}算是{object.bare}"
     positive "{subject.bare}属于{object.bare}"
     negative "{subject.bare}不算{object.bare}"
-  template "part-of plain|basic|ste|primes statement"
+  template "part-of statement"
+    styles ("plain" "basic" "ste" "primes")
     positive "{subject.bare}是{object.bare}的一部分。"
     negative "{subject.bare}不是{object.bare}的一部分。"
-  template "part-of plain|basic|ste|primes question"
+  template "part-of question"
+    styles ("plain" "basic" "ste" "primes")
     positive "{subject.bare}是{object.bare}的一部分吗？"
     negative "{subject.bare}不是{object.bare}的一部分吗？"
-  template "part-of ace statement"
+  template "part-of statement"
+    styles ("ace")
     positive "每{subject.measure}都是一{object.measure}的一部分。"
     negative "没有{subject.bare}是一{object.measure}的一部分。"
-  template "part-of ace question"
+  template "part-of question"
+    styles ("ace")
     positive "每{subject.measure}都是一{object.measure}的一部分吗？"
     negative "没有{subject.bare}是一{object.measure}的一部分吗？"
-  template "part-of gellish statement"
+  template "part-of statement"
+    styles ("gellish")
     positive "{subject.bare}是{object.bare}的组成部分。"
     negative "{subject.bare}不是{object.bare}的组成部分。"
-  template "part-of gellish question"
+  template "part-of question"
+    styles ("gellish")
     positive "{subject.bare}是{object.bare}的组成部分吗？"
     negative "{subject.bare}不是{object.bare}的组成部分吗？"
-  template "part-of sbvr statement"
+  template "part-of statement"
+    styles ("sbvr")
     positive "必然每{subject.measure}都是一{object.measure}的一部分。"
     negative "不可能有{subject.bare}是{object.bare}的一部分。"
-  template "part-of sbvr question"
+  template "part-of question"
+    styles ("sbvr")
     positive "必然每{subject.measure}都是一{object.measure}的一部分吗？"
     negative "不可能有{subject.bare}是{object.bare}的一部分吗？"
-  template "part-of eprime statement"
+  template "part-of statement"
+    styles ("eprime")
     positive "{subject.bare}构成{object.bare}的一部分。"
     negative "{subject.bare}不构成{object.bare}的一部分。"
-  template "part-of eprime question"
+  template "part-of question"
+    styles ("eprime")
     positive "{subject.bare}构成{object.bare}的一部分吗？"
     negative "{subject.bare}不构成{object.bare}的一部分吗？"
-  template "part-of dense statement"
+  template "part-of statement"
+    styles ("dense")
     positive "{object.bare}有{subject.bare}。"
     negative "{object.bare}没有{subject.bare}。"
-  template "part-of dense question"
+  template "part-of question"
+    styles ("dense")
     positive "{object.bare}有{subject.bare}吗？"
     negative "{object.bare}没有{subject.bare}吗？"
-  template "part-of colloquial question"
+  template "part-of question"
+    styles ("colloquial")
     positive "{subject.bare}是{object.bare}的一部分吗"
     positive "{subject.bare}是{object.bare}的部分吗"
     positive "{subject.bare}是不是{object.bare}的一部分"
@@ -267,53 +376,69 @@ cnl-language zh
     positive "{object.bare}有没有{subject.bare}"
     positive "{object.bare}上有{subject.bare}吗"
     positive "一{object.bare}有{subject.bare}吗"
-  template "part-of colloquial statement"
+  template "part-of statement"
+    styles ("colloquial")
     positive "{subject.bare}是{object.bare}的一部分"
     positive "{subject.bare}是{object.bare}的部分"
     positive "{object.bare}上有{subject.bare}"
-  template "must-have plain|ste|eprime statement"
+  template "must-have statement"
+    styles ("plain" "ste" "eprime")
     positive "{subject.bare}必须有{object.bare}。"
     negative "{subject.bare}不需要{object.bare}。"
-  template "must-have plain|ste|eprime question"
+  template "must-have question"
+    styles ("plain" "ste" "eprime")
     positive "{subject.bare}必须有{object.bare}吗？"
     negative "{subject.bare}不需要{object.bare}吗？"
-  template "must-have basic statement"
+  template "must-have statement"
+    styles ("basic")
     positive "{subject.bare}有{object.bare}是必要的。"
     negative "{subject.bare}有{object.bare}不是必要的。"
-  template "must-have basic question"
+  template "must-have question"
+    styles ("basic")
     positive "{subject.bare}有{object.bare}是必要的吗？"
     negative "{subject.bare}有{object.bare}不是必要的吗？"
-  template "must-have ace statement"
+  template "must-have statement"
+    styles ("ace")
     positive "每{subject.measure}都必须有一{object.measure}。"
     negative "并非每{subject.measure}都必须有一{object.measure}。"
-  template "must-have ace question"
+  template "must-have question"
+    styles ("ace")
     positive "每{subject.measure}都必须有一{object.measure}吗？"
     negative "并非每{subject.measure}都必须有一{object.measure}吗？"
-  template "must-have gellish statement"
+  template "must-have statement"
+    styles ("gellish")
     positive "{subject.bare}应有{object.bare}。"
     negative "{subject.bare}不要求{object.bare}。"
-  template "must-have gellish question"
+  template "must-have question"
+    styles ("gellish")
     positive "{subject.bare}应有{object.bare}吗？"
     negative "{subject.bare}不要求{object.bare}吗？"
-  template "must-have sbvr statement"
+  template "must-have statement"
+    styles ("sbvr")
     positive "规定每{subject.measure}都有一{object.measure}。"
     negative "允许{subject.bare}没有{object.bare}。"
-  template "must-have sbvr question"
+  template "must-have question"
+    styles ("sbvr")
     positive "规定每{subject.measure}都有一{object.measure}吗？"
     negative "允许{subject.bare}没有{object.bare}吗？"
-  template "must-have primes statement"
+  template "must-have statement"
+    styles ("primes")
     positive "如果某物是{subject.bare}，{object.bare}是这个东西的部分。"
     negative "如果{object.bare}不是某物的部分，这个东西能是{subject.bare}。"
-  template "must-have primes question"
+  template "must-have question"
+    styles ("primes")
     positive "如果某物是{subject.bare}，{object.bare}是这个东西的部分吗？"
     negative "如果{object.bare}不是某物的部分，这个东西能是{subject.bare}吗？"
-  template "must-have dense statement"
+  template "must-have statement"
+    styles ("dense")
     positive "{subject.bare}需要{object.bare}。"
     negative "{subject.bare}不需要{object.bare}。"
-  template "must-have dense question"
+  template "must-have question"
+    styles ("dense")
     positive "{subject.bare}需要{object.bare}吗？"
     negative "{subject.bare}不需要{object.bare}吗？"
-  template "must-have colloquial question"
+  template "must-have question"
+    styles ("colloquial")
     positive "{subject.bare}需要{object.bare}吗"
     positive "{subject.bare}需不需要{object.bare}"
     positive "{subject.bare}要不要{object.bare}"
@@ -321,33 +446,44 @@ cnl-language zh
     positive "{subject.bare}必须要有{object.bare}吗"
     positive "{subject.bare}得有{object.bare}吗"
     positive "{object.bare}是{subject.bare}必需的吗"
-  template "must-have colloquial statement"
+  template "must-have statement"
+    styles ("colloquial")
     positive "{subject.bare}需要{object.bare}"
     positive "{subject.bare}得有{object.bare}"
     positive "{subject.bare}一定要有{object.bare}"
-  template "relation stream question"
+  template "relation question"
+    styles ("stream")
     positive "{subject.bare}...{object.bare}"
     positive "{subject.bare}……{object.bare}"
     positive "{subject.bare}和{object.bare}...怎么样"
     positive "{subject.bare}和{object.bare}有什么关系"
     positive "{subject.bare}跟{object.bare}什么关系"
-  template "clarify plain|ste|ace|gellish|sbvr|eprime statement"
+  template "clarify statement"
+    styles ("plain" "ste" "ace" "gellish" "sbvr" "eprime")
     positive "这个问题有{count.number}种可能的含义。"
-  template "clarify basic statement"
+  template "clarify statement"
+    styles ("basic")
     positive "这个问题有{count.number}种可能的意思。"
-  template "clarify primes statement"
+  template "clarify statement"
+    styles ("primes")
     positive "这些话能说{count.number}种东西。"
-  template "clarify dense statement"
+  template "clarify statement"
+    styles ("dense")
     positive "这个问题有{count.number}种含义。"
-  template "choose plain|ste|ace|gellish|sbvr|eprime request"
+  template "choose request"
+    styles ("plain" "ste" "ace" "gellish" "sbvr" "eprime")
     positive "请用你想要的含义的编号回答。"
-  template "choose basic request"
+  template "choose request"
+    styles ("basic")
     positive "请给出你心里想的意思的编号。"
-  template "choose primes request"
+  template "choose request"
+    styles ("primes")
     positive "我要你说你要的一个。"
-  template "choose dense request"
+  template "choose request"
+    styles ("dense")
     positive "请按编号选择含义。"
-  template "sum task request"
+  template "sum request"
+    styles ("task")
     positive "计算{left.number}加{right.number}"
     positive "计算{left.number}加{right.number}的和"
     positive "{left.number}加{right.number}等于多少"
@@ -363,7 +499,8 @@ cnl-language zh
     positive "如果我有{left.number}个苹果，又得到{right.number}个，我一共有多少个苹果"
     positive "我有{left.number}个苹果，又买了{right.number}个，现在有几个苹果"
     positive "小明有{left.number}本书，又买了{right.number}本书，小明现在一共有多少本书"
-  template "difference task request"
+  template "difference request"
+    styles ("task")
     positive "计算{left.number}减{right.number}"
     positive "{left.number}减{right.number}等于多少"
     positive "{left.number}减{right.number}是多少"
@@ -374,7 +511,8 @@ cnl-language zh
     positive "求{left.number}与{right.number}的差"
     positive "我有{left.number}个苹果，吃了{right.number}个，还剩多少个苹果"
     positive "如果我有{left.number}个苹果，吃掉{right.number}个，还剩几个苹果"
-  template "product task request"
+  template "product request"
+    styles ("task")
     positive "计算{left.number}乘{right.number}"
     positive "计算{left.number}乘以{right.number}"
     positive "{left.number}乘{right.number}等于多少"
@@ -385,7 +523,8 @@ cnl-language zh
     positive "{left.number}和{right.number}的积是多少"
     positive "求{left.number}与{right.number}的积"
     positive "有{left.number}个盒子，每个盒子里有{right.number}支笔，一共有多少支笔"
-  template "reverse-text task request"
+  template "reverse-text request"
+    styles ("task")
     positive "写一个反转字符串的函数"
     positive "写一个函数来反转字符串"
     positive "写一个函数反转字符串"
@@ -393,16 +532,19 @@ cnl-language zh
     positive "写代码反转一个字符串"
     positive "我需要一个反转文本的函数"
     positive "字符串反转函数"
-  template "list-maximum task request"
+  template "list-maximum request"
+    styles ("task")
     positive "写一个函数找出列表中最大的数"
     positive "写一个返回列表最大值的函数"
     positive "编写一个函数求列表中的最大值"
     positive "写一个函数找出列表里最大的数字"
-  template "list-sum task request"
+  template "list-sum request"
+    styles ("task")
     positive "写一个函数计算列表中所有数字的和"
     positive "写一个对数字列表求和的函数"
     positive "编写一个把列表里所有数加起来的函数"
-  template "factorial task request"
+  template "factorial request"
+    styles ("task")
     positive "写一个计算一个数的阶乘的函数"
     positive "写一个阶乘函数"
     positive "写一个求阶乘的函数"

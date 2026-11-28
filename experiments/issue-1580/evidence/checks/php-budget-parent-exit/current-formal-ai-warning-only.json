@@ -1,0 +1,28 @@
+{
+  "case": "warning-only",
+  "wrapper": "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+  "argv": [
+    "bash",
+    "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+    "1",
+    "finite child fixture",
+    "bash",
+    "-c",
+    "sleep 4 & printf \"%s\\n\" \"$!\" > \"$BUDGET_FIXTURE_PID\"; printf \"fixture stdout\\n\"; printf \"fixture stderr\\n\" >&2; exit 0"
+  ],
+  "exitCode": 0,
+  "wrapperExitSeconds": 4.095543274888769,
+  "pipeClosedSeconds": 4.09658882394433,
+  "workerRunningWhenWrapperExited": false,
+  "workerStateWhenWrapperExited": "Z",
+  "stdout": "fixture stdout\nfinite child fixture took 4s of its 1s execution budget.\n",
+  "stderr": "fixture stderr\n::warning title=finite child fixture is approaching its timeout::The command is still running after 1s (70% of its 1s execution budget). Speed up or repartition it before the budget terminates the step.\n",
+  "fixtureWorkerMaximumSeconds": 4,
+  "budgetSeconds": 1,
+  "fixtureDescendantsReaped": [
+    {
+      "pid": 3502040,
+      "waitStatus": 0
+    }
+  ]
+}

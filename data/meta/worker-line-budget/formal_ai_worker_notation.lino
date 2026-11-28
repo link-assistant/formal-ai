@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_notation.js"
+  ceiling 302
+  rationale "Links Notation parsing, substitution rule parsing and variable bindings extracted unchanged from the meaning lexicon; the combined ceiling does not grow."

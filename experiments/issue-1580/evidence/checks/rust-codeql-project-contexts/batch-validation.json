@@ -1,0 +1,30 @@
+[
+  {
+    "label": "production-profile-corrected",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 5.921,
+    "rawSha256": "2dfcceb8470f741141f4b6039f0fa501645b1c698bf6a5657926b95738cac38f",
+    "archiveSha256": "4839776feb5b83afe997b5f72bc3bcf6195c14aca301fd5355db9c8b04d5f9dd"
+  },
+  {
+    "label": "complete-local-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 878.163,
+    "rawSha256": "42146233786fa3ad2cba03d3e1457c8ba062fd318c894094cd7b72348833c126",
+    "archiveSha256": "3025f822f132d369353e88a9adba223a4fffa8533e1ad2e8acdc34cffa264cc9"
+  }
+]

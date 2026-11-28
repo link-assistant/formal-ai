@@ -1,0 +1,608 @@
+{
+  "createdAt": "2026-11-18T00:49:08.345628+00:00",
+  "head": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "sourceWorkflowSha256": "a858e77148b02fd8e53e7bd440670df11b31087d2717a0e5b8089aa53be09497",
+  "beforeSelectedFiles": 33599,
+  "beforeSelectedBytes": 732862187,
+  "selectedFiles": 24020,
+  "selectedBytes": 413103005,
+  "reducedBytes": 319759182,
+  "omittedFiles": 57164,
+  "omittedBytes": 1662303209,
+  "initialInvocation": {
+    "exitStatus": "Formal AI 60000ms shell limit; incomplete outer command; all 20 individual command records retained",
+    "commands": [
+      {
+        "name": "node scripts/check-readable-code.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-readable-code.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 10.201,
+        "log": "sparse-command-01.log.gz",
+        "rawSha256": "cc8f62436ec2f3a7c66bbb53a03f2da8a63437d5db7e2e11206f6a490428a916",
+        "rawBytes": 83,
+        "rawLines": 1
+      },
+      {
+        "name": "node scripts/check-file-size.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-file-size.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 1.947,
+        "log": "sparse-command-02.log.gz",
+        "rawSha256": "11bcbbde851f084571d2985c9525fccf01d72e0508e478c5705bfc69801e13f5",
+        "rawBytes": 48557,
+        "rawLines": 376
+      },
+      {
+        "name": "node scripts/check-ci-speed.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-ci-speed.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 0.2,
+        "log": "sparse-command-03.log.gz",
+        "rawSha256": "cfcf04a61fe2778c90c85df320ced964e56f07aa53d9747c51892bbe55feb519",
+        "rawBytes": 163,
+        "rawLines": 1
+      },
+      {
+        "name": "node scripts/check-hardcoded-language.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-hardcoded-language.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 1.156,
+        "log": "sparse-command-04.log.gz",
+        "rawSha256": "d68b107279294c6ee8e412fc8095adcc62316afdfbeb9268f4f9a1aa8e9dd3a9",
+        "rawBytes": 195,
+        "rawLines": 7
+      },
+      {
+        "name": "node scripts/check-js-literals.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-js-literals.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 1.849,
+        "log": "sparse-command-05.log.gz",
+        "rawSha256": "b0a7d09b800a0e4abab53b7899b943d839e5258961cc2a3c1c84cb39b673bd15",
+        "rawBytes": 203,
+        "rawLines": 4
+      },
+      {
+        "name": "node scripts/check-tests-as-docs.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-tests-as-docs.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 6.755,
+        "log": "sparse-command-06.log.gz",
+        "rawSha256": "4973e1f972fd34b082dfe0976977b4763aefa73eeaee914466e50078d77340dd",
+        "rawBytes": 188,
+        "rawLines": 5
+      },
+      {
+        "name": "node scripts/assemble-requirements.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/assemble-requirements.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 0.203,
+        "log": "sparse-command-07.log.gz",
+        "rawSha256": "e7efde4cb723e30e214f158f201c9fcf443b73f81d2f6869048a2722276a1ed4",
+        "rawBytes": 156,
+        "rawLines": 5
+      },
+      {
+        "name": "node scripts/generate-requirement-status.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/generate-requirement-status.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 0.405,
+        "log": "sparse-command-08.log.gz",
+        "rawSha256": "cf878d49ccad0d414d85cf41bcd4652e5a2a934a14e4129fb677fa2adda68ca5",
+        "rawBytes": 49,
+        "rawLines": 1
+      },
+      {
+        "name": "node scripts/check-requirement-status.mjs",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-requirement-status.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 1.178,
+        "log": "sparse-command-09.log.gz",
+        "rawSha256": "f3adbb5156c3e05dfee8b8a4793ff78297181015cbb76a6dc8c113aa67d93359",
+        "rawBytes": 64,
+        "rawLines": 1
+      },
+      {
+        "name": "node scripts/render-status.mjs --check",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/render-status.mjs",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 0.956,
+        "log": "sparse-command-10.log.gz",
+        "rawSha256": "5e4ef6784a8229bd7a4cd12a3ca2e0d1ceba9ebf22f1f1d116b96a175fecf9b5",
+        "rawBytes": 28,
+        "rawLines": 1
+      },
+      {
+        "name": "node scripts/render-progressive-plan.mjs --check",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/render-progressive-plan.mjs",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 1.021,
+        "log": "sparse-command-11.log.gz",
+        "rawSha256": "5b940383264b4637cf6f096d9341b19a3c82864d1d35199bdbc1b816c9290e48",
+        "rawBytes": 99,
+        "rawLines": 1
+      },
+      {
+        "name": "node scripts/mirror-package-data.mjs --check",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/mirror-package-data.mjs",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 0.353,
+        "log": "sparse-command-12.log.gz",
+        "rawSha256": "def32e2815224f03be262ff1436d0498f6b1abdc19d8daf0405c2aafc3e040db",
+        "rawBytes": 79,
+        "rawLines": 1
+      },
+      {
+        "name": "language-parity",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-language-parity.mjs",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 0.431,
+        "log": "sparse-command-13.log.gz",
+        "rawSha256": "6ad823c51769319cd16ca160a31170fb94e23bd17eff01dea85147a088bbad7c",
+        "rawBytes": 61,
+        "rawLines": 1
+      },
+      {
+        "name": "minimal-core",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-minimal-core-boundary.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 0.117,
+        "log": "sparse-command-14.log.gz",
+        "rawSha256": "31169eeef3e2f56d0b2d96c7d1a651b2d0cf2f6157b3690497c8d462c5634e69",
+        "rawBytes": 68,
+        "rawLines": 1
+      },
+      {
+        "name": "current-debt-ceilings",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-fast-governance.mjs",
+          "--current-debt-ceilings"
+        ],
+        "exitCode": 1,
+        "seconds": 0.081,
+        "log": "sparse-command-15.log.gz",
+        "rawSha256": "4271d10274d537ef62b392668221b7541806d1d4b7019dbd8489e5087913deaa",
+        "rawBytes": 68,
+        "rawLines": 1
+      },
+      {
+        "name": "honest-closure",
+        "argv": [
+          "python3",
+          "scripts/check-closure-audit.py"
+        ],
+        "exitCode": 0,
+        "seconds": 5.029,
+        "log": "sparse-command-16.log.gz",
+        "rawSha256": "920023ac0010fa50bd96f7a9b368cc4050cbb985250643d64ffcfbc58a06ea64",
+        "rawBytes": 126,
+        "rawLines": 3
+      },
+      {
+        "name": "role-namespace",
+        "argv": [
+          "python3",
+          "scripts/generate-role-registry.py",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 0.286,
+        "log": "sparse-command-17.log.gz",
+        "rawSha256": "f82ed7a24a0c051c5dadbef884c94b2ffae17ebb971f329072dad28704b803c7",
+        "rawBytes": 133,
+        "rawLines": 2
+      },
+      {
+        "name": "seed-metadata",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/audit-seed-metadata.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 0.229,
+        "log": "sparse-command-18.log.gz",
+        "rawSha256": "90c2ad1a2a918167d24779ac93251df472d2ee2a82a42056879e467e87b76188",
+        "rawBytes": 76,
+        "rawLines": 1
+      },
+      {
+        "name": "response-language-parity",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/generate-response-parity-debt.mjs",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 0.124,
+        "log": "sparse-command-19.log.gz",
+        "rawSha256": "ea71dc2b99300b00eed962ca55cb0376473921189cd414fc9e32900e4d1794d0",
+        "rawBytes": 56,
+        "rawLines": 1
+      },
+      {
+        "name": "worker-line-budget",
+        "argv": [
+          "node",
+          "--max-old-space-size=256",
+          "scripts/check-worker-line-budget.mjs"
+        ],
+        "exitCode": 0,
+        "seconds": 0.2,
+        "log": "sparse-command-20.log.gz",
+        "rawSha256": "9f194706a3d334ef88ec9f39436678e01914e8bc3788291b95cfdb46e15322e6",
+        "rawBytes": 12541,
+        "rawLines": 185
+      }
+    ]
+  },
+  "correctedDebtInvocation": {
+    "name": "current-debt-ceilings",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "--input-type=module",
+      "-e",
+      "import fs from 'node:fs';import {parseRatchet,measure,checkMeasured} from './scripts/check-debt-ratchet.mjs';const ratchet=parseRatchet(fs.readFileSync('data/meta/debt-ratchet.lino','utf8'));const failures=checkMeasured(ratchet,measure(process.cwd()));if(failures.length){console.error(failures.join('\\n'));process.exitCode=1;}else console.log('Current debt ceilings match measured source; direct exported functions, no hosted-environment impersonation');"
+    ],
+    "exitCode": 0,
+    "seconds": 0.737,
+    "log": "sparse-current-debt-direct.log.gz",
+    "rawSha256": "62e487209f26176f5747cddcfdf75aa9db45517e2431cb61b7e494eb48f0792a",
+    "rawBytes": 108,
+    "rawLines": 1
+  },
+  "acceptedCommands": [
+    {
+      "name": "node scripts/check-readable-code.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-readable-code.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.201,
+      "log": "sparse-command-01.log.gz",
+      "rawSha256": "cc8f62436ec2f3a7c66bbb53a03f2da8a63437d5db7e2e11206f6a490428a916",
+      "rawBytes": 83,
+      "rawLines": 1
+    },
+    {
+      "name": "node scripts/check-file-size.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-file-size.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.947,
+      "log": "sparse-command-02.log.gz",
+      "rawSha256": "11bcbbde851f084571d2985c9525fccf01d72e0508e478c5705bfc69801e13f5",
+      "rawBytes": 48557,
+      "rawLines": 376
+    },
+    {
+      "name": "node scripts/check-ci-speed.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-ci-speed.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.2,
+      "log": "sparse-command-03.log.gz",
+      "rawSha256": "cfcf04a61fe2778c90c85df320ced964e56f07aa53d9747c51892bbe55feb519",
+      "rawBytes": 163,
+      "rawLines": 1
+    },
+    {
+      "name": "node scripts/check-hardcoded-language.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-hardcoded-language.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.156,
+      "log": "sparse-command-04.log.gz",
+      "rawSha256": "d68b107279294c6ee8e412fc8095adcc62316afdfbeb9268f4f9a1aa8e9dd3a9",
+      "rawBytes": 195,
+      "rawLines": 7
+    },
+    {
+      "name": "node scripts/check-js-literals.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-js-literals.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.849,
+      "log": "sparse-command-05.log.gz",
+      "rawSha256": "b0a7d09b800a0e4abab53b7899b943d839e5258961cc2a3c1c84cb39b673bd15",
+      "rawBytes": 203,
+      "rawLines": 4
+    },
+    {
+      "name": "node scripts/check-tests-as-docs.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-tests-as-docs.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.755,
+      "log": "sparse-command-06.log.gz",
+      "rawSha256": "4973e1f972fd34b082dfe0976977b4763aefa73eeaee914466e50078d77340dd",
+      "rawBytes": 188,
+      "rawLines": 5
+    },
+    {
+      "name": "node scripts/assemble-requirements.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/assemble-requirements.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.203,
+      "log": "sparse-command-07.log.gz",
+      "rawSha256": "e7efde4cb723e30e214f158f201c9fcf443b73f81d2f6869048a2722276a1ed4",
+      "rawBytes": 156,
+      "rawLines": 5
+    },
+    {
+      "name": "node scripts/generate-requirement-status.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-requirement-status.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.405,
+      "log": "sparse-command-08.log.gz",
+      "rawSha256": "cf878d49ccad0d414d85cf41bcd4652e5a2a934a14e4129fb677fa2adda68ca5",
+      "rawBytes": 49,
+      "rawLines": 1
+    },
+    {
+      "name": "node scripts/check-requirement-status.mjs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-requirement-status.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.178,
+      "log": "sparse-command-09.log.gz",
+      "rawSha256": "f3adbb5156c3e05dfee8b8a4793ff78297181015cbb76a6dc8c113aa67d93359",
+      "rawBytes": 64,
+      "rawLines": 1
+    },
+    {
+      "name": "node scripts/render-status.mjs --check",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/render-status.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.956,
+      "log": "sparse-command-10.log.gz",
+      "rawSha256": "5e4ef6784a8229bd7a4cd12a3ca2e0d1ceba9ebf22f1f1d116b96a175fecf9b5",
+      "rawBytes": 28,
+      "rawLines": 1
+    },
+    {
+      "name": "node scripts/render-progressive-plan.mjs --check",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/render-progressive-plan.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 1.021,
+      "log": "sparse-command-11.log.gz",
+      "rawSha256": "5b940383264b4637cf6f096d9341b19a3c82864d1d35199bdbc1b816c9290e48",
+      "rawBytes": 99,
+      "rawLines": 1
+    },
+    {
+      "name": "node scripts/mirror-package-data.mjs --check",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/mirror-package-data.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.353,
+      "log": "sparse-command-12.log.gz",
+      "rawSha256": "def32e2815224f03be262ff1436d0498f6b1abdc19d8daf0405c2aafc3e040db",
+      "rawBytes": 79,
+      "rawLines": 1
+    },
+    {
+      "name": "language-parity",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-language-parity.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.431,
+      "log": "sparse-command-13.log.gz",
+      "rawSha256": "6ad823c51769319cd16ca160a31170fb94e23bd17eff01dea85147a088bbad7c",
+      "rawBytes": 61,
+      "rawLines": 1
+    },
+    {
+      "name": "minimal-core",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-minimal-core-boundary.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.117,
+      "log": "sparse-command-14.log.gz",
+      "rawSha256": "31169eeef3e2f56d0b2d96c7d1a651b2d0cf2f6157b3690497c8d462c5634e69",
+      "rawBytes": 68,
+      "rawLines": 1
+    },
+    {
+      "name": "current-debt-ceilings",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "--input-type=module",
+        "-e",
+        "import fs from 'node:fs';import {parseRatchet,measure,checkMeasured} from './scripts/check-debt-ratchet.mjs';const ratchet=parseRatchet(fs.readFileSync('data/meta/debt-ratchet.lino','utf8'));const failures=checkMeasured(ratchet,measure(process.cwd()));if(failures.length){console.error(failures.join('\\n'));process.exitCode=1;}else console.log('Current debt ceilings match measured source; direct exported functions, no hosted-environment impersonation');"
+      ],
+      "exitCode": 0,
+      "seconds": 0.737,
+      "log": "sparse-current-debt-direct.log.gz",
+      "rawSha256": "62e487209f26176f5747cddcfdf75aa9db45517e2431cb61b7e494eb48f0792a",
+      "rawBytes": 108,
+      "rawLines": 1
+    },
+    {
+      "name": "honest-closure",
+      "argv": [
+        "python3",
+        "scripts/check-closure-audit.py"
+      ],
+      "exitCode": 0,
+      "seconds": 5.029,
+      "log": "sparse-command-16.log.gz",
+      "rawSha256": "920023ac0010fa50bd96f7a9b368cc4050cbb985250643d64ffcfbc58a06ea64",
+      "rawBytes": 126,
+      "rawLines": 3
+    },
+    {
+      "name": "role-namespace",
+      "argv": [
+        "python3",
+        "scripts/generate-role-registry.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.286,
+      "log": "sparse-command-17.log.gz",
+      "rawSha256": "f82ed7a24a0c051c5dadbef884c94b2ffae17ebb971f329072dad28704b803c7",
+      "rawBytes": 133,
+      "rawLines": 2
+    },
+    {
+      "name": "seed-metadata",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/audit-seed-metadata.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.229,
+      "log": "sparse-command-18.log.gz",
+      "rawSha256": "90c2ad1a2a918167d24779ac93251df472d2ee2a82a42056879e467e87b76188",
+      "rawBytes": 76,
+      "rawLines": 1
+    },
+    {
+      "name": "response-language-parity",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-response-parity-debt.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.124,
+      "log": "sparse-command-19.log.gz",
+      "rawSha256": "ea71dc2b99300b00eed962ca55cb0376473921189cd414fc9e32900e4d1794d0",
+      "rawBytes": 56,
+      "rawLines": 1
+    },
+    {
+      "name": "worker-line-budget",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-worker-line-budget.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.2,
+      "log": "sparse-command-20.log.gz",
+      "rawSha256": "9f194706a3d334ef88ec9f39436678e01914e8bc3788291b95cfdb46e15322e6",
+      "rawBytes": 12541,
+      "rawLines": 185
+    }
+  ],
+  "scope": "Actual fast-source commands in a temporary sparse copy. Governance children run directly; the hosted-only debt CLI refusal is retained and its identical exported calculation is independently invoked. This does not reproduce remote checkout, hosted wrapper timing or native execution.",
+  "independentAuthorshipCredit": 0
+}

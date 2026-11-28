@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "argv": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+        "rust/tests/unit/specification/formalization.rs"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-18T01:50:41.181388+00:00",
+      "log": "1.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-11-18T01:50:41.258075+00:00",
+      "log": "2.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+      "sha256": "b8c092e4ed1edbee890579d3386c5480831a24e47f2ecc144c6e376e24e898ed"
+    },
+    {
+      "path": "rust/tests/unit/specification/formalization.rs",
+      "sha256": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3"
+    }
+  ],
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

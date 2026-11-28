@@ -1,0 +1,18 @@
+{
+  "source": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-build-api/maven-metadata.xml",
+  "file": "plexus-current-metadata.xml.gz",
+  "rawSha256": "aa02683767b449996c0f790283a3ed9c6c18ec8641a9282dbc5cb41480dcee6e",
+  "archiveSha256": "346cd6c6ac9f41cc3fe88840fb88221cae85d5c28e88c2911adb93dd3b1c9f27",
+  "latest": "1.4.0",
+  "release": "1.4.0",
+  "lastUpdated": "20261114143252",
+  "sources": {
+    "url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-build-api/1.4.0/plexus-build-api-1.4.0-sources.jar",
+    "file": "plexus-current-sources.jar",
+    "sha256": "390a8913e4c236e075e43abb843911acf89805aa07aa88071ef681cc0b8d558e",
+    "entry": "org/codehaus/plexus/build/progress/DefaultProgress.java",
+    "sourceSha256": "57eefe91263742e5478337cf2fb31aa25cd927f399609025cbd8554db30f782f",
+    "hasSingletonAnnotation": false,
+    "hasMojoExecutionScopedAnnotation": true
+  }
+}

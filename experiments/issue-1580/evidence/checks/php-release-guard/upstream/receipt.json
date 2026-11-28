@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-11-18T12:20:25.634342+00:00",
+  "receipts": {
+    "issues": {
+      "count": 26,
+      "sha256": "c1de956226730d1392c495522473db52940540954e56ed0af57d4d30da52645f"
+    },
+    "repository": {
+      "count": 1,
+      "sha256": "1dc9ea4a8457ad29626b64654be0487e3ba4f2b424e9ec96603ff2e05bfd9a89"
+    },
+    "head": {
+      "count": 1,
+      "sha256": "0e13ab4f730c3e39e3704ff1aebbebee8828ddd68c3d87e400e693cf8166d4ba"
+    },
+    "pulls": {
+      "count": 8,
+      "sha256": "3fc50756a46adbf9599fe6ac8a6c434e2ae5c6c25998d5e74bbe6ac065961440"
+    }
+  }
+}

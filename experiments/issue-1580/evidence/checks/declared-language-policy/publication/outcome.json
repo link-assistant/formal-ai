@@ -1,0 +1,49 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "projection",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.824,
+      "rawBytes": 188,
+      "rawLines": 1,
+      "rawSha256": "fc3f033428548a4500f1df0ec78e77db7050b95e954089f214ea64b8cb6ed814"
+    },
+    {
+      "name": "gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-changelog-fragment-js-twin,check-fragment-release-map,check-file-size,check-reconstructed-changelog,check-worker-line-budget,check-hardcoded-language-js-twin,check-hardcoded-language,check-prompt-specialization"
+      ],
+      "exitCode": 1,
+      "seconds": 110.817,
+      "rawBytes": 465,
+      "rawLines": 11,
+      "rawSha256": "80cb1c73cfadbe0590e7f9db9de8675cec8e7f68e46713ddfcbee4592ec6943f"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.206,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

@@ -1,0 +1,61 @@
+{
+  "observedAt": "2026-11-21T10:56:02.043894+00:00",
+  "sourceHead": "ce1557b2f2c0fbf3aaff52a5d7dbb8f50b17fa77",
+  "files": [
+    {
+      "parent": "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+      "child": "rust/tests/unit/specification/reasoning_paths_procedures/elaboration.rs",
+      "module": "elaboration",
+      "testNames": [
+        "procedural_elaboration_followup_rebinds_to_prior_how_to",
+        "procedural_elaboration_requires_a_prior_how_to",
+        "procedural_elaboration_followup_covers_supported_languages",
+        "procedural_elaboration_followup_covers_many_topics"
+      ],
+      "beforeLines": 1000,
+      "afterLines": 760,
+      "originalSha256": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6",
+      "movedSha256": "702cfea7904704158e0185676b1748ad2ff8bee68f60a8ce21c6d28534f51bdc",
+      "movedFirst": 28959,
+      "movedLast": 38325,
+      "movedBodiesUnchanged": true,
+      "actualParentLines": 759,
+      "actualChildLines": 262
+    },
+    {
+      "parent": "rust/tests/integration/with_formal_ai.rs",
+      "child": "rust/tests/integration/with_formal_ai/global_configuration.rs",
+      "module": "global_configuration",
+      "testNames": [
+        "with_formal_ai_global_configures_idempotently_and_undo_restores_backups"
+      ],
+      "beforeLines": 945,
+      "afterLines": 820,
+      "originalSha256": "d6b93ce35cd81d7fa3256e92c65132274344ba740533ef133fee3f0d7b1ba3cf",
+      "movedSha256": "b5c47c08614eaa5ac8fee4a8bf8f7fb66ce6c1217c2caeceaf28f30f7437aca4",
+      "movedFirst": 26133,
+      "movedLast": 30916,
+      "movedBodiesUnchanged": true,
+      "actualParentLines": 820,
+      "actualChildLines": 133
+    }
+  ],
+  "before": {
+    "passed": 9,
+    "failed": 2
+  },
+  "after": {
+    "headroom": 11,
+    "nativeGroups": 50,
+    "maintained": 144
+  },
+  "nativeTestNamesPreserved": 5,
+  "existingTimingRecordsUnchanged": true,
+  "remainingWarnings": 79,
+  "scannerLimitsUnchanged": true,
+  "retainedRecords": 41,
+  "nativeBuildRun": false,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,26 @@
+{
+  "sourceSha256": "dfe4a2ff8a659be8102235df406ccf2ff0678e77f2f3acb750cb755087a25213",
+  "bodies": [
+    {
+      "sha256": "8a5a5b60f2c48810397a1b775e9fab794a27c4d60a56d75136a25681654d6f84",
+      "bytes": 1571,
+      "lines": 47
+    },
+    {
+      "sha256": "5ee3f0e7500c1e5c280cd2375b466bb63dbc491fd2a14071b06548c8382f0e50",
+      "bytes": 216,
+      "lines": 6
+    },
+    {
+      "sha256": "db15e6c5cd1a4f5ecf90816e2adb12785aff6fa432f306f7b81b490328e0d961",
+      "bytes": 702,
+      "lines": 21
+    }
+  ],
+  "appLinesBefore": 1451,
+  "appLinesAfter": 1382,
+  "hooksLinesBefore": 491,
+  "hooksLinesAfter": 574,
+  "renderedMarkupUnchanged": true,
+  "independentAuthorshipCredit": 0
+}

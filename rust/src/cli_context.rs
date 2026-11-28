@@ -10,6 +10,9 @@ use formal_ai::dialog_conversation::append_with_overlap;
 use serde_json::{Value, json};
 
 mod harness;
+#[cfg(test)]
+#[path = "../tests/source/source_tests/cli_context/production_tests.rs"]
+mod tests;
 
 const ERROR_PLACEHOLDER: &str = "{error}";
 const SESSION_PLACEHOLDER: &str = "{session}";

@@ -10,7 +10,7 @@ use formal_ai::external_benchmarks::ledger::{Ledger, LedgerRecord};
 use formal_ai::external_benchmarks::{SuiteRun, ratchet};
 use formal_ai::learning_cycle::{
     UPSTREAM_BENCHMARKS_FRONTIER, UPSTREAM_BENCHMARKS_FRONTIER_PARTS, parse_frontier_record,
-    recorded_frontier,
+    recorded_frontier, run_learning_cycle,
 };
 
 const LEDGER_PATH: &str = "data/benchmarks/external-results.lino";
@@ -207,11 +207,10 @@ fn the_committed_upstream_frontier_is_registered_and_replayable() {
             .expect("the provisioned part must exist"),
         );
     }
-    assert_eq!(
-        frontier.document, committed,
-        "the embedded record is the committed pages"
-    );
-    let items = parse_frontier_record(frontier.document);
+    let items = parse_frontier_record(&committed);
+    let replay = run_learning_cycle(frontier.slug, &items);
+    assert_eq!(replay.frontier, UPSTREAM_BENCHMARKS_FRONTIER);
+    assert_eq!(replay.frontier_items, items.len());
     assert!(
         !items.is_empty(),
         "the record carries the last scheduled run's failures"

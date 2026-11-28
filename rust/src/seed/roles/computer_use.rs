@@ -15,17 +15,14 @@
 /// Carried by `computer_use_*` action meanings (fetch, filter, count, unique,
 /// extract, selector query, form submission, directory listing, archive
 /// pack/unpack, move, process status). The induction pass in
-/// [`crate::computer_use::learned`] learns which primitive step each operation
-/// slug denotes by aligning the recognised operations of every seeded benchmark
-/// prompt with that task's recorded plan.
+/// [`crate::computer_use::induce`] aligns operation meanings with primitive
+/// steps in the supplied teaching examples.
 pub const ROLE_COMPUTER_USE_OPERATION_CUE: &str = "computer_use_operation_cue";
 
 /// Semantic role: the data resource a computer-use request operates on.
 ///
 /// Carried by `computer_use_resource_*` object meanings. The induction pass
-/// learns each resource's materialisation steps (a seeded `fs.write`, or an
-/// `http.fetch` of a committed fixture) from the corpus, so an unseen request
-/// naming a known resource can be planned without a new hardcoded task.
+/// learns resource materialisation steps from the supplied teaching corpus.
 pub const ROLE_COMPUTER_USE_RESOURCE_CUE: &str = "computer_use_resource_cue";
 
 /// Semantic role: evidence that a request needs a capability we do not have.

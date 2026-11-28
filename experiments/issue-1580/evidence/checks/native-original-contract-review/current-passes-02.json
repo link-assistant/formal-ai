@@ -1,0 +1,162 @@
+[
+  {
+    "originalTest": "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "concept_lookup_self_use::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "concept_lookup_self_use::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+            "line": 66169,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:08:21.4188646Z test concept_lookup_self_use::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+            "line": 64595,
+            "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-22T04:18:06.7953255Z test web_requests::web_search_source_marker_prompts_extract_query_without_source_marker ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "reasoning_loop::step_6_candidates_are_validated_against_constraints",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "reasoning_loop::step_6_candidates_are_validated_against_constraints",
+            "line": 66218,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:26.4008168Z test reasoning_loop::step_6_candidates_are_validated_against_constraints ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+            "line": 66200,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:14.9730310Z test procedures::how_to_make_tea_uses_source_backed_procedure_plan ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+            "line": 61753,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:26.4895751Z test spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "compound_courtesy_and_question_are_answered_in_source_order",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "compound_courtesy_and_question_are_answered_in_source_order",
+            "line": 61763,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:37.3806705Z test compound_courtesy_and_question_are_answered_in_source_order ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "decomposed_sub_results_are_composed_for_algebra",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "decomposed_sub_results_are_composed_for_algebra",
+            "line": 61764,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:38.3774712Z test decomposed_sub_results_are_composed_for_algebra ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "renumbered_algebra_substitution_recomputes_closed_value",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "renumbered_algebra_substitution_recomputes_closed_value",
+            "line": 61769,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:41.8584548Z test renumbered_algebra_substitution_recomputes_closed_value ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  }
+]

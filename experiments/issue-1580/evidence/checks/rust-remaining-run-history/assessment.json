@@ -1,0 +1,60 @@
+{
+  "literalPinnedFilesRead": 339,
+  "literalPinnedSourceLinesRead": 39016,
+  "sourceFiles": [
+    {
+      "path": "dev/log/issues/247/pulls/248/issue.json",
+      "sha256": "bd10797f0ee04725df70506677a8185b29ec6442e03f4c6f5aa2fb539f1e04fa",
+      "sourceLines": 1,
+      "renderedLines": 23,
+      "readFile": "issue.json.read.txt"
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/main-pipeline.json",
+      "sha256": "e4cf0e16074ea88d3d900ab3b375664ffb5d6053d8ad2d73398711aff9906c46",
+      "sourceLines": 1,
+      "renderedLines": 1141,
+      "readFile": "main-pipeline.json.read.txt"
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/main-security.json",
+      "sha256": "0f6c1aa865cf008934ad24bd6edcffe9b07f10cf5c22956c751b52560a9ddf60",
+      "sourceLines": 1,
+      "renderedLines": 491,
+      "readFile": "main-security.json.read.txt"
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/downstream-meta-after-run-24985948212.json",
+      "sha256": "6b7a2e716081186901f400f5f5773b16eb849a2ed2b07636aae141f7e7acdf55",
+      "sourceLines": 1,
+      "renderedLines": 914,
+      "readFile": "downstream-meta-after-run-24985948212.json.read.txt"
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/downstream-meta-before-run-24983875003.json",
+      "sha256": "a7dac818450b78ec3a543fa2c1e4cecab0963989fab5be5c30542a0c8e16ef08",
+      "sourceLines": 1,
+      "renderedLines": 857,
+      "readFile": "downstream-meta-before-run-24983875003.json.read.txt"
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/main-run-24465255225.json",
+      "sha256": "38fbfda3ffce9516ffbc6fdee24c1193dcf579e691e30e9f910e330102c17249",
+      "sourceLines": 1,
+      "renderedLines": 774,
+      "readFile": "main-run-24465255225.json.read.txt"
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/pr-run-25212295127.json",
+      "sha256": "e8f818329a6b55c5eb4c0d2261d95d47e2b8259f58e307ab387b54fd5c59c3f2",
+      "sourceLines": 1,
+      "renderedLines": 475,
+      "readFile": "pr-run-25212295127.json.read.txt"
+    }
+  ],
+  "metadataIsOriginalFailureDiagnosis": false,
+  "metadataIsCurrentRuntimeVerification": false,
+  "allTemplatePracticesAdopted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

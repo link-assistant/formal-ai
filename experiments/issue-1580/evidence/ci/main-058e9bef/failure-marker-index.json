@@ -1,0 +1,226 @@
+[
+  {
+    "run": 44174503822,
+    "workflow": "Agentic CLI Matrix",
+    "markers": [
+      {
+        "line": 2468,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 2905,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 3344,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 3793,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 4248,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 4874,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 5312,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 5865,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 6296,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 6755,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 7197,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 7647,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 7760,
+        "text": "##[error]Process completed with exit code 1."
+      }
+    ]
+  },
+  {
+    "run": 44174503458,
+    "workflow": "Layered CI",
+    "markers": [
+      {
+        "line": 14722,
+        "text": "\u2716 formalize <url> answers the statements of the fetched page in every language (3580.54083ms)"
+      },
+      {
+        "line": 15864,
+        "text": "\u2716 failing tests:"
+      },
+      {
+        "line": 15867,
+        "text": "\u2716 formalize <url> answers the statements of the fetched page in every language (3580.54083ms)"
+      },
+      {
+        "line": 15868,
+        "text": "  AssertionError [ERR_ASSERTION]: formalize this page: https://en.wikipedia.org/wiki/Moon"
+      },
+      {
+        "line": 15885,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 17284,
+        "text": "\u2716 generated native registry is current (10033.10404ms)"
+      },
+      {
+        "line": 17290,
+        "text": "\u2716 a separately supported explicit stdout obligation reaches a source write through the same connector (262.187384ms)"
+      },
+      {
+        "line": 17291,
+        "text": "\u2716 a long display placeholder cannot displace the explicit structured issue record (199.984384ms)"
+      },
+      {
+        "line": 17292,
+        "text": "\u2716 a direct structured issue record uses the same decoder as a content-wrapped JSON record (247.135514ms)"
+      },
+      {
+        "line": 17813,
+        "text": "\u2716 original operations and authority remain with selected-source compilation and bounded cold install (5.514345ms)"
+      },
+      {
+        "line": 18560,
+        "text": "\u2716 failing tests:"
+      },
+      {
+        "line": 18563,
+        "text": "\u2716 generated native registry is current (10033.10404ms)"
+      },
+      {
+        "line": 18592,
+        "text": "\u2716 a separately supported explicit stdout obligation reaches a source write through the same connector (262.187384ms)"
+      },
+      {
+        "line": 18593,
+        "text": "  AssertionError [ERR_ASSERTION]: {\"kind\":\"tool_calls\",\"calls\":[{\"tool\":\"bash\",\"arguments\":\"{\\\"command\\\":\\\"command -v python3 >/dev/null 2>&1 && python3 -c 'import json\\\\nimport os\\\\nimport pathlib\\\\nimport secrets\\\\nimport stat\\\\nimport sys\\\\n\\\\nMAXIMUM_FILE_BYTES = 16 * 1024 * 1024\\\\nplan = json.loads(sys.argv[1])\\\\nroot = pathlib.Path.cwd()\\\\n\\\\n\\\\ndef owned_path(value):\\\\n    if not isinstance(value, str) or not value or '\\\\\\\\''\\\\\\\\x00'\\\\\\\\'' in value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    relative = pathlib.PurePosixPath(value)\\\\n    if relative.is_absolute() or pathlib.PureWindowsPath(value).drive or '\\\\\\\\''..'\\\\\\\\'' in relative.parts or str(relative) != value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    current = root\\\\n    for part in relative.parts:\\\\n        current = current / part\\\\n        if current.is_symlink():\\\\n            raise ValueError('\\\\\\\\''symbolic_owned_path'\\\\\\\\'')\\\\n    return current\\\\n\\\\n\\\\ndef read_regular(path, limit):\\\\n    descriptor = os.open(path, os.O_RDONLY | getattr(os, '\\\\\\\\''O_NOFOLLOW'\\\\\\\\'', 0) | getattr(os, '\\\\\\\\''O_NONBLOCK'\\\\\\\\'', 0))\\\\n    with os.fdopen(descriptor, '\\\\\\\\''rb'\\\\\\\\'') as stream:\\\\n        before = os.fstat(stream.fileno())\\\\n        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:\\\\n            raise ValueError('\\\\\\\\''unbounded_owned_file'\\\\\\\\'')\\\\n        data = stream.read(limit + 1)\\\\n        after = os.fstat(stream.fileno())\\\\n    current = os.lstat(path)\\\\n    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_mode)\\\\n    if len(data) > limit or identity(before) != identity(after) or identity(after) != identity(current):\\\\n        raise ValueError('\\\\\\\\''owned_file_changed'\\\\\\\\'')\\\\n    return data, identity(current)\\\\n\\\\n\\\\nimport hashlib\\\\ndef write_regular_atomic(path, updated, identity, expected_sha=None):\\\\n    if len(updated) > MAXIMUM_FILE_BYTES:\\\\n        raise ValueError('\\\\\\\\''owned_write_limit'\\\\\\\\'')\\\\n    temporary = root / ('\\\\\\\\''.formal-ai-source-'\\\\\\\\'' + secrets.token_hex(12))\\\\n    try:\\\\n        with open(temporary, '\\\\\\\\''xb'\\\\\\\\'') as stream:\\\\n            if stream.write(updated) != len(updated):\\\\n                raise OSError('\\\\\\\\''owned_write_incomplete'\\\\\\\\'')\\\\n            if identity is not None:\\\\n                os.fchmod(stream.fileno(), stat.S_IMODE(identity[4]))\\\\n            stream.flush()\\\\n            os.fsync(stream.fileno())\\\\n        if identity is None:\\\\n            if path.exists() or path.is_symlink():\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n        else:\\\\n            current_bytes, current_identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n            if identity != current_identity:\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n            if expected_sha is not None and hashlib.sha256(current_bytes).hexdigest() != expected_sha:\\\\n                raise ValueError('\\\\\\\\''owned_write_preimage_changed'\\\\\\\\'')\\\\n        os.replace(temporary, path)\\\\n    finally:\\\\n        if temporary.exists():\\\\n            temporary.unlink()\\\\n\\\\n\\\\ndef placeholder_content_matches(data, issue, branch):\\\\n    if not data:\\\\n        return True\\\\n    if not isinstance(issue, str) or not isinstance(branch, str) or len(data) > 1024:\\\\n        return False\\\\n    import re\\\\n    import datetime\\\\n    match = re.fullmatch(r'\\\\\\\\''# \\\\\\\\.gitkeep file auto-generated at ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\\\\\.[0-9]{3}Z) for PR creation at branch (issue-[1-9][0-9]*-[A-Za-z0-9-]+) for issue (https://github\\\\\\\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[1-9][0-9]*)'\\\\\\\\'', data.decode('\\\\\\\\''utf-8'\\\\\\\\'', '\\\\\\\\''strict'\\\\\\\\''))\\\\n    if match is None or match[2] != branch or match[3] != issue:\\\\n        return False\\\\n    if not branch.startswith('\\\\\\\\''issue-'\\\\\\\\'' + issue.rsplit('\\\\\\\\''/'\\\\\\\\'', 1)[1] + '\\\\\\\\''-'\\\\\\\\''):\\\\n        return False\\\\n    try:\\\\n        datetime.datetime.fromisoformat(match[1].replace('\\\\\\\\''Z'\\\\\\\\'', '\\\\\\\\''+00:00'\\\\\\\\''))\\\\n    except ValueError:\\\\n        return False\\\\n    return True\\\\n\\\\npath_value = plan['\\\\\\\\''path'\\\\\\\\'']\\\\npath = owned_path(path_value)\\\\ntry:\\\\n    os.lstat(path)\\\\nexcept FileNotFoundError:\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': True, '\\\\\\\\''error_code'\\\\\\\\'': '\\\\\\\\''ENOENT'\\\\\\\\''}\\\\nelse:\\\\n    data, identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': False, '\\\\\\\\''source'\\\\\\\\'': data.decode('\\\\\\\\''utf-8'\\\\\\\\''), '\\\\\\\\''identity'\\\\\\\\'': [str(value) for value in identity], '\\\\\\\\''sha256'\\\\\\\\'': hashlib.sha256(data).hexdigest()}\\\\nprint(json.dumps(result, ensure_ascii=True))\\\\n' '{\\\\\\\"path\\\\\\\":\\\\\\\"main.rs\\\\\\\"}'\\\"}\"}]}"
+      },
+      {
+        "line": 18610,
+        "text": "\u2716 a long display placeholder cannot displace the explicit structured issue record (199.984384ms)"
+      },
+      {
+        "line": 18611,
+        "text": "  AssertionError [ERR_ASSERTION]: {\"kind\":\"tool_calls\",\"calls\":[{\"tool\":\"bash\",\"arguments\":\"{\\\"command\\\":\\\"command -v python3 >/dev/null 2>&1 && python3 -c 'import json\\\\nimport os\\\\nimport pathlib\\\\nimport secrets\\\\nimport stat\\\\nimport sys\\\\n\\\\nMAXIMUM_FILE_BYTES = 16 * 1024 * 1024\\\\nplan = json.loads(sys.argv[1])\\\\nroot = pathlib.Path.cwd()\\\\n\\\\n\\\\ndef owned_path(value):\\\\n    if not isinstance(value, str) or not value or '\\\\\\\\''\\\\\\\\x00'\\\\\\\\'' in value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    relative = pathlib.PurePosixPath(value)\\\\n    if relative.is_absolute() or pathlib.PureWindowsPath(value).drive or '\\\\\\\\''..'\\\\\\\\'' in relative.parts or str(relative) != value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    current = root\\\\n    for part in relative.parts:\\\\n        current = current / part\\\\n        if current.is_symlink():\\\\n            raise ValueError('\\\\\\\\''symbolic_owned_path'\\\\\\\\'')\\\\n    return current\\\\n\\\\n\\\\ndef read_regular(path, limit):\\\\n    descriptor = os.open(path, os.O_RDONLY | getattr(os, '\\\\\\\\''O_NOFOLLOW'\\\\\\\\'', 0) | getattr(os, '\\\\\\\\''O_NONBLOCK'\\\\\\\\'', 0))\\\\n    with os.fdopen(descriptor, '\\\\\\\\''rb'\\\\\\\\'') as stream:\\\\n        before = os.fstat(stream.fileno())\\\\n        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:\\\\n            raise ValueError('\\\\\\\\''unbounded_owned_file'\\\\\\\\'')\\\\n        data = stream.read(limit + 1)\\\\n        after = os.fstat(stream.fileno())\\\\n    current = os.lstat(path)\\\\n    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_mode)\\\\n    if len(data) > limit or identity(before) != identity(after) or identity(after) != identity(current):\\\\n        raise ValueError('\\\\\\\\''owned_file_changed'\\\\\\\\'')\\\\n    return data, identity(current)\\\\n\\\\n\\\\nimport hashlib\\\\ndef write_regular_atomic(path, updated, identity, expected_sha=None):\\\\n    if len(updated) > MAXIMUM_FILE_BYTES:\\\\n        raise ValueError('\\\\\\\\''owned_write_limit'\\\\\\\\'')\\\\n    temporary = root / ('\\\\\\\\''.formal-ai-source-'\\\\\\\\'' + secrets.token_hex(12))\\\\n    try:\\\\n        with open(temporary, '\\\\\\\\''xb'\\\\\\\\'') as stream:\\\\n            if stream.write(updated) != len(updated):\\\\n                raise OSError('\\\\\\\\''owned_write_incomplete'\\\\\\\\'')\\\\n            if identity is not None:\\\\n                os.fchmod(stream.fileno(), stat.S_IMODE(identity[4]))\\\\n            stream.flush()\\\\n            os.fsync(stream.fileno())\\\\n        if identity is None:\\\\n            if path.exists() or path.is_symlink():\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n        else:\\\\n            current_bytes, current_identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n            if identity != current_identity:\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n            if expected_sha is not None and hashlib.sha256(current_bytes).hexdigest() != expected_sha:\\\\n                raise ValueError('\\\\\\\\''owned_write_preimage_changed'\\\\\\\\'')\\\\n        os.replace(temporary, path)\\\\n    finally:\\\\n        if temporary.exists():\\\\n            temporary.unlink()\\\\n\\\\n\\\\ndef placeholder_content_matches(data, issue, branch):\\\\n    if not data:\\\\n        return True\\\\n    if not isinstance(issue, str) or not isinstance(branch, str) or len(data) > 1024:\\\\n        return False\\\\n    import re\\\\n    import datetime\\\\n    match = re.fullmatch(r'\\\\\\\\''# \\\\\\\\.gitkeep file auto-generated at ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\\\\\.[0-9]{3}Z) for PR creation at branch (issue-[1-9][0-9]*-[A-Za-z0-9-]+) for issue (https://github\\\\\\\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[1-9][0-9]*)'\\\\\\\\'', data.decode('\\\\\\\\''utf-8'\\\\\\\\'', '\\\\\\\\''strict'\\\\\\\\''))\\\\n    if match is None or match[2] != branch or match[3] != issue:\\\\n        return False\\\\n    if not branch.startswith('\\\\\\\\''issue-'\\\\\\\\'' + issue.rsplit('\\\\\\\\''/'\\\\\\\\'', 1)[1] + '\\\\\\\\''-'\\\\\\\\''):\\\\n        return False\\\\n    try:\\\\n        datetime.datetime.fromisoformat(match[1].replace('\\\\\\\\''Z'\\\\\\\\'', '\\\\\\\\''+00:00'\\\\\\\\''))\\\\n    except ValueError:\\\\n        return False\\\\n    return True\\\\n\\\\npath_value = plan['\\\\\\\\''path'\\\\\\\\'']\\\\npath = owned_path(path_value)\\\\ntry:\\\\n    os.lstat(path)\\\\nexcept FileNotFoundError:\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': True, '\\\\\\\\''error_code'\\\\\\\\'': '\\\\\\\\''ENOENT'\\\\\\\\''}\\\\nelse:\\\\n    data, identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': False, '\\\\\\\\''source'\\\\\\\\'': data.decode('\\\\\\\\''utf-8'\\\\\\\\''), '\\\\\\\\''identity'\\\\\\\\'': [str(value) for value in identity], '\\\\\\\\''sha256'\\\\\\\\'': hashlib.sha256(data).hexdigest()}\\\\nprint(json.dumps(result, ensure_ascii=True))\\\\n' '{\\\\\\\"path\\\\\\\":\\\\\\\"main.rs\\\\\\\"}'\\\"}\"}]}"
+      },
+      {
+        "line": 18628,
+        "text": "\u2716 a direct structured issue record uses the same decoder as a content-wrapped JSON record (247.135514ms)"
+      },
+      {
+        "line": 18629,
+        "text": "  AssertionError [ERR_ASSERTION]: {\"kind\":\"tool_calls\",\"calls\":[{\"tool\":\"bash\",\"arguments\":\"{\\\"command\\\":\\\"command -v python3 >/dev/null 2>&1 && python3 -c 'import json\\\\nimport os\\\\nimport pathlib\\\\nimport secrets\\\\nimport stat\\\\nimport sys\\\\n\\\\nMAXIMUM_FILE_BYTES = 16 * 1024 * 1024\\\\nplan = json.loads(sys.argv[1])\\\\nroot = pathlib.Path.cwd()\\\\n\\\\n\\\\ndef owned_path(value):\\\\n    if not isinstance(value, str) or not value or '\\\\\\\\''\\\\\\\\x00'\\\\\\\\'' in value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    relative = pathlib.PurePosixPath(value)\\\\n    if relative.is_absolute() or pathlib.PureWindowsPath(value).drive or '\\\\\\\\''..'\\\\\\\\'' in relative.parts or str(relative) != value:\\\\n        raise ValueError('\\\\\\\\''invalid_owned_path'\\\\\\\\'')\\\\n    current = root\\\\n    for part in relative.parts:\\\\n        current = current / part\\\\n        if current.is_symlink():\\\\n            raise ValueError('\\\\\\\\''symbolic_owned_path'\\\\\\\\'')\\\\n    return current\\\\n\\\\n\\\\ndef read_regular(path, limit):\\\\n    descriptor = os.open(path, os.O_RDONLY | getattr(os, '\\\\\\\\''O_NOFOLLOW'\\\\\\\\'', 0) | getattr(os, '\\\\\\\\''O_NONBLOCK'\\\\\\\\'', 0))\\\\n    with os.fdopen(descriptor, '\\\\\\\\''rb'\\\\\\\\'') as stream:\\\\n        before = os.fstat(stream.fileno())\\\\n        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:\\\\n            raise ValueError('\\\\\\\\''unbounded_owned_file'\\\\\\\\'')\\\\n        data = stream.read(limit + 1)\\\\n        after = os.fstat(stream.fileno())\\\\n    current = os.lstat(path)\\\\n    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns, value.st_mode)\\\\n    if len(data) > limit or identity(before) != identity(after) or identity(after) != identity(current):\\\\n        raise ValueError('\\\\\\\\''owned_file_changed'\\\\\\\\'')\\\\n    return data, identity(current)\\\\n\\\\n\\\\nimport hashlib\\\\ndef write_regular_atomic(path, updated, identity, expected_sha=None):\\\\n    if len(updated) > MAXIMUM_FILE_BYTES:\\\\n        raise ValueError('\\\\\\\\''owned_write_limit'\\\\\\\\'')\\\\n    temporary = root / ('\\\\\\\\''.formal-ai-source-'\\\\\\\\'' + secrets.token_hex(12))\\\\n    try:\\\\n        with open(temporary, '\\\\\\\\''xb'\\\\\\\\'') as stream:\\\\n            if stream.write(updated) != len(updated):\\\\n                raise OSError('\\\\\\\\''owned_write_incomplete'\\\\\\\\'')\\\\n            if identity is not None:\\\\n                os.fchmod(stream.fileno(), stat.S_IMODE(identity[4]))\\\\n            stream.flush()\\\\n            os.fsync(stream.fileno())\\\\n        if identity is None:\\\\n            if path.exists() or path.is_symlink():\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n        else:\\\\n            current_bytes, current_identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n            if identity != current_identity:\\\\n                raise ValueError('\\\\\\\\''owned_write_identity_changed'\\\\\\\\'')\\\\n            if expected_sha is not None and hashlib.sha256(current_bytes).hexdigest() != expected_sha:\\\\n                raise ValueError('\\\\\\\\''owned_write_preimage_changed'\\\\\\\\'')\\\\n        os.replace(temporary, path)\\\\n    finally:\\\\n        if temporary.exists():\\\\n            temporary.unlink()\\\\n\\\\n\\\\ndef placeholder_content_matches(data, issue, branch):\\\\n    if not data:\\\\n        return True\\\\n    if not isinstance(issue, str) or not isinstance(branch, str) or len(data) > 1024:\\\\n        return False\\\\n    import re\\\\n    import datetime\\\\n    match = re.fullmatch(r'\\\\\\\\''# \\\\\\\\.gitkeep file auto-generated at ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\\\\\.[0-9]{3}Z) for PR creation at branch (issue-[1-9][0-9]*-[A-Za-z0-9-]+) for issue (https://github\\\\\\\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[1-9][0-9]*)'\\\\\\\\'', data.decode('\\\\\\\\''utf-8'\\\\\\\\'', '\\\\\\\\''strict'\\\\\\\\''))\\\\n    if match is None or match[2] != branch or match[3] != issue:\\\\n        return False\\\\n    if not branch.startswith('\\\\\\\\''issue-'\\\\\\\\'' + issue.rsplit('\\\\\\\\''/'\\\\\\\\'', 1)[1] + '\\\\\\\\''-'\\\\\\\\''):\\\\n        return False\\\\n    try:\\\\n        datetime.datetime.fromisoformat(match[1].replace('\\\\\\\\''Z'\\\\\\\\'', '\\\\\\\\''+00:00'\\\\\\\\''))\\\\n    except ValueError:\\\\n        return False\\\\n    return True\\\\n\\\\npath_value = plan['\\\\\\\\''path'\\\\\\\\'']\\\\npath = owned_path(path_value)\\\\ntry:\\\\n    os.lstat(path)\\\\nexcept FileNotFoundError:\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': True, '\\\\\\\\''error_code'\\\\\\\\'': '\\\\\\\\''ENOENT'\\\\\\\\''}\\\\nelse:\\\\n    data, identity = read_regular(path, MAXIMUM_FILE_BYTES)\\\\n    result = {'\\\\\\\\''schema'\\\\\\\\'': '\\\\\\\\''workspace-source-v1'\\\\\\\\'', '\\\\\\\\''path'\\\\\\\\'': path_value, '\\\\\\\\''success'\\\\\\\\'': True,\\\\n              '\\\\\\\\''complete'\\\\\\\\'': True, '\\\\\\\\''absent'\\\\\\\\'': False, '\\\\\\\\''source'\\\\\\\\'': data.decode('\\\\\\\\''utf-8'\\\\\\\\''), '\\\\\\\\''identity'\\\\\\\\'': [str(value) for value in identity], '\\\\\\\\''sha256'\\\\\\\\'': hashlib.sha256(data).hexdigest()}\\\\nprint(json.dumps(result, ensure_ascii=True))\\\\n' '{\\\\\\\"path\\\\\\\":\\\\\\\"main.rs\\\\\\\"}'\\\"}\"}]}"
+      },
+      {
+        "line": 18646,
+        "text": "\u2716 original operations and authority remain with selected-source compilation and bounded cold install (5.514345ms)"
+      },
+      {
+        "line": 18647,
+        "text": "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+      },
+      {
+        "line": 18670,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 19913,
+        "text": "##[error]Process completed with exit code 143."
+      },
+      {
+        "line": 21209,
+        "text": "AssertionError [ERR_ASSERTION]: controlled engine boundary request differs"
+      },
+      {
+        "line": 21259,
+        "text": "AssertionError [ERR_ASSERTION]: controlled engine boundary byte corruption"
+      },
+      {
+        "line": 21779,
+        "text": "##[error]Process completed with exit code 143."
+      },
+      {
+        "line": 23810,
+        "text": "\u2716 prepared pull request metadata decodes one working pattern across scalar and JSON quoting layers (40.740007ms)"
+      },
+      {
+        "line": 23994,
+        "text": "\u2716 failing tests:"
+      },
+      {
+        "line": 23997,
+        "text": "\u2716 prepared pull request metadata decodes one working pattern across scalar and JSON quoting layers (40.740007ms)"
+      },
+      {
+        "line": 23998,
+        "text": "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+      },
+      {
+        "line": 24015,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 28212,
+        "text": "\u2716 #1172 R7: a question over a quoted passage is answered from its own sentence with no network call (1491.8828ms)"
+      },
+      {
+        "line": 28960,
+        "text": "\u2716 failing tests:"
+      },
+      {
+        "line": 28963,
+        "text": "\u2716 #1172 R7: a question over a quoted passage is answered from its own sentence with no network call (1491.8828ms)"
+      },
+      {
+        "line": 28964,
+        "text": "  AssertionError [ERR_ASSERTION]: Read this and answer: \"The meeting moved from Tuesday to Thursday at 3 pm in room 204.\" When and where is the meeting? made network calls"
+      },
+      {
+        "line": 29002,
+        "text": "##[error]Process completed with exit code 1."
+      },
+      {
+        "line": 30404,
+        "text": "\u2716 unbound nested required values produce a terminal failure, no empty call, and actionable diagnostics (18.586188ms)"
+      },
+      {
+        "line": 31239,
+        "text": "\u2716 failing tests:"
+      },
+      {
+        "line": 31242,
+        "text": "\u2716 unbound nested required values produce a terminal failure, no empty call, and actionable diagnostics (18.586188ms)"
+      },
+      {
+        "line": 31243,
+        "text": "  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:"
+      },
+      {
+        "line": 31259,
+        "text": "##[error]Process completed with exit code 1."
+      }
+    ]
+  }
+]

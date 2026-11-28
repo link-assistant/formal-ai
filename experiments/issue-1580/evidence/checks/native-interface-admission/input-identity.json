@@ -1,0 +1,71 @@
+{
+  "inputs": [
+    {
+      "path": "rust/tests/integration/formal_ai_cli.rs",
+      "sha256": "c1e05859fd0a1608f9d1940ed25e87e73b1749ebc9ce72f723f80da0e2cff8d3"
+    },
+    {
+      "path": "rust/tests/integration/http_server.rs",
+      "sha256": "620ded66735098a0e9780a502f27e71269261db97f162e19ee8e8191cf516441"
+    },
+    {
+      "path": "rust/tests/integration/pty.rs",
+      "sha256": "44a9feb7b018a8faa03714ae6b23caab6c9db3cbe0d719ac63e36ad2bddf06ce"
+    },
+    {
+      "path": "rust/tests/support/structured_stderr.rs",
+      "sha256": "c9dac0ed48131ea7bda344b2a5f3fed01af77a120f267d012c63cce9ad23621b"
+    },
+    {
+      "path": "rust/tests/integration/with_formal_ai.rs",
+      "sha256": "8886f556ec8c8f4a5ec884628df1bd711b5be3c41666e0c08f679d93018cae40"
+    },
+    {
+      "path": "rust/tests/integration/with_formal_ai/fixture_env.rs",
+      "sha256": "460bb161a359794c06b4bbe467d567ddaa44017937d8685f4bf6fb78d8096344"
+    },
+    {
+      "path": "rust/tests/integration/with_formal_ai/issue_1582.rs",
+      "sha256": "d9abaf836adaefa74a8f2a0f34a83d9f8251eb388d527dd588b7cc648fd056fb"
+    },
+    {
+      "path": "rust/tests/integration/with_formal_ai/model_metadata.rs",
+      "sha256": "067fc174e2563d0c4633564bcec30bbf004febe171736ced24b8cd56a36e9547"
+    },
+    {
+      "path": "rust/tests/integration/with_formal_ai_argv.rs",
+      "sha256": "a6825176174d355184f9eea23a750fc559d29fd16a479baf8f63d76042532707"
+    },
+    {
+      "path": "rust/tests/integration/issue_819_tui_isolation.rs",
+      "sha256": "2242c4e5e6334c146f6d81b47583136a894f2b7a624479c24fc14a984b1aafd2"
+    },
+    {
+      "path": "rust/tests/integration/issue_1138_family_behaviour.rs",
+      "sha256": "fb7190607f0ddeb84c201d10d6acc38651dd7502ea3334b8e1f44890735b9444"
+    },
+    {
+      "path": "rust/tests/unit/formal_ai/seed_and_memory.rs",
+      "sha256": "4b241c76b1a8dd185b7bdd42bef7799813d1ecf7b310cfdf3faa977641532be7"
+    },
+    {
+      "path": "rust/tests/unit/seed/issue_699_handler_migration.rs",
+      "sha256": "92857a05cc9df207baa6834bfc7b2a88233e738ad1ef7b85f7be4408407109c9"
+    },
+    {
+      "path": "docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.html",
+      "sha256": "8be3093e7334b53611a024d67534ffe84b31fc98f53eec724a81baa2519f7185"
+    },
+    {
+      "path": "docs/case-studies/issue-781/raw-data/chatgpt-web-capture.json",
+      "sha256": "8e0a9b32c121f03bbed340d04a744cd83e6ea7c032e2c7344dcd39caaba535e5"
+    },
+    {
+      "path": "docs/case-studies/issue-699/agent-cli-evidence/handler-migration-batch-report.lino",
+      "sha256": "edf7d8f72a722bf6771bad1fd569bc08457f9f3564f222ad762821ed8c6232ae"
+    }
+  ],
+  "nativeReplayObserved": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

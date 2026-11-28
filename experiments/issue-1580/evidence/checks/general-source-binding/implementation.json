@@ -1,0 +1,18 @@
+{
+  "sources": [
+    {
+      "file": "rust/src/solver_unknown_reasoning.rs",
+      "beforeSha256": "f699a2cc35be62a3ea5aebe325fbb492873d54e79fb55462d332a5cf2cf93ab3",
+      "afterSha256": "a84e6790fc0d81fa8730aeddf761cbc0697ee3733f67b8e53afa73e53683d558"
+    },
+    {
+      "file": "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs",
+      "beforeSha256": "64c330a06af1903375194f14a90f650980e831605a11e1f7f8a012ee0eadc713",
+      "afterSha256": "c9e8aea5dada5df2cd393eb570f5e04a0e7ff0167fcb188880a2873cfc057dfe"
+    }
+  ],
+  "newNativeCases": 5,
+  "nativeExecutedLocally": false,
+  "rustfmtEdition": "2024",
+  "independentAuthorshipCredit": 0
+}

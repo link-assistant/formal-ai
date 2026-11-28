@@ -1,0 +1,8 @@
+PASS check-file-size-js-twin 4.3s
+PASS check-file-size 3.4s
+PASS check-readable-code 11.0s
+PASS check-runner-labels 0.7s
+PASS check-tests-as-docs 7.2s
+PASS check-twin-citations 0.6s
+
+6/6 passed or skipped; failed: none

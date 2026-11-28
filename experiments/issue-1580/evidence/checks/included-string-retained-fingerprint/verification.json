@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "failingRun": 44843761720,
+  "head": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86",
+  "originalLogErrorLine": 8379,
+  "failingBefore": true,
+  "passingAfter": true,
+  "onlyReviewedFingerprintChanged": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

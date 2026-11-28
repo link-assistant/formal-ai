@@ -1,0 +1,34 @@
+{
+  "purpose": "Isolated exact default Secretlint dependency closure and actual masked engine qualification",
+  "parentHead": "2deead9656b5d6125dfa59991d49ac92ea95415c",
+  "defaultScannerVersion": "14.0.0",
+  "installedPackageCount": 29,
+  "behavioralFailuresBefore": 3,
+  "focusedRegressionCasesPassed": 5,
+  "maintainedBoundaryCasesPassed": 44,
+  "fastProfileCasesPassed": 29,
+  "actualEngineCasesPassed": 5,
+  "mismatchedLockRefusedWithEusage": true,
+  "observedAuditVulnerabilities": 0,
+  "javascriptGatesPassed": 11,
+  "runtime": {
+    "node": "v26.13.0",
+    "npm": "11.20.0"
+  },
+  "initialFailedDraftsRetained": true,
+  "physicalCompileCacheControlRetained": true,
+  "actualInstallationsCleaned": true,
+  "hostedNode22ExecutionVerified": false,
+  "fullLiteralObservationRead": false,
+  "targetedFailureAndFinalReceiptReviewComplete": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 43956,
+    "sha256": "97cb57ab9b30cfb1ede24a83a0a46c53994d641c47b7ccce9ecd3856f47d5352"
+  },
+  "members": 85,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T14:12:36.620384+00:00"
+}

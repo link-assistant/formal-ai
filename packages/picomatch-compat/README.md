@@ -24,5 +24,8 @@ callers processing untrusted patterns must retain the default protection.
 This does not make arbitrary raw regular-expression features safe.
 
 The repository's `rust/tests/web/picomatch-compat.test.mjs` checks the pinned
-sources, the lockfiles for both consumers and ordinary glob behavior. Remove
-the local override when an upstream release fixes the advisory.
+sources, the lockfiles for both consumers and ordinary glob behavior.
+The focused regression is rust/tests/web/picomatch-security-backport.test.mjs.
+Its hostile probes run in separate children with a 64 MiB heap cap, 256 KiB
+stack, 1.25-second kill deadline and finite 42-byte subjects.
+Remove the local override when an upstream release fixes the advisory.

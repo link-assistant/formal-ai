@@ -1,0 +1,29 @@
+{
+  "head": "f7a71cb86a16e78da0e9ca055c13710d62277739",
+  "terminalRuns": {
+    "skipped": 1,
+    "success": 31,
+    "failure": 1
+  },
+  "pipelineRun": 45151783306,
+  "pipelineConclusion": "success",
+  "layeredRun": 45151782730,
+  "layeredConclusion": "failure",
+  "onlyActionableFailure": "Two Layered JavaScript groups fail during APT provisioning before tests; source repair 0096a8168cb9f611ac55a611cce602884c888607 remains unqualified on its own hosted head.",
+  "producerRerunRequested": false,
+  "producerRerunQualification": "unfinished because baseline includes Layered failure",
+  "nativeArtifactDownloadedLocally": false,
+  "localRustBuild": false,
+  "sourceRepairCommit": "0096a8168cb9f611ac55a611cce602884c888607",
+  "completeAggregateReview": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1724260,
+    "sha256": "f28fb07ff9d8e956d0192e42bf558e84b46035e519d11a40bbeb8351fbc83d14"
+  },
+  "members": 278,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T11:04:40.101037+00:00"
+}

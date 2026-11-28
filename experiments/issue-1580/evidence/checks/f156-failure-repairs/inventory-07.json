@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/staged-before.stdout",
+    "file": "0211-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/staged-evidence.stderr",
+    "file": "0212-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/staged-evidence.stdout",
+    "file": "0213-evidence.gz",
+    "bytes": 78984,
+    "lines": 915,
+    "rawSha256": "3d25787c46880fb2fec33f82135770cfbd80f531f8a863422d8bd25349dee074",
+    "archiveSha256": "af65d7726af6abcfd2913aa516d51706d46659721bdd9eca70e2c6143e9c2d78"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/status-after.stderr",
+    "file": "0214-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/status-after.stdout",
+    "file": "0215-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-head-ci/outcome.json",
+    "file": "0216-evidence.gz",
+    "bytes": 561,
+    "lines": 22,
+    "rawSha256": "6e39aa77a8849983aaf229be460b050cb314c8f1e8461ab1a7e22f1900f41caf",
+    "archiveSha256": "48c1c87a3b04811bf77887339bef6c2d113b0087256d5953c343cf77500a7223"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-head-ci/worker.log",
+    "file": "0217-evidence.gz",
+    "bytes": 36273,
+    "lines": 91,
+    "rawSha256": "78962dc8264b700d38d20b089752a56aad0196327e5e454d6d9ff6662b45dd55",
+    "archiveSha256": "8744fb6c06ea1411c313b0b9597daff8ab943af30a9637580192a0e7323573ae"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/branch.stderr",
+    "file": "0218-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/branch.stdout",
+    "file": "0219-evidence.gz",
+    "bytes": 24,
+    "lines": 1,
+    "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+    "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/dispatch-security.stderr",
+    "file": "0220-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/dispatch-security.stdout",
+    "file": "0221-evidence.gz",
+    "bytes": 69,
+    "lines": 1,
+    "rawSha256": "88148b4cd978e07f6ae26f4e9e887c7c089a9bce335d92bbaeefdaece1d2f06c",
+    "archiveSha256": "633b1a8233bb7b7ce99fcef02f5bbe10a7f847f4b9a1758d2f05e2c9d3ef91b7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/edit-description.stderr",
+    "file": "0222-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/edit-description.stdout",
+    "file": "0223-evidence.gz",
+    "bytes": 54,
+    "lines": 1,
+    "rawSha256": "2a0be70d82ef5db818ead580d29299c06fc9d28a7c85355fbb36648015956b71",
+    "archiveSha256": "f31ada65defe6fa1ca11e5521ba57b5a9dfab58e4bf4d48cfc63e079e0b57b39"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/fetch-main.stderr",
+    "file": "0224-evidence.gz",
+    "bytes": 99,
+    "lines": 2,
+    "rawSha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5",
+    "archiveSha256": "b4665725e37b8fc351f63ee82bef06b90506666038876d7b4e2388b87afe3bb0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/fetch-main.stdout",
+    "file": "0225-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/head.stderr",
+    "file": "0226-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/head.stdout",
+    "file": "0227-evidence.gz",
+    "bytes": 41,
+    "lines": 1,
+    "rawSha256": "1594c408a6d6c47a2f26f1bb13d2a0449337b83d4cd3df58298351a35b44d24e",
+    "archiveSha256": "5247344f1bffcd7c005577f33f3fc88bc13fd6f11b6d34698e93b8a7ecdd5644"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/in_progress.stderr",
+    "file": "0228-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/in_progress.stdout",
+    "file": "0229-evidence.gz",
+    "bytes": 3,
+    "lines": 1,
+    "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/inline-comments-fresh.stderr",
+    "file": "0230-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/inline-comments-fresh.stdout",
+    "file": "0231-evidence.gz",
+    "bytes": 4,
+    "lines": 1,
+    "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+    "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/issue-comments-fresh.stderr",
+    "file": "0232-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/issue-comments-fresh.stdout",
+    "file": "0233-evidence.gz",
+    "bytes": 4477,
+    "lines": 1,
+    "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2",
+    "archiveSha256": "e58aa06dd389ebca87f43ba61d6b1fa0df4211e037a983ba266a8db672883638"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/main-ancestor.stderr",
+    "file": "0234-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/main-ancestor.stdout",
+    "file": "0235-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/main.stderr",
+    "file": "0236-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/main.stdout",
+    "file": "0237-evidence.gz",
+    "bytes": 41,
+    "lines": 1,
+    "rawSha256": "6f674250dd7a08adf0f561f99ccbe15ca03226028532de1d6d27140c62e41282",
+    "archiveSha256": "00bc666a0f885c9c8a1fe798ed7d681137e5700f76ef157230b98467ea35c5c9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/outcome.json",
+    "file": "0238-evidence.gz",
+    "bytes": 257,
+    "lines": 9,
+    "rawSha256": "ff0d591c836fa9c9d4299ac599988eae8ffdcd17741efba544a543204afda6c0",
+    "archiveSha256": "4dbb73b56c88365c007b9c2bfc54b85a08ebc7ce4299b5f327e098e69ffd2559"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/pr-comments-fresh.stderr",
+    "file": "0239-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/pr-comments-fresh.stdout",
+    "file": "0240-evidence.gz",
+    "bytes": 36071,
+    "lines": 1,
+    "rawSha256": "a278356a74e24895f54119da90cd4e92ec86c68956914a919a18d989d934dd0f",
+    "archiveSha256": "d55f55897f5102da22e3961ffa856eccc66b3cd4a4db30fbcb27a7058ae429df"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/publication-records.json",
+    "file": "0241-evidence.gz",
+    "bytes": 4001,
+    "lines": 234,
+    "rawSha256": "1956d5d8dd6acc4b6cf9af60709ca69c782c79592a3ad9ff43c92e612ab0c50c",
+    "archiveSha256": "ee36fa701b57657e2eff8f0fa6f2d1c5408d317815df9ad0c0c4a909c83ee03b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/pull-before.stderr",
+    "file": "0242-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/pull-before.stdout",
+    "file": "0243-evidence.gz",
+    "bytes": 20973,
+    "lines": 1,
+    "rawSha256": "12c19fc19497550dacb3e1699a53f41324ead450a3941e1e60319141b7b9da81",
+    "archiveSha256": "91fc19718ce2047f5fe24d75c182268e957dab638285c228a3925a1c3c297648"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/push.stderr",
+    "file": "0244-evidence.gz",
+    "bytes": 108,
+    "lines": 2,
+    "rawSha256": "181a6578b32396bbfbc6983df8aa7734315ed987f349447383abc1a3283ef6c9",
+    "archiveSha256": "7bc50fff136048ad2e8c02fb7e2a0118d2735c3bbde5cbc4564d5301390a3731"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-publication/push.stdout",
+    "file": "0245-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

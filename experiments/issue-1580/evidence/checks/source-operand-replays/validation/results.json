@@ -1,0 +1,98 @@
+{
+  "complete": true,
+  "observedAt": "2026-11-18T11:37:49.995696+00:00",
+  "checks": [
+    {
+      "name": "format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.114,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "format-check",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.066,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "composition-tests",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-production-composition.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.481,
+      "rawLines": 12,
+      "rawSha256": "b0ed7267d64fd9bbcb189d38c2593ec212730e4d13ef631fcd3cb3f95b97fa10",
+      "archiveSha256": "cada4e9148ec0bdc6a6c3777a2f65f1c0f3afafaef76be5295be92b2119cff74"
+    },
+    {
+      "name": "executor-tests",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-meta-executor.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.265,
+      "rawLines": 33,
+      "rawSha256": "2d33f713651d3fc3104af3036f5c5263d7671b03d5bda86904c80c5622a27d1a",
+      "archiveSha256": "b6f944172aa50aa40ea42821d27ae3f4152b28e4b4561bfb1623b2275f45ad9e"
+    },
+    {
+      "name": "gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 26.696,
+      "rawLines": 6,
+      "rawSha256": "55128388c801d05c77903efd2c185045e6b463640d75b270ab61498a1a099c4f",
+      "archiveSha256": "986490b86a8f486fde7647c910482cd2be0e4fbf0edef55de136030cbf6812bd"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.536,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeExecution": false,
+  "independentAuthorshipCredit": 0
+}

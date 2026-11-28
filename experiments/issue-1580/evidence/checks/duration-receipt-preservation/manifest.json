@@ -1,0 +1,35 @@
+{
+  "failure": "An ordinary larger timing replaced a receipt-bound duration and erased all receipt/source fields.",
+  "regression": "Both larger/smaller, complete/incomplete and raise-only/ordinary cohort imports preserve the exact receipted record.",
+  "testsPassed": 27,
+  "protectedBlockUnchanged": true,
+  "protectedBlockSHA256": "4d7e987de0e52cbc88ecca3bd28ea9f1321a959a81d58f1321a8eea1bea4f123",
+  "files": [
+    {
+      "file": "before.log.gz",
+      "sha256": "c7d0b2d55e6e70c11e63739987065349fc04421f66476f9375a98414d10caace",
+      "gzipSHA256": "ffff1ab8049049c79c131ea36af97e9fd88034fdad7bc2f6be008e1ce67ad268"
+    },
+    {
+      "file": "before-exit.json.gz",
+      "sha256": "e97bb2d65ca9b769472b69e7069db7f74cbf536ca856c372071123f1fc497362",
+      "gzipSHA256": "25963d6b4a68f470dcc428516e73d9ae5612464a7717161ce5b010359ede3ac4"
+    },
+    {
+      "file": "after.log.gz",
+      "sha256": "8883b8748f89da20d3a7e5220b1b2a12f501930f2756d28e97684082629503e4",
+      "gzipSHA256": "0839039041fdf24488d1b5f67e1045acd26772098e10cce668cfe89dcf65b02e"
+    },
+    {
+      "file": "after-exit.json.gz",
+      "sha256": "a236e9df2f8fb72655066a730dbdb24c5832e3ee54bc84e89237b2ee03cf9e81",
+      "gzipSHA256": "ed50ba6c063966ac9c456de524b07a2acddc8bcf7bfa2c50d77b7c18ea7ee6ec"
+    },
+    {
+      "file": "protected-block.lino.gz",
+      "sha256": "4d7e987de0e52cbc88ecca3bd28ea9f1321a959a81d58f1321a8eea1bea4f123",
+      "gzipSHA256": "9ec95e96dc789a7a3858e77087a40b889b68f4b11f88699b414165a529511d1f"
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

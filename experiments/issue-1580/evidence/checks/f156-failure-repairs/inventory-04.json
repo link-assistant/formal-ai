@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-0.stderr",
+    "file": "0106-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-0.stdout",
+    "file": "0107-evidence.gz",
+    "bytes": 67,
+    "lines": 3,
+    "rawSha256": "5b5df7ab0604527ffe142ebf0a904b41c3a4359934ed7f946fd0bcbc6d2cfd7c",
+    "archiveSha256": "2951aa96e31f714bf2c8fe770e066953f4ca9e89586c9209159cc899378492fb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-1.stderr",
+    "file": "0108-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-1.stdout",
+    "file": "0109-evidence.gz",
+    "bytes": 63,
+    "lines": 3,
+    "rawSha256": "ce58f0fd385467373faad3b477fcb2f9a678bb56f9f6cbeec9755e5848c533cb",
+    "archiveSha256": "97f8aa3b9a94c5102286012e37a6e4b9fa40143c4a8b1b83032ba9d02890a799"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-2.stderr",
+    "file": "0110-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-2.stdout",
+    "file": "0111-evidence.gz",
+    "bytes": 67,
+    "lines": 3,
+    "rawSha256": "a65d139e7643bd56045998aea998537fda6eb74b46d9cb064898fa3cf436831a",
+    "archiveSha256": "0fb5d1fa6bca8848f19cc0c73100a19768911896204fa86172c5cd0b13aa7cf9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-3.stderr",
+    "file": "0112-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-csharp-comparison-commit/step-3.stdout",
+    "file": "0113-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-download-check/outcome.json",
+    "file": "0114-evidence.gz",
+    "bytes": 220,
+    "lines": 11,
+    "rawSha256": "cbf671504dd9f1afa595926159e6d14a72bd10ad1ae9fef69901dc6be9439855",
+    "archiveSha256": "690ffbf29d20b7386986688c6e0467052572f608a8ef69d9b53764c2168fee08"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-download-check/test.stderr",
+    "file": "0115-evidence.gz",
+    "bytes": 100,
+    "lines": 5,
+    "rawSha256": "950c2b6a9d1c0a067d20a245b9001fbc2ce62f3045a6c8aefae17943c2650453",
+    "archiveSha256": "f0503659ccb68bdd5ae8934fcb6b48f3f31490d2489080496e7a2dc13af779d2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-cpp-download-check/test.stdout",
+    "file": "0116-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/checkout/scripts/fetch-with-retries.mjs",
+    "file": "0117-evidence.gz",
+    "bytes": 1347,
+    "lines": 41,
+    "rawSha256": "0ebd36310c3a9b7eb514b55d14a50abd9059ce54a0d579f68ba7c637133e1148",
+    "archiveSha256": "4cadc5de276c3b20ec559d854934e426d7fe01f396614273b9d8cfdf7be4e01f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/checkout/scripts/merge-changesets.test.mjs",
+    "file": "0118-evidence.gz",
+    "bytes": 2466,
+    "lines": 76,
+    "rawSha256": "6f4f416826f6ae450767df73b490cc97d59a6b647b6abf0436123c2e272f043b",
+    "archiveSha256": "4116108ff46ebbefc559d1f489bee5fef599b48076f43a15507a9464fbd32ae6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/checkout/scripts/pipeline-gate.mjs",
+    "file": "0119-evidence.gz",
+    "bytes": 4721,
+    "lines": 137,
+    "rawSha256": "4d060e2e8ffea34131a60639c4ab43efa495094e20e3639006f91a240f017833",
+    "archiveSha256": "10a76f463e1117abc135cfa15d9abc2723f42ae96ef096528d052c96d7911de2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/checkout/scripts/pipeline-gate.test.mjs",
+    "file": "0120-evidence.gz",
+    "bytes": 3846,
+    "lines": 102,
+    "rawSha256": "7accaaed0dde28b42635a124253f0a78c9fd1b124d56bacf94536d52bc71cc48",
+    "archiveSha256": "dceab2ecfcba0078ae15e4d25aaf5944a5060d2dd9025bebc9f644ea6cc391f2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/checkout/scripts/print-untrusted.mjs",
+    "file": "0121-evidence.gz",
+    "bytes": 1944,
+    "lines": 55,
+    "rawSha256": "5a2e811bfec75c0ecd007fbc414a7359d15e733adb9523c51dd5a6400d0d2648",
+    "archiveSha256": "bf112d870633691a03260793d1ec475675b1a77c1d7e3204c8b8fba724dd2f24"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/checkout/scripts/runner-acquisition.mjs",
+    "file": "0122-evidence.gz",
+    "bytes": 7484,
+    "lines": 217,
+    "rawSha256": "cb34ec0653751a939899fdc3463a020d5bf2230aa906409afe14e293378c46ff",
+    "archiveSha256": "3b5927be7b8fbb4afab75d6db7294eda0983ec1e6c23db2f92cf054552ecde95"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/checkout/scripts/security-gates.mjs",
+    "file": "0123-evidence.gz",
+    "bytes": 7839,
+    "lines": 195,
+    "rawSha256": "015f548b6e6d7e57e6b5e5349be752e9e18be264ac4291a9a29248bf08f8c290",
+    "archiveSha256": "1bc477b5aa23a8434d6d3574785f991a14ab9234b8d424ca0a29c17b18019b8b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/copied-identities.json",
+    "file": "0124-evidence.gz",
+    "bytes": 1492,
+    "lines": 44,
+    "rawSha256": "4426bc4fd59ac828d1d9d2b4e35a4cdf8daa33864a659000bf6406e44ca083d7",
+    "archiveSha256": "0151eac365164df1116b2ac4fbbf2cfdcb1f186f183de4e499cf8a25df449800"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/merge-changesets.stderr",
+    "file": "0125-evidence.gz",
+    "bytes": 2039,
+    "lines": 39,
+    "rawSha256": "8560a7bc386d736ccc826954ca7348e7a3ab5f431e22bd0620012affc532a8d3",
+    "archiveSha256": "43ac972a5f1ed8b960dda055f3e791ba0e88174f2ae107c19a4d958c06ae5f04"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/merge-changesets.stdout",
+    "file": "0126-evidence.gz",
+    "bytes": 28,
+    "lines": 1,
+    "rawSha256": "bbe6a94c29cc8d3ff5a1792a5abae1f1122aed0642111b52036ab7e0b2b2ca47",
+    "archiveSha256": "2811d7fe2fd05cfa5d8e55ae3a2b8e73e7f0e57bff95f57da5c6b4944fb7cc32"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/outcome.json",
+    "file": "0127-evidence.gz",
+    "bytes": 815,
+    "lines": 29,
+    "rawSha256": "13a33d4fd98693246c1798620362e1faba3864d8499f294022a82008900942d4",
+    "archiveSha256": "547bb8c857a12a9ecc2a3ea976d6691dabb34a83ba799dec7bc482ab72b7e45d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/pipeline-gate.stderr",
+    "file": "0128-evidence.gz",
+    "bytes": 1458,
+    "lines": 23,
+    "rawSha256": "65191d43a654e531680402bac3d2b55d42a4fa1b7224270adaf8c6b2c4c521b6",
+    "archiveSha256": "8b13dfaa48000b9b4294d5c45ee6527cfa0afc13a7e65aab03724c76352894d4"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check/pipeline-gate.stdout",
+    "file": "0129-evidence.gz",
+    "bytes": 28,
+    "lines": 1,
+    "rawSha256": "bbe6a94c29cc8d3ff5a1792a5abae1f1122aed0642111b52036ab7e0b2b2ca47",
+    "archiveSha256": "2811d7fe2fd05cfa5d8e55ae3a2b8e73e7f0e57bff95f57da5c6b4944fb7cc32"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/fetch-with-retries.mjs",
+    "file": "0130-evidence.gz",
+    "bytes": 1347,
+    "lines": 41,
+    "rawSha256": "0ebd36310c3a9b7eb514b55d14a50abd9059ce54a0d579f68ba7c637133e1148",
+    "archiveSha256": "4cadc5de276c3b20ec559d854934e426d7fe01f396614273b9d8cfdf7be4e01f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/merge-changesets.mjs",
+    "file": "0131-evidence.gz",
+    "bytes": 6538,
+    "lines": 269,
+    "rawSha256": "ade38ea7f4d394fd14271abc52b6a43d03a3729027e2c3e8a68fd367f3027dee",
+    "archiveSha256": "fe0a758dd1482bd49a2334106e5221886a8311055b7f597d99cac8ee74b7d1f7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/merge-changesets.test.mjs",
+    "file": "0132-evidence.gz",
+    "bytes": 2466,
+    "lines": 76,
+    "rawSha256": "6f4f416826f6ae450767df73b490cc97d59a6b647b6abf0436123c2e272f043b",
+    "archiveSha256": "4116108ff46ebbefc559d1f489bee5fef599b48076f43a15507a9464fbd32ae6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/parse-changeset.mjs",
+    "file": "0133-evidence.gz",
+    "bytes": 833,
+    "lines": 20,
+    "rawSha256": "42d5864063ffc705d78667a206353b68a080b5ec0893fb25f2c926b147b47a26",
+    "archiveSha256": "6f8e6074c069ec903e26b00b64a9677fa16f0a714f9990c3d52a30c1d32f4e2d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/pipeline-gate.mjs",
+    "file": "0134-evidence.gz",
+    "bytes": 4721,
+    "lines": 137,
+    "rawSha256": "4d060e2e8ffea34131a60639c4ab43efa495094e20e3639006f91a240f017833",
+    "archiveSha256": "10a76f463e1117abc135cfa15d9abc2723f42ae96ef096528d052c96d7911de2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/pipeline-gate.test.mjs",
+    "file": "0135-evidence.gz",
+    "bytes": 3846,
+    "lines": 102,
+    "rawSha256": "7accaaed0dde28b42635a124253f0a78c9fd1b124d56bacf94536d52bc71cc48",
+    "archiveSha256": "dceab2ecfcba0078ae15e4d25aaf5944a5060d2dd9025bebc9f644ea6cc391f2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/print-untrusted.mjs",
+    "file": "0136-evidence.gz",
+    "bytes": 1944,
+    "lines": 55,
+    "rawSha256": "5a2e811bfec75c0ecd007fbc414a7359d15e733adb9523c51dd5a6400d0d2648",
+    "archiveSha256": "bf112d870633691a03260793d1ec475675b1a77c1d7e3204c8b8fba724dd2f24"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/runner-acquisition.mjs",
+    "file": "0137-evidence.gz",
+    "bytes": 7484,
+    "lines": 217,
+    "rawSha256": "cb34ec0653751a939899fdc3463a020d5bf2230aa906409afe14e293378c46ff",
+    "archiveSha256": "3b5927be7b8fbb4afab75d6db7294eda0983ec1e6c23db2f92cf054552ecde95"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/checkout/scripts/security-gates.mjs",
+    "file": "0138-evidence.gz",
+    "bytes": 7839,
+    "lines": 195,
+    "rawSha256": "015f548b6e6d7e57e6b5e5349be752e9e18be264ac4291a9a29248bf08f8c290",
+    "archiveSha256": "1bc477b5aa23a8434d6d3574785f991a14ab9234b8d424ca0a29c17b18019b8b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/copied-identities.json",
+    "file": "0139-evidence.gz",
+    "bytes": 1914,
+    "lines": 56,
+    "rawSha256": "e094ba5d1bbc63f88e6923a6d4108c3f77f786be39da561d3d647ac7b69593fb",
+    "archiveSha256": "77a400caf7bdb3317ff1fa7ea4d6d5ec6eddf72e086d93849c7ed536d58c0fc3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/merge-changesets.stderr",
+    "file": "0140-evidence.gz",
+    "bytes": 288,
+    "lines": 9,
+    "rawSha256": "52f1bc489da67e8b778883d540e483bc4efd04708a25abc3c64c3aa91d9b1efc",
+    "archiveSha256": "fe4eb5c31f6b6837c56ea3f4b987822fcf3a0c758de81c55b474493aa3f6b5ae"
+  }
+]

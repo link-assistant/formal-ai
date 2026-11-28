@@ -18,6 +18,7 @@
 //!
 //! Authored by Formal AI through `scripts/author-change-with-formal-ai.sh`.
 
+use formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
 
@@ -67,7 +68,11 @@ fn a_rewrite_request_does_not_add_quoted_prose_values() {
             call.tool.clone(),
             call.arguments.clone(),
         )]));
-        let result = if call.tool == "read" { SOURCE } else { "ok" };
+        let result = if call.tool == "read" {
+            complete_owned_source_read_frame(SOURCE)
+        } else {
+            "ok".to_owned()
+        };
         messages.push(ChatMessage::tool_result(id, &call.tool, result));
     }
 }
@@ -171,7 +176,12 @@ fn every_registered_language_needs_the_verb_before_a_member_list_grows() {
                 call.tool.clone(),
                 call.arguments.clone(),
             )]));
-            messages.push(ChatMessage::tool_result(id, &call.tool, SOURCE));
+            let result = if call.tool == "read" {
+                complete_owned_source_read_frame(SOURCE)
+            } else {
+                String::new()
+            };
+            messages.push(ChatMessage::tool_result(id, &call.tool, result));
         }
         assert!(
             reached_write,

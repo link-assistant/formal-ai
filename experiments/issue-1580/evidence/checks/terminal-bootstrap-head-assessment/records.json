@@ -1,0 +1,58 @@
+[
+  {
+    "file": "helpers/assess-terminal-bootstrap-head.py.gz",
+    "rawSha256": "485dc410614c11fa42ce91be6c92638b2a354570c14f6b1fe47e7fa2c33e13e0",
+    "archiveSha256": "08ed2947a225802ecd29851a0ace8532030cb560f661c660f0d45193a913eeef",
+    "bytes": 3758,
+    "lines": 64
+  },
+  {
+    "file": "helpers/assess-terminal-bootstrap-head.log.gz",
+    "rawSha256": "924f7c21249b9c460d7caf16d407544061c4733a3f26d929572b60710895c550",
+    "archiveSha256": "f93cab36fd5433691bba35bf4743db59f94f375e2bdb66eb461d8cb1cc0850d9",
+    "bytes": 2449,
+    "lines": 34
+  },
+  {
+    "file": "helpers/document-terminal-bootstrap-head.py.gz",
+    "rawSha256": "09104e548ecf56c25a70dd4d207b99e2776baf789fc68e316f75537028b1b50d",
+    "archiveSha256": "296d4e63a40bc6293d99380fef7c700c349db6f0d815aa2bcfb4e76e149f30cb",
+    "bytes": 10899,
+    "lines": 109
+  },
+  {
+    "file": "helpers/collect-next-repair-head-ci.py.gz",
+    "rawSha256": "c2e1189c14e5349bfaa58ce7dbd1763063c1ee143ed11d28355ba54b141f6b70",
+    "archiveSha256": "728d9ee4861ce6dd9fc519e15a751b2a0d482d8ac9899686c1edddf8001c2c8f",
+    "bytes": 6267,
+    "lines": 85
+  },
+  {
+    "file": "collector-worker.log.gz",
+    "rawSha256": "faa682df1147b50499bd15900cfc5775c1ddc621614e422e422e9eea8dc13673",
+    "archiveSha256": "4f201ce850b61afb14d378d177a4a165f6899bd9d305a737ade5aa9d2e382dd2",
+    "bytes": 18201,
+    "lines": 92
+  },
+  {
+    "file": "collector/outcome.json.gz",
+    "rawSha256": "0f16f72903372af0dc7885caac42089237e98fb863e1d3707fd2f3e03235d91c",
+    "archiveSha256": "ba87b06873410d71c9622f5ddf78aef4a6631b19bc8fecd029b6b8d6fc94f1e4",
+    "bytes": 199,
+    "lines": 9
+  },
+  {
+    "file": "current-source-diff.txt.gz",
+    "rawSha256": "fc88f45691a031f32718defa92baba0d3aab8927599052eecb2a91561ed28ebf",
+    "archiveSha256": "923f6191615461c5a1783113a606ae03cd05da5c8665edf8c0f53fe8cb6a8a97",
+    "bytes": 24442,
+    "lines": 471
+  },
+  {
+    "file": "published-file-list.txt.gz",
+    "rawSha256": "59d26350845320e1f06232e0bb6383888b940c73da30eaf81c56b79e3baf0ab5",
+    "archiveSha256": "dbb28dd6022bc25992ed3915b648a6c2562348f928e02740c912dcccd39ca366",
+    "bytes": 2503406,
+    "lines": 26997
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "sourceCommit": "fb7fb4f3ea5a85b8a73ebcecfc7cac487a74c386",
+  "previousHostedHead": "53816c9eb4bd11729a8be347ccd9497d07042660",
+  "scope": "Original failed scheduling regressions, finite rejected and selected policy probes, partial/strict capture checks, real Meta Reasoner execution, full local JavaScript gates and targeted documentation/ledger repair.",
+  "focusedTests": {
+    "ciSpeed": 28,
+    "historicalAndProbe": 12,
+    "metaPartition": 4,
+    "dialogueOwnership": 4,
+    "maintainedObservations": 438
+  },
+  "realMetaReasoner": {
+    "seconds": 157.19035387039185,
+    "originalCasesPassed": 13,
+    "unchangedExistingSkips": 2
+  },
+  "allJavaScriptGatesBeforeCitationRepair": {
+    "passed": 88,
+    "explicitCiRustSkips": 54,
+    "failed": 1,
+    "failure": "stale R1017 test-title citation"
+  },
+  "afterCitationRepair": {
+    "affectedDocumentationGatesPassed": 10,
+    "requirementCommandsPassed": 5,
+    "affectedLedgerGatesPassed": 6,
+    "verdictChanges": 0
+  },
+  "hostedQualification": "pending for this repair",
+  "partialFailedCohort": {
+    "observedFiles": 819,
+    "unexecutedFiles": 103,
+    "failedObservedFile": "ci-speed.test.mjs",
+    "absentExecutionCredit": 0
+  },
+  "independentReasoningCredit": 0,
+  "broaderOriginalAcceptance": "unfinished; PR remains draft and unmerged",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 935243,
+    "sha256": "fb44ed4e54afaf440611c1a20a65bb936b671f339835e67b2faf26e29ad8d4c9"
+  },
+  "members": 268,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T20:42:42.480398+00:00"
+}

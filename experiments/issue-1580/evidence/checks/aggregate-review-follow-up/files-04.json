@@ -1,0 +1,162 @@
+[
+  {
+    "path": "scripts/canonical-release-source.mjs",
+    "diff": "0379.diff",
+    "sha256": "3620eff6e50d729a096c7392a5e2abdf7e39a12e710c20775dae8448c3cc1fcc",
+    "bytes": 4103,
+    "lines": 61,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/cargo-package.rs",
+    "diff": "0380.diff",
+    "sha256": "7e6f3d82f5639001024339a04b4ac34cfdf019598b93684f489b08b4cb0dbd56",
+    "bytes": 6079,
+    "lines": 158,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/changelog-files.rs",
+    "diff": "0381.diff",
+    "sha256": "ead070fdd70a3f1edae350fcfd6e0addc0e29334dacfdc8cc1f3905d5c9de2a0",
+    "bytes": 7095,
+    "lines": 201,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/changelog-fragment-file.rs",
+    "diff": "0382.diff",
+    "sha256": "c8cfa5299b4201da7f3304839cce3971bf7e7908c920d1f70a967b51af5557f0",
+    "bytes": 4267,
+    "lines": 121,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-codeql-results.mjs",
+    "diff": "0384.diff",
+    "sha256": "1998522eb139c77f8491280067412a8677152d45cc425660786dfe09bb0133fb",
+    "bytes": 5448,
+    "lines": 119,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-file-size.mjs",
+    "diff": "0387.diff",
+    "sha256": "c94277746231e5e4c0c247b2a6b7a4145afeae3b1c3f951a70703bd15f28c66f",
+    "bytes": 2789,
+    "lines": 53,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-release-needed.rs",
+    "diff": "0397.diff",
+    "sha256": "919eb6c71e5b1f6f9f5cb8fd0413991464f68afd0da1fe47c8862c78847d564c",
+    "bytes": 9166,
+    "lines": 271,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-rust-dependencies.sh",
+    "diff": "0400.diff",
+    "sha256": "23fabc1f1353538b871d006fedc8620841b416f447925ee38751916f41d9a116",
+    "bytes": 1493,
+    "lines": 34,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-secrets-files.mjs",
+    "diff": "0402.diff",
+    "sha256": "7871e65d63c51645b721c5d4bae9b0151c8a74102996ecb5cb6941a2781dbb3f",
+    "bytes": 5307,
+    "lines": 111,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-secrets.sh",
+    "diff": "0403.diff",
+    "sha256": "4b6d458378893f74dc1cd766082049b9b1f98648d3ed9ddb52901dbdfc5c0171",
+    "bytes": 3348,
+    "lines": 80,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-version-modification.rs",
+    "diff": "0404.diff",
+    "sha256": "e81767979b58fbd52b3f87cf585201a9ef1b962f0d4090c8a09555ac477a8719",
+    "bytes": 3907,
+    "lines": 113,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/check-workflow-concurrency.mjs",
+    "diff": "0405.diff",
+    "sha256": "d03f8b2a1e1892ee26305c870d7b52cfc2753168b2c5e44bc6015f18ad121415",
+    "bytes": 5841,
+    "lines": 113,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/extract-artifacts.py",
+    "diff": "0421.diff",
+    "sha256": "3c8cbc2408f715b553b59827e47d2c9c23da6fd3f94b42d57f31a6f005455c59",
+    "bytes": 6890,
+    "lines": 143,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/github-actions-log.mjs",
+    "diff": "0444.diff",
+    "sha256": "20ef42ea63d3365f28251c831ce01759e4a83e601ca38c80b550eb4a94590f92",
+    "bytes": 771,
+    "lines": 14,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/github-actions-log.rs",
+    "diff": "0445.diff",
+    "sha256": "11eb01dc47f0d1079e76203a2eb139e3478a1c80c6278517987323cfbf818ef7",
+    "bytes": 2460,
+    "lines": 70,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/native-contract-artifact.mjs",
+    "diff": "0453.diff",
+    "sha256": "f52efb9dc8a6d648669bc656b2f1e485f3f69a602a56245841c0f425c06a7cf3",
+    "bytes": 10573,
+    "lines": 154,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/rerun-unacquired-jobs.mjs",
+    "diff": "0460.diff",
+    "sha256": "035cf66affd724313bbe6800a14f603b87ef871d6e1e5b44eff62104156c2a91",
+    "bytes": 7538,
+    "lines": 128,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/run-with-deadline.sh",
+    "diff": "0463.diff",
+    "sha256": "dbef83ba4a944bbc0b26609923c0b351e6d0ea3da007550e1f01e4d4f6d96e3c",
+    "bytes": 3821,
+    "lines": 87,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/self-authored-publication-source.mjs",
+    "diff": "0467.diff",
+    "sha256": "6f14863e0dc051d1ca71b5ec12734e727e08f98e986417281f5fe6c48e456b25",
+    "bytes": 1440,
+    "lines": 25,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/self-hosting-ledger.mjs",
+    "diff": "0468.diff",
+    "sha256": "f686b123218db9e7732400af9bd8e8fae498d0a0a61d3a6a0940a8dc60d2d54d",
+    "bytes": 3253,
+    "lines": 51,
+    "carriedExactDiffReview": false
+  }
+]

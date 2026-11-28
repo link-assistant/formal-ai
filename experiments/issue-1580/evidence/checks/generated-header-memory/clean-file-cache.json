@@ -1,0 +1,49 @@
+{
+  "workspaceEvidence": {
+    "observedAt": "2026-11-17T16:52:21.932107+00:00",
+    "action": "POSIX_FADV_DONTNEED on clean regular files over 1 MiB in task workspace evidence/research directories",
+    "before": {
+      "limit": 3135369216,
+      "current": 2833379328,
+      "available": 301989888,
+      "anon": 779403264,
+      "file": 1811087360,
+      "fileDirty": 262144
+    },
+    "after": {
+      "limit": 3135369216,
+      "current": 2739851264,
+      "available": 395517952,
+      "anon": 780046336,
+      "file": 1713909760,
+      "fileDirty": 262144
+    },
+    "filesAdvised": 283,
+    "fileBytesAdvised": 1452287119,
+    "fileContentsChanged": false,
+    "independentAuthorshipCredit": 0,
+    "globalCachePurge": false
+  },
+  "gitObjects": {
+    "action": "Best-effort POSIX_FADV_DONTNEED for regular files in this checkout's own Git object directory",
+    "before": {
+      "limit": 3135369216,
+      "current": 2732425216,
+      "available": 402944000,
+      "anon": 771895296,
+      "file": 1714122752
+    },
+    "after": {
+      "limit": 3135369216,
+      "current": 1793744896,
+      "available": 1341624320,
+      "anon": 771936256,
+      "file": 778211328
+    },
+    "objectsAdvised": 2478,
+    "objectBytesAdvised": 1118683156,
+    "fileContentsChanged": false,
+    "globalCachePurge": false,
+    "independentAuthorshipCredit": 0
+  }
+}

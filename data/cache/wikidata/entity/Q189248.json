@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Q189248": {
+      "type": "item",
+      "id": "Q189248",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "GNU Bash"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "bash"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बैश (यूनिक्स शेल)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "Bash"
+        },
+        "es": {
+          "language": "es",
+          "value": "Bash"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "GNU Project implementation of the standard Unix shell"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "усовершенствованная и модернизированная вариация командной оболочки Bourne shell"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मानक यूनिक्स शेल का GNU प्रोजेक्ट कार्यान्वयन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "對布恩Shell程式的GNU替換"
+        },
+        "es": {
+          "language": "es",
+          "value": "shell y lenguaje de scripting de Unix"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Bourne Again shell"
+          },
+          {
+            "language": "en",
+            "value": "BASH"
+          },
+          {
+            "language": "en",
+            "value": "Bash shell"
+          },
+          {
+            "language": "en",
+            "value": "Bash (programming language)"
+          },
+          {
+            "language": "en",
+            "value": "Bash (Unix shell)"
+          },
+          {
+            "language": "en",
+            "value": "shell"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "GNU Bash"
+          },
+          {
+            "language": "ru",
+            "value": "Бэш"
+          },
+          {
+            "language": "ru",
+            "value": "Баш"
+          },
+          {
+            "language": "ru",
+            "value": "ГНУ Бэш"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "再次布恩壳"
+          },
+          {
+            "language": "zh",
+            "value": "布再壳"
+          },
+          {
+            "language": "zh",
+            "value": "角马重生壳"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Bourne Again shell"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

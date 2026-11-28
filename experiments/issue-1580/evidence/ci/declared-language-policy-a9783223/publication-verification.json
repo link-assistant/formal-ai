@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "checkedAt": "2026-11-18T03:57:02.225932+00:00",
+  "head": "a97832237cbb365000dd7296050984e4bdd59ebb",
+  "remoteHead": "a97832237cbb365000dd7296050984e4bdd59ebb",
+  "main": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "draft": true,
+  "bodyExact": true,
+  "bodySha256": "21fc8b65f9ca0fd8526544dc8236d2cd56129a52e3cd0984d0d77c43757ee720",
+  "cleanWorkingTree": true,
+  "noActiveRunsBeforePush": true,
+  "nativeBehaviorVerified": false,
+  "broadAcceptanceComplete": false
+}

@@ -1,0 +1,65 @@
+{
+  "sourceHead": "81dc39ef0328694ce2bec8540dd0a5073c29c77f",
+  "localRustCompilation": false,
+  "fullCargoMetadataPassed": false,
+  "hostedLockedValidation": "pending",
+  "autonomousAuthorshipCredit": 0,
+  "files": [
+    {
+      "source": "before-regression.log",
+      "file": "before-regression.log.gz",
+      "bytes": 22477,
+      "sha256": "01a75b763c677e7acb61632ce406d6b017e3c045778c2ce73b9d6eb84a05b43c",
+      "gzipSHA256": "27b4713dc506099e3f3230f46ca2193ef2c97bdcfa81e0116308febf97cdf565"
+    },
+    {
+      "source": "after-tests.log",
+      "file": "after-tests.log.gz",
+      "bytes": 508,
+      "sha256": "ad8bb7448d8108e4cfca51005e4e2d184fa9edfb5660aa624eb12a8c671cb85b",
+      "gzipSHA256": "483947997cf127d759d1750f2fcbe45b2f9df28c417e9f870f4a2ae2ab393dc7"
+    },
+    {
+      "source": "resolution.stderr",
+      "file": "resolution.stderr.gz",
+      "bytes": 120,
+      "sha256": "9ba4a1a1f7d4d8785411fd1a414665fe1bbd7e01ccc85b033fed92b72f52c57c",
+      "gzipSHA256": "3e10fc181150d8572a81ee1bb77de8d61cfb55bc97081956c055ac43653e6405"
+    },
+    {
+      "source": "resolution-result.json",
+      "file": "resolution-result.json.gz",
+      "bytes": 222,
+      "sha256": "4d676afc049264a4c12426328d713fd35d45b31d5558963eb61f144cac210d29",
+      "gzipSHA256": "4918685ef5f91ae0ed8dff8c05a38f86c14f5748897376d85e2bc03b7b4b6efa"
+    },
+    {
+      "source": "metadata.stderr",
+      "file": "metadata.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSHA256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "result.json",
+      "file": "result.json.gz",
+      "bytes": 125,
+      "sha256": "fb977bb5e825f181eddb148fc9eaf4739acbe5c681ae5d4862afd10ca7de912d",
+      "gzipSHA256": "6bdb39200e3d9c4b081d64ee739e08e06038ce4a120eea4a6434d98518e8de35"
+    },
+    {
+      "source": "change-report.json",
+      "file": "change-report.json.gz",
+      "bytes": 4609,
+      "sha256": "8be91de462d7ac2e146dedab5e122931218c14f9a1942af5a0ee6cf4f80a88e9",
+      "gzipSHA256": "41b9382ccdbb2f152b041c75ff86afa453c40a43994ef1812e42549db0b8ab77"
+    },
+    {
+      "source": "original-Cargo.toml",
+      "file": "original-Cargo.toml.gz",
+      "bytes": 9207,
+      "sha256": "adbd7893e8223faab5269afcc11d581cb530958348f30d8fe69800b433615b4f",
+      "gzipSHA256": "69ed8b9710263a5198e5705e0fd74698ca349bd1d4fa083ad81af86f92bd93ed"
+    }
+  ]
+}

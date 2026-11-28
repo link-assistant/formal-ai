@@ -1,0 +1,272 @@
+{
+  "capturedAt": "2026-11-22T05:37:41.541130+00:00",
+  "publishedHead": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+  "autonomousAuthorshipCredit": 0,
+  "nativeExecutionClaim": false,
+  "files": [
+    {
+      "sourceName": "after-00.stderr",
+      "retainedName": "after-00.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-00.stdout",
+      "retainedName": "after-00.stdout.gz",
+      "bytes": 304,
+      "lines": 10,
+      "sha256": "e04c8b986d7164f96f6db941c8b0864f5085bb85690ad85a8f3e5a7bb847624a",
+      "retainedSha256": "f90a30579b6d1bf404c828f6fbc3aeb089b7a180a9980aab920fe73f69454fa2"
+    },
+    {
+      "sourceName": "after-01.stderr",
+      "retainedName": "after-01.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-01.stdout",
+      "retainedName": "after-01.stdout.gz",
+      "bytes": 318,
+      "lines": 10,
+      "sha256": "5f1cb7651605bdcde9ef9d6344902287ffbce86f4e54d1f20162f64cf4a1b989",
+      "retainedSha256": "09d368f3c0654af658b5182a75c5c088cbf57471dae104e1fb63168cc7c38c30"
+    },
+    {
+      "sourceName": "after-02.stderr",
+      "retainedName": "after-02.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-02.stdout",
+      "retainedName": "after-02.stdout.gz",
+      "bytes": 2144,
+      "lines": 38,
+      "sha256": "bc253b16f2fdc98ef8c18748d66fb76122f2f7e5dddab4d8653180dd390bfd09",
+      "retainedSha256": "671e41e1a8b41f34d4bad3a1f410be52793733bccc81c14665b36c11985469ec"
+    },
+    {
+      "sourceName": "after-04.stderr",
+      "retainedName": "after-04.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-04.stdout",
+      "retainedName": "after-04.stdout.gz",
+      "bytes": 429,
+      "lines": 11,
+      "sha256": "f60f73fd23fa354306af78caecf653dceaa773c1439b2ac65e05f36fc2b2b34e",
+      "retainedSha256": "b53c05cd8fd85de92e36ef45138e50102be5d83f54ec5383d5678fb335490aed"
+    },
+    {
+      "sourceName": "after-05.stderr",
+      "retainedName": "after-05.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-05.stdout",
+      "retainedName": "after-05.stdout.gz",
+      "bytes": 282,
+      "lines": 10,
+      "sha256": "415669b94f0e6de1f53dbff9b8de0229593d87dbc84dfa864dc4c317f6b8e2bd",
+      "retainedSha256": "907995b498e55ee466f860305a047ec1398c31e801c285a978f7af3faea4eeb2"
+    },
+    {
+      "sourceName": "after-06.stderr",
+      "retainedName": "after-06.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-06.stdout",
+      "retainedName": "after-06.stdout.gz",
+      "bytes": 3514,
+      "lines": 39,
+      "sha256": "b411cf28fe0daecd59dc514e249ae04f72e0ccfda67ad7749963bb17c2e002e9",
+      "retainedSha256": "8ff6a0b74196a304fb2665ce8fb1fecc32410c5624ae1210edbef4b78b551950"
+    },
+    {
+      "sourceName": "after-07.stderr",
+      "retainedName": "after-07.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-07.stdout",
+      "retainedName": "after-07.stdout.gz",
+      "bytes": 416,
+      "lines": 12,
+      "sha256": "07ca0c9e9c5224827729196b1413d9b9ff6c5e5c60ce351eb895908f464de407",
+      "retainedSha256": "e95949255b32689ee1165cc983e0e212c9ce8e3a70e842bdde2af2bb7cfa0b6a"
+    },
+    {
+      "sourceName": "after-08.stderr",
+      "retainedName": "after-08.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-08.stdout",
+      "retainedName": "after-08.stdout.gz",
+      "bytes": 1317,
+      "lines": 23,
+      "sha256": "de736030dca13d5278f1dfbf160f6e9bf564ec38ab556083a6b22210aa46aeb4",
+      "retainedSha256": "57efc329031d6e8fc3b0773e5fbea952f867712ca546557196c288af660bb61e"
+    },
+    {
+      "sourceName": "after-09.stderr",
+      "retainedName": "after-09.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-09.stdout",
+      "retainedName": "after-09.stdout.gz",
+      "bytes": 269,
+      "lines": 10,
+      "sha256": "133e62f0e17f27a3b812491c209bf2f38c4ac218855bb59d8e7aeb1c2f35aa38",
+      "retainedSha256": "8fcaa1ff9effcc8869464f69919788fe639aaf188d94d45dcd75670247056526"
+    },
+    {
+      "sourceName": "after-10.stderr",
+      "retainedName": "after-10.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-10.stdout",
+      "retainedName": "after-10.stdout.gz",
+      "bytes": 204,
+      "lines": 9,
+      "sha256": "a4ee6e4462bda71fc77590c91fecc191d184703f5a3198feb4fd2803591f0f1c",
+      "retainedSha256": "9d9f751d8589912b45a562a69137b60970291ee3d4ab93f3541f0a7fc3b75e0e"
+    },
+    {
+      "sourceName": "after-11.stderr",
+      "retainedName": "after-11.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after-11.stdout",
+      "retainedName": "after-11.stdout.gz",
+      "bytes": 1900,
+      "lines": 23,
+      "sha256": "6c0d4a9bfe8660dd96d72e9a05f6056a881ccf16a609d60b40ea89b1a6e85342",
+      "retainedSha256": "463c30995b81d8acffd0e78519c514f2ccc6fa725ac575a10f2b9d0ae3e6b44d"
+    },
+    {
+      "sourceName": "before-native-headroom.stderr",
+      "retainedName": "before-native-headroom.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "before-native-headroom.stdout",
+      "retainedName": "before-native-headroom.stdout.gz",
+      "bytes": 35750,
+      "lines": 768,
+      "sha256": "b77acdf4793f5568b3a1c2ef4496aade371b2d4904194c37fe34817435419500",
+      "retainedSha256": "de6995103d857a0bafb842e21b6b8356d259a108a26f02862d0dd58c10eb35c4"
+    },
+    {
+      "sourceName": "desktop-manifest-headroom.test.before.mjs",
+      "retainedName": "desktop-manifest-headroom.test.before.mjs",
+      "bytes": 2209,
+      "lines": 26,
+      "sha256": "587914178ec707d3468f266cd16c4ed98ae223375eae8cf580eeeea53b76c12a",
+      "retainedSha256": "587914178ec707d3468f266cd16c4ed98ae223375eae8cf580eeeea53b76c12a"
+    },
+    {
+      "sourceName": "documentation-headroom.test.before.mjs",
+      "retainedName": "documentation-headroom.test.before.mjs",
+      "bytes": 1668,
+      "lines": 30,
+      "sha256": "1b6e95b70a9e64f3ebeb906e0081a0fa2ae58df52846d5a343d603bb8166edc1",
+      "retainedSha256": "1b6e95b70a9e64f3ebeb906e0081a0fa2ae58df52846d5a343d603bb8166edc1"
+    },
+    {
+      "sourceName": "final-native-headroom.test.before.mjs",
+      "retainedName": "final-native-headroom.test.before.mjs",
+      "bytes": 2872,
+      "lines": 101,
+      "sha256": "4894655bcfbb217167b2870a610f32812702f25d447c7a68f6ddf9f9de4da691",
+      "retainedSha256": "4894655bcfbb217167b2870a610f32812702f25d447c7a68f6ddf9f9de4da691"
+    },
+    {
+      "sourceName": "hosted-failure-classification.json",
+      "retainedName": "hosted-failure-classification.json",
+      "bytes": 697,
+      "lines": 17,
+      "sha256": "7e21722308f58e1445b3f0db758651c56fca36e441f17d698357d8c4e6f88f07",
+      "retainedSha256": "7e21722308f58e1445b3f0db758651c56fca36e441f17d698357d8c4e6f88f07"
+    },
+    {
+      "sourceName": "metadata-storage-headroom.test.before.mjs",
+      "retainedName": "metadata-storage-headroom.test.before.mjs",
+      "bytes": 1512,
+      "lines": 24,
+      "sha256": "d2baa8bb5cebc8b21e1ad5df02205e258eb20c49cd9203c066b9b9686f4a2a7d",
+      "retainedSha256": "d2baa8bb5cebc8b21e1ad5df02205e258eb20c49cd9203c066b9b9686f4a2a7d"
+    },
+    {
+      "sourceName": "native-test-headroom.test.before.mjs",
+      "retainedName": "native-test-headroom.test.before.mjs",
+      "bytes": 17162,
+      "lines": 357,
+      "sha256": "52666c1289046385934d57bf7376c2cb0f09396c6601ee800f8dce215df5a6ef",
+      "retainedSha256": "52666c1289046385934d57bf7376c2cb0f09396c6601ee800f8dce215df5a6ef"
+    },
+    {
+      "sourceName": "outcome.json",
+      "retainedName": "outcome.json",
+      "bytes": 4832,
+      "lines": 161,
+      "sha256": "79cf1de0b06c3f311bb924b0029f2a20941bdcfd896a90b171900644a12dc29f",
+      "retainedSha256": "79cf1de0b06c3f311bb924b0029f2a20941bdcfd896a90b171900644a12dc29f"
+    },
+    {
+      "sourceName": "runtime-module-headroom.test.before.mjs",
+      "retainedName": "runtime-module-headroom.test.before.mjs",
+      "bytes": 3219,
+      "lines": 90,
+      "sha256": "b0ba0648a3d35517faa0e229e4d2b6759234a41b754adbf40faaf6f27509e74a",
+      "retainedSha256": "b0ba0648a3d35517faa0e229e4d2b6759234a41b754adbf40faaf6f27509e74a"
+    },
+    {
+      "sourceName": "seed-record-readers.test.before.mjs",
+      "retainedName": "seed-record-readers.test.before.mjs",
+      "bytes": 2135,
+      "lines": 31,
+      "sha256": "03992b5eead9581e7daef2e263a266b64919f0d0bbcdcabe29884f07cfedcf61",
+      "retainedSha256": "03992b5eead9581e7daef2e263a266b64919f0d0bbcdcabe29884f07cfedcf61"
+    }
+  ]
+}

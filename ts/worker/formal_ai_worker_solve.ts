@@ -1,4 +1,3 @@
-// Solve dispatch, handler registry, seed loading and worker initialization.
 // @worker-prerequisite js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
 function projectControlledAnswer(answer, config, options) { // Issue #1584: Rust `render_output` after `controlled_solve`.
   if (!answer || typeof answer.content !== "string" || answer.outputProjection?.content === answer.content) return answer;
@@ -35,14 +34,14 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
     // Issue #1584: a paraphrase directive re-renders the previous answer; otherwise the crate hook
     // (Rust `controlled_solve`) answers, clarifies or re-solves. Every draft goes through the procedure.
-    const draft = (text) => solveImpl(text, history, prefs, userContext, memory, options);
+    const draft = (text, draftOptions = options) => solveImpl(text, history, prefs, userContext, memory, draftOptions);
     const solved = turn.rewrite === null
       ? await cnl.controlledSolve(turn, history || [], draft)
       : {prompt, answer: {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, detectLanguage(turn.rewrite)),
         confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []}};
     prompt = solved.prompt;
     const answer = solved.answer;
-    const subTask = async (text) => metaResolveImpasse(text, await draft(text), prefs);
+    const subTask = async (text) => metaResolveImpasse(text, await draft(text, { ...options, metaSubTask: true }), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {
     setForcedResponseLanguage(previousForced);
@@ -142,6 +141,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
 
   const promptData = tryPromptData(prompt, forcedResponseLanguage);
   if (promptData) return finalize(events.concat([`handler:${promptData.intent}`]), steps, toolCalls, promptData, formalizationContext);
+
+  // A supplied passage owns its question before independent-question splitting.
+  const passageAnswer = tryPromptTextQuestion(prompt, normalized);
+  if (passageAnswer) return finalizeInlineHandler(events, steps, toolCalls, passageAnswer, "tryPromptTextQuestion", formalizationContext);
+  const passageSummary = trySummarizationText(prompt);
+  if (passageSummary) return finalizeInlineHandler(events, steps, toolCalls, passageSummary, "trySummarizationText", formalizationContext);
 
   const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
   if (compound) return finalize(["composition:compound_response"], [], compound.toolCalls, compound, formalizationContext);
@@ -382,7 +387,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     }, formalizationContext);
   }
-  if (isGreetingPrompt(normalized, prompt) && !tryRoleplayRequest(prompt, normalized)) {
+  if (isGreetingPrompt(normalized, prompt) && roleplayRequest(prompt) === null) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });
     const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
@@ -451,7 +456,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     });
   }
-  const calculatorRateBasis = tryCalculatorRateBasis(normalized, language);
+  const calculatorRateBasis = await tryCalculatorRateBasis(prompt, normalized, language, preferences);
   if (calculatorRateBasis) {
     events.push(`handler:${calculatorRateBasis.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCalculatorRateBasis" });
@@ -491,7 +496,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
         prompt,
         history,
         responseLanguage,
-        preferences.blueprintComposition,
+        preferences.blueprintComposition, preferences,
       );
     }
     return writeProgramResult;
@@ -501,8 +506,14 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     prompt, normalized, history, memory, memoryEvents, language,
     responseLanguage, preferences, userContext, writeProgram, definitionMerge,
   });
+  let recurrenceDiscovery;
   for (const handler of syncHandlers) {
-    const hit = handler.run();
+    const local = await handler.run();
+    const mayDiscoverRecurrence = handler.name === "tryProgramSynthesis"
+      || (handler.name === "tryWriteProgramConcrete" && local?.intent === "write_program");
+    const source = mayDiscoverRecurrence && !local?.evidence?.includes("synthesis:ir:type_checked")
+      ? await (recurrenceDiscovery ??= discoverSourceRecurrence(prompt, normalized, preferences)) : null;
+    const hit = source || sourceRecurrenceGapForCatalog(prompt, normalized, responseLanguage, local) || local;
     if (hit) {
       events.push(`handler:${hit.intent}`);
       steps.push({ step: "dispatch_handler", detail: handler.name });
@@ -538,6 +549,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   // Issue #1085: an opinion opener ("what do you think about …") is the
   // opinion_question (and clarification) row natively, which identity must not
   // claim; the rows answer from the synchronous table below, as Rust dispatches.
+  const projectOrigin = await tryProjectOrigin(prompt, preferences, events);
+  if (projectOrigin) {
+    events.push(`handler:${projectOrigin.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProjectOrigin" });
+    return finalize(events, steps, toolCalls, projectOrigin, formalizationContext);
+  }
   if (isIdentityPrompt(normalized, prompt) && !tryOpinionQuestion(prompt, normalized) && !tryClarification(prompt, normalized)) {
     events.push("rule:identity");
     steps.push({ step: "match_rule", detail: "identity" });
@@ -548,20 +565,35 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       evidence: ["rule:identity", `language:${language}`],
     }, formalizationContext);
   }
-  const coreferenceFact = claimRouteRun("tryCoreferenceFactLookup", prompt, normalized, history, () => tryCoreferenceFactLookup(prompt, normalized, history));
+  const coreferenceFact = await claimRouteRun("tryCoreferenceFactLookup", prompt, normalized, history, async () =>
+    tryCoreferenceFactLookup(prompt, normalized, history) ||
+    tryCoreferenceLiveFact(prompt, normalized, history, preferences, formalizationContext));
   if (coreferenceFact) {
     events.push(`handler:${coreferenceFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCoreferenceFactLookup" });
     return finalize(events, steps, toolCalls, coreferenceFact, formalizationContext);
   }
-  // Real-time fact reasoning: parse structured (relation, subject) queries, hit
-  // the 1-week TTL cache, fall back to Wikidata/Wikipedia for any country or
-  // entity. Cache warmed from `data/seed/facts.lino` so the test matrix and
-  // offline browsers still answer instantly. The legacy substring-based
-  // `tryFactLookup` remains as a fallback for non-relation seed facts
-  // (e.g. who painted the Mona Lisa) until those are migrated to relations.
+  steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
+  const documentationMethod = await claimRouteRun("tryDocumentationMethodExplanation", prompt, normalized, history,
+    () => tryDocumentationMethodExplanation(prompt, language, preferences));
+  if (documentationMethod) {
+    events.push(`handler:${documentationMethod.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryDocumentationMethodExplanation" });
+    toolCalls.push({
+      tool: "docs_method_explanation",
+      inputs: { prompt, language, method: documentationMethod.formalizedObject },
+      outputs: {
+        intent: documentationMethod.intent,
+        confidence: documentationMethod.confidence,
+        formalizedObject: documentationMethod.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, documentationMethod, formalizationContext);
+  }
+  // Resolve structured facts from the verified runtime cache or publisher.
   steps.push({ step: "invoke_tool", detail: "fact_query" });
-  const factQuery = await tryFactQuery(prompt, normalized, preferences);
+  const factQuery = await tryFactQuery(prompt, normalized, preferences) ||
+    await tryLiveFactComparison(prompt, normalized, preferences);
   if (factQuery) {
     events.push(`handler:${factQuery.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactQuery" });
@@ -579,21 +611,21 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, factQuery, formalizationContext);
   }
-  const legacyFact = tryFactLookup(prompt, normalized);
+  const legacyFact = await tryReleaseTimeline(prompt, normalized, preferences, events) || await tryPublisherPolicy(prompt, normalized, preferences, events) || tryFactLookup(prompt, normalized);
   if (legacyFact) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
     return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
   }
   // Issue #1172 R8: the fact_lookup row's last step explains from retrieved pages.
-  const explanation = await tryExplanationResearch(prompt);
+  const explanation = await tryExplanationResearch(prompt, preferences);
   if (explanation) {
     events.push(`handler:${explanation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryExplanationResearch" });
     return finalize(events, steps, toolCalls, explanation, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
-  const fetched = await tryFetch(prompt);
+  const fetched = await tryFetch(prompt, preferences);
   if (fetched) {
     events.push(`handler:${fetched.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFetch" });
@@ -615,22 +647,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
     });
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
-  }
-  steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
-  const docsMethod = claimRouteRun("tryDocsMethodExplanation", prompt, normalized, history, () => tryDocsMethodExplanation(prompt));
-  if (docsMethod) {
-    events.push(`handler:${docsMethod.intent}`);
-    steps.push({ step: "dispatch_handler", detail: "tryDocsMethodExplanation" });
-    toolCalls.push({
-      tool: "docs_method_explanation",
-      inputs: { prompt, language, method: docsMethod.formalizedObject },
-      outputs: {
-        intent: docsMethod.intent,
-        confidence: docsMethod.confidence,
-        formalizedObject: docsMethod.formalizedObject || "",
-      },
-    });
-    return finalize(events, steps, toolCalls, docsMethod, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
   const procedure = await claimRouteRun("tryProceduralHowTo", prompt, normalized, history, () => tryProceduralHowTo(prompt, language, preferences));
@@ -711,7 +727,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, originality, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "web_search" });
-  const webSearch = await claimRouteRun("tryWebSearch", prompt, normalized, history, () => tryWebSearch(prompt, language));
+  const webSearch = await claimRouteRun("tryWebSearch", prompt, normalized, history, () => tryWebSearch(prompt, language, preferences));
   if (webSearch) {
     events.push(`handler:${webSearch.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWebSearch" });
@@ -726,8 +742,9 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, webSearch, formalizationContext);
   }
-  // The `summarization` row runs after web search, as the native table runs it.
-  const topicSummary = claimRouteRun("trySummarizationTopic", prompt, normalized, history, () => trySummarizationTopic(prompt));
+  const learning = await claimRouteRun("tryLearnFromSource", prompt, normalized, history, () => tryLearnFromSource(prompt, preferences));
+  if (learning) return finalizeInlineHandler(events, steps, toolCalls, learning, "tryLearnFromSource", formalizationContext);
+  const topicSummary = await claimRouteRun("trySummarizationTopic", prompt, normalized, history, () => trySummarizationTopic(prompt, preferences));
   if (topicSummary) return finalizeInlineHandler(events, steps, toolCalls, topicSummary, "trySummarizationTopic", formalizationContext);
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
   const wiki = await tryWikipediaLookup(prompt, language, preferences);
@@ -800,7 +817,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   const bareTermQuery = extractUnresolvedBareTermSearchQuery(prompt);
   if (bareTermQuery) {
     steps.push({ step: "invoke_tool", detail: "web_search_unresolved_bare_term" });
-    const bareTermSearch = await runWebSearchQuery(bareTermQuery, language, "unresolved_bare_term");
+    const bareTermSearch = await runWebSearchQuery(bareTermQuery, language, "unresolved_bare_term", preferences);
     if (bareTermSearch) {
       events.push(`handler:${bareTermSearch.intent}`);
       steps.push({ step: "dispatch_handler", detail: "tryUnresolvedBareTermWebSearch" });
@@ -824,7 +841,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }
   }
   steps.push({ step: "invoke_tool", detail: "unknown_intent_research" });
-  const researchedUnknown = await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
+  // Issue #1580: a #1550 sub-task is a speculative candidate; it never researches the web or learns from it.
+  const researchedUnknown = options.metaSubTask ? null : await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
   const researchedSources = researchedUnknown?.diagnostics?.fused;
   if (Array.isArray(researchedSources) && researchedSources.length > 0) {
     const associationId = associativeResearchId(prompt);
@@ -846,65 +864,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
-    intent: "unknown",
+    intent: validation?.answer ? NUMBER_PROPERTY_PRIME_SLUG : "unknown",
     content: validation?.answer ?? unresolved?.content ?? unknownAnswerWithVariation(prompt, language),
     confidence: validation?.answer ? 1 : unresolved ? 0 : 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
     solverEvents: [{ kind: "search:external", payload: prompt }, ...(validation?.events || []), ...(unresolved?.events || [])], // observed research and candidate checks
   }, formalizationContext);
-}
-function finalize(events, steps, toolCalls, answer, formalizationContext) {
-  // Issue #1173 R5: no answer may be the canned search-machinery description.
-  answer = guardCannedWebSearchAnswer(
-    answer,
-    (formalizationContext && formalizationContext.language) || "en",
-  );
-  const interpretations = collectInterpretations(formalizationContext, answer);
-  answer = applyVisibleInterpretations(answer, interpretations);
-  applyResolvedFormalization(events, steps, formalizationContext, answer);
-  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
-  const projection = deformalizeProjection(formalizationContext, answer);
-  events.push(`deformalize:${projection.tuple}:${projection.intent}`);
-  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
-  // diagnostics panel; `answer` carries the clean composed answer so the
-  // human-readable thinking preview can show "Compose the answer: …" (issue
-  // #488) without leaking the tuple.
-  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
-  steps.push({
-    step: "deformalize",
-    detail: projection.summary,
-    projection,
-    answer: answerFirstLine,
-  });
-  const trace = events.map((event) => `trace:${event}`);
-  const result = {
-    intent: answer.intent,
-    content: answer.content,
-    confidence: answer.confidence,
-    evidence: [...evidence, ...trace],
-    steps: withThinkingLevels(steps),
-    toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
-  };
-  if (formalizationContext && formalizationContext.initial) recordSolverEventLog(result, formalizationContext.initial.raw, answer); // R1013
-  if (formalizationContext && formalizationContext.meta) {
-    result.derivation = formalizationContext.meta.derivationLino;
-  }
-  if (answer.iframeUrl) {
-    result.iframeUrl = answer.iframeUrl;
-  }
-  if (answer.diagnostics) {
-    result.diagnostics = answer.diagnostics;
-  }
-  if (answer.programExecution) {
-    result.programExecution = answer.programExecution; // R1013
-  }
-  if (answer.synthesizedProgram) result.synthesizedProgram = answer.synthesizedProgram;
-  // Issue #529: carry a natural-language memory write (append/substitution) out
-  // to the app so it can apply the read+write transform to persistent storage.
-  if (answer.memoryOperation) {
-    result.memoryOperation = answer.memoryOperation;
-  }
-  return result;
 }
 // Issue #1138 B9, plan 09 leaves 13-15: the browser worker resolves its
 // specialized handlers under the same name-keyed vocabulary the seed owns.
@@ -948,10 +913,10 @@ function workerHandlerRegistryDefinition() {
     product_search: "tryProductSearch",
     requirement_listing: "requirement_listing", // seed rule set (handler-rules.lino), bound by its `rule_set` browser row
     web_search: null, // phase async
-    learn_from_source: "tryLearnFromSource",
+    learn_from_source: null, // phase async
     research_comparison_table: "tryResearchComparisonTable",
     research_result_followup: "tryResearchResultFollowup",
-    docs_method_explanation: "tryDocsMethodExplanation",
+    docs_method_explanation: null, // phase async: verified publisher capture
     procedural_how_to: null, // phase async: the how-to guide fetches its source registry
     procedural_how_to_followup: null, // phase async
     conversation_memory: workerHandlerAliases.conversation_memory,
@@ -1091,7 +1056,7 @@ async function loadSeed() {
       seedSourceTexts = (seed && seed.sourceRaw) || {};
       installBrowserHandlerPrecedence(seed && seed.browserHandlerPrecedence);
       installWorkerHandlerRegistry(SEED_RAW["seed/handler-precedence.lino"]);
-      await hydrateLinoSeedAndSourceCaches(SEED_RAW);
+      hydrateLinoSeedText(SEED_RAW);
       await loadCrateSeeds(SEED_RAW);
       if (seed && seed.responses) {
         const merged = {};
@@ -1125,10 +1090,7 @@ async function loadSeed() {
         CONCEPT_CONTEXTS = seed.conceptContexts;
       }
       if (Array.isArray(seed && seed.facts) && seed.facts.length > 0) {
-        // Issue #1172 R9: the written records, then those derived from the
-        // committed Wikidata captures (formal_ai_worker_fact_derivation.js).
-        FACTS = seed.facts.concat(derivedCaptureFacts(SEED_RAW));
-        warmFactCacheFromSeed();
+        FACTS = seed.facts;
       }
       if (Array.isArray(seed && seed.projects) && seed.projects.length > 0) {
         PROJECTS = seed.projects;

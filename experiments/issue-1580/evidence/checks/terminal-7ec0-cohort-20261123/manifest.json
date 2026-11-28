@@ -1,0 +1,82 @@
+{
+  "head": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+  "workflowCount": 33,
+  "conclusions": {
+    "success": 32,
+    "skipped": 1
+  },
+  "wholeCliStreamsAvailable": 32,
+  "pipelineCliLogAvailable": false,
+  "pipelineFallback": {
+    "run": 45218149963,
+    "path": "collector/available-logs-45218149963.zip",
+    "bytes": 2123599,
+    "sha256": "52c08240501ac794a1bdda06e1d06ccf1d1e95f82a04a1e724459d8f3b12c71e",
+    "crcVerified": true,
+    "executedJobsCovered": 22
+  },
+  "diagnosticCandidates": 2112,
+  "classificationCounts": {
+    "git-initial-branch-hint": 64,
+    "quoted-command": 51,
+    "passing-test-or-test-title": 66,
+    "test-file-scheduling-observation": 6,
+    "actual-warning-preserved": 5,
+    "setup-command-option": 3,
+    "quoted-command-group": 11,
+    "passing-test-name": 1,
+    "listed-repository-path": 15,
+    "listed-evidence-path": 1890
+  },
+  "actualWarnings": [
+    {
+      "run": 45218148759,
+      "member": "complete-cli-log",
+      "line": 23044,
+      "text": "js tier (node --check over js, suite group 6)\tRun this shard of the JavaScript suites\t2026-11-23T16:44:00.3955768Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."
+    },
+    {
+      "run": 45218148807,
+      "member": "complete-cli-log",
+      "line": 554,
+      "text": "Dependency Review\tRun actions/dependency-review-action@v5\t2026-11-23T16:35:38.3857967Z ##[warning]npm/debug has an OpenSSF Scorecard of 2.8, which is less than this repository's threshold of 3."
+    },
+    {
+      "run": 45218148807,
+      "member": "complete-cli-log",
+      "line": 555,
+      "text": "Dependency Review\tRun actions/dependency-review-action@v5\t2026-11-23T16:35:38.3864798Z ##[warning]npm/require-from-string has an OpenSSF Scorecard of 2.3, which is less than this repository's threshold of 3."
+    },
+    {
+      "run": 45218148807,
+      "member": "complete-cli-log",
+      "line": 1178,
+      "text": "Cargo audit\tAudit committed Cargo.lock\t2026-11-23T16:36:17.8330027Z ^[[0m^[[0m^[[1m^[[33mwarning:^[[0m 1 allowed warning found"
+    },
+    {
+      "run": 45218149963,
+      "member": "39_Release Preflight.txt",
+      "line": 196,
+      "text": "2026-11-23T16:36:28.0335721Z ##[warning]UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only `cargo publish` can prove it"
+    }
+  ],
+  "reviewScope": "Complete available streams retained; diagnostic candidates classified and selected literal contexts reviewed. Not a line-by-line semantic review of all logs.",
+  "notQualified": [
+    "remaining original issue scope",
+    "main-only production delivery",
+    "independent authorship",
+    "external serving identity",
+    "unknown publication authority",
+    "broader security warnings"
+  ],
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 4187878,
+    "sha256": "f51a4e029d6e4a67d3e05a40071b496b2a146094675adaac8cf60fde93558fea"
+  },
+  "members": 413,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T17:52:44.278701+00:00"
+}

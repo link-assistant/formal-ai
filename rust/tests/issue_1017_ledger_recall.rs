@@ -23,10 +23,7 @@
 //! it. One binary, one test, one deterministic count.
 
 use formal_ai::agentic_coding::self_ast::ast_census_runs;
-use formal_ai::{
-    approved_lesson_for, canonical_failure_trace, canonical_ledger,
-    canonical_ledger_failure_prompts, solve,
-};
+use formal_ai::{LearningLedger, approved_lesson_for, solve};
 
 /// A request that routes to no known rule, so the solver reaches ledger recall —
 /// the path that used to pay for the parse. Issue #1017 measured this exact
@@ -36,11 +33,9 @@ const UNKNOWN_PROMPT: &str = "look up the latest news about renewable energy";
 /// What the solver answers offline, exactly — recorded here so the test doubles
 /// as documentation (R234-2) and so a change in the answer is a decision rather
 /// than a silent drift. Live fetching is off by default, so the request is
-/// reported as an unexecuted plan naming the sources it would have used.
+/// reported without naming sources that contributed nothing (issue #1632).
 const EXPECTED_ANSWER: &str = "No captured provider response is available for `renewable energy`. \
-Live fetching is off by default; enable it explicitly to populate the replayable source cache. \
-The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and \
-Wikinews.";
+Live fetching is off by default; enable it explicitly to populate the replayable source cache.";
 
 #[test]
 fn ordinary_recall_never_parses_the_pinned_module() {
@@ -73,28 +68,18 @@ fn ordinary_recall_never_parses_the_pinned_module() {
         "an ordinary solve must not round-trip the pinned module's CST/AST"
     );
 
-    // A hit still recalls the approved lesson: the short-circuit narrows nothing.
-    let canonical_prompt = canonical_failure_trace().prompt;
-    let lesson = approved_lesson_for(&canonical_prompt)
-        .expect("the canonical failure prompt still recalls its approved lesson");
-    assert_eq!(
-        lesson.failure_prompt, canonical_prompt,
-        "the recalled entry is the one promoted from the canonical trace"
+    let fixture = LearningLedger::from_approved_lessons_seed(include_str!(
+        "fixtures/issue-558/approved-lessons.lino"
+    ))
+    .unwrap();
+    let prompt = &fixture.entries()[0].failure_prompt;
+    assert!(
+        approved_lesson_for(prompt).is_none(),
+        "a fresh runtime has no shipped lesson"
     );
-
-    // The guard is only safe while the cheap set and the real ledger agree.
-    // Deriving the set from the trace is what makes it cheap; comparing it
-    // against the ledger that is actually built is what keeps it honest.
-    let built: Vec<String> = canonical_ledger()
-        .entries()
-        .iter()
-        .map(|entry| entry.failure_prompt.clone())
-        .collect();
-    assert_eq!(
-        canonical_ledger_failure_prompts(),
-        built,
-        "`canonical_ledger_failure_prompts` must list exactly the prompts the \
-         canonical ledger answers, or the cheap miss check would refuse a prompt \
-         that has an approved lesson"
+    assert!(
+        fixture.lesson_for(prompt).is_some(),
+        "the explicit reviewed record remains usable"
     );
+    assert_eq!(ast_census_runs(), baseline);
 }

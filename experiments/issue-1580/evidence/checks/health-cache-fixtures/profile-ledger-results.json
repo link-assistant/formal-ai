@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 3.53,
+    "rawSha256": "3ea1558467bf9f8491b64314d8cf0efec81becb0ed6231cadb34d9dfa2502de3",
+    "rawLines": 100
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/main-only-regression-ledger.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.21,
+    "rawSha256": "4d10590080e81a7b06af493219fa61c575dd4fb90a956da8f5219ca8dda544ae",
+    "rawLines": 34
+  }
+]

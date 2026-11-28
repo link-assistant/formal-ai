@@ -160,9 +160,30 @@ fn no_benchmark_prompt_reaches_the_unknown_opener() {
         "the unknown openers must be readable for this gate to mean anything"
     );
 
+    // Off by default. FORMAL_AI_CORPUS_TRACE=1 logs each prompt before it is
+    // answered and its duration after, so a shard whose runner is killed
+    // (issue #1637: runs 45490076540 and 45549993299) names the prompt it was on.
+    let trace = std::env::var("FORMAL_AI_CORPUS_TRACE")
+        .is_ok_and(|value| !value.is_empty() && value != "0" && value != "false");
     let mut silent: Vec<String> = Vec::new();
-    for (origin, prompt) in &prompts {
+    for (position, (origin, prompt)) in prompts.iter().enumerate() {
+        let started = std::time::Instant::now();
+        if trace {
+            eprintln!(
+                "[corpus-trace] {}/{} {origin}: {prompt:?}",
+                position + 1,
+                prompts.len()
+            );
+        }
         let answer = FormalAiEngine.answer(prompt).answer;
+        if trace {
+            eprintln!(
+                "[corpus-trace] {}/{} answered in {:.2}s",
+                position + 1,
+                prompts.len(),
+                started.elapsed().as_secs_f64()
+            );
+        }
         if openers.iter().any(|opener| answer.contains(opener)) {
             silent.push(format!("{origin}: {prompt:?}"));
         }

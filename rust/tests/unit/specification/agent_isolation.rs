@@ -25,11 +25,8 @@ fn chat_mode_never_runs_user_supplied_shell_commands() {
 #[test]
 fn typescript_unavailable_status_is_honest_not_silenced() {
     let response = answer("hello world in TypeScript");
-    assert!(
-        response
-            .answer
-            .contains("Execution status: not run; this program was rediscovered from")
-    );
+    assert!(response.answer.contains("Execution status:"));
+    assert!(!response.answer.contains("compiled and ran"));
 }
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,15 @@
+{
+  "name": "fast-profile",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+  ],
+  "exitCode": 0,
+  "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/fast-profile.log.gz",
+  "uncompressedSha256": "21c15c5b169ffa574ce1ae2e72b2c6f5ec1e86da0d7048b59466880833f18dd9"
+}

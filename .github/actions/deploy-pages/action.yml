@@ -1,0 +1,21 @@
+name: Deploy the exact GitHub Pages artifact
+description: Create, retry, poll and cancel a deployment bound to one immutable artifact and source commit.
+inputs:
+  artifact_id:
+    description: Immutable artifact_id from upload-pages-artifact in this workflow run
+    required: true
+  source_sha:
+    description: Full commit SHA stamped into the uploaded site
+    required: true
+  timeout:
+    description: Maximum polling time in milliseconds
+    default: '600000'
+  token:
+    description: Token with pages write permission
+    default: ${{ github.token }}
+outputs:
+  page_url:
+    description: URL of the deployed site
+runs:
+  using: node24
+  main: index.mjs

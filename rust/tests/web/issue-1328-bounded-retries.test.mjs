@@ -126,7 +126,16 @@ test('unbound nested required values produce a terminal failure, no empty call, 
   assert.match(chat.choices[0].message.content,/No call was sent/);
   const response=responseFromPlan(ctx,request,request,user.content,plan,0);
   assert.ok(!response.output.some(item=>item.type==='function_call'));
-  assert.ok(events.some(event=>event[1]==='tool_argument_binding_failed'&&event[2].schema===nested));
+  const failures=events.filter(event=>event[1]==='tool_argument_binding_failed');
+  assert.equal(failures.length,2,'both wire projections retain the binding failure');
+  for(const event of failures) {
+    assert.deepEqual(event[2],{component:'planner',tool:'unknown',reason:'argument_validation_failed'});
+    assert.equal(typeof event[3],'function','private schema and arguments remain lazy');
+    const diagnostic=event[3]();
+    assert.equal(diagnostic.schema,nested);
+    assert.deepEqual(JSON.parse(diagnostic.arguments),{options:{}});
+    assert.match(diagnostic.reason,/owner/);
+  }
 });
 
 test('schema types, combinations, bounds and unresolved references are checked after binding', () => {

@@ -1,0 +1,296 @@
+{
+  "head" : {
+    "vars" : [ "subject", "film", "firstRelease", "title", "localTitle" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q484442"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2002-05-03T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Spider-Man"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q190145"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2004-06-30T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Spider-Man 2"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук 2"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q182212"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2007-05-01T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Spider-Man 3"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук 3: Враг в отражении"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q229808"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2012-06-28T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "The Amazing Spider-Man"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Новый Человек-паук"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q4254026"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2014-04-17T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "The Amazing Spider-Man 2"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Новый Человек-паук. Высокое напряжение"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q23010088"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2017-07-07T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Spider-Man: Homecoming"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук: Возвращение домой"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q29588607"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2018-12-13T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Spider-Man: Into the Spider-Verse"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук: Через вселенные"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q27985819"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2019-06-28T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Spider-Man: Far From Home"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук: Вдали от дома"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q68934496"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2021-12-15T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Spider-Man: No Way Home"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук: Нет пути домой"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q76448600"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2023-06-01T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Spider-Man: Across the Spider-Verse"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук: Паутина вселенных"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q113244935"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2026-07-29T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Spider-Man: Brand New Day"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук: Новый день"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2307877"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q110152284"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2027-06-18T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Spider-Man: Beyond the Spider-Verse"
+      },
+      "localTitle" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Человек-паук: За пределами вселенных"
+      }
+    } ]
+  }
+}

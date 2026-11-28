@@ -1,0 +1,30 @@
+{
+  "base": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "source": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "reviewedPaths": 80,
+  "completeDiffLines": 5763,
+  "completeDiffSha256": "bb5645cc736ce9dc3de967884bb4337101106cf18abfe9305edbfd9c142292bf",
+  "literalChunksRead": 33,
+  "findings": [
+    {
+      "path": "experiments/issue-1580/formal-command.mjs",
+      "defect": "Substring answer boundary truncation and unqualified exit-code parsing",
+      "repairWorkingTree": true,
+      "regression": "experiments/issue-1580/formal-command.test.mjs",
+      "beforeFailed": 11,
+      "afterPassed": 16
+    }
+  ],
+  "sourceBehaviorExecutedByReview": false,
+  "completeAggregateReview": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 181991,
+    "sha256": "560b57d78bebe2fb1b4ffb921ef868badc4dea8c6866278e98792daf2f9aefba"
+  },
+  "members": 37,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T11:58:25.593858+00:00"
+}

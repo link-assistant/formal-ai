@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "head": "09a855c2594e99a06e904d6d3b3269abc79a35f6",
+  "workflowCount": 23,
+  "success": 21,
+  "failed": [
+    {
+      "id": 44619126037,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44619126037"
+    },
+    {
+      "id": 44619126583,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44619126583"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

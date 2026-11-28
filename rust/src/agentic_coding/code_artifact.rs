@@ -205,9 +205,21 @@ fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {
     // Issue #1165 R1165-6: the file a documented program binds
     // (`HelloWorldApp.java`) is the one it is written to.
     let spec = program_spec(program_task.slug, language.slug)?;
+    let bound = if crate::coding::catalog_parameters::catalog_parameter_guidance(program_task.slug)
+        .is_some()
+    {
+        Some(crate::coding::catalog_parameters::bind_catalog_program(
+            spec, task,
+        )?)
+    } else {
+        None
+    };
+    let code = bound.as_ref().map_or(spec.template.code.as_ref(), |bound| {
+        bound.template.code.as_ref()
+    });
     Some(WorkspaceArtifact {
         path: spec.language.save_as.to_string(),
-        content: format!("{}\n", spec.template.code.trim_end()),
+        content: format!("{}\n", code.trim_end()),
     })
 }
 

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/browser-engine-release-integration.test.mjs"
+  ],
+  "status": 1,
+  "durationSeconds": 5.74,
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 80204,
+  "rawSha256": "9200240796ded07dd631ac0b77ed6bf9a9da11f9a665f5d7c86e90af3c8d533c",
+  "rawBytes": 3794,
+  "log": "browser-release.log.gz",
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-11-20T21:31:36.479277+00:00",
+  "records": 236,
+  "parts": [
+    {
+      "file": "records-part-1.json",
+      "records": 40,
+      "sha256": "376005b4d81f72411853e7282ac311e76a7256a5b9342c3777ab9cff4acfaf78"
+    },
+    {
+      "file": "records-part-2.json",
+      "records": 40,
+      "sha256": "374d84de3942fcff053b6ac2c651d7a48975b3cf621d2b4cebf11bf9a2fdea2b"
+    },
+    {
+      "file": "records-part-3.json",
+      "records": 40,
+      "sha256": "30f1fa2b29c861f5b2ef0909269af6df07422d00a9585b99cc2d26ba4aeb0805"
+    },
+    {
+      "file": "records-part-4.json",
+      "records": 40,
+      "sha256": "b370db8eb6c0bb20d31366923dd042b5eb8e6b0f66ab947bf7571b243bec3c3a"
+    },
+    {
+      "file": "records-part-5.json",
+      "records": 40,
+      "sha256": "42f3b515a2495db97e0dd4cd2da4705a800b7c7d92312a23d17eba6d94bb718f"
+    },
+    {
+      "file": "records-part-6.json",
+      "records": 36,
+      "sha256": "94b437ef0eb74b0f989d7f70759f8cc4b4ff1436da17e6a18b7593b954b46b9e"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

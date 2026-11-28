@@ -1,0 +1,72 @@
+{
+  "observedAt": "2026-11-21T10:32:58.074128+00:00",
+  "sourceHead": "6672bfc98bf02cb8db124421a75b118e30abd349",
+  "files": [
+    {
+      "parent": "rust/tests/unit/agentic-coding/agentic_general_planner.rs",
+      "child": "rust/tests/unit/agentic-coding/agentic_general_planner/command_capture.rs",
+      "beforeLines": 988,
+      "afterLines": 889,
+      "childLines": 106,
+      "originalSha256": "5647b6852b5e17546d25a39d800c89d29e68b1061d58dfa6bd422d1d82161888",
+      "movedSha256": "00bf8a08e7bcc9b3afe7440836ca0ad5b782e89e7a08153e71e897a3802ba669",
+      "exactInverse": true,
+      "nativeExecutionVerified": false,
+      "postFormattingBodiesUnchanged": true,
+      "actualParentLines": 888,
+      "actualChildLines": 106,
+      "parentSha256": "1902bf36dafa491854043e31bf29429280e6f24fe771e4f5e2bd0c629e98cd25",
+      "childSha256": "7ea0e3fcf255b513016e0b5819736a552aa12499366fc2157d656c3889b1b21e"
+    },
+    {
+      "parent": "rust/tests/unit/ci-cd/job_budget_fit.rs",
+      "child": "rust/tests/unit/ci-cd/job_budget_fit/standalone_suites.rs",
+      "beforeLines": 939,
+      "afterLines": 773,
+      "childLines": 172,
+      "originalSha256": "72ed2df4ae51247b2d0720fee9c5408e0bb675e0748cff953d9b87cb588b78a7",
+      "movedSha256": "4852be7bf883dd05bb0a9ed78051e97513edf6724eec5a583788598c96319a60",
+      "exactInverse": true,
+      "nativeExecutionVerified": false,
+      "postFormattingBodiesUnchanged": true,
+      "actualParentLines": 772,
+      "actualChildLines": 172,
+      "parentSha256": "76a447736d26c1279db700274672f35522f90cf5cbfcac34a6b6a4f8e2217570",
+      "childSha256": "fcd39c0e96a96423efe1f79c8e18e2d89ccab158a35c01d86a412b5b177260d0"
+    },
+    {
+      "parent": "rust/tests/unit/ci-cd/pinned_tool_images.rs",
+      "child": "rust/tests/unit/ci-cd/pinned_tool_images/image_policy.rs",
+      "beforeLines": 952,
+      "afterLines": 747,
+      "childLines": 209,
+      "originalSha256": "ff86cccbd32d7af8ad587e641b6a25196ba5ab47fc431d202bff5a4400c2a2d4",
+      "movedSha256": "464587b0fc0dcb1b280a9f7b5703646266956d6b5259b91084e1c24f6fc3e1b7",
+      "exactInverse": true,
+      "nativeExecutionVerified": false,
+      "postFormattingBodiesUnchanged": true,
+      "actualParentLines": 747,
+      "actualChildLines": 208,
+      "parentSha256": "2dfea8b996d6c7bb737765828608558284e504153c376bf456d545cafc3abe0b",
+      "childSha256": "406cb2036c594e56a476467516c06d205fcb3745a3042678f65c863e5cabd1a0"
+    }
+  ],
+  "before": {
+    "tests": 3,
+    "passed": 0,
+    "failed": 3
+  },
+  "after": {
+    "headroom": 3,
+    "maintainedObservations": 136,
+    "agenticWrites": 23,
+    "plannerTwins": 3,
+    "releaseOperations": 15
+  },
+  "remainingWarnings": 84,
+  "scannerLimitsUnchanged": true,
+  "nativeExecutionVerified": false,
+  "retainedRecords": 44,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

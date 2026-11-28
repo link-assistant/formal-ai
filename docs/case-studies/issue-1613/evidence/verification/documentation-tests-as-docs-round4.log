@@ -1,0 +1,3 @@
+Checking behavioural tests show exact example answers (R234-2)...
+
+All loose-only behavioural tests are tracked in the 302-row burn-down allowlist; every other answer assertion is exact

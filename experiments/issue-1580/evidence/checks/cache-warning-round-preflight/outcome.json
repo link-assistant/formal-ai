@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-11-21T02:18:37.794960+00:00",
+  "main": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "mainAncestor": true,
+  "previousPublishedHead": "bbda05c06bce8e9fef10a9c8812b6b6cc31858b2",
+  "feedbackCounts": {
+    "issue-comments": 1,
+    "conversation": 11,
+    "inline": 0,
+    "reviews": 0
+  },
+  "changedFeedbackKinds": [],
+  "emptyQueues": true,
+  "isDraft": true,
+  "previousBodySha256": "2d23dfbc7d2b634c30890952866e55b2dca807edb217dde82b3c56033987a48a",
+  "fullPullRequestDiffLiterallyReviewed": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

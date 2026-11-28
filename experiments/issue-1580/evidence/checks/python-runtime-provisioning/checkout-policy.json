@@ -1,0 +1,15 @@
+{
+  "name": "checkout-policy",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "rust/tests/web/ci-change-detection-checkout.test.mjs"
+  ],
+  "exitCode": 0,
+  "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/checkout-policy.log.gz",
+  "uncompressedSha256": "d9423da6bf64f7ae7cb4780fd2398f2408458a1cd9d3369a0681e0b9291c0789"
+}

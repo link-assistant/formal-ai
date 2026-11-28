@@ -1,0 +1,15 @@
+{
+  "file": "full-run-diagnostic-candidates.json.gz",
+  "rawSha256": "6efad1134bb9e9e912bf726703de639194866b2ce44b5139a32c4dec96c4da10",
+  "archiveSha256": "c6ef7b693b611b4a41eac52d370c949ea633135a4654d51a8b2cf08f196e76ae",
+  "candidateCount": 144,
+  "categories": {
+    "workflow shell source echo": 20,
+    "source file size headroom warning": 124
+  },
+  "classificationComplete": true,
+  "allLogLinesLiterallyRead": false,
+  "allWarningsResolved": false,
+  "fullIssueComplete": false,
+  "review": "All 144 candidates inspected: 20 echoed shell statements and 124 emitted file-size headroom warnings. Warnings remain unresolved."
+}

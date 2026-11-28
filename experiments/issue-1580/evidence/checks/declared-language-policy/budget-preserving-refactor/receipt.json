@@ -1,0 +1,9 @@
+{
+  "priorLines": 38,
+  "finalLines": 33,
+  "priorSha256": "254efb3d4efa54d1846fa7afe9c2539a75dd72542e2d0ae90868319816235049",
+  "finalSha256": "cd3df8009683e191e57a14d4843a3a03b4fdf4d67f9b6e205dc746a19367f72a",
+  "ceilingUnchanged": 33,
+  "sharedMetadataChanged": false,
+  "changes": "Inline two single-use values, retain the delimiter chain on one line, and remove duplicated comments; preserve runtime branches and every test assertion."
+}

@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {parseLanguageGrammar} from '../../../js/agentic/crate/cnl_grammar.mjs';
 import {installHost} from '../../../js/agentic/host.mjs';
 import {parseLino, readRepoFile} from '../../../js/server/lino.mjs';
 import {
-  cnlPolicy, frequencyTier, formalizeOutput, outputConfiguration, outputDirective,
+  cnlPolicy, frequencyTier, formalizeOutput, outputConfiguration, outputDirective, parseOutputPolicy,
   outputLinksNotation, outputMeaning, outputSource, outputTurn, outputWords,
   projectOutput, renderOutput, validateOutput,
 } from '../../../js/agentic/crate/cnl_output.mjs';
@@ -76,7 +77,7 @@ test('ambiguous equivalence declarations remain opaque instead of selecting a me
 });
 
 // Twin of declared_multilingual_meanings_round_trip_without_certifying_unchecked_standards
-// in rust/tests/unit/cnl_output.rs: every projection keeps the meaning, and only the
+// in rust/tests/standalone/cnl_output.rs: every projection keeps the meaning, and only the
 // profiles whose checks are all decidable may certify it.
 test('declared multilingual meanings round trip and certify only decidable profiles', () => {
   const dense = {en: 'I am omniscient.', ru: 'Я всеведущ.', hi: 'मैं सर्वज्ञ हूँ।', zh: '我无所不知。', es: 'Soy omnisciente.'};
@@ -189,4 +190,72 @@ test('complete E-Prime evidence cannot be inferred from a finite forbidden-word 
   const config = {output_standard: 'e-prime'};
   assert.equal(validateOutput('I know this.', 'en', config, policy, {'e-prime-english': () => true}).compliant, true);
   assert.equal(validateOutput('Thou wast here.', 'en', config, policy, {'e-prime-english': () => false}).compliant, false);
+});
+
+test('canonical CNL references preserve keyed forms, empty forms and template styles', () => {
+  const legacy = `cnl-language en
+  keys "bare|plural"
+  fillers "you know|please"
+  prime "I: i|me"
+  list "basic: cat|dog"
+  tier "100: cat|dog"
+  term cat
+    forms "|cats"
+  template "reply plain|basic statement"
+    positive "{subject.bare}."
+`;
+  const canonical = `cnl-language en
+  keys ("bare" "plural")
+  fillers ("you know" "please")
+  prime I
+    forms ("i" "me")
+  list basic
+    forms ("cat" "dog")
+  tier 100
+    forms ("cat" "dog")
+  term cat
+    forms ("" "cats")
+  template "reply statement"
+    styles ("plain" "basic")
+    positive "{subject.bare}."
+`;
+  assert.deepEqual(parseLanguageGrammar(canonical, parseLino), parseLanguageGrammar(legacy, parseLino));
+  const oldPolicy = `controlled-output
+  registers "plain|basic"
+  profile plain
+    aliases "one|two"
+    styles "plain|basic"
+  lexeme sample
+    form hello
+      mode "plain|basic"
+`;
+  const newPolicy = oldPolicy.replaceAll('"plain|basic"', '("plain" "basic")')
+    .replace('"one|two"', '("one" "two")');
+  assert.deepEqual(parseOutputPolicy(newPolicy, parseLino), parseOutputPolicy(oldPolicy, parseLino));
+});
+
+test('every CNL seed stores alternatives as canonical references', () => {
+  function check(node, path) {
+    assert.ok(!node.value?.includes('|'), `${path}: ${node.name} ${node.value}`);
+    for (const child of node.children ?? []) check(child, path);
+  }
+  for (const path of ['data/seed/cnl-output.lino',
+    ...['en', 'ru', 'hi', 'zh', 'es'].map(language => `data/seed/cnl-language-${language}.lino`)]) {
+    check(parseLino(readRepoFile(path)), path);
+  }
+});
+
+test('both Gemini token overrides use canonical quoting around embedded JSON', () => {
+  const lines = readRepoFile('data/seed/client-integrations.lino').split('\n')
+    .filter(line => line.includes('modelConfigs.overrides=json+:'));
+  assert.equal(lines.length, 2);
+  for (const line of lines) {
+    assert.match(line.trim(), /^(?:temp_home_json_set|json_set) 'modelConfigs\.overrides=json\+:\[/u);
+    const parsed = parseLino(line.trim());
+    const node = parsed.name ? parsed : parsed.children[0];
+    const overrides = node.value.slice('modelConfigs.overrides=json+:'.length)
+      .replace('{max_output_tokens}', '123');
+    assert.deepEqual(JSON.parse(overrides), [{match: {model: '{model}'},
+      modelConfig: {generateContentConfig: {maxOutputTokens: 123}}}]);
+  }
 });

@@ -1,0 +1,23 @@
+✔ #1172 R2: the subject slot resolves to the seeded record's Q-id (698.438796ms)
+✔ #1172 R2: the longest label wins and a cross-Q-id tie resolves to nothing (3.551644ms)
+✔ #1172 R2: a seeded answer carries the subject gate and the native intent (1701.762909ms)
+✔ #1172 R2: an unseeded subject is never answered from another record (554.339816ms)
+✔ #1172 R2: the subject gate cannot return the retired painting attribution (147.191889ms)
+✔ #1172 R6: two seeded subjects are compared on aligned relations in every language (1201.739831ms)
+✔ #1172 R6: a comparison with one unseeded side names the missing side honestly (485.260814ms)
+✔ #1172 R6: subjects without seeded facts leave the comparison route alone (10.943593ms)
+✔ #1172 R7: a question over a quoted passage is answered from its own sentence with no network call (286.495473ms)
+✔ #1172 R7: the sentence covering the question's words is the one quoted (62.800492ms)
+✔ #1172 R7: nothing in the text covers the question, so the text does not say (34.586425ms)
+✔ #1172 R7: the covering sentence is projected into subject/predicate/object/time/place (203.052516ms)
+✔ #1172 R7: an asked slot the question already says is not claimed; CJK keeps the quote (132.407822ms)
+✔ #1172 R7: a quoted phrase inside an instruction is not a text to read (2.281044ms)
+✔ #1172 R12: the worker matches the shared parity case the native solver pins (3361.80545ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12033.698598

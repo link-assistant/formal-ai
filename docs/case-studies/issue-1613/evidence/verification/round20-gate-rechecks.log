@@ -1,0 +1,8 @@
+PASS check-abbreviations 2.8s
+PASS check-closure-audit 5.3s
+PASS check-language-change-parity 1.0s
+FAIL check-notation 2.0s -> experiments/formal_ai_subagent/sandboxes/gates/check-notation.log
+PASS check-package-self-containment 0.3s
+PASS check-runtime-feature-inventory 0.9s
+
+5/6 passed or skipped; failed: check-notation

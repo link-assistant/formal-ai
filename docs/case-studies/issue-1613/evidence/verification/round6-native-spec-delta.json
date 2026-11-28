@@ -1,0 +1,104 @@
+{
+  "scope": "complete paired physical object graph; bounded small-value details",
+  "differences": 19,
+  "visitedPairs": 7017,
+  "allDifferencesSha256": "f5fbdfa83901a0015e4d97d909fba388df41dd225e885bd65c03300a795a82ed",
+  "detailsTruncated": false,
+  "details": [
+    {
+      "path": "inventory/cases/160/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/161/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/162/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/163/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/164/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/165/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/166/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/167/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/171/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/172/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/173/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/58/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/59/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/60/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/61/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/62/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/63/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/64/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    },
+    {
+      "path": "inventory/cases/65/program/fixtures/2/sha256",
+      "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+      "after": "57623de2b91ee0a680317b11d0c0f434c9d8996e49c3dbdc7e7b11da1553cc6d"
+    }
+  ]
+}

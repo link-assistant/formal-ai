@@ -114,6 +114,26 @@ fn report_destination_question_allows_multiple_selections() {
     assert_eq!(args["questions"][0]["multiple"], true, "{args}");
 }
 
+/// Claude Code's AskUserQuestion reads `multiSelect`, not OpenCode's
+/// `multiple`; without it the "Select one or more" question rendered as a
+/// single-choice picker (issue #1632).
+#[test]
+fn claude_report_destination_question_is_multi_select() {
+    let call = one_call(
+        &[ChatMessage::user("Report this problem")],
+        &["AskUserQuestion", "Bash"],
+    );
+    assert_eq!(call.tool, "AskUserQuestion");
+    let args = arguments(&call);
+    assert_eq!(args["questions"][0]["multiSelect"], true, "{args}");
+    assert!(
+        args["questions"][0]["options"]
+            .as_array()
+            .is_some_and(|options| options.len() >= 2),
+        "{args}"
+    );
+}
+
 /// Every selected destination is fulfilled, one executable step at a time.
 ///
 /// Until #839 all three were packed into one `set -eu` line sharing a single
@@ -172,6 +192,26 @@ fn narrated_question_tool_call_does_not_end_the_report_flow() {
 
     let server = next_command(&mut messages, "exported");
     assert!(server.contains("--source server"), "{server}");
+
+    let github = next_command(&mut messages, "https://github.com/o/r/issues/1");
+    assert!(github.contains("formal-ai report create-issue"), "{github}");
+}
+
+/// Claude Code returns a multi-select AskUserQuestion answer as one
+/// comma-joined string; every chosen destination is still fulfilled (#1632).
+#[test]
+fn claude_multi_select_answer_runs_every_selected_destination() {
+    let mut messages = vec![
+        ChatMessage::user("Report"),
+        ChatMessage::tool_result(
+            "choose_reports",
+            "AskUserQuestion",
+            r#"User has answered your questions: "What would you like to report? Select one or more."="Harness log, GitHub issue". You can now continue with the user's answers in mind."#,
+        ),
+    ];
+
+    let harness = next_command(&mut messages, "exported");
+    assert!(harness.contains("--source harness"), "{harness}");
 
     let github = next_command(&mut messages, "https://github.com/o/r/issues/1");
     assert!(github.contains("formal-ai report create-issue"), "{github}");

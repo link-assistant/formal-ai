@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-11-18T13:06:39.270251+00:00",
+  "head": "3a034b27a56067971ca74dd4c74c7707056b215d",
+  "publishedEvidenceHead": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+  "sourceUnchanged": true,
+  "issueBodiesUnchanged": true,
+  "issues": 26,
+  "pulls": 8,
+  "duplicateFound": false,
+  "bodySha256": "421941128359cf96d8ca72ceeeac0728148c989f1f12b78c2ac2d8705537047d",
+  "records": [
+    {
+      "name": "repository",
+      "rawSha256": "ae94deb1ae5206687fcae93fb37d6aac0ed7a61b6dd44982cf2672c8f8d77089"
+    },
+    {
+      "name": "head",
+      "rawSha256": "cf820be8469fa4a2653d45aa85c4c21f3d4e34a1e861579a25eac9f0829f1ef2"
+    },
+    {
+      "name": "issues",
+      "rawSha256": "c1de956226730d1392c495522473db52940540954e56ed0af57d4d30da52645f"
+    },
+    {
+      "name": "pulls",
+      "rawSha256": "3fc50756a46adbf9599fe6ac8a6c434e2ae5c6c25998d5e74bbe6ac065961440"
+    },
+    {
+      "name": "release-workflow",
+      "rawSha256": "b2e81fe3257c2bd94098b93ac7e87216b8a958704679a9003d7dbaebda936e46"
+    },
+    {
+      "name": "published-reproduction",
+      "rawSha256": "79bfc9b0e6a45436f0e6350ac8b4dc62f5c8a2e61ac3f2c5c1cff59ad0d2dbcf"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

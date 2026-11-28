@@ -22,6 +22,7 @@ import { answerDerivationId } from "../../../js/agentic/crate/derivation.mjs";
 import { hasHost, installHost } from "../../../js/agentic/host.mjs";
 import { DebugSession, debugSessionBanner, debugTokenFrom, isLoopbackHost } from "../../../js/server/debug-session.mjs";
 import { describeTurn, stageDiagram } from "../../../js/server/debug-stage.mjs";
+import { thinkingStepsFromEvents } from "../../../js/server/solver-trace.mjs";
 import { STAGE_SOURCES } from "../../../js/server/debug-stage-sources.mjs";
 import { renderStageSources } from "../../../scripts/generate-debug-stage-sources.mjs";
 import { REPO_ROOT, parseLino, readRepoFile } from "../../../js/server/lino.mjs";
@@ -39,7 +40,7 @@ const ROUTED = [
   { id: "step_0", step: "impulse", detail: "What is 2 + 2?", source_event: "impulse" },
   { id: "step_1", step: "formalize", detail: "arithmetic", source_event: "intent_formalization:route" },
   { id: "step_2", step: "compute", detail: "2 + 2 = 4", source_event: "calculation" },
-  { id: "step_3", step: "compute_engine", detail: "link-calculator", source_event: "calculation:engine", parent_id: "step_2" },
+  { id: "step_3", step: "compute_engine", detail: "link-calculator", source_event: "calculation:engine", source_origin: "calculation:arithmetic:engine", parent_id: "step_2" },
   { id: "step_4", step: "deformalize", detail: "2 + 2 = 4", source_event: "response" },
 ];
 
@@ -49,9 +50,9 @@ const NO_LOCATION = {
   method_rust_excerpt: "", method_rust_line: 0, method_rust_source: "",
 };
 
-const SOLVE_ENTRY = "rust/src/solver.rs:solve_with_history_probability_store_and_intent_cache";
+const SOLVE_ENTRY = "rust/src/solver.rs:solve_inner";
 const EVENT_LOG = "js/worker/formal_ai_worker_solver_events.js:solverEventLog";
-const ARITHMETIC = "rust/src/solver_handlers/mod.rs:try_arithmetic";
+const ARITHMETIC = "rust/src/solver_handlers/mod.rs:try_arithmetic_with_online";
 const CALCULATION_EVENTS = "js/worker/formal_ai_worker_solver_events.js:solverCalculationEvents";
 const FINALIZE = "rust/src/solver_handlers/mod.rs:finalize_simple";
 const ANSWER_TEST = "rust/src/solver_helpers/mod.rs:record_answer_test";
@@ -232,6 +233,24 @@ describe("the session state machine (DebugSession)", () => {
     assert.deepEqual(describeTurn([{ step: "formalize", detail: "greeting", source_event: "no_such_event" }]),
       { method: "", rust: null, js: null, stages: [{ rust: null, js: null }] });
     assert.equal(stageDiagram([{ step: 'say "hi"' }], 0).split("\n")[1], '    s0["0 say #quot;hi#quot;"]');
+  });
+
+  test("recorded arithmetic origins distinguish equally reachable native emitters", () => {
+    if (!hasHost()) installHost({ readText: readRepoFile, parseLino });
+    for (const [origin, expected] of [
+      ['arithmetic', ARITHMETIC],
+      ['quantity', 'rust/src/quantity_constraint.rs:record_calculation'],
+    ]) {
+      for (const kind of ['engine', 'lino', 'steps']) {
+        const turn = describeTurn([ROUTED[1], {
+          step: 'compute_engine', detail: 'fixture', source_event: `calculation:${kind}`,
+          source_origin: `calculation:${origin}:${kind}`,
+        }]);
+        const stage = turn.stages[1];
+        assert.equal(`${stage.rust.path}:${stage.rust.symbol}`, expected);
+        assert.equal(`${stage.js.path}:${stage.js.symbol}`, CALCULATION_EVENTS);
+      }
+    }
   });
 
   test("the stage-sources table is current with the source tree", () => {
@@ -482,4 +501,24 @@ test("actual browser validation emitter has a nonempty physical source and excer
     assertExcerpt(source, site.line, site.excerpt, definition);
   }
   assert.ok(provenance.js.excerpt.includes("procedure.answerValidation(answer.intent, answer.content)"));
+});
+
+test("calculator folding retains each event origin and clears it between clusters", () => {
+  const events = [
+    {kind: "calculation:request", payload: "1 + 1", source_origin: "request:first"},
+    {kind: "calculation:engine", payload: "engine", source_origin: "engine:first"},
+    {kind: "calculation:lino", payload: "1+1", source_origin: "expression:first"},
+    {kind: "calculation:steps", payload: "3", source_origin: "steps:first"},
+    {kind: "calculation", payload: "2", source_origin: "result:first"},
+    {kind: "intent", payload: "arithmetic"},
+    {kind: "calculation:request", payload: "2 + 2", source_origin: "request:second"},
+    {kind: "calculation:engine", payload: "engine"},
+  ];
+  const steps = thinkingStepsFromEvents(events);
+  assert.deepEqual(steps.map(step => step.source_origin ?? null), [
+    "result:first", "engine:first", "expression:first", "steps:first", null,
+    "request:second", null,
+  ]);
+  assert.equal(steps[1].parent_id, steps[0].id);
+  assert.equal(steps[6].parent_id, steps[5].id);
 });

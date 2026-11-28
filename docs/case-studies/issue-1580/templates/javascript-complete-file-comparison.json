@@ -1,0 +1,28 @@
+{
+  "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+  "pinnedHead": "8e72538d579d904aff818c2447fb3c2413d3a989",
+  "files": 566,
+  "roles": {
+    "active-template-source": 330,
+    "retained-historical-evidence": 236
+  },
+  "methods": {
+    "complete-structured-active-source-comparison": 293,
+    "current-delta-literal-source-comparison": 30,
+    "exact-content-retained-literal-review": 26,
+    "complete-structured-historical-content-comparison": 201,
+    "binary-identity-and-artifact-role-comparison": 16
+  },
+  "activeFilesWithRetainedCompleteLiteralReview": 32,
+  "allGitBlobIdentitiesReverified": true,
+  "allFilesHaveApplicabilityComparison": true,
+  "allComparisonPathsExist": true,
+  "literalAndStructuredMethodsDistinct": true,
+  "allApplicablePracticesImplementedAndVerified": false,
+  "completeRuntimeQualification": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "scope": "Complete pinned per-file applicability map, using separately named literal reuse, current literal deltas, complete structured source observations and binary identity. Structured comparison is not literal reading or proof of current runtime behavior.",
+  "filesReceipt": "javascript-complete-files.jsonl",
+  "structuredReceipt": "javascript-structured-file-practices.jsonl.gz"
+}

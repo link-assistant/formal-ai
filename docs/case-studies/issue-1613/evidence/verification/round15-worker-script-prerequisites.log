@@ -1,0 +1,24 @@
+T10401_GENERATOR_TEN_CONTROLS_PASS
+T10395_ORDINARY_ENTRY_MIRROR_CONTEXT_PASS
+WorkerBootstrapFailed Error: ActualBootstrapImportFailed
+    at browser.importScripts (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/worker-script-prerequisites.test.mjs:63:15)
+    at importScripts (js/worker/formal_ai_worker.js:25:11)
+    at js/worker-script-prerequisites.js:56:5
+    at js/worker/formal_ai_worker.js:58:3
+    at Script.runInContext (node:vm:150:12)
+    at Object.runInContext (node:vm:302:6)
+    at freshBrowserEntry (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/worker-script-prerequisites.test.mjs:71:8)
+    at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/worker-script-prerequisites.test.mjs:90:48)
+    at Test.runInAsyncScope (node:async_hooks:226:14)
+    at Test.run (node:internal/test_runner/test:1402:25)
+✔ fresh browser imports the real parser provider before seed and dependent modules (2295.386046ms)
+✔ failed browser bootstrap import does not admit seed or dependent modules (5.798977ms)
+✔ genuine constructor bootstrap can be loaded again without lexical redeclaration (3.907708ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3337.573005

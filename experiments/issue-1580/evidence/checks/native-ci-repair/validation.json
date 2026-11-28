@@ -1,0 +1,135 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "records": [
+    {
+      "name": "default-branch-build-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.041,
+      "rawSha256": "ac9d0bfb252b51eae9ab94141bc935d171f5549bfe4ad0a17f42eebb73470c04",
+      "archiveSha256": "2b2010b17f85879fce625a09d9ef0ad4c5638d361e27b28488014dcd9c25a270",
+      "lines": 328
+    },
+    {
+      "name": "atomic-record-append-contract",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/atomic-record-append-contract.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.876,
+      "rawSha256": "cb0477151b6faba9c1fcae07d253fbc8561d0f62028dbea46741334277d79670",
+      "archiveSha256": "115ef7677a41106a587747ad420038a4f426e9e18d3ae562aed7e3406a6350d0",
+      "lines": 82
+    },
+    {
+      "name": "focused-test-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.744,
+      "rawSha256": "2832874fdcd3ad76ecc3f4ab87524a1a9e0e480b81741e78511965162bcff36c",
+      "archiveSha256": "f108f698f3c41b3df9b0b6fb6864f529cc7450db0b9cd952fdc8a8d6b3542a4f",
+      "lines": 58
+    },
+    {
+      "name": "rust-specification-unicode-identifiers",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.104,
+      "rawSha256": "e99491606fdea6913290d0a07316ce8fac56fda283092becebd0b97c23d0f854",
+      "archiveSha256": "049dbcbafb419142ebc120cd998d76e8a24dc70cdd0f2b9116d7039e2c6a481f",
+      "lines": 214
+    },
+    {
+      "name": "rust-specification-fixture-integrity",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.274,
+      "rawSha256": "59bfe948628b75e84d1adff6d42d656f02da8551594c5df98b79684552abfa43",
+      "archiveSha256": "0dee6dca7fa914f0d3f5ceaf7e96b1f45a65e8a8eb37d335814d5b039004e8f2",
+      "lines": 22
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/protocol.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.236,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "source-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog"
+      ],
+      "exitCode": 0,
+      "seconds": 104.602,
+      "rawSha256": "e1a66047274137184f0e4ce9c24cfc9b7e670fff80a75bc56c7000fc5aa7b1f7",
+      "archiveSha256": "c86d1f9616a173ffad270dd7cb6aed0333b87f00b59578e81f86ec1d1e80c915",
+      "lines": 9
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.382,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  ],
+  "nativeExecutionObserved": false
+}

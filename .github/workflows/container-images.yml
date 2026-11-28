@@ -332,10 +332,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -457,10 +466,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -494,7 +512,9 @@ jobs:
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
     - uses: docker/setup-buildx-action@v4
-      with: {cleanup: false}
+      with:
+        cleanup: false
+        driver-opts: image=moby/buildkit@sha256:baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c
     - name: Compile the full image independently on each native architecture
       run: |
         set -euo pipefail
@@ -632,10 +652,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -668,15 +697,14 @@ jobs:
     - name: Reclaim disk before native image construction
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
     - uses: docker/setup-buildx-action@v4
-      with: {cleanup: false}
+      with:
+        cleanup: false
+        driver-opts: image=moby/buildkit@sha256:baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c
     - name: Build and observe the actual native container
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/build-container-image.sh"
@@ -780,10 +808,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -816,15 +853,14 @@ jobs:
     - name: Reclaim disk before native image construction
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
     - uses: docker/setup-buildx-action@v4
-      with: {cleanup: false}
+      with:
+        cleanup: false
+        driver-opts: image=moby/buildkit@sha256:baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c
     - uses: docker/login-action@v4
       with:
         registry: ghcr.io
@@ -917,10 +953,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -950,30 +995,23 @@ jobs:
         NODE
       env:
         GH_TOKEN: ${{ github.token }}
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-native-amd64
         path: native/amd64
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-native-arm64
         path: native/arm64
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         pattern: container-image-published-*
         merge-multiple: true
         path: image-receipts
     - uses: docker/setup-buildx-action@v4
-      with: {cleanup: false}
+      with:
+        cleanup: false
+        driver-opts: image=moby/buildkit@sha256:baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c
     - uses: docker/login-action@v4
       with:
         registry: ghcr.io

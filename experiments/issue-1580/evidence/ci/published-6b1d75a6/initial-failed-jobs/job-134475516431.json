@@ -1,0 +1,10 @@
+{
+  "job": 134475516431,
+  "head": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "endpoint": "repos/link-assistant/formal-ai/actions/jobs/134475516431/logs",
+  "rawBytes": 15060,
+  "rawLines": 170,
+  "rawSha256": "db3bba8245dc82bde7ec907d47985603b9c78815fc7ce05d7bacff634e4c6f44",
+  "log": "job-134475516431.log.gz",
+  "independentAuthorshipCredit": 0
+}

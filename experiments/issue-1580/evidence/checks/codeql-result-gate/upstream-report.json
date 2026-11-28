@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/github/codeql/issues/23176",
+  "bodySha256": "fe6bdd95c1f7167a68461489b583b4281940371339e5dfbe892974f63da2d3e3",
+  "bodyArchiveSha256": "1663b242b8242181be46736ba0ccb777f1e5a8e2e499eb51c5d0566fccbffe94",
+  "observedRealAnalysis": 2198826017,
+  "codeqlVersion": "2.27.4",
+  "independentReducedQueryExecution": false,
+  "upstreamFixVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "head": "dc618e45c5372edbd742f500105ac5e3a72a9737",
+  "sourceUnchangedDuringValidation": true,
+  "checks": 12,
+  "failed": [],
+  "gateLogsArchived": 87,
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "completedAt": "2026-11-18T18:04:30.760397+00:00"
+}

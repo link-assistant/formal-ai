@@ -1,0 +1,15 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 3.102,
+  "log": "fast-inventory-after.log.gz",
+  "rawSha256": "437dd704d71629ab4558a06956a94289fbdda4c20b31959f166371c9f26d4e22"
+}

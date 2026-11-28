@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_recurrence_discovery.js"
+  ceiling 113
+  rationale "Issue #1613 replaces bundled recurrence records with bounded publisher search and a language bridge backed by verified encyclopedia captures. A callable with missing publisher evidence reports the source gap before a standalone catalog program can ask for a concrete operand."

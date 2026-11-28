@@ -1,0 +1,83 @@
+{
+  "observedAt": "2026-11-19T21:22:22.218210+00:00",
+  "records": [
+    {
+      "name": "issue",
+      "sha256": "78ca801391fe6f96cf51079d478ee455318e37cea4c7a656b273b13b60d3b36f",
+      "count": null,
+      "previousBodiesEqual": null,
+      "argv": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "title,body,updatedAt"
+      ]
+    },
+    {
+      "name": "issue-comments",
+      "sha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "count": 1,
+      "previousBodiesEqual": true,
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate"
+      ],
+      "comparedWith": "experiments/issue-1580/evidence/checks/native-repair-feedback/issue-comments.json.gz"
+    },
+    {
+      "name": "pull-request-conversation",
+      "sha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "count": 11,
+      "previousBodiesEqual": true,
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate"
+      ],
+      "comparedWith": "experiments/issue-1580/evidence/checks/native-repair-feedback/pull-request-conversation.json.gz"
+    },
+    {
+      "name": "inline-comments",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count": 0,
+      "previousBodiesEqual": true,
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate"
+      ],
+      "comparedWith": "experiments/issue-1580/evidence/checks/native-repair-feedback/inline-comments.json.gz"
+    },
+    {
+      "name": "reviews",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count": 0,
+      "previousBodiesEqual": true,
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate"
+      ],
+      "comparedWith": "experiments/issue-1580/evidence/checks/native-repair-feedback/reviews.json.gz"
+    },
+    {
+      "name": "sub-issues",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count": 0,
+      "previousBodiesEqual": null,
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues",
+        "--paginate"
+      ]
+    }
+  ]
+}

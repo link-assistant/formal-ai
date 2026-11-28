@@ -1,0 +1,96 @@
+{
+  "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "commit": "3a034b27a56067971ca74dd4c74c7707056b215d",
+  "files": [
+    {
+      "path": "scripts/detect-code-changes.php",
+      "gitBlob": "dd204f9f5bcc1953cc2b287a55bcc08749c9f50f",
+      "sha256": "94a590991dbef47de28a4d482988d939771a047952dacd76e1fd740b30cc7c58"
+    },
+    {
+      "path": "scripts/bootstrap.php",
+      "gitBlob": "4ef7ddbcc46eafe8b46c6eef5c8dcfb8c26f27ab",
+      "sha256": "39969a7ebce086784466a314923a658704e7e4dd9f362c239f080e49f06c5595"
+    },
+    {
+      "path": "scripts/src/Actions.php",
+      "gitBlob": "8aceb323f774706d5bb90bcb8642a916c5ea09d3",
+      "sha256": "c138ee2bbdd43ac59b164a2ec5e261623a93c8e264fdf4d5e9b0aabcc36c1984"
+    },
+    {
+      "path": "scripts/src/ChangeDetector.php",
+      "gitBlob": "58df912d6f0291407b686f719a132ebf2f5f580b",
+      "sha256": "c57c73ab4219c8ff6e04c787b0bbbccd78a19a1632e3fa707d75d672465b1dd6"
+    },
+    {
+      "path": "scripts/src/Process.php",
+      "gitBlob": "ae2ffa8c921a7c50993b581ca86183543670739a",
+      "sha256": "97a1b126035a71434739ecc962d73c74b44ea8ea802263b74031e04332b43bbf"
+    },
+    {
+      "path": "scripts/src/ProcessResult.php",
+      "gitBlob": "a7eb3aad719f3b0d16d2d928b3deaab85a6e5a8b",
+      "sha256": "b16970ed6e98e100c00dc3716c0084c1186f0e1a41cfafc96de2696657147d1c"
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "d383bce663bc9c7de1513b951131c937864d7676",
+      "sha256": "b1ea5a8b7a2c103e2bad5a92a36229ea56397642fb48db733af0db6d3dfd3899"
+    },
+    {
+      "path": "scripts/version-and-commit.php",
+      "gitBlob": "4064e001df56da13a05dd5a60076b80b18d47deb",
+      "sha256": "0214f276d8732a2591b4e0d41d2600fe74aef7358d07bc6136be9070ad5d393d"
+    },
+    {
+      "path": "scripts/src/VersionReleaser.php",
+      "gitBlob": "a9da3bb74ce1effbe6c6e124c18479ae095db0c7",
+      "sha256": "2a3250cbf9cd3bf605799f3b670fbb6df1d45528aba8e0c6cbfe16e6c15a55ff"
+    },
+    {
+      "path": "scripts/src/Project.php",
+      "gitBlob": "34b9699fc8e8a632220a80ecf33ae1aae83b950a",
+      "sha256": "6c665acc039b4a2fd75687d95a745dc7a71d2025c3de6c903b4702300c22018d"
+    },
+    {
+      "path": "scripts/src/Git.php",
+      "gitBlob": "4b96ef5a1b4b84b1106bfe449671cd005fc007b1",
+      "sha256": "5c6d151f7bcda91c6161af83a62455b5c2aba4b54f103bed605924af04884efa"
+    },
+    {
+      "path": "scripts/src/SemVer.php",
+      "gitBlob": "bc7695453b4a62d664509d7cb4b95a7929fd2722",
+      "sha256": "4ff127e182aa545f201edac764dc79adb30045307941305d9dc77ba9b20323c5"
+    },
+    {
+      "path": "scripts/src/ChangelogFragments.php",
+      "gitBlob": "e611720367bd38cdf7f2d7ed75ada499ef47e424",
+      "sha256": "88c156fcaa052e8f359e8dd23ecb5a37e7d3b52a18309080cd0a09b779d864b3"
+    },
+    {
+      "path": "scripts/src/Changelog.php",
+      "gitBlob": "f3330cb406ba905ea96d88bbdb032b7958ae3c5a",
+      "sha256": "b2bdfb66ec179c8d9f013b54d339a46b7e11b56d2a3db561d0ff3d159e87be07"
+    },
+    {
+      "path": "scripts/src/Cli.php",
+      "gitBlob": "4eb25923e67273d4f5f8abeff298a26f9c345310",
+      "sha256": "54aeb58748c06c88d2b829f5719783f578d36aceca698ae15989e728350076e9"
+    },
+    {
+      "path": "scripts/check-version-modification.php",
+      "gitBlob": "a017a0e8d57bfa11b1b05131eb33b473ce2f9f93",
+      "sha256": "21a2f84d4058cea06d3644fa5840b30a885957000458d85e9d26bfa056cbdabb"
+    },
+    {
+      "path": "scripts/src/ReleaseNotes.php",
+      "gitBlob": "708a574def9b2ab6f36c9bf81177f4c6b7ce3eec",
+      "sha256": "176181c4ebec0068128d476141e88bedb70429362c23e13beaeed1e4a5df2ec8"
+    }
+  ]
+}

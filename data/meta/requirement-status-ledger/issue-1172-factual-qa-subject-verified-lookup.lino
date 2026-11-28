@@ -37,6 +37,7 @@ requirement_status_ledger_shard
   requirement
     id "R1172-6"
     delivered "2026-10-07 (this pull request; seeded subjects only, live Wikidata tables still open)"
+    automated_test "rust/tests/web/issue-0127-fact-query-cache.test.mjs"
   requirement
     id "R1172-7"
     delivered "2026-10-07 (this pull request; the covering sentence is quoted and projected into subject/predicate/object/time/place slots from seed prepositions and temporal surfaces in en/ru/es, the asked slots stated first; hi/zh keep the quote alone; JavaScript verified locally, Rust awaiting CI)"

@@ -16,7 +16,7 @@ use super::{POPULAR_LANGUAGES, answer, assert_write_program_parameters};
 
 #[test]
 fn english_fizzbuzz_in_rust_returns_program() {
-    let response = answer("Write me a FizzBuzz program in Rust");
+    let response = answer("Write me a FizzBuzz program in Rust from 1 through 15");
     assert_write_program_parameters(&response, "rust", "fizzbuzz");
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("% 15 == 0"));
@@ -51,7 +51,7 @@ fn russian_factorial_of_five_in_python_returns_program() {
         response.answer
     );
     assert!(
-        response.answer.contains("факториал 5"),
+        response.answer.contains("120"),
         "Russian explanation should describe the factorial, got: {}",
         response.answer
     );
@@ -60,7 +60,7 @@ fn russian_factorial_of_five_in_python_returns_program() {
 #[test]
 fn hindi_reverse_string_in_rust_returns_program() {
     // Hindi: "reverse the string, write in Rust".
-    let response = answer("Rust में स्ट्रिंग को उलटें");
+    let response = answer("Rust में प्रोग्राम लिखें जो स्ट्रिंग को उलटें «नमस्ते»");
     assert_write_program_parameters(&response, "rust", "reverse_string");
     assert!(response.answer.contains("```rust"));
     assert!(
@@ -100,8 +100,7 @@ fn english_recursive_fibonacci_in_python_returns_program() {
     // Issue #334 step 1: the website demo asked to "Write a Python function
     // that calculates the Fibonacci sequence recursively." Before the catalog
     // gained a Fibonacci task this answered "I didn't understand you". The
-    // recursive template defines `fibonacci`, calls itself, and prints the 10th
-    // term (F(1)=F(2)=1 -> F(10)=55).
+    // recursive template defines `fibonacci` without choosing an index.
     let response =
         answer("Write a Python function that calculates the Fibonacci sequence recursively.");
     assert_write_program_parameters(&response, "python", "fibonacci");
@@ -112,9 +111,10 @@ fn english_recursive_fibonacci_in_python_returns_program() {
         response.answer
     );
     assert!(
-        response.answer.contains("fibonacci(n - 1)")
-            && response.answer.contains("fibonacci(n - 2)"),
-        "Fibonacci template should recurse on n-1 and n-2, got: {}",
+        response
+            .answer
+            .contains("advance(remaining - 1, current, previous + current)"),
+        "Fibonacci template should advance the pair recursively, got: {}",
         response.answer
     );
     assert!(
@@ -122,14 +122,16 @@ fn english_recursive_fibonacci_in_python_returns_program() {
         "Fibonacci answer should explain how it works, got: {}",
         response.answer
     );
-    // The verified deterministic output for the 10th term is surfaced.
-    assert!(response.answer.contains("55"));
+    assert!(!response.answer.contains("print("));
+    assert!(!response.answer.contains("```text"));
 }
 
 #[test]
 fn fizzbuzz_supported_for_every_popular_language() {
     for (language, slug, fence) in POPULAR_LANGUAGES {
-        let response = answer(&format!("Write me a FizzBuzz program in {language}"));
+        let response = answer(&format!(
+            "Write me a FizzBuzz program in {language} from 1 through 15"
+        ));
         assert_write_program_parameters(&response, slug, "fizzbuzz");
         assert!(
             response.answer.contains(fence),
@@ -171,6 +173,60 @@ fn new_coding_tasks_are_each_supported_in_a_popular_language() {
         assert!(
             response.answer.contains(expected_output),
             "{task} answer should surface the verified output {expected_output}, got: {}",
+            response.answer
+        );
+    }
+}
+
+/// Artifact counts are not the factorial operand; the native catalog uses the
+/// same canonical program-kind role as the browser operand regression.
+#[test]
+fn factorial_operand_excludes_the_number_of_requested_functions() {
+    // Issue #1639: this is a catalog-binding contract. Since c30b54f15 a Python
+    // function request first probes the Wikifunctions recurrence, and with read
+    // access on by default (c0e480a36, #1582) or a shared source cache already
+    // holding that capture, "...5 का फ़ैक्टोरियल लौटाए" was answered by the
+    // general `def factorial(n)` recurrence and never reached the catalog
+    // binding (main run 45636781871). Replay it with read access denied and an
+    // exclusive, empty cache, as #1637 did for the other network-dependent cases.
+    if crate::offline_replay::in_network_denied_child(
+        "specification::code_generation::task_catalog::factorial_operand_excludes_the_number_of_requested_functions",
+    ) {
+        return;
+    }
+    for (prompt, expected) in [
+        (
+            "Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए",
+            "इस अनुरोध के लिए कोई सत्यापित स्रोत-कथन प्राप्त नहीं हुआ, इसलिए कुछ भी नहीं लिखा गया।",
+        ),
+        (
+            "Write one function in Python that returns the factorial of n",
+            "No verified source statement was captured for this request, so nothing was composed.",
+        ),
+    ] {
+        let response = answer(prompt);
+        // With no publisher capture replayed, an unbound `n` refuses; it never
+        // binds the artifact count ("one"/"एक") as the operand. The composed
+        // recurrence of a seeded cache is covered by
+        // solver::issue_1173_route3_recurrence and issue-1396-native.test.mjs.
+        assert_eq!(response.answer, expected, "{prompt}");
+        assert!(
+            !response.answer.contains("range(1, 2)"),
+            "{prompt}: the artifact count was bound as the operand: {}",
+            response.answer
+        );
+    }
+    for (prompt, end) in [
+        ("Python में एक फ़ंक्शन लिखो जो 5 का फ़ैक्टोरियल लौटाए", 6),
+        ("Write one function in Python for factorial of five", 6),
+        ("Write a Python function for factorial of one", 2),
+        ("Write 2 functions in Python to calculate factorial of 5", 6),
+    ] {
+        let response = answer(prompt);
+        assert_write_program_parameters(&response, "python", "factorial");
+        assert!(
+            response.answer.contains(&format!("range(1, {end})")),
+            "{prompt}: {}",
             response.answer
         );
     }

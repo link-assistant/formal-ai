@@ -1,0 +1,455 @@
+{
+  "head": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2",
+  "reports": [
+    {
+      "report": "rust.sarif",
+      "originalSha256": "b461cbf09d24cc36d66cd5802403dfe1df60e6e7d500303c6f6a2887f60ce049",
+      "toolVersion": "2.27.5",
+      "findings": 0,
+      "warningOrErrorNotifications": 0,
+      "notificationLevels": {
+        "note": 56,
+        "none": 8881
+      }
+    },
+    {
+      "report": "actions.sarif",
+      "originalSha256": "821e51bb43b0639f53b3b5fe062c21fdde97c96a8bf3beb7182a5efd733a8f5e",
+      "toolVersion": "2.27.5",
+      "findings": 0,
+      "warningOrErrorNotifications": 0,
+      "notificationLevels": {
+        "none": 5747
+      }
+    }
+  ],
+  "expectedRustFiles": 2576,
+  "extractedRustFiles": 2576,
+  "missingExpectedRustFiles": [],
+  "formerlyMissingContextPaths": [
+    {
+      "path": "js/wasm-worker/src/formal_statement_worker.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "js/wasm-worker/src/lib.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "js/wasm-worker/src/memory_query_worker.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "js/wasm-worker/src/proof_translation_worker.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/assemble-requirements.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/audit-seed-metadata.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/bump-version.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/cargo-package.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/changelog-files.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/changelog-fragment-file.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-associative-terminology.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-cache-budget.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-capability-routing.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-changelog-fragment.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-ci-wall-clock.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-coding-ladder.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-coverage-ratchet-reports.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-coverage-ratchet-tests.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-coverage-ratchet.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-crate-package-size.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-debt-ratchet.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-dependencies-action-release-tests.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-dependencies-action-release.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-dependencies-latest-parsers.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-dependencies-latest-tests.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-dependencies-latest.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-dependencies-snapshot.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-disk-usage-policy.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-duplicate-functions.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-evidence-lines.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-file-size.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-formal-ai-contribution.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-generated-version-literals.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-hardcoded-language.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-head-pipeline-coverage.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-issue-citations.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-job-headroom.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-language-parity.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-merge-conflict-policy.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-minimal-core-boundary.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-pull-request-link.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-question-necessity-ratchet.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-release-needed.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-requirement-status.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-seed-answer-duplicates.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-self-development-release.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-source-duplication.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-step-budget-headroom.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-tests-as-docs.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-version-modification.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-wasm-worker-size.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/check-worker-line-budget.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/clean-seed-readability.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/collect-changelog.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/create-changelog-fragment.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/create-github-release.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/cross-org-duplication.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/decode-github-issue-url.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/detect-code-changes.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/download-datasets.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/duplication_support.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/generate-llm-task-parity.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/generate-module-map.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/generate-program-cst-grammars.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/generate-requirement-status.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/generate-seed-registry.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/get-bump-type.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/get-version.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/git-config.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/github-output.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/ground-meanings.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/handcheck-runner.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/hello-world-task.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/language-parity-lib.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/lib/registered-module-paths.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/migrate-empty-facet-fields.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/migrate-empty-redefinition-fields.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/migrate-meaning-seed.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/migrate-pipe-lists.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/mine-hive-mind-dataset.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/mirror-package-data.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/move-evidence.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/normalize-ordered-lists.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/plan-test-partition.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/prepared-release.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/publish-crate.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/refresh-issue-state.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/registry.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/render-status.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/run-ci-gates.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/rust-paths.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-development-loop.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-development-policy.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-hosting-attribution.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-hosting-ledger-rows.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-hosting-ledger.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-hosting-metric.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-hosting-replay.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/self-hosting-retraction.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/version-and-commit-tests.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/version-and-commit.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/version-changelog.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/version-specification-witness.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/wait-for-crate.rs",
+      "currentlyExtracted": true
+    },
+    {
+      "path": "scripts/wikidata-json-to-lino.rs",
+      "currentlyExtracted": true
+    }
+  ],
+  "unresolvedMacroNotifications": 631,
+  "allMacroSemanticsVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

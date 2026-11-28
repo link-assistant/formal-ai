@@ -1,0 +1,657 @@
+{
+  "currentHead": "0cc2a1bbdf33f7512cb45b5ce63c818e1c88901a",
+  "originalInventoryCount": 53,
+  "publishedHead": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+  "publishedReplays": 8,
+  "currentHeadReplays": 0,
+  "tests": [
+    {
+      "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs",
+          "line": 30
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1138_place_timezone.rs",
+          "line": 45
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_498_google_trends.rs",
+          "line": 82
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+          "line": 770
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_706_any_language::a_language_without_localized_openers_reports_a_gap_not_english",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_706_any_language.rs",
+          "line": 420
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "a_language_without_localized_openers_reports_a_gap_not_english",
+        "originalLogLines": [
+          1734
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/issue_706_any_language.rs",
+        "publishedSourceSha256": "a4b9cf11a34826d39ab618912a074290d326b3c2469057fb160505dc08d4727f",
+        "currentSourceSha256": "a4b9cf11a34826d39ab618912a074290d326b3c2469057fb160505dc08d4727f",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/seed/issue_699_handler_migration.rs",
+          "line": 194
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "data_files::meaning_slugs_are_globally_unique",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/data_files.rs",
+          "line": 631
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "data_files::seed_lino_values_never_pipe_pack_multi_values",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/data_files.rs",
+          "line": 214
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "data_files::lino_data_files_are_parseable_human_readable_and_bounded",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/data_files.rs",
+          "line": 16
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs",
+          "line": 91
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs",
+          "line": 264
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/ci-cd/workflow_release.rs",
+          "line": 55
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+          "line": 45
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+          "line": 364
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+          "line": 134
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+          "line": 746
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/solver/issue_1138_self_use_concept_lookup.rs",
+          "line": 286
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/web_requests.rs",
+          "line": 417
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/reasoning_loop.rs",
+          "line": 207
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+          "line": 173
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/spoken_hour_scheduling.rs",
+          "line": 150
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/synthesis.rs",
+          "line": 304
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "compound_courtesy_and_question_are_answered_in_source_order",
+        "originalLogLines": [
+          1678
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/synthesis.rs",
+          "line": 276
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "decomposed_sub_results_are_composed_for_algebra",
+        "originalLogLines": [
+          1679
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/synthesis.rs",
+          "line": 475
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "renumbered_algebra_substitution_recomputes_closed_value",
+        "originalLogLines": [
+          1684
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/synthesis.rs",
+          "line": 73
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+        "originalLogLines": [
+          1686
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/benchmarks.rs",
+          "line": 102
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/formalization.rs",
+          "line": 274
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::synthesis::renumbered_word_problem_recomputes_from_quantities",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/synthesis.rs",
+          "line": 442
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "renumbered_word_problem_recomputes_from_quantities",
+        "originalLogLines": [
+          1685
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/formal_ai/seed_and_memory.rs",
+          "line": 217
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+      "currentDeclarations": [],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/page_formalization_route.rs",
+          "line": 120
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "web_requests::source_search_prompts_still_cover_supported_languages",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/web_requests.rs",
+          "line": 683
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/integration/issue_1138_family_behaviour.rs",
+          "line": 95
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/integration/with_formal_ai_argv.rs",
+          "line": 19
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/ci-cd/network_download_retry.rs",
+          "line": 137
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+          "line": 581
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1138_retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1138_retrieval_method.rs",
+          "line": 142
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/integration/formal_ai_cli.rs",
+          "line": 138
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+          "line": 781
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+          "line": 736
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/solver/issue_869_meeting_scheduling.rs",
+          "line": 63
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/integration/with_formal_ai.rs",
+          "line": 558
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/integration/with_formal_ai.rs",
+          "line": 231
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/integration/issue_819_tui_isolation.rs",
+          "line": 47
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/benchmarks.rs",
+          "line": 68
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/benchmarks.rs",
+          "line": 187
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/benchmarks.rs",
+          "line": 329
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/benchmarks.rs",
+          "line": 149
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/debug_session.rs",
+          "line": 651
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/pronoun_topic_follow_up.rs",
+          "line": 126
+        }
+      ],
+      "currentExecutionVerified": false
+    },
+    {
+      "originalTest": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/synthesis.rs",
+          "line": 402
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "paraphrased_algebra_prompt_reaches_same_derivation",
+        "originalLogLines": [
+          1683
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "specification::synthesis::object_counting_filters_items_by_requested_category",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/synthesis.rs",
+          "line": 501
+        }
+      ],
+      "currentExecutionVerified": false,
+      "publishedReplay": {
+        "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+        "job": 134952852325,
+        "run": 44347162546,
+        "name": "object_counting_filters_items_by_requested_category",
+        "originalLogLines": [
+          1682
+        ],
+        "logRawSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+        "source": "rust/tests/unit/specification/synthesis.rs",
+        "publishedSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceSha256": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93",
+        "currentSourceUnchanged": true,
+        "result": "passed"
+      }
+    },
+    {
+      "originalTest": "specification::unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss",
+      "currentDeclarations": [
+        {
+          "path": "rust/tests/unit/specification/unknown_reasoning.rs",
+          "line": 80
+        }
+      ],
+      "currentExecutionVerified": false
+    }
+  ],
+  "fullAcceptanceVerified": false,
+  "limits": "Exact success lines are joined to current declarations by unique test name. Source-byte equality is recorded separately. The current merge head has not executed natively. Remaining original failures and three budget terminations remain open.",
+  "independentAuthorshipCredit": 0
+}

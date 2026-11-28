@@ -1,0 +1,258 @@
+[
+  {
+    "line": 42913,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.1138488Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 42924,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.1410344Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 42935,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.1713490Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 42946,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.2015428Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 42957,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.2315143Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 42968,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.2611170Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 42979,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.2910593Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 42990,
+    "message": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-21T00:28:08.5571415Z ^[[1m^[[91merror^[[0m^[[1m: unused import: `ThinkingStep`^[[0m"
+  },
+  {
+    "line": 44443,
+    "message": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-21T00:30:30.9331766Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 44454,
+    "message": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-21T00:30:30.9339478Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 44465,
+    "message": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-21T00:30:30.9344252Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 44476,
+    "message": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-21T00:30:30.9348158Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 44487,
+    "message": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-21T00:30:30.9352261Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 44498,
+    "message": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-21T00:30:30.9356223Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 44509,
+    "message": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-21T00:30:30.9360190Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 45962,
+    "message": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-21T00:32:17.3024697Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 45973,
+    "message": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-21T00:32:17.3031496Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 45984,
+    "message": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-21T00:32:17.3036065Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 45995,
+    "message": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-21T00:32:17.3039928Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 46006,
+    "message": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-21T00:32:17.3044112Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 46017,
+    "message": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-21T00:32:17.3048159Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 46028,
+    "message": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-21T00:32:17.3052638Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 47487,
+    "message": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:40:38.6268396Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 47498,
+    "message": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:40:38.6274616Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 47509,
+    "message": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:40:38.6278831Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 47520,
+    "message": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:40:38.6282811Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 47531,
+    "message": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:40:38.6287345Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 47542,
+    "message": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:40:38.6291257Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 47553,
+    "message": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-21T00:40:38.6295306Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 49005,
+    "message": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-21T00:36:57.4043938Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 49016,
+    "message": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-21T00:36:57.4047937Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 49027,
+    "message": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-21T00:36:57.4050796Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 49038,
+    "message": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-21T00:36:57.4053033Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 49049,
+    "message": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-21T00:36:57.4055490Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 49060,
+    "message": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-21T00:36:57.4057727Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 49071,
+    "message": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-21T00:36:57.4060049Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 50525,
+    "message": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-21T00:34:17.7996475Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 50536,
+    "message": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-21T00:34:17.8004600Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 50547,
+    "message": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-21T00:34:17.8010714Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 50558,
+    "message": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-21T00:34:17.8015207Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 50569,
+    "message": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-21T00:34:17.8019204Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 50580,
+    "message": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-21T00:34:17.8023431Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 50591,
+    "message": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-21T00:34:17.8027199Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 52042,
+    "message": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-21T00:28:54.9054494Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 52053,
+    "message": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-21T00:28:54.9063452Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 52064,
+    "message": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-21T00:28:54.9069443Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 52075,
+    "message": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-21T00:28:54.9074413Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 52086,
+    "message": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-21T00:28:54.9078852Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 52097,
+    "message": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-21T00:28:54.9083448Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 52108,
+    "message": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-21T00:28:54.9087879Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 53561,
+    "message": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-21T00:35:44.4830856Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 53572,
+    "message": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-21T00:35:44.4836900Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 53583,
+    "message": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-21T00:35:44.4841045Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 53594,
+    "message": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-21T00:35:44.4845117Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 53605,
+    "message": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-21T00:35:44.4848903Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 53616,
+    "message": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-21T00:35:44.4852876Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 53627,
+    "message": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-21T00:35:44.4856657Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 55079,
+    "message": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:39:15.7117241Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 55090,
+    "message": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:39:15.7124738Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 55101,
+    "message": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:39:15.7128892Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 55112,
+    "message": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:39:15.7133252Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 55123,
+    "message": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:39:15.7137226Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 55134,
+    "message": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:39:15.7141140Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  },
+  {
+    "line": 55145,
+    "message": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-21T00:39:15.7145482Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `split_pipe_list` in this scope^[[0m"
+  }
+]

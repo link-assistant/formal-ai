@@ -82,23 +82,23 @@ multilingual_responses
   response response_fact_comparison_en
     intent fact_comparison
     language en
-    text "{left} and {right}, compared on their seeded facts:\n{rows}\n{differences}"
+    text "{left} and {right}, compared using verified facts:\n{rows}\n{differences}"
   response response_fact_comparison_ru
     intent fact_comparison
     language ru
-    text "{left} и {right} в сравнении по сохранённым фактам:\n{rows}\n{differences}"
+    text "{left} и {right} в сравнении по проверенным фактам:\n{rows}\n{differences}"
   response response_fact_comparison_hi
     intent fact_comparison
     language hi
-    text "सहेजे गए तथ्यों के आधार पर {left} और {right} की तुलना:\n{rows}\n{differences}"
+    text "सत्यापित तथ्यों के आधार पर {left} और {right} की तुलना:\n{rows}\n{differences}"
   response response_fact_comparison_zh
     intent fact_comparison
     language zh
-    text "根据已存事实比较{left}和{right}：\n{rows}\n{differences}"
+    text "根据已核实的事实比较{left}和{right}：\n{rows}\n{differences}"
   response response_fact_comparison_es
     intent fact_comparison
     language es
-    text "{left} y {right}, comparados según sus hechos guardados:\n{rows}\n{differences}"
+    text "{left} y {right}, comparados con datos verificados:\n{rows}\n{differences}"
   response response_fact_comparison_row_en
     intent fact_comparison_row
     language en
@@ -142,23 +142,23 @@ multilingual_responses
   response response_fact_comparison_missing_value_en
     intent fact_comparison_missing_value
     language en
-    text "no seeded value"
+    text "no verified value"
   response response_fact_comparison_missing_value_ru
     intent fact_comparison_missing_value
     language ru
-    text "нет сохранённого значения"
+    text "нет проверенного значения"
   response response_fact_comparison_missing_value_hi
     intent fact_comparison_missing_value
     language hi
-    text "कोई सहेजा गया मान नहीं"
+    text "कोई सत्यापित मान नहीं"
   response response_fact_comparison_missing_value_zh
     intent fact_comparison_missing_value
     language zh
-    text "无已存值"
+    text "没有已核实的值"
   response response_fact_comparison_missing_value_es
     intent fact_comparison_missing_value
     language es
-    text "sin valor guardado"
+    text "sin valor verificado"
   response response_fact_comparison_difference_en
     intent fact_comparison_difference
     language en
@@ -202,43 +202,43 @@ multilingual_responses
   response response_fact_comparison_unaligned_en
     intent fact_comparison_unaligned
     language en
-    text "{relation} is seeded only for {subject}, so it cannot be compared yet."
+    text "{relation} is available only for {subject}, so it cannot be compared yet."
   response response_fact_comparison_unaligned_ru
     intent fact_comparison_unaligned
     language ru
-    text "{relation}: значение сохранено только для {subject}, поэтому сравнить пока нельзя."
+    text "{relation}: проверенное значение есть только для {subject}, поэтому сравнить пока нельзя."
   response response_fact_comparison_unaligned_hi
     intent fact_comparison_unaligned
     language hi
-    text "{relation} केवल {subject} के लिए सहेजा गया है, इसलिए अभी तुलना नहीं हो सकती।"
+    text "{relation} केवल {subject} के लिए उपलब्ध है, इसलिए अभी तुलना नहीं हो सकती।"
   response response_fact_comparison_unaligned_zh
     intent fact_comparison_unaligned
     language zh
-    text "{relation}只为{subject}存有数据，因此暂时无法比较。"
+    text "{relation}只有{subject}有已核实的数据，因此暂时无法比较。"
   response response_fact_comparison_unaligned_es
     intent fact_comparison_unaligned
     language es
-    text "{relation} solo está guardado para {subject}, así que aún no se puede comparar."
+    text "Solo hay un valor verificado de {relation} para {subject}, así que aún no se puede comparar."
   response response_fact_comparison_gap_en
     intent fact_comparison_gap
     language en
-    text "I can compare {known} and {missing} only from seeded facts, and I have none for {missing}. What I have for {known}:\n{rows}\nAdd facts for {missing} (or allow a live lookup) to compare them."
+    text "I found no verified facts for {missing} to compare with {known}. Verified facts for {known}:\n{rows}"
   response response_fact_comparison_gap_ru
     intent fact_comparison_gap
     language ru
-    text "Я могу сравнить {known} и {missing} только по сохранённым фактам, а для {missing} их нет. Что есть для {known}:\n{rows}\nДобавьте факты для {missing} (или разрешите живой поиск), чтобы сравнить."
+    text "Мне не удалось найти проверенные факты о {missing} для сравнения с {known}. Проверенные факты о {known}:\n{rows}"
   response response_fact_comparison_gap_hi
     intent fact_comparison_gap
     language hi
-    text "मैं {known} और {missing} की तुलना केवल सहेजे गए तथ्यों से कर सकता हूँ, और {missing} के लिए कोई तथ्य नहीं है। {known} के लिए मेरे पास है:\n{rows}\nतुलना के लिए {missing} के तथ्य जोड़ें (या लाइव खोज की अनुमति दें)।"
+    text "मुझे {known} से तुलना के लिए {missing} के कोई सत्यापित तथ्य नहीं मिले। {known} के सत्यापित तथ्य:\n{rows}"
   response response_fact_comparison_gap_zh
     intent fact_comparison_gap
     language zh
-    text "我只能根据已存事实比较{known}和{missing}，但没有关于{missing}的事实。关于{known}，我有：\n{rows}\n请为{missing}添加事实（或允许实时查询）后再比较。"
+    text "没有找到关于{missing}的已核实事实，暂时无法与{known}比较。关于{known}的已核实事实：\n{rows}"
   response response_fact_comparison_gap_es
     intent fact_comparison_gap
     language es
-    text "Solo puedo comparar {known} y {missing} con hechos guardados, y no tengo ninguno de {missing}. Lo que tengo de {known}:\n{rows}\nAñade hechos de {missing} (o permite una consulta en vivo) para compararlos."
+    text "No encontré datos verificados sobre {missing} para compararlos con {known}. Datos verificados sobre {known}:\n{rows}"
   response response_prompt_text_answer_en
     intent prompt_text_answer
     language en
@@ -439,6 +439,26 @@ multilingual_responses
     intent fact_live_answer
     language es
     text "Según Wikidata, {relation} de {subject}: {value}. Fuente: {reference}"
+  response response-fact-live-answer-opening-date-en
+    intent fact_live_answer_opening-date
+    language en
+    text "Wikidata lists these opening dates for {subject}: {value}. Source: {reference}"
+  response response-fact-live-answer-opening-date-ru
+    intent fact_live_answer_opening-date
+    language ru
+    text "Даты открытия {subject} по Викиданным: {value}. Источник: {reference}"
+  response response-fact-live-answer-opening-date-hi
+    intent fact_live_answer_opening-date
+    language hi
+    text "विकिडेटा में {subject} की उद्घाटन तिथियाँ: {value}। स्रोत: {reference}"
+  response response-fact-live-answer-opening-date-zh
+    intent fact_live_answer_opening-date
+    language zh
+    text "维基数据所列的{subject}开放日期：{value}。来源：{reference}"
+  response response-fact-live-answer-opening-date-es
+    intent fact_live_answer_opening-date
+    language es
+    text "Fechas de inauguración de {subject} en Wikidata: {value}. Fuente: {reference}"
   response response_fact_live_answer_author_of_book_en
     intent fact_live_answer_author_of_book
     language en
@@ -499,3 +519,63 @@ multilingual_responses
     intent explanation_research_row
     language es
     text "- {statement} (fuente: {url}, sha256 {sha256})"
+  response response-project-origin-author-en
+    intent project-origin-author
+    language en
+    text "{subject} was created by {author}."
+  response response-project-origin-author-ru
+    intent project-origin-author
+    language ru
+    text "{subject} был создан пользователем {author}."
+  response response-project-origin-author-hi
+    intent project-origin-author
+    language hi
+    text "{subject} को {author} ने बनाया था।"
+  response response-project-origin-author-zh
+    intent project-origin-author
+    language zh
+    text "{subject} 由 {author} 创建。"
+  response response-project-origin-author-es
+    intent project-origin-author
+    language es
+    text "{author} creó {subject}."
+  response response-project-origin-author-and-tool-en
+    intent project-origin-author-and-tool
+    language en
+    text "{subject} was created by {author} using {tool}."
+  response response-project-origin-author-and-tool-ru
+    intent project-origin-author-and-tool
+    language ru
+    text "{subject} был создан пользователем {author} с использованием {tool}."
+  response response-project-origin-author-and-tool-hi
+    intent project-origin-author-and-tool
+    language hi
+    text "{subject} को {author} ने {tool} का उपयोग करके बनाया था।"
+  response response-project-origin-author-and-tool-zh
+    intent project-origin-author-and-tool
+    language zh
+    text "{subject} 由 {author} 使用 {tool} 创建。"
+  response response-project-origin-author-and-tool-es
+    intent project-origin-author-and-tool
+    language es
+    text "{author} creó {subject} con {tool}."
+  response response-publisher-policy-excerpt-en
+    intent publisher-policy-excerpt
+    language en
+    text "The official policy says: “{excerpt}” Source: {source}"
+  response response-publisher-policy-excerpt-ru
+    intent publisher-policy-excerpt
+    language ru
+    text "В официальных правилах сказано: «{excerpt}» Источник: {source}"
+  response response-publisher-policy-excerpt-hi
+    intent publisher-policy-excerpt
+    language hi
+    text "आधिकारिक नीति में लिखा है: “{excerpt}” स्रोत: {source}"
+  response response-publisher-policy-excerpt-zh
+    intent publisher-policy-excerpt
+    language zh
+    text "官方政策写道：“{excerpt}”来源：{source}"
+  response response-publisher-policy-excerpt-es
+    intent publisher-policy-excerpt
+    language es
+    text "La política oficial indica: «{excerpt}» Fuente: {source}"

@@ -1,0 +1,849 @@
+[
+  {
+    "file": "full-run-44813109427.stdout.gz",
+    "line": 660,
+    "level": "error",
+    "text": "Error response from daemon: canonical registry unavailable in deliberate fallback control",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1893,
+    "level": "warning",
+    "text": "Maintained file has 1480 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1895,
+    "level": "warning",
+    "text": "Maintained file has 1437 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1897,
+    "level": "warning",
+    "text": "Maintained file has 1475 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1899,
+    "level": "warning",
+    "text": "Maintained file has 1408 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1901,
+    "level": "warning",
+    "text": "Maintained file has 1475 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1903,
+    "level": "warning",
+    "text": "Maintained file has 1498 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1905,
+    "level": "warning",
+    "text": "Maintained file has 1482 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1907,
+    "level": "warning",
+    "text": "Rust file has 975 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1909,
+    "level": "warning",
+    "text": "Rust file has 905 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1911,
+    "level": "warning",
+    "text": "Rust file has 970 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1913,
+    "level": "warning",
+    "text": "Rust file has 910 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1915,
+    "level": "warning",
+    "text": "Maintained file has 1491 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1917,
+    "level": "warning",
+    "text": "Maintained file has 1419 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1919,
+    "level": "warning",
+    "text": "Links Notation file has 1472 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1921,
+    "level": "warning",
+    "text": "Links Notation file has 1423 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1923,
+    "level": "warning",
+    "text": "Links Notation file has 1489 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1925,
+    "level": "warning",
+    "text": "Links Notation file has 1426 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1927,
+    "level": "warning",
+    "text": "Links Notation file has 1407 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1929,
+    "level": "warning",
+    "text": "Links Notation file has 1486 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1931,
+    "level": "warning",
+    "text": "Links Notation file has 1498 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1933,
+    "level": "warning",
+    "text": "Maintained file has 1451 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1935,
+    "level": "warning",
+    "text": "Maintained file has 1500 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1937,
+    "level": "warning",
+    "text": "Worker JavaScript file has 1417 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1939,
+    "level": "warning",
+    "text": "Worker JavaScript file has 1460 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1941,
+    "level": "warning",
+    "text": "Rust file has 976 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1943,
+    "level": "warning",
+    "text": "Rust file has 929 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1945,
+    "level": "warning",
+    "text": "Links Notation file has 1489 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1947,
+    "level": "warning",
+    "text": "Links Notation file has 1426 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1949,
+    "level": "warning",
+    "text": "Links Notation file has 1407 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1951,
+    "level": "warning",
+    "text": "Links Notation file has 1486 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1953,
+    "level": "warning",
+    "text": "Links Notation file has 1498 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1955,
+    "level": "warning",
+    "text": "Rust file has 999 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1957,
+    "level": "warning",
+    "text": "Rust file has 973 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1959,
+    "level": "warning",
+    "text": "Rust file has 966 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1961,
+    "level": "warning",
+    "text": "Rust file has 973 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1963,
+    "level": "warning",
+    "text": "Rust file has 936 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1965,
+    "level": "warning",
+    "text": "Rust file has 946 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1967,
+    "level": "warning",
+    "text": "Rust file has 988 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1969,
+    "level": "warning",
+    "text": "Rust file has 955 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1971,
+    "level": "warning",
+    "text": "Rust file has 975 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1973,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1975,
+    "level": "warning",
+    "text": "Rust file has 998 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1977,
+    "level": "warning",
+    "text": "Rust file has 948 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1979,
+    "level": "warning",
+    "text": "Rust file has 989 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1981,
+    "level": "warning",
+    "text": "Rust file has 941 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1983,
+    "level": "warning",
+    "text": "Rust file has 968 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1985,
+    "level": "warning",
+    "text": "Rust file has 932 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1987,
+    "level": "warning",
+    "text": "Rust file has 973 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1989,
+    "level": "warning",
+    "text": "Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1991,
+    "level": "warning",
+    "text": "Rust file has 949 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1993,
+    "level": "warning",
+    "text": "Rust file has 910 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1995,
+    "level": "warning",
+    "text": "Rust file has 976 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1997,
+    "level": "warning",
+    "text": "Rust file has 961 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 1999,
+    "level": "warning",
+    "text": "Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2001,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2003,
+    "level": "warning",
+    "text": "Rust file has 926 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2005,
+    "level": "warning",
+    "text": "Rust file has 957 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2007,
+    "level": "warning",
+    "text": "Rust file has 994 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2009,
+    "level": "warning",
+    "text": "Rust file has 921 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2011,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2013,
+    "level": "warning",
+    "text": "Rust file has 946 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2015,
+    "level": "warning",
+    "text": "Rust file has 930 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2017,
+    "level": "warning",
+    "text": "Rust file has 954 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2019,
+    "level": "warning",
+    "text": "Rust file has 903 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2021,
+    "level": "warning",
+    "text": "Rust file has 903 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2023,
+    "level": "warning",
+    "text": "Rust file has 944 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2025,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2027,
+    "level": "warning",
+    "text": "Rust file has 993 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2029,
+    "level": "warning",
+    "text": "Rust file has 983 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2031,
+    "level": "warning",
+    "text": "Rust file has 940 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2033,
+    "level": "warning",
+    "text": "Rust file has 990 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2035,
+    "level": "warning",
+    "text": "Rust file has 972 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2037,
+    "level": "warning",
+    "text": "Rust file has 950 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2039,
+    "level": "warning",
+    "text": "Rust file has 903 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2041,
+    "level": "warning",
+    "text": "Rust file has 983 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2043,
+    "level": "warning",
+    "text": "Rust file has 914 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2045,
+    "level": "warning",
+    "text": "Rust file has 912 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2047,
+    "level": "warning",
+    "text": "Rust file has 983 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2049,
+    "level": "warning",
+    "text": "Rust file has 992 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2051,
+    "level": "warning",
+    "text": "Rust file has 984 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2053,
+    "level": "warning",
+    "text": "Rust file has 939 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2055,
+    "level": "warning",
+    "text": "Rust file has 985 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2057,
+    "level": "warning",
+    "text": "Rust file has 952 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2059,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2061,
+    "level": "warning",
+    "text": "Rust file has 953 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2063,
+    "level": "warning",
+    "text": "Rust file has 950 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2065,
+    "level": "warning",
+    "text": "Rust file has 986 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2067,
+    "level": "warning",
+    "text": "Rust file has 984 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2069,
+    "level": "warning",
+    "text": "Rust file has 965 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2071,
+    "level": "warning",
+    "text": "Rust file has 961 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2073,
+    "level": "warning",
+    "text": "Rust file has 997 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2075,
+    "level": "warning",
+    "text": "Rust file has 974 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2077,
+    "level": "warning",
+    "text": "Rust file has 907 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2079,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2081,
+    "level": "warning",
+    "text": "Rust file has 970 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2083,
+    "level": "warning",
+    "text": "Rust file has 988 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2085,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2087,
+    "level": "warning",
+    "text": "Rust file has 995 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2089,
+    "level": "warning",
+    "text": "Rust file has 907 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2091,
+    "level": "warning",
+    "text": "Rust file has 943 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2093,
+    "level": "warning",
+    "text": "Rust file has 984 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2095,
+    "level": "warning",
+    "text": "Rust file has 999 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2097,
+    "level": "warning",
+    "text": "Maintained file has 1424 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2099,
+    "level": "warning",
+    "text": "Maintained file has 1401 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2101,
+    "level": "warning",
+    "text": "Rust file has 982 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2103,
+    "level": "warning",
+    "text": "Rust file has 994 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2105,
+    "level": "warning",
+    "text": "Rust file has 945 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2107,
+    "level": "warning",
+    "text": "Rust file has 921 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2109,
+    "level": "warning",
+    "text": "Rust file has 961 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2111,
+    "level": "warning",
+    "text": "Rust file has 962 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2113,
+    "level": "warning",
+    "text": "Rust file has 961 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2115,
+    "level": "warning",
+    "text": "Rust file has 911 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2117,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2119,
+    "level": "warning",
+    "text": "Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2121,
+    "level": "warning",
+    "text": "Rust file has 953 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2123,
+    "level": "warning",
+    "text": "Maintained file has 1460 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2125,
+    "level": "warning",
+    "text": "Maintained file has 1417 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2127,
+    "level": "warning",
+    "text": "Maintained file has 1500 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2129,
+    "level": "warning",
+    "text": "GitHub Actions workflow file has 1481 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.",
+    "quotedShellSource": false
+  },
+  {
+    "file": "full-run-44813110048.stdout.gz",
+    "line": 2711,
+    "level": "warning",
+    "text": "UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only `cargo publish` can prove it",
+    "quotedShellSource": false
+  }
+]

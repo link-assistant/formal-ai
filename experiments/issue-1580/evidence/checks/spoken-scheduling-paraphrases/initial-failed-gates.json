@@ -1,0 +1,26 @@
+[
+  {
+    "name": "check-minimal-core-boundary-js-twin",
+    "file": "check-minimal-core-boundary-js-twin-initial.log.gz",
+    "rawSha256": "460aad05ffc537ff627f7b63307b1b0d27ae5f4986752ea5876c7213e688e7f5",
+    "archiveSha256": "a98e815f55f0bc3754b0799d61bd7bf36e47184f8d7d2c52afcf492f04e36869"
+  },
+  {
+    "name": "check-minimal-core-boundary",
+    "file": "check-minimal-core-boundary-initial.log.gz",
+    "rawSha256": "d108b78e9c9e907b22b67843a431989af7c2c1f861a91257e7abf6c282f1e806",
+    "archiveSha256": "41632a653bdbed4cfc19b8cbe2bf7f3574b783c5687051df88ccd78a373f393a"
+  },
+  {
+    "name": "check-worker-line-budget-js-twin",
+    "file": "check-worker-line-budget-js-twin-initial.log.gz",
+    "rawSha256": "20a483460a9f4510cee8a22e55d30f5882026de00dbe484c5ba661ba768fa7b2",
+    "archiveSha256": "3d636a7e7a876557be6029a6f69a2483b54c3e3bcfea900168c5e6c97b206c37"
+  },
+  {
+    "name": "check-worker-line-budget",
+    "file": "check-worker-line-budget-initial.log.gz",
+    "rawSha256": "6bce0fddaa81fcdb1b310cac7435106e995c1694ad1147f2dad54f76b870bcb7",
+    "archiveSha256": "1f2eed0619a56406150bf88e24f05481e2e56ce420d9947c144b8c5c4c1d4b7d"
+  }
+]

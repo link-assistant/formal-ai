@@ -1,11 +1,11 @@
 //! Issue #1180 R10: status and definition questions answered from this
-//! repository's history and its self-AST census.
+//! repository's history and its current source navigation.
 //!
 //! "Why does the self-development status fail?" is answered from the rule's
 //! checking script (and the issue that introduced it), the commit range the
 //! script measures, and the floor and target the self-hosting ledger records.
 //! "What does `evaluate_calculation` do?" is answered by locating the symbol in
-//! `data/meta/self-ast`, quoting its documentation comment from the source,
+//! the live owned source, quoting its documentation comment from that source,
 //! and naming the commit that first wrote its name (`git log -S`). Both cues
 //! claim only with their subject present (issue #1175).
 
@@ -108,6 +108,74 @@ fn the_census_locates_evaluate_calculation() {
     assert_eq!(found.len(), 1, "{found:?}");
     assert_eq!(found[0].target, "src/calculation.rs");
     assert_eq!(found[0].kind, "function");
+}
+
+#[test]
+fn source_edits_moves_and_deletion_supersede_stale_census_positions() {
+    struct Fixture(PathBuf);
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
+    let unique = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("clock")
+        .as_nanos();
+    let directory = Fixture(std::env::temp_dir().join(format!(
+        "formal-ai-qa-current-source-{}-{unique}",
+        std::process::id()
+    )));
+    let root = &directory.0;
+    let rules = HistoryRules::load(None);
+    let source_directory = root.join(&rules.repository_qa.source_root).join("src");
+    let legacy_directory = root.join(&rules.repository_qa.census_dir);
+    std::fs::create_dir_all(&source_directory).expect("source directory");
+    std::fs::create_dir_all(&legacy_directory).expect("legacy directory");
+    std::fs::write(
+        legacy_directory.join("current.lino"),
+        "self_ast_census\n  target src/current.rs\n  symbols\n    function measured_value 1 1\n    function historical_only 8 8\n",
+    )
+    .expect("stale navigation fixture");
+    // Historical decoding is diagnostic; current navigation ignores these spans.
+    let historical = history_context::census_document_symbols(
+        &std::fs::read_to_string(legacy_directory.join("current.lino")).expect("legacy record"),
+    );
+    assert_eq!(historical.len(), 2);
+    assert_eq!(historical[0].start, 1);
+    assert_eq!(historical[1].name, "historical_only");
+    let current = source_directory.join("current.rs");
+    std::fs::write(&current, "/// Current contract.\nfn measured_value() {}\n")
+        .expect("current source");
+    let expected = |target: &str, start| CensusSymbol {
+        target: target.to_owned(),
+        kind: "function".to_owned(),
+        name: "measured_value".to_owned(),
+        start,
+        end: start,
+    };
+    assert_eq!(
+        history_context::census_symbols(root, &rules),
+        vec![expected("src/current.rs", 2)]
+    );
+    let edited = "// Added framing: नमस्ते.\n\n/// Edited contract.\nfn measured_value() {}\n";
+    std::fs::write(&current, edited).expect("edited source");
+    assert_eq!(
+        history_context::census_symbols(root, &rules),
+        vec![expected("src/current.rs", 4)]
+    );
+    assert_eq!(
+        symbol_doc(edited, 4, &rules),
+        Some("Edited contract.".to_owned())
+    );
+    let moved = source_directory.join("moved.rs");
+    std::fs::rename(&current, &moved).expect("move source");
+    assert_eq!(
+        history_context::census_symbols(root, &rules),
+        vec![expected("src/moved.rs", 4)]
+    );
+    std::fs::remove_file(moved).expect("remove source");
+    assert_eq!(history_context::census_symbols(root, &rules), Vec::new());
 }
 
 #[test]

@@ -1,0 +1,107 @@
+{
+  "records": [
+    {
+      "name": "negative-original-collector",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "negative-original-collector.log.gz",
+      "rawSha256": "8d643711480a948f85909fba5cc44f353eee49e5b39119ae9507b00c464f496d",
+      "archiveSha256": "fdf39f7a8557b588ab85324b15423363fc548d65596f556bd91346c4b6315aef"
+    },
+    {
+      "name": "native-admission",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-admission.log.gz",
+      "rawSha256": "333bd6be39fd528dfc80d5b3cdc138c0e89a5dd7e897cf7d984c7ac7eb519cd9",
+      "archiveSha256": "51ed9b01f444ba221cbe57d9eb435eb74385b3c174e88242f29a25fae6768028"
+    },
+    {
+      "name": "maintained-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "maintained-policy.log.gz",
+      "rawSha256": "902606e32b427abddae323ff6cd54036c29d79777a023baeb54041bfc32271e9",
+      "archiveSha256": "7325ef0a8e9a5fcc1b2737cc19db834fa168f14dd86d3c8160593f22021da124"
+    },
+    {
+      "name": "rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/collect-changelog.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "rust/tests/unit/ci-cd/mod.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "local-gates",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-readable-code,check-changelog-fragment-js-twin,release#1,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-runner-labels,check-ci-speed"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "local-gates.log.gz",
+      "rawSha256": "21ae19c32066cc63366964a517ab9b017261ea1632e8560170e6be02f1ed4c7d",
+      "archiveSha256": "690be76c6cf352600813efc36656b373f45496c63c1dcccd51ca9ec9accb34a8"
+    },
+    {
+      "name": "deployed-release-source",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-staged-release.mjs",
+        "--check-deployed"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "deployed-release-source.log.gz",
+      "rawSha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce",
+      "archiveSha256": "3816b50a43a2d25b47022d5f33e5f75a98cf635160cdef80035a04e73df66942"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "validationHarnessNote": "The original before-control returned its expected exit 1 and retained the actual package reader assertion. An extra harness assertion assumed TAP text (not ok 32) while this Node used the spec reporter. The control log is intact; validation resumed from it and all after-checks passed."
+}

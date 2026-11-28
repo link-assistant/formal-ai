@@ -1,0 +1,11 @@
+# After the parity fixes, run 1: eee485204 worktree + only the parity patch (isolates other agents' uncommitted seed/worker edits)
+# node scripts/check-server-parity.mjs --rust-binary /tmp/agentA-1/rel/formal-ai --list
+server parity: 161 identical, 0 content divergence(s), 0 protocol divergence(s)
+EXIT 0
+
+# After the parity fixes, run 2: this working tree (includes other agents' uncommitted data/seed edits; the prebuilt binary embeds eee485204 seeds, so /v1/bundle differs)
+server parity: 160 identical, 1 content divergence(s), 0 protocol divergence(s)
+  content bundle: body text differs
+::error::new content divergence in bundle: make the JavaScript server answer like the Rust one (R1013).
+::error::1 content divergence(s) above the ceiling 0.
+EXIT 1

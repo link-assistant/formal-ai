@@ -68,7 +68,7 @@ runs:
           # observations retain the normal targets. Explicit caller subsets stay explicit.
           docs_only=false
           if changed_count="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json changedFiles --jq .changedFiles)" && \
-            file_pages="$(gh api --paginate --slurp "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100" --jq 'map(map({filename,previous_filename} | with_entries(select(.value != null))))')"; then
+            file_pages="$(gh api --paginate --slurp "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100")"; then
             docs_only="$(printf '%s' "$file_pages" | node scripts/lib/documentation-paths.mjs "$changed_count")"
           fi
           if [ "$docs_only" = true ] && [ "$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid --jq .headRefOid)" != "$head_sha" ]; then

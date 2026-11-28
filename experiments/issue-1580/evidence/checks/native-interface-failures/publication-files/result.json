@@ -1,0 +1,81 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "records": [
+    {
+      "name": "archive-command-records",
+      "argv": [
+        "python3",
+        "/tmp/issue-1580-research/archive-evidence.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.751,
+      "rawSha256": "9c6f19693fd298cb6027fe787d3b4d9233a6364b7a2cda8fc2b3a1ae32ee96d9",
+      "archiveSha256": "ae087dafff9b3cb4f8ff041e966fe91d9c61b78d04af8fb321b133e9cd7407af",
+      "lines": 1
+    },
+    {
+      "name": "stage-recorded-evidence",
+      "argv": [
+        "git",
+        "add",
+        "--",
+        "experiments/issue-1580/evidence/commands",
+        "experiments/issue-1580/evidence/checks/native-interface-failures",
+        "experiments/issue-1580/evidence/checks/native-source-witness",
+        "experiments/issue-1580/evidence/checks/native-workflow-admission",
+        "experiments/issue-1580/evidence/ci/native-interface-09a855c2",
+        "experiments/issue-1580/work-plan.md",
+        "changelog.d/issue-1580-native-interface-failures.md"
+      ],
+      "exitCode": 0,
+      "seconds": 0.79,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "publication-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-architecture-contents,check-fragment-release-map,check-reconstructed-changelog"
+      ],
+      "exitCode": 0,
+      "seconds": 105.522,
+      "rawSha256": "2988816d965b75dd612269b22c458d5c14262dc60d9e6a8b16ad53881d91c851",
+      "archiveSha256": "7c576785590e7eadc91e64a0762d16926f0c49909960116e387f4f5ffaf3c342",
+      "lines": 9
+    },
+    {
+      "name": "staged-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.482,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "unstaged-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.165,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  ],
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false
+}

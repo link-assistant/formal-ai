@@ -1,0 +1,702 @@
+[
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "action.yml",
+    "file": "producer-14643440964-action.yml.gz",
+    "bytes": 3770,
+    "lines": 87,
+    "rawSha256": "77029707cceacfd8bd26d502c850ac461fa8e8b332fd88a3c0ec0aed9a4f8531",
+    "archiveSha256": "ffba4cb81e0e5f9ca36fe914ec9d4fbbb1edaba3c4892328fccfc82cd07c016e"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "bin/docker",
+    "file": "producer-14643440964-bin_docker.gz",
+    "bytes": 617,
+    "lines": 10,
+    "rawSha256": "8698d3cf79b8437638a70118be28a8e94c8091ea4215d1d427202ed66ee8889b",
+    "archiveSha256": "7d39ae82b01bb77379bf7f241e32553bcf16c74d1512f4a78f2ea26001b78865"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "context.json",
+    "file": "producer-14643440964-context.json.gz",
+    "bytes": 432,
+    "lines": 8,
+    "rawSha256": "caa84aa0e64de3019de3ca6ea7d41a2e4fdce80acaeb13b577e55a9e34285222",
+    "archiveSha256": "b9b3cf6687a7ce769cc84733dcae59727c3d1d8b1da1abf3c2e6a94e0ad117f5"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "fault.json",
+    "file": "producer-14643440964-fault.json.gz",
+    "bytes": 219,
+    "lines": 5,
+    "rawSha256": "be0d892c54d47b857fb0087845721e393fecd0f828d4cca81132e71f31d78b56",
+    "archiveSha256": "9f67557318232f56f872b816ac9b2792d2ec206df96b09d064c393940b513799"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-builder.result.json",
+    "file": "producer-14643440964-initial-builder.result.json.gz",
+    "bytes": 150,
+    "lines": 10,
+    "rawSha256": "0cf6da183d7033c97f2f08087110b6aee7b786a2d12d0cb6d1ad93539b1e9de3",
+    "archiveSha256": "ea5f28d303123b9686291fc75795ba750fa4ed6c189993fb65221fba09c5fbff"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-builder.stderr",
+    "file": "producer-14643440964-initial-builder.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-builder.stdout",
+    "file": "producer-14643440964-initial-builder.stdout.gz",
+    "bytes": 1569,
+    "lines": 40,
+    "rawSha256": "de18f79890a9d4138152bf49abdcf4bc69eaa9a77386de14bdec6bb3271734f5",
+    "archiveSha256": "253ab501e082065889390069511673ec352f5c4b580e5e4540b1314eb3fda950"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-container.result.json",
+    "file": "producer-14643440964-initial-container.result.json.gz",
+    "bytes": 151,
+    "lines": 9,
+    "rawSha256": "abe8261cdefb309d85d59bcfb28757fee9cb481d28b16c158b5c9e984a302f00",
+    "archiveSha256": "e8e63d892f99771e485e74cdf9f5a6fbd022787aad8568ee36f749ab37c260b3"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-container.stderr",
+    "file": "producer-14643440964-initial-container.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-container.stdout",
+    "file": "producer-14643440964-initial-container.stdout.gz",
+    "bytes": 8899,
+    "lines": 214,
+    "rawSha256": "106159606c070582e16c32dc8f551042c28c71976377a2515aa4f4363509b201",
+    "archiveSha256": "687a72b3a73c7ff26655bb6fb3257d0e3a807d670bd0b5bb46493a330af902dc"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-image.result.json",
+    "file": "producer-14643440964-initial-image.result.json.gz",
+    "bytes": 171,
+    "lines": 9,
+    "rawSha256": "97b54aca7b8bb6516ebcb608825b8132c63c2f885f5b74fc11169c55ad865fb3",
+    "archiveSha256": "7586892ebcfdba32f0dc4257ca6642e6d9a3f19c1856fa4b756e8e4c1ff0fc48"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-image.stderr",
+    "file": "producer-14643440964-initial-image.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-image.stdout",
+    "file": "producer-14643440964-initial-image.stdout.gz",
+    "bytes": 3205,
+    "lines": 67,
+    "rawSha256": "5231e897c5b5ae285d17fa444636ecea441f94722b343e1af65a6dca9f184633",
+    "archiveSha256": "9c0ba5c53421607f4d683e5e0c823de83d02c2ccfa898dbceadb45597098f909"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "initial-verified.json",
+    "file": "producer-14643440964-initial-verified.json.gz",
+    "bytes": 543,
+    "lines": 10,
+    "rawSha256": "42353fbfa2b6b1f1deda26770749b6e2b3bf9deaceaf833731cd0034d5c2634d",
+    "archiveSha256": "c932bff276862b41545615a11010892026174f8d661dd7281d47f0642bd29d95"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "injected-failures.jsonl",
+    "file": "producer-14643440964-injected-failures.jsonl.gz",
+    "bytes": 144,
+    "lines": 1,
+    "rawSha256": "e8e725fdef6819eeb83396e2b81950a59b390255fc5caa5b5a0c595d8cde61bd",
+    "archiveSha256": "a0666fb1c8dfc285e0e286cc773a7de520f41da413726f0b67d1a2690b1aed59"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-builder.result.json",
+    "file": "producer-14643440964-mirror-builder.result.json.gz",
+    "bytes": 150,
+    "lines": 10,
+    "rawSha256": "c4f9e23a03ed2558bec9a03e69f0f7b5638b98f9091acee28532121cbb6674d5",
+    "archiveSha256": "3a0dc01069e9953c33285dac9584037cbd9a55cefd4b617384b1b943270bc89f"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-builder.stderr",
+    "file": "producer-14643440964-mirror-builder.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-builder.stdout",
+    "file": "producer-14643440964-mirror-builder.stdout.gz",
+    "bytes": 1583,
+    "lines": 40,
+    "rawSha256": "14b2252f56ad91afccbad9c77bda1c37f1f57e5e015173817c58c96915089213",
+    "archiveSha256": "93b219f2c7f9fe94927b559584304b5facb41810aa89013b328df276444c3604"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-container.result.json",
+    "file": "producer-14643440964-mirror-container.result.json.gz",
+    "bytes": 151,
+    "lines": 9,
+    "rawSha256": "66eea2ffd935976e57e06db39d0c42642fc0a2736c41289c505fde87a0ef00cb",
+    "archiveSha256": "f44729453819f98af4f54222f0578ea2ce79e2f2a09831f943c8254b770f2567"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-container.stderr",
+    "file": "producer-14643440964-mirror-container.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-container.stdout",
+    "file": "producer-14643440964-mirror-container.stdout.gz",
+    "bytes": 8913,
+    "lines": 214,
+    "rawSha256": "932391c99917251a3004ec86a3efcd61a312e9b17e1a2d5066e992fca80ae8ef",
+    "archiveSha256": "bfa8449760fa602719194a906f32ed9d35818ececb3074f27bfb9e105128b98b"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-image.result.json",
+    "file": "producer-14643440964-mirror-image.result.json.gz",
+    "bytes": 185,
+    "lines": 9,
+    "rawSha256": "c4c582c3e3d26ea98efe5a470e5e31229459e22ca224ecca8c8c871a9605f65e",
+    "archiveSha256": "93293d1ada0a0144ffa35aab3500d9fc24e0ac57be7c2a0ad0cd66481d0fd445"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-image.stderr",
+    "file": "producer-14643440964-mirror-image.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-image.stdout",
+    "file": "producer-14643440964-mirror-image.stdout.gz",
+    "bytes": 3320,
+    "lines": 68,
+    "rawSha256": "945d819d693af12b3df3e0930cc04f4df21468950d2535b35af214c35894f8d5",
+    "archiveSha256": "0bd15d79bd4e53d03e580b2f10a63a1b7eae96ec9771aa09c2c0350958dec649"
+  },
+  {
+    "artifact": {
+      "id": 14643440964,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY0MzQ0MDk2NA==",
+      "name": "buildkit-bootstrap-identity",
+      "size_in_bytes": 15838,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14643440964/zip",
+      "expired": false,
+      "digest": "sha256:ee6d10a9f2e21c7599b1d7ad3b7be5f7df9ab175357bf818157521d9955c22eb",
+      "created_at": "2026-11-20T15:36:29Z",
+      "updated_at": "2026-11-20T15:36:29Z",
+      "expires_at": "2026-11-27T15:36:29Z",
+      "workflow_run": {
+        "id": 44764893157,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+      }
+    },
+    "relativePath": "mirror-verified.json",
+    "file": "producer-14643440964-mirror-verified.json.gz",
+    "bytes": 556,
+    "lines": 10,
+    "rawSha256": "dbc931cbada9bf040bad56d051d5d5e331ca501a3e832cb2fa266b207c4b77d1",
+    "archiveSha256": "341311636e1f82041567b6072ebfe7d7c351335e1ac60900d1e3cdc15cd6ab26"
+  }
+]

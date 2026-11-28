@@ -23,6 +23,9 @@ use std::path::{Path, PathBuf};
 
 use formal_ai::{SolverConfig, UniversalSolver};
 
+#[path = "issue_1175_routing_probes/publisher_replay.rs"]
+mod publisher_replay;
+
 const LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
 
 #[derive(Debug, Default)]
@@ -321,6 +324,12 @@ fn every_lane_meets_the_coverage_budget_or_is_exempt_with_a_reason() {
 
 #[test]
 fn the_native_solver_answers_every_probe_as_measured() {
+    if crate::offline_replay::in_child_with_cache(
+        "solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured",
+        publisher_replay::warm_cache,
+    ) {
+        return;
+    }
     let solvers = [false, true].map(|agent_mode| {
         UniversalSolver::new(SolverConfig {
             offline: true,
@@ -332,6 +341,9 @@ fn the_native_solver_answers_every_probe_as_measured() {
     for probe in load_probes() {
         let solver = &solvers[usize::from(probe.field("native-agent-mode") == "true")];
         let answer = solver.solve(probe.field("prompt"));
+        if probe.field("lane") == "fact_lookup" {
+            publisher_replay::assert_fact_answer(&probe.id, &answer.answer, &answer.evidence_links);
+        }
         let pinned = if probe.has("rust_misroute") {
             probe.field("rust_misroute")
         } else {

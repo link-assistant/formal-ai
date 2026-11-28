@@ -1,0 +1,14 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/picomatch-security-backport.test.mjs"
+  ],
+  "exitCode": 0,
+  "rawSha256": "43c7d172cd7eec6973f4791b266def22cb26262210e04b35897f275603a88a76",
+  "autonomousAuthorshipCredit": 0
+}

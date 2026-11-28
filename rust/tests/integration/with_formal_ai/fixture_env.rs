@@ -42,7 +42,7 @@ fn all_seeded_credentials_and_command_overrides_are_removed_from_fixtures() {
                 command
                     .get_envs()
                     .any(|(name, value)| name == key.as_str() && value.is_none()),
-                "{key} must be cleared before a fake client can observe it"
+                "client credentials and command overrides must be cleared before fake client execution"
             );
         }
     }

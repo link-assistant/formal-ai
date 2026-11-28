@@ -1,0 +1,50 @@
+{
+  "events": [
+    {
+      "prompt": "Назначь мне встречу с Александром на 20:00 по Грузии",
+      "time": "20:00",
+      "zone": "Asia/Tbilisi",
+      "participant": "александр"
+    },
+    {
+      "prompt": "Запланируй встречу с Марией на 21:45 по Тбилиси",
+      "time": "21:45",
+      "zone": "Asia/Tbilisi",
+      "participant": "мари"
+    },
+    {
+      "prompt": "Schedule a meeting with Elena at 08:15 Georgia time",
+      "time": "08:15",
+      "zone": "Asia/Tbilisi",
+      "participant": "elena"
+    },
+    {
+      "prompt": "Назначь встречу с Иваном завтра в 23:50 по Грузии",
+      "time": "23:50",
+      "zone": "Asia/Tbilisi",
+      "participant": "иван"
+    },
+    {
+      "prompt": "Programa una reunión mañana a las 22:10",
+      "time": "22:10",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "安排明天09:25的会议",
+      "time": "09:25",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "कल 19:35 पर बैठक शेड्यूल करें",
+      "time": "19:35",
+      "zone": "UTC"
+    }
+  ],
+  "documents": [
+    "I watched a schedule demonstration at 20:45.",
+    "Schedule a meeting. The background mentions 20:45.",
+    "Create a poem about 20:45.",
+    "Schedule a meeting at 20:45. Book another meeting at 21:10.",
+    "The text says: schedule a meeting at 20:45."
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "head": "11c0bd05cc63049a0bc865944385efe3982b4344",
+  "observedAt": "2026-11-20T04:58:15.702221+00:00",
+  "workflowCount": 23,
+  "completed": 23,
+  "success": 21,
+  "failed": [
+    {
+      "id": 44673787188,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787188"
+    },
+    {
+      "id": 44673787597,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787597"
+    }
+  ],
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787056,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:20:58Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787056",
+      "workflowName": "External Benchmarks"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786831,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:20:58Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786831",
+      "workflowName": "Proactive failure report Agent CLI E2E"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787151,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:04Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787151",
+      "workflowName": "Desktop Release"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787072,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:05Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787072",
+      "workflowName": "Self-development status"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786943,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:05Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786943",
+      "workflowName": "container-images"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787125,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:01Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787125",
+      "workflowName": "Benchmark Corpus Gate"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786911,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:00Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786911",
+      "workflowName": "Stock Rust Install"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787285,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:02Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787285",
+      "workflowName": "Verify full readable source content"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786838,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:00Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786838",
+      "workflowName": "Regenerate native session projections"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787360,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:07Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787360",
+      "workflowName": "Self-hosting evidence"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786869,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:07Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786869",
+      "workflowName": "Publish source networks"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787087,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:06Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787087",
+      "workflowName": "Documentation policy"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786630,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:12Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786630",
+      "workflowName": "Guarded staged release authority refusal"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787236,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:08Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787236",
+      "workflowName": "Agentic CLI Matrix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787092,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:08Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787092",
+      "workflowName": "Broken Link Checker"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786809,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:15Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786809",
+      "workflowName": "Workflows"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786933,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:09Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786933",
+      "workflowName": "Coverage"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787026,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:10Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787026",
+      "workflowName": "Publish VS Code extension"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787148,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:08Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787148",
+      "workflowName": "Publish browser engine"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787316,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:21:41Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787316",
+      "workflowName": "Security"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673786760,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:22:21Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673786760",
+      "workflowName": "Source scanner qualification and debt inventory"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787188,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:27:38Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787188",
+      "workflowName": "Layered CI"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-20T04:20:51Z",
+      "databaseId": 44673787597,
+      "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+      "status": "completed",
+      "updatedAt": "2026-11-20T04:57:54Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44673787597",
+      "workflowName": "CI/CD Pipeline"
+    }
+  ],
+  "fullIssueComplete": false
+}

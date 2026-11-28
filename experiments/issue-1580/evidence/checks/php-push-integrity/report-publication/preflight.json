@@ -1,0 +1,96 @@
+{
+  "observedAt": "2026-11-18T13:32:33.510108+00:00",
+  "upstreamHead": "3a034b27a56067971ca74dd4c74c7707056b215d",
+  "publishedEvidenceHead": "73da561d993cee3506e9f77dba353255888c4acc",
+  "sourceUnchanged": true,
+  "issueCount": 27,
+  "pullCount": 8,
+  "previouslyReadIssueBodiesUnchanged": [
+    26,
+    25,
+    24,
+    23,
+    22,
+    21,
+    20,
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
+  "newIssue27MatchesOwnVerifiedReport": true,
+  "pullBodiesUnchanged": true,
+  "candidateDuplicateFound": false,
+  "bodySha256": "624dd2d7315a00df6eee96bbc83ce997671c4c33cc10a6f2c684a3c7023bf9bf",
+  "allImmutablePayloadsVerified": true,
+  "records": [
+    {
+      "file": "repository.json.gz",
+      "rawBytes": 8895,
+      "rawSha256": "0673bc64de91dda28cf68807185e31b305671bc47857d9fb568656139dc39bf8"
+    },
+    {
+      "file": "head.json.gz",
+      "rawBytes": 18623,
+      "rawSha256": "cf820be8469fa4a2653d45aa85c4c21f3d4e34a1e861579a25eac9f0829f1ef2"
+    },
+    {
+      "file": "issues.json.gz",
+      "rawBytes": 272030,
+      "rawSha256": "5de612342c5ec20be1254c5218848a273c68d1e5c9e234362d88fcc57cab29eb"
+    },
+    {
+      "file": "pulls.json.gz",
+      "rawBytes": 210926,
+      "rawSha256": "df37fba35593171ebed0722e6943f9c53f0c36293635839b497ed844c78ca6c1"
+    },
+    {
+      "file": "source-VersionReleaser.json.gz",
+      "rawBytes": 5813,
+      "rawSha256": "7abbc6eff8d241401427312fe4f5b313a491fae45a5bc0500acbfc601dc84c06"
+    },
+    {
+      "file": "source-Git.json.gz",
+      "rawBytes": 3695,
+      "rawSha256": "8d4547fb25b49e1b919f62c0964946cb20648cb1a23f831e6e9ce9aef90c6430"
+    },
+    {
+      "file": "published-reproduction.json.gz",
+      "rawBytes": 10055,
+      "rawSha256": "afd01b1abd81dbc27e98af86dd4b2f581a15164444e5cfe131a706d340c54f41"
+    },
+    {
+      "file": "published-focused-results.json.gz",
+      "rawBytes": 3849,
+      "rawSha256": "ca2c5c5423e6f01a2b513554bc1369cca1a4d4a79a83df70f489eb800f43702b"
+    },
+    {
+      "file": "published-focused-log.json.gz",
+      "rawBytes": 1858,
+      "rawSha256": "df85211199fdc9e47a1cfb7823a316e0ae549323cb28b46ce49f694d221af6ca"
+    },
+    {
+      "file": "published-maintained-log.json.gz",
+      "rawBytes": 4182,
+      "rawSha256": "289d7068005809da7f21d0bca87361eac51a8fa86b081346a6a4fb844f6fe57d"
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "previousDraftBodySha256": "f59a995d830162c8a1de4b9e62d0f135948f8462cb4c3b862e61779064420acb",
+  "duplicateReferenceCorrection": "#26 concerns failed Git comparisons and no-code change classification; its title was literally reviewed from the fresh issue list."
+}

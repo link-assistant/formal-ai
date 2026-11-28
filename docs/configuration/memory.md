@@ -25,12 +25,14 @@ enabled. That same server process keeps Desktop, Telegram, and API writes in
 sync; do not point concurrent processes at different overrides if you expect a
 shared history.
 
-Docker must mount the directory, not a one-off container file:
+Bind the host memory directory so Formal AI can create sibling locks and
+temporary files. The container's `box` user needs write access.
 
 ```bash
+install -d -m 0700 "$HOME/.formal-ai"
 docker run --rm --privileged \
-  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
-  -v "$HOME/.formal-ai:/root/.formal-ai" \
+  -e FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/home/box/.formal-ai" \
   ghcr.io/link-assistant/formal-ai:latest
 ```
 
@@ -39,8 +41,8 @@ and Agent services. On Windows PowerShell use a resolved host directory:
 
 ```powershell
 docker run --rm --privileged `
-  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino `
-  -v "${env:APPDATA}\formal-ai:/root/.formal-ai" `
+  -e FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino `
+  -v "${env:APPDATA}\formal-ai:/home/box/.formal-ai" `
   ghcr.io/link-assistant/formal-ai:latest
 ```
 

@@ -6,6 +6,7 @@
 
 use formal_ai::{ConversationTurn, SolverConfig, SymbolicAnswer, UniversalSolver};
 
+#[path = "chat_surface/behavior_rule_grammar.rs"]
 mod behavior_rule_grammar;
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -88,8 +89,48 @@ fn identity_examples_cover_known_phrasings() {
     }
 }
 
+const PROJECT_ORIGIN_COMMENT_API: &str =
+    "https://api.github.com/repos/link-assistant/formal-ai/issues/comments/4526577668";
+const PROJECT_ORIGIN_COMMENT: &str =
+    "https://github.com/link-assistant/formal-ai/issues/157#issuecomment-4526577668";
+
+struct ProjectOriginTransport;
+
+impl formal_ai::source_fetch::SourceTransport for ProjectOriginTransport {
+    fn get(&self, url: &str) -> Result<Vec<u8>, formal_ai::source_fetch::FetchError> {
+        assert_eq!(url, PROJECT_ORIGIN_COMMENT_API);
+        Ok(serde_json::json!({
+            "id": 4526577668_u64,
+            "html_url": PROJECT_ORIGIN_COMMENT,
+            "issue_url": "https://api.github.com/repos/link-assistant/formal-ai/issues/157",
+            "user": {"login": "konard"},
+            "author_association": "CONTRIBUTOR",
+            "body": "Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind.",
+        }).to_string().into_bytes())
+    }
+}
+
 #[test]
 fn creator_questions_return_formal_ai_origin_fact_across_languages() {
+    use formal_ai::event_log::EventLog;
+    use formal_ai::source_fetch::CachedSourceClient;
+    use formal_ai::try_fact_lookup_with_client;
+    use formal_ai::web_engine_core::normalize_prompt;
+
+    let cache =
+        std::env::temp_dir().join(format!("formal-ai-project-origin-{}", std::process::id()));
+    let ask = |prompt, client: &CachedSourceClient<ProjectOriginTransport>| {
+        try_fact_lookup_with_client(
+            prompt,
+            &normalize_prompt(prompt),
+            &mut EventLog::new(),
+            client,
+        )
+    };
+    let offline = CachedSourceClient::new(&cache, ProjectOriginTransport);
+    assert!(ask("Who created you?", &offline).is_none());
+    let client = CachedSourceClient::new(&cache, ProjectOriginTransport).with_online(true);
+
     let cases = [
         (
             "English",
@@ -113,12 +154,21 @@ fn creator_questions_return_formal_ai_origin_fact_across_languages() {
         ),
     ];
     for (language, prompt, expected_answer) in cases {
-        let response = answer(prompt);
+        let response = ask(prompt, &client).unwrap_or_else(|| panic!("unanswered: {prompt}"));
         assert_eq!(
             response.intent, "fact_lookup",
             "{language} creator prompt should route to fact_lookup"
         );
         assert_eq!(response.answer, expected_answer);
+        assert!(
+            response
+                .evidence_links
+                .contains(&format!("source:{PROJECT_ORIGIN_COMMENT}"))
+        );
+        assert!(response.evidence_links.iter().any(|link| {
+            link.starts_with(&format!("source:http:{PROJECT_ORIGIN_COMMENT_API}:"))
+                && link.contains("sha256=")
+        }));
         assert!(
             response.answer.contains("github.com/konard"),
             "{language} creator answer must name the creator account, got: {}",
@@ -132,6 +182,8 @@ fn creator_questions_return_formal_ai_origin_fact_across_languages() {
             response.answer
         );
     }
+    let reused = ask("Who created you?", &offline).expect("cached project declaration");
+    assert_eq!(reused.answer, cases[0].2);
 }
 
 #[test]
@@ -486,7 +538,7 @@ fn every_code_answer_declares_execution_status_or_unavailability() {
     let response = answer("Write me a sorting algorithm in Rust");
     assert_eq!(
         response.answer,
-        "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+        "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
     );
     assert!(
         response.answer.contains("Execution status:")
@@ -825,39 +877,5 @@ fn behavior_rules_listing_includes_runtime_rule_when_history_has_one() {
     );
 }
 
-#[test]
-fn self_facts_answer_includes_model_id_and_strategy() {
-    let response = answer("List all facts you know about yourself");
-    assert_eq!(response.intent, "self_facts");
-    assert_eq!(response.answer, SELF_FACTS_ANSWER);
-    assert!(
-        response.answer.to_lowercase().contains("formal-ai")
-            || response.answer.to_lowercase().contains("symbolic"),
-        "self facts should describe the model identity; got: {}",
-        response.answer
-    );
-}
-
-#[test]
-fn behavior_rule_detail_uses_describe_prefix() {
-    let response = answer("describe behavior rule unknown");
-    assert_eq!(response.intent, "behavior_rule_detail");
-    assert_eq!(response.answer, ENGLISH_UNKNOWN_RULE_DETAIL);
-    assert!(
-        response.answer.contains("rule_unknown"),
-        "describe prefix must surface the same detail as Show behavior rule; got: {}",
-        response.answer
-    );
-}
-
-#[test]
-fn behavior_rule_detail_uses_read_rule_prefix() {
-    let response = answer("Read rule unknown");
-    assert_eq!(response.intent, "behavior_rule_detail");
-    assert_eq!(response.answer, ENGLISH_UNKNOWN_RULE_DETAIL);
-    assert!(
-        response.answer.contains("rule_unknown"),
-        "Read rule prefix must surface the same detail as Show behavior rule; got: {}",
-        response.answer
-    );
-}
+#[path = "chat_surface/rule_details.rs"]
+mod rule_details;

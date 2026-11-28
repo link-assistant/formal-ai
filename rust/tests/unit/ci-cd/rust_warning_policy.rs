@@ -88,10 +88,19 @@ fn parallel_e2e_jobs_do_not_race_to_save_the_bun_cache() {
     // "what does the pipeline run?" rather than "what is in this file?".
     let workflow = crate::ci_gates::pipeline_workflows();
 
-    assert_eq!(
-        workflow.matches("no-cache: true").count(),
-        2,
-        "both parallel E2E jobs must leave the shared setup-bun cache write to lint"
+    // `lint` owns the shared setup-bun cache write. 617132e7f added a third
+    // reader -- the PR native check replays Codex through Bun -- so the
+    // contract is named per job rather than as a global count of opt-outs.
+    for job in ["test-agent-cli-e2e", "test-e2e-local", "native-type-check"] {
+        assert!(
+            super::workflow_fixtures::job_block(&workflow, job).contains("no-cache: true"),
+            "`{job}` runs in parallel with lint and must leave the shared setup-bun cache write to it"
+        );
+    }
+    let lint = super::workflow_fixtures::job_block(&workflow, "lint");
+    assert!(
+        lint.contains("uses: oven-sh/setup-bun@v2") && !lint.contains("no-cache: true"),
+        "lint must remain the one job that saves the shared setup-bun cache"
     );
 }
 

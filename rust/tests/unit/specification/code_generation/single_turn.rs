@@ -3,23 +3,44 @@
 //! evidence, and the parameterized `write_program` templates (issue #386 split).
 
 use super::{POPULAR_LANGUAGES, answer, assert_write_program_parameters};
+use formal_ai::{SolverConfig, SymbolicAnswer, UniversalSolver};
+
+fn offline_answer(prompt: &str) -> SymbolicAnswer {
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve(prompt)
+}
 
 #[test]
-fn rust_hello_world_seed_compiles_and_runs() {
-    let response = answer("Write me hello world program in Rust");
+fn rust_hello_world_composes_a_stdout_program() {
+    let response = offline_answer("Write me hello world program in Rust");
     assert_write_program_parameters(&response, "rust", "hello_world");
     assert!(
         response
             .links_notation
             .contains("legacy_intent hello_world_rust")
     );
-    assert!(response.answer.contains("```rust"));
-    assert!(response.answer.contains("fn main()"));
-    assert!(
-        response
-            .answer
-            .contains("Execution status: compiled and ran")
+    assert_eq!(
+        response.answer.split("```").nth(1),
+        Some("rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n")
     );
+    // Offline solves replay the shared source cache (`data/source-cache`). An
+    // online solve earlier in the same run may already have captured the Rust
+    // book page, and then the program is the one rediscovered from it (issue
+    // #1165, commit 10a6f2855). Either way the status must be one of the two
+    // honest lines, never a claimed run.
+    let composed = "Execution status: not probed in this environment.";
+    let rediscovered = "Execution status: not run; this program was rediscovered from \
+         https://doc.rust-lang.org/book/ch01-02-hello-world.html and its output contract \
+         was checked by decomposition, not by executing it.";
+    assert!(
+        response.answer.contains(composed) || response.answer.contains(rediscovered),
+        "Rust hello world status must be composed or rediscovered, got: {}",
+        response.answer
+    );
+    assert!(!response.answer.contains("compiled and ran"));
     assert!(response.answer.contains("Check command: `rustc"));
     assert!(response.answer.contains("Run command: `./main`"));
     assert!(response.answer.contains("Hello, world!"));
@@ -53,7 +74,7 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
             language: "Python",
             slug: "python",
             prompt: "Write hello world in Python, but print “Bye Python” instead",
-            code_fragment: "print('Bye Python')",
+            code_fragment: "print(\"Bye Python\")",
             output_fragment: "```text\nBye Python\n```",
         },
         Case {
@@ -73,7 +94,7 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
     ];
 
     for case in cases {
-        let response = answer(case.prompt);
+        let response = offline_answer(case.prompt);
         assert_write_program_parameters(&response, case.slug, "hello_world");
         assert!(
             response.answer.contains(case.code_fragment),
@@ -97,39 +118,28 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
 
 #[test]
 fn python_hello_world_seed_runs() {
-    let response = answer("Write hello world in Python");
+    let response = offline_answer("Write hello world in Python");
     assert_write_program_parameters(&response, "python", "hello_world");
     assert!(response.answer.contains("```python"));
-    assert!(response.answer.contains("print('Hello, world!')"));
-    // Issue #1165: the program is the Python wiki's, which no recorded run
-    // executed, so its status names the page instead of the harness run.
-    assert!(response.answer.contains(
-        "Execution status: not run; this program was rediscovered from \
-         https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples"
-    ));
+    assert!(response.answer.contains("print(\"Hello, world!\")"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: not probed in this environment.")
+    );
     assert!(response.answer.contains("python3"));
 }
 
 #[test]
-fn python_list_files_reverse_sort_sample_output_matches_saved_file_name() {
+fn python_list_files_reverse_sort_has_no_assumed_directory_contents() {
     let response = answer(
         "Write me a Python program that lists files in the current directory in reverse-sorted order",
     );
 
     assert_write_program_parameters(&response, "python", "list_files_reverse_sort");
     assert!(response.answer.contains("```python"));
-    assert!(
-        response
-            .answer
-            .contains("```text\nmain.py\ndata.txt\nREADME.md\n```"),
-        "Python reverse file-list output should match the documented sample directory, got: {}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("Cargo.toml"),
-        "Python sample output should not mention Rust project files, got: {}",
-        response.answer
-    );
+    assert_eq!(response.answer.contains("reverse=True"), true);
+    assert_eq!(response.answer.contains("```text"), false);
 }
 
 #[test]
@@ -143,45 +153,51 @@ fn javascript_hello_world_seed_runs() {
 
 #[test]
 fn go_hello_world_seed_runs() {
-    let response = answer("hello world in Go");
+    let response = offline_answer("hello world in Go");
     assert_write_program_parameters(&response, "go", "hello_world");
     assert!(response.answer.contains("```go"));
     assert!(response.answer.contains("fmt.Println"));
     assert!(
         response
             .answer
-            .contains("Execution status: compiled and ran")
+            .contains("Execution status: not probed in this environment.")
     );
 }
 
 #[test]
-fn c_hello_world_seed_compiles_and_runs() {
-    let response = answer("hello world in C");
+fn c_hello_world_composes_a_stdout_program() {
+    let response = offline_answer("hello world in C");
     assert_write_program_parameters(&response, "c", "hello_world");
-    assert!(response.answer.contains("```c"));
-    assert!(response.answer.contains("#include <stdio.h>"));
-    // Issue #1165: Microsoft's documented puts example is not the program the
-    // harness ran, so its status names the page it was rediscovered from.
-    assert!(response.answer.contains(
-        "Execution status: not run; this program was rediscovered from \
-         https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md"
-    ));
-}
-
-#[test]
-fn typescript_hello_world_seed_reports_unavailable_execution() {
-    let response = answer("hello world in TypeScript");
-    assert_write_program_parameters(&response, "typescript", "hello_world");
-    assert!(response.answer.contains("```typescript"));
-    assert!(
-        response
-            .answer
-            .contains("Execution status: not run; this program was rediscovered from")
+    assert_eq!(
+        response.answer.split("```").nth(1),
+        Some(
+            "c\n#include <stdio.h>\n\nint main(void) {\n    puts(\"Hello, world!\");\n    return 0;\n}\n"
+        )
     );
     assert!(
         response
             .answer
-            .contains("Expected output after verification")
+            .contains("Execution status: not probed in this environment.")
+    );
+}
+
+#[test]
+fn typescript_hello_world_reports_unobserved_execution() {
+    let response = offline_answer("hello world in TypeScript");
+    assert_write_program_parameters(&response, "typescript", "hello_world");
+    assert_eq!(
+        response.answer.split("```").nth(1),
+        Some("typescript\nconsole.log(\"Hello, world!\");\n")
+    );
+    assert!(
+        response
+            .answer
+            .contains("Execution status: not probed in this environment.")
+    );
+    assert!(
+        response
+            .answer
+            .contains("Output, not observed in this environment:")
     );
 }
 
@@ -283,31 +299,28 @@ fn top_ten_popular_languages_each_use_the_write_program_intent() {
 
 #[test]
 fn code_answers_include_execution_links_in_notation() {
-    let response = answer("Write me hello world program in Rust");
+    let response = offline_answer("Write me hello world program in Rust");
     assert!(
         response
             .links_notation
-            .contains("execution_status compiled and ran"),
-        "Links Notation trace should describe execution status, got: {}",
-        response.links_notation
+            .contains("execution_status not probed in this environment"),
+        "trace must state whether this program ran: {}",
+        response.links_notation,
     );
-    assert!(
-        response.links_notation.contains("execution_environment"),
-        "Links Notation trace should describe execution environment"
-    );
+    assert!(!response.links_notation.contains("execution_environment"));
 }
 
 #[test]
-fn code_answers_declare_isolation_level() {
-    let response = answer("Write me hello world program in Rust");
-    let lower = response.answer.to_lowercase();
+fn generated_code_answers_record_unobserved_execution() {
+    let response = offline_answer("Write me hello world program in Rust");
     assert!(
-        lower.contains("docker")
-            || lower.contains("sandbox")
-            || lower.contains("webvm")
-            || lower.contains("isolated"),
-        "execution evidence should declare an isolation boundary, got: {}",
-        response.answer
+        response
+            .answer
+            .contains("Output, not observed in this environment:")
+    );
+    assert_eq!(
+        response.answer.split("```").nth(3),
+        Some("text\nHello, world!\n")
     );
 }
 
@@ -399,10 +412,13 @@ fn russian_list_files_in_rust_returns_program() {
     // language framing (intro line and execution status) is localized while the
     // code stays canonical. The English status text still appears in the
     // language-independent Links Notation trace below.
+    // Commit 9adbb43f5 ("keep execution results tied to caller inputs"): a
+    // catalog program is no longer reported as run, because its output depends
+    // on the caller's directory, so the status is "not probed".
     assert!(
         response
             .answer
-            .contains("Статус выполнения: скомпилировано и запущено"),
+            .contains("Статус выполнения: не проверялось в этой среде."),
         "Russian request should yield a Russian execution status line, got: {}",
         response.answer
     );
@@ -416,7 +432,7 @@ fn russian_list_files_in_rust_returns_program() {
     assert!(
         response
             .links_notation
-            .contains("execution_status compiled and ran"),
+            .contains("execution_status not probed in this environment"),
         "Links Notation trace stays language-independent, got: {}",
         response.links_notation
     );
@@ -428,11 +444,14 @@ fn english_list_files_in_python_returns_program() {
     assert_write_program_parameters(&response, "python", "list_files");
     assert!(response.answer.contains("```python"));
     assert!(response.answer.contains("listdir"));
+    // Commit 9adbb43f5: the listing depends on the caller's directory, so the
+    // catalog program is not reported as run and shows no assumed output.
     assert!(
         response
             .answer
-            .contains("Execution status: compiled and ran")
+            .contains("Execution status: not probed in this environment.")
     );
+    assert!(!response.answer.contains("compiled and ran"));
 }
 
 #[test]
@@ -488,28 +507,41 @@ fn chinese_list_files_in_rust_returns_program() {
 
 #[test]
 fn russian_program_request_with_unknown_task_is_not_unknown() {
-    // The whole class: a Russian "write a program in <lang>" request whose task
-    // is not in the catalog must still be recognized as a (currently
-    // unsupported) write_program request instead of falling through to unknown.
+    // The whole class: a Russian "write a program in <lang>" request must be
+    // recognized as a write_program request instead of falling through to
+    // unknown. Since 9b1ab09ca ("Bind coding catalog operands and derive
+    // requested program output") factorial is a catalog task whose operand is
+    // bound from the request, so this request (which names no number) is no
+    // longer an uncatalogued skill gap: it resolves the (python, factorial)
+    // parameters and asks, in Russian, for the missing operand instead of
+    // writing a program with an invented one.
     let response = answer("Напиши программу на Python, которая вычисляет факториал числа");
     assert_eq!(
-        response.intent, "write_program_skill_gap",
+        response.intent, "write_program",
         "Russian program request should be recognized as write_program, got: {}",
         response.intent
     );
-    // Issue #324: the message is localized to Russian, so assert on the
-    // backtick-quoted parameter (stable across languages) rather than the
-    // English word "language".
+    for parameter in [
+        "program_parameter:language python",
+        "program_parameter:task factorial",
+    ] {
+        assert!(
+            response.links_notation.contains(parameter),
+            "Links Notation trace should include {parameter}, got: {}",
+            response.links_notation
+        );
+    }
+    // Issue #324: the clarification is localized to Russian.
     assert!(
-        response.answer.contains("`python`"),
-        "skill-gap answer should name the extracted python parameter, got: {}",
+        response
+            .answer
+            .contains("Факториал какого целого числа от 0 до 18 должна вычислить программа?"),
+        "clarification should ask for the factorial operand in Russian, got: {}",
         response.answer
     );
-    // Issue #699 batch 3: it names the routes that missed instead of the
-    // `write_program(language, task)` signature and the template catalogue.
     assert!(
-        response.answer.contains("coding_oracle"),
-        "skill-gap answer should name the synthesis routes it tried, got: {}",
+        !response.answer.contains("```python"),
+        "an unbound operand must not produce a program, got: {}",
         response.answer
     );
 }

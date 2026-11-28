@@ -1,0 +1,233 @@
+# Current-head CI regression repair
+
+This checkpoint repairs failures from published source
+`3479d01bd88a731b48c4f9bd2f3efb927320dfbc`. All 64 collected workflows are
+terminal: 57 succeed, four fail and three skip. Automatic and manually dispatched
+Pipeline and Layered runs are retained separately. Their passing results do not
+qualify the local draft or complete issue #1580.
+
+## Reproduction and repairs
+
+The Pipeline compiler reports unresolved `super::ci_workflow` and
+`super::command_reroute` paths in `request_routes.rs` at raw log lines
+63273, 63289 and 63305. The nested planner now addresses its actual parent.
+The Layered logs name the 22 failing JavaScript files in the retained failure
+inventory, each with its original log line. Replaying those files locally
+reproduces 19 failures; three pass locally and remain hosted observations.
+
+The source repairs preserve arithmetic event emitter origins through clustered
+trace folding, bind algorithm operands independently of requested artifact counts,
+strip only leading function words after the longest seeded explanation cue, and
+retain complete JavaScript colon bodies containing string or template literals.
+For example, `Run this JavaScript: console.log("Hello, world!");` formerly
+extracted only the message and failed execution; the positive control now actually
+executes the complete program. Fenced, wrapped and non-execution requests retain
+independent controls. Native extractor tests live in a test-only module rather
+than introducing test prompt literals into production scanning.
+
+The canonical arithmetic generator now materializes all 97 current multilingual
+tokens and eight phrases in both source roots. Native and JavaScript string
+encoders preserve Unicode and escape control characters in equivalent forms.
+Both generated inventories remain checked against their actual seed consumer.
+The new English plural `functions` retains a verified, licensed dictionary API
+response and its canonical lossless Links Notation projection; the closure-gap
+ceiling remains unchanged.
+
+Publisher routing replays retain all original questions and use the actual
+Wikidata search/entity transport with checked-in entity captures. Answers assert
+both item identities and labels. A cold Rust-creator control declines without
+external requests. Native replays seed an isolated cache through the same
+transport and await CI. The browser corpus, including the four publisher rows,
+passes without raising the misroute budget.
+
+All 167 historical AST census records now retain their exact original source
+bytes, Git blob identity and capture commit. The new archive matches the committed
+native histograms even where current sources have changed or disappeared. The
+existing unaccepted shared-grammar parity obligation remains explicit.
+
+Fixture repairs use actual documentation URLs and captured output, current
+Trends templates and topic vocabulary, and the real learning-cycle frontier.
+Five response blocks retired by main `908f48238203a16a403d82508eac3386edef3097`
+are removed only from the legacy comparison projection; all other bytes and
+ordering remain compared. Five superseded page expectations now account for
+the additional typed statement, with independent preservation of existing facts.
+Original quoted-payload negative cases and real nonquoted computer-use positives
+remain. Source extraction retains the complete native test inventory and the
+contributing dependency rules in a linked guide. The sparse checkout includes
+both compressed archives actually consumed by the browser tests.
+
+Four worker budget records add exactly 3, 3, 7 and 7 measured lines with individual
+source reasons. The handler ledger adds nineteen measured lines across two
+existing files, including eight outside-core lines. File counts, dispositions,
+promotion decisions and exclusions remain unchanged. No test allowlist row is
+added. The governed witness refresh compares complete objects: all 223 supported
+cases remain unchanged, three new declarations remain unsupported, and only the
+reviewed native test hashes and tuple-loop diagnostic change.
+
+## Verification and remaining work
+
+Focused JavaScript checks pass for the repaired behaviors, including the full
+publisher corpus, retained AST captures, actual JavaScript execution and all
+original Hive work-item controls. The Hive control passes in both local replays;
+its intermittent hosted cause remains unresolved. Failure-only bounded command
+traces are retained for a fresh hosted run. Time limits are unchanged.
+
+The first complete 143-gate draft run records 80 passes, nine failures and 54
+explicit hosted-only skips. Eight failed gates now pass focused rechecks. The
+remaining worker currency failure requires a real hosted WASM compilation of the
+changed arithmetic source. The maintained explicit worker-receipt producer is
+the authorized compilation path; no manifest hash is hand-stamped and no local
+Rust compiler or executable runs. The final combined artifact and source still
+need the complete gate inventory and current-head hosted checks.
+
+The release subprocess pipe defect is also reported against the current Rust
+template in [template issue #265](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/265).
+Its five actual native CLI controls await CI. This is an upstream report,
+not an additional closing reference for this PR.
+
+Full command logs, local before/after outcomes, original hosted logs, source
+reviews and exact witness comparisons are round-trip archived in
+`experiments/issue-1580/evidence/checks/current-ci-regressions/manifest.json`.
+One emergency bootstrap removed an accidentally duplicated JavaScript declaration
+before Formal AI could start; subsequent operations use JavaScript Formal AI.
+All supplied operations and conclusions receive zero independent authorship or
+reasoning credit.
+
+Original full-tree template practice qualification, required runtime and delivery
+evidence, GPU equivalence, trusted epochs, aggregate PR review and genuine
+independent authorship remain unfinished. PR #1581 remains draft and unmerged.
+
+
+## Pre-worker publication checkpoint
+
+The second complete 143-gate run records 86 passes, three failures and 54
+hosted-only skips. One new failure is the deterministic status projection:
+the measured handler ledger grew from 595 to 596 lines. The maintained JavaScript
+renderer updates exactly that table cell; both status checks then pass. The
+secret scan selects committed paths while old transcript files have been
+compressed in the working tree. It reports the missing original path rather
+than silently skipping it. Its unchanged deletion filter will be checked after
+the archive deletions are committed. Worker currency still awaits the
+actual hosted producer. All changed Rust files pass `rustfmt --check` without
+compilation. The eight latest template heads are unchanged, and all 661 lines of
+the current Hive Mind CI guidance were reread. These exact inputs and checks are
+retained in the `pre-worker-regeneration` evidence archive.
+
+A source preparation commit uses `[skip ci]` only to publish the immutable source
+needed by the explicit worker producer. It does not qualify CI or acceptance.
+The combined source and actual artifact must subsequently pass the full gates
+and a normal current-head CI run. The PR remains draft and unmerged.
+
+
+## Actual hosted worker import
+
+[Explicit producer 45068095941](https://github.com/link-assistant/formal-ai/actions/runs/45068095941)
+passes on preparation commit `d5b64675ef55ff5437bb73d9a43fc971e0d1f3c9`,
+attempt 1. Its actual build takes seventeen seconds (raw lines 479–491).
+The upload identifies artifact `14771458725`, three files and the full ZIP digest
+at lines 508–519. The maintained immutable-ID downloader verifies metadata before
+and after transfer, the full archive length/digest and bounded ZIP extraction.
+The maintained compiler verifier checks the native receipt, exact source commit
+and tree, all 27 recorded inputs, compiler identity, recipe and binary digest
+before importing any file. The actual compiler is Rust 1.100.0; the worker is
+311,893 bytes with SHA-256
+`ec8186543a701ccad0f8f7faa8bdf2a21b513359717230748954c6707a8b4ff2`.
+The manifest changes only the actual arithmetic input hash and worker bytes/hash.
+Its 25 compiler dependency inputs now pass the maintained currency check.
+
+The previously missing transcript inventory passes the unchanged committed
+secret scan. Complete producer logs, artifact metadata, extracted files and
+verification records are retained in `hosted-worker-regeneration/manifest.json`.
+No local Rust compilation or execution occurs. Complete combined-head local gates
+and normal hosted CI remain pending, and broader issue acceptance stays open.
+
+
+## Complete combined-source local replay
+
+The clean committed source `32363d09636554c7ccba7a0a41241d34639ce358`
+passes all 89 maintained JavaScript gates, with zero failures and 54 explicit
+hosted-only skips. The tree is clean before and after the run. Worker currency,
+status projections and the unchanged committed secret scanner pass together.
+No local Rust compilation or execution occurs. The complete per-gate logs and
+exact outcome are round-trip archived in
+`evidence/checks/combined-worker-full-gates/manifest.json`.
+
+The eight template identities and main ae36 remain current. The issue has one
+comment, the PR has eleven conversation comments and no inline comments or
+reviews; all are reread, with no new requirements. Java historical literal review
+advances to 227/254 pages and 13,859 source lines. This does not complete the
+remaining semantic comparison or broader issue acceptance. A normal hosted run
+on the combined published head, including actual native regressions, is pending.
+
+
+## Combined-worker hosted failures and registration repair
+
+All 33 workflows on `2f1fc2875f7928a996f5411465d50104fafc69bb` finish:
+30 succeed, Pipeline and Layered fail, and the Issue 1028 integration remains
+explicitly skipped. Complete logs and job records are retained in
+`experiments/issue-1580/evidence/checks/combined-worker-hosted/manifest.json`.
+Successful local source gates did not establish native compilation or full
+hosted JavaScript success.
+
+Pipeline [45069591603](https://github.com/link-assistant/formal-ai/actions/runs/45069591603)
+reports these independent compiler failures in its complete raw log:
+
+| Raw lines | Failure | Repair and verification |
+| --- | --- | --- |
+| 65380–65381 | Focused reasoning cannot import the sibling publisher helper or original Google Trends module name. | Share the unchanged publisher transport under `tests/fixtures`; preserve the Google Trends test names with a root alias. Actual native CI must compile both full and isolated consumers. |
+| 67224–67233 | The standalone synthesis target refers above its crate root. | Include the same physical publisher helper directly from synthesis. Keep every original case and assertion. |
+| 67258–67285 | A practical-help negative control uses the old capture-limit constant. | Use the actual production `MAXIMUM_CAPTURE_BYTES + 1`; preserve the oversized-source control. |
+| 68824–68826 | The release creator imports a shared collector-only helper with warnings denied. | Mark only that helper's intentional per-consumer nonuse; keep warnings denied and all real release CLI controls. |
+
+Layered [45069591265](https://github.com/link-assistant/formal-ai/actions/runs/45069591265)
+fails source placement at raw lines 16490–16514, Hive delivery at 19469–19486,
+and checkout expectations at 19487–19524. Move the unchanged JavaScript
+extractor Rust regression under `rust/tests` and point its production registration
+there. The checkout assertion now retains both actually consumed compressed
+browser fixture paths already present in the maintained workflow.
+
+The isolated Codex Hive case initially passes, so that replay alone does not
+reproduce the intermittent hosted failure. An explicit disposable cache-change
+control then reproduces the same `recipe-source-epoch-invalidated` refusal at
+turn 12 after a real successful Git push and clean status. All three patch
+owners retain exact successful receipt bindings. Offline source resolution
+still reads the inherited user cache; changing its action-release captures
+changes the regenerated workflow. The hosted log does not identify a specific
+parallel writer. The controlled reproduction establishes that this shared cache
+can cause the observed refusal without a source edit or receipt corruption.
+
+Give each fixture a private source cache outside its Git worktree before host
+installation. Repeat the same controlled cache changes and require both captures
+to have been written. The complete original delivery assertions now pass,
+including real pushed-head equality, clean status, exactly two commits, all three
+published files and the simulated PR operations. Source freshness and receipt
+checks remain active; compiler, network and CI fixture responses remain mocks.
+Optional source-owner tracing defaults off and changes no planner evidence.
+
+Local verification passes all 73 cases across source placement, checkout policy,
+the complete 18-case Hive file and practical help. The full Hive replay takes
+161 seconds; its original two-second command, sixty-second probe and sixty-five-
+second case limits remain. All nine changed Rust files pass Rust 2024 formatting.
+No local Rust compilation or execution occurs. Native behavior and broader
+original acceptance remain unfinished until actual hosted verification.
+
+All issue and PR comments, inline comments and reviews are refreshed and read;
+counts remain one, eleven, zero and zero. Main ae36 remains current. Java literal
+history review reaches 237/254 pages, 138 complete files and 14,005 complete
+source lines; seventeen pages and semantic application remain open. At
+2026-11-22T21:02:01Z the latest published command-stream 1.13.0 and
+link-calculator 0.24.0 still require Chrono. The registry captures preserve the
+unresolved migration evidence; they do not qualify an unpublished repair.
+Supplied commands, patches and conclusions earn zero independent authorship
+or reasoning credit. The PR stays draft and unmerged.
+
+
+The ten touched local gates also pass, together with all 63 native-lane policy
+tests. Those policy tests use a compiler mock and do not qualify native behavior.
+The 136 JavaScript assertions, gate outcomes, controlled before/after failures,
+source reviews and refreshed publication evidence are retained losslessly in
+`evidence/checks/combined-registration-repairs/manifest.json`. The archive SHA-256
+is `f4b25f88499fe24a9488d668ff3f74a9bb9140ce2d6e97c9e58f2bf5b1c7f429`.
+The complete terminal hosted-cohort archive SHA-256 is
+`903a0062842561bd174201e78e78a3fd8300ffbc6d904ea0bf70cade5cd4355c`.
+All archive payloads are round-trip verified. Native execution remains pending.

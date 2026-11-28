@@ -1,0 +1,455 @@
+{
+  "head": "d0b8b895661c6b5e809810c4da8a3db9f79138b3",
+  "run": 44134042788,
+  "rawLogSha256": "6b661d33f53860fd239b9e46a39aff139716d39099b8e8dcd58da21bca619fc3",
+  "groups": [
+    {
+      "name": "audit",
+      "count": 10,
+      "allExecuted": true,
+      "testEvidence": [
+        {
+          "title": "the complete audit precedes native compilation and retains its later registered gate",
+          "passingLogLines": [
+            {
+              "line": 3986,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8124386Z \u2714 the complete audit precedes native compilation and retains its later registered gate (59.442239ms)"
+            }
+          ]
+        },
+        {
+          "title": "outage: each committed lockfile retries twice and obtains an answer",
+          "passingLogLines": [
+            {
+              "line": 3987,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8125730Z \u2714 outage: each committed lockfile retries twice and obtains an answer (233.314194ms)"
+            }
+          ]
+        },
+        {
+          "title": "npm-outage: each committed lockfile retries twice and obtains an answer",
+          "passingLogLines": [
+            {
+              "line": 3988,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8127250Z \u2714 npm-outage: each committed lockfile retries twice and obtains an answer (233.667052ms)"
+            }
+          ]
+        },
+        {
+          "title": "an advisory ends each committed lockfile audit on the first attempt",
+          "passingLogLines": [
+            {
+              "line": 3989,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8128593Z \u2714 an advisory ends each committed lockfile audit on the first attempt (175.739842ms)"
+            }
+          ]
+        },
+        {
+          "title": "exhausting unanswered attempts refuses every committed lockfile",
+          "passingLogLines": [
+            {
+              "line": 3990,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8129828Z \u2714 exhausting unanswered attempts refuses every committed lockfile (184.451509ms)"
+            }
+          ]
+        },
+        {
+          "title": "request timeouts recover only after every lock receives a real verdict",
+          "passingLogLines": [
+            {
+              "line": 3991,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8131098Z \u2714 request timeouts recover only after every lock receives a real verdict (224.325583ms)"
+            }
+          ]
+        },
+        {
+          "title": "persistent request timeouts never substitute a clean audit verdict",
+          "passingLogLines": [
+            {
+              "line": 3992,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8132350Z \u2714 persistent request timeouts never substitute a clean audit verdict (284.283157ms)"
+            }
+          ]
+        },
+        {
+          "title": "a real Git inventory failure refuses to claim that no lockfiles need auditing",
+          "passingLogLines": [
+            {
+              "line": 3993,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8133694Z \u2714 a real Git inventory failure refuses to claim that no lockfiles need auditing (10.735545ms)"
+            }
+          ]
+        },
+        {
+          "title": "partial Git inventory output cannot start audits or become a successful subset",
+          "passingLogLines": [
+            {
+              "line": 3994,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8135102Z \u2714 partial Git inventory output cannot start audits or become a successful subset (10.707974ms)"
+            }
+          ]
+        },
+        {
+          "title": "a genuinely empty tracked lockfile inventory remains successful",
+          "passingLogLines": [
+            {
+              "line": 3995,
+              "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T17:15:12.8136335Z \u2714 a genuinely empty tracked lockfile inventory remains successful (20.631156ms)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "maintained-template-observations",
+      "count": 38,
+      "allExecuted": true,
+      "testEvidence": [
+        {
+          "title": "Go manual release skips lint/build/release while the actual terminal gate accepts it",
+          "passingLogLines": [
+            {
+              "line": 7825,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7357950Z \u2714 Go manual release skips lint/build/release while the actual terminal gate accepts it (26.253217ms)"
+            }
+          ]
+        },
+        {
+          "title": "allowing manual change detection restores each selected release and still blocks failed prerequisites",
+          "passingLogLines": [
+            {
+              "line": 7826,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7359186Z \u2714 allowing manual change detection restores each selected release and still blocks failed prerequisites (101.608842ms)"
+            }
+          ]
+        },
+        {
+          "title": "Go detector converts failed git into docs-only success; propagating errors restores fallback/failure",
+          "passingLogLines": [
+            {
+              "line": 7827,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7373444Z \u2714 Go detector converts failed git into docs-only success; propagating errors restores fallback/failure (1167.177744ms)"
+            }
+          ]
+        },
+        {
+          "title": "Go initial-commit detection loses real source files without a comparison parent",
+          "passingLogLines": [
+            {
+              "line": 7828,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7374250Z \u2714 Go initial-commit detection loses real source files without a comparison parent (143.106758ms)"
+            }
+          ]
+        },
+        {
+          "title": "Go stale-pin integrity failures become warnings; independent verification preserves failures",
+          "passingLogLines": [
+            {
+              "line": 7829,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7375501Z \u2714 Go stale-pin integrity failures become warnings; independent verification preserves failures (5.199274ms)"
+            }
+          ]
+        },
+        {
+          "title": "workflow review inventory preserves the entire parsed execution context",
+          "passingLogLines": [
+            {
+              "line": 7830,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7376170Z \u2714 workflow review inventory preserves the entire parsed execution context (238.804189ms)"
+            }
+          ]
+        },
+        {
+          "title": "workflow review refuses content that differs from the pinned Git blob",
+          "passingLogLines": [
+            {
+              "line": 7831,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7410238Z \u2714 workflow review refuses content that differs from the pinned Git blob (229.550741ms)"
+            }
+          ]
+        },
+        {
+          "title": "workflow inventory runs when yaml exposes only dynamic CommonJS exports",
+          "passingLogLines": [
+            {
+              "line": 7832,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7411902Z \u2714 workflow inventory runs when yaml exposes only dynamic CommonJS exports (234.659611ms)"
+            }
+          ]
+        },
+        {
+          "title": "java: failed Git is reported as a successful no-code observation",
+          "passingLogLines": [
+            {
+              "line": 7833,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7412743Z \u2714 java: failed Git is reported as a successful no-code observation (593.896084ms)"
+            }
+          ]
+        },
+        {
+          "title": "python: failed Git is reported as a successful no-code observation",
+          "passingLogLines": [
+            {
+              "line": 7834,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7413440Z \u2714 python: failed Git is reported as a successful no-code observation (522.156568ms)"
+            }
+          ]
+        },
+        {
+          "title": "php: failed Git is reported as a successful no-code observation",
+          "passingLogLines": [
+            {
+              "line": 7835,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7414131Z \u2714 php: failed Git is reported as a successful no-code observation (822.149189ms)"
+            }
+          ]
+        },
+        {
+          "title": "Java changeset release suppresses a failed commit and publishes a tag on the old version",
+          "passingLogLines": [
+            {
+              "line": 7836,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7414933Z \u2714 Java changeset release suppresses a failed commit and publishes a tag on the old version (358.682435ms)"
+            }
+          ]
+        },
+        {
+          "title": "Java changeset release propagates commit failure after the candidate repair",
+          "passingLogLines": [
+            {
+              "line": 7837,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7415678Z \u2714 Java changeset release propagates commit failure after the candidate repair (224.765375ms)"
+            }
+          ]
+        },
+        {
+          "title": "Java instant release suppresses a failed commit and publishes a tag on the old version",
+          "passingLogLines": [
+            {
+              "line": 7838,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7416300Z \u2714 Java instant release suppresses a failed commit and publishes a tag on the old version (217.392994ms)"
+            }
+          ]
+        },
+        {
+          "title": "Java instant release propagates commit failure after the candidate repair",
+          "passingLogLines": [
+            {
+              "line": 7839,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7416906Z \u2714 Java instant release propagates commit failure after the candidate repair (217.087888ms)"
+            }
+          ]
+        },
+        {
+          "title": "Java successful commit still publishes the updated version before and after candidate repair",
+          "passingLogLines": [
+            {
+              "line": 7840,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7417539Z \u2714 Java successful commit still publishes the updated version before and after candidate repair (833.543018ms)"
+            }
+          ]
+        },
+        {
+          "title": "reference inventory follows nested local action/module helpers and preserves unresolved paths",
+          "passingLogLines": [
+            {
+              "line": 7841,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7418233Z \u2714 reference inventory follows nested local action/module helpers and preserves unresolved paths (3.368913ms)"
+            }
+          ]
+        },
+        {
+          "title": "a changed transitive helper cannot silently retain its pinned source identity",
+          "passingLogLines": [
+            {
+              "line": 7842,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7418870Z \u2714 a changed transitive helper cannot silently retain its pinned source identity (2.038385ms)"
+            }
+          ]
+        },
+        {
+          "title": "self-repository uses follows reusable workflows, nested composites and JavaScript action phases",
+          "passingLogLines": [
+            {
+              "line": 7843,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7419672Z \u2714 self-repository uses follows reusable workflows, nested composites and JavaScript action phases (2.437707ms)"
+            }
+          ]
+        },
+        {
+          "title": "missing, dynamic and escaping self-repository paths remain explicit unresolved evidence",
+          "passingLogLines": [
+            {
+              "line": 7844,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7420238Z \u2714 missing, dynamic and escaping self-repository paths remain explicit unresolved evidence (1.207492ms)"
+            }
+          ]
+        },
+        {
+          "title": "self-repository transitive files retain pinned-blob verification",
+          "passingLogLines": [
+            {
+              "line": 7845,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7420611Z \u2714 self-repository transitive files retain pinned-blob verification (2.414122ms)"
+            }
+          ]
+        },
+        {
+          "title": "C# pinned changeset merger reports success after deleting a colliding output",
+          "passingLogLines": [
+            {
+              "line": 7846,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7420962Z \u2714 C# pinned changeset merger reports success after deleting a colliding output (37.04667ms)"
+            }
+          ]
+        },
+        {
+          "title": "C# candidate preserves every input and rejects an output filename collision",
+          "passingLogLines": [
+            {
+              "line": 7847,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7421322Z \u2714 C# candidate preserves every input and rejects an output filename collision (35.269108ms)"
+            }
+          ]
+        },
+        {
+          "title": "C# noncolliding merge retains the highest bump and ordered descriptions before and after repair",
+          "passingLogLines": [
+            {
+              "line": 7848,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7421716Z \u2714 C# noncolliding merge retains the highest bump and ordered descriptions before and after repair (71.178337ms)"
+            }
+          ]
+        },
+        {
+          "title": "C# malformed input remains a fatal, nonmutating error before and after repair",
+          "passingLogLines": [
+            {
+              "line": 7849,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7422110Z \u2714 C# malformed input remains a fatal, nonmutating error before and after repair (67.222941ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python pinned manual fragment creation silently replaces an earlier same-second change",
+          "passingLogLines": [
+            {
+              "line": 7850,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7422495Z \u2714 Python pinned manual fragment creation silently replaces an earlier same-second change (80.91357ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python candidate rejects a same-second collision and preserves the earlier bytes",
+          "passingLogLines": [
+            {
+              "line": 7851,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7422895Z \u2714 Python candidate rejects a same-second collision and preserves the earlier bytes (108.867877ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python separate timestamps retain both descriptions before and after the guard",
+          "passingLogLines": [
+            {
+              "line": 7852,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7423274Z \u2714 Python separate timestamps retain both descriptions before and after the guard (144.316612ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python invalid bump remains a fatal nonmutating argument error before and after the guard",
+          "passingLogLines": [
+            {
+              "line": 7853,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7423678Z \u2714 Python invalid bump remains a fatal nonmutating argument error before and after the guard (97.52519ms)"
+            }
+          ]
+        },
+        {
+          "title": "missing or old Python fails hosted observations while remaining optional locally",
+          "passingLogLines": [
+            {
+              "line": 7854,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7424118Z \u2714 missing or old Python fails hosted observations while remaining optional locally (549.040827ms)"
+            }
+          ]
+        },
+        {
+          "title": "the selected JavaScript shard provisions Python before executing the pinned observations",
+          "passingLogLines": [
+            {
+              "line": 7855,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7424781Z \u2714 the selected JavaScript shard provisions Python before executing the pinned observations (281.981375ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python pinned npm audit accepts failed or partial Git inventory as a successful audit",
+          "passingLogLines": [
+            {
+              "line": 7856,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7425495Z \u2714 Python pinned npm audit accepts failed or partial Git inventory as a successful audit (31.478029ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python candidate rejects failed and partial inventory before listing or auditing",
+          "passingLogLines": [
+            {
+              "line": 7857,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7428426Z \u2714 Python candidate rejects failed and partial inventory before listing or auditing (25.72466ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python audit retains every tracked lock, spaces, advisory failures and real empty inventory",
+          "passingLogLines": [
+            {
+              "line": 7858,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7431154Z \u2714 Python audit retains every tracked lock, spaces, advisory failures and real empty inventory (76.668596ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python pinned release formatter rewrites literal code escapes and publishes the corrupted body",
+          "passingLogLines": [
+            {
+              "line": 7859,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7433419Z \u2714 Python pinned release formatter rewrites literal code escapes and publishes the corrupted body (83.16094ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python candidate preserves literal escapes and Unicode while adding the version badge",
+          "passingLogLines": [
+            {
+              "line": 7860,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7434195Z \u2714 Python candidate preserves literal escapes and Unicode while adding the version badge (79.868323ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python release formatting retains an already formatted body without a second write",
+          "passingLogLines": [
+            {
+              "line": 7861,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7435210Z \u2714 Python release formatting retains an already formatted body without a second write (117.896074ms)"
+            }
+          ]
+        },
+        {
+          "title": "Python release formatting keeps read and write failures fatal before and after the candidate",
+          "passingLogLines": [
+            {
+              "line": 7862,
+              "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T17:14:05.7436178Z \u2714 Python release formatting keeps read and write failures fatal before and after the candidate (261.430717ms)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nativeAcceptanceClaimed": false,
+  "autonomousAuthorshipCredit": 0
+}

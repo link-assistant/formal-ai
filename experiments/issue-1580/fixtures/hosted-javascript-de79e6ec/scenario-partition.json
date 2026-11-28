@@ -1,0 +1,31 @@
+{
+  "schema": "full-provenance-cli-scenario-partition-v1",
+  "originalSha256": "e6e71f37f440b53a3854d7707bdd27dc9648342c6ba2d9c185d777b9c062aa7d",
+  "originalObservedFileSeconds": 316.415456503,
+  "originalObservedPrimaryTestSeconds": 309.297034661,
+  "sourceRun": 44962289540,
+  "sourceCommit": "de79e6ece67142fe8c6012059e6eb2bc0300e7bd",
+  "localFullRun": false,
+  "newScenarioDurations": "Unknown until hosted verification",
+  "sharedFixture": "rust/tests/web/helpers/full-provenance-cli-fixture.mjs",
+  "scenarios": [
+    {
+      "path": "rust/tests/web/full-provenance-cli.test.mjs",
+      "role": "installed positive and unchanged atomic append controls",
+      "assertionCount": 10,
+      "bodySha256": "b4ef808d7aa0d23b85f1fa3186e46ab8b4bf3abd645c4ef9be33a1a515afd11b"
+    },
+    {
+      "path": "rust/tests/web/full-provenance-archived-cli.test.mjs",
+      "role": "archived positive",
+      "assertionCount": 11,
+      "bodySha256": "291e4c3ea883d7472affc10ae47297fa27637f358ee150af8c03aec599be07da"
+    },
+    {
+      "path": "rust/tests/web/full-provenance-refusals-cli.test.mjs",
+      "role": "all original negative controls",
+      "assertionCount": 13,
+      "bodySha256": "886abd3a62cbb288cd270cd3a2f6b3dd3be587cba98edc6062c50982473f776d"
+    }
+  ]
+}

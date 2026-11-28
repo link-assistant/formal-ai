@@ -19,11 +19,10 @@
 # reached. The full reconstruction is in
 # dev/log/issues/977/pulls/978/ANALYSIS.md.
 #
-# `main` is never cancelled by concurrency -- release.yml sets
-# `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}` -- so on `main` a
-# cancelled job can only mean a timeout or a deliberate manual cancel. Both
-# need to be red. On other refs a cancellation genuinely is the normal
-# "superseded by a newer push" case, so there it stays a warning.
+# A cancelled dependency is incomplete on every ref. On a feature branch it
+# may be a superseded run, but that does not prove its required checks passed.
+# In particular, a job reaching its own deadline must never make the current
+# pull request green. Preserve the cancelled measurement as an error.
 #
 # INPUT
 #   NEEDS_JSON  `toJSON(needs)`: a map of job-id -> {result, outputs}.
@@ -32,6 +31,19 @@ set -euo pipefail
 
 : "${NEEDS_JSON:?NEEDS_JSON is required (pass toJSON(needs))}"
 IS_MAIN="${IS_MAIN:-false}"
+
+# Missing or unknown observations cannot establish a successful pipeline.
+# Slurping also rejects a stream containing more than one JSON document.
+if ! printf '%s' "$NEEDS_JSON" | jq -e -s '
+  length == 1 and (.[0] |
+    type == "object" and length > 0 and
+    all(.[]; type == "object" and
+      (.result | . == "success" or . == "failure" or
+        . == "cancelled" or . == "skipped")))
+' >/dev/null; then
+  echo "::error::Pipeline dependency results are missing or invalid. Expected a nonempty job map with known results."
+  exit 1
+fi
 
 # jq is preinstalled on GitHub-hosted runners.
 select_by_result() {
@@ -58,7 +70,8 @@ if [ -n "$cancelled" ]; then
     echo "::error::Pipeline has cancelled jobs on main: ${cancelled}. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded the maximum execution time'."
     status=1
   else
-    echo "::warning::Cancelled jobs: ${cancelled}. On a non-default ref this is usually a superseded run."
+    echo "::error::Pipeline has cancelled jobs: ${cancelled}. Required checks are incomplete; inspect their logs for a timeout or cancellation."
+    status=1
   fi
 fi
 

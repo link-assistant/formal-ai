@@ -1,0 +1,22 @@
+{
+  "records": 227,
+  "parts": [
+    {
+      "file": "records-part-1.json",
+      "sha256": "d30c8d80de2d2579106938c4644ceedc8a8586bc7d18e96d8cd169bf7b7aa8a8",
+      "records": 80
+    },
+    {
+      "file": "records-part-2.json",
+      "sha256": "cacd2a991e587f0bb82adbac375b988d8c829d00ad052f126937b0e2111c5685",
+      "records": 80
+    },
+    {
+      "file": "records-part-3.json",
+      "sha256": "d21dd594c63621c084a43dbe337841d1fdb74ce735cf1ff12b08540b4e1dea6c",
+      "records": 67
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

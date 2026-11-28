@@ -1,0 +1,13 @@
+{
+  "beforeExitCode": 1,
+  "afterExitCode": 0,
+  "javascriptPasses": 45,
+  "unchangedIncludedModuleHashes": {
+    "specification/reasoning_paths_procedures.rs": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6",
+    "solver/issue_1138_self_use_concept_lookup.rs": "e7829fe5e274988f6a97eff568adab09819ab6fe4ada8ee1f253306340428e02",
+    "issue_1138_retrieval_method.rs": "03a1a7a3aa3706aeb4b333f7aa38198281e71a95ba35ca9120a742b971926ea3"
+  },
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

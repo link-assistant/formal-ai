@@ -44,6 +44,7 @@ notation-renames
     leaf_nodes_passing_without_authored_rules_note leaf-nodes-passing-without-authored-rules-note
     learned_items_never_read_back learned-items-never-read-back
     literal_predicates literal-predicates
+    measured_by measured-by
     memorized_capability_cues memorized-capability-cues
     meta_ceiling meta-ceiling
     native_only_ceiling native-only-ceiling

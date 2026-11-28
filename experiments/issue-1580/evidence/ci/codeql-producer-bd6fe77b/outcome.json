@@ -1,0 +1,18 @@
+{
+  "captureComplete": true,
+  "producerAnalysisComplete": false,
+  "head": "bd6fe77b98aa1cb89c53bfc0667107f6afb13122",
+  "runId": 44855577716,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855577716",
+  "conclusion": "failure",
+  "producerFiles": 110,
+  "sarifReports": [
+    "actions.sarif"
+  ],
+  "rustSarifMissing": true,
+  "macroObservationsMissing": true,
+  "reason": "CLI rejected duplicate --expect-discarded-cache and --no-expect-discarded-cache before query execution",
+  "firstCollectorIncorrectlyExpectedTwoSarifReports": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

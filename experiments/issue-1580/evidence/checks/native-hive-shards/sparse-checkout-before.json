@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=real JavaScript sparse checkout",
+    "experiments/issue-1580/native-regression-groups.test.mjs"
+  ],
+  "exitCode": 1,
+  "file": "sparse-checkout-before.log.gz",
+  "rawSha256": "175b96a1010dc25eace320da657a7c09b654067efdae939c0d40c0d5e7e3936c",
+  "archiveSha256": "5eaa16e4e81ad37b636f122a93f671c8b9f914ae1756e51851ccba99fbf537d6"
+}

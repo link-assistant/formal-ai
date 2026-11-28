@@ -1,0 +1,18 @@
+{
+  "incomingMain": "664e03feb0d337d7e891313cfc9c705bc3943136",
+  "parentHead": "95656065f154cd2c27953847f21b734630ff50a8",
+  "archiveSha256": "f66ba0b762d46369df2840ce679b2bef56f2f53ddeef9d88994be68e8481f44d",
+  "payloadCount": 112,
+  "roundTripVerified": true,
+  "verifiedSourceFiles": 172,
+  "supportedCases": 223,
+  "unsupportedCases": 967,
+  "supportedSemanticChangesFromPrevious": 0,
+  "unsupportedChangesFromPrevious": 0,
+  "sourceIdentityChangesFromPrevious": 4,
+  "baselineReaderSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "initialFormatterScopeFailureRetained": true,
+  "formalAiBootstrapOnlyExceptionRetained": true,
+  "nativeExecutedLocally": false,
+  "autonomousAuthorshipCredit": 0
+}

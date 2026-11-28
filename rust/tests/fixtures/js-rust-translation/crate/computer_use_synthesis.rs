@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c5b4a60c1d578fe939e740b518dbcd5f7bc826b8157d02f95e0f1c8afb1a8c58 bytes=7255
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8fe7de4bf7c1d0dc34c1144d4c0ea7ccf0c8c03c53316697db6b6c9fc17f4683 bytes=7088
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=1 carried=4; string-methods items=2
+// formal-ai:workarounds import-pruning items=0 carried=4; string-methods items=2
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -31,8 +31,8 @@ pub fn wa_str_slice_from(text: String, start: f64) -> String {
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
 
-// formal-ai:workaround import-pruning JavaScript import_statement items=1 sha256=8315bb4c8544b356f02abca6e612b26c65fb36c445c557e0d3861c7038bf0ee5
-// | import { FETCH_OPERATION, learned } from './computer_use_induction.mjs';
+// meta-language:translated JavaScript import_statement items=1 sha256=8315bb4c8544b356f02abca6e612b26c65fb36c445c557e0d3861c7038bf0ee5
+// | import { FETCH_OPERATION } from './computer_use_induction.mjs';
 use crate::computer_use_induction::FETCH_OPERATION;
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
@@ -60,10 +60,6 @@ pub static RESOURCE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLo
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
 // formal-ai:blockers call of an imported function | null
-
-// meta-language:carried JavaScript export_statement (type)
-// formal-ai:refusal type: unknown name (a sibling item or an import)
-// formal-ai:blockers call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null

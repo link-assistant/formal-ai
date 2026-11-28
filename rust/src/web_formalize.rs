@@ -3,7 +3,8 @@
 //! Web search exists, but its results stay "observations": strings the
 //! solver shows and forgets. This module is the generic page formalizer that
 //! turns any fetched resource -- HTML, Markdown, plain text, JSON, or
-//! PDF-extracted text -- into a [`LinkNetwork`] the solver can reason over:
+//! PDF-extracted text -- into blocks and, with the `meta-language` feature, a
+//! `LinkNetwork` the solver can reason over:
 //! headings become section links, paragraphs become statement links, lists
 //! and tables become list and row links, and every code block becomes a code
 //! node tagged with its language.
@@ -15,28 +16,36 @@
 //! their weights). The Rust here only interprets those rules.
 //!
 //! The six bespoke extractors in `concept_lookup.rs` stay as faster paths;
-//! [`covers_statements`] proves the generic formalizer yields every
+//! `covers_statements` proves the generic formalizer yields every
 //! statement they yield on the same bytes, so each is a cache, not a
 //! dependency.
 //!
 //! Nothing here fetches anything: bytes arrive through the existing
-//! `source_fetch` capture boundary, and [`annotate_capture`] records the
+//! `source_fetch` capture boundary, and `annotate_capture` records the
 //! rediscovery procedure (query, rank, URL, hash, timestamp) so a cached
 //! network can be dropped under storage pressure and re-fetched
 //! deterministically.
-#![cfg(feature = "meta-language")]
 
+mod html_text;
+
+pub(crate) use html_text::strip_tags_keep_lines;
+use html_text::{cell_texts, decode_entities, strip_tags, tag_attr};
+
+#[cfg(feature = "meta-language")]
 use std::collections::BTreeMap;
 
+#[cfg(feature = "meta-language")]
 use meta_language::{Link, LinkId, LinkNetwork};
 use serde_json::Value;
 
 use crate::seed::parser::{LinoNode, parse_lino};
+#[cfg(feature = "meta-language")]
 use crate::source_fetch::SourceCapture;
 
 /// The formalization rules seed, mirrored into the embedded bundle.
 const RULES_TEXT: &str = include_str!("../embedded/data/seed/page-formalization-rules.lino");
 /// The trust-weight seed, mirrored into the embedded bundle.
+#[cfg(feature = "meta-language")]
 const TRUST_TEXT: &str = include_str!("../embedded/data/seed/source-trust-weights.lino");
 
 /// Mime categories the formalizer recognises; `Unknown` falls back to
@@ -299,10 +308,9 @@ pub fn url_domain(url: &str) -> String {
 /// `js/worker/formal_ai_worker_page_formalization.js`.
 #[must_use]
 pub fn page_prose(bytes: &[u8], url: &str) -> String {
-    let (_, blocks) = formalize_page_with_context(bytes, None, Some(url));
-    let texts: Vec<String> = blocks
+    let texts: Vec<String> = parse_page_blocks(bytes, None, Some(url))
         .into_iter()
-        .filter_map(|(_, block)| match block {
+        .filter_map(|block| match block {
             PageBlock::Paragraph { text, .. } | PageBlock::ListItem { text } => Some(text),
             _ => None,
         })
@@ -317,6 +325,7 @@ pub fn page_prose(bytes: &[u8], url: &str) -> String {
 /// and tables become list and row links, and fenced code blocks become code
 /// links carrying a `language` field. The mime kind comes from the hint or,
 /// when the hint is missing, from the seed's sniff rules.
+#[cfg(feature = "meta-language")]
 #[must_use]
 pub fn formalize_page(bytes: &[u8], mime_hint: Option<&str>) -> LinkNetwork {
     formalize_page_with_context(bytes, mime_hint, None).0
@@ -325,16 +334,27 @@ pub fn formalize_page(bytes: &[u8], mime_hint: Option<&str>) -> LinkNetwork {
 /// [`formalize_page`] with a URL the language-tag heuristic may consult
 /// (extension in the path). Returns the network and each block's node id,
 /// so callers can index blocks without walking the link graph.
+#[cfg(feature = "meta-language")]
 #[must_use]
 pub fn formalize_page_with_context(
     bytes: &[u8],
     mime_hint: Option<&str>,
     url_hint: Option<&str>,
 ) -> (LinkNetwork, Vec<(LinkId, PageBlock)>) {
+    let blocks = parse_page_blocks(bytes, mime_hint, url_hint);
+    blocks_to_network(&blocks, url_hint)
+}
+
+/// Parse structural blocks in document order without constructing a links network.
+pub(crate) fn parse_page_blocks(
+    bytes: &[u8],
+    mime_hint: Option<&str>,
+    url_hint: Option<&str>,
+) -> Vec<PageBlock> {
     let rules = FormalizationRules::load();
     let mime = PageMime::from_hint_or_sniff(mime_hint, bytes, &rules);
     let text = String::from_utf8_lossy(bytes).to_string();
-    let blocks = match mime {
+    match mime {
         PageMime::Html => html_blocks(&text, &rules),
         PageMime::Markdown => markdown_blocks(&text, &rules, url_hint),
         PageMime::Json => {
@@ -345,13 +365,13 @@ pub fn formalize_page_with_context(
             blocks
         }
         PageMime::PlainText | PageMime::PdfText | PageMime::Unknown => plain_blocks(&text, &rules),
-    };
-    blocks_to_network(&blocks, url_hint)
+    }
 }
 
 /// Build the page network from parsed blocks: a `page` root with one child
 /// object per block, each carrying its text (and language/level/command
 /// fields where they apply). Block node ids come back in document order.
+#[cfg(feature = "meta-language")]
 fn blocks_to_network(
     blocks: &[PageBlock],
     url_hint: Option<&str>,
@@ -800,123 +820,6 @@ fn extension_language(rules: &FormalizationRules, url: &str) -> Option<String> {
         .map(|(_, language)| language.clone())
 }
 
-/// Value of `name="..."` in a tag's attribute text, if present.
-fn tag_attr(inner_tag: &str, name: &str) -> Option<String> {
-    let lower = inner_tag.to_ascii_lowercase();
-    let needle = format!("{name}=");
-    let at = lower.find(&needle)?;
-    let rest = &inner_tag[at + needle.len()..];
-    let quote = rest.chars().next()?;
-    if quote == '"' || quote == '\'' {
-        let end = rest[1..].find(quote)? + 1;
-        Some(rest[1..end].to_owned())
-    } else {
-        Some(
-            rest.split_whitespace()
-                .next()
-                .unwrap_or_default()
-                .to_owned(),
-        )
-    }
-}
-
-/// The text of an HTML fragment with every tag removed, whitespace kept.
-fn remove_tags(fragment: &str) -> String {
-    let mut out = String::new();
-    let mut depth = 0usize;
-    for character in fragment.chars() {
-        match character {
-            '<' => depth += 1,
-            '>' => depth = depth.saturating_sub(1),
-            _ if depth == 0 => out.push(character),
-            _ => {}
-        }
-    }
-    out
-}
-
-/// Strip every tag from an HTML fragment and collapse its whitespace.
-fn strip_tags(fragment: &str) -> String {
-    remove_tags(fragment)
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ")
-}
-
-/// Strip tags from a code block and keep it code (issue #1165 R1165-1).
-///
-/// Unlike prose, a code block's whitespace is meaning: every line keeps its
-/// indentation and inner spacing (a highlighter's `<span>` around leading
-/// spaces included), and only trailing whitespace goes. The blank lines that
-/// open and close the block are the page's markup, not the program, and so
-/// is the indentation every line shares; both are removed.
-fn strip_tags_keep_lines(fragment: &str) -> String {
-    let text = remove_tags(fragment);
-    let lines: Vec<&str> = text.lines().map(str::trim_end).collect();
-    let (Some(first), Some(last)) = (
-        lines.iter().position(|line| !line.is_empty()),
-        lines.iter().rposition(|line| !line.is_empty()),
-    ) else {
-        return String::new();
-    };
-    let body = &lines[first..=last];
-    let mut shared: Option<&str> = None;
-    for line in body.iter().copied().filter(|line| !line.is_empty()) {
-        let indent = &line[..line.len() - line.trim_start().len()];
-        shared = Some(shared.map_or(indent, |previous| {
-            let common = previous
-                .char_indices()
-                .zip(indent.chars())
-                .find(|((_, left), right)| left != right)
-                .map_or_else(|| previous.len().min(indent.len()), |((at, _), _)| at);
-            &previous[..common]
-        }));
-    }
-    let shared = shared.unwrap_or_default();
-    body.iter()
-        .copied()
-        .map(|line| line.strip_prefix(shared).unwrap_or(line))
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-
-/// Text of each `<td>`/`<th>` cell in a table row.
-fn cell_texts(row: &str) -> Vec<String> {
-    let lower = row.to_ascii_lowercase();
-    let mut cells = Vec::new();
-    let mut cursor = 0usize;
-    while let Some(rel) = lower[cursor..].find("<t") {
-        let open = cursor + rel;
-        let Some(tag_end) = lower[open..].find('>') else {
-            break;
-        };
-        let tag_end = open + tag_end;
-        let name = lower[open + 1..tag_end]
-            .trim_start_matches('/')
-            .split_whitespace()
-            .next()
-            .unwrap_or_default()
-            .to_owned();
-        if (name == "td" || name == "th")
-            && let Some(close) = lower[tag_end + 1..].find("</t")
-        {
-            cells.push(strip_tags(&row[tag_end + 1..tag_end + 1 + close]));
-        }
-        cursor = tag_end + 1;
-    }
-    cells
-}
-
-/// Decode the handful of entities real pages use.
-fn decode_entities(text: &str) -> String {
-    text.replace("&nbsp;", " ")
-        .replace("&amp;", "&")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&#39;", "'")
-}
-
 /// The trust features the seed weighs (issue #1163 R7).
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct TrustFeatures {
@@ -932,5 +835,7 @@ pub struct TrustFeatures {
     pub agreement_pages: u32,
 }
 
+#[cfg(feature = "meta-language")]
 include!("web_formalize_trust.rs");
+#[cfg(feature = "meta-language")]
 include!("web_formalize_features.rs");

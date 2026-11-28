@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-abbreviations,check-file-size,check-file-size-js-twin"
+  ],
+  "exitCode": 0,
+  "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/gates-final-staged-basic.log.gz",
+  "uncompressedSha256": "d7427b4003f7180d58754e9cf9b4b91a75a6dceede4f54a477c1e784423d56f5"
+}

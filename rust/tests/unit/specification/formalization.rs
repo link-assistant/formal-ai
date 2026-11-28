@@ -272,7 +272,10 @@ fn low_rigor_ambiguous_prompt_guesses_and_records_policy() {
 
 #[test]
 fn same_prompt_and_config_produce_same_interpretation_choice() {
+    // Compare the complete answer against fixed inputs. A live first fetch and
+    // a later cache hit have different provenance even with the same choice.
     let config = SolverConfig {
+        offline: true,
         temperature: 0.9,
         guess_probability: 0.3,
         questioning_rigor: 0.1,

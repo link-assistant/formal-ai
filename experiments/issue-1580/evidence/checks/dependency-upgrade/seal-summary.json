@@ -1,0 +1,13 @@
+{
+  "complete": true,
+  "gatesPassed": 87,
+  "explicitExclusions": 53,
+  "nativeBuild": false,
+  "verifiedArchives": 1102,
+  "dependencyFiles": 183,
+  "hostedHead": "aca32b1aa27aee55f1d9443f54d6a1c08f77ccb0",
+  "unpublishedSourceHosted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "detailedGateLogs": 87
+}

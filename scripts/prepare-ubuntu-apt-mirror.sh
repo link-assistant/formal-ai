@@ -23,8 +23,9 @@ staged="$(mktemp "${mirror_list}.next.XXXXXX")"
 cp -p -- "$original" "$staged"
 # Match one exact URI token, preserving priorities, comments and all
 # other hosts. APT still verifies the unchanged signed catalog/hashes.
-awk '$1 == "http://azure.archive.ubuntu.com/ubuntu" || $1 == "http://azure.archive.ubuntu.com/ubuntu/" {
-  sub(/http:\/\/azure\.archive\.ubuntu\.com\/ubuntu/, "https://archive.ubuntu.com/ubuntu")
+awk '$1 == "http://azure.archive.ubuntu.com/ubuntu" || $1 == "http://azure.archive.ubuntu.com/ubuntu/" ||
+  $1 ~ /^https?:\/\/[a-z0-9-]+\.ec2\.archive\.ubuntu\.com\/ubuntu\/?$/ {
+  sub(/https?:\/\/[^/]+\/ubuntu/, "https://archive.ubuntu.com/ubuntu")
 } { print }' "$original" > "$staged"
 [ ! -L "$mirror_list" ] && cmp -s -- "$mirror_list" "$original" || {
   echo "official Ubuntu mirror list changed during preparation" >&2; exit 2;

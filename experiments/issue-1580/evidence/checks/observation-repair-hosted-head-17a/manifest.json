@@ -1,0 +1,72 @@
+{
+  "source": "17a3431f187c7dd5a12d71ce1aa6bcd966d62994",
+  "completedAt": "2026-11-23T03:50:35.000225+00:00",
+  "runCounts": {
+    "success": 31,
+    "failure": 2,
+    "skipped": 1
+  },
+  "failedRuns": [
+    45103300864,
+    45103301043
+  ],
+  "codeql": {
+    "source": "17a3431f187c7dd5a12d71ce1aa6bcd966d62994",
+    "runId": 45103329305,
+    "attempt": 1,
+    "rows": 2108,
+    "queryResultSha256": "f710c77810b128b57067ff9bc8d23d47ecc5e6944d7c2f92e24ee7e59a1ffbe8",
+    "states": {
+      "literal-expansion": 1854,
+      "unexpanded": 253,
+      "other-expansion": 1
+    },
+    "controlFlow": {
+      "no-expansion-cfg-node": 1823,
+      "expansion-has-cfg-node": 285
+    },
+    "files": 259,
+    "literalComparisonCounts": {
+      "empty-expansion-of-nonempty-source": 541,
+      "literal-requires-rust-decoder": 24,
+      "non-literal-or-unbound-span": 1279,
+      "matches-exact-source": 9,
+      "included-source-unavailable": 1
+    },
+    "sarif": [
+      {
+        "artifactId": 14786501794,
+        "path": "actions.sarif",
+        "results": 0,
+        "notificationLevels": {
+          "none": 5967
+        },
+        "executionSuccessful": true
+      },
+      {
+        "artifactId": 14786198702,
+        "path": "rust.sarif",
+        "results": 0,
+        "notificationLevels": {
+          "note": 57,
+          "none": 9221
+        },
+        "executionSuccessful": true
+      }
+    ],
+    "scope": "Exact immutable source spans, literal relative paths and JSON-compatible tokens only; context rows are not unique calls or a security coverage percentage.",
+    "semanticCoverageProven": false,
+    "independentAuthorshipCredit": 0
+  },
+  "cargoAudit": "Both actual current-head jobs audit all three tracked lockfiles without incomplete registry errors; the independently allowed historical warning and proven primary advisory exception remain visible.",
+  "scope": "Terminal actual-head observations, complete original failed workflow logs, all three original CodeQL ZIP artifacts and exact-source comparison. Local fixes do not qualify the next hosted head.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 15855199,
+    "sha256": "3757c1120f122656e88b8b1479f7728d93e379c2e20f4c763e51f520fbdd2fbe"
+  },
+  "members": 256,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

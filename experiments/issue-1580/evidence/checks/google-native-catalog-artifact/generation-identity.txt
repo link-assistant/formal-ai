@@ -1,0 +1,13 @@
+2427bb899f61d872805299f02d5828f39a9db70e
+eadbc642e33b2b701beb1a04bd03ef3787fdbde1
+rustc 1.100.0 (0ef1bc386 2026-11-09)
+binary: rustc
+commit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a
+commit-date: 2026-11-09
+host: x86_64-unknown-linux-gnu
+release: 1.100.0
+LLVM version: 23.1.5
+3ba40641c3a2ae78685d469c30e9074036a6ae33367cc00e76ddf826bb51259d  rust/target/debug/examples/dump_google_trends_catalog
+f984852bb868b48bb932be10da892ee8b2630b723b8d3f6123a0bd01bbcc184d  rust/examples/dump_google_trends_catalog.rs
+a62d350272a1f9f4499952afbcd46541a0a7f9d705466d8224e2d1e217210023  rust/src/google_trends_catalog.rs
+589a2477b200e941d00f819f0f8c0a7b00855f1961d5a22845dbc273f0cd4faa  data/seed/google-trends-prompts.lino

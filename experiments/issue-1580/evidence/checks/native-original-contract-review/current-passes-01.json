@@ -1,0 +1,198 @@
+[
+  {
+    "originalTest": "data_files::lino_data_files_are_parseable_human_readable_and_bounded",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "lino_data_files_are_parseable_human_readable_and_bounded",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "lino_data_files_are_parseable_human_readable_and_bounded",
+            "line": 61681,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:05.1428682Z test lino_data_files_are_parseable_human_readable_and_bounded ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run",
+            "line": 66183,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:08:36.8848198Z test google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses",
+            "line": 61748,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:24.0987212Z test self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait",
+            "line": 61982,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:02:12.5070299Z test workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable",
+            "line": 61728,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:19.6898484Z test agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified",
+            "line": 65376,
+            "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-22T04:31:44.2198351Z test issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_kotlin",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_kotlin",
+            "line": 71056,
+            "text": "Native type and lint check / Native contracts (hive-4)\tUNKNOWN STEP\t2026-11-22T04:38:03.5633421Z test issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_kotlin ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      },
+      {
+        "expected": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_scala",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_scala",
+            "line": 67813,
+            "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-22T04:32:56.0571263Z test issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_scala ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      },
+      {
+        "expected": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_rust",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_rust",
+            "line": 65386,
+            "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-22T04:37:35.4995787Z test issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_rust ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      },
+      {
+        "expected": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_python",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_python",
+            "line": 71057,
+            "text": "Native type and lint check / Native contracts (hive-4)\tUNKNOWN STEP\t2026-11-22T04:40:02.0684523Z test issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_python ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian",
+            "line": 67024,
+            "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-22T04:29:09.2501448Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  }
+]

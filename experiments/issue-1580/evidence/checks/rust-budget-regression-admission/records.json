@@ -1,0 +1,262 @@
+{
+  "records": [
+    {
+      "source": "rust-budget-regression-admission/adapter-before.gz",
+      "file": "record-0000.gz",
+      "rawSha256": "50e8ca227d4655958fc04b79d573f9f3393b36371036cb50cc3c67a591b3bb6d",
+      "archiveSha256": "2e440db9d1dac798f6a9cdb6dfb75053df3cd9b44d119999456f0ab86fc85871",
+      "bytes": 325,
+      "lines": 2
+    },
+    {
+      "source": "rust-budget-regression-admission/adapter-syntax.stderr",
+      "file": "record-0001.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/adapter-syntax.stdout",
+      "file": "record-0002.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/budget-child-lifetime.stderr",
+      "file": "record-0003.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/budget-child-lifetime.stdout",
+      "file": "record-0004.gz",
+      "rawSha256": "c28983a9e91bbf9d0940edb9266eb131b878e51daed7a3197f9219654ad261a4",
+      "archiveSha256": "b8e7efd6dd11d86a0fb649e3a2b825ada9b2b652465cf69a306da2b06520c99d",
+      "bytes": 735,
+      "lines": 15
+    },
+    {
+      "source": "rust-budget-regression-admission/commands.json",
+      "file": "record-0005.gz",
+      "rawSha256": "f48a7178952fb111e165a44821e786deba5337f35c0a0c4488625ff50b13279c",
+      "archiveSha256": "4eed2431c2fcf17d4651649c255d952e2700afc37efe43f9fc8ced22dade5c26",
+      "bytes": 2098,
+      "lines": 104
+    },
+    {
+      "source": "rust-budget-regression-admission/desktop-checksum-verification.json",
+      "file": "record-0006.gz",
+      "rawSha256": "bd270cdda4004456e8ee72ce59326b3088dc769d02098c05a10a7f0175f343d2",
+      "archiveSha256": "0b1c5f05573436b3a29c2923a702d639ef9e178a4c200525a872318622153645",
+      "bytes": 2162,
+      "lines": 46
+    },
+    {
+      "source": "rust-budget-regression-admission/failure.json",
+      "file": "record-0007.gz",
+      "rawSha256": "3cf2218b67b14e8d83de17d41715a3e10b9a8612b3438a5d5ca91bb60ee54dfd",
+      "archiveSha256": "d6bc680ad7e33b1d2c0a86afa340a0f1887da52b0a06d424418a2fd2cf3da3de",
+      "bytes": 916,
+      "lines": 4
+    },
+    {
+      "source": "rust-budget-regression-admission/final-source-gates.stderr",
+      "file": "record-0008.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/final-source-gates.stdout",
+      "file": "record-0009.gz",
+      "rawSha256": "0ee35933faaaf8f00a9443e7534658fed3364bde719fede711891cfa4816f839",
+      "archiveSha256": "99b79bf5f514560ecf4055772e86c5ebbfc288452e1069508030e3beea436ac2",
+      "bytes": 157,
+      "lines": 6
+    },
+    {
+      "source": "rust-budget-regression-admission/identity-0.stderr",
+      "file": "record-0010.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/identity-0.stdout",
+      "file": "record-0011.gz",
+      "rawSha256": "4069f57fcf3bd55ea36c8b2b683c574a465a56706199af49c33acf4c656b7f6a",
+      "archiveSha256": "72e8ed085ea0b68e41c91cfff936635d79c6ea30d4f0df849db97779429c7760",
+      "bytes": 83001,
+      "lines": 1481
+    },
+    {
+      "source": "rust-budget-regression-admission/identity-1.stderr",
+      "file": "record-0012.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/identity-1.stdout",
+      "file": "record-0013.gz",
+      "rawSha256": "04c494a74ba5e874979d3b60b8ca3a0bb66deab32c38708e047183fb1a9cfdaf",
+      "archiveSha256": "e3099b6e08648126b8da87f9e888669ada29141667be633dbb9fe78c245c70af",
+      "bytes": 2286,
+      "lines": 39
+    },
+    {
+      "source": "rust-budget-regression-admission/identity-2.stderr",
+      "file": "record-0014.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/identity-2.stdout",
+      "file": "record-0015.gz",
+      "rawSha256": "e5ab91f53eb74fcad89e844af2f436ece6b87a4b251a197bfbd43d7c9fe741b5",
+      "archiveSha256": "478de0c0362a175ff851cc57126e397c6ba650ea069d605cadb9fb5dc23a9750",
+      "bytes": 7694,
+      "lines": 106
+    },
+    {
+      "source": "rust-budget-regression-admission/original-controller.py.gz",
+      "file": "record-0016.gz",
+      "rawSha256": "4df614d91ab816dd6f318b1c7e128253c5c434dbfa035dabc6c57f691715d0c4",
+      "archiveSha256": "cb24b66f6e02d77b019dfe69e47dcc022f2637c02d149aecacb88c6922fb5f9c",
+      "bytes": 2482,
+      "lines": 24
+    },
+    {
+      "source": "rust-budget-regression-admission/outcome.json",
+      "file": "record-0017.gz",
+      "rawSha256": "50d541493d50e18851d6592b927567b8618fd9ee934b9a5e108916b7c3d68bf2",
+      "archiveSha256": "5b96c7fc9822087e4924cf814bcf62095fb7dccbc232e2e78caebcfbf73f013b",
+      "bytes": 472,
+      "lines": 11
+    },
+    {
+      "source": "rust-budget-regression-admission/source-gates.stderr",
+      "file": "record-0018.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/source-gates.stdout",
+      "file": "record-0019.gz",
+      "rawSha256": "998ad1d79bf155205a843f4dd4df9aabc6de4369a36d504ca0a9e66e76028ef2",
+      "archiveSha256": "c3199ce038dbb2c8869d4a14feb4f23b5672cdec3332aa050df6263d5125bba0",
+      "bytes": 522,
+      "lines": 8
+    },
+    {
+      "source": "rust-budget-regression-admission/whitespace.stderr",
+      "file": "record-0020.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/whitespace.stdout",
+      "file": "record-0021.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "rust-budget-regression-admission/worker.log",
+      "file": "record-0022.gz",
+      "rawSha256": "d3876920c436aadaf9ad56c4eb9979ed82c7d3a171df9608ebdce098f536ce5c",
+      "archiveSha256": "c3b7f0bc65698719a50ca03af5b19734010eee4eac77b8758acd0742c1afe3c8",
+      "bytes": 919,
+      "lines": 11
+    },
+    {
+      "source": "rust-package-practice-native-evidence/progress.diff",
+      "file": "record-0023.gz",
+      "rawSha256": "98d14cee558429ec03defa1e7cbd04837e5e910e7f47bf793b099b20d6f07d81",
+      "archiveSha256": "31cbf2c0d3a498ef88344564f45777f630c742e470b50121ebf9587118812557",
+      "bytes": 2435,
+      "lines": 29
+    },
+    {
+      "source": "rust-package-practice-native-evidence/verification.json",
+      "file": "record-0024.gz",
+      "rawSha256": "3d818d8238bdd1492a15deee5ed819f59a6fe70e61d02840167f4514597ada0f",
+      "archiveSha256": "38bfbd79da8c6576707dc6b2f73b308259074f38f41c7aa3a6f32df79c82aa9c",
+      "bytes": 6653,
+      "lines": 135
+    },
+    {
+      "source": "complete-rust-budget-regression-admission.py",
+      "file": "record-0025.gz",
+      "rawSha256": "2dea75ebd9dcc31d5bf29568c83b3d80ff1bf501fc7a016f9812f70dd04e7da1",
+      "archiveSha256": "4df614d91ab816dd6f318b1c7e128253c5c434dbfa035dabc6c57f691715d0c4",
+      "bytes": 5959,
+      "lines": 71
+    },
+    {
+      "source": "complete-rust-budget-regression-admission.log",
+      "file": "record-0026.gz",
+      "rawSha256": "26204375cd108790945eaaa4b81bc8599ed96ee086116e2d152a3f2f3c032a65",
+      "archiveSha256": "4af181995edb47ab84ccb8ae8130dc364eb85a6dd83d6fdc97abf945393bdf57",
+      "bytes": 182,
+      "lines": 4
+    },
+    {
+      "source": "finish-rust-budget-regression-admission.py",
+      "file": "record-0027.gz",
+      "rawSha256": "aae123d50d845c1712bc5f6305ee4bbea643c348862289ed9259a7cf5616d68c",
+      "archiveSha256": "5f853ad91eac567acfcf6665af42fc90a73ce24802b8ef8c4fc7cf4b7721f4d0",
+      "bytes": 2563,
+      "lines": 32
+    },
+    {
+      "source": "finish-rust-budget-regression-admission.log",
+      "file": "record-0028.gz",
+      "rawSha256": "175364e5673bcff097ad67e904928153c097b9ef5dff11fa95efeab8cfe6200f",
+      "archiveSha256": "c75d8eb29d9154196b9e512153358106cb86545a4994951e6382fe5a0ff0c49a",
+      "bytes": 564,
+      "lines": 10
+    },
+    {
+      "source": "finish-rust-budget-regression-admission-corrected.log",
+      "file": "record-0029.gz",
+      "rawSha256": "3bb6e89b0db9d65d92afbf1d27e0817eb7e2802cf07b0d9b761890db833ebba7",
+      "archiveSha256": "57e44c62e883932710bac953e4893d75a0a92c69bd3eb137b26a99dcb8adb85f",
+      "bytes": 647,
+      "lines": 15
+    },
+    {
+      "source": "refresh-rust-package-practice-native-evidence.py",
+      "file": "record-0030.gz",
+      "rawSha256": "2be75420c088ad335a995536e25c940710660392469ddd02dce8fdccbe9582c7",
+      "archiveSha256": "a02c13358ebb6272e674daed9ebce787271fbd577fcb8af343ac3c7eb138afe0",
+      "bytes": 4240,
+      "lines": 71
+    },
+    {
+      "source": "refresh-rust-package-practice-native-evidence.log",
+      "file": "record-0031.gz",
+      "rawSha256": "8c5bae5e0c044ac7986fbf9c86b8bc9f774d7eb3fded570c9ec6332c05e37458",
+      "archiveSha256": "6498a0cc85136ba77f849d37a0a8f51cbcf7e5c7f6bc98472d2b62e9d94ab0fe",
+      "bytes": 272,
+      "lines": 4
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

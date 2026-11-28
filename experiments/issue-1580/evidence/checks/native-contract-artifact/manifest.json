@@ -1,0 +1,75 @@
+{
+  "provenance": "External procedure and conclusions supplied to actual JavaScript Formal AI; zero independent authorship/reasoning credit. Native probes use finite JavaScript mocks, not local Rust execution.",
+  "files": [
+    {
+      "path": "initial-validation/checkout.log.gz",
+      "rawBytes": 474,
+      "rawSha256": "5997771422951da4ad53aac055967293af2939aa8ffa7335603a4f5111e91450"
+    },
+    {
+      "path": "initial-validation/groups.log.gz",
+      "rawBytes": 6709,
+      "rawSha256": "f54384e698cd6216778b121c319a7d86a52d48efea3ff998b1ac436aa29f6229"
+    },
+    {
+      "path": "initial-validation/outcome.json.gz",
+      "rawBytes": 267,
+      "rawSha256": "c2daf0843dc6823728388f6e7c07a4200a49493bdcd74ae9f87300471c157dbf"
+    },
+    {
+      "path": "initial-validation/policy.log.gz",
+      "rawBytes": 15619,
+      "rawSha256": "32e387e52627dc8908f405c1a213e247dcfc6f763b2053469065fa221a8ffa12"
+    },
+    {
+      "path": "initial-validation/shell.log.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "initial-validation/transport.log.gz",
+      "rawBytes": 801,
+      "rawSha256": "14823044726748052fa1139e4f77d27df87e58d5d8d92746a5c33b0258e11932"
+    },
+    {
+      "path": "initial-validation/worker.log.gz",
+      "rawBytes": 189,
+      "rawSha256": "079fad56b78d7cea46ce124dd2d98d6e5de825598ebe85990fc3bc4c789cdf10"
+    },
+    {
+      "path": "integration-formal-driver.log.gz",
+      "rawBytes": 1100,
+      "rawSha256": "5a774497c423b22344c7f95119a2c1be69462a8e79b4a7bdbe4c9f6c79e44fbf"
+    },
+    {
+      "path": "supplied-draft.mjs.gz",
+      "rawBytes": 10006,
+      "rawSha256": "18d374ad531ebf21c5b0dae7beba53d1d0c1d56fa303fcf10302b423c9a2f228"
+    },
+    {
+      "path": "supplied-draft.test.mjs.gz",
+      "rawBytes": 6923,
+      "rawSha256": "f140856b25729d3300772041919357b76a799744355c67d2767a08c8d55175af"
+    },
+    {
+      "path": "supplied-integration.mjs.gz",
+      "rawBytes": 4203,
+      "rawSha256": "c0f67e3835476930d1073b69db9ac1901adc4823f72bc8a6f3831c47aab5a740"
+    },
+    {
+      "path": "initial-install-failed.log.gz",
+      "rawBytes": 1114,
+      "rawSha256": "ef2c52998493c035b0246610d6c6402a47511337ab409a78eb0821bd86c7f180"
+    },
+    {
+      "path": "wiring-formal-driver.log.gz",
+      "rawBytes": 125,
+      "rawSha256": "41245806db0c1787cf4d32ab785f6a87e8cedb49616f6cbfc4a0427d4422cf65"
+    },
+    {
+      "path": "test-wiring-formal-driver.log.gz",
+      "rawBytes": 1249,
+      "rawSha256": "e27cd153d2b516f4e63bb4a273fa10cbcb368bf28e5ab326c5786f03a4df7cb9"
+    }
+  ]
+}

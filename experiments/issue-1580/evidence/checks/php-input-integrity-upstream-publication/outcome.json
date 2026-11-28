@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "reports": [
+    {
+      "kind": "version",
+      "created": true,
+      "url": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/31"
+    },
+    {
+      "kind": "notes",
+      "created": true,
+      "url": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/32"
+    },
+    {
+      "kind": "budget",
+      "created": true,
+      "url": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/15#issuecomment-7054888090"
+    }
+  ],
+  "sourceRepository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "evidenceCommit": "ac9cd6a55e3ea7d8738e6122f623d7676666630d",
+  "upstreamRepairProven": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

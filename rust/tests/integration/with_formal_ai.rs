@@ -10,8 +10,11 @@ use std::sync::atomic::{AtomicU64, Ordering};
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 mod fixture_env;
+#[path = "with_formal_ai/global_configuration.rs"]
+mod global_configuration;
 mod issue_1582;
 mod model_metadata;
+mod verbosity;
 
 pub fn tmpdir() -> PathBuf {
     let seq = TMPDIR_SEQ.fetch_add(1, Ordering::SeqCst);
@@ -273,8 +276,24 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
         ),
         (
             "claude",
-            vec!["--model", "formal-ai"],
-            vec!["--model", "formal-ai", "--print", "hi"],
+            vec![
+                "--allowedTools",
+                "Read,Glob,Grep,WebFetch,WebSearch",
+                "--model",
+                "formal-ai",
+                "--permission-mode",
+                "auto",
+            ],
+            vec![
+                "--allowedTools",
+                "Read,Glob,Grep,WebFetch,WebSearch",
+                "--model",
+                "formal-ai",
+                "--permission-mode",
+                "auto",
+                "--print",
+                "hi",
+            ],
         ),
         (
             "qwen",
@@ -284,7 +303,7 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
         (
             "grok",
             vec!["--model", "formal-ai"],
-            vec!["--model", "formal-ai", "--prompt", "hi"],
+            vec!["--model", "formal-ai", "-p", "hi"],
         ),
         (
             "aider",
@@ -567,7 +586,8 @@ fn with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down() {
     );
     assert!(
         output.stderr.is_empty(),
-        "routine startup stays out of the harness"
+        "routine startup stays out of the harness; actual stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
     );
     let logs = std::fs::read_dir(home.join(".formal-ai/logs"))
         .expect("default diagnostic directory")
@@ -762,133 +782,7 @@ fn with_formal_ai_gemini_protocol_vertex_sets_vertex_base_url() {
 
 #[test]
 fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
-    let dir = tmpdir();
-    let home = dir.join("home");
-    std::fs::create_dir_all(home.join(".codex")).expect("codex dir");
-    std::fs::write(
-        home.join(".codex/config.toml"),
-        "approval_policy = \"never\"\n",
-    )
-    .expect("seed codex config");
-    std::fs::write(
-        home.join(".codex/formal-ai-model-catalog.json"),
-        "user-managed catalog\n",
-    )
-    .expect("seed codex catalog");
-
-    let first = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
-        .args([
-            "with",
-            "--global",
-            "--base-url",
-            "http://127.0.0.1:18080",
-            "--all",
-        ])
-        .env("HOME", &home)
-        .output()
-        .expect("global configure");
-    assert!(
-        first.status.success(),
-        "stderr: {}",
-        String::from_utf8_lossy(&first.stderr)
-    );
-
-    let codex_config = std::fs::read_to_string(home.join(".codex/config.toml")).expect("codex");
-    assert!(codex_config.contains("approval_policy = \"never\""));
-    assert!(codex_config.contains("model_provider = \"formalai\""));
-    assert!(codex_config.contains("model = \"formal-ai\""));
-    assert!(codex_config.contains("model_catalog_json = "));
-    assert!(codex_config.contains("[model_providers.formalai]"));
-    assert!(codex_config.contains("base_url = \"http://127.0.0.1:18080/api/openai/v1\""));
-    assert!(home.join(".codex/config.toml.formal-ai.bak").exists());
-    let codex_catalog = std::fs::read_to_string(home.join(".codex/formal-ai-model-catalog.json"))
-        .expect("codex catalog");
-    assert!(codex_catalog.contains("\"slug\": \"formal-ai\""));
-    assert!(codex_catalog.contains("\"context_window\":"));
-    assert!(codex_catalog.contains("\"context_used_tokens\":"));
-    assert!(codex_catalog.contains("\"disk_free_bytes\":"));
-    assert!(!codex_catalog.contains("\"context_window\": 60000"));
-    assert!(
-        home.join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
-            .exists()
-    );
-
-    let opencode_config =
-        std::fs::read_to_string(home.join(".config/opencode/opencode.json")).expect("opencode");
-    assert!(opencode_config.contains("\"formalai\""));
-    assert!(opencode_config.contains("\"model\": \"formalai/formal-ai\""));
-    assert!(
-        home.join(".config/opencode/opencode.json.formal-ai.bak")
-            .exists()
-    );
-
-    let agent_config =
-        std::fs::read_to_string(home.join(".config/link-assistant-agent/opencode.json"))
-            .expect("agent");
-    assert!(agent_config.contains("\"formalai\""));
-    assert!(agent_config.contains("\"model\": \"formalai/formal-ai\""));
-    assert!(
-        home.join(".config/link-assistant-agent/opencode.json.formal-ai.bak")
-            .exists()
-    );
-
-    let profile = std::fs::read_to_string(home.join(".profile")).expect("profile");
-    assert_eq!(profile.matches("formal-ai gemini").count(), 2);
-    assert!(profile.contains("GOOGLE_GEMINI_BASE_URL=\"http://127.0.0.1:18080/api/gemini\""));
-    assert!(home.join(".profile.formal-ai.bak").exists());
-
-    let second = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
-        .args([
-            "with",
-            "-g",
-            "--base-url",
-            "http://127.0.0.1:18080",
-            "--all",
-        ])
-        .env("HOME", &home)
-        .output()
-        .expect("global configure again");
-    assert!(
-        second.status.success(),
-        "stderr: {}",
-        String::from_utf8_lossy(&second.stderr)
-    );
-    let profile_again = std::fs::read_to_string(home.join(".profile")).expect("profile again");
-    assert_eq!(profile_again.matches("formal-ai gemini").count(), 2);
-
-    let undo = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
-        .args(["with", "--global", "--undo", "--all"])
-        .env("HOME", &home)
-        .output()
-        .expect("global undo");
-    assert!(
-        undo.status.success(),
-        "stderr: {}",
-        String::from_utf8_lossy(&undo.stderr)
-    );
-    assert_eq!(
-        std::fs::read_to_string(home.join(".codex/config.toml")).expect("restored codex"),
-        "approval_policy = \"never\"\n"
-    );
-    assert_eq!(
-        std::fs::read_to_string(home.join(".codex/formal-ai-model-catalog.json"))
-            .expect("restored codex catalog"),
-        "user-managed catalog\n"
-    );
-    assert!(
-        !home
-            .join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
-            .exists()
-    );
-    assert!(!home.join(".config/opencode/opencode.json").exists());
-    assert!(
-        !home
-            .join(".config/link-assistant-agent/opencode.json")
-            .exists()
-    );
-    assert!(!home.join(".profile").exists());
-
-    let _ = std::fs::remove_dir_all(&dir);
+    global_configuration::with_formal_ai_global_configures_idempotently_and_undo_restores_backups();
 }
 
 #[test]

@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync,mkdtempSync,mkdirSync,lstatSync,realpathSync,chmodSync,symlinkSync,rmSync} from 'node:fs';
@@ -19,13 +20,13 @@ const sourcePaths=[
  'scripts/checked-release-operation-view.mjs',
  'scripts/maintained-staged-authority.mjs',
  'scripts/generate-staged-release.mjs',
- 'scripts/lib/ci-speed-workflows.mjs',
+ 'scripts/lib/ci-speed-workflows.mjs','scripts/canonical-release-source.mjs',
  'scripts/staged-caller-authority.mjs',
  'scripts/release-source-freshness.mjs',
  'scripts/refresh-release-specification-witness.mjs',
  'scripts/governed-github-command-provider.mjs',
  'rust/tests/unit/ci-cd/pinned_tool_images.rs',
- ...['original-release-workflow.yml','candidate-release-caller.yml','stage-source-coverage.json','candidate-output-bindings.json'].map(name=>protocolEvidence+name)
+ ...['original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt','candidate-release-caller.yml','stage-source-coverage.json','candidate-output-bindings.json'].map(name=>protocolEvidence+name)
 ];
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const sourceWitness=sourcePaths.map(relative=>{
@@ -54,7 +55,7 @@ const run=args=>spawnSync(process.execPath,['scripts/native-staged-release-opera
 test('native source bridge exposes checked original operations and actual permission/DAG surfaces',()=>{
  const result=run(['--source-view']);assert.equal(result.status,0,result.stderr);const view=JSON.parse(result.stdout);
  assert.equal(view.productionAuthority,false);assert.equal(view.inventory.operations,52);assert.equal(view.inventory.bindings,104);
- assert.equal(view.originalSource,readFileSync(root+evidence+'original-release-workflow.yml','utf8'));
+ assert.equal(view.originalSource,readCanonicalSource(root).text);
  assert.deepEqual(view.physicalCaller,YAML.parse(readFileSync(root+'.github/workflows/release.yml','utf8')));
  assert.deepEqual(view.physicalStages,YAML.parse(readFileSync(root+'.github/workflows/release-staged.yml','utf8')));
 });
@@ -75,7 +76,7 @@ for(const [name,file,mutate] of [
 test('native source bridge conserves ordinary inline identity and its historical deadline floor',()=>{
  const file='.github/workflows/release.yml',original=readFileSync(root+file,'utf8');
  try {
-  writeFileSync(root+file,readFileSync(root+evidence+'original-release-workflow.yml','utf8'));
+  writeFileSync(root+file,readCanonicalSource(root).text);
   const result=run(['--source-view']);assert.equal(result.status,0,result.stderr);
   const view=JSON.parse(result.stdout);assert.equal(view.mode,'inline');
   for(const name of ['auto-release','manual-release'])assert.ok(view.physicalCaller.jobs[name]['timeout-minutes']>=60);

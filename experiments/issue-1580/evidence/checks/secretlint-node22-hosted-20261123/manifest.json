@@ -1,0 +1,28 @@
+{
+  "purpose": "Qualify actual locked scanner negative controls on a dedicated hosted Node 22 lane",
+  "localChecks": {
+    "focusedRegressions": 4,
+    "maintainedSubprocessTests": 48,
+    "securityNeighbors": 22,
+    "fastProfiles": 29,
+    "affectedGates": 7,
+    "allPassed": true
+  },
+  "beforeRegressionsFailed": 4,
+  "realSparseCheckoutVerified": true,
+  "actualProbeWrongRuntimeRejectedBeforeInstall": true,
+  "localPackageInstallExecutedThisSubstep": false,
+  "newHostedNode22ControlsVerified": false,
+  "fullLiteralTemplateReadThisSubstep": false,
+  "targetedCounterpartCompared": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 41305,
+    "sha256": "e4353df14fc2d1a80f39d1b33be2744ecd207ef30fed3588b704c26fdf8883f8"
+  },
+  "members": 47,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T15:17:15.557547+00:00"
+}

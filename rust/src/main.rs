@@ -28,12 +28,12 @@ mod cli_provenance;
 mod cli_report;
 mod cli_repository_history;
 mod cli_shared_dialog;
+mod cli_solver;
 mod cli_statement_audit;
 mod cli_summarization;
 mod cli_telegram;
 mod cli_thinking;
 mod cli_translate;
-use cli_thinking::print_thinking_trace;
 
 use cli_algorithm::{AlgorithmArgs, run_algorithm};
 use cli_benchmark::{BenchmarkAction, run_benchmark};
@@ -56,17 +56,14 @@ use cli_procedure::{ProcedureArgs, run_procedure};
 use cli_report::{ReportArgs, run_report};
 use cli_repository_history::{RepositoryHistoryAction, run_repository_history};
 use cli_shared_dialog::{SharedDialogAction, run_shared_dialog};
+use cli_solver::{run_agent, run_chat};
 use cli_statement_audit::{StatementAuditArgs, run_statement_audit};
 use cli_summarization::{SummarizationAction, run_summarization};
 use cli_telegram::run_telegram;
 use cli_translate::run_translate;
-use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
-    ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, ProxyConfig,
-    ResponsesRequest, SolverConfig, UniversalSolver, WithFormalAiArgs,
-    create_chat_completion_with_solver, create_response_with_solver, delimit_tool_args,
-    enable_http_agent_mode_for_current_process, knowledge_links_notation, run_proxy,
-    run_with_formal_ai,
+    ProxyConfig, WithFormalAiArgs, delimit_tool_args, enable_http_agent_mode_for_current_process,
+    knowledge_links_notation, run_proxy, run_with_formal_ai,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -80,7 +77,7 @@ const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и р
     about = "Formal symbolic AI implementation"
 )]
 struct Args {
-    /// Print verbose CLI output (enabled by default).
+    /// Print verbose CLI output (enabled by default; wrapper diagnostics need this explicit flag).
     #[arg(long, global = true, default_value_t = true)]
     verbose: bool,
 
@@ -668,10 +665,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
     // `formal-ai with <tool> …` hands everything after the tool name to that
     // tool, including flags this command also defines globally.
-    let arguments = Args::parse_from(delimit_tool_args(
-        std::env::args_os().collect(),
-        &Args::command(),
-    ));
+    let argv = delimit_tool_args(std::env::args_os().collect(), &Args::command());
+    // The delimiter already separates our options from the client's, so a
+    // client's own --verbose must never opt the wrapper into terminal logs.
+    let explicit_verbose = argv
+        .iter()
+        .take_while(|argument| *argument != "--")
+        .any(|argument| argument == "--verbose");
+    let arguments = Args::parse_from(argv);
     formal_ai::cnl_output::configuration::configure_options(
         arguments.output_standard.as_deref(),
         arguments.lexical_density.as_deref(),
@@ -682,10 +683,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
     let verbose = arguments.verbose && !arguments.silent;
     formal_ai::dialog_log::configure_verbose(!arguments.silent);
-    // The wrapper shares a terminal with a client that may own the full screen.
-    formal_ai::dialog_log::structured_log::configure_terminal(
-        verbose && !matches!(&arguments.command, Some(Command::With(_))),
-    );
+    // Keep the default chat verbosity while the wrapper's normal diagnostics
+    // stay in the log files. Explicit wrapper verbosity still mirrors them.
+    let terminal_verbose =
+        verbose && (explicit_verbose || !matches!(&arguments.command, Some(Command::With(_))));
+    formal_ai::dialog_log::structured_log::configure_terminal(terminal_verbose);
     formal_ai::dialog_log::structured_log::configure(
         arguments.silent,
         matches!(arguments.command.as_ref(), Some(Command::Serve(_))),
@@ -862,32 +864,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run_agent(
-    task: &str,
-    transcript: bool,
-    session_json: Option<&std::path::Path>,
-) -> Result<(), Box<dyn Error>> {
-    let outcome = run_agentic_task(task)?;
-    if transcript {
-        print!("{}", outcome.transcript());
-        println!();
-    }
-    if let Some(path) = session_json {
-        let rendered = serde_json::to_string_pretty(&outcome.session_json())?;
-        std::fs::write(path, format!("{rendered}\n"))?;
-        formal_ai::diagnostic!("debug"; "wrote agent session to {}", path.display());
-    }
-    if outcome.hit_turn_cap {
-        return Err(format!(
-            "the agentic loop did not finish within its turn cap after {} tool call(s)",
-            outcome.steps.len()
-        )
-        .into());
-    }
-    println!("{}", outcome.final_answer);
-    Ok(())
-}
-
 pub(crate) struct TelegramRunArgs {
     pub(crate) mode: TelegramMode,
     pub(crate) token: Option<String>,
@@ -897,83 +873,6 @@ pub(crate) struct TelegramRunArgs {
     pub(crate) allowed_updates: String,
     pub(crate) host: String,
     pub(crate) port: u16,
-}
-
-fn solver_for_chat(
-    definition_fusion: Option<DefinitionFusionMode>,
-    compute_budget: Option<u32>,
-    draft_count: Option<u8>,
-) -> UniversalSolver {
-    let mut config = SolverConfig::from_env();
-    config.execution_surface = ExecutionSurface::Cli;
-    if let Some(mode) = definition_fusion {
-        config.definition_fusion_by_default = matches!(mode, DefinitionFusionMode::Auto);
-    }
-    if let Some(budget) = compute_budget {
-        config.compute_budget = budget;
-    }
-    if let Some(count) = draft_count {
-        config.draft_count = count.max(1);
-    }
-    UniversalSolver::new(config)
-}
-
-fn run_chat(
-    prompt: &str,
-    format: OutputFormat,
-    definition_fusion: Option<DefinitionFusionMode>,
-    thinking: bool,
-    compute_budget: Option<u32>,
-    draft_count: Option<u8>,
-) -> Result<(), Box<dyn Error>> {
-    let solver = solver_for_chat(definition_fusion, compute_budget, draft_count);
-    match format {
-        OutputFormat::Text => {
-            let response = solver.solve(prompt);
-            if thinking {
-                print_thinking_trace(&response);
-            }
-            println!("{}", response.answer);
-        }
-        OutputFormat::Chat => {
-            let request = ChatCompletionRequest {
-                model: Some(String::from(DEFAULT_MODEL)),
-                messages: vec![ChatMessage::user(prompt)],
-                temperature: None,
-                stream: false,
-                tools: Vec::new(),
-                tool_choice: None,
-                functions: Vec::new(),
-                function_call: None,
-                output_standard: None,
-                lexical_density: None,
-                response_format: None,
-                stream_options: None,
-            };
-            println!(
-                "{}",
-                serde_json::to_string_pretty(&create_chat_completion_with_solver(
-                    &request, &solver
-                ))?
-            );
-        }
-        OutputFormat::Responses => {
-            let request = ResponsesRequest {
-                model: Some(String::from(DEFAULT_MODEL)),
-                input: serde_json::Value::String(String::from(prompt)),
-                instructions: None,
-                temperature: None,
-                stream: false,
-                ..ResponsesRequest::default()
-            };
-            println!(
-                "{}",
-                serde_json::to_string_pretty(&create_response_with_solver(&request, &solver))?
-            );
-        }
-    }
-
-    Ok(())
 }
 
 pub(crate) fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {

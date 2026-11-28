@@ -159,23 +159,23 @@ routing_probes
   probe p109
     lane fact_lookup
     language en
-    intent fact_lookup
+    intent fact_query
     prompt "Make sense of this: what is the capital of France?"
     adversarial true
   probe p110
     lane fact_lookup
     language en
-    intent fact_lookup
+    intent fact_query
     prompt "What is the capital of the USA?"
   probe p111
     lane fact_lookup
     language ru
-    intent fact_lookup
+    intent fact_query
     prompt "столица россии"
   probe p112
     lane fact_lookup
     language zh
-    intent fact_lookup
+    intent fact_query
     prompt "谁创建了 Rust?"
   probe p116
     lane formalization_request

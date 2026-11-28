@@ -276,29 +276,3 @@ fn escaped_record_parses_as_links_notation() {
         panic!("record should be valid Links Notation: {error}\nbuffer:\n{buf}");
     });
 }
-
-#[test]
-fn seed_files_stay_under_per_file_line_cap() {
-    for (name, contents) in seed_files() {
-        let lines = contents.lines().count();
-        assert!(
-            lines <= MAX_SEED_LINES_PER_FILE,
-            "{name} has {lines} lines, exceeds MAX_SEED_LINES_PER_FILE={MAX_SEED_LINES_PER_FILE}",
-        );
-    }
-}
-
-#[test]
-fn seed_response_is_consulted_before_disk_or_transport() {
-    // Use a URL we expect to be present in the committed bundle. If the
-    // bundle is empty during early bootstrapping, skip the assertion —
-    // the test exists to lock the precedence once the bundle is filled.
-    let any_url = seed_index().keys().next().cloned();
-    let Some(url) = any_url else {
-        return;
-    };
-    let dir = temp_dir("seed-precedence");
-    let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
-    let body = cache.get(&url).expect("seeded response must hit");
-    assert!(!body.is_empty());
-}

@@ -1,0 +1,30 @@
+✔ the four precedence rows bind worker functions (467.772255ms)
+✔ R1: brainstorming composes from the formalized topic (346.634453ms)
+✔ R2: brainstorming states its metric and constraints (6.590994ms)
+✔ brainstorming honors the requested count (3.742335ms)
+✔ brainstorming multilingual probes (30.802852ms)
+✔ R3: a four-line poem about the sea passes its constraint check (10.24238ms)
+✔ R3: a violating poem is never returned (6.858062ms)
+✔ a haiku carries three lines and states its meter unverified (3.615579ms)
+✔ R4: rhyme evidence is requested for ungrounded verse (22.094ms)
+✔ R5: the itinerary is cited and feasible (6.205617ms)
+✔ R5: every scheduled window sits inside the day and in order (4.59274ms)
+✔ planning names missing observations (1.734924ms)
+✔ planning multilingual probes (17.813732ms)
+✔ R6: advice is cited, graded and weighted (3.087455ms)
+✔ advice multilingual probes (5.822292ms)
+✔ advice names missing observations (1.50796ms)
+✔ R8: unrelated prompts are not claimed (7.899844ms)
+✔ the full worker routes the four classes to their composition handlers (1950.985764ms)
+✔ issue #1613: itineraries consume cited places for an unfamiliar destination (3.240169ms)
+✔ issue #1613: advice orders cited observations for any supplied topic (1.353532ms)
+✔ issue #1613: six-line verse uses three distinct supplied rhyme classes (430.594866ms)
+✔ issue #1613: a cold itinerary cannot reuse Rome and invalid observations cannot fill it (2.56949ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6626.569158

@@ -1,0 +1,33 @@
+{
+  "at": "2026-11-22T15:29:49.452611+00:00",
+  "sourceHead": "dd99013af518469481fb8072c4d964b1f59b3cf1",
+  "counts": {
+    "PASS": 89,
+    "SKIP": 54,
+    "FAIL": 0
+  },
+  "exit": 0,
+  "cleanBefore": true,
+  "cleanAfter": true,
+  "nativeBuild": false,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0,
+  "files": [
+    {
+      "source": "all-gates.log",
+      "file": "record-0001.gz",
+      "bytes": 7017,
+      "newlineCount": 145,
+      "sha256": "093b9ae830cce545eed43bd52c3ec4dcf85bf047ab0b09451e8e37c3eb157013",
+      "compressedSha256": "d140e69393e141b2380b6dac88897806c2f9a9ef6b0b623d7a620fc899d1f61a"
+    },
+    {
+      "source": "outcome.json",
+      "file": "record-0002.gz",
+      "bytes": 195,
+      "newlineCount": 8,
+      "sha256": "482f0762368f340a3b10249984a81ee55ff29ad4950aea568a596cba20af9fde",
+      "compressedSha256": "e005812fda36bb67e4cfd8730cfab2a49506bee4272a3f96a710d4bab4b72061"
+    }
+  ]
+}

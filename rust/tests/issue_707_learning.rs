@@ -12,8 +12,8 @@ use std::fs;
 use std::path::PathBuf;
 
 use formal_ai::computer_use::{
-    ComputerUsePrimitive, capability_gap_cue, learned, normalize_request, operation_cues,
-    resource_cue, synthesize,
+    ComputerUsePrimitive, LearnedSchemas, capability_gap_cue, induce, normalize_request,
+    operation_cues, parse_benchmark_tasks, resource_cue, synthesize_with,
 };
 
 fn root() -> PathBuf {
@@ -21,6 +21,14 @@ fn root() -> PathBuf {
         .parent()
         .expect("the repository root sits one level above the crate")
         .to_path_buf()
+}
+
+const CORPUS: &str = "rust/tests/fixtures/computer-use/tasks.lino";
+
+fn learned() -> LearnedSchemas {
+    induce(&parse_benchmark_tasks(include_str!(
+        "fixtures/computer-use/tasks.lino"
+    )))
 }
 
 const SNAPSHOT: &str = "docs/case-studies/issue-707/learned-schemas.lino";
@@ -33,9 +41,9 @@ fn the_committed_schema_snapshot_matches_a_fresh_induction() {
     let committed = fs::read_to_string(root().join(SNAPSHOT)).expect("committed schema snapshot");
     assert_eq!(
         committed,
-        learned().links_notation(),
+        learned().links_notation(CORPUS),
         "the learned schemas drifted from the committed evidence; \
-         regenerate with `cargo run --bin formal-ai -- computer-use --learn > {SNAPSHOT}`"
+         regenerate with `cargo run --bin formal-ai -- computer-use --learn --from {CORPUS} > {SNAPSHOT}`"
     );
 }
 
@@ -121,7 +129,7 @@ fn no_synthesized_plan_inherits_a_path_from_another_resource() {
         "Report the process status for the inventory",
         "Move the inbox note and archive it",
     ] {
-        let synthesis = synthesize(prompt).expect("plan");
+        let synthesis = synthesize_with(prompt, &schemas).expect("plan");
         let binding = &schemas.resources[&synthesis.resource];
         let own = binding
             .steps

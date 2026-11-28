@@ -1,0 +1,715 @@
+8054:thread 'seed::semantic_grounding::seed_and_source_wikidata_ids_have_checked_in_cache_records' (14890) panicked at tests/unit/seed/semantic_grounding.rs:131:5:
+8055-seed/source Wikidata ids are missing checked-in cache files:
+8056-P1181.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:128
+8057-P1181.json -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:128
+8058-P1619.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:102
+8059-P1619.json -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:102
+8060-P61.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:137
+--
+8090:thread 'seed::semantic_grounding::semantic_definition_graph_is_closed' (14891) panicked at tests/unit/seed/semantic_grounding.rs:107:5:
+8091-semantic definition graph has dangling references:
+8092-urge -> need
+8093-requested-text-sentiment -> conversational_act
+8095-test seed::semantic_grounding::semantic_definition_graph_is_closed ... FAILED
+8096-   0:     0x55f968537f41 - <<std[c60ef17cbf7de79f]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[62e902411887be45]::fmt::Display>::fmt
+--
+8116:thread 'seed::semantic_grounding::wikidata_cache_records_cover_recursive_grounding_closure' (14892) panicked at tests/unit/seed/semantic_grounding.rs:185:5:
+8117-recursive Wikidata grounding closure is missing checked-in cache files:
+8118-P1181.json -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:128
+8119-P1181.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:128
+8120-P1619.json -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:102
+8121-P1619.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:102
+8122-P61.json -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:137
+--
+13284:thread 'agentic_coding::agentic_surfaces::responses_non_agentic_task_with_tools_falls_through_to_symbolic' (15188) panicked at tests/unit/agentic-coding/agentic_surfaces.rs:485:5:
+13285-assertion `left == right` failed
+13286-  left: [ResponseFunctionToolCall { id: "fc_1034804a7fac5027", kind: "function_call", call_id: "call_1034804a7fac5027", name: "web_search", namespace: None, arguments: "{\"query\":\"capital of france\"}", status: "completed" }]
+13287- right: []
+13289-   0:     0x55b8a7042da1 - <unknown>
+13290-   1:     0x55b8a705fdba - <unknown>
+--
+13314:thread 'agentic_coding::issue_686_agent_cli::associative_learning_requires_a_supplied_observation_network' (16450) panicked at tests/unit/agentic-coding/issue_686_agent_cli.rs:71:9:
+13315-assertion failed: outcome.steps.is_empty()
+13317-   0:     0x55b8a7042da1 - <unknown>
+13318-   1:     0x55b8a705fdba - <unknown>
+13319-   2:     0x55b8a704a06c - <unknown>
+13320-   3:     0x55b8a7016336 - <unknown>
+--
+13341:thread 'agentic_coding::issue_716_agentic_execution::code_generation_writes_source_then_runs_every_catalog_command_in_cli_harness' (16549) panicked at tests/unit/agentic-coding/issue_716_agentic_execution.rs:50:5:
+13342-assertion `left == right` failed
+13343-  left: "stop"
+13344- right: "tool_calls"
+13346-   0:     0x55b8a7042da1 - <unknown>
+13347-   1:     0x55b8a705fdba - <unknown>
+--
+13372:thread 'agentic_coding::planning_routes::planner_ignores_non_formalization_tasks' (16590) panicked at tests/unit/agentic-coding/agentic_coding.rs:200:5:
+13373-assertion `left == right` failed
+13374-  left: Some(ToolCalls([PlannedToolCall { tool: "web_search", arguments: "{\"query\":\"capital of france\"}" }]))
+13375- right: None
+13377-   0:     0x55b8a7042da1 - <unknown>
+13378-   1:     0x55b8a705fdba - <unknown>
+--
+13402:thread 'agentic_coding::work_item_planning::an_uncovered_language_is_not_invented_into_an_artifact' (16687) panicked at tests/unit/agentic-coding/work_item_planning.rs:358:17:
+13403-Haskell is not in the coding catalog, so the only file this run may write is its own plan record: {"content":"main :: IO ()\nmain = putStrLn \"Hello World\"","filePath":"Main.hs","file_path":"Main.hs","path":"Main.hs"}
+13405-   0:     0x55b8a7042da1 - <unknown>
+13406-   1:     0x55b8a705fdba - <unknown>
+13407-   2:     0x55b8a704a06c - <unknown>
+13408-   3:     0x55b8a7016336 - <unknown>
+--
+13428:thread 'coding_discovery::task_spec::conversational_program_without_a_named_callable_uses_the_main_entry_point' (18295) panicked at tests/unit/coding_discovery/task_spec.rs:174:5:
+13429-assertion `left == right` failed
+13430-  left: "count_to_three"
+13431- right: "main"
+13433-   0:     0x55b8a7042da1 - <unknown>
+13434-   1:     0x55b8a705fdba - <unknown>
+--
+13458:thread 'issue_1165_documented_commands::a_derived_command_is_the_catalog_command_of_every_task' (22608) panicked at tests/unit/issue_1165_documented_commands.rs:109:10:
+13459-a program answer carries its execution recipe
+13461-   0:     0x55b8a7042da1 - <unknown>
+13462-   1:     0x55b8a705fdba - <unknown>
+13463-   2:     0x55b8a704a06c - <unknown>
+13464-   3:     0x55b8a7016336 - <unknown>
+--
+13485:thread 'web_engine_core::issue_1177_code_task_handlers::engine_answers_shell_compose_request' (27657) panicked at tests/unit/web-engine-core/issue_1177_code_task_handlers.rs:84:5:
+13486-I parsed '.log files larger than 10 MB under /var' as an arithmetic request but could not evaluate it: expression could not be parsed.
+13488-   0:     0x55b8a7042da1 - <unknown>
+13489-   1:     0x55b8a705fdba - <unknown>
+13490-   2:     0x55b8a704a06c - <unknown>
+13491-   3:     0x55b8a7016336 - <unknown>
+--
+13583:thread 'issue_716_agentic_execution::chat_completions_routes_program_creation_to_the_advertised_cli_write_tool' (31220) panicked at tests/integration/issue_716_agentic_execution.rs:26:5:
+13584-assertion `left == right` failed
+13585-  left: String("stop")
+13586- right: "tool_calls"
+13588-   0:     0x55e2377925e1 - <unknown>
+13589-   1:     0x55e2377ae4aa - <unknown>
+--
+13613:thread 'issue_822_context::verbose_is_global_default_and_silent_is_available' (31430) panicked at tests/integration/issue_822_context.rs:261:5:
+13614-Formal symbolic AI implementation
+13615-
+13616-Usage: formal-ai [OPTIONS] [COMMAND]
+13617-
+13618-Commands:
+13619-  chat                
+--
+17709:thread 'agentic_coding::issue_1085_requirement_resolution::the_ladder_compiles_tests_merges_and_verifies_requirement_levels' (3886) panicked at tests/unit/agentic-coding/issue_1085_requirement_resolution.rs:170:9:
+17710-verify-node.sh must contain "cargo test --test unit"
+17712-   0:     0x55cf3b419da1 - <unknown>
+17713-   1:     0x55cf3b436dba - <unknown>
+17714-   2:     0x55cf3b42106c - <unknown>
+17715-   3:     0x55cf3b3ed336 - <unknown>
+--
+17735:thread 'ci_cd::issue_1107_green_ledger::consumers_of_a_ledgered_producer_gate_on_its_output' (6486) panicked at tests/unit/ci-cd/issue_1107_green_ledger.rs:223:17:
+17736-.github/workflows/agentic-cli-matrix.yml job learn: step `name: Check out workflow-owned artifact extraction` must gate on needs.build.outputs.already-green != 'true'
+17738-   0:     0x55cf3b419da1 - <unknown>
+17739-   1:     0x55cf3b436dba - <unknown>
+17740-   2:     0x55cf3b42106c - <unknown>
+17741-   3:     0x55cf3b3ed336 - <unknown>
+--
+17761:thread 'ci_cd::step_deadlines_and_coverage_budget::runner_telemetry_exists_and_defaults_to_off' (7691) panicked at tests/unit/ci-cd/step_deadlines_and_coverage_budget.rs:235:17:
+17762-learning-cycle.yml: FORMAL_AI_CI_VERBOSE is pinned to `true`; issue #1076 requires the verbose mode to default to off so it is switched on deliberately, not permanently
+17764-   0:     0x55cf3b419da1 - <unknown>
+17765-   1:     0x55cf3b436dba - <unknown>
+17766-   2:     0x55cf3b42106c - <unknown>
+17767-   3:     0x55cf3b3ed336 - <unknown>
+--
+17787:thread 'seed::semantic_grounding::semantic_definition_graph_is_closed' (13902) panicked at tests/unit/seed/semantic_grounding.rs:107:5:
+17788-semantic definition graph has dangling references:
+17789-urge -> need
+17790-requested-text-sentiment -> conversational_act
+17792-   0:     0x55cf3b419da1 - <unknown>
+17793-   1:     0x55cf3b436dba - <unknown>
+--
+17815:thread 'solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured' (14385) panicked at tests/unit/offline_replay.rs:43:5:
+17816-offline replay solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured failed:
+17817-
+17818-running 1 test
+17819-test solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured ... FAILED
+17820-
+17821-failures:
+--
+17830:thread 'solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured' (14399) panicked at tests/unit/solver/issue_1175_routing_probes.rs:368:5:
+17831-1 probes answer other than the fixture pins:
+17832-p207 [opinion_question] "Как ты думаешь, есть ли свобода воли?" answers procedural_how_to (fixture pins opinion_question): set `rust_misroute procedural_how_to`
+17834-   0:     0x564bd60ddda1 - <unknown>
+17835-   1:     0x564bd60fadba - <unknown>
+17836-   2:     0x564bd60e5eac - <unknown>
+--
+17956:thread 'issue_1138_family_behaviour::no_family_answer_is_the_unknown_opener' (15227) panicked at tests/integration/issue_1138_family_behaviour.rs:137:5:
+17957-assertion `left == right` failed
+17958-  left: "write paragraphs; work as a paragrapher -- source Open English WordNet 2024, https://en-word.net/api/lemma/paragraph, CC BY 4.0.\n\nwrite about in a paragraph -- source Open English WordNet 2024, https://en-word.net/api/lemma/paragraph, CC BY 4.
+17959- right: "I identified a source-backed retrieval request, but this isolated turn contains no verified capture for the subject. A trusted-source walk is required before a summary can be asserted."
+17961-   0:     0x55f39b8c85e1 - <unknown>
+17962-   1:     0x55f39b8e44aa - <unknown>
+--
+17986:thread 'issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration' (15484) panicked at tests/integration/issue_859_codex.rs:12:5:
+17987-assertion `left == right` failed
+17988-  left: "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: not run; this program was rediscovered from https://doc.rust-lang.org/book/ch01-02-hello-world.html and its output
+17989- right: "Let me update main.rs for you."
+17991-   0:     0x55f39b8c85e1 - <unknown>
+17992-   1:     0x55f39b8e44aa - <unknown>
+--
+18092:thread 'coding::catalog::lino_parity::lino_seed_task_rows_mirror_every_catalog_task' (15750) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/lino_parity.rs:46:9:
+18093-assertion `left == right` failed: count_to_three
+18094-  left: None
+18095- right: Some("")
+18097-   0:     0x55f7d9369561 - <unknown>
+18098-   1:     0x55f7d9383eba - <unknown>
+--
+21794:thread 'specification::agentic_meta_algorithm::meta_surfaces_expose_the_loop' (3887) panicked at tests/unit/specification/agentic_meta_algorithm.rs:345:9:
+21795-src/main.rs (cli_subcommand) should contain `fn run_agent`
+21797-   0:     0x560b406e8da1 - <unknown>
+21798-   1:     0x560b40705dba - <unknown>
+21799-   2:     0x560b406f006c - <unknown>
+21800-   3:     0x560b406bc336 - <unknown>
+--
+21820:thread 'specification::code_generation::single_turn::russian_list_files_in_rust_returns_program' (4154) panicked at tests/unit/specification/code_generation/single_turn.rs:405:5:
+21821-Russian request should yield a Russian execution status line, got: Вот минимальная программа на языке Rust (list files in the current directory):
+21822-
+21823-```rust
+21824-use std::fs;
+21825-
+21826-fn main() -> std::io::Result<()> {
+--
+21876:thread 'specification::concept_lookup_meta_algorithm::concept_lookup_recipe_is_grounded_in_the_live_retrieval_kernel' (4299) panicked at tests/unit/specification/concept_lookup_meta_algorithm.rs:86:9:
+21877-rust/src/concept_lookup.rs must define the function named by recipe step 1
+21879-   0:     0x560b406e8da1 - <unknown>
+21880-   1:     0x560b40705dba - <unknown>
+21881-   2:     0x560b406f006c - <unknown>
+21882-   3:     0x560b406bc336 - <unknown>
+--
+21902:thread 'specification::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode' (4471) panicked at tests/unit/specification/openai_compatibility.rs:879:5:
+21903-chat surface must refuse autonomous shell execution by default, got: 
+21905-   0:     0x560b406e8da1 - <unknown>
+21906-   1:     0x560b40705dba - <unknown>
+21907-   2:     0x560b406f006c - <unknown>
+21908-   3:     0x560b406bc336 - <unknown>
+--
+21928:thread 'specification::reasoning_paths_procedures::spec_driven_typo_how_to_prompts_cover_supported_languages' (5851) panicked at tests/unit/specification/reasoning_paths_procedures.rs:449:13:
+21929-assertion `left == right` failed
+21930-  left: "## How to do spec driven development\n\n1. Spec-First — Specs seed the initial generation, then code is allowed to drift. Good for AI-assisted features and prototypes. Low overhead, no long-term guarantees.\n2. Spec-Anchored — Specs and code
+21931- right: "I couldn’t verify steps for “do spec driven development”. If you have a guide, share its link and I can help you work through it."
+21933-   0:     0x560b406e8da1 - <unknown>
+21934-   1:     0x560b40705dba - <unknown>
+--
+21958:thread 'specification::reasoning_paths_procedures::telegraphic_install_prompts_use_official_docs_procedure_plan' (5936) panicked at tests/unit/specification/reasoning_paths_procedures.rs:213:9:
+21959-assertion `left == right` failed
+21960-  left: "## How to install cursor\n\n1. Go to cursor.com/download\n2. Click the download button for your operating system\n3. Open the downloaded file\n4. Follow the install steps for your OS: Mac : Drag Cursor into your Applications folder Windows : Run
+21961- right: "I couldn’t verify steps for “install cursor”. If you have a guide, share its link and I can help you work through it."
+21963-   0:     0x560b406e8da1 - <unknown>
+21964-   1:     0x560b40705dba - <unknown>
+--
+21988:thread 'specification::summarization_pipeline::summarization_request_summarizes_inline_conversation_content' (6524) panicked at tests/unit/specification/summarization_pipeline.rs:42:13:
+21989-assertion `left == right` failed
+21990-  left: "User asked about the weather."
+21991- right: "Conversation summary: User asked about the weather.\n\nTitle: Assistant said it is sunny\n\nUser turns:\n  1. User asked about the weather. Assistant said it is sunny."
+21993-   0:     0x560b406e8da1 - <unknown>
+21994-   1:     0x560b40705dba - <unknown>
+--
+22018:thread 'specification::web_app_sources_cover_every_jsx_module' (6950) panicked at tests/unit/specification/mod.rs:186:9:
+22019-/home/runner/work/formal-ai/formal-ai/rust/../js/app/cnl-settings.jsx must be listed in WEB_APP_SOURCES
+22021-   0:     0x560b406e8da1 - <unknown>
+22022-   1:     0x560b40705dba - <unknown>
+22023-   2:     0x560b406f006c - <unknown>
+22024-   3:     0x560b406bc336 - <unknown>
+--
+26021:thread 'agentic_coding::agentic_surfaces::responses_returns_final_message_once_recipe_is_exhausted' (3972) panicked at tests/unit/agentic-coding/agentic_surfaces.rs:441:5:
+26022-final answer should be the knowledge base
+26024-   0:     0x562bb87b3da1 - <unknown>
+26025-   1:     0x562bb87d0dba - <unknown>
+26026-   2:     0x562bb87bb06c - <unknown>
+26027-   3:     0x562bb8787336 - <unknown>
+--
+26047:thread 'agentic_coding::issue_716_agentic_execution::failed_compile_is_reported_and_the_run_command_is_not_attempted' (4720) panicked at tests/unit/agentic-coding/issue_716_agentic_execution.rs:50:5:
+26048-assertion `left == right` failed
+26049-  left: "stop"
+26050- right: "tool_calls"
+26052-   0:     0x562bb87b3da1 - <unknown>
+26053-   1:     0x562bb87d0dba - <unknown>
+--
+26078:thread 'agentic_coding::issue_848_coding_ladder::collection_edit_reads_transforms_writes_and_observes_workspace_bytes' (4802) panicked at tests/unit/agentic-coding/issue_848_coding_ladder.rs:258:17:
+26079-expected one tool call, got Some(Final("{\"complete\":false,\"reason\":\"SourcePreimageUnavailable\",\"schema\":\"workspace-change-verification-gap/v1\",\"target\":\"scripts/detect-code-changes.rs\",\"verified\":false}"))
+26081-   0:     0x562bb87b3da1 - <unknown>
+26082-   1:     0x562bb87d0dba - <unknown>
+26083-   2:     0x562bb87bb06c - <unknown>
+26084-   3:     0x562bb8787336 - <unknown>
+--
+26105:thread 'ci_cd::api_docs_publishing::generated_api_docs_are_published_below_the_site_docs_route' (5188) panicked at tests/unit/ci-cd/api_docs_publishing.rs:63:5:
+26106-assertion failed: workflow.contains("uses: actions/deploy-pages@v5")
+26108-   0:     0x562bb87b3da1 - <unknown>
+26109-   1:     0x562bb87d0dba - <unknown>
+26110-   2:     0x562bb87bb06c - <unknown>
+26111-   3:     0x562bb8787336 - <unknown>
+--
+26132:thread 'ci_cd::ci_warning_audit::download_artifact_deprecation_is_suppressed_only_on_affected_steps' (5208) panicked at tests/unit/ci-cd/ci_warning_audit.rs:181:9:
+26133-.github/workflows/agentic-cli-matrix.yml should exercise download-artifact v8
+26135-   0:     0x562bb87b3da1 - <unknown>
+26136-   1:     0x562bb87d0dba - <unknown>
+26137-   2:     0x562bb87bb06c - <unknown>
+26138-   3:     0x562bb8787336 - <unknown>
+--
+26158:thread 'issue_1021_closed_circle::closed_circle_session_replays' (14835) panicked at tests/unit/offline_replay.rs:43:5:
+26159-offline replay issue_1021_closed_circle::closed_circle_session_replays failed:
+26160-
+26161-running 1 test
+26162-test issue_1021_closed_circle::closed_circle_session_replays ... FAILED
+26163-
+26164-failures:
+--
+26173:thread 'issue_1021_closed_circle::closed_circle_session_replays' (14837) panicked at tests/unit/issue_1021_closed_circle.rs:223:5:
+26174-assertion `left == right` failed: the closed-circle capture is stale; regenerate it with FORMAL_AI_UPDATE_CLOSED_CIRCLE=1
+26175-  left: "{\n  \"contributions\": [\n    {\n      \"changelog_fragment\": \"---\\nbump: patch\\n---\\n\\n### Fixed\\n\\n- Answer the reported behaviour range of issue #1021 — a bare `ls`, `Execute ls command`, `List me files here`, a copy-stdin-to-stdou
+26176- right: "{\n  \"contributions\": [\n    {\n      \"changelog_fragment\": \"---\\nbump: patch\\n---\\n\\n### Fixed\\n\\n- Answer the reported behaviour range of issue #1021 — a bare `ls`, `Execute ls command`, `List me files here`, a copy-stdin-to-stdou
+26178-   0:     0x55ee81a95da1 - <unknown>
+26179-   1:     0x55ee81ab2dba - <unknown>
+--
+26225:thread 'issue_1085_metric_restatement::the_restatement_mechanism_appends_and_the_figure_is_published' (15420) panicked at tests/unit/issue_1085_metric_restatement.rs:76:5:
+26226-assertion failed: metric.contains("\"--replay-epoch\" => replay_epoch = true")
+26228-   0:     0x562bb87b3da1 - <unknown>
+26229-   1:     0x562bb87d0dba - <unknown>
+26230-   2:     0x562bb87bb06c - <unknown>
+26231-   3:     0x562bb8787336 - <unknown>
+--
+26252:thread 'issue_1138_surface_honesty::guidance_has_a_spanish_branch' (16461) panicked at tests/unit/issue_1138_surface_honesty.rs:113:9:
+26253-assertion `left == right` failed: Spanish must be seeded wherever Russian is: ["record_type \"coding_guidance\"", "id \"execution-status-line\"", "en \"Execution status: {status} in {environment}.\"", "ru \"Статус выполнения: {status} в 
+26254-  left: false
+26255- right: true
+26257-   0:     0x562bb87b3da1 - <unknown>
+26258-   1:     0x562bb87d0dba - <unknown>
+--
+26282:thread 'issue_901_triz_solver::a_russian_contradiction_prompt_gets_the_localized_worksheet' (17367) panicked at tests/unit/issue_901_triz_solver.rs:15:5:
+26283-assertion `left == right` failed
+26284-  left: Some("Конфликтующие требования: е: деталь должна быть жёсткой / гибкой")
+26285- right: Some("Конфликтующие требования: деталь должна быть жёсткой / гибкой")
+26287-   0:     0x562bb87b3da1 - <unknown>
+26288-   1:     0x562bb87d0dba - <unknown>
+--
+26312:thread 'minimal_core_and_seed_metadata::coding_path_has_complete_metadata_and_every_other_gap_is_data' (18071) panicked at tests/unit/minimal_core_and_seed_metadata.rs:518:5:
+26313-assertion `left == right` failed: coding-path regression floor
+26314-  left: 121
+26315- right: 117
+26317-   0:     0x562bb87b3da1 - <unknown>
+26318-   1:     0x562bb87d0dba - <unknown>
+--
+26416:thread 'issue_859_codex::codex_streams_native_custom_patch_events' (22141) panicked at tests/integration/issue_859_codex.rs:110:5:
+26417-event: response.created
+26418-data: {"response":{"created_at":1795584720,"evidence_links":[],"id":"resp_58ff0015c7a2ad1d","model":"formal-ai","object":"response","output":[],"status":"in_progress","usage":{"input_tokens":35,"output_tokens":775,"total_tokens":810}},"sequence_number":0
+26419-
+26420-event: response.in_progress
+26421-data: {"response":{"created_at":1795584720,"evidence_links":[],"id":"resp_58ff0015c7a2ad1d","model":"formal-ai","object":"response","output":[],"status":"in_progress","usage":{"input_tokens":35,"output_tokens":775,"total_tokens":810}},"sequence_number":1
+26422-
+--
+26495:thread 'issue_712_intent_routing::leading_edit_action_is_language_general' (21899) panicked at tests/integration/http_server.rs:300:69:
+26496-POST should complete: Os { code: 11, kind: WouldBlock, message: "Resource temporarily unavailable" }
+26498-   0:     0x558bf1b885e1 - <unknown>
+26499-   1:     0x558bf1ba44aa - <unknown>
+26500-   2:     0x558bf1b8ea3c - <unknown>
+26501-   3:     0x558bf1b5b9d6 - <unknown>
+--
+26602:thread 'coding::blueprint::tests::selects_python_personal_budget_report_blueprint' (22462) panicked at tests/source/coding/../source_tests/coding/blueprint/tests.rs:52:5:
+26603-assertion failed: blueprint.program.code.contains("budget_report.md")
+26605-   0:     0x55b4b6748561 - <unknown>
+26606-   1:     0x55b4b6762eba - <unknown>
+26607-   2:     0x55b4b674db6c - <unknown>
+26608-   3:     0x55b4b671f446 - <unknown>
+--
+26629:thread 'coding::catalog::seed_alias_coverage::every_task_alias_meaning_names_a_catalog_slug' (22464) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/seed_alias_coverage.rs:68:17:
+26630-`program-reverse-operand-introducer` carries the task-alias role but is not a `program_task_<slug>` meaning
+26632-   0:     0x55b4b6748561 - <unknown>
+26633-   1:     0x55b4b6762eba - <unknown>
+26634-   2:     0x55b4b674db6c - <unknown>
+26635-   3:     0x55b4b671f446 - <unknown>
+--
+37254:thread 'agentic_coding::codex_patch_writes::codex_hello_world_starts_with_apply_patch_instead_of_write_stdin' (3971) panicked at tests/unit/agentic-coding/codex_patch_writes.rs:32:9:
+37255-Codex should receive a workspace creation tool call: None
+37257-   0:     0x56198bcccda1 - <unknown>
+37258-   1:     0x56198bce9dba - <unknown>
+37259-   2:     0x56198bcd406c - <unknown>
+37260-   3:     0x56198bca0336 - <unknown>
+--
+37280:thread 'agentic_coding::issue_716_agentic_execution::follow_up_change_writes_the_updated_program_instead_of_repeating_old_code' (4709) panicked at tests/unit/agentic-coding/issue_716_agentic_execution.rs:50:5:
+37281-assertion `left == right` failed
+37282-  left: "stop"
+37283- right: "tool_calls"
+37285-   0:     0x56198bcccda1 - <unknown>
+37286-   1:     0x56198bce9dba - <unknown>
+--
+37311:thread 'ci_cd::ci_diagnostic_audit::every_javascript_lock_surface_has_one_explicit_advisory_gate' (6633) panicked at tests/unit/ci-cd/ci_diagnostic_audit.rs:244:5:
+37312-assertion failed: script.contains("$NF == name")
+37314-   0:     0x56198bcccda1 - <unknown>
+37315-   1:     0x56198bce9dba - <unknown>
+37316-   2:     0x56198bcd406c - <unknown>
+37317-   3:     0x56198bca0336 - <unknown>
+--
+37338:thread 'ci_cd::desktop_jobs_and_permissions::reviewed_dependency_warnings_are_narrowly_classified' (6657) panicked at tests/unit/ci-cd/desktop_jobs_and_permissions.rs:130:5:
+37339-assertion failed: desktop.contains("NODE_OPTIONS: --disable-warning=DEP0005")
+37341-   0:     0x56198bcccda1 - <unknown>
+37342-   1:     0x56198bce9dba - <unknown>
+37343-   2:     0x56198bcd406c - <unknown>
+37344-   3:     0x56198bca0336 - <unknown>
+--
+37365:thread 'ci_cd::third_party_cli_version_pins::no_committed_script_reaches_for_a_timeout_binary_macos_does_not_have' (7565) panicked at tests/unit/ci-cd/third_party_cli_version_pins.rs:742:17:
+37366-scripts/check-rust-dependencies.sh:66: `timeout` is GNU coreutils and the macOS runners do not have it -- use scripts/run-with-deadline.sh, which keeps the same 124-on-expiry contract
+37368-   0:     0x56198bcccda1 - <unknown>
+37369-   1:     0x56198bce9dba - <unknown>
+37370-   2:     0x56198bcd406c - <unknown>
+37371-   3:     0x56198bca0336 - <unknown>
+--
+37391:thread 'docs_requirements::issues::full_range_coding_artifacts::every_test_the_traceability_rows_cite_exists' (11021) panicked at tests/unit/docs_requirements/full_range_coding_artifacts.rs:324:13:
+37392-rust/tests/unit/issue_1021_behaviour_range.rs should define the test the_stdin_answer_prints_the_input_it_was_verified_against its traceability row cites
+37394-   0:     0x56198bcccda1 - <unknown>
+37395-   1:     0x56198bce9dba - <unknown>
+37396-   2:     0x56198bcd406c - <unknown>
+37397-   3:     0x56198bca0336 - <unknown>
+--
+37417:thread 'formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct' (11237) panicked at tests/unit/formal_ai/seed_and_memory.rs:239:5:
+37418-assertion failed: fetch_response.answer.contains("https://google.com")
+37420-   0:     0x56198bcccda1 - <unknown>
+37421-   1:     0x56198bce9dba - <unknown>
+37422-   2:     0x56198bcd406c - <unknown>
+37423-   3:     0x56198bca0336 - <unknown>
+--
+37444:thread 'issue_1066_ladder_capability::a_client_that_speaks_no_computer_use_is_not_told_a_primitive_is_missing' (11522) panicked at tests/unit/issue_1066_ladder_capability.rs:670:5:
+37445-assertion `left == right` failed
+37446-  left: None
+37447- right: Some(Final("capability_gap: required primitive fs.write was not advertised for plan synthesized-computer_use_resource_customers-computer_use_count_lines, step synthesized-computer_use_resource_customers-computer_use_count_lines-01."))
+37449-   0:     0x56198bcccda1 - <unknown>
+37450-   1:     0x56198bce9dba - <unknown>
+--
+37474:thread 'issue_1165_discovery_production::a_supplied_code_fence_is_not_bound_as_the_hello_world_literal' (14741) panicked at tests/unit/issue_1165_discovery_production.rs:382:10:
+37475-a program answer carries its execution recipe
+37477-   0:     0x56198bcccda1 - <unknown>
+37478-   1:     0x56198bce9dba - <unknown>
+37479-   2:     0x56198bcd406c - <unknown>
+37480-   3:     0x56198bca0336 - <unknown>
+--
+37501:thread 'minimal_core_and_seed_metadata::generic_interpreter_components_are_registered_outside_the_census' (16011) panicked at tests/unit/minimal_core_and_seed_metadata.rs:333:9:
+37502-assertion `left == right` failed: component numeric-list-program-interpreter is registered under the boundary document's interpreter category
+37503-  left: "seed-driven coding interpreter"
+37504- right: "Generic interpreter"
+37506-   0:     0x56198bcccda1 - <unknown>
+37507-   1:     0x56198bce9dba - <unknown>
+--
+37531:thread 'seed::reference_closure::meaning_definition_references_resolve_to_defined_meanings' (16779) panicked at tests/unit/seed/reference_closure.rs:112:5:
+37532-meaning graph has 2 reference(s) that resolve to no defined meaning (every defined-by/facet target must be a defined meaning slug):
+37533-urge defined-by need
+37534-requested-text-sentiment defined-by conversational_act
+37536-   0:     0x56198bcccda1 - <unknown>
+37537-   1:     0x56198bce9dba - <unknown>
+--
+37559:thread 'solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description' (16817) panicked at tests/unit/solver/issue_1138_self_use_concept_lookup.rs:291:13:
+37560-assertion `left == right` failed
+37561-  left: "No consulted source defined \"Is the sentence \"quick brown fox\" a lipogram\". Consulted: github unbound_template wikidata unbound_template wiktionary unreachable wordnet unreachable wikipedia unreachable stackexchange unreachable; github unbou
+37562- right: "No consulted source defined \"Is the sentence \"quick brown fox\" a lipogram\". Consulted: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offl
+37564-   0:     0x56198bcccda1 - <unknown>
+37565-   1:     0x56198bce9dba - <unknown>
+--
+37589:thread 'solver::issue_938_meta_algorithm_builder::shared_program_synthesis_trace_is_multilingual' (16859) panicked at tests/unit/solver/issue_938_meta_algorithm_builder.rs:13:5:
+37590-assertion `left == right` failed: every coding surface must execute the same seven stages: answer_prompt_ecc9bc008ec9bbe8
+37591-  prompt "English request: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text."
+37592-  intent "write_program"
+37593-  answer "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef count_vowels(text: str):\n    return sum(1 for character in text if character in 'aeiouAEIOU')\n```\n\nExecution stat
+37594-  trace "trace_6777f098dd1c5f6f"
+37595-﻿2026-11-25T05:14:08.7173523Z Current runner version: '2.338.2'
+--
+46616:thread 'specification::agentic_meta_algorithm::meta_functions_exist_in_named_source' (3765) panicked at tests/unit/specification/agentic_meta_algorithm.rs:286:9:
+46617-src/agentic_coding/capability_router.rs should define fn classify_tool
+46619-   0:     0x55b68a7b8da1 - <unknown>
+46620-   1:     0x55b68a7d5dba - <unknown>
+46621-   2:     0x55b68a7c006c - <unknown>
+46622-   3:     0x55b68a78c336 - <unknown>
+--
+46642:thread 'specification::associative_packages::chat_tool_gate_requires_agent_mode_and_package_permission' (3771) panicked at tests/unit/specification/associative_packages.rs:164:5:
+46643-assertion failed: denied.choices[0].message.content.plain_text().contains("agent mode")
+46645-   0:     0x55b68a7b8da1 - <unknown>
+46646-   1:     0x55b68a7d5dba - <unknown>
+46647-   2:     0x55b68a7c006c - <unknown>
+46648-   3:     0x55b68a78c336 - <unknown>
+--
+46670:thread 'specification::code_generation::task_catalog::factorial_operand_excludes_the_number_of_requested_functions' (4269) panicked at tests/unit/specification/code_generation/task_catalog.rs:196:9:
+46671-assertion `left == right` failed: Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए
+46672-  left: "यह खोज\u{947} गए भागो\u{902} स\u{947} प\u{941}नर\u{94d}निर\u{94d}मित और प\u{943}थक workspace म\u{947}\u{902} सत\u{94d}यापित Python artifact ह\u{948}:\n\n```python\ndef factori
+46673- right: "इस अन\u{941}रोध क\u{947} लिए कोई सत\u{94d}यापित स\u{94d}रोत-कथन प\u{94d}राप\u{94d}त नही\u{902} ह\u{941}आ, इसलिए क\u{941}छ भी नही\u{902} लिख
+46675-   0:     0x55b68a7b8da1 - <unknown>
+46676-   1:     0x55b68a7d5dba - <unknown>
+--
+46700:thread 'specification::meta_algorithm::meta_recipe_functions_exist_in_named_source' (5187) panicked at tests/unit/specification/meta_algorithm.rs:206:9:
+46701-src/solver_handler_how.rs should define fn render_procedural_how_to_body
+46703-   0:     0x55b68a7b8da1 - <unknown>
+46704-   1:     0x55b68a7d5dba - <unknown>
+46705-   2:     0x55b68a7c006c - <unknown>
+46706-   3:     0x55b68a78c336 - <unknown>
+--
+46726:thread 'specification::method_registry::registry_covers_all_dispatch_surfaces' (5205) panicked at tests/unit/specification/method_registry.rs:42:5:
+46727-assertion `left == right` failed: there are exactly fourteen contextual override handlers
+46728-  left: 18
+46729- right: 14
+46731-   0:     0x55b68a7b8da1 - <unknown>
+46732-   1:     0x55b68a7d5dba - <unknown>
+--
+46756:thread 'specification::prompt_variations::brainstorming_intent_routes_to_brainstorm_handler' (5350) panicked at tests/unit/specification/prompt_variations.rs:601:13:
+46757-Give me 5 ideas for a local-first AI helper.: 1. Build a minimal prototype for local-first ai helper. and try it on a representative task.
+46758-2. Design an onboarding exercise for local-first ai helper. and time a first attempt.
+46759-3. Compare two approaches to local-first ai helper. under the same constraints.
+46760-4. Make a checklist for local-first ai helper. based on common failure modes.
+46761-5. Create an accessibility review for local-first ai helper. and validate one improvement.
+--
+46786:thread 'specification::reasoning_paths_procedures::how_to_procedure_is_general_not_memoized_to_examples' (6205) panicked at tests/unit/specification/reasoning_paths_procedures.rs:412:5:
+46787-assertion `left == right` failed
+46788-  left: "## How to calibrate a torque wrench\n\n1. Measure from the square drive to the handle.\n2. Secure the square drive in the vice. Orient your bench vice so you can place the square drive of the torque wrench into and have the handle extend out, aw
+46789- right: "I couldn’t verify steps for “calibrate a torque wrench”. If you have a guide, share its link and I can help you work through it."
+46791-   0:     0x55b68a7b8da1 - <unknown>
+46792-   1:     0x55b68a7d5dba - <unknown>
+--
+46816:thread 'specification::reasoning_paths_procedures::procedural_elaboration_followup_covers_many_topics' (6279) panicked at tests/unit/specification/reasoning_paths_procedures.rs:744:9:
+46817-follow-up after "how to publish to npm" should recover the exact task; evidence=["prompt:prompt_8b4f1ea452ba62a7", "prior_turn:user:prior_turn:user_33b63e0768581a8c", "prior_turn:assistant:prior_turn:assistant_d16e6a8db60da8a2", "impulse:impulse_c76068fd
+46819-   0:     0x55b68a7b8da1 - <unknown>
+46820-   1:     0x55b68a7d5dba - <unknown>
+46821-   2:     0x55b68a7c006c - <unknown>
+46822-   3:     0x55b68a78c336 - <unknown>
+--
+46842:thread 'specification::reasoning_paths_procedures::procedural_elaboration_followup_rebinds_to_prior_how_to' (6328) panicked at tests/unit/specification/reasoning_paths_procedures.rs:534:9:
+46843-missing evidence prefix "procedural_how_to:request:publish to npm": ["prompt:prompt_8b4f1ea452ba62a7", "prior_turn:user:prior_turn:user_33b63e0768581a8c", "prior_turn:assistant:prior_turn:assistant_d16e6a8db60da8a2", "impulse:impulse_c76068fd53784508", "
+46845-   0:     0x55b68a7b8da1 - <unknown>
+46846-   1:     0x55b68a7d5dba - <unknown>
+46847-   2:     0x55b68a7c006c - <unknown>
+46848-   3:     0x55b68a78c336 - <unknown>
+--
+52775:thread 'specification::code_generation::single_turn::english_list_files_in_python_returns_program' (4765) panicked at tests/unit/specification/code_generation/single_turn.rs:434:5:
+52776-assertion failed: response.answer.contains("Execution status: compiled and ran")
+52778-   0:     0x56129de90da1 - <unknown>
+52779-   1:     0x56129deaddba - <unknown>
+52780-   2:     0x56129de9806c - <unknown>
+52781-   3:     0x56129de64336 - <unknown>
+--
+52802:thread 'specification::code_generation::single_turn::rust_hello_world_composes_a_stdout_program' (4785) panicked at tests/unit/specification/code_generation/single_turn.rs:29:5:
+52803-assertion failed: response.answer.contains("Execution status: not probed in this environment.")
+52805-   0:     0x56129de90da1 - <unknown>
+52806-   1:     0x56129deaddba - <unknown>
+52807-   2:     0x56129de9806c - <unknown>
+52808-   3:     0x56129de64336 - <unknown>
+--
+52829:thread 'specification::prompt_variations::factual_qna_matrix_records_per_language_evidence' (8931) panicked at tests/unit/specification/prompt_variations.rs:738:13:
+52830-Who wrote The Lord of the Rings?: ["prompt:prompt_629eaf819af36a8a", "fact_query:request:fact_query:request_ddd35a09bdc29d42", "fact_query:relation:author_of_book", "fact_query:subject:lord of the rings", "search:external:search:external_8547dcde152ef3c6
+52832-   0:     0x56129de90da1 - <unknown>
+52833-   1:     0x56129deaddba - <unknown>
+52834-   2:     0x56129de9806c - <unknown>
+52835-   3:     0x56129de64336 - <unknown>
+--
+52855:thread 'specification::reasoning_paths_procedures::how_to_prepare_fried_potatoes_falls_back_to_web_search' (9067) panicked at tests/unit/specification/reasoning_paths_procedures.rs:156:5:
+52856-assertion `left == right` failed
+52857-  left: "## How to prepare fried potatoes\n\n1. Rinse the potatoes and season with salt.\n2. Heat the oil in a pan, and add the potatoes when hot. Cook until golden all over, flipping as needed.\n\n### Sources\n- wikibooks → https://en.wikibooks.org/wi
+52858- right: "I couldn’t verify steps for “prepare fried potatoes”. If you have a guide, share its link and I can help you work through it."
+52860-   0:     0x56129de90da1 - <unknown>
+52861-   1:     0x56129deaddba - <unknown>
+--
+56538:thread 'specification::budget_search_meta_algorithm::meta_recipe_integration_is_wired_into_the_loop_with_budget_controls' (6274) panicked at tests/unit/specification/budget_search_meta_algorithm.rs:261:5:
+56539-rust/src/solver.rs should expose the compute_budget config field
+56541-   0:     0x559b2a003da1 - <unknown>
+56542-   1:     0x559b2a020dba - <unknown>
+56543-   2:     0x559b2a00b06c - <unknown>
+56544-   3:     0x559b29fd7336 - <unknown>
+--
+56564:thread 'specification::code_generation::single_turn::russian_program_request_with_unknown_task_is_not_unknown' (6502) panicked at tests/unit/specification/code_generation/single_turn.rs:498:5:
+56565-assertion `left == right` failed: Russian program request should be recognized as write_program, got: write_program
+56566-  left: "write_program"
+56567- right: "write_program_skill_gap"
+56569-   0:     0x559b2a003da1 - <unknown>
+56570-   1:     0x559b2a020dba - <unknown>
+--
+56594:thread 'specification::openai_compatibility::http_models_endpoint_advertises_only_formal_ai' (7894) panicked at tests/unit/specification/openai_compatibility.rs:327:5:
+56595-assertion `left == right` failed
+56596-  left: ["formal-ai", "formal-ai-embeddings"]
+56597- right: ["formal-ai"]
+56599-   0:     0x559b2a003da1 - <unknown>
+56600-   1:     0x559b2a020dba - <unknown>
+--
+56624:thread 'specification::conversational_reverification::independent_questions_are_answered_in_source_order_in_every_language' (6988) panicked at tests/unit/specification/conversational_reverification.rs:83:9:
+56625-assertion `left == right` failed: hi should expose all decomposed questions: ["prompt:prompt_28a94e9e68931ffc", "impulse:impulse_a177e61b53638531", "language:hi", "candidate:candidate_74c3299da1dfcca6", "statement_weight:formalization:0 weight=1.000000 s
+56626-  left: 5
+56627- right: 3
+56629-   0:     0x559b2a003da1 - <unknown>
+56630-   1:     0x559b2a020dba - <unknown>
+--
+56654:thread 'specification::prompt_variations::hello_world_matrix_emits_a_code_block_per_language' (8003) panicked at tests/unit/specification/prompt_variations.rs:453:9:
+56655-assertion `left == right` failed
+56656-  left: "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: not run; this program was rediscovered from https://doc.rust-lang.org/book/ch01-02-hello-world.html and its output
+56657- right: "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: not probed in this environment.\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nOutput, not observ
+56659-   0:     0x559b2a003da1 - <unknown>
+56660-   1:     0x559b2a020dba - <unknown>
+--
+56684:thread 'specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan' (8298) panicked at tests/unit/specification/reasoning_paths_procedures.rs:125:5:
+56685-assertion `left == right` failed
+56686-  left: "## How to make tea\n\n1. Put fresh water into a kettle. If you're just making a cup of tea, pour about 1.5 times as much water as you need to fill the cup.\n2. Heat the water in your kettle until it comes to a boil.\n3. Microwave the water if yo
+56687- right: "I couldn’t verify steps for “make tea”. If you have a guide, share its link and I can help you work through it."
+56689-   0:     0x559b2a003da1 - <unknown>
+56690-   1:     0x559b2a020dba - <unknown>
+--
+56714:thread 'specification::code_generation_blueprint::budget_calculator_blueprint_covers_supported_prompt_languages' (6519) panicked at tests/unit/specification/code_generation_blueprint.rs:331:9:
+56715-assertion `left == right` failed: language ru should route to budget blueprint, got: web_search
+56716-  left: "web_search"
+56717- right: "write_program"
+56719-   0:     0x559b2a003da1 - <unknown>
+56720-   1:     0x559b2a020dba - <unknown>
+--
+60686:thread 'ci_cd::excluded_only_changes::excluded_only_change_matrix_is_covered_for_pushes_and_pull_requests' (6566) panicked at tests/unit/ci-cd/excluded_only_changes.rs:77:9:
+60687-missing ignored-path regression fixture for experiments/repro.rs
+60689-   0:     0x55c042595da1 - <unknown>
+60690-   1:     0x55c0425b2dba - <unknown>
+60691-   2:     0x55c04259d06c - <unknown>
+60692-   3:     0x55c042569336 - <unknown>
+--
+60712:thread 'ci_cd::macos_test_partitioning::current_template_security_and_link_gates_are_present' (7093) panicked at tests/unit/ci-cd/macos_test_partitioning.rs:122:5:
+60713-assertion failed: unwrapped(&links).contains("!cancelled() && steps.lychee.outputs.exit_code != 0")
+60715-   0:     0x55c042595da1 - <unknown>
+60716-   1:     0x55c0425b2dba - <unknown>
+60717-   2:     0x55c04259d06c - <unknown>
+60718-   3:     0x55c042569336 - <unknown>
+--
+60739:thread 'ci_cd::step_budgets_within_job_clocks::link_report_parser_is_unit_tested_before_it_is_trusted' (7130) panicked at tests/unit/ci-cd/step_budgets_within_job_clocks/link_parser.rs:65:5:
+60740-a cancelled link check must not append a `broken links` error to a run that never finished checking them
+60742-   0:     0x55c042595da1 - <unknown>
+60743-   1:     0x55c0425b2dba - <unknown>
+60744-   2:     0x55c04259d06c - <unknown>
+60745-   3:     0x55c042569336 - <unknown>
+--
+60766:thread 'ci_cd::step_deadlines_and_coverage_budget::workflows_are_audited_for_security_not_only_syntax' (7132) panicked at tests/unit/ci-cd/step_deadlines_and_coverage_budget.rs:461:10:
+60767-workflows.yml must run zizmor at least once (issue #1076)
+60769-   0:     0x55c042595da1 - <unknown>
+60770-   1:     0x55c0425b2dba - <unknown>
+60771-   2:     0x55c04259d06c - <unknown>
+60772-   3:     0x55c042569336 - <unknown>
+--
+60793:thread 'issue_1021_behaviour_range::asking_for_code_is_a_coding_request_whatever_the_asking_verb' (7679) panicked at tests/unit/issue_1021_behaviour_range.rs:448:9:
+60794-assertion `left == right` failed: ru: мне нужен код на пхп
+60795-  left: false
+60796- right: true
+60798-   0:     0x55c042595da1 - <unknown>
+60799-   1:     0x55c0425b2dba - <unknown>
+--
+60823:thread 'issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures' (13989) panicked at tests/unit/issue_1588_intent_spans.rs:35:17:
+60824-Какая дата будет через 10 дней после 25 декабря 2026 года?: SymbolicAnswer { intent: "calendar_date_offset", answer: "Дата: 4 января 2027 года. 2026-12-25 +10 дней = 2027-01-04.", confidence: 1.0, 
+60826-   0:     0x55c042595da1 - <unknown>
+60827-   1:     0x55c0425b2dba - <unknown>
+60828-   2:     0x55c04259d06c - <unknown>
+60829-   3:     0x55c042569336 - <unknown>
+--
+60849:thread 'issue_918_handler_rules_batch::the_algorithm_rules_compose_the_requested_language' (15502) panicked at tests/unit/issue_918_handler_rules_batch.rs:602:9:
+60850-assertion `left == right` failed
+60851-  left: "Include its expected inputs and outputs."
+60852- right: "What should the algorithm do? Include its expected inputs and outputs."
+60854-   0:     0x55c042595da1 - <unknown>
+60855-   1:     0x55c0425b2dba - <unknown>
+--
+60879:thread 'unresolved_request_research::offline_mode_preserves_the_explicit_no_network_boundary' (17577) panicked at tests/unit/unresolved_request_research.rs:87:5:
+60880-assertion `left == right` failed
+60881-  left: "web_search"
+60882- right: "unknown"
+60884-   0:     0x55c042595da1 - <unknown>
+60885-   1:     0x55c0425b2dba - <unknown>
+--
+60978:thread 'issue_716_agentic_execution::anthropic_messages_routes_program_creation_to_the_advertised_cli_write_tool' (18778) panicked at tests/integration/issue_716_agentic_execution.rs:48:5:
+60979-assertion `left == right` failed
+60980-  left: String("end_turn")
+60981- right: "tool_use"
+60983-   0:     0x564006ea45e1 - <unknown>
+60984-   1:     0x564006ec04aa - <unknown>
+--
+61008:thread 'issue_1138_concept_lookup_http::chat_completions_honours_a_dictionary_opt_out' (18623) panicked at tests/integration/issue_1138_concept_lookup_http.rs:135:5:
+61009-the disabled service is still reported as disabled: Fused 0 statement(s) from 0 captured source(s) for `Explain the word lipogram`:
+61010-
+61011-
+61013-   0:     0x564006ea45e1 - <unknown>
+61014-   1:     0x564006ec04aa - <unknown>
+--
+61113:thread 'coding::catalog::seed_alias_coverage::every_language_alias_meaning_names_a_catalog_slug' (18986) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/seed_alias_coverage.rs:53:9:
+61114-alias meaning `program_language_bash` names language slug `bash`, absent from PROGRAM_LANGUAGES
+61116-   0:     0x56379ba10561 - <unknown>
+61117-   1:     0x56379ba2aeba - <unknown>
+61118-   2:     0x56379ba15b6c - <unknown>
+61119-   3:     0x56379b9e7446 - <unknown>
+--
+65080:thread 'agentic_coding::issue_716_agentic_execution::follow_up_output_change_preserves_non_output_literals_in_other_languages' (4494) panicked at tests/unit/agentic-coding/issue_716_agentic_execution.rs:50:5:
+65081-assertion `left == right` failed
+65082-  left: "stop"
+65083- right: "tool_calls"
+65085-   0:     0x55d6ec5d6da1 - <unknown>
+65086-   1:     0x55d6ec5f3dba - <unknown>
+--
+65111:thread 'agentic_coding::work_item_planning::repository_work_item_run_reports_planned_not_executed_instead_of_success' (4797) panicked at tests/unit/agentic-coding/work_item_planning.rs:174:5:
+65112-the unavailable-source report must identify the original issue: The command failed: run_command produced no result for "grep -rIlw --exclude-dir=node_modules --exclude-dir=.git -e 'verification_command' . | head -n 20"
+65114-   0:     0x55d6ec5d6da1 - <unknown>
+65115-   1:     0x55d6ec5f3dba - <unknown>
+65116-   2:     0x55d6ec5de06c - <unknown>
+65117-   3:     0x55d6ec5aa336 - <unknown>
+--
+65137:thread 'capability_routing::issue_1175_claim_routing::a_surface_word_alone_is_not_admitted' (6131) panicked at tests/unit/capability-routing/issue_1175_claim_routing.rs:94:9:
+65138-`fact_lookup` must not be offered `List films in release order.`
+65140-   0:     0x55d6ec5d6da1 - <unknown>
+65141-   1:     0x55d6ec5f3dba - <unknown>
+65142-   2:     0x55d6ec5de06c - <unknown>
+65143-   3:     0x55d6ec5aa336 - <unknown>
+--
+65163:thread 'ci_cd::attestation_and_coverage_audit::artifact_download_and_expected_adhoc_signing_are_warning_free' (6135) panicked at tests/unit/ci-cd/attestation_and_coverage_audit.rs:134:5:
+65164-assertion failed: desktop.contains("uses: actions/download-artifact@v8")
+65166-   0:     0x55d6ec5d6da1 - <unknown>
+65167-   1:     0x55d6ec5f3dba - <unknown>
+65168-   2:     0x55d6ec5de06c - <unknown>
+65169-   3:     0x55d6ec5aa336 - <unknown>
+--
+65190:thread 'coding_discovery::multilingual::count_to_one_hundred_requests_derive_the_full_inclusive_output' (7296) panicked at tests/unit/coding_discovery/multilingual.rs:88:9:
+65191-assertion `left == right` failed
+65192-  left: "count_to_three"
+65193- right: "main"
+65195-   0:     0x55d6ec5d6da1 - <unknown>
+65196-   1:     0x55d6ec5f3dba - <unknown>
+--
+65220:thread 'issue_1021_behaviour_range::a_framework_named_coding_request_keeps_the_framework' (8415) panicked at tests/unit/issue_1021_behaviour_range.rs:410:9:
+65221-assertion `left == right` failed: ru: напиши мне код на PHP Laravel
+65222-  left: false
+65223- right: true
+65225-   0:     0x55d6ec5d6da1 - <unknown>
+65226-   1:     0x55d6ec5f3dba - <unknown>
+--
+65250:thread 'issue_918_handler_rules_batch::brainstormed_project_ideas_use_the_requested_topic_and_count' (11686) panicked at tests/unit/issue_918_handler_rules_batch.rs:430:5:
+65251-
+65253-   0:     0x55d6ec5d6da1 - <unknown>
+65254-   1:     0x55d6ec5f3dba - <unknown>
+65255-   2:     0x55d6ec5de06c - <unknown>
+65256-   3:     0x55d6ec5aa336 - <unknown>
+--
+65276:thread 'issue_932_box_language_projects::generated_programs_are_identical_across_prompt_locales' (11693) panicked at tests/unit/issue_932_box_language_projects.rs:251:13:
+65277-assertion `left == right` failed: python/en must show the canonical program exactly
+65278-  left: Some("print(\"Hello, world!\")")
+65279- right: Some("print('Hello, world!')")
+65281-   0:     0x55d6ec5d6da1 - <unknown>
+65282-   1:     0x55d6ec5f3dba - <unknown>
+--
+65306:thread 'seed::semantic_grounding::seed_and_source_wikidata_ids_have_checked_in_cache_records' (13441) panicked at tests/unit/seed/semantic_grounding.rs:131:5:
+65307-seed/source Wikidata ids are missing checked-in cache files:
+65308-P1181.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:128
+65309-P1181.json -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:128
+65310-P1619.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:102
+65311-P1619.json -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:102
+65312-P61.lino -> /home/runner/work/formal-ai/formal-ai/data/seed/meanings-facts.lino:137
+--
+65344:thread 'solver::issue_1138_self_use_concept_lookup::a_spanish_prompt_is_not_reported_as_an_unsupported_language' (13604) panicked at tests/unit/solver/issue_1138_self_use_concept_lookup.rs:334:5:
+65345-assertion `left == right` failed
+65346-  left: "Ninguna fuente consultada definió «¿La frase \"quick brown fox\" es un lipograma en e». Fuentes consultadas: github unbound_template wikidata unbound_template wiktionary unreachable wordnet unbound_template wikipedia unreachable stackexchang
+65347- right: "Ninguna fuente consultada definió «¿La frase \"quick brown fox\" es un lipograma en e». Fuentes consultadas: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_mis
+65349-   0:     0x55d6ec5d6da1 - <unknown>
+65350-   1:     0x55d6ec5f3dba - <unknown>
+--
+65514:thread 'coding::catalog::lino_parity::lino_seed_mirrors_every_catalog_template' (15038) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/lino_parity.rs:73:9:
+65515-assertion `left == right` failed: lino seed is missing the reverse_string/php template (escaped code not found)
+65516-  left: Some("<?php\n\n$text = {{text}};\necho implode(\", array_reverse(preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY))), PHP_EOL;")
+65517- right: Some("<?php\n\n$text = {{text}};\necho implode(\"\", array_reverse(preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY))), PHP_EOL;")
+65519-   0:     0x55ab0211e561 - <unknown>
+65520-   1:     0x55ab02138eba - <unknown>
+--
+65544:thread 'repository_workspace::tests::module_files_are_where_the_convention_says' (15062) panicked at tests/source/source_tests/repository_workspace/tests.rs:75:5:
+65545-assertion `left == right` failed: the module tree must hold exactly the files the plan declares
+65546-  left: ["rust/src/repository_workspace/clone.rs", "rust/src/repository_workspace/command_allowlist.rs", "rust/src/repository_workspace/diff.rs", "rust/src/repository_workspace/edit.rs", "rust/src/repository_workspace/locate.rs", "rust/src/repository_wor
+65547- right: ["rust/src/repository_workspace/clone.rs", "rust/src/repository_workspace/diff.rs", "rust/src/repository_workspace/edit.rs", "rust/src/repository_workspace/locate.rs", "rust/src/repository_workspace/mod.rs", "rust/src/repository_workspace/operati
+65549-   0:     0x55ab0211e561 - <unknown>
+65550-   1:     0x55ab02138eba - <unknown>

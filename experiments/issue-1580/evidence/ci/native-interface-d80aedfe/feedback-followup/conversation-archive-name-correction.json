@@ -1,0 +1,9 @@
+{
+  "from": "pr-comments.json.gz",
+  "to": "pull-request-conversation-comments.json.gz",
+  "compressedBytesUnchanged": true,
+  "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+  "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30",
+  "abbreviationCeilingRaised": false,
+  "initialFailureEvidence": "experiments/issue-1580/evidence/checks/review-record-validation/review-gates.log.gz"
+}

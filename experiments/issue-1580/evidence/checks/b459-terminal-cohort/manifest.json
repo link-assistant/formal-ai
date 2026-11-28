@@ -1,0 +1,30 @@
+{
+  "sourceHead": "b459d0b0f66ddf285815ef20553f43e4460bd41a",
+  "completedAt": "2026-11-23T00:47:57.944209+00:00",
+  "workflows": {
+    "total": 33,
+    "success": 31,
+    "failure": 1,
+    "skipped": 1
+  },
+  "failedRun": 45085971679,
+  "failedNativeJobs": [
+    137406760782,
+    137406760817,
+    137406760874
+  ],
+  "observedAssertionFailures": 4,
+  "additionalActionableFailures": 0,
+  "nativeCompileAndLint": "success",
+  "nativeGroups": {
+    "success": 7,
+    "failure": 3
+  },
+  "layeredCi": "success",
+  "candidateNativeExecution": "pending next published head",
+  "payloadCount": 19,
+  "roundTripVerified": true,
+  "archiveSha256": "8efa1f7c81b894ae0aff6a9489b8aee5b7fa3a713cdb467ddbc1c5a05312ecdd",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

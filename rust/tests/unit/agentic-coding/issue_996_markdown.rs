@@ -87,7 +87,9 @@ fn completed_answer_fences_the_plan_event() {
 /// fenced block instead of hundreds of indented lines.
 #[test]
 fn formalization_answer_fences_the_knowledge_base() {
-    let messages = vec![ChatMessage::user("formalize the fisherman tale")];
+    let messages = vec![ChatMessage::user(
+        "Formalize «The cat sat on the mat» into Links Notation.",
+    )];
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &[]) else {
         panic!("expected a final answer");
     };

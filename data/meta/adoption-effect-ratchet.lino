@@ -5,15 +5,15 @@ adoption-effect-ratchet
   measure adopted-items
     direction up
     value 1
-    measured_by tests/unit/issue_1138_learning_ratchet.rs
+    measured-by tests/unit/issue_1138_learning_ratchet.rs
     note "Only status adopted counts. The shipped method has a five-language verified execution effect."
   measure adopted-items-with-qualifying-effect
     direction up
     value 1
-    measured_by tests/unit/issue_1138_learning_ratchet.rs
+    measured-by tests/unit/issue_1138_learning_ratchet.rs
     invariant "equals adopted-items"
   measure learned-items-never-read-back
     direction down
     value 0
-    measured_by tests/unit/issue_1138_learning_ratchet.rs
+    measured-by tests/unit/issue_1138_learning_ratchet.rs
     invariant "every effective adoption enters the registry's final dispatch loop"

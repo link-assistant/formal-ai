@@ -1,0 +1,222 @@
+{
+  "records": [
+    {
+      "source": "protocol-chat-message-extraction/chat_message-before-format.rs",
+      "file": "record-0000.gz",
+      "rawSha256": "03bec637c617c86b001738c819d995fd0b2ee81ebe1991cdc931ac0a9e5c8211",
+      "archiveSha256": "2e5a910a0dee190266b9eaa39498975e580b66fdd3e5079574ce5190172fc5c8",
+      "bytes": 7890,
+      "lines": 221
+    },
+    {
+      "source": "protocol-chat-message-extraction/commands.json",
+      "file": "record-0001.gz",
+      "rawSha256": "e004ea8f6f4e0b07aa06b7b1273eceb6a393b2363d5824e8f74ac71d2a326311",
+      "archiveSha256": "b86b8c90dd2bf82515c1b1a4c6af3cd0ba89988ed51edd283c62fdae027876b1",
+      "bytes": 2599,
+      "lines": 94
+    },
+    {
+      "source": "protocol-chat-message-extraction/fixture-integrity.stderr",
+      "file": "record-0002.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/fixture-integrity.stdout",
+      "file": "record-0003.gz",
+      "rawSha256": "ce5089f4e84fab73488b190ae018f9dfb719197431bc2c5145ba55e2d6ee74dd",
+      "archiveSha256": "966da32ea349bc1cd3792a35519b899010ea85821578456d056a4fad0c49a445",
+      "bytes": 309,
+      "lines": 10
+    },
+    {
+      "source": "protocol-chat-message-extraction/formatting-token-equivalence.stderr",
+      "file": "record-0004.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/formatting-token-equivalence.stdout",
+      "file": "record-0005.gz",
+      "rawSha256": "dacfc35db2ea898d3db93ca1b0f7117bb18b1d1c9faa750d3f2abf60fbce770e",
+      "archiveSha256": "ba424a8cee312ae2521e087cc428a5c80971056b7e3095b6b6e5835d5e68e0f1",
+      "bytes": 51,
+      "lines": 1
+    },
+    {
+      "source": "protocol-chat-message-extraction/optional-tool-result-name.stderr",
+      "file": "record-0006.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/optional-tool-result-name.stdout",
+      "file": "record-0007.gz",
+      "rawSha256": "1a5ab8630203aea610ef96a2d44cd91616cc2da7d5f87a5c90ac2d74e6a77d80",
+      "archiveSha256": "4debf5e6f6aafef241e3974bf709782981bb2a438fc50e75ff77e04a7f4e9175",
+      "bytes": 443,
+      "lines": 11
+    },
+    {
+      "source": "protocol-chat-message-extraction/outcome.json",
+      "file": "record-0008.gz",
+      "rawSha256": "7bbfd34dd4b59c3fae2aca7cfbac3ff66b41bb7158ddf8bd95d7450e5eae189b",
+      "archiveSha256": "551e07402bea508db3a3085344297574a5943ed38d786ab9d2d2fa4c6b728828",
+      "bytes": 87,
+      "lines": 5
+    },
+    {
+      "source": "protocol-chat-message-extraction/parent-before.rs.gz",
+      "file": "record-0009.gz",
+      "rawSha256": "f81a232c6047d0c8b0030f4491bf71a7eb3efe82c009a17e47c70aff49269bf9",
+      "archiveSha256": "6aec0bd23ccb74fcfe552090e246663b6693ea68d9ac66af9608387892b044a6",
+      "bytes": 9123,
+      "lines": 70
+    },
+    {
+      "source": "protocol-chat-message-extraction/proof.json",
+      "file": "record-0010.gz",
+      "rawSha256": "12c22dc57850d6850fc6459b465162e4639567f9df83658256704abc99c76438",
+      "archiveSha256": "eac98905ecddbc7407ecd92dcb7949c57f461fa1a82efb5f59bd24d4453f7f82",
+      "bytes": 813,
+      "lines": 19
+    },
+    {
+      "source": "protocol-chat-message-extraction/protocol-before-format.rs",
+      "file": "record-0011.gz",
+      "rawSha256": "01ef575b175e0a642317521cf02f1fca9c20e122e727098e95cd81896c215ad2",
+      "archiveSha256": "46d8778e5eb2878a96b1ae918e858035cede5c5e3a91bd9443f6840a77cdda18",
+      "bytes": 31574,
+      "lines": 776
+    },
+    {
+      "source": "protocol-chat-message-extraction/protocol-envelope-values.stderr",
+      "file": "record-0012.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/protocol-envelope-values.stdout",
+      "file": "record-0013.gz",
+      "rawSha256": "543ec74ca8a8973da4af6ced0a348fcea9f830ae4fc5a7ac1ddd8f0339f7bbcf",
+      "archiveSha256": "df6fcbbdd46106b800d7b145e391d8bbbcab3af9869df2e5f1e5092eadd79808",
+      "bytes": 581,
+      "lines": 13
+    },
+    {
+      "source": "protocol-chat-message-extraction/rust-format-check.stderr",
+      "file": "record-0014.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/rust-format-check.stdout",
+      "file": "record-0015.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/rust-format.stderr",
+      "file": "record-0016.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/rust-format.stdout",
+      "file": "record-0017.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/source-and-currency-gates.stderr",
+      "file": "record-0018.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/source-and-currency-gates.stdout",
+      "file": "record-0019.gz",
+      "rawSha256": "cd5725e8e2d9cdecae7b9ef3fe9cd84ce4ec7ad5d30932164ef3cb8c8bf6fe16",
+      "archiveSha256": "7d518b4f9cf303491bbf4c0067c17a7324a8723a496a32a0b8706333fc77d7e0",
+      "bytes": 312,
+      "lines": 10
+    },
+    {
+      "source": "protocol-chat-message-extraction/translation-currency.stderr",
+      "file": "record-0020.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/translation-currency.stdout",
+      "file": "record-0021.gz",
+      "rawSha256": "90aed8bda8b21c7aa680e4a45bd86a1a9b72fcd87d27782ec19d86d8dfcb40c4",
+      "archiveSha256": "e49d5aae5ac9baef68b9660805d75bc20ab1dfb914063e838009a00740af9463",
+      "bytes": 188,
+      "lines": 1
+    },
+    {
+      "source": "protocol-chat-message-extraction/whitespace.stderr",
+      "file": "record-0022.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/whitespace.stdout",
+      "file": "record-0023.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "protocol-chat-message-extraction/worker.log",
+      "file": "record-0024.gz",
+      "rawSha256": "7a5eb379888928a11b15ad0a2edee09f5b91674730d88a1d7e4d398713d54d92",
+      "archiveSha256": "e58efadd1600a980a3ac87f40a15ea98029a8cf0a6650293d55f528065e8b41e",
+      "bytes": 204,
+      "lines": 9
+    },
+    {
+      "source": "extract-protocol-chat-message-types.py",
+      "file": "record-0025.gz",
+      "rawSha256": "f8ef40e5ed6cd4c649a9978d4794d14ecd3487898571c6357f3dfe8067689a61",
+      "archiveSha256": "1d5275d5353c0d924daa1464593e71b7834680aa6808f4cf12aaff740557a338",
+      "bytes": 5355,
+      "lines": 51
+    },
+    {
+      "source": "extract-protocol-chat-message-types.log",
+      "file": "record-0026.gz",
+      "rawSha256": "8acaa1b7e6a81221db9939d628ad9514aa675739ffa3c9e060e32df88795da68",
+      "archiveSha256": "0b2f6f7af9461440710a60a62f635c888afbbe4db5c00a658506b496ac5b374f",
+      "bytes": 176,
+      "lines": 4
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

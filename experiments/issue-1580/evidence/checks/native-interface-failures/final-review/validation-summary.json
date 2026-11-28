@@ -1,0 +1,54 @@
+{
+  "observedAt": "2026-11-20T00:15:07.433157+00:00",
+  "rawCompleteInventory": {
+    "PASS": 86,
+    "FAIL": 1,
+    "SKIP": 52
+  },
+  "inventoryEntries": 139,
+  "finalExecutableGatePasses": 87,
+  "explicitContextOrNativeExclusions": 52,
+  "unresolvedLocalGateFailures": 0,
+  "repairEvidence": "../artifact-repair/result.json",
+  "sourceCommits": [
+    {
+      "message": "Keep URL parsing and wrapper tests within source budgets",
+      "commit": "a9025fa99bb2d2b3d32cd98948c6668884536277",
+      "paths": [
+        "data/meta/core-boundary-ledger.lino",
+        "data/meta/runtime-feature-coverage.json",
+        "js/worker/formal_ai_worker_write_program_and_research.js",
+        "rust/src/solver_handlers/web_requests/url_parse.rs",
+        "rust/tests/integration/with_formal_ai.rs",
+        "rust/tests/integration/with_formal_ai/verbosity.rs",
+        "rust/tests/web/attachment-url-scope.test.mjs"
+      ]
+    },
+    {
+      "message": "Retain rejected synthesis attempts and replay complete typed search contracts",
+      "commit": "26e4f6f4af16917fd8e6ae064da9a60479a300be",
+      "paths": [
+        "rust/Cargo.toml",
+        "rust/src/coding/composition.rs",
+        "rust/src/coding/composition/ir_draft.rs",
+        "rust/src/coding/composition_search/binders.rs",
+        "rust/src/coding/composition_search/pool.rs",
+        "rust/tests/unit/coding_contracts.rs",
+        "rust/tests/unit/coding_discovery/composition.rs",
+        "rust/tests/unit/coding_discovery/composition/rejected_ir.rs",
+        "rust/tests/unit/coding_discovery/composition_search.rs",
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        "scripts/ci-native-regressions.sh",
+        "scripts/ci-pull-request-admission.mjs",
+        "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8"
+      ]
+    }
+  ],
+  "nativeExecutionObserved": false,
+  "strictOriginalReplayUnion": {
+    "qualified": 27,
+    "total": 53
+  },
+  "independentlyAcceptedReasoningUnits": 0,
+  "fullIssueComplete": false
+}

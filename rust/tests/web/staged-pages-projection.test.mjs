@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -15,7 +16,7 @@ test('current Pages smoke command is conserved by the strict deployed staged pro
   assert.equal(inventory.operations, 52);
   assert.equal(inventory.bindings, 104);
   assert.equal(inventory.productionAuthority, false);
-  const source = read(evidence + 'original-release-workflow.yml');
+  const source = readCanonicalSource(root).text;
   const packet = JSON.parse(read(evidence + 'stage-source-coverage.json'));
   const projection = buildStagedReleaseProjection(source, packet);
   assert.equal(read('.github/workflows/release.yml'), projection.outputs.get(evidence + 'candidate-release-caller.yml'));

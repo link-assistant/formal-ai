@@ -1,0 +1,23 @@
+{
+  "rootCause": "Rust grammar readers trimmed literal quote characters after the seed parser had decoded the value.",
+  "beforeNativeEvidence": "experiments/issue-1580/evidence/ci/task-quotation-04a468f5/failure-download-20261118T051904Z/44242408037-job-134593302106.log:1634",
+  "javascriptBehaviorAlreadyPreservedValues": true,
+  "nativeExecutionClaimed": false,
+  "independentAuthorshipCredit": 0,
+  "sharedQuotedValues": [
+    "\"\"",
+    "\"quoted\"",
+    "\"left",
+    "right\""
+  ],
+  "layeredCheckoutFailure": {
+    "file": "experiments/issue-1580/evidence/ci/task-quotation-04a468f5/failure-download-20261118T051904Z/44242407754-job-134593254796.log",
+    "lines": [
+      124,
+      125,
+      126
+    ],
+    "classification": "Git transfer timeout before test execution",
+    "workflowChangeMade": false
+  }
+}

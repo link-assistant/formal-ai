@@ -1,0 +1,28 @@
+{
+  "pinnedCommit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "cumulativeSummary": {
+    "literalPages": 115,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 7815,
+    "nextForwardPage": 116,
+    "remainingPages": 139,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "archives": [
+    {
+      "page": 114,
+      "rawSha256": "2c6af2b6afc64abdf74a041ee89f1e4c520b761478da99edef7f95a9a1c818e3",
+      "archiveSha256": "7f36817196a2cb9342f187db9d6b895a4d95cf88f7d8d71457a9bb97e522c354",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 115,
+      "rawSha256": "039ad61768b8702d58b8076dd8c5e58ea0c660b6be7ad7f643c804e59c10692f",
+      "archiveSha256": "657ce2f19199d3820a64bf3033e9b2ea1ca6d35f337af66ab0e9dd04a8e8e63f",
+      "fullLiteralRead": true
+    }
+  ]
+}

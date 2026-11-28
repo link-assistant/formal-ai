@@ -1,0 +1,175 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "sourceIdentities": [
+    {
+      "path": ".github/workflows/layered-ci.yml",
+      "sha256": "0ee7c7f53de3e2a00dc25bb34f74a24826a13ca296bf68cb0ec655926c7a951a"
+    },
+    {
+      "path": ".github/workflows/native-type-check.yml",
+      "sha256": "6b7513991657a278e2da1fb6f496a79e14e00f9b07ea3dd27d170efe9fe27428"
+    },
+    {
+      "path": "scripts/ci-native-regressions.sh",
+      "sha256": "6015fa5b50663515044d1cd11863c9635f35c2661b4cbea06bf813a9ab04ee0a"
+    },
+    {
+      "path": "scripts/ci-native-hive-durations.lino",
+      "sha256": "01e7b6be8376c3c21403b1a8d8c43285c2334aca19ea98f9549df30d22df7de3"
+    },
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "sha256": "77fc0318e74e8b2e8aab22a8ab2946c6d303fa32324dc321e7e5216d76ca5a6c"
+    },
+    {
+      "path": "rust/tests/integration/http_server.rs",
+      "sha256": "eecc55b4ab875c523b02a4d7f0239e7334951bbfd0b2d75dd02222b5868da586"
+    },
+    {
+      "path": "experiments/issue-1580/native-regression-groups.test.mjs",
+      "sha256": "8655f61687c92d3694099f834efd4b1f6a3c8c99ef94155a1e4cf6cef9f9ccd8"
+    },
+    {
+      "path": "experiments/issue-1580/derive-native-hive-durations.py",
+      "sha256": "287af0177299a77cca3ac77e3c7d66b39c7510971248f22b776c0adf0224db61"
+    },
+    {
+      "path": "experiments/issue-1580/work-plan.md",
+      "sha256": "3c28469f2bc057577f5187fda5ad16d541dd73a99df15f36d91293fe05a97056"
+    },
+    {
+      "path": "changelog.d/20261120_023000_issue_1580_native_family_completion.md",
+      "sha256": "a5c824fe90e729f40e8370ce87506e5a9539dca56d9f3ff8f18b2c871d149ee3"
+    }
+  ],
+  "records": [
+    {
+      "name": "focused-shards",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.352843984030187,
+      "file": "focused-shards.log.gz",
+      "rawSha256": "ccee44f00532d4a67e0560bb762a0f6e01012382e071b8fe9040d8e95daf71a4",
+      "archiveSha256": "e460ef0e8dda6b19de9f77509f03ab0eab841c4d133680310808374f971ca9e7",
+      "lines": 178
+    },
+    {
+      "name": "maintained-native-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.921101114014164,
+      "file": "maintained-native-policy.log.gz",
+      "rawSha256": "c20d8774a4936e3fed0296b8d50df7f33fb8068c772f51c0be3902b3677af7fe",
+      "archiveSha256": "65640d64236e238a2ae82ba33e53cf16379c2286d752a559c52b8afb3645ba7a",
+      "lines": 496
+    },
+    {
+      "name": "shellcheck",
+      "argv": [
+        "shellcheck",
+        "scripts/ci-native-regressions.sh",
+        "scripts/run-with-budget-warning.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.3220444000326097,
+      "file": "shellcheck.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "shell-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.006093957927078009,
+      "file": "shell-syntax.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "http-rustfmt",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/integration/http_server.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.34803967108018696,
+      "file": "http-rustfmt.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "relevant-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-ci-speed,check-runner-labels,check-readable-code"
+      ],
+      "exitCode": 0,
+      "seconds": 121.02382817701437,
+      "file": "relevant-gates.log.gz",
+      "rawSha256": "ef6bb303a0d3735f0f0ed928606368ba9e50d5a7e81253009d6a9aa978f0d709",
+      "archiveSha256": "e98bd95b03b349a708e094706b145d91460276ef48d28793d7e649d73f84fbce",
+      "lines": 12
+    },
+    {
+      "name": "staged-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.24754158616997302,
+      "file": "staged-whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  ],
+  "focusedControls": {
+    "pass": 28,
+    "fail": 0,
+    "skip": 0
+  },
+  "maintainedControls": {
+    "pass": 81,
+    "fail": 0,
+    "skip": 0
+  },
+  "nativeExecutionObserved": false,
+  "rustCompiledLocally": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

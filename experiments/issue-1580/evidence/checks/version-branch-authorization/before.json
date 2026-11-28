@@ -1,0 +1,43 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "--test-name-pattern",
+    "release-like branch names cannot authorize manual version changes",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 0.8216617461293936,
+  "productionSources": [
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "sha256": "77fc0318e74e8b2e8aab22a8ab2946c6d303fa32324dc321e7e5216d76ca5a6c"
+    },
+    {
+      "path": "scripts/check-version-modification.rs",
+      "sha256": "e24f2a96a75bb0ec563a4052171f2dd0330a384fe81793f0b1e5f6ceb29a9557"
+    }
+  ],
+  "testSha256": "bf1b3e0c26ce2d856dcb870869b18b68070281dde3fbcb454500bb3d281a1312",
+  "results": {
+    "pass": 0,
+    "fail": 4
+  },
+  "logs": [
+    {
+      "file": "before.stdout.gz",
+      "rawSha256": "4b2c304b4684fb2450e54e064b6541e19dda83aec540f088a78a23453ef2bc5a",
+      "archiveSha256": "5e967f74a2f4973ee0f1011e8be02ec554669aa5e55da1b562ff898e4b519d25"
+    },
+    {
+      "file": "before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ]
+}

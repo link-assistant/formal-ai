@@ -1,0 +1,12 @@
+[
+  {
+    "change_id": "change_request_f8529a6854bf7c5f",
+    "request": "Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.",
+    "requirement": "The system must add a new capability to Formal AI: let users ask it to reverse-sort a program's output.",
+    "target_module": "src/agentic_coding/planner.rs",
+    "test": "reverse_sort_program_output",
+    "reviewer": "maintainer",
+    "benchmark_suite": "issue_362_multilingual_coding_modification",
+    "benchmark_passed": 4
+  }
+]

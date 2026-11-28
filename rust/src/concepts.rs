@@ -188,7 +188,9 @@ pub struct ConceptQuery {
 pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
     let trimmed = crate::capability_routing::without_answer_shape_directive(prompt);
     let trimmed = trimmed
-        .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
+        .trim_end_matches([
+            '?', '？', '。', '.', '!', '！', ',', '，', ';', '；', ':', '：',
+        ])
         .trim();
     if trimmed.is_empty() {
         return None;
@@ -317,7 +319,9 @@ fn finalize_concept_query_with_response_language(
 ) -> Option<ConceptQuery> {
     let body = body
         .trim()
-        .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
+        .trim_end_matches([
+            '?', '？', '。', '.', '!', '！', ',', '，', ';', '；', ':', '：',
+        ])
         .trim()
         .to_lowercase();
     if body.is_empty() {
@@ -771,3 +775,7 @@ fn render_concept_in_context(language: &str, context: &str, record: &ConceptReco
         .replace("{source}", &source_markup)
         .replace("{source_kind}", source_kind)
 }
+
+#[cfg(test)]
+#[path = "../tests/source/concept_query_tests.rs"]
+mod tests;

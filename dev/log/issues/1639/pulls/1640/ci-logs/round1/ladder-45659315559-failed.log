@@ -1,0 +1,18 @@
+Compare the measured ladder with the record	Join the legs into one run	﻿2026-11-25T17:29:16.3881402Z ##[group]Run set -euo pipefail
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3881757Z ^[[36;1mset -euo pipefail^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3882003Z ^[[36;1mrm -rf "$OUT"^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3882272Z ^[[36;1mLADDER_SOURCE_COMMIT="$(git rev-parse HEAD)"^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3882987Z ^[[36;1mLADDER_SOURCE_TREE="$(git rev-parse 'HEAD^{tree}')"^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3883388Z ^[[36;1mexport LADDER_SOURCE_COMMIT LADDER_SOURCE_TREE^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3884027Z ^[[36;1mpython3 experiments/issue_1028_agent_cli_ladder/plan-legs.py "$TREE_DEPTH" "$NODE_FILTER" > "$RUNNER_TEMP/ladder-plan.json"^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3884764Z ^[[36;1mpython3 experiments/issue_1028_agent_cli_ladder/combine-shards.py \^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3885343Z ^[[36;1m  "$RUNNER_TEMP/agent-tree-legs" "$OUT" "$LEG_COUNT" "$RUNNER_TEMP/ladder-plan.json"^[[0m
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3905350Z shell: /usr/bin/bash -e {0}
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3905603Z env:
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3905791Z   TREE_DEPTH: 5
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3906006Z   NODE_FILTER: 2.2.2.2.1
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3906403Z   OUT: /home/runner/work/formal-ai/formal-ai/docs/case-studies/issue-1028/agent-tree-run
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3907054Z   LEG_COUNT: 1
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.3907251Z ##[endgroup]
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.4811966Z ##[error]the plan has 1 shard(s), 0 wrote a result
+Compare the measured ladder with the record	Join the legs into one run	2026-11-25T17:29:16.4846880Z ##[error]Process completed with exit code 1.

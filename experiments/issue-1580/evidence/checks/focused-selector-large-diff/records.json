@@ -1,0 +1,159 @@
+[
+  {
+    "name": "regression-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "regression-before.stdout.gz",
+      "rawSha256": "672e5a261c8b2bac51de65b10701616c8c7641e81a10e17d46369ec9d1dca015",
+      "archiveSha256": "3e909768f034156c44919de1709ee53c569d27261baeec7ef4ffe5446e2ed1bc",
+      "bytes": 136829,
+      "lines": 910
+    },
+    "stderr": {
+      "file": "regression-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "regression-after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "regression-after.stdout.gz",
+      "rawSha256": "94a979496c0d55173d747063140b469ff11866e59b70773db1ee8eaa9433288f",
+      "archiveSha256": "1995b93fcc3b09339b0f7f692abb4fb4605fe7420e75c85f566db90744f3835d",
+      "bytes": 1047,
+      "lines": 18
+    },
+    "stderr": {
+      "file": "regression-after.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "actual-published-diff",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/select-focused-tests.mjs",
+      "--since",
+      "7b7e189d770c4fbd8786b996d065282422e93b5c",
+      "--json"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "actual-published-diff.stdout.gz",
+      "rawSha256": "574ac47271bbf0a1eae3e929b0a8959866041a1dbb97eefa59f7020609e25a5a",
+      "archiveSha256": "6a6a1aa8f6c3bf9dbd47cc082a72bf276619a57d588fc7c9ab90f3457fa6d3ee",
+      "bytes": 1259,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "actual-published-diff.stderr.gz",
+      "rawSha256": "438c92481c9b85906389a8a52db8ab26b2afa356e39b95e17b8d5dacba6ac010",
+      "archiveSha256": "d94176e2ce413319e9732ea2238e06b91b082499e1d9e771e175430c15618dcf",
+      "bytes": 223,
+      "lines": 1
+    }
+  },
+  {
+    "name": "source-diff",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "scripts/select-focused-tests.mjs",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "source-diff.stdout.gz",
+      "rawSha256": "7386e61414ede60cb3ffdc8f72d654707123c253a57cbfc5f8e404eb637009ac",
+      "archiveSha256": "288360d3e0add2c04bf1cc8dccf5af3f8f54bc44b8210ce78bbcfa33056a343b",
+      "bytes": 4754,
+      "lines": 78
+    },
+    "stderr": {
+      "file": "source-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "regression-after-quiet",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "regression-after-quiet.stdout.gz",
+      "rawSha256": "e0ca304070390c6cdb08212146258e5ce932103cff8116c5fb451ff04a8b8aa2",
+      "archiveSha256": "70024e3763db0fa2ee03a1b13e8e9b32d0dddb446f0e7b6fe53930268621c703",
+      "bytes": 752,
+      "lines": 16
+    },
+    "stderr": {
+      "file": "regression-after-quiet.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "reviewed-source-diff",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "scripts/select-focused-tests.mjs",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "reviewed-source-diff.stdout.gz",
+      "rawSha256": "49465f30032dc95ac2497e11195935a92c0874f81792d9f0bb4e79730356db26",
+      "archiveSha256": "42c8a576a539f9e80944ef8b449be32515bd4cb27b8b5e36c4e5ce3e1908ebf6",
+      "bytes": 4789,
+      "lines": 78
+    },
+    "stderr": {
+      "file": "reviewed-source-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

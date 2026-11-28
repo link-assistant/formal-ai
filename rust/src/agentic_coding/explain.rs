@@ -25,7 +25,7 @@
 
 use std::sync::OnceLock;
 
-use crate::self_explanation::{canonical_explanation, SystemExplanation};
+use crate::self_explanation::{SystemExplanation, canonical_explanation};
 
 /// The workspace path the planner writes the generated explanation document to.
 pub const EXPLAIN_PATH: &str = "how-formal-ai-works.lino";
@@ -46,8 +46,7 @@ fn cached_explanation() -> &'static SystemExplanation {
 /// The router recognises the intent from the words, not a hardcoded string.
 /// Deliberately avoids the source-links keywords ("recompile", whole-source-to-links
 /// "and back") and the ledger keywords so the self-inspection recipes never collide.
-pub const EXPLAIN_TASK: &str =
-    "Explain how Formal AI itself works, and ground the answer in its own source \
+pub const EXPLAIN_TASK: &str = "Explain how Formal AI itself works, and ground the answer in its own source \
      files, data artifacts, and tests rather than prose documentation.";
 
 /// Keywords that mark a user turn as the self-explanation recipe.
@@ -123,10 +122,8 @@ pub fn final_answer(document: &str) -> String {
     let explanation = cached_explanation();
     format!(
         "Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} \
-         topics with {citations} citations, every claim points at a real artifact — source files \
-         content-addressed through the owned manifest, the data artifacts they generate, and the \
-         tests that lock the behaviour — rather than prose docs. The answer is a deterministic \
-         function of the embedded source, so it cannot cite anything the repository does not ship.\n\n\
+         topics with {citations} citations. Each section draws from its cited module's documentation. \
+         Source citations identify the exact module content, and supporting citations give repository paths.\n\n\
          Generated document ({EXPLAIN_PATH}):\n\n{document}",
         sections = explanation.section_count(),
         citations = explanation.citation_count(),

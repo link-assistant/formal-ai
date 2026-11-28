@@ -1,0 +1,130 @@
+[
+  {
+    "ordinal": 213,
+    "path": "rust/embedded/data/seed/meanings-routing-vocabulary-additional.lino",
+    "diffSha256": "c1e4e95ba9f8bbafd394e1a42b442717da37cb4d2d21639ef4e8dfb232b6f372",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-routing-vocabulary-additional.lino",
+    "sha256": "3a52ae43536a91970cdbfdbdccfbb94214b758ef4166ddf62881a024d1be7301"
+  },
+  {
+    "ordinal": 214,
+    "path": "rust/embedded/data/seed/meanings-routing-vocabulary.lino",
+    "diffSha256": "9bd20aaeb96fa293e66b0a3cb952bc41c7ec273481e10fcd71735ba60cf78195",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-routing-vocabulary.lino",
+    "sha256": "ab6aaa0e531bbf006fa44cf376a2655b94ca030c1079acf857b9b6ded2593057"
+  },
+  {
+    "ordinal": 215,
+    "path": "rust/embedded/data/seed/meanings-translation.lino",
+    "diffSha256": "eb991cb1e08de0c0f54fa2babfc9f5bad7c5ef9c514f87cb999da7c974e8ae9d",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-translation.lino",
+    "sha256": "27206d0268272adb26ec4f8fd884f9be436d17068b34f0e89734b6503d43be54"
+  },
+  {
+    "ordinal": 216,
+    "path": "rust/embedded/data/seed/meta-reasoning.lino",
+    "diffSha256": "744c0876774629f993c994feac0d8e34dfe3ecf055a881739e8c7f5c85b001d7",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meta-reasoning.lino",
+    "sha256": "6957d59ec39965dbec450128feb50f3134b0ab6c05768fdea72f5cf86440ef0b"
+  },
+  {
+    "ordinal": 217,
+    "path": "rust/embedded/data/seed/multilingual-responses-administration.lino",
+    "diffSha256": "e58f0e37700e395b885fcac15c7f33e44702233952ad0f609beb6e02e112d90b",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-administration.lino",
+    "sha256": "bf9f12613bdacccc27a3a22559735f60d39d474e637f982cd22bc5862c30b322"
+  },
+  {
+    "ordinal": 218,
+    "path": "rust/embedded/data/seed/multilingual-responses-agentic.lino",
+    "diffSha256": "d72cb1e9b1e9ae79d9e6fcabe045312d1a26f98bc6045f8dbb2387201f8b85b4",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-agentic.lino",
+    "sha256": "abd60b207b9dc25f42a34763567d834e2eef07f39b5f9dec3f66d1cc6244078d"
+  },
+  {
+    "ordinal": 219,
+    "path": "rust/embedded/data/seed/multilingual-responses-capabilities.lino",
+    "diffSha256": "9be371021b338bbe0f726a9dc028d301e36f71e26490830882860cda516ef4ea",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-capabilities.lino",
+    "sha256": "814d60a21e4f9bf575906b1dbbfe41dae66a9306c30e29a0d768d320b165ffbd"
+  },
+  {
+    "ordinal": 220,
+    "path": "rust/embedded/data/seed/multilingual-responses-composition.lino",
+    "diffSha256": "71feaa1ea552fdc1d25273e5660c8882193bd1e3a04b19c9a45631103652a0bb",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-composition.lino",
+    "sha256": "73b92ebb04a253eb66a7c93ec6e449de377e4ceefd513a9f2f1e299ac472b4fd"
+  },
+  {
+    "ordinal": 221,
+    "path": "rust/embedded/data/seed/multilingual-responses-quantity-constraint.lino",
+    "diffSha256": "b21ab7008706327742ebb01b26588d58e918f146454e6bb62442f7b3d93c25b7",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-quantity-constraint.lino",
+    "sha256": "601bfbeeabdec8e6480efdff84d868a70f0e92a1976b4a7512dbc7aa59849193"
+  },
+  {
+    "ordinal": 222,
+    "path": "rust/embedded/data/seed/multilingual-responses-synthesis-runtime.lino",
+    "diffSha256": "1e2faa3e5b272274801fd9cd784dd8d935fba2ba47c5e2b47cb1ec4faef324bc",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-synthesis-runtime.lino",
+    "sha256": "15d3bc27e311cc3d00c439c1c08e05f055a18fd610d4129c4ad01378a68efcfd"
+  },
+  {
+    "ordinal": 223,
+    "path": "rust/embedded/data/seed/multilingual-responses-synthesis.lino",
+    "diffSha256": "e5f9137f0f6afd20012c200d79c9f15ead000df0b0df5fc12e0eee1427036cc6",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-synthesis.lino",
+    "sha256": "c55b800318b363328771b642808799c1293a6b7dc03d3c2c6f334947c438c017"
+  },
+  {
+    "ordinal": 224,
+    "path": "rust/embedded/data/seed/multilingual-responses-text-transform.lino",
+    "diffSha256": "c762aced2378b1cbf6db9c787d4e45ad31da71232cc312a0d41f4ac9860fe7c2",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-text-transform.lino",
+    "sha256": "20150b49b6db8e35cd67d0f75439278591a5c9ead238a017da25fde96aff01b3"
+  },
+  {
+    "ordinal": 225,
+    "path": "rust/embedded/data/seed/multilingual-responses-web.lino",
+    "diffSha256": "1d0a2e15fe10063bc233d50c107516c86c32e30606583e0b95a405a29068f935",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses-web.lino",
+    "sha256": "d748b263f6c7445ad9c519fc17bc85a268d25faa67fd4eed1792046e579e1355"
+  },
+  {
+    "ordinal": 226,
+    "path": "rust/embedded/data/seed/multilingual-responses.lino",
+    "diffSha256": "587cb03716db2e8f92e7e5e5d4b843f5807b94135a74e2dcc189ae2d42516dd0",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/multilingual-responses.lino",
+    "sha256": "9340bb162f21a74f4c25a22d6671f3c9f63ee4c90a6555aa2a51acc88d977197"
+  },
+  {
+    "ordinal": 227,
+    "path": "rust/embedded/data/seed/text-formalization.lino",
+    "diffSha256": "5e648166b64e1189278be09aea4a994dded9143d8c2c97da196629248dd44f28",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/text-formalization.lino",
+    "sha256": "8fc795bb78d575207f97a1f77f2e612a6cf0d81b460b3c433ce3ef7627e54841"
+  },
+  {
+    "ordinal": 228,
+    "path": "rust/embedded/data/seed/workspace-discovery-contracts.lino",
+    "diffSha256": "f73dba3db33565dba7a5ab041ac9b2c064ac1fc95731a8c309045c307ba915b9",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/workspace-discovery-contracts.lino",
+    "sha256": "eb025c7a71927f31bea7d476b8d93df0b334c7357c668119b72ebf862bcf1857"
+  }
+]

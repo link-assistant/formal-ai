@@ -1,0 +1,401 @@
+{
+  "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "commit": "62cc393707ddfe7ceeddbc580d43cc35334636f1",
+  "currentBlobCount": 338,
+  "changedFiles": [
+    {
+      "path": ".github/actions/artifact/dist/index.mjs",
+      "bytes": 2219114,
+      "lines": 88,
+      "sha256": "86e59b0dc70fac1667e052e117c8c0899b0b143b6552cbf1b67ed9ec4b3d0e31",
+      "gitBlob": "a759533dac04294f24a2ee0e87f757600cdeb929",
+      "literalReviewComplete": false,
+      "assessment": "Pinned hosted clean install and actual ncc rebuild match the committed bundle and licenses; actual byte/empty-file and Pages-tar round trips pass. Literal minified-source review remains incomplete."
+    },
+    {
+      "path": ".github/actions/artifact/dist/licenses.txt",
+      "bytes": 23423,
+      "lines": 426,
+      "sha256": "4b48d179c3439e819d3d0fdcea562e76ebfe7368fc4be1324e65ce776e4f93f3",
+      "gitBlob": "9803562fda9d9328fa01234a8031fad39bf91ea9",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/actions/artifact/package-lock.json",
+      "bytes": 122872,
+      "lines": 3421,
+      "sha256": "04c2fa94d5024cb890152aedac20890032df6a6f3bc457483288c117c76045f6",
+      "gitBlob": "e215cdca3b32d3704e666e35397d839da413e6c5",
+      "literalReviewComplete": false,
+      "assessment": "All 247 package identities, licenses and Node engine rows reviewed; registry tarball/SHA512 shape and manifest agreement checked; actual npm lock-only graph, hosted clean install, vulnerability audit and live deprecation inventory pass. Literal lockfile and every graph-edge semantic review remain incomplete."
+    },
+    {
+      "path": ".github/actions/artifact/package.json",
+      "bytes": 621,
+      "lines": 28,
+      "sha256": "749edf873971a09222d82ddad642e5f30f47e1c16b6d0b1f0a06a960aaea8031",
+      "gitBlob": "b29c20217061644287e8a559d13fc9c24acbb7b9",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/actions/deploy-pages/action.yml",
+      "bytes": 615,
+      "lines": 18,
+      "sha256": "5cfe4f8efffaace37603b9aa26361e5fdfa2de16262d9c6e247f10c566f9e0a6",
+      "gitBlob": "f7239e878f7cd5aa3c06436063ede7bd146ab794",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/actions/deploy-pages/deploy.mjs",
+      "bytes": 11275,
+      "lines": 272,
+      "sha256": "d25ebeec823f5dd74728e433a5f977c4bba1b944683520060003620811da6556",
+      "gitBlob": "fd69f386f578ae97f58181690ecd5dd6b98681d9",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/workflows/dependabot-health.yml",
+      "bytes": 2262,
+      "lines": 75,
+      "sha256": "a30827b4d0edf94a39fb6e5b0cdba3ddd3a6644879e1474cbe505b022d6ea0d8",
+      "gitBlob": "71f3c053aceeff722749aece51a400bd7c80aae7",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/workflows/docs.yml",
+      "bytes": 5814,
+      "lines": 163,
+      "sha256": "da8010ce780cdb632065503fc622482b75529654ff44428ba9f79e858dfbdb80",
+      "gitBlob": "c4ea36b81411f119f7cc986e7425ddb0b796aed8",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/workflows/links.yml",
+      "bytes": 6702,
+      "lines": 187,
+      "sha256": "71ca325ddc422ac6e11d35f382673ae36719c801562a0d8377c420b91219a330",
+      "gitBlob": "b864a3aab933d12b7d951732636d8be089a5ed0f",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "bytes": 37797,
+      "lines": 1029,
+      "sha256": "98fa2be75bf4be91f474f16bd75f3c71e27c7d6c632b32fcfbf7415ab0e90340",
+      "gitBlob": "994197baa688200397a6d50f6b87bc3b58aa3285",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "bytes": 6190,
+      "lines": 190,
+      "sha256": "fa848c7272f194004f3ff3970a8cc83537adbc2d340a41490193062b8be42cf0",
+      "gitBlob": "89078a05219ed97e3b58978d4f00dcbadce2c87e",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "bytes": 11152,
+      "lines": 285,
+      "sha256": "ae9bc5109972d38c987ed915ec6c2409b7a7e206af2b15bf79a403fc8bf0786b",
+      "gitBlob": "d910b9968f37a8a27b9aae236ce0625922911ba6",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "README.md",
+      "bytes": 18864,
+      "lines": 464,
+      "sha256": "c5e1ed37c17e17f6a603d0eafe2f5c8308019f3364da417941c2081fa48e8b50",
+      "gitBlob": "3679756b48252b540064f474a7fb763a809740a5",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "changelog.d/20261120_issue_161_pipeline_reliability.md",
+      "bytes": 476,
+      "lines": 10,
+      "sha256": "1a50a9642cd0123b58e0588c0bf8ea2d2ca5890d0f2a17d3b5c1e455368f7fa5",
+      "gitBlob": "1e4d304eec63ae170f36bb9de38a35770bb6cdbf",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "changelog.d/20261121_issue_163_pages_artifact_retry.md",
+      "bytes": 140,
+      "lines": 3,
+      "sha256": "fc54a2933327d157811678b02fb75aaab389390c39405ae6ea411f1f7cab3a8e",
+      "gitBlob": "bf8bccfdb92201f55f22595285fc0b7a04f20180",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "docs/ci-evidence.md",
+      "bytes": 7842,
+      "lines": 132,
+      "sha256": "a1bacc1a63b93ce89047d6d91e09e8eaca2df1318056311d85293b5c54553b61",
+      "gitBlob": "f07c648a6eb11ec6fa57e21602c4c9f3ee8e8e4f",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "scripts/audit-npm-locks.sh",
+      "bytes": 2330,
+      "lines": 66,
+      "sha256": "3d7d7ec89deb17a58e189406520398ebfa5602d90fe40c9c3af479cde8515926",
+      "gitBlob": "dd8411a6e2a3498fce183e330796c89547a228fd",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "scripts/check-deprecated-packages.mjs",
+      "bytes": 4416,
+      "lines": 110,
+      "sha256": "a96d05fd3fd43afc499f3db6f6052a2312c321a6dea639b00349cb9c58336e11",
+      "gitBlob": "afbcd414181a4b0688e06b9db21393e24c01bfbf",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "scripts/create_manual_changeset.py",
+      "bytes": 7536,
+      "lines": 254,
+      "sha256": "f254d822c125f1a2e2152085165ced5a55cb5b26bca6c430ab3be063b53c8be9",
+      "gitBlob": "72199af6818a7e2101deb1843f50a91539901704",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "scripts/detect_code_changes.py",
+      "bytes": 6298,
+      "lines": 180,
+      "sha256": "9e81f8022496676bb6b1f6459acef243f72fb7e39d8f47b5b2ed250843b0894f",
+      "gitBlob": "62fedff96c95469dc9b546219a05709269989652",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "scripts/format_release_notes.py",
+      "bytes": 7290,
+      "lines": 261,
+      "sha256": "7b0ad3bdbf8d45a0c2ce1cc2a569738ce81d96a5cf3eedde84686290983165e8",
+      "gitBlob": "347b64b8989970ccafef06c17e6d84150a6ac701",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "scripts/run-with-budget-warning.sh",
+      "bytes": 8799,
+      "lines": 289,
+      "sha256": "d9c9e94535ab15b14e9890075263559a30f9b9740597e8c000860e5928d04de1",
+      "gitBlob": "bc5164961fe1a597bac34bf28e0c51b14d53bef8",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/check-deprecated-packages.test.mjs",
+      "bytes": 2864,
+      "lines": 69,
+      "sha256": "d8aa3224816639fdad0f3ca8cb1329c1b9c9872d0a6a9d97524d5732cd80af62",
+      "gitBlob": "209f8b1fa0cc3859fb15969efe30d37cc7da8bc3",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/deploy-pages.test.mjs",
+      "bytes": 15291,
+      "lines": 357,
+      "sha256": "5c537cc4a39557beaf6e5c97b94e2a4a13e66f089c1866c3353ff63739a89b45",
+      "gitBlob": "1b43b574fa24a293bb28fced96ae5d41227bd331",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_audit_npm_locks.py",
+      "bytes": 2718,
+      "lines": 88,
+      "sha256": "c5248db4caf0fe31d2793625f19eae5f79bc5730bc31297f79c25334f572b6a9",
+      "gitBlob": "1733faf05d30f5cb84cb130fc3714af991a66310",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_create_manual_changeset.py",
+      "bytes": 1418,
+      "lines": 38,
+      "sha256": "40a9021b80947bc666bafe862f9b2c5c6b08ec1cfaec620201dc82bcc260bcc2",
+      "gitBlob": "d22eef577e9f149aac0708066a12c84673098b00",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_detect_code_changes.py",
+      "bytes": 7832,
+      "lines": 232,
+      "sha256": "83c9d5d91b2e868d8c3b0b910c00227081028ed3c5b6784510005aaa99b828b4",
+      "gitBlob": "12b60ec83ec62a5e8800b8e3cf1421b2a42c10cb",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_format_release_notes.py",
+      "bytes": 2553,
+      "lines": 89,
+      "sha256": "08764106dce3c0ab80978581f7a2f3ad8a3425f0ada907851d91bbcbc98ab06d",
+      "gitBlob": "cfc12c1d044c1b30e61b470d87eefbc987b484b7",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_issue_133_workflows.py",
+      "bytes": 8950,
+      "lines": 220,
+      "sha256": "658912ac55f7fb127225c13b877d110d69bb87aafdb624fec46edb16d6437575",
+      "gitBlob": "c1debdf2b72337333e8e9bcd30faa6bc9aef0c76",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_issue_98.py",
+      "bytes": 7306,
+      "lines": 172,
+      "sha256": "b490efa9fa73732dc4f7f114efea5267c556f618b860452784cd18470ea3ce29",
+      "gitBlob": "3e5b5b84db395066d92ddf849eaebc62c4ed62c4",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_run_with_budget_warning.py",
+      "bytes": 10461,
+      "lines": 298,
+      "sha256": "2f547e5e3b38ce736de5632af18ca609b6e3840dfa02d909f585cfee8af71c19",
+      "gitBlob": "5604b250f6520aea0376dd53fa6c20f252b1bdbe",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_workflow_budgets.py",
+      "bytes": 3208,
+      "lines": 94,
+      "sha256": "d88a0c81772db32a57d89c5d181cd7bcc44ad3bc6f48543b77c11227b37caa01",
+      "gitBlob": "9dbb904bdffcab8c696ca142cedf6d23d4d6b9ee",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/test_workflows.py",
+      "bytes": 20635,
+      "lines": 464,
+      "sha256": "a897d3230f03da1ac9326dbaa539d43e56eb5e262f84a534c3998e26b0e0cb88",
+      "gitBlob": "352f2044dfac452374a61b8c4cc9460ef24defed",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/workflow_budgets.py",
+      "bytes": 7177,
+      "lines": 208,
+      "sha256": "25ee8d22a37d7e166d2898ecad5f5e4be3a40a4136de488bbad561916ece22d2",
+      "gitBlob": "21c497a8536a681daec53f6a19168cb179298963",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    },
+    {
+      "path": "tests/workflow_helpers.py",
+      "bytes": 5802,
+      "lines": 161,
+      "sha256": "99f1705ec482c0478d2b9b738451c6e99f09d40d69761a3d2132e4fe285ec428",
+      "gitBlob": "5cc0ac8f4cdf0be7930b125bdbac3670d555836a",
+      "literalReviewComplete": true,
+      "assessment": "Complete literal review; workflow, source, tests and license decisions are summarized in the checkpoint."
+    }
+  ],
+  "literalChangedFilesReviewed": 33,
+  "changedFileCount": 35,
+  "fullTemplateComparisonComplete": false,
+  "historicalCoverageComplete": false,
+  "allApplicablePracticesComplete": false,
+  "acceptanceComplete": false,
+  "scrivObservation": {
+    "sourceSha256": "f254d822c125f1a2e2152085165ced5a55cb5b26bca6c430ab3be063b53c8be9",
+    "testFile": "experiments/issue-1580/template-python-scriv-integrity.test.mjs",
+    "testsPassed": 4,
+    "actualPython": true,
+    "actualScrivExecuted": false,
+    "externalScrivProducerMocked": true,
+    "upstreamReport": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/165",
+    "upstreamRepairApplied": false
+  },
+  "currentMainFailure": {
+    "run": 44857673625,
+    "conclusion": "failure",
+    "reason": "PyPI 422 invalid-publisher: no configured publisher matches the current claims.",
+    "fullLogLines": [
+      153,
+      158,
+      159,
+      160,
+      2393,
+      2394
+    ],
+    "ownerActionStillRequired": true
+  },
+  "parserFalsePositive": {
+    "syntax": "$/ self repository action reference",
+    "oldParserVersion": "1.7.12",
+    "oldParserRejects": true,
+    "officialGitHubSyntaxValid": true,
+    "reportFiled": false
+  },
+  "evidence": "experiments/issue-1580/evidence/checks/current-template-findings",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "javascriptDetectionObservation": {
+    "sourceSha256": "9e81f8022496676bb6b1f6459acef243f72fb7e39d8f47b5b2ed250843b0894f",
+    "testFile": "experiments/issue-1580/template-python-javascript-detection.test.mjs",
+    "testsPassed": 3,
+    "actualPython": true,
+    "actualGit": true,
+    "events": [
+      "push",
+      "pull_request"
+    ],
+    "candidatePreservesExclusions": true,
+    "upstreamReport": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/166",
+    "upstreamRepairApplied": false
+  },
+  "hostedArtifactValidation": {
+    "run": 44857673628,
+    "head": "62cc393707ddfe7ceeddbc580d43cc35334636f1",
+    "conclusion": "success",
+    "dependencyPackages": 247,
+    "rootManifestAgrees": true,
+    "registryTarballsAndSha512Validated": 247,
+    "actualNpmCleanInstall": true,
+    "generatedBundleAndLicensesMatchSourceAndLock": true,
+    "artifactTestsPassed": 21,
+    "deploymentMockTestsPassed": 30,
+    "actualArtifactRoundTrips": 2,
+    "livePagesDeploymentVerified": false
+  },
+  "hostedDependencyAudit": {
+    "run": 44857673553,
+    "conclusion": "success",
+    "npmVulnerabilities": 0,
+    "registryVersionsChecked": 245,
+    "registryDeprecated": 0,
+    "registryUnanswered": 0,
+    "actualPythonDependencyAudit": true
+  },
+  "generatedArtifactComparisonComplete": true,
+  "currentHostedEvidence": "experiments/issue-1580/evidence/checks/python-hosted-and-javascript-observations"
+}

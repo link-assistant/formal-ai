@@ -11,8 +11,9 @@
 #
 # Environment (all optional):
 #   LADDER_CARGO_CHECK=0       skip `cargo check --lib`
-#   LADDER_CARGO_TEST=0        skip `cargo test --test unit <module>`
+#   LADDER_CARGO_TEST=0        skip the registered native tests
 #   LADDER_CARGO_TARGET_DIR    shared target directory (run.sh sets one per run)
+#   LADDER_VERIFY_LOG_DIR     write receipt and Cargo logs here as they appear
 #   LADDER_LEAVES              leaves.tsv (requirement-shaped nodes)
 #   LADDER_LEAF_SPAN=start-end leaf numbers under a requirement-shaped node
 #   LADDER_CHILD_DIFFS         two diff files a depth-4 composite must merge
@@ -31,9 +32,14 @@ right="$6"
 criterion_path="$7"
 criterion_marker="$8"
 criterion_guard="$9"
-report="$workspace/.agent-ladder/verify.tsv"
-mkdir -p "$workspace/.agent-ladder"
-: > "$report"
+verification_dir="${LADDER_VERIFY_LOG_DIR:-$workspace/.agent-ladder}"
+if ! mkdir -p "$verification_dir" || ! verification_dir=$(cd "$verification_dir" && pwd); then
+  echo "cannot open the verifier evidence directory" >&2
+  exit 2
+fi
+report="$verification_dir/verify.tsv"
+: > "$report" || exit 2
+projected_seed_mirrors=()
 
 fail() {
   printf '%s\n' "$1"
@@ -45,21 +51,69 @@ record() {
 target_dir() {
   printf '%s' "${LADDER_CARGO_TARGET_DIR:-$workspace/target}"
 }
+restore_seed_mirrors() {
+  local status="$1"
+  if (("${#projected_seed_mirrors[@]}")) && ! git -C "$workspace" restore --worktree -- "${projected_seed_mirrors[@]}"; then
+    record seed_projection_restore failed
+    printf '%s\n' seed_projection_restore_failed >&2
+    ((status != 0)) || status=1
+  fi
+  projected_seed_mirrors=()
+  return "$status"
+}
+prepare_seed_projections() {
+  local source mirror component existing digest
+  for source in "$@"; do
+    [[ "$source" =~ ^data/seed/[[:alnum:]][[:alnum:]_.-]*\.lino$ ]] || continue
+    mirror="rust/embedded/$source"
+    for existing in "${projected_seed_mirrors[@]}"; do
+      [[ "$existing" != "$mirror" ]] || continue 2
+    done
+    for component in data data/seed "$source" rust rust/embedded rust/embedded/data rust/embedded/data/seed "$mirror"; do
+      [[ ! -L "$workspace/$component" ]] || return 1
+    done
+    [[ -f "$workspace/$source" && -f "$workspace/$mirror" ]] || return 1
+    git -C "$workspace" ls-files --error-unmatch -- "$mirror" >/dev/null 2>&1 || return 1
+    git -C "$workspace" diff --quiet -- "$mirror" || return 1
+    git -C "$workspace" diff --cached --quiet HEAD -- "$mirror" || return 1
+    git -C "$workspace" show "HEAD:$source" | cmp -s - "$workspace/$mirror" || return 1
+    projected_seed_mirrors+=("$mirror")
+    cp -- "$workspace/$source" "$workspace/$mirror" || return 1
+    digest=$(git -C "$workspace" hash-object -- "$mirror") || return 1
+    record "seed_projection:$source" "$mirror $digest"
+  done
+}
+trap 'restore_seed_mirrors "$?"; exit "$?"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
 # Only registered CST-derived tests can witness a changed source module.
 module_filter() {
   node "$ROOT/scripts/lib/ladder-test-projection.mjs" "$workspace" "$1"
 }
 verify_source_tests() {
-  local source="$1" filters filter target
+  local source="$1" projection filter target selected_target=""
+  local -a selected_filters=()
   if [[ "${LADDER_CARGO_TEST:-1}" == 0 ]] || ! command -v cargo >/dev/null 2>&1 || [[ ! -f "$workspace/rust/Cargo.toml" ]]; then
-    cargo_test source_projection_unavailable
+    cargo_test unit source_projection_unavailable
     return $?
   fi
-  filters=$(module_filter "$source") || { record "tests:$source" missing_source_projection; return 1; }
-  [[ -n "$filters" ]] || { record "tests:$source" missing_source_projection; return 1; }
+  if [[ "$source" =~ ^data/seed/[[:alnum:]][[:alnum:]_.-]*\.lino$ ]]; then
+    LADDER_CHANGED_SEED="$source" cargo_test data_files embedded_seed_matches_canonical_source
+    return $?
+  fi
+  projection=$(module_filter "$source") || { record "tests:$source" missing_source_projection; return 1; }
+  [[ -n "$projection" ]] || { record "tests:$source" missing_source_projection; return 1; }
+  # Projection emits the selected tests together for each declared target.
   while IFS=$'\t' read -r target filter; do
-    cargo_test "$filter" "$target" || return 1
-  done <<< "$filters"
+    if [[ -n "$selected_target" && "$target" != "$selected_target" ]]; then
+      cargo_test "$selected_target" "${selected_filters[@]}" || return 1
+      selected_filters=()
+    fi
+    selected_target="$target"
+    selected_filters+=("$filter")
+  done <<< "$projection"
+  cargo_test "$selected_target" "${selected_filters[@]}"
 }
 
 cargo_check() {
@@ -70,22 +124,26 @@ cargo_check() {
   [[ -f "$workspace/rust/Cargo.toml" ]] || { record compile unavailable; return 0; }
   local started=$SECONDS
   if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
-      cargo check --lib --quiet >"$workspace/.agent-ladder/cargo-check.log" 2>&1); then
+      cargo check --lib --quiet >"$verification_dir/cargo-check.log" 2>&1); then
     echo "verify $node: cargo check --lib took $((SECONDS - started))s" >&2
     record compile ok
     return 0
   fi
-  tail -40 "$workspace/.agent-ladder/cargo-check.log" >&2 || true
+  tail -40 "$verification_dir/cargo-check.log" >&2 || true
   record compile failed
   return 1
 }
 # Run the exact registered cases for their declared Cargo target.
-# A successful harness with no selected tests cannot witness a source change.
+# Each selected case needs an observed passing result from the harness.
 cargo_test() {
-  local filter="$1" target="${2:-unit}" log passed
+  local target="$1" filter="$2" log log_name
+  shift
   local -a target_args
   case "$target" in
     lib) target_args=(--lib) ;;
+    bin:*)
+      [[ "${target#bin:}" =~ ^[A-Za-z_][A-Za-z_0-9-]*$ ]] || { record "tests:$filter" missing_test_target; return 1; }
+      target_args=(--bin "${target#bin:}") ;;
     *)
       [[ "$target" =~ ^[A-Za-z_][A-Za-z_0-9-]*$ ]] || { record "tests:$filter" missing_test_target; return 1; }
       target_args=(--test "$target") ;;
@@ -93,24 +151,29 @@ cargo_test() {
   [[ "${LADDER_CARGO_TEST:-1}" != 0 ]] || { record "tests:$filter" skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record "tests:$filter" unavailable; return 0; }
   [[ -f "$workspace/rust/Cargo.toml" ]] || { record "tests:$filter" unavailable; return 0; }
-  local log_name
-  log_name=$(node "$ROOT/scripts/lib/ladder-test-log-name.mjs" "$target" "$filter") || { record "tests:$filter" invalid_test_log_identity; return 1; }
-  log="$workspace/.agent-ladder/$log_name"
-  record "test_log:$target:$filter" "$log_name"
-  local started=$SECONDS
+  log_name=$(node "$ROOT/scripts/lib/ladder-test-log-name.mjs" "$target" "$@") || { record "tests:$filter" invalid_test_log_identity; return 1; }
+  log="$verification_dir/$log_name"
+  for filter in "$@"; do
+    record "test_log:$target:$filter" "$log_name"
+  done
+  local started=$SECONDS missing=0
   if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
-      cargo test "${target_args[@]}" --quiet -- --exact "$filter" >"$log" 2>&1); then
-    echo "verify $node: cargo test ${target_args[*]} $filter took $((SECONDS - started))s" >&2
-    passed=$(sed -n 's/^test result: ok\. \([0-9]*\) passed.*/\1/p' "$log" | tail -1)
-    if [[ ! "$passed" =~ ^[1-9][0-9]*$ ]]; then
-      record "tests:$filter" missing_selected_tests
-      return 1
-    fi
-    record "tests:$filter" "passed=$passed"
-    return 0
+      cargo test "${target_args[@]}" -- --exact --format pretty --color never --test-threads=1 "$@" >"$log" 2>&1); then
+    echo "verify $node: cargo test ${target_args[*]} $* took $((SECONDS - started))s" >&2
+    for filter in "$@"; do
+      if grep -Fxq -- "test $filter ... ok" "$log"; then
+        record "tests:$filter" passed=1
+      else
+        record "tests:$filter" missing_selected_tests
+        missing=1
+      fi
+    done
+    return "$missing"
   fi
   tail -40 "$log" >&2 || true
-  record "tests:$filter" failed
+  for filter in "$@"; do
+    record "tests:$filter" failed
+  done
   return 1
 }
 rustfmt_parses() {
@@ -175,6 +238,7 @@ if [[ "$depth" -eq 5 ]]; then
   [[ "$tracked_changes" == " M $criterion_path" ]] || fail unexpected_tracked_changes
   record diff_lines "$(diff_lines "$criterion_path")"
   rustfmt_parses "$criterion_path" || fail unparsable_leaf_change
+  prepare_seed_projections "$criterion_path" || fail seed_projection_failed
   cargo_check || fail uncompilable_leaf_change
   verify_source_tests "$criterion_path" || fail failing_leaf_tests
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
@@ -218,6 +282,7 @@ elif [[ "$depth" -eq 4 ]]; then
     for changed in "${merged_paths[@]}"; do
       rustfmt_parses "$changed" || fail unparsable_composite_change
     done
+    prepare_seed_projections "${merged_paths[@]}" || fail seed_projection_failed
     cargo_check || fail uncompilable_composite_change
   fi
 else
@@ -257,9 +322,11 @@ else
   for changed in "${touched[@]}"; do
     rustfmt_parses "$changed" || fail unparsable_requirement_change
   done
+  prepare_seed_projections "${touched[@]}" || fail seed_projection_failed
   cargo_check || fail uncompilable_requirement_change
   for changed in "${touched[@]}"; do
     verify_source_tests "$changed" || fail failing_requirement_tests
   done
 fi
+restore_seed_mirrors 0 || fail seed_projection_restore_failed
 printf 'ok\n'

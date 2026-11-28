@@ -14,7 +14,15 @@ fn the_commit_names_its_files_and_a_repeated_run_is_a_clean_no_op() {
     let workspace = Workspace::new("Rust", "issue-1157");
     let prompt = offline(FORMAL_AI_PROMPT);
     let first = workspace.session(&prompt, 40);
-    let _ = first.answer();
+    // Name a failed first delivery here, with its final answer and commands:
+    // main runs 45490077033 and 45549993600 only reported the unchanged
+    // "[WIP]" title below, while the test passes in isolation (issue #1637).
+    assert!(
+        first.answer().ends_with("the pull request is ready."),
+        "the first run delivers: {}\ncommands: {:#?}",
+        first.answer(),
+        first.commands().collect::<Vec<_>>()
+    );
     let delivered = assert_delivered(&workspace, "Rust", "main.rs");
     assert_eq!(
         delivered.commits, 2,

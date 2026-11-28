@@ -1,0 +1,46 @@
+{
+  "format": "partitioned-producer-inventory",
+  "records": 142,
+  "parts": [
+    {
+      "file": "producer-files-01.json",
+      "records": 20,
+      "sha256": "7fead6856fb5abb1e3d12666be9f9b8101f7fcc68a582f8d54d4797a016fb419"
+    },
+    {
+      "file": "producer-files-02.json",
+      "records": 20,
+      "sha256": "83613dd153d3a7fedd0834fc70881a8937c2ecb12e8b14ccc8a727dc63c8cd5c"
+    },
+    {
+      "file": "producer-files-03.json",
+      "records": 20,
+      "sha256": "73f48d5622b593563222c5e72e06beab2057bad216eba56e45e9be46f1a07b8c"
+    },
+    {
+      "file": "producer-files-04.json",
+      "records": 20,
+      "sha256": "61ec9f7f577e8472bf1374ba1600c3dcfc254f55e0dfaecffa25bf12ae2cc386"
+    },
+    {
+      "file": "producer-files-05.json",
+      "records": 20,
+      "sha256": "a7c96d025c86912ab1b6547ac9825992244bd25e8b5a7dd08995340721f515d5"
+    },
+    {
+      "file": "producer-files-06.json",
+      "records": 20,
+      "sha256": "2639dcc0525e852ed91c49d0ec55e657ae190a10d0203bda9e2fd2517bd37c40"
+    },
+    {
+      "file": "producer-files-07.json",
+      "records": 20,
+      "sha256": "6f87f4545c7bba3a159c410ec7fc98fecf442d6ef6a1b64cd954703cc418a8c9"
+    },
+    {
+      "file": "producer-files-08.json",
+      "records": 2,
+      "sha256": "dff2aabf95a6d72d62cb319016557436ac524dfeb1d4d4f341e4802e3b7d4a68"
+    }
+  ]
+}

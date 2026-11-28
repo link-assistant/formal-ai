@@ -32,7 +32,7 @@ seed_registry
   seed agreement-rules
     bundle true
     web true
-  seed approved-lessons
+  seed auto-mode-classifier
     bundle true
   seed brainstorm-seeds
     bundle true
@@ -108,9 +108,6 @@ seed_registry
   seed creative-composition-rules
     bundle true
     web true
-  seed demo-dialogs
-    bundle true
-    web true
   seed derivation-schema
     bundle true
     web true
@@ -124,14 +121,8 @@ seed_registry
   seed environments
     bundle true
     web true
-  seed fact-captures
-    bundle true
-    web true
   seed fact-check-sources
     bundle true
-  seed fact-realization
-    bundle true
-    web true
   seed facts
     bundle true
     web true
@@ -146,6 +137,8 @@ seed_registry
     web true
   seed formalization-relations
     bundle true
+    web true
+  seed google-trends-prompts
     web true
   seed grammar-projection-rules
     bundle true
@@ -401,6 +394,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-occupations
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-ontology
     bundle true
     lexicon meaning
@@ -436,10 +433,19 @@ seed_registry
   seed meanings-response-intents
     bundle true
     lexicon meaning
+  seed meanings-response-intents-additional
+    bundle true
+    lexicon meaning
   seed meanings-response-intents-handlers
     bundle true
     lexicon meaning
+  seed meanings-response-intents-handlers-additional
+    bundle true
+    lexicon meaning
   seed meanings-routing-vocabulary
+    bundle true
+    lexicon meaning
+  seed meanings-routing-vocabulary-additional
     bundle true
     lexicon meaning
   seed meanings-search
@@ -569,6 +575,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-administration
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-agentic
     bundle true
     lexicon response
@@ -597,6 +607,10 @@ seed_registry
     bundle true
     lexicon response
   seed multilingual-responses-code-tasks
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-composition
     bundle true
     lexicon response
     web true
@@ -694,6 +708,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-quantity-constraint
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-repair
     bundle true
     lexicon response
@@ -713,6 +731,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-synthesis
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-synthesis-runtime
     bundle true
     lexicon response
     web true
@@ -864,9 +886,6 @@ seed_registry
   seed writing-genre-styleguides
     bundle true
     web true
-  unregistered google-trends-*
-    owner "src/google_trends_catalog.rs"
-    reason "The Google Trends catalog embeds its own prompts and snapshot; the capability owns the data rather than the shared bundle."
   unregistered question-generation-lexicon
     owner "src/question_generation.rs"
     reason "Question generation embeds its own lexicon so the words it may use are scoped to the one module that may use them."
@@ -876,3 +895,6 @@ seed_registry
   unregistered search-fusion-language-grammar
     owner "src/search_fusion_grammar.rs"
     reason "The per-language query grammar is embedded by the search-fusion module that parses it."
+  unregistered wordnet-view-coverage
+    owner "scripts/build-views.py"
+    reason "The view builder reads these required publisher inputs from disk during generation and verification."

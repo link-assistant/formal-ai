@@ -1,0 +1,108 @@
+{
+  "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "workflowGitBlob": "ecab57bcb89b29cf3d62f85137f461393630c170",
+  "originalCommandSha256": "5ebe6536be65e410293d758e82fbb833276babe4177876f34a97351e71c40662",
+  "candidateApplied": true,
+  "observations": [
+    {
+      "branch": "sha256sum",
+      "staleFragment": false,
+      "exitCode": 0,
+      "stderr": "",
+      "manifestName": "SHA256SUMS-fixture.partial",
+      "manifest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e  app.zip\n32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114  second asset.exe\n",
+      "entries": [
+        {
+          "name": "app.zip",
+          "digest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "second asset.exe",
+          "digest": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114",
+          "matchesCurrentBytes": true
+        }
+      ],
+      "expectedAssetDigests": {
+        "app.zip": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+        "second asset.exe": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114"
+      }
+    },
+    {
+      "branch": "sha256sum",
+      "staleFragment": true,
+      "exitCode": 0,
+      "stderr": "",
+      "manifestName": "SHA256SUMS-fixture.partial",
+      "manifest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e  app.zip\n32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114  second asset.exe\n",
+      "entries": [
+        {
+          "name": "app.zip",
+          "digest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "second asset.exe",
+          "digest": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114",
+          "matchesCurrentBytes": true
+        }
+      ],
+      "expectedAssetDigests": {
+        "app.zip": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+        "second asset.exe": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114"
+      }
+    },
+    {
+      "branch": "shasum",
+      "staleFragment": false,
+      "exitCode": 0,
+      "stderr": "",
+      "manifestName": "SHA256SUMS-fixture.partial",
+      "manifest": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114  second asset.exe\nff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e  app.zip\n",
+      "entries": [
+        {
+          "name": "second asset.exe",
+          "digest": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "app.zip",
+          "digest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+          "matchesCurrentBytes": true
+        }
+      ],
+      "expectedAssetDigests": {
+        "app.zip": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+        "second asset.exe": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114"
+      }
+    },
+    {
+      "branch": "shasum",
+      "staleFragment": true,
+      "exitCode": 0,
+      "stderr": "",
+      "manifestName": "SHA256SUMS-fixture.partial",
+      "manifest": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114  second asset.exe\nff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e  app.zip\n",
+      "entries": [
+        {
+          "name": "second asset.exe",
+          "digest": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114",
+          "matchesCurrentBytes": true
+        },
+        {
+          "name": "app.zip",
+          "digest": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+          "matchesCurrentBytes": true
+        }
+      ],
+      "expectedAssetDigests": {
+        "app.zip": "ff5d8507b6a72bee2debce2c0054798deaccdc5d8a1b945b6280ce8aa9cba52e",
+        "second asset.exe": "32ec217d4e1c245fa2a2328636934986201496617cf71441f890e973d4f68114"
+      }
+    }
+  ],
+  "rustBuildExecuted": false,
+  "hostedPublicationExecuted": false,
+  "independentAuthorshipCredit": 0
+}

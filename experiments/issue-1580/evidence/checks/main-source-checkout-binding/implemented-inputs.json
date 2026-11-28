@@ -1,0 +1,14 @@
+[
+  {
+    "file": ".github/workflows/hive-mind-draft.yml",
+    "sha256": "251fa74783849e645cb88e03686fa542100a1de153514741922cd0cac16e0cc3"
+  },
+  {
+    "file": "rust/tests/web/hive-mind-draft-workflow.test.mjs",
+    "sha256": "1f62e9f478c8964fad678e17236b3c980fbad37defaa63ce0b56fe48fa339de0"
+  },
+  {
+    "file": "changelog.d/1580-main-source-checkout-binding.md",
+    "sha256": "be46161cdeaa07ddcf28ec589625d2109dd52216695f73e87767fcfde6767c38"
+  }
+]

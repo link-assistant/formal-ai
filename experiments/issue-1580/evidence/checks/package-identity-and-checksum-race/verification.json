@@ -1,0 +1,189 @@
+{
+  "records": [
+    {
+      "name": "rustfmt",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "rust/tests/unit/ci-cd/mod.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "scripts/bump-version.rs",
+        "scripts/check-crate-package-size.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/collect-changelog.rs",
+        "scripts/create-changelog-fragment.rs",
+        "scripts/create-github-release.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/get-version.rs",
+        "scripts/publish-crate.rs",
+        "scripts/rust-paths.rs",
+        "scripts/version-and-commit-tests.rs",
+        "scripts/version-and-commit.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/cargo-package.rs",
+        "rust/tests/unit/ci-cd/cargo_package_identity.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt.log.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "rust/tests/unit/ci-cd/mod.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "scripts/bump-version.rs",
+        "scripts/check-crate-package-size.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/collect-changelog.rs",
+        "scripts/create-changelog-fragment.rs",
+        "scripts/create-github-release.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/get-version.rs",
+        "scripts/publish-crate.rs",
+        "scripts/rust-paths.rs",
+        "scripts/version-and-commit-tests.rs",
+        "scripts/version-and-commit.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/cargo-package.rs",
+        "rust/tests/unit/ci-cd/cargo_package_identity.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check.log.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "negative-package-admission-before",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=package identity, updates",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "negative-package-admission-before.log.gz",
+      "sha256": "afb87b32399e82a2e81e162ff81dc214c0b3e8c894716809537d63262ad84669",
+      "compressedSha256": "4698dc00d61710a64b2e9c204a5025aa8f8749dc932428e4420090f5c355cea2"
+    },
+    {
+      "name": "native-groups-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups-after.log.gz",
+      "sha256": "695436968faf664b3ab224add498cf484b94232a78b93efb856a1025cd84d077",
+      "compressedSha256": "352531a32bd34d819e21e0d818fb9680957e1ea9bd2ec9310be4edf321b02e80"
+    },
+    {
+      "name": "desktop-checksum-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-rust-desktop-checksums.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "desktop-checksum-after.log.gz",
+      "sha256": "9891f56e9df947da70b46e186112c8810f5f2404332773be97bcfd5ca5e8c818",
+      "compressedSha256": "1703b3da0fb1b569f123cd1becdd548ee4b477a32d9d059f2f3ec3b0bd6d54e4"
+    },
+    {
+      "name": "negative-desktop-candidate-disabled",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=candidate selection",
+        "experiments/issue-1580/template-rust-desktop-checksums.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "negative-desktop-candidate-disabled.log.gz",
+      "sha256": "b06883a1f650e02a2e10dc25881082a93ec5ac04b91014c542bb5bc296dac6ef",
+      "compressedSha256": "c0f9f35eeb15e725049a8e7a23d7a9afdcf738d4c273031e83c99d9e14fe7008"
+    },
+    {
+      "name": "default-branch-admission-after",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "default-branch-admission-after.log.gz",
+      "sha256": "a539d303f119f3d8836bf18b41567d74ca527c57a8e46fb441197bd50884725f",
+      "compressedSha256": "581d7dad32f5847d6aef1de53be9916b76438232a58f9e51ef5b3f1d2c251130"
+    },
+    {
+      "name": "local-gates",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-readable-code,check-changelog-fragment-js-twin,release#1,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "local-gates.log.gz",
+      "sha256": "6f3f35a012e8a5ecc36101c36445305d147c47b2a3aecb53c577e418a4f58aa8",
+      "compressedSha256": "2b9d2864c1a203ad90d985e54a723a0f9caf01519b0fbf66a148c5f6014793f1"
+    },
+    {
+      "name": "deployed-release-source",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-staged-release.mjs",
+        "--check-deployed"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "deployed-release-source.log.gz",
+      "sha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce",
+      "compressedSha256": "3816b50a43a2d25b47022d5f33e5f75a98cf635160cdef80035a04e73df66942"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "hostedNativeTestsPending": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

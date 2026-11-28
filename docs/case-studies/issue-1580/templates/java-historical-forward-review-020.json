@@ -1,0 +1,47 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 145,
+    "totalPages": 254,
+    "completeFiles": 123,
+    "partialFiles": 1,
+    "literalLines": 8766,
+    "nextForwardPage": 146,
+    "remainingPages": 109,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    146,
+    147,
+    148
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+      "newReadLinePieces": [
+        43,
+        60
+      ],
+      "cumulativeReadLinePieces": [
+        1,
+        60
+      ],
+      "totalLinePieces": 145,
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 148,
+    "totalPages": 254,
+    "completeFiles": 123,
+    "partialFiles": 1,
+    "literalLines": 8766,
+    "nextForwardPage": 149,
+    "remainingPages": 106,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "All three pages were literally read without output truncation. These continue the archived PyPI pre-commit registry record through releases from 2015\u20132018 and partial piece 60/145. The single source line is not complete, so neither completed line nor completed file counts increase. This historical package metadata does not establish current release behavior or dependency safety. Pages 149\u2013254 and wider semantic applicability remain unfinished. Supplied reading earns zero independent reasoning or authorship credit."
+  ]
+}

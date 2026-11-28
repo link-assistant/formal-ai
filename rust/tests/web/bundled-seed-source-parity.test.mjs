@@ -16,9 +16,13 @@ test('bundled raw seed inputs match the actual native declaration CST and source
     const parsed=runtime.forSource(filename,'Rust').parse(source,'Rust');
     const render=node=>node.tokenIndex===undefined?node.children.map(render).join(''):parsed.tokens[node.tokenIndex].text;
     const collect=(node,predicate)=>[...(predicate(node)?[node]:[]),...node.children.flatMap(child=>collect(child,predicate))];
-    const functions=collect(parsed.tree,node=>node.term==='function_item'&&node.children.some(child=>child.field==='name'&&render(child)==='seed_files'));
+    assert.match(source,/^include!\("embedded_files\.rs"\);$/mu);
+    const bundleSource=readFileSync(new URL('../../../rust/src/seed/embedded_files.rs',import.meta.url),'utf8');
+    const bundleParsed=runtime.forSource('rust/src/seed/embedded_files.rs','Rust').parse(bundleSource,'Rust');
+    const renderBundle=node=>node.tokenIndex===undefined?node.children.map(renderBundle).join(''):bundleParsed.tokens[node.tokenIndex].text;
+    const functions=collect(bundleParsed.tree,node=>node.term==='function_item'&&node.children.some(child=>child.field==='name'&&renderBundle(child)==='seed_files'));
     assert.equal(functions.length,1,'one actual native seed_files declaration');
-    const paths=collect(functions[0],node=>node.term==='string_literal').map(node=>JSON.parse(render(node)));
+    const paths=collect(functions[0],node=>node.term==='string_literal').map(node=>JSON.parse(renderBundle(node)));
     assert(paths.length>0);assert(paths.every(path=>path.startsWith('data/seed/')&&path.endsWith('.lino')));
     assert.equal(new Set(paths).size,paths.length);
     const meanings=collect(parsed.tree,node=>node.term==='const_item'&&node.children.some(child=>child.field==='name'&&render(child)==='MEANING_FILES'));

@@ -1,0 +1,102 @@
+{
+  "schema": "hive-draft-session-capture/v1",
+  "runId": "44923287323",
+  "runAttempt": "1",
+  "workflowSource": "f574289f4559f1d8b801eca9d60bc087a4cd888f",
+  "buildOutcome": "success",
+  "attemptOutcome": "failure",
+  "files": [
+    {
+      "path": "source-identity.txt",
+      "bytes": 500,
+      "sha256": "64054c9bda735d19a06a4ff28bf41f6f4efc9b5ce80c171fddde6fa4b1041764",
+      "complete": true
+    },
+    {
+      "path": "shared-build.txt",
+      "bytes": 359,
+      "sha256": "d7ca4e59d1029fc6c1b83953cc911729aa7ee4a66b6295cf523920546685984a",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-draft-failure.log",
+      "bytes": 218,
+      "sha256": "c87e9429d3dc00e60085cd39a061b5e3ae9bb3ea9c6a962a6f574f3ac0e286d2",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-attempt-receipt.json",
+      "bytes": 621,
+      "sha256": "5d612dd83fddce01bc78df16b1c83e48c37cfd6dd7815d8aa415213b6b5f819a",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-attempt-identity.json",
+      "bytes": 771,
+      "sha256": "3be7ad9d092d52eae169becfe5b59d9638d62d81dda9a4c6495ae7d51e987876",
+      "complete": true
+    },
+    {
+      "path": "draft-diagnostics-adapter.json",
+      "bytes": 507,
+      "sha256": "fbe4bba7a5aa52f233540f2746684ea39ca47c12d226185ba93b1ad50feb2987",
+      "complete": true
+    },
+    {
+      "path": "build-capture-manifest.json",
+      "bytes": 1100,
+      "sha256": "70bd6b8dd445dbe7757cfd24e68c0da7ada47dbc443205e37677a522562cafd3",
+      "complete": true
+    },
+    {
+      "path": "build-identity.json",
+      "bytes": 641,
+      "sha256": "8a8eaadfd1a525c6e45f01bc4112276e784cb044e06781bff094784dbccdfa06",
+      "complete": true
+    },
+    {
+      "path": "attempt.stdout.txt",
+      "bytes": 440,
+      "sha256": "386207e4de92d657849f7e58fe629a81f8ee2ef260e151feca2fa3efa80749f1",
+      "complete": true
+    },
+    {
+      "path": "attempt.stderr.txt",
+      "bytes": 111,
+      "sha256": "b530cadb7a02167559874dd010217e3b10566c0a26ed9841b8196cc0bb8feef0",
+      "complete": true
+    },
+    {
+      "path": "attempt.capture.jsonl",
+      "bytes": 743,
+      "sha256": "713f778c3e3e9d432c8728ce8b293ff8f7381139dccb20394f3bdcb8d8d26083",
+      "complete": true
+    },
+    {
+      "path": "attempt-policy.txt",
+      "bytes": 104,
+      "sha256": "6efae9ae119b95fba6a25356d60bee6196dcc9083642a0beefb3f462beddc823",
+      "complete": true
+    },
+    {
+      "path": "attempt-outcome.json",
+      "bytes": 476,
+      "sha256": "8e38e30744e469a88a33f9c4730f5d0e3a251e382bfcd633cc9871f9d9f98af6",
+      "complete": true
+    }
+  ],
+  "unavailable": [],
+  "redaction": "known environment credentials, credential patterns and personal-data patterns",
+  "rawPrivateFilesIncluded": false,
+  "taskAcceptance": false,
+  "missingRequired": [
+    "build.capture.jsonl",
+    "build-outcome.json"
+  ],
+  "completeAvailableFileCapture": true,
+  "nativeResponsesObserved": false,
+  "dialogExchangesObserved": false,
+  "fullModelEvidence": false,
+  "incompleteProcesses": [],
+  "complete": false
+}

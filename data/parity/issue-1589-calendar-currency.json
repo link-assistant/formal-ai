@@ -35,13 +35,6 @@
     "answer": "Дата: 4 января 2027 года. 2026-12-25 +10 дней = 2027-01-04."
   },
   {
-    "prompt": "Посчитай 1000 рублей в долларах",
-    "intent": "calculation",
-    "text": "12.12 USD",
-    "evidence": "currency:result:12.12 USD",
-    "answer": "1000 RUB ≈ 12.12 USD. Зафиксированный исторический курс: 1 RUB = 1 RUB; 1 USD = 82.5143 RUB. Источник: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Дата курса: 2026-11-17. 1000 × 1 / 82.5143 ≈ 12.12 USD"
-  },
-  {
     "prompt": "Add 14 months, 2 years and 7 months. Answer in months.",
     "intent": "calendar-duration-sum",
     "text": "45 months",
@@ -131,55 +124,6 @@
     "text": "38 месяцев",
     "evidence": "calendar:duration_result:38",
     "answer": "38 месяцев. Полные календарные периоды: 2021-03-15 → 2024-06-14: 39 - 1 = 38 months; ⌊38 / 1⌋ = 38"
-  },
-  {
-    "prompt": "Convert 1000 RUB to USD",
-    "intent": "calculation",
-    "text": "12.12 USD",
-    "evidence": "currency:result:12.12 USD",
-    "answer": "1000 RUB ≈ 12.12 USD. Captured historical rate basis: 1 RUB = 1 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1000 × 1 / 82.5143 ≈ 12.12 USD"
-  },
-  {
-    "prompt": "Calculate 1 USD in RUB",
-    "intent": "calculation",
-    "text": "82.51 RUB",
-    "evidence": "currency:result:82.51 RUB",
-    "answer": "1 USD ≈ 82.51 RUB. Captured historical rate basis: 1 USD = 82.5143 RUB; 1 RUB = 1 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1 × 82.5143 / 1 ≈ 82.51 RUB"
-  },
-  {
-    "prompt": "Calculate 1 EUR in RUB",
-    "intent": "calculation",
-    "text": "91.19 RUB",
-    "evidence": "currency:result:91.19 RUB",
-    "answer": "1 EUR ≈ 91.19 RUB. Captured historical rate basis: 1 EUR = 91.1948 RUB; 1 RUB = 1 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1 × 91.1948 / 1 ≈ 91.19 RUB"
-  },
-  {
-    "prompt": "Calculate 1 EUR in USD",
-    "intent": "calculation",
-    "text": "1.11 USD",
-    "evidence": "currency:result:1.11 USD",
-    "answer": "1 EUR ≈ 1.11 USD. Captured historical rate basis: 1 EUR = 91.1948 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1 × 91.1948 / 82.5143 ≈ 1.11 USD"
-  },
-  {
-    "prompt": "Calculate 1.005 USD in USD",
-    "intent": "calculation",
-    "text": "1.01 USD",
-    "evidence": "currency:result:1.01 USD",
-    "answer": "1.005 USD ≈ 1.01 USD. Captured historical rate basis: 1 USD = 82.5143 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1.005 × 82.5143 / 82.5143 ≈ 1.01 USD"
-  },
-  {
-    "prompt": "Calculate -1.005 USD in USD",
-    "intent": "calculation",
-    "text": "-1.01 USD",
-    "evidence": "currency:result:-1.01 USD",
-    "answer": "-1.005 USD ≈ -1.01 USD. Captured historical rate basis: 1 USD = 82.5143 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. -1.005 × 82.5143 / 82.5143 ≈ -1.01 USD"
-  },
-  {
-    "prompt": "Посчитай 0,004 рублей в рублях",
-    "intent": "calculation",
-    "text": "0.00 RUB",
-    "evidence": "currency:result:0.00 RUB",
-    "answer": "0.004 RUB ≈ 0.00 RUB. Зафиксированный исторический курс: 1 RUB = 1 RUB; 1 RUB = 1 RUB. Источник: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Дата курса: 2026-11-17. 0.004 × 1 / 1 ≈ 0.00 RUB"
   },
   {
     "prompt": "Add 2 years of experience and 7 months in months.",

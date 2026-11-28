@@ -218,8 +218,8 @@ export function parseJavaScriptFileEvents(log) {
   // 2 printed `✔ rust/tests/web/server-dialog-lino.test.mjs` and no summary),
   // so a bound is taken only from a log whose budget actually killed the run.
   const killed = /was terminated after \d+s, its full \d+s execution budget/u.test(log);
-  const blocking = queued.find((file) => started.has(file) && !files.has(file));
-  if (killed && last !== null && blocking) {
+  const blocking = queued.find((file) => !files.has(file));
+  if (killed && last !== null && blocking && started.has(blocking)) {
     files.set(blocking, { seconds: Math.max(0, (last - started.get(blocking)) / 1000), complete: false });
   }
   return files;
@@ -243,9 +243,11 @@ export function parseJavaScriptFileEvents(log) {
  * - writes `default-seconds`, the mean of the observed files left unrecorded,
  *   which is the weight the planner gives a file it has no record for.
  *
+ * `raiseOnly` preserves existing weights and the fallback when importing a
+ * faster cohort, such as PR tests that skip full integration work on main.
  * The result is sorted longest first and is a pure function of its inputs.
  */
-export function mergeJavaScriptDurations(text, observed, { source, floor = 2, recordedDate } = {}) {
+export function mergeJavaScriptDurations(text, observed, { source, floor = 2, recordedDate, raiseOnly = false } = {}) {
   const lines = text.replace(/\n$/u, '').split('\n');
   const firstTest = lines.findIndex((line) => /^ {2}test /u.test(line));
   let headerEnd = firstTest < 0 ? lines.length : firstTest;
@@ -276,8 +278,11 @@ export function mergeJavaScriptDurations(text, observed, { source, floor = 2, re
   for (const [file, { seconds, complete = true }] of [...observed].sort(([left], [right]) => left.localeCompare(right))) {
     const entry = byFile.get(file);
     if (entry) {
-      const replace = round(seconds) > entry.seconds
-        || (complete && entry.extra.length === 0 && round(seconds) !== entry.seconds);
+      // A receipt binds the exact measured seconds and their source identity.
+      // Ordinary cohort imports cannot replace it, even with a larger timing.
+      const receipted = entry.extra.some((line) => /^ {4}receipt-sha256 /u.test(line));
+      const replace = !receipted && (round(seconds) > entry.seconds
+        || (complete && !raiseOnly && entry.extra.length === 0 && round(seconds) !== entry.seconds));
       if (replace) {
         Object.assign(entry, { seconds: round(seconds), text: String(round(seconds)), comments: [], extra: [] });
       }
@@ -294,7 +299,13 @@ export function mergeJavaScriptDurations(text, observed, { source, floor = 2, re
   if (source) out.push(note, `  observed-run ${source}`);
   if (unrecorded.length) {
     const mean = unrecorded.reduce((sum, value) => sum + value, 0) / unrecorded.length;
-    out.push(`  default-seconds ${Math.max(0.1, Math.round(mean * 100) / 100)}`);
+    const previousDefault = raiseOnly ? Number(text.match(/^ {2}default-seconds (\S+)$/mu)?.[1] ?? 0) : 0;
+    out.push(`  default-seconds ${Math.max(previousDefault, 0.1, Math.round(mean * 100) / 100)}`);
+  } else {
+    // Known-file-only (or empty) imports have no new fallback sample.
+    // Preserve the existing policy instead of silently reverting to 0.1s.
+    const existingDefault = text.match(/^ {2}default-seconds \S+$/mu)?.[0];
+    if (existingDefault) out.push(existingDefault);
   }
   for (const entry of entries) out.push(...entry.comments, `  test "${entry.file}"`, `    seconds ${entry.text}`, ...entry.extra);
   return `${out.join('\n')}\n`;

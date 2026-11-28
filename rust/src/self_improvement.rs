@@ -13,9 +13,6 @@ use crate::event_log::{Event, EventLog};
 use crate::learning_ledger::LearningLedger;
 use crate::substitution::SubstitutionRuleSet;
 
-const CODING_MODIFICATION_SUITE_LINO: &str =
-    include_str!("../embedded/data/benchmarks/coding-modification-suite.lino");
-
 /// A solver trace that reached or started from the unknown path.
 ///
 /// The trace stores structured [`EventLog`] events rather than only the
@@ -167,24 +164,17 @@ impl BenchmarkGateReport {
     /// Build an issue #362 gate report using the checked-in benchmark manifest.
     ///
     /// The caller supplies the latest pass/fail counts; the suite id, runner,
-    /// and ratchet floor are read from `data/benchmarks/coding-modification-suite.lino`.
+    /// and ratchet floor come from the benchmark promotion policy.
     #[must_use]
     pub fn issue_362_from_counts(passed: usize, failed: usize) -> Self {
-        let suite = parse_first_record(CODING_MODIFICATION_SUITE_LINO)
-            .expect("coding-modification suite fixture should contain a suite record");
-        let suite_id = suite
-            .field("id")
-            .unwrap_or("issue_362_multilingual_coding_modification")
-            .to_owned();
-        let runner = suite
-            .field("runner")
-            .unwrap_or("cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture")
-            .to_owned();
-        let minimum_pass_count = suite
-            .field("minimum_pass_count")
-            .and_then(|value| value.parse::<usize>().ok())
-            .unwrap_or(1);
-        Self::new(suite_id, runner, passed, failed, minimum_pass_count)
+        let gate = crate::promotion::PromotionRatchet::coding_modification(passed, failed);
+        Self::new(
+            gate.suite_id,
+            gate.runner,
+            passed,
+            failed,
+            gate.minimum_pass_count,
+        )
     }
 
     /// Whether the gate allows learned-rule adoption.
@@ -196,7 +186,7 @@ impl BenchmarkGateReport {
         self.observed && self.passed >= self.minimum_pass_count
     }
 
-    const fn status_slug(&self) -> &'static str {
+    pub(crate) const fn status_slug(&self) -> &'static str {
         if !self.observed {
             return "absent";
         }
@@ -430,7 +420,7 @@ pub struct LearnedRuleProposal {
     pub modifier: String,
     /// Program-plan task after rewriting.
     pub resolved_task: String,
-    /// Verification fixture named by the rule-synthesis trace.
+    /// Verification evidence named by the trace. The field name preserves the historical schema.
     pub fixture: String,
     /// Human-readable review summary.
     pub summary: String,
@@ -582,8 +572,15 @@ fn propose_rule_from_trace(
     let base_task = require_field(&candidate.payload, "base_task")?;
     let modifier = require_field(&candidate.payload, "modifier")?;
     let resolved_task = require_field(&candidate.payload, "resolved_task")?;
-    let fixture =
-        field_value(&verification.payload, "fixture").unwrap_or_else(|| String::from("unknown"));
+    let basis = field_value(&verification.payload, "verification_basis");
+    let verification_label = if basis.is_some() {
+        "verification"
+    } else {
+        "fixture"
+    };
+    let fixture = basis
+        .or_else(|| field_value(&verification.payload, "fixture"))
+        .unwrap_or_else(|| String::from("unknown"));
 
     for (name, value) in [
         ("rule_id", rule_id.as_str()),
@@ -603,12 +600,19 @@ fn propose_rule_from_trace(
     } else {
         LearnedRuleAdoption::BlockedByBenchmark
     };
-    let summary = format!(
-        "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{}` is {} ({}/{}).",
-        gate.suite_id,
-        gate.status_slug(),
-        gate.passed,
-        gate.minimum_pass_count
+    let summary = crate::seed::server_message(
+        "learning_proposal_summary",
+        &[
+            ("modifier", &modifier),
+            ("base_task", &base_task),
+            ("resolved_task", &resolved_task),
+            ("verification_label", verification_label),
+            ("fixture", &fixture),
+            ("suite", &gate.suite_id),
+            ("status", gate.status_slug()),
+            ("passed", &gate.passed.to_string()),
+            ("minimum", &gate.minimum_pass_count.to_string()),
+        ],
     );
     let id = stable_id(
         "learned_rule",
@@ -673,36 +677,6 @@ fn validate_slug(name: &str, value: &str) -> Result<(), String> {
     } else {
         Err(format!("invalid {name} `{value}`"))
     }
-}
-
-#[derive(Debug)]
-struct ParsedRecord {
-    fields: Vec<(String, String)>,
-}
-
-impl ParsedRecord {
-    fn field(&self, name: &str) -> Option<&str> {
-        self.fields
-            .iter()
-            .find_map(|(field_name, value)| (field_name == name).then_some(value.as_str()))
-    }
-}
-
-fn parse_first_record(text: &str) -> Option<ParsedRecord> {
-    let block = text
-        .split("\n\n")
-        .map(str::trim)
-        .find(|record| !record.is_empty())?;
-    let fields = block
-        .lines()
-        .skip(1)
-        .filter_map(|line| {
-            let trimmed = line.trim();
-            let (name, raw) = trimmed.split_once(' ')?;
-            Some((name.to_owned(), unquote(raw.trim())))
-        })
-        .collect();
-    Some(ParsedRecord { fields })
 }
 
 fn unquote(value: &str) -> String {

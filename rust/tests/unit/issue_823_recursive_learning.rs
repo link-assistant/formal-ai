@@ -155,6 +155,17 @@ fn a_real_symbolic_candidate_round_trips_through_report_ingestion() {
 
 #[test]
 fn the_live_solver_recalls_an_approved_lesson_instead_of_rederiving_it() {
+    // An unconfigured runtime starts with an empty ledger (289c28b88); recall
+    // is only possible once an operator names the reviewed lessons document.
+    if crate::offline_replay::in_child_with_approved_lessons(
+        "issue_823_recursive_learning::the_live_solver_recalls_an_approved_lesson_instead_of_rederiving_it",
+        concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/fixtures/issue-558/approved-lessons.lino"
+        ),
+    ) {
+        return;
+    }
     let setup = UniversalSolver::default();
     let first_prompt = "Write a Rust program that lists files in the current directory";
     let first = setup.solve(first_prompt);

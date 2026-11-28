@@ -3,22 +3,18 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
+
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/fact_derivation.mjs"] = (crateRequire) => {
-// Fact records derived from committed Wikidata captures (issue #1172 R9),
-// the crate twin of rust/src/seed/fact_derivation.rs (`derived_facts`) for the
-// agentic port; js/worker/formal_ai_worker_fact_derivation.js is the browser
-// worker's. A record is a subject entity of data/seed/fact-captures.lino whose
-// first claim's property grounds a fact_relation meaning that
-// data/seed/fact-realization.lino realizes, with its value item captured too;
-// the record has the browser shape (`subjectAliases`, `questionKeywords`,
-// `localized`, ...), which solver_handlers_benchmark_prompts.mjs reads.
+// Derive fact records from explicit captures and realization rules.
+// The same function is available through the browser worker factory.
+
 const { lower: canonicalUnaryLower } = crateRequire("crate/rust_str.mjs");
-const { cached, parseLino, readText } = crateRequire("host.mjs");
+const { parseLino } = crateRequire("host.mjs");
 const { splitPipeList } = crateRequire("crate/seed.mjs");
-const { meaning } = crateRequire("crate/seed_meanings.mjs");
-const FACT_CAPTURES_FILE = "data/seed/fact-captures.lino";
-const FACT_REALIZATION_FILE = "data/seed/fact-realization.lino";
 const FACT_SLOT_PATTERN = /\{(subject|value)(?::([a-z_]+))?\}/g;
+const FACT_CAPTURES_ROOT = "fact_captures";
+const FACT_REALIZATION_ROOT = "fact_realization";
+
 /**
  * The single top-level record of a parsed seed file named `name`, or null.
  * @param {string} text
@@ -31,6 +27,7 @@ function factSeedRoot(text, name) {
   if (root.name === name) return root;
   return (root.children || []).find((child) => child.name === name) || null;
 }
+
 /**
  * @param {object} node
  * @param {string} name
@@ -39,6 +36,7 @@ function factSeedRoot(text, name) {
 function factChildren(node, name) {
   return ((node && node.children) || []).filter((child) => child.name === name);
 }
+
 /**
  * @param {object} node
  * @param {string} name
@@ -48,6 +46,7 @@ function factChildText(node, name) {
   const child = factChildren(node, name)[0];
   return child ? String(child.id || "") : "";
 }
+
 /**
  * @param {string} value
  * @returns {Array<string>}
@@ -55,6 +54,7 @@ function factChildText(node, name) {
 function factList(value) {
   return splitPipeList(String(value || ""));
 }
+
 /**
  * The captured entities in seed order: labels, aliases, sitelinks, claims.
  * @param {object|null} root
@@ -75,6 +75,7 @@ function factCapturedEntities(root) {
     return entity;
   });
 }
+
 /**
  * The realization tables of fact-realization.lino.
  * @param {object} root
@@ -152,6 +153,7 @@ function factRealizationRules(root) {
     morphology,
   };
 }
+
 /**
  * An entity's surface in `language`: its preferred label, else its label in
  * the first captured variant the language lists, else its label.
@@ -168,6 +170,7 @@ function factSurface(rules, entity, language) {
   }
   return entity.labels.get(language) || "";
 }
+
 /**
  * The definite form of `text` (the article rule of `language`).
  * @param {object} rules
@@ -182,6 +185,7 @@ function factDefinite(rules, text, language) {
   const words = text.split(" ");
   return article.heads.includes(words[words.length - 1].toLowerCase()) ? `${article.definite} ${text}` : text;
 }
+
 /**
  * True for an all-capital abbreviation of two or more letters.
  * @param {string} word
@@ -191,6 +195,7 @@ function factAcronym(word) {
   const letters = Array.from(word).filter((character) => character.toLowerCase() !== character.toUpperCase());
   return letters.length > 1 && letters.every((character) => character === character.toUpperCase());
 }
+
 /**
  * `text` in grammatical case `name` of `language`: the first word that is
  * neither an initial nor an acronym takes the longest matching ending, else
@@ -222,6 +227,7 @@ function factInflect(rules, text, language, name) {
   }
   return text;
 }
+
 /**
  * @param {object} rules
  * @param {string} text
@@ -233,6 +239,7 @@ function factForm(rules, text, language, form) {
   if (!form) return text;
   return form === "definite" ? factDefinite(rules, text, language) : factInflect(rules, text, language, form);
 }
+
 /**
  * Fill a sentence template; a slot ending in the absorbed mark takes the
  * place of the same mark right after it.
@@ -257,6 +264,7 @@ function factRealize(rules, template, language, subject, value) {
   }
   return out + template.slice(position);
 }
+
 /**
  * The page of `entity` in `language`'s edition, from its captured sitelink.
  * @param {object} rules
@@ -272,6 +280,7 @@ function factSourceUrl(rules, entity, language) {
     .split("{language}").join(language)
     .split("{title}").join(title.split(" ").join(rules.source.titleSpace));
 }
+
 /**
  * The label-index surfaces of a subject: each captured label (and preferred
  * label) per language, with the article and morphology forms of it, then the
@@ -309,23 +318,10 @@ function factLabelSurfaces(rules, entity) {
   for (const surface of rules.surfaces.get(entity.qid) || []) add(surface);
   return out;
 }
-/**
- * The fact records the captures and the realization rules derive, in capture
- * order (`derived_facts`).
- * @returns {Array<object>}
- */
-function derivedFacts() {
-  return cached("derived-capture-facts", () => buildDerivedFacts());
-}
-function buildDerivedFacts() {
-  return deriveFactsFromTexts(
-    readText(FACT_CAPTURES_FILE), readText(FACT_REALIZATION_FILE),
-    (slug) => meaning(slug)?.wikidata ?? "",
-  );
-}
+
 function deriveFactsFromTexts(captureText, realizationText, propertyOf) {
-  const captures = factSeedRoot(captureText, "fact_captures");
-  const realization = factSeedRoot(realizationText, "fact_realization");
+  const captures = factSeedRoot(captureText, FACT_CAPTURES_ROOT);
+  const realization = factSeedRoot(realizationText, FACT_REALIZATION_ROOT);
   if (captures === null || realization === null) return [];
   const rules = factRealizationRules(realization);
   const entities = factCapturedEntities(captures);
@@ -373,8 +369,8 @@ function deriveFactsFromTexts(captureText, realizationText, propertyOf) {
   }
   return records;
 }
+
 return Object.freeze({
-  derivedFacts,
   deriveFactsFromTexts,
   factSeedRoot,
   factChildren,

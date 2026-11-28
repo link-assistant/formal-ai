@@ -1,0 +1,55 @@
+{
+  "source": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+  "qualification": {
+    "run": 45218148759,
+    "job": 137845376155,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/45218148759/job/137845376155",
+    "head": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+    "testedCheckout": "7ac60761cdf0edd3206b73ebfe0f42f7ce2e8c98",
+    "tests": 33,
+    "pass": 33,
+    "fail": 0,
+    "firstPassingLine": 1487,
+    "lastPassingLine": 1519,
+    "completeOriginalJobLines": 3038,
+    "realLocalHttpCases": 5,
+    "archiveCliCases": 20,
+    "recheckCliCases": 6,
+    "staticControls": 2,
+    "transportOnlyExternalMocks": true,
+    "liveExternalAvailabilityVerified": false,
+    "broaderIssueComplete": false,
+    "independentAuthorshipCredit": 0,
+    "targetedReadRanges": [
+      [
+        149,
+        151
+      ],
+      [
+        282,
+        285
+      ],
+      [
+        1486,
+        1520
+      ],
+      [
+        2977,
+        2986
+      ]
+    ]
+  },
+  "gatesPassed": 8,
+  "semantics": "33 supplied boundary controls only; transport mocks do not establish live external availability",
+  "broaderTemplateAdoptionComplete": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 184620,
+    "sha256": "b834f095c88c77a3f218c259ac2471b6cda155184d0e0e7543ba71c1dcfee37c"
+  },
+  "members": 46,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T17:29:40.096817+00:00"
+}

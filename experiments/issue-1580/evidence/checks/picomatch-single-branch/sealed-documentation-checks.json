@@ -1,0 +1,72 @@
+{
+  "capturedAt": "2026-11-17T18:56:36.186997+00:00",
+  "allPassed": false,
+  "checks": [
+    {
+      "gate": "check-file-size",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 12.748,
+      "rawSha256": "7ae51af524cb0ed3fd6c39bf73d4aa55292ecafee58103de0046a1101bb3ad3f",
+      "log": "sealed-check-file-size.log.gz"
+    },
+    {
+      "gate": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 4.186,
+      "rawSha256": "43e9f18e90da64ce5f02fb42f92209cd0e5832562a4f0b1bd43faa4b68c2dfa0",
+      "log": "sealed-check-file-size-js-twin.log.gz"
+    },
+    {
+      "gate": "check-readable-code",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-readable-code"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 12.074,
+      "rawSha256": "7e6b77ea7a448107c4b0f654e7532bed3e72293d8eac4514c54379748c85dab5",
+      "log": "sealed-check-readable-code.log.gz"
+    },
+    {
+      "gate": "check-abbreviations",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 1,
+      "durationSeconds": 4.796,
+      "rawSha256": "a16662baef34cc923107b8e125c2f176fd9fa8b0925ef53cff3691623e5dd74a",
+      "log": "sealed-check-abbreviations.log.gz"
+    },
+    {
+      "gate": "check-package-self-containment",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-package-self-containment"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 2.121,
+      "rawSha256": "9ccc813af424e2a0bda4f0ea9f6b2d7c4e36fde07c6f0cc8e103cb2503201284",
+      "log": "sealed-check-package-self-containment.log.gz"
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

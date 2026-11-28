@@ -1,0 +1,15 @@
+{
+  "records": 50,
+  "parts": [
+    {
+      "file": "inventory-01.json",
+      "records": 35,
+      "sha256": "dd66f596be3c4e0628eaae92670c1a0650f11a663aab80c92e9e9fceb6eedb88"
+    },
+    {
+      "file": "inventory-02.json",
+      "records": 15,
+      "sha256": "1b0de51bd5359603e597354b46e9fd6a53beff1fa8eeed722e53049dd029e8de"
+    }
+  ]
+}

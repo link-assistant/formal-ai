@@ -13,7 +13,10 @@ function run(failures,installStatus=0,source=docker,marker='RUN FORMAL_AI_APT_PR
   const scripts=join(directory,'helpers'),bin=join(directory,'bin');
   mkdirSync(scripts);mkdirSync(bin);
   for(const name of helpers){copyFileSync(resolve('scripts',name),join(scripts,name));chmodSync(join(scripts,name),0o755);}
-  const calls=join(directory,'calls.jsonl');
+  const calls=join(directory,'calls.jsonl');writeFileSync(calls,'');
+  // Noninteractive shells may load .bashrc when their input looks remote.
+  // Keep host startup files and BASH_ENV out of the fake package-manager PATH.
+  writeFileSync(join(directory,'.bashrc'),'printf \'host startup must not run\\n\' >&2; exit 97\n');
   const fake=join(bin,'apt-get');
   writeFileSync(fake,'#!'+process.execPath+'\n'+[
    "import fs from 'node:fs';",
@@ -31,12 +34,13 @@ function run(failures,installStatus=0,source=docker,marker='RUN FORMAL_AI_APT_PR
   assert(start>source.indexOf(stage));
   const end=source.indexOf('\n\n',start);
   const command=source.slice(start+4,end).replaceAll('/usr/local/lib/formal-ai-build',scripts);
-  const result=spawnSync('bash',['-c',command],{cwd:directory,encoding:'utf8',timeout:15000,
-   env:{...process.env,PATH:bin+':'+process.env.PATH,FORMAL_AI_APT_GET:fake,
+  const result=spawnSync('bash',['--noprofile','--norc','-c',command],{cwd:directory,encoding:'utf8',timeout:15000,
+   env:{...process.env,HOME:directory,BASH_ENV:'/dev/null',ENV:'/dev/null',SSH_CLIENT:'127.0.0.1 49152 22',
+    PATH:bin+':'+process.env.PATH,FORMAL_AI_APT_GET:fake,
     FORMAL_AI_APT_ATTEMPTS:'3',FORMAL_AI_APT_ATTEMPT_SECONDS:'3',FORMAL_AI_APT_RETRY_DELAY_SECONDS:'0',
     FAKE_CALLS:calls,FAKE_FAILURES:String(failures),FAKE_INSTALL_STATUS:String(installStatus)}});
   assert.equal(result.signal,null,result.stderr);
-  const records=readFileSync(calls,'utf8').trim().split('\n').map(JSON.parse);
+  const records=readFileSync(calls,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse);
   return {status:result.status,records,stderr:result.stderr};
  }finally{rmSync(directory,{recursive:true,force:true});}
 }

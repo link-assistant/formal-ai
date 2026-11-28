@@ -20,8 +20,27 @@ pub(super) fn read_observation(
         });
     }
     let legacy = super::records::read_record_for_path(records, path)?;
-    let mut read =
-        tool_result::source_read_observation(&legacy.content, legacy.is_error, None, path);
+    // The client can absolutize a relative planned path. Use its validated call
+    // argument for transport decoding; an alias never upgrades completeness.
+    let recorded_path = ["path", "filePath", "file_path", "absolute_path"]
+        .iter()
+        .find_map(|key| {
+            legacy
+                .arguments
+                .get(*key)
+                .and_then(serde_json::Value::as_str)
+        })?;
+    let mut read = if let Some(read) = progress.source_read_for(recorded_path) {
+        tool_result::SourceReadObservation {
+            status: read.status,
+            complete: false,
+            absent: read.absent,
+            source: read.source.clone(),
+            error: read.error.clone(),
+        }
+    } else {
+        tool_result::source_read_observation(&legacy.content, legacy.is_error, None, recorded_path)
+    };
     read.complete = false;
     Some(read)
 }

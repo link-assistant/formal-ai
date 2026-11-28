@@ -1,0 +1,49 @@
+{
+  "records": [
+    {
+      "name": "formatting",
+      "argv": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "rust/src/unknown_opener.rs",
+        "rust/src/web_engine_core.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.085,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "full-javascript-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 692.121,
+      "rawBytes": 7299,
+      "rawLines": 140,
+      "rawSha256": "3edf62f1f6a860a8a063a28a8fcfe57f515769d53091d0a19df9d57abd475e17"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.368,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "complete": true,
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

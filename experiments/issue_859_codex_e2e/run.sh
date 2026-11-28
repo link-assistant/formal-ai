@@ -26,9 +26,10 @@ MODEL_CATALOG="$RUN_DIR/formal-ai-model-catalog.json"
 
 codex_cli() {
   if [ -n "$CODEX_BIN" ]; then
-    "$CODEX_BIN" "$@"
+    python3 "$ROOT/experiments/issue_859_codex_e2e/own-process-group.py" "$CODEX_BIN" "$@"
   else
-    bunx --package "@openai/codex@$CODEX_VERSION" codex "$@"
+    python3 "$ROOT/experiments/issue_859_codex_e2e/own-process-group.py" \
+      bunx --package "@openai/codex@$CODEX_VERSION" codex "$@"
   fi
 }
 
@@ -42,7 +43,7 @@ server_command=("$BIN" serve)
 if [ "$SERVER" = js ]; then
   server_command=(node "$ROOT/js/server/main.mjs")
 fi
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_DREAMING=0 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace FORMAL_AI_DREAMING=0 \
   FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR=false \
   FORMAL_AI_DIALOG_LOG_DIR="$RUN_DIR/dialogs" \
   FORMAL_AI_MEMORY_PATH="$RUN_DIR/memory.lino" \

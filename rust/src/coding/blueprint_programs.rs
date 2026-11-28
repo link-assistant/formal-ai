@@ -192,8 +192,10 @@ main().catch((error) => {
 });
 "#;
 
-pub(super) const PYTHON_PERSONAL_BUDGET_REPORT: &str = r#"from dataclasses import dataclass
-from math import log
+pub(super) const PYTHON_PERSONAL_BUDGET_REPORT: &str = r#"import argparse
+import json
+from dataclasses import dataclass
+from math import expm1, isfinite, log1p
 from pathlib import Path
 
 
@@ -203,15 +205,6 @@ class CityCost:
     average_rent: float
     living_cost_ex_rent: float
     source: str
-
-
-CITY_COSTS = [
-    CityCost('Moscow', 950.0, 850.0, 'https://www.numbeo.com/cost-of-living/in/Moscow'),
-    CityCost('Berlin', 1550.0, 1250.0, 'https://www.numbeo.com/cost-of-living/in/Berlin'),
-    CityCost('New York', 3600.0, 1850.0, 'https://www.numbeo.com/cost-of-living/in/New-York'),
-]
-ANNUAL_RETURN = 0.08
-GOAL = 100_000.0
 
 
 def budget_50_30_20(monthly_income):
@@ -225,14 +218,23 @@ def budget_50_30_20(monthly_income):
 def future_value(monthly_contribution, annual_return, years):
     monthly_rate = annual_return / 12
     months = years * 12
-    return monthly_contribution * (((1 + monthly_rate) ** months - 1) / monthly_rate)
+    if monthly_rate == 0:
+        return monthly_contribution * months
+    return monthly_contribution * (expm1(months * log1p(monthly_rate)) / monthly_rate)
 
 
-def years_to_goal(monthly_savings, goal=GOAL, annual_return=ANNUAL_RETURN):
+def years_to_goal(monthly_savings, goal, annual_return):
+    if goal == 0:
+        return 0.0
     if monthly_savings <= 0:
         return None
     monthly_rate = annual_return / 12
-    months = log(1 + goal * monthly_rate / monthly_savings) / log(1 + monthly_rate)
+    if monthly_rate == 0:
+        return goal / monthly_savings / 12
+    growth = goal * monthly_rate / monthly_savings
+    if growth <= -1:
+        return None
+    months = log1p(growth) / log1p(monthly_rate)
     return months / 12
 
 
@@ -244,10 +246,10 @@ def years(value):
     return 'not reachable' if value is None else f'{value:.1f}'
 
 
-def comparison_rows(monthly_income):
+def comparison_rows(monthly_income, cities, savings_goal, annual_return):
     plan = budget_50_30_20(monthly_income)
     rows = []
-    for cost in CITY_COSTS:
+    for cost in cities:
         expenses = cost.average_rent + cost.living_cost_ex_rent
         remaining = monthly_income - expenses
         monthly_savings = max(0.0, min(plan['savings'], remaining))
@@ -256,16 +258,15 @@ def comparison_rows(monthly_income):
             'rent': cost.average_rent,
             'remaining': remaining,
             'monthly_savings': monthly_savings,
-            'years_to_100k': years_to_goal(monthly_savings),
+            'years_to_goal': years_to_goal(monthly_savings, savings_goal, annual_return),
             'source': cost.source,
         })
     return rows
 
 
-def render_markdown(monthly_income):
+def render_markdown(monthly_income, monthly_contribution, annual_return, horizon, savings_goal, cities):
     plan = budget_50_30_20(monthly_income)
-    scenario_savings = 3000.0 * 0.20
-    scenario_future = future_value(scenario_savings, ANNUAL_RETURN, 10)
+    scenario_future = future_value(monthly_contribution, annual_return, horizon)
     lines = [
         '# Budget Calculator Report',
         '',
@@ -276,47 +277,62 @@ def render_markdown(monthly_income):
         f'- Savings (20%): {money(plan["savings"])}',
         '',
         '## Investment Scenario',
-        f'- 20% of $3000 monthly: {money(scenario_savings)}',
-        f'- Future value after 10 years at 8% annual return: {money(scenario_future)}',
+        f'- Monthly contribution: {money(monthly_contribution)}',
+        f'- Future value after {horizon} years at {annual_return:.2%} annual return: {money(scenario_future)}',
         '',
         '## City Comparison',
-        '| City | Average rent | Remaining budget after expenses | Years to save $100,000 |',
+        f'| City | Average rent | Remaining budget after expenses | Years to save {money(savings_goal)} |',
         '| --- | ---: | ---: | ---: |',
     ]
-    for row in comparison_rows(monthly_income):
+    for row in comparison_rows(monthly_income, cities, savings_goal, annual_return):
         lines.append(
             f'| {row["city"]} | {money(row["rent"])} | '
-            f'{money(row["remaining"])} | {years(row["years_to_100k"])} |'
+            f'{money(row["remaining"])} | {years(row["years_to_goal"])} |'
         )
     lines.extend(['', '## Sources'])
-    for cost in CITY_COSTS:
+    for cost in cities:
         lines.append(f'- {cost.city}: {cost.source}')
     lines.append('')
-    lines.append('Review and update the city-cost values after checking the source pages.')
     return '\n'.join(lines)
 
 
-def read_income():
-    try:
-        raw = input('Monthly income in USD [3000]: ').strip()
-    except EOFError:
-        raw = ''
-    return float(raw or '3000')
-
-
 def main():
-    report = render_markdown(read_income())
-    Path('budget_report.md').write_text(report, encoding='utf-8')
+    parser = argparse.ArgumentParser(
+        description='Read a JSON budget scenario and write a sourced Markdown report.',
+        epilog='Scenario fields: monthly_income, monthly_contribution, annual_return (fraction), years, savings_goal and cities. Each city needs city, average_rent, living_cost_ex_rent and source.',
+    )
+    parser.add_argument('scenario', type=Path)
+    parser.add_argument('output', type=Path)
+    args = parser.parse_args()
+    scenario = json.loads(args.scenario.read_text(encoding='utf-8'))
+    for key in ('monthly_income', 'monthly_contribution', 'years', 'savings_goal'):
+        value = scenario[key]
+        if type(value) not in (int, float) or not isfinite(value) or value < 0:
+            parser.error(f'{key} must be a finite, nonnegative number')
+    cities = [CityCost(**row) for row in scenario['cities']]
+    if not cities or any(not city.source.strip() for city in cities):
+        parser.error('provide city costs with source URLs')
+    annual_return = scenario['annual_return']
+    if type(annual_return) not in (int, float) or not isfinite(annual_return) or annual_return <= -1:
+        parser.error('annual_return must be finite and greater than -1')
+    report = render_markdown(scenario['monthly_income'], scenario['monthly_contribution'],
+                             annual_return, scenario['years'], scenario['savings_goal'], cities)
+    args.output.write_text(report, encoding='utf-8')
     print(report)
-    print('\nMarkdown report written to budget_report.md')
 
 
 if __name__ == '__main__':
     main()
 "#;
 
-pub(super) const PYTHON_CRYPTO_PORTFOLIO_TRACKER: &str = r#"from dataclasses import dataclass
+pub(super) const PYTHON_CRYPTO_PORTFOLIO_TRACKER: &str = r#"import argparse
+import json
+from dataclasses import dataclass
+from math import isfinite
+from pathlib import Path
 from typing import Mapping
+from urllib.parse import urlsplit
+from urllib.request import urlopen
 
 
 @dataclass(frozen=True)
@@ -326,32 +342,22 @@ class AssetPrice:
     change_24h_pct: float
 
 
-PORTFOLIO = {
-    'BTC': 2.5,
-    'ETH': 15.0,
-    'TON': 1000.0,
-    'USDT': 5000.0,
-}
-
-MOCK_API_RESPONSE = {
-    'BTC': {'price_usd': 64120.25, 'change_24h_pct': -2.4},
-    'ETH': {'price_usd': 3350.80, 'change_24h_pct': 1.2},
-    'TON': {'price_usd': 6.85, 'change_24h_pct': -5.7},
-    'USDT': {'price_usd': 1.00, 'change_24h_pct': 0.0},
-}
-
-
-def fetch_prices(symbols: list[str]) -> dict[str, AssetPrice]:
-    """Mock a public price API response for deterministic offline execution."""
-    prices = {}
-    for symbol in symbols:
-        payload = MOCK_API_RESPONSE[symbol]
-        prices[symbol] = AssetPrice(
-            symbol=symbol,
-            price_usd=payload['price_usd'],
-            change_24h_pct=payload['change_24h_pct'],
-        )
-    return prices
+def fetch_prices(symbols: list[str], source: str) -> dict[str, AssetPrice]:
+    if source.startswith('https://'):
+        endpoint = urlsplit(source)
+        if not endpoint.hostname or endpoint.username or endpoint.password:
+            raise ValueError('provide a public HTTPS endpoint without credentials')
+        maximum_bytes = 1_048_576
+        with urlopen(source, timeout=10) as response:
+            if urlsplit(response.geturl()).scheme != 'https':
+                raise ValueError('the price source redirected outside HTTPS')
+            body = response.read(maximum_bytes + 1)
+        if len(body) > maximum_bytes:
+            raise ValueError('the price response exceeded 1 MiB')
+        payload = json.loads(body)
+    else:
+        payload = json.loads(Path(source).read_text(encoding='utf-8'))
+    return {symbol: AssetPrice(symbol=symbol, **payload[symbol]) for symbol in symbols}
 
 
 def portfolio_rows(
@@ -363,7 +369,7 @@ def portfolio_rows(
     for symbol, amount in holdings.items():
         price = prices[symbol]
         value = amount * price.price_usd
-        portfolio_weight = value / total_value * 100
+        portfolio_weight = value / total_value * 100 if total_value else 0.0
         rows.append({
             'symbol': symbol,
             'amount': amount,
@@ -375,11 +381,11 @@ def portfolio_rows(
     return rows
 
 
-def notify_alerts(rows: list[dict[str, float | str]]) -> list[str]:
+def notify_alerts(rows: list[dict[str, float | str]], alert_threshold: float) -> list[str]:
     return [
         f'Notify: {row["symbol"]} dropped {row["change_24h_pct"]:.2f}% in 24h'
         for row in rows
-        if float(row['change_24h_pct']) < -5.0
+        if float(row['change_24h_pct']) < -alert_threshold
     ]
 
 
@@ -387,7 +393,9 @@ def money(value: float) -> str:
     return f'${value:,.2f}'
 
 
-def render_dashboard(rows: list[dict[str, float | str]], notices: list[str]) -> str:
+def render_dashboard(
+    rows: list[dict[str, float | str]], notices: list[str], alert_threshold: float,
+) -> str:
     total_value = sum(float(row['value_usd']) for row in rows)
     lines = [
         '# Crypto Portfolio Dashboard',
@@ -404,23 +412,40 @@ def render_dashboard(rows: list[dict[str, float | str]], notices: list[str]) -> 
             f'{row["portfolio_weight"]:.2f}% |'
         )
     lines.extend(['', '## Alerts'])
-    lines.extend(notices or ['No asset dropped more than 5% in the last 24h.'])
+    lines.extend(notices or [f'No asset dropped more than {alert_threshold:g}% in the last 24h.'])
     return '\n'.join(lines)
 
 
 def main() -> None:
-    prices = fetch_prices(list(PORTFOLIO))
-    rows = portfolio_rows(PORTFOLIO, prices)
-    notices = notify_alerts(rows)
-    formatted_log = render_dashboard(rows, notices)
-    print(formatted_log)
+    parser = argparse.ArgumentParser(
+        description='Read JSON holdings and prices from a file or public HTTPS endpoint.',
+        epilog='Holdings maps symbols to quantities. Prices maps symbols to price_usd and change_24h_pct. To replay a mock response, pass its JSON file as the prices argument.',
+    )
+    parser.add_argument('holdings', type=Path)
+    parser.add_argument('prices', help='prices JSON file or public HTTPS endpoint')
+    parser.add_argument('alert_threshold', type=float, help='percentage decline that triggers an alert')
+    args = parser.parse_args()
+    if not isfinite(args.alert_threshold) or args.alert_threshold < 0:
+        parser.error('alert_threshold must be a finite, nonnegative percentage')
+    holdings = json.loads(args.holdings.read_text(encoding='utf-8'))
+    if not isinstance(holdings, dict) or not holdings:
+        parser.error('holdings must be a nonempty mapping from symbols to quantities')
+    prices = fetch_prices(list(holdings), args.prices)
+    rows = portfolio_rows(holdings, prices)
+    notices = notify_alerts(rows, args.alert_threshold)
+    dashboard = render_dashboard(rows, notices, args.alert_threshold)
+    print(f'{dashboard}\n\nPrice source: {args.prices}')
 
 
 if __name__ == '__main__':
     main()
 "#;
 
-pub(super) const PYTHON_SMART_TRAVEL_PLANNER: &str = r#"from dataclasses import dataclass
+pub(super) const PYTHON_SMART_TRAVEL_PLANNER: &str = r#"import argparse
+import json
+from dataclasses import dataclass
+from math import isfinite
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -433,42 +458,14 @@ class DestinationData:
     source: str
 
 
-DEFAULT_DESTINATIONS = {
-    'Japan': DestinationData(
-        country='Japan',
-        visa_free=False,
-        visa_note='Russian citizens should confirm visa requirements before booking.',
-        average_flight_cost=820.0,
-        daily_cost=160.0,
-        source='https://www.mofa.go.jp/',
-    ),
-    'UAE': DestinationData(
-        country='UAE',
-        visa_free=True,
-        visa_note='Assume visa-free short-stay access; verify current entry rules.',
-        average_flight_cost=420.0,
-        daily_cost=135.0,
-        source='https://u.ae/',
-    ),
-    'Serbia': DestinationData(
-        country='Serbia',
-        visa_free=True,
-        visa_note='Assume visa-free short-stay access; verify current entry rules.',
-        average_flight_cost=380.0,
-        daily_cost=95.0,
-        source='https://www.mfa.gov.rs/',
-    ),
-}
-DEFAULT_DAYS = 7
-
-
 def money(value):
     return f'${value:,.0f}'
 
 
 class TravelPlanner:
-    def __init__(self, destination_data=None):
-        self.destination_data = destination_data or DEFAULT_DESTINATIONS
+    def __init__(self, destination_data, days):
+        self.destination_data = destination_data
+        self.days = days
         self.destinations = []
 
     def add_destination(self, country: str, budget: float):
@@ -489,7 +486,7 @@ class TravelPlanner:
         )
 
     def estimate_total_cost(self) -> dict:
-        return self._estimate_for_days(DEFAULT_DAYS)
+        return self._estimate_for_days(self.days)
 
     def generate_itinerary(self, days: int) -> str:
         estimates = self._estimate_for_days(days)
@@ -500,17 +497,17 @@ class TravelPlanner:
         lines = [
             '# Smart Travel Planner',
             '',
-            f'Sample output for a {days}-day trip with $2,000 budget',
+            f'Itinerary for a {days}-day trip',
             '',
-            '| Rank | Destination | Visa | Estimated cost | Budget status |',
-            '| ---: | --- | --- | ---: | --- |',
+            '| Rank | Destination | Visa | Estimated cost | Budget | Budget status |',
+            '| ---: | --- | --- | ---: | ---: | --- |',
         ]
         for rank, row in enumerate(ranked, start=1):
             visa = 'visa-free' if row['visa_free'] else 'visa check required'
             warning = row['budget_warning'] or 'Budget warning: none'
             lines.append(
                 f'| {rank} | {row["country"]} | {visa} | '
-                f'{money(row["estimated_total"])} | {warning} |'
+                f'{money(row["estimated_total"])} | {money(row["budget"])} | {warning} |'
             )
         lines.extend(['', '## Notes'])
         for row in ranked:
@@ -526,6 +523,8 @@ class TravelPlanner:
         return self.destinations
 
     def _estimate_for_days(self, days):
+        if type(days) is not int or days < 1:
+            raise ValueError('the trip must have at least one day')
         estimates = {}
         for item in self._selected_destinations():
             data = self.destination_data[item['country']]
@@ -549,23 +548,42 @@ class TravelPlanner:
         return estimates
 
 
-def build_sample_planner():
-    planner = TravelPlanner()
-    for country in ('Japan', 'UAE', 'Serbia'):
-        planner.add_destination(country, 2000.0)
-    return planner
+def main():
+    parser = argparse.ArgumentParser(
+        description='Read a JSON travel scenario and print the ranked itinerary.',
+        epilog='Scenario fields: days and destinations. Each destination needs country, budget, visa_free, visa_note, average_flight_cost, daily_cost and source for the citizenship, origin and dates.',
+    )
+    parser.add_argument('scenario', type=Path)
+    args = parser.parse_args()
+    scenario = json.loads(args.scenario.read_text(encoding='utf-8'))
+    destinations = {}
+    budgets = {}
+    for row in scenario['destinations']:
+        data = dict(row)
+        budget = data.pop('budget')
+        destination = DestinationData(**data)
+        if not destination.source.strip() or destination.country in destinations:
+            parser.error('provide distinct destinations with source URLs')
+        if type(destination.visa_free) is not bool:
+            parser.error('visa_free must be a JSON boolean')
+        values = (budget, destination.average_flight_cost, destination.daily_cost)
+        if any(type(value) not in (int, float) or not isfinite(value) or value < 0 for value in values):
+            parser.error('budget and costs must be finite, nonnegative numbers')
+        destinations[destination.country] = destination
+        budgets[destination.country] = budget
+    planner = TravelPlanner(destinations, scenario['days'])
+    for country, budget in budgets.items():
+        planner.add_destination(country, budget)
+    print(planner.generate_itinerary(planner.days))
 
 
 if __name__ == '__main__':
-    sample = build_sample_planner()
-    print('Sample output for a 7-day trip with $2,000 budget')
-    print(sample.generate_itinerary(7))
+    main()
 "#;
 
 pub(super) const RUST_SELF_SOURCE_METRICS: &str = r#"use std::fmt::Write as _;
 
 const SOURCE: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", file!()));
-const RESPONSE_REASONING: &str = "The response decomposes the request, provides a source-metrics program, and compares the code with this prose.";
 
 #[derive(Default)]
 struct Metrics {
@@ -577,10 +595,13 @@ struct Metrics {
     complexity_score: usize,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let path = std::env::args_os().nth(1).ok_or("usage: cargo run -- <response-prose.txt>")?;
+    let reasoning = std::fs::read_to_string(path)?;
     let source_metrics = analyze_rust_text(SOURCE);
-    let reasoning_metrics = analyze_rust_text(RESPONSE_REASONING);
+    let reasoning_metrics = analyze_rust_text(&reasoning);
     println!("{}", render_report(&source_metrics, &reasoning_metrics));
+    Ok(())
 }
 
 fn analyze_rust_text(text: &str) -> Metrics {
@@ -684,7 +705,7 @@ fn render_report(source: &Metrics, reasoning: &Metrics) -> String {
         "tie"
     };
     let explanation = if verdict == "generated_code" {
-        "The generated Rust code is more complex because it contains functions, loops, conditionals, and comment syntax; the reasoning text is plain prose."
+        "The generated Rust code has more branches under this scanner."
     } else if verdict == "reasoning_text" {
         "The reasoning text is more complex under this scanner."
     } else {

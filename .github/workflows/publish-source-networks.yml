@@ -247,9 +247,19 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - name: Check out workflow-owned artifact extraction
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .formal-ai-artifact-protocol
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+          sparse-checkout-cone-mode: false
+      - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
         with:
           pattern: formal-ai-source-networks-*
           path: ${{ runner.temp }}/source-network-archives

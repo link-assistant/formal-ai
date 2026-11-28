@@ -1,0 +1,17 @@
+{
+  "source": "38b4e36cca799fd99cc88ec05ff373d413c14975",
+  "gatesPassed": 4,
+  "whitespaceCheckPassed": true,
+  "fullTemplatePracticeEquivalenceVerified": false,
+  "initialInvocation": "Formal driver refused nonverbatim invocation before any side effect; zero verification credit",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 6957,
+    "sha256": "e3161a5d162a0a081e402c994c81cf67ce6b9c3ef4e42eb3775f78e26f1508a2"
+  },
+  "members": 14,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:32:11.027259+00:00"
+}

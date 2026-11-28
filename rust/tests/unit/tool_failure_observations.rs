@@ -405,7 +405,7 @@ fn issue_905_case_study_and_self_authorship_are_preserved() {
         "{case}/self-hosting-fixture-refresh/self-healing-case.lino"
     )));
     let canonical = repair_case_without_source_counts(&PathBuf::from(format!(
-        "{root}/data/meta/self-healing-case.lino"
+        "{root}/rust/tests/fixtures/issue-558/self-healing-case.lino"
     )));
     assert_eq!(refreshed, canonical);
 }

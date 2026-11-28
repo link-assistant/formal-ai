@@ -64,8 +64,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ${{ github.workflow }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
 env:
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
@@ -78,6 +78,10 @@ jobs:
   # not, so both workflows call the same scripts/detect-code-changes.rs.
   detect-changes:
     name: Detect Changes
+    # actions: read lets the admission confirm the previous head passed (#1637).
+    permissions:
+      contents: read
+      actions: read
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
@@ -99,6 +103,8 @@ jobs:
           # Keep complete commit history, without materializing unrelated blobs.
           sparse-checkout: |
             /scripts/detect-code-changes.rs
+            /scripts/github-output.rs
+            /scripts/detect-code-changes-tests.rs
             /scripts/ci-pull-request-admission.mjs
             /scripts/lib/documentation-paths.mjs
             /scripts/install-rust-script.sh
@@ -115,6 +121,10 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          # Issue #1637: a push onto an already-green head is judged by its own range.
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+          GITHUB_EVENT_AFTER: ${{ github.event.after }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = pull_request ] || { [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; }; then
             node scripts/ci-pull-request-admission.mjs detect
@@ -311,12 +321,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
 
       - name: Download the instrumented executables
-        uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           name: coverage-objects
           path: coverage-objects
@@ -512,17 +517,13 @@ jobs:
         uses: taiki-e/install-action@cargo-llvm-cov
 
       - name: Download the instrumented executables
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           name: coverage-objects
           path: coverage-objects
 
       - name: Download every shard's profile
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           pattern: coverage-profile-*
           merge-multiple: true
@@ -721,9 +722,7 @@ jobs:
         run: bash scripts/sync-seed.sh
 
       - name: Download every browser coverage shard
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           pattern: browser-coverage-shard-*
           merge-multiple: false

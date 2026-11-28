@@ -1,0 +1,273 @@
+{
+  "at": "2026-11-22T10:59:20.325276+00:00",
+  "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "source": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+  "previousSource": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+  "changed": 7,
+  "exactBlobCarry": 367,
+  "completePatchReconstruction": true,
+  "wholeLiteralCurrentFiles": 5,
+  "structuredCurrentFiles": 2,
+  "upstreamPythonControlsPassed": 5,
+  "localNativeExecution": false,
+  "allApplicablePracticesVerified": false,
+  "independentAuthorshipCredit": 0,
+  "files": [
+    {
+      "source": "refresh-current-template-map-driver.log",
+      "file": "0001.log.gz",
+      "bytes": 469,
+      "lines": 9,
+      "sha256": "b8e32cd8da2e32cb45c28a9f209e4b10b2f509f0353fde8cba583ebaa7344a04",
+      "compressedSha256": "f8f4e59725219662099c357dd3fb05f6f5ea873dabe26638d64af4b68ab76d44"
+    },
+    {
+      "source": "refresh-current-template-map.py",
+      "file": "0002.log.gz",
+      "bytes": 9974,
+      "lines": 82,
+      "sha256": "890a4633a4316ce5858134503430e6c6351a9a5bc0cf7a20e57aa58ff61b221a",
+      "compressedSha256": "3ebe1dcf2982f834cdf1dfe1a3db5aad2cb089a375ed8b1f1952994c2e75394f"
+    },
+    {
+      "source": "template-url-origin/comparison-pages.json",
+      "file": "0003.log.gz",
+      "bytes": 45341,
+      "lines": 1,
+      "sha256": "62f91219c0bec2a3fba174f98bda0b00b873dc1d2ca0b70db51821379fd29fcd",
+      "compressedSha256": "f2d5f83fee0c8d96a680b35fe21ca0d8693fa7ac7ae4866ae5da940107b60f7c"
+    },
+    {
+      "source": "template-url-origin/complete-delta-proof.json",
+      "file": "0004.log.gz",
+      "bytes": 3313,
+      "lines": 68,
+      "sha256": "4fec777a91415548842af138d37caf25a8c5499227060162e513cb4b565f36ae",
+      "compressedSha256": "32bd1e3c16ef25e08a557a8e909bc9b3c3fb8a583471cb324a6457e2ea097557"
+    },
+    {
+      "source": "template-url-origin/current-source/CHANGELOG.md",
+      "file": "0005.log.gz",
+      "bytes": 194340,
+      "lines": 3609,
+      "sha256": "8c3f3a295aa72e0808c040a29312b4f098f1f8c372adb2caf8d4840c5f21d28b",
+      "compressedSha256": "1ef17428929f40545d06dcb3c1f3b01b9928f7529a5f77ec68105013e114af86"
+    },
+    {
+      "source": "template-url-origin/current-source/Cargo.lock",
+      "file": "0006.log.gz",
+      "bytes": 12062,
+      "lines": 462,
+      "sha256": "28c5ee9ee0736a42679f28974c37ec6c7604ecaf411c82552b86bce500c92d12",
+      "compressedSha256": "f4cd298f39d33673d72dad5a3f4f0c141e3f724f485ca4deacb2cfe49d8f01f7"
+    },
+    {
+      "source": "template-url-origin/current-source/Cargo.toml",
+      "file": "0007.log.gz",
+      "bytes": 1708,
+      "lines": 69,
+      "sha256": "7290b5e522f039e6cc2ae88955e98839992b57c9674e68996e2424b15c11e950",
+      "compressedSha256": "d5f4829455e66f06628b4320adcb306d38931a4b8df802164a1acc48e0c399c2"
+    },
+    {
+      "source": "template-url-origin/current-source/README.md",
+      "file": "0008.log.gz",
+      "bytes": 20660,
+      "lines": 429,
+      "sha256": "179d00d4d78ce4e05e531c19a4a44403c926fea91556f119cf95fa8ec72e3320",
+      "compressedSha256": "bf85846eb7bc4f3404ed6bd40bc53fa3fbb69a5d4418d161308f7b2e043ded74"
+    },
+    {
+      "source": "template-url-origin/current-source/experiments/issue-226-regressions.py",
+      "file": "0009.log.gz",
+      "bytes": 13338,
+      "lines": 273,
+      "sha256": "33ead52ee556e18a8627c8172ac5bc653e5e4d39db2802adcdcc08b8bd28f5df",
+      "compressedSha256": "4e023ea272a38e1f001f4e930a1fb81eda8f1b090defa5cb51c5f41a1a930620"
+    },
+    {
+      "source": "template-url-origin/current-source/scripts/unacquired-jobs.py",
+      "file": "0010.log.gz",
+      "bytes": 7071,
+      "lines": 166,
+      "sha256": "54cdc0e8a69b85205be32e0388ddcd7a357c74ca115441f98201036561af4b51",
+      "compressedSha256": "505dc98c480bdd8fa5307d6a5f8202c7e2586876dcfddeed53a37a2a07b37b9a"
+    },
+    {
+      "source": "template-url-origin/current-source/tests/unit/ci-cd/issue_135.rs",
+      "file": "0011.log.gz",
+      "bytes": 17361,
+      "lines": 452,
+      "sha256": "94489dda8157b2dc82ac10a88f85e2ae970348a2712a236c3d44ab9c3385178a",
+      "compressedSha256": "60de54823f29800943bb7f3516c6c0a1e97e7e16616831bc9ec7b61c4b4f0545"
+    },
+    {
+      "source": "template-url-origin/fetched-current-delta.json",
+      "file": "0012.log.gz",
+      "bytes": 2340,
+      "lines": 67,
+      "sha256": "2fa535e6296176f3959aa03e4f6e4b52c4cf5798380b545d78549410c5836f24",
+      "compressedSha256": "e5a80f39bb8e3214be20a5fd9c33451c0d026977ed6323aa9b2df5d0b2e9a11d"
+    },
+    {
+      "source": "template-url-origin/formal-ai-counterpart-controls.json",
+      "file": "0013.log.gz",
+      "bytes": 296,
+      "lines": 18,
+      "sha256": "0ba313d8ad20255d3c8d6cae50ca9c2597b9e90fda197358fd9d85a54e2c1e38",
+      "compressedSha256": "413a5724e1061d593ac65de23bacbe102637c7d97798eba40c8c0eb6b179b11d"
+    },
+    {
+      "source": "template-url-origin/observations.json",
+      "file": "0014.log.gz",
+      "bytes": 1048,
+      "lines": 23,
+      "sha256": "87d7971824bfec548fd00c9d1f51ad45e5a687f385b1de2c4d4b6b9e63e8f104",
+      "compressedSha256": "92f795022d9befffdca6639a2bee7c709acc75469551b3c6cd42bfc9a73ca912"
+    },
+    {
+      "source": "template-url-origin/previous-rust-complete-file-comparison.json",
+      "file": "0015.log.gz",
+      "bytes": 2337,
+      "lines": 37,
+      "sha256": "e05b14692cf8d17bd3ea67281bbaf7bcb36c168e545f1e202c1f0c39e7f849eb",
+      "compressedSha256": "bf0a51641a7de1ea36a82eca4da75bb89b2f72394c712252b199f12306effe54"
+    },
+    {
+      "source": "template-url-origin/previous-rust-complete-files.jsonl",
+      "file": "0016.log.gz",
+      "bytes": 324066,
+      "lines": 374,
+      "sha256": "bbc3a0b03c618931431eba113e2380c816a4ad67b8c74a7a34b08e4855117494",
+      "compressedSha256": "2f439971cff096f0cdf05baf190f510b4883e21767715006c3920f14d1f72b77"
+    },
+    {
+      "source": "template-url-origin/previous-source/CHANGELOG.md",
+      "file": "0017.log.gz",
+      "bytes": 194087,
+      "lines": 3603,
+      "sha256": "a949686ae2e35f8585570cce11ce601d2d545ba4df68b24d34f998f316dae019",
+      "compressedSha256": "52b739dc5c1b50485b21f26b999b36bd8783d0506416f0f142c8949182a62553"
+    },
+    {
+      "source": "template-url-origin/previous-source/Cargo.lock",
+      "file": "0018.log.gz",
+      "bytes": 12062,
+      "lines": 462,
+      "sha256": "15cb0036b9d18eb87a2033e967f5ed23a2c89b2a0641d746bf0c22a85d218af0",
+      "compressedSha256": "d81947278efd6d07909b5713a4f5a3668cda9a17b0cc3f2dfc0d80f1d031cc3b"
+    },
+    {
+      "source": "template-url-origin/previous-source/Cargo.toml",
+      "file": "0019.log.gz",
+      "bytes": 1708,
+      "lines": 69,
+      "sha256": "f92605aef788b96698359555aa96ffcb1844417b2db4ae943da914527dd30ed6",
+      "compressedSha256": "9ba8e048fed14b87d2ef027a8068d2b4263a3d6370d01b8332058fc99ea41e9d"
+    },
+    {
+      "source": "template-url-origin/previous-source/README.md",
+      "file": "0020.log.gz",
+      "bytes": 20592,
+      "lines": 429,
+      "sha256": "53929867193fc7d56354f4dac721d8363bf69c8220718e1d217d09fe55a82dd3",
+      "compressedSha256": "e707abf6cfa6de404604a95526f33859df2d0af0c7d1a236b902840c79e57197"
+    },
+    {
+      "source": "template-url-origin/previous-source/experiments/issue-226-regressions.py",
+      "file": "0021.log.gz",
+      "bytes": 11831,
+      "lines": 242,
+      "sha256": "2b25eb6340dd40c88583fa31e14f001e4938e565a55bf4a593ecefbd424b7f45",
+      "compressedSha256": "5b5a904904831929d9f5d86209ef9fc389f9f49160fd55b5847bf33e38dc354f"
+    },
+    {
+      "source": "template-url-origin/previous-source/scripts/unacquired-jobs.py",
+      "file": "0022.log.gz",
+      "bytes": 6917,
+      "lines": 161,
+      "sha256": "cc9acc34a63b60a7193132ea59215c22a9de38542720c3722d501a743227c076",
+      "compressedSha256": "6a19f14128b874857006aef5e926fde925fc9a011cc85085c437e09259d14cd8"
+    },
+    {
+      "source": "template-url-origin/previous-source/tests/unit/ci-cd/issue_135.rs",
+      "file": "0023.log.gz",
+      "bytes": 16222,
+      "lines": 428,
+      "sha256": "22c9fd89588fb4f3878a7686b8e50b9a67cd729a09be993db9b01cca6ee92ee8",
+      "compressedSha256": "4ccace70432c7fbdcd5f2c29b0f6053e180b31c1e2b240dcceb8794f00a21c31"
+    },
+    {
+      "source": "template-url-origin/selected-upstream-regressions.log",
+      "file": "0024.log.gz",
+      "bytes": 103,
+      "lines": 5,
+      "sha256": "820f48a26c2bd9b106e7b27d12642d2e328e702fd753aa0c60d48fea5c625e24",
+      "compressedSha256": "699a34187fb35403eeaa22c6330c045589aef5c51a5829d6014931f881a03efb"
+    },
+    {
+      "source": "template-url-origin/template-inventory-integrity.log",
+      "file": "0025.log.gz",
+      "bytes": 388,
+      "lines": 11,
+      "sha256": "39aaff21b9648d248dc4b4b0343f0a657277b5634d2864d9176905d6b8ff896f",
+      "compressedSha256": "d320677819f9fee0c3e96aabbcb92175bc340dfd092a0eef24a7d44d383a553f"
+    },
+    {
+      "source": "template-url-origin/template-rust-runner-annotations.log",
+      "file": "0026.log.gz",
+      "bytes": 558,
+      "lines": 14,
+      "sha256": "20cee6975482f522902b26e796ba01f6d80a355dc06d1871ec29bb3dca7a0d04",
+      "compressedSha256": "f23db51cdccacdff7f52b625fd79f01f9baa6a0354991db0a73ca074a03287c1"
+    },
+    {
+      "source": "template-url-origin/template-rust-timeout-documentation.log",
+      "file": "0027.log.gz",
+      "bytes": 285,
+      "lines": 10,
+      "sha256": "da45f264efe6277ef2f11cc5a81883d3b1b9d162441915802b1309f83203d482",
+      "compressedSha256": "0769a929c8aabafdc62ddecea50f4b023e551d0373dc050b1678b5045dd2624d"
+    },
+    {
+      "source": "template-url-origin/template-source-identities.log",
+      "file": "0028.log.gz",
+      "bytes": 217,
+      "lines": 9,
+      "sha256": "8838d5b60e032f13f172e6f3f87db94ee8f4f37fa7764e8406678258447988b9",
+      "compressedSha256": "f5db00fb51ff0aa898ec0e2ec2f94f293d240db0d9d42c06772ec3e0bc1f56b2"
+    },
+    {
+      "source": "template-url-origin/tree.json",
+      "file": "0029.log.gz",
+      "bytes": 124256,
+      "lines": 1,
+      "sha256": "cd4ae395639882f15b1e5c9330787cf56b6ce7a37fafcbf50db012f72b4873ec",
+      "compressedSha256": "437337d6d9ddf4ace18dd608f8866e715677de9d91944ec3f55adeb290bea7b6"
+    },
+    {
+      "source": "verify-current-template-delta-driver.log",
+      "file": "0030.log.gz",
+      "bytes": 408,
+      "lines": 9,
+      "sha256": "436ebb6e69a7fe26faef7a0574c94c5d460b4331e9dabd467be1956e6f3106a0",
+      "compressedSha256": "f9717165e0ac7ceaa95e358b55d1927e74f1c2f94d39036bf6a633b48637a308"
+    },
+    {
+      "source": "verify-current-template-delta-second-driver.log",
+      "file": "0031.log.gz",
+      "bytes": 3110,
+      "lines": 4,
+      "sha256": "0138375ad26c036b6092a2c70cdefaf5387f23b9cf7a9b0a1a3772d6770b90b9",
+      "compressedSha256": "442878a7e4b0d5905f51f8ef069a12e24cde180ce1644f2a9ec44a3b86e13b61"
+    },
+    {
+      "source": "verify-current-template-delta.py",
+      "file": "0032.log.gz",
+      "bytes": 3804,
+      "lines": 42,
+      "sha256": "17817ae01df5368206fbfba618bc2adf63f87c3994135f522b9d17e502e0d042",
+      "compressedSha256": "5a0c523b955d619113f342232725ba3900c68c711e50485601d02154c82025d8"
+    }
+  ]
+}

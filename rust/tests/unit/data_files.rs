@@ -1,6 +1,14 @@
 use std::fs;
 use std::path::Path;
 
+#[path = "data_files/text_rows.rs"]
+mod text_rows;
+
+use text_rows::{
+    forbidden_meaning_key, lino_comment_body, path_has_component, strip_lino_comment,
+    strip_quoted_spans, wikidata_cache_path,
+};
+
 use formal_ai::json_lino::{json_cache_file, lino_to_json};
 use links_notation::parse_lino as parse_canonical_lino;
 use regex::Regex;
@@ -11,6 +19,37 @@ use walkdir::WalkDir;
 mod technical_scalar;
 
 const MAX_LINO_LINES: usize = 1_500;
+
+#[test]
+fn embedded_seed_matches_canonical_source() {
+    let requested = std::env::var_os("LADDER_CHANGED_SEED");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("..");
+    let mut checked = 0;
+    for (path, embedded) in formal_ai::seed::seed_files() {
+        if requested
+            .as_deref()
+            .is_some_and(|name| name != std::ffi::OsStr::new(path))
+        {
+            continue;
+        }
+        let source =
+            fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"));
+        assert!(source == embedded, "{path} differs from the compiled seed");
+        parse_canonical_lino(embedded.trim()).unwrap_or_else(|error| panic!("{path}: {error}"));
+        formal_ai::seed::parse_lino_checked(embedded)
+            .unwrap_or_else(|error| panic!("{path}: {error}"));
+        checked += 1;
+    }
+    match requested {
+        Some(path) => assert_eq!(
+            checked,
+            1,
+            "unexpected registration for {}",
+            path.to_string_lossy()
+        ),
+        None => assert!(checked > 0, "no compiled seeds"),
+    }
+}
 
 #[test]
 fn lino_data_files_are_parseable_human_readable_and_bounded() {
@@ -830,141 +869,4 @@ fn data_lino_paths() -> Vec<std::path::PathBuf> {
         .map(walkdir::DirEntry::into_path)
         .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
         .collect()
-}
-
-fn strip_lino_comment(line: &str) -> &str {
-    let mut quote = None;
-    let mut escaped = false;
-    let mut previous_was_space = true;
-    let mut characters = line.char_indices().peekable();
-    while let Some((index, character)) = characters.next() {
-        if let Some(quote_character) = quote {
-            if escaped {
-                escaped = false;
-                continue;
-            }
-            if quote_character == '"' && character == '\\' {
-                escaped = true;
-                continue;
-            }
-            if quote_character == '\''
-                && character == '\''
-                && characters.peek().is_some_and(|(_, next)| *next == '\'')
-            {
-                characters.next();
-                continue;
-            }
-            if character == quote_character {
-                quote = None;
-            }
-            continue;
-        }
-        if matches!(character, '"' | '\'') {
-            quote = Some(character);
-            previous_was_space = false;
-            continue;
-        }
-        if character == '#' && previous_was_space {
-            return &line[..index];
-        }
-        previous_was_space = character.is_whitespace();
-    }
-    line
-}
-
-/// The body of a line's trailing `#` comment (everything after the `#`), or
-/// `None` when the line has no comment. Mirrors [`strip_lino_comment`]'s
-/// quote-aware boundary detection.
-fn lino_comment_body(line: &str) -> Option<&str> {
-    let mut quote = None;
-    let mut escaped = false;
-    let mut previous_was_space = true;
-    let mut characters = line.char_indices().peekable();
-    while let Some((index, character)) = characters.next() {
-        if let Some(quote_character) = quote {
-            if escaped {
-                escaped = false;
-                continue;
-            }
-            if quote_character == '"' && character == '\\' {
-                escaped = true;
-                continue;
-            }
-            if quote_character == '\''
-                && character == '\''
-                && characters.peek().is_some_and(|(_, next)| *next == '\'')
-            {
-                characters.next();
-                continue;
-            }
-            if character == quote_character {
-                quote = None;
-            }
-            continue;
-        }
-        if matches!(character, '"' | '\'') {
-            quote = Some(character);
-            previous_was_space = false;
-            continue;
-        }
-        if character == '#' && previous_was_space {
-            return Some(&line[index + 1..]);
-        }
-        previous_was_space = character.is_whitespace();
-    }
-    None
-}
-
-/// Remove quoted scalar spans (`"..."`, `'...'`, `` `...` ``) from a line so
-/// structural assertions only inspect the Links Notation skeleton. Backslash
-/// escapes are honoured inside double-quote and backtick spans (matching the
-/// seed parser), so an escaped delimiter does not prematurely close the span.
-fn strip_quoted_spans(line: &str) -> String {
-    let mut out = String::with_capacity(line.len());
-    let mut chars = line.chars();
-    while let Some(character) = chars.next() {
-        if matches!(character, '"' | '\'' | '`') {
-            let delimiter = character;
-            let escapes = delimiter != '\'';
-            while let Some(inner) = chars.next() {
-                if escapes && inner == '\\' {
-                    chars.next();
-                    continue;
-                }
-                if inner == delimiter {
-                    break;
-                }
-            }
-            out.push(' ');
-        } else {
-            out.push(character);
-        }
-    }
-    out
-}
-
-fn wikidata_cache_path(root: &Path, id: &str, extension: &str) -> std::path::PathBuf {
-    let kind = match id.chars().next() {
-        Some('L') => "lexeme",
-        Some('P') => "property",
-        Some('Q') => "entity",
-        _ => panic!("unexpected Wikidata id `{id}`"),
-    };
-    root.join(kind).join(format!("{id}.{extension}"))
-}
-
-fn forbidden_meaning_key(trimmed: &str) -> bool {
-    trimmed.starts_with("meaning ")
-        || trimmed.starts_with("gloss ")
-        || trimmed.starts_with("description ")
-        || trimmed.starts_with("word ")
-}
-
-fn path_has_component(path: &Path, component: &str) -> bool {
-    path.components().any(|path_component| {
-        path_component
-            .as_os_str()
-            .to_str()
-            .is_some_and(|part| part == component)
-    })
 }

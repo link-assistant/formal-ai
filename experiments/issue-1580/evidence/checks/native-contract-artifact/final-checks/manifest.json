@@ -1,0 +1,50 @@
+{
+  "source": "actual Formal AI-invoked subprocesses; supplied procedure receives no independent authorship credit",
+  "files": [
+    {
+      "path": "check-abbreviations.log",
+      "bytes": 67,
+      "sha256": "7888153859515be6f7ed0d54bf1d61352ebe6283ccd0ec9555e0bc7454db6b1a"
+    },
+    {
+      "path": "check-changelog-fragment-js-twin.log",
+      "bytes": 80,
+      "sha256": "7d080f34e133dbcb0ee648b981ffec7d7219b366d195b4372af96efd5721bec7"
+    },
+    {
+      "path": "check-ci-speed.log",
+      "bytes": 62,
+      "sha256": "a8e911715ca2e194bbbbdf071b6a08151bb482ffe49ba54f629c626849736c73"
+    },
+    {
+      "path": "check-file-size.log",
+      "bytes": 64,
+      "sha256": "4fce495e6e3b634f8cb392c5b7ab7fa5cbe17d32b26e7dec5830886ba1595dba"
+    },
+    {
+      "path": "check-reconstructed-changelog.log",
+      "bytes": 78,
+      "sha256": "ee93dd30f6423471e5d4eb508299e93bffc37f79aa03b92186e74ea1e9d60b6e"
+    },
+    {
+      "path": "lint-shell-scripts.log",
+      "bytes": 66,
+      "sha256": "27f9edf276a48d25651643fb8dc7fbc0a6e9762d338dca018b91a0343b9e4b3d"
+    },
+    {
+      "path": "maintained.log",
+      "bytes": 29629,
+      "sha256": "ae32f457ba2e9134708adbbd40456bc7178cfd22667df0b5fa97ea0b4aedffb2"
+    },
+    {
+      "path": "outcome.json",
+      "bytes": 620,
+      "sha256": "d0eefed1b11b34a2fff8092bd1bcb112843bded26bd94c8452435d7180e3f3d1"
+    },
+    {
+      "path": "worker.log",
+      "bytes": 484,
+      "sha256": "321055b9a046f2fcf7f2a4f9530dbabd1656133a9a614aaf32ed55ff3deb5939"
+    }
+  ]
+}

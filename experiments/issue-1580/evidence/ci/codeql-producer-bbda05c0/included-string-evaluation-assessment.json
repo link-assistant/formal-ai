@@ -1,0 +1,354 @@
+{
+  "head": "bbda05c06bce8e9fef10a9c8812b6b6cc31858b2",
+  "runId": 44848465533,
+  "filesVerified": 137,
+  "trace": {
+    "artifact": {
+      "id": 14685530112,
+      "node_id": "MDg6QXJ0aWZhY3QxNDY4NTUzMDExMg==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 4730970,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14685530112",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14685530112/zip",
+      "expired": false,
+      "digest": "sha256:19b2699642fc45939c9178b7014ddae922ef78f7c4fe6db505fc080ae09868f1",
+      "created_at": "2026-11-21T01:29:29Z",
+      "updated_at": "2026-11-21T01:29:29Z",
+      "expires_at": "2027-02-19T01:09:45Z",
+      "workflow_run": {
+        "id": 44848465533,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "bbda05c06bce8e9fef10a9c8812b6b6cc31858b2"
+      }
+    },
+    "relativePath": "included-string-payloads/evaluation.jsonl",
+    "file": "producer-14685530112-included-string-payloads_evaluation.jsonl.gz",
+    "rawSha256": "681078b72264faaf781cc8e5ab03ab204e66694f9a41a0e0c4fc63b29da734a5",
+    "archiveSha256": "a937465ff8bf46c44448413a38ce0a5b952885afdbd13c6823d8255b4f13153e",
+    "bytes": 9069812,
+    "lines": 284451,
+    "lineCountKind": "newline-delimited"
+  },
+  "eventCounts": {
+    "LOG_HEADER": 1,
+    "SENTINEL_EMPTY": 439,
+    "QUERY_STARTED": 1,
+    "CACHE_LOOKUP": 413,
+    "PREDICATE_STARTED": 3348,
+    "PREDICATE_COMPLETED": 3347,
+    "PIPELINE_STARTED": 7369,
+    "PIPELINE_COMPLETED": 7368
+  },
+  "longestCompletedPredicates": [
+    {
+      "name": "PathResolution::builtin/2#a77e0548",
+      "seconds": 107.171866849,
+      "rows": 17,
+      "startEvent": 13955,
+      "endEvent": 21370,
+      "sourceEndingLine": 272899,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2342,1-2349,2"
+    },
+    {
+      "name": "PathResolution::implEdge/3#1268b848",
+      "seconds": 107.171793307,
+      "rows": 523040,
+      "startEvent": 13956,
+      "endEvent": 21388,
+      "sourceEndingLine": 273061,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2035,1-2054,2"
+    },
+    {
+      "name": "PathResolution::preludeItem/2#05551ca3",
+      "seconds": 107.171684609,
+      "rows": 153,
+      "startEvent": 13957,
+      "endEvent": 21371,
+      "sourceEndingLine": 272908,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2309,1-2324,2"
+    },
+    {
+      "name": "PathResolution::preludeEdge/3#1f32547c",
+      "seconds": 107.171663711,
+      "rows": 2785139,
+      "startEvent": 13958,
+      "endEvent": 21385,
+      "sourceEndingLine": 273034,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2326,1-2340,2"
+    },
+    {
+      "name": "PathResolution::typeImplEdge/4#698acb5e",
+      "seconds": 107.17161378,
+      "rows": 478745,
+      "startEvent": 13959,
+      "endEvent": 21365,
+      "sourceEndingLine": 272854,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2294,1-2307,2"
+    },
+    {
+      "name": "PathResolution::crateDefEdge/5#5ce6bcdc",
+      "seconds": 107.171607171,
+      "rows": 79054,
+      "startEvent": 13960,
+      "endEvent": 21394,
+      "sourceEndingLine": 273115,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:1509,1-1518,2"
+    },
+    {
+      "name": "PathResolution::macroUseEdge/5#325d4ba9",
+      "seconds": 107.171535414,
+      "rows": 395300,
+      "startEvent": 13961,
+      "endEvent": 21395,
+      "sourceEndingLine": 273124,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2056,1-2075,2"
+    },
+    {
+      "name": "PathResolution::useImportEdge/4#93d5e3d1",
+      "seconds": 107.171279154,
+      "rows": 4679725,
+      "startEvent": 13962,
+      "endEvent": 21364,
+      "sourceEndingLine": 272845,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2234,1-2273,2"
+    },
+    {
+      "name": "PathResolution::getASuccessor/5#9de165be",
+      "seconds": 107.171252669,
+      "rows": 60738981,
+      "startEvent": 13963,
+      "endEvent": 21369,
+      "sourceEndingLine": 272890,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:1725,1-1731,2"
+    },
+    {
+      "name": "PathResolution::fileImportEdge/5#bb2be9be",
+      "seconds": 107.171245594,
+      "rows": 10749441,
+      "startEvent": 13964,
+      "endEvent": 21393,
+      "sourceEndingLine": 273106,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:1495,1-1507,2"
+    },
+    {
+      "name": "PathResolution::resolvePathCand/1#3d235758",
+      "seconds": 107.171125677,
+      "rows": 3887542,
+      "startEvent": 13965,
+      "endEvent": 21383,
+      "sourceEndingLine": 273016,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2077,1-2121,2"
+    },
+    {
+      "name": "PathResolution::resolvePathCand0/2#9c9639a9",
+      "seconds": 107.171058156,
+      "rows": 4015164,
+      "startEvent": 13966,
+      "endEvent": 21390,
+      "sourceEndingLine": 273079,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:1886,1-1914,2"
+    },
+    {
+      "name": "PathResolution::ItemNode.getASuccessor/1#8f430f71",
+      "seconds": 107.171027316,
+      "rows": 18956209,
+      "startEvent": 13967,
+      "endEvent": 21386,
+      "sourceEndingLine": 273043,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:456,12-456,25"
+    },
+    {
+      "name": "PathResolution::ItemNode.getASuccessor/3#473ff188",
+      "seconds": 107.170726847,
+      "rows": 55868691,
+      "startEvent": 13968,
+      "endEvent": 21396,
+      "sourceEndingLine": 273133,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:325,12-325,25"
+    },
+    {
+      "name": "PathResolution::resolveUseTreeListItem/4#20ce239d",
+      "seconds": 107.170623813,
+      "rows": 80471,
+      "startEvent": 13969,
+      "endEvent": 21397,
+      "sourceEndingLine": 273142,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2187,1-2202,2"
+    },
+    {
+      "name": "PathResolution::relevantSelfFunctionName/2#b4d8a846",
+      "seconds": 107.170567442,
+      "rows": 2655,
+      "startEvent": 13970,
+      "endEvent": 21362,
+      "sourceEndingLine": 272827,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2025,1-2033,2"
+    },
+    {
+      "name": "PathResolution::resolvePathCandQualified/4#7bbc4121",
+      "seconds": 107.170462238,
+      "rows": 1235040,
+      "startEvent": 13971,
+      "endEvent": 21398,
+      "sourceEndingLine": 273151,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:1960,1-1971,2"
+    },
+    {
+      "name": "PathResolution::ItemNode.getASuccessor/1#dispred#15c1c4ac",
+      "seconds": 107.170429204,
+      "rows": 18956209,
+      "startEvent": 13972,
+      "endEvent": 21384,
+      "sourceEndingLine": 273025,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:454,3-461,4"
+    },
+    {
+      "name": "PathResolution::TraitItemNodeImpl.resolveABoundCand/0#796d7c8d",
+      "seconds": 107.170397895,
+      "rows": 2507,
+      "startEvent": 13973,
+      "endEvent": 21374,
+      "sourceEndingLine": 272935,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:1149,12-1149,29"
+    },
+    {
+      "name": "PathResolution::relevantSelfFunctionName/2#b4d8a846#reorder_1_0",
+      "seconds": 107.170365905,
+      "rows": 2655,
+      "startEvent": 13974,
+      "endEvent": 21361,
+      "sourceEndingLine": 272818,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:2025,1-2033,2"
+    }
+  ],
+  "largestCompletedPredicates": [
+    {
+      "name": "PathResolution::getASuccessor/5#9de165be",
+      "seconds": 107.171252669,
+      "rows": 60738981,
+      "startEvent": 13963,
+      "endEvent": 21369,
+      "sourceEndingLine": 272890,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:1725,1-1731,2"
+    },
+    {
+      "name": "PathResolution::ItemNode.getASuccessor/3#473ff188",
+      "seconds": 107.170726847,
+      "rows": 55868691,
+      "startEvent": 13968,
+      "endEvent": 21396,
+      "sourceEndingLine": 273133,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:325,12-325,25"
+    },
+    {
+      "name": "PathResolution::ItemNode.getASuccessor/3#473ff188#reorder_4_0_1_2_3",
+      "seconds": 107.170145821,
+      "rows": 55868659,
+      "startEvent": 13982,
+      "endEvent": 21368,
+      "sourceEndingLine": 272881,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:325,12-325,25"
+    },
+    {
+      "name": "cached_PathResolution::ItemNode.getASuccessor/3#473ff188",
+      "seconds": 4.556456647,
+      "rows": 55868659,
+      "startEvent": 21406,
+      "endEvent": 21451,
+      "sourceEndingLine": 273821,
+      "position": null
+    },
+    {
+      "name": "project#PathResolution::ItemNode.getASuccessor/3#473ff188",
+      "seconds": 2.688588917,
+      "rows": 55455162,
+      "startEvent": 21449,
+      "endEvent": 21453,
+      "sourceEndingLine": 273839,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/internal/PathResolution.qll:325,12-325,25"
+    },
+    {
+      "name": "Synth::Synth::convertLocatableToRaw/1#7fbdde95",
+      "seconds": 0.38471904,
+      "rows": 33823250,
+      "startEvent": 1311,
+      "endEvent": 1314,
+      "sourceEndingLine": 17574,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/elements/internal/generated/Synth.qll:4310,3-4322,4"
+    },
+    {
+      "name": "Synth::Synth::TAstNode#a10d007f",
+      "seconds": 0.484136115,
+      "rows": 33145080,
+      "startEvent": 8088,
+      "endEvent": 8095,
+      "sourceEndingLine": 116676,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/elements/internal/generated/Synth.qll:775,9-775,17"
+    },
+    {
+      "name": "Synth::Synth::TElement#52a4b46d",
+      "seconds": 0.208147717,
+      "rows": 33017382,
+      "startEvent": 6464,
+      "endEvent": 6469,
+      "sourceEndingLine": 93465,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/elements/internal/generated/Synth.qll:16,11-16,19"
+    },
+    {
+      "name": "cached_Synth::Synth::TElement#52a4b46d",
+      "seconds": 3.927e-05,
+      "rows": 33017382,
+      "startEvent": 6474,
+      "endEvent": 6475,
+      "sourceEndingLine": 93544,
+      "position": null
+    },
+    {
+      "name": "ElementImpl::Impl::MacroExpansion::isRelevantElement/1#4504dec2",
+      "seconds": 3.727864469,
+      "rows": 33016742,
+      "startEvent": 3821,
+      "endEvent": 4005,
+      "sourceEndingLine": 58127,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/rust-all/0.2.26/codeql/rust/elements/internal/ElementImpl.qll:112,5-121,6"
+    }
+  ],
+  "unfinishedPredicatesAtTermination": [
+    {
+      "eventId": 22284,
+      "predicateName": "_LocalNameBinding::LocalNameBinding<Locations::Location,VariableImpl::Impl::Input>::getRankedChild/2__#antijoin_rhs",
+      "nanoTime": 250892444376,
+      "position": "/opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/.codeql/libraries/codeql/namebinding/0.0.11/codeql/namebinding/LocalNameBinding.qll:381,3-442,4",
+      "dependencies": {
+        "_project#LocalNameBinding::LocalNameBinding<Locations::Location,VariableImpl::Impl::Input>::getChild__#shared": "43c860r2327fb8ld16sfit9i5od",
+        "_LocalNameBinding::LocalNameBinding<Locations::Location,VariableImpl::Impl::Input>::prefixPreservesI__#shared": "3c08bfqlc9bnfo91ces6rvdhgl4",
+        "LocalNameBinding::LocalNameBinding<Locations::Location,VariableImpl::Impl::Input>::getRankedChild/2#390719dd": "1b01687et9nh8f57u0cup0pourb",
+        "VariableImpl::Impl::Input::SiblingShadowingDecl.getElse/0#dispred#4cbe353c_1#join_rhs": "7691dfade6104a0jq6lbdn9828c",
+        "VariableImpl::Impl::Input::SiblingShadowingDecl.getRhs/0#dispred#7f78fd6a_1#join_rhs": "638a87qb0f2slsq1hcsq6cqemc0"
+      },
+      "sourceEndingLine": 284442
+    }
+  ],
+  "lastRecordedEvent": {
+    "time": "2026-11-21T01:29:26.668470888Z",
+    "type": "PIPELINE_STARTED",
+    "eventId": 22285,
+    "nanoTime": 250892521783,
+    "predicateStartEvent": 22284,
+    "raReference": "pipeline"
+  },
+  "originalErrors": [
+    {
+      "line": 2241,
+      "text": "CodeQL producer verification (rust)\tObserve included Rust string payloads\t2026-11-21T01:29:26.0417027Z ##[error]The action 'Observe included Rust string payloads' has timed out after 4 minutes."
+    }
+  ],
+  "queryCompiled": true,
+  "evaluationComplete": false,
+  "semanticCoverageProven": false,
+  "inference": "The trace measures expensive whole-database relations but does not by itself establish which selected query expression introduces them.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

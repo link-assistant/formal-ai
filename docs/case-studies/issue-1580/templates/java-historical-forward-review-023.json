@@ -1,0 +1,75 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 157,
+    "totalPages": 254,
+    "completeFiles": 123,
+    "partialFiles": 1,
+    "literalLines": 8766,
+    "nextForwardPage": 158,
+    "remainingPages": 97,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+      "newReadLinePieces": [
+        115,
+        145
+      ],
+      "cumulativeReadLinePieces": [
+        1,
+        145
+      ],
+      "totalLinePieces": 145,
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/registry-inventory.json",
+      "newReadLines": [
+        1,
+        235
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/related-code.json",
+      "newReadLines": [
+        1,
+        1
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/resolved-artifacts-before-overrides.txt",
+      "newReadLines": [
+        1,
+        32
+      ],
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 164,
+    "totalPages": 254,
+    "completeFiles": 126,
+    "partialFiles": 1,
+    "literalLines": 9035,
+    "nextForwardPage": 165,
+    "remainingPages": 90,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "All seven pages were literally read without truncation across the present and preceding research contexts. The historical package metadata registry is complete; its single source line adds one complete line only after all 145 pieces. The package inventory and related-code search capture are also complete. The artifact report is read through line 32 and remains partial. These are pinned historical captures, not current dependency or execution claims. Pages 165\u2013254 and wider semantic applicability remain unfinished. Supplied reading earns zero independent authorship credit."
+  ]
+}

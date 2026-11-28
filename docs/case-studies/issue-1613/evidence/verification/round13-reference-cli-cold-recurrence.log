@@ -1,0 +1,12 @@
+✔ native offline chat needs a publisher capture to synthesize factorial (3007.437467ms)
+ℹ Native recurrence request started for Write a Python function that returns the factorial of n
+ℹ Native recurrence response took 2756 ms
+ℹ No native synthesis stages were logged
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4913.111331

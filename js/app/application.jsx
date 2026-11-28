@@ -17,7 +17,7 @@ import {
 } from "./autocomplete.js";
 import { decomposeAgentTask } from "./agent-plan.jsx";
 import { EXAMPLE_PROMPTS, SOURCE_CODE_URL } from "./application-constants.js";
-import { useConversationMessages, useInterfaceCommands } from "./application-conversation-hooks.jsx";
+import { useConversationList, useConversationMessages, useInterfaceCommands } from "./application-conversation-hooks.jsx";
 import { useDesktopCommands, useDesktopIntegration } from "./application-desktop-hooks.jsx";
 import { useContextPanelResize, useDocumentEnvironment } from "./application-layout-hooks.jsx";
 import { useMemoryActions, useMemoryOperation } from "./application-memory-hooks.jsx";
@@ -28,7 +28,7 @@ import {
   OCR_DOWNLOAD_WARNING, attachmentOnlyPrompt, buildPromptWithAttachments, useAttachments,
 } from "./attachments.jsx";
 import {
-  conversationToMarkdown, groupConversations, localizeTool, messagesForConversation,
+  conversationToMarkdown, localizeTool, messagesForConversation,
   resizeComposerInput,
 } from "./conversations.jsx";
 import { useDemoPlayback } from "./demo-mode.jsx";
@@ -44,7 +44,6 @@ import {
 } from "./interface-commands.jsx";
 import { createIssueUrl, shouldOfferMessageReport } from "./issue-reporting.jsx";
 import { copyTextToClipboard } from "./markdown-render.jsx";
-import { recordMemoryEvent } from "./memory-events.jsx";
 import { DesktopPermissionPanel, Message, PendingAssistantBubble } from "./message-view.jsx";
 import {
   CONTEXT_PANEL_MIN_WIDTH, DESKTOP_TOOL_OPTIONS, EXTERNAL_TRUSTED_SERVICES, MODE_LABEL_KEYS,
@@ -468,52 +467,11 @@ export function App() {
     userContextRef.current = userContext;
   }, [userContext]);
 
-  // Issue #27: on mount, hydrate the conversation list from the append-only
-  // event log and restore the active thread's messages. Operates purely as a
-  // projection — no events are mutated.
-  const refreshConversations = useCallback(async (showDeletedOverride) => {
-    if (typeof window === "undefined" || !window.FormalAiMemory) {
-      return [];
-    }
-    try {
-      const shouldShowDeleted =
-        typeof showDeletedOverride === "boolean"
-          ? showDeletedOverride
-          : showDeletedConversationsRef.current;
-      const events = await window.FormalAiMemory.listEvents();
-      conversationEventsRef.current = events;
-      const list = groupConversations(events, {
-        showDeleted: shouldShowDeleted,
-      });
-      list.forEach((entry) => {
-        if (entry.title) {
-          conversationTitlesRef.current.set(entry.id, entry.title);
-        }
-      });
-      setConversations(list);
-      return events;
-    } catch (_error) {
-      conversationEventsRef.current = [];
-      return [];
-    }
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    refreshConversations().then((events) => {
-      if (cancelled || !Array.isArray(events) || events.length === 0) return;
-      const initialId = initialPreferences.current.currentConversationId;
-      if (!initialId) return;
-      const restored = messagesForConversation(events, initialId);
-      if (restored.length > 0) {
-        setMessages(restored);
-        setDemoMode(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [refreshConversations]);
+  const { refreshConversations, handleShowDeletedConversations, handleDeleteConversation } = useConversationList({
+    initialPreferences, conversationEventsRef, conversationTitlesRef, showDeletedConversationsRef,
+    currentConversationRef, setConversations, setMessages, setDemoMode, setCurrentConversationId,
+    setPrompt, setShowDeletedConversations,
+  });
 
   const {
     handleExportMemory, handleImportMemory, triggerImportMemory, handleResetMemory,
@@ -528,36 +486,9 @@ export function App() {
     attachmentInputRef, setComposerMenuOpen, setAttachments, experimentalOcr,
   });
 
-  const handleShowDeletedConversations = useCallback((event) => {
-    const next = Boolean(event.target.checked);
-    setShowDeletedConversations(next);
-    refreshConversations(next);
-  }, [refreshConversations]);
-
   const { handleContextResizePointerDown, handleContextResizeKeyDown } = useContextPanelResize({
     contextPanelWidth, setContextPanelWidth,
   });
-
-  const handleDeleteConversation = useCallback(async (entry) => {
-    if (!entry || !entry.id) return;
-    await recordMemoryEvent({
-      kind: "conversation_deleted",
-      role: "system",
-      content: `Conversation deleted: ${entry.title || entry.id}`,
-      sentAt: new Date().toISOString(),
-      conversationId: entry.id,
-      conversationTitle: entry.title || "",
-    });
-    if (entry.id === currentConversationRef.current) {
-      currentConversationRef.current = "";
-      setCurrentConversationId("");
-      setMessages([]);
-      setPrompt("");
-      setDemoMode(false);
-    }
-    setShowDeletedConversations(false);
-    await refreshConversations(false);
-  }, [refreshConversations]);
 
   // Issue #386: copy a whole conversation to the clipboard as Markdown. When
   // diagnostics mode is on, the persisted reasoning steps are folded in after

@@ -1,0 +1,120 @@
+---- issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures stdout ----
+
+thread 'issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures' (11156) panicked at tests/unit/issue_1588_intent_spans.rs:28:29:
+assertion `left == right` failed: How many days are in 2 years?: SymbolicAnswer { intent: "concept_measurement_lookup", answer: "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"How many days are in 2 years?\"\n  status \"no_grounded_quantity\"\n  source_count \"4\"\n  concept \"years\"\n  source_kinds \"lexical_database encyclopedia\"\n", confidence: 0.8, evidence_links
+  left: "concept_measurement_lookup"
+ right: "unit_conversion"
+stack backtrace:
+   0:     0x56087aa7e9e1 - <unknown>
+   1:     0x56087aa9b9fa - <unknown>
+   2:     0x56087aa85cac - <unknown>
+   3:     0x56087aa51f76 - <unknown>
+   4:     0x56087aa73589 - <unknown>
+   5:     0x560878fc4790 - <unknown>
+---- coding::catalog::lino_parity::lino_seed_mirrors_every_catalog_template stdout ----
+
+thread 'coding::catalog::lino_parity::lino_seed_mirrors_every_catalog_template' (15515) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/lino_parity.rs:73:9:
+assertion `left == right` failed: lino seed is missing the hello_world/laravel template (escaped code not found)
+  left: None
+ right: Some("<?php\n\nnamespace App\\Console\\Commands;\n\nuse Illuminate\\Console\\Command;\n\nclass HelloWorld extends Command\n{\n    protected $signature = 'hello:world';\n\n    protected $description = 'Print a greeting';\n\n    public function handle(): int\n    {\n        $this->line('Hello, world!');\n\n        return self::SUCCESS;\n    }\n}")
+stack backtrace:
+   0:     0x55f268807e41 - <unknown>
+   1:     0x55f26882279a - <unknown>
+   2:     0x55f26880d44c - <unknown>
+   3:     0x55f2687ded26 - <unknown>
+   4:     0x55f2687fe4d9 - <unknown>
+   5:     0x55f2681e05c0 - <unknown>
+---- issue_1158_pull_request_steps::the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pull_request stdout ----
+
+thread 'issue_1158_pull_request_steps::the_hive_mind_prompt_reads_feedback_then_titles_describes_and_readies_the_pull_request' (16055) panicked at tests/unit/issue_1158_pull_request_steps.rs:24:5:
+Prepared recipe remains unverified: fresh status or source ownership is incomplete, or unrelated changes prevent a safe commit. CI verification is still required.
+stack backtrace:
+   0:     0x5614e0dba9e1 - <unknown>
+   1:     0x5614e0dd79fa - <unknown>
+   2:     0x5614e0dc1cac - <unknown>
+   3:     0x5614e0d8df76 - <unknown>
+   4:     0x5614e0daf589 - <unknown>
+   5:     0x5614df300790 - <unknown>
+   6:     0x5614e0daf8b2 - <unknown>
+   7:     0x5614e0d8e022 - <unknown>
+--
+---- minimal_core_and_seed_metadata::coding_path_has_complete_metadata_and_every_other_gap_is_data stdout ----
+
+thread 'minimal_core_and_seed_metadata::coding_path_has_complete_metadata_and_every_other_gap_is_data' (17783) panicked at tests/unit/minimal_core_and_seed_metadata.rs:693:5:
+assertion `left == right` failed
+  left: 1081
+ right: 1073
+stack backtrace:
+   0:     0x5614e0dba9e1 - <unknown>
+   1:     0x5614e0dd79fa - <unknown>
+   2:     0x5614e0dc1cac - <unknown>
+   3:     0x5614e0d8df76 - <unknown>
+   4:     0x5614e0daf589 - <unknown>
+   5:     0x5614df300790 - <unknown>
+---- docs_requirements::issues::full_range_coding_artifacts::every_test_the_traceability_rows_cite_exists stdout ----
+
+thread 'docs_requirements::issues::full_range_coding_artifacts::every_test_the_traceability_rows_cite_exists' (10516) panicked at tests/unit/docs_requirements/full_range_coding_artifacts.rs:324:13:
+rust/tests/unit/issue_1021_behaviour_range.rs should define the test a_framework_named_coding_request_is_answered_in_that_framework its traceability row cites
+stack backtrace:
+   0:     0x55d818fe19e1 - <unknown>
+   1:     0x55d818ffe9fa - <unknown>
+   2:     0x55d818fe8cac - <unknown>
+   3:     0x55d818fb4f76 - <unknown>
+   4:     0x55d818fd6589 - <unknown>
+   5:     0x55d817527790 - <unknown>
+   6:     0x55d818fd68b2 - <unknown>
+   7:     0x55d818fb5022 - <unknown>
+--
+---- solver::issue_938_meta_algorithm_builder::all_coding_surfaces_execute_one_trace_shape stdout ----
+
+thread 'solver::issue_938_meta_algorithm_builder::all_coding_surfaces_execute_one_trace_shape' (16621) panicked at tests/unit/solver/issue_938_meta_algorithm_builder.rs:9:5:
+missing shared builder: answer_prompt_3732c82a6ee20907
+  prompt "Write hello world in Rust"
+  intent "write_program"
+  answer 'Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!("Hello, world!");\n}\n```\n\nExecution status: not run; this program was rediscovered from https://doc.rust-lang.org/book/ch01-02-hello-world.html and its output contract was checked by decomposition, not by executing it.\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nExpected output after 
+  trace "trace_f60283eda5c61953"
+  steps 'step_0 impulse Write hello world in Rust; step_1 language en; step_2 candidate formalization:0 score=0 probability=1.000000 empty; step_3 statement_weight formalization:0 weight=1.000000 empty; step_4 policy:temperature_selection selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate; step_5 intent_formalization_cache miss impulse_1bab506a27c1
+  thinking_steps "step_0 impulse high impulse Write hello world in Rust; step_1 detect_language high language en; step_2 formalize high intent_formalization:route write_program; step_3 program_plan high program_parameters write_program(language=rust, task=hello_world); step_4 dispatch_handler high legacy_intent hello_world_rust; step_5 dispatch_handler high intent write_program; step_6 rule_verifi
+derivation
+  answer_id "answer_bcd606e9ef5c2f0d"
+  fetch
+--
+---- coding::catalog::lino_parity::lino_seed_has_no_extra_templates stdout ----
+
+thread 'coding::catalog::lino_parity::lino_seed_has_no_extra_templates' (20614) panicked at tests/source/coding/catalog/../../source_tests/coding/catalog/mod/lino_parity.rs:94:5:
+assertion `left == right` failed: lino seed template count (150) must equal the catalog count (151)
+  left: 150
+ right: 151
+stack backtrace:
+   0:     0x558796103e41 - <unknown>
+   1:     0x55879611e79a - <unknown>
+   2:     0x55879610944c - <unknown>
+   3:     0x5587960dad26 - <unknown>
+   4:     0x5587960fa4d9 - <unknown>
+   5:     0x558795adc5c0 - <unknown>
+---- specification::code_generation::task_catalog::factorial_operand_excludes_the_number_of_requested_functions stdout ----
+
+thread 'specification::code_generation::task_catalog::factorial_operand_excludes_the_number_of_requested_functions' (4377) panicked at tests/unit/specification/code_generation/mod.rs:16:5:
+Links Notation trace should include language=python, got: answer_prompt_5baa2e0426e00391
+  prompt "Python में एक फ़ंक्शन लिखो जो 5 का फ़ैक्टोरियल लौटाए"
+  intent "write_program"
+  answer "यह खोजे गए भागों से पुनर्निर्मित और पृथक workspace में सत्यापित Python artifact है:\n\n```python\ndef factorial(n):\n    return 1 if (n == 0) else (n * factorial(n - 1))\n```\n\nExecution status: सीमित पृथक agent workspace में tests pass हुए।\nजाँच command: 
+  trace "trace_7898fe4e56371486"
+  steps 'step_0 impulse Python में एक फ़ंक्शन लिखो जो 5 का फ़ैक्टोरियल लौटाए; step_1 language hi; step_2 candidate formalization:0 score=0 probability=1.000000 empty; step_3 statement_weight formalization:0 weight=1.000000 empty; step_4 policy:temperature_selection selected=formalization:0 probability=1.000000 margin=1.000000 
+  thinking_steps "step_0 impulse high impulse Python में एक फ़ंक्शन लिखो जो 5 का फ़ैक्टोरियल लौटाए; step_1 detect_language high language hi; step_2 formalize high intent_formalization:route write_program; step_3 dispatch_handler high intent write_program; step_4 rule_verification detailed validation ; step_5 deformalize high r
+derivation
+  answer_id "answer_8afa5a1cd267b9cb"
+  fetch
+---- specification::prompt_variations::hello_world_matrix_emits_a_code_block_per_language stdout ----
+
+thread 'specification::prompt_variations::hello_world_matrix_emits_a_code_block_per_language' (7420) panicked at tests/unit/specification/prompt_variations.rs:492:9:
+prompt "Show me hello world in JavaScript": Here is a minimal JavaScript hello world program:
+
+```javascript
+console.log("Hello, world!");
+```
+
+Execution status: not run; this program was rediscovered from https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/console/index.md and its output contract was checked by decomposition, not by executing it.
+Check command: `node --check main.js`
+Run command: `node main.js`
+Expected output after verification:

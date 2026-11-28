@@ -1,0 +1,25 @@
+{
+  "reason": "spell source filename in full; original capture bytes preserved",
+  "renames": [
+    {
+      "before": "buildkit-bootstrap-sources/docker-buildx-src_main.ts.decoded.gz",
+      "after": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.decoded.gz",
+      "originalBytesUnchanged": true
+    },
+    {
+      "before": "buildkit-bootstrap-sources/docker-buildx-src_main.ts.result.json.gz",
+      "after": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.result.json.gz",
+      "originalBytesUnchanged": true
+    },
+    {
+      "before": "buildkit-bootstrap-sources/docker-buildx-src_main.ts.stderr.gz",
+      "after": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.stderr.gz",
+      "originalBytesUnchanged": true
+    },
+    {
+      "before": "buildkit-bootstrap-sources/docker-buildx-src_main.ts.stdout.gz",
+      "after": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.stdout.gz",
+      "originalBytesUnchanged": true
+    }
+  ]
+}

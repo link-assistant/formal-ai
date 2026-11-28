@@ -1,0 +1,101 @@
+{
+  "head": "27e895c1103926b4f73862c0eb15fa77fb505089",
+  "runId": 44860038851,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44860038851",
+  "reports": {
+    "rust.sarif": {
+      "sha256": "959250c21896c1cd6fb2f672ee8456295af30e0aed46d88d4a8f8bebf37f9543",
+      "results": 0,
+      "toolExecutionNotificationLevels": {
+        "note": 56,
+        "none": 8934
+      },
+      "warningErrorNotifications": 0,
+      "allInvocationsSuccessful": true
+    },
+    "actions.sarif": {
+      "sha256": "df4ec29822415df4c9f33fc2569770f3332672e897dded024bdacf10a50cae08",
+      "results": 0,
+      "toolExecutionNotificationLevels": {
+        "none": 5774
+      },
+      "warningErrorNotifications": 0,
+      "allInvocationsSuccessful": true
+    }
+  },
+  "profiles": {
+    "macro-contexts": {
+      "rows": 122574,
+      "resolvedMemory": {
+        "totalMiB": 4096,
+        "offHeapMiB": 0,
+        "heapMiB": 2607,
+        "arguments": [
+          "-J-Xmx2607M"
+        ]
+      },
+      "queryRuntimeDiagnostics": [],
+      "queryCompiledAndExecuted": true,
+      "queryStderr": [
+        "Resolving data extensions.",
+        "Finished resolving data extensions.",
+        "Merging data extensions.",
+        "Finished merging data extensions.",
+        "Compiling query plan for /opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/formal-ai-macro-contexts-n8rbzz74/MacroContexts.ql.",
+        "[1/1 comp 26.1s] Compiled /opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/formal-ai-macro-contexts-n8rbzz74/MacroContexts.ql.",
+        "Starting evaluation of codeql/rust-queries/formal-ai-macro-contexts-n8rbzz74/MacroContexts.ql.",
+        "[1/1 eval 59.3s] Evaluation done; writing results to /home/runner/work/_temp/codeql-results/macro-contexts/macro-contexts.bqrs.",
+        "Shutting down query evaluator."
+      ],
+      "resultSha256": "492f4de92206da3a3edd364e3ad724a54f23302eb9fdc3080cf10c2b4b006ef1"
+    },
+    "included-string-payloads": {
+      "rows": 2179,
+      "resolvedMemory": {
+        "totalMiB": 4096,
+        "offHeapMiB": 0,
+        "heapMiB": 2607,
+        "arguments": [
+          "-J-Xmx2607M"
+        ]
+      },
+      "queryRuntimeDiagnostics": [],
+      "queryCompiledAndExecuted": true,
+      "queryStderr": [
+        "Resolving data extensions.",
+        "Finished resolving data extensions.",
+        "Merging data extensions.",
+        "Finished merging data extensions.",
+        "Compiling query plan for /opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/formal-ai-macro-contexts-0dnvwx5e/IncludedStringPayloads.ql.",
+        "[1/1 comp 22.3s] Compiled /opt/hostedtoolcache/CodeQL/2.27.5/x64/codeql/qlpacks/codeql/rust-queries/0.1.47/formal-ai-macro-contexts-0dnvwx5e/IncludedStringPayloads.ql.",
+        "Starting evaluation of codeql/rust-queries/formal-ai-macro-contexts-0dnvwx5e/IncludedStringPayloads.ql.",
+        "[1/1 eval 3m30s] Evaluation done; writing results to /home/runner/work/_temp/codeql-results/included-string-payloads/included-string-payloads.bqrs.",
+        "Shutting down query evaluator."
+      ],
+      "resultSha256": "1317d7c5c1a8ccbb6eeef73c74ab941a2fd46dcf902d63ff1e52e3c0fb6291d6"
+    }
+  },
+  "macroRows": 122574,
+  "macroSourceFiles": 2232,
+  "expansionStates": {
+    "expanded:outside-expansion": 42436,
+    "expanded:inside-expansion": 79507,
+    "unexpanded:outside-expansion": 631
+  },
+  "originalNotifications": 631,
+  "distinctOriginalPositions": 631,
+  "positionalCrosswalkCounts": {
+    "unexpanded-contexts": 631
+  },
+  "includedStringRows": 2179,
+  "includedStringSourceFiles": 258,
+  "includedStringStates": {
+    "literal-expansion:expansion-has-cfg-node": 266,
+    "literal-expansion:no-expansion-cfg-node": 1664,
+    "unexpanded:no-expansion-cfg-node": 248,
+    "other-expansion:expansion-has-cfg-node": 1
+  },
+  "allMacroSemanticsQualified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

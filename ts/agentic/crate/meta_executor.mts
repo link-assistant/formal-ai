@@ -25,6 +25,7 @@ import { grammarVocabulary, structuralRuleValues } from './formalization_grammar
 import { rankByLeastAction } from './least_action.mjs';
 import { attemptFailed, attemptPassed, recursiveLeaf, solveRecursively } from './recursive_execution.mjs';
 import { containsCjk } from './seed_meanings.mjs';
+import { maskQuotedCues } from './task_decomposition_cues.mjs';
 import { isAlphanumeric, isWhitespace, trimMatches } from './rust_str.mjs';
 
 const RULE = 'task-decomposition';
@@ -91,21 +92,30 @@ function quotedMask(characters) {
   if (pairs.some((pair) => pair.length !== 2)) throw Error('task_decomposition_quote_pair');
   const mask = [];
   let closer = null;
-  for (const character of characters) {
+  let escaped = false;
+  for (let at = 0; at < characters.length; at += 1) {
+    const character = characters[at];
+    const neighbor = characters[at + (closer === "'" ? 1 : -1)] ?? '';
+    const wordApostrophe = character === "'" && isAlphanumeric(neighbor) && !containsCjk(neighbor);
+    const delimiter = !escaped && !wordApostrophe;
     if (closer !== null) {
       mask.push(true);
-      if (character === closer) closer = null;
-      continue;
+      if (delimiter && character === closer) closer = null;
+    } else {
+      const pair = pairs.find((candidate) => delimiter && candidate[0] === character);
+      mask.push(Boolean(pair));
+      if (pair) closer = pair[1];
     }
-    const pair = pairs.find((candidate) => candidate[0] === character);
-    if (pair) {
-      closer = pair[1];
-      mask.push(true);
-      continue;
-    }
-    mask.push(false);
+    escaped = character === '\\' && !escaped;
   }
   return mask;
+}
+
+// A character that continues a word: alphanumeric, or a combining mark. A
+// Devanagari virama is a mark but not alphabetic, so without the mark test
+// the connective "या" would match inside "क्या" ("what").
+function isWordCharacter(character) {
+  return isAlphanumeric(character) || /^\p{M}$/u.test(character);
 }
 
 function markerMatches(lowered, original, mask, at, marker, cjk) {
@@ -115,9 +125,9 @@ function markerMatches(lowered, original, mask, at, marker, cjk) {
     if (mask[at + offset] || lowered[at + offset] !== marker[offset]) return false;
   }
   if (cjk) return true;
-  if (isAlphanumeric(marker[0]) && at > 0 && isAlphanumeric(original[at - 1])) return false;
-  if (isAlphanumeric(marker[marker.length - 1]) && end < original.length
-    && isAlphanumeric(original[end])) return false;
+  if (isWordCharacter(marker[0]) && at > 0 && isWordCharacter(original[at - 1])) return false;
+  if (isWordCharacter(marker[marker.length - 1]) && end < original.length
+    && isWordCharacter(original[end])) return false;
   return true;
 }
 
@@ -139,6 +149,7 @@ export function splitRequest(text, language) {
   const original = Array.from(String(text));
   const lowered = original.map((character) => character.toLowerCase());
   const mask = quotedMask(original);
+  maskQuotedCues(lowered, original, mask, ruleValues, markerMatches);
   for (const relation of decompositionRelations()) {
     const vocabulary = ruleValue(relation + '-vocabulary');
     const markers = grammarVocabulary(language, vocabulary)
@@ -298,6 +309,7 @@ function compose(node, test, childOutcomes) {
     confidence,
     steps,
     parts: chosen.map((outcome) => outcome.task),
+    evidence: [...new Set(chosen.flatMap((outcome) => outcome.candidate.evidence))],
   };
 }
 
@@ -309,6 +321,7 @@ function draftOf(method, steps, raw) {
     content: String(raw.content ?? ''),
     confidence: Number(raw.confidence ?? 0),
     steps,
+    evidence: Array.isArray(raw.evidence) ? raw.evidence.slice() : [],
     source: raw,
   };
 }
@@ -351,7 +364,7 @@ async function runTask(node, host, state, options) {
     budgetExhausted = true;
   }
   if (node.children.length) {
-    const composition = compose(node, test, childOutcomes);
+    const composition = (host.canCompose?.(node) ?? true) ? compose(node, test, childOutcomes) : null;
     emit(state, 'meta_exec:compose', [
       ['task', node.id],
       ['relation', node.relation],
@@ -500,7 +513,7 @@ export async function nested(body) {
 }
 
 const answerDraft = (answer) =>
-  answer ? { intent: answer.intent, content: answer.content, confidence: answer.confidence } : null;
+  answer ? { intent: answer.intent, content: answer.content, confidence: answer.confidence, evidence: answer.evidence } : null;
 
 /**
  * Every answer goes through the procedure: the turn is the root task, its
@@ -517,6 +530,10 @@ const answerDraft = (answer) =>
 export async function solveAnswer(request, answer, solveSubTask, options = {}) {
   if (!answer || isNested()) return { answer, run: null };
   const host = {
+    // Joining prose cannot establish a concrete output contract (for example,
+    // source code), even when each fragment has a nonempty response. Only an
+    // untyped unresolved root can be discharged by this generic composition.
+    canCompose: (task) => task.depth !== 0 || ruleValues('unresolved-intent').includes(answer.intent),
     draft: async (text, task) => (task.depth === 0 ? answerDraft(answer) : answerDraft(await nested(() => solveSubTask(text)))),
   };
   const run = await solveTurn(request, host, options);
@@ -528,7 +545,7 @@ export async function solveAnswer(request, answer, solveSubTask, options = {}) {
     events: run.events.map((event) => `${event.kind} ${event.payload}`),
   };
   const adopted = selected?.method === 'composition'
-    ? { ...answer, intent: selected.intent, content: selected.content, confidence: selected.confidence }
+    ? { ...answer, intent: selected.intent, content: selected.content, confidence: selected.confidence, evidence: selected.evidence }
     : answer;
   // The trace joins the solver events of the answer, as the native solver
   // appends it to its event log.

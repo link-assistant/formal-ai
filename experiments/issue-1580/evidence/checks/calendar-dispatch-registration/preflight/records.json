@@ -1,0 +1,160 @@
+{
+  "observedAt": "2026-11-18T22:03:51.376638+00:00",
+  "records": [
+    {
+      "name": "branch",
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "branch.stdout.gz",
+        "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+        "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+        "bytes": 24,
+        "lines": 1
+      },
+      "stderr": {
+        "file": "branch.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    },
+    {
+      "name": "fetch-main",
+      "argv": [
+        "git",
+        "-c",
+        "gc.auto=0",
+        "fetch",
+        "origin",
+        "main"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "fetch-main.stdout.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "stderr": {
+        "file": "fetch-main.stderr.gz",
+        "rawSha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5",
+        "archiveSha256": "b4665725e37b8fc351f63ee82bef06b90506666038876d7b4e2388b87afe3bb0",
+        "bytes": 99,
+        "lines": 2
+      }
+    },
+    {
+      "name": "main",
+      "argv": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main.stdout.gz",
+        "rawSha256": "6f674250dd7a08adf0f561f99ccbe15ca03226028532de1d6d27140c62e41282",
+        "archiveSha256": "00bc666a0f885c9c8a1fe798ed7d681137e5700f76ef157230b98467ea35c5c9",
+        "bytes": 41,
+        "lines": 1
+      },
+      "stderr": {
+        "file": "main.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    },
+    {
+      "name": "main-ancestor",
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "origin/main",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main-ancestor.stdout.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "stderr": {
+        "file": "main-ancestor.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    },
+    {
+      "name": "current-runs",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,workflowName,conclusion,createdAt,headSha"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "current-runs.stdout.gz",
+        "rawSha256": "1485a72180762d45dc00812dbd15520ddce92af3192d190a63769a3ac8f43e96",
+        "archiveSha256": "f55bf6e7b3582644bfdf68e851d6d7881e3f8e97be28c7b6cd6b14920cf68a12",
+        "bytes": 897,
+        "lines": 1
+      },
+      "stderr": {
+        "file": "current-runs.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    },
+    {
+      "name": "pr-diff",
+      "argv": [
+        "gh",
+        "pr",
+        "diff",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai"
+      ],
+      "exitCode": 1,
+      "stdout": {
+        "file": "pull-request-diff.stdout.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      },
+      "stderr": {
+        "file": "pull-request-diff.stderr.gz",
+        "rawSha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5",
+        "archiveSha256": "3064591bc8bc81382ccf3efad6a3d49e9ad0bc111959202d619054be8452903b",
+        "bytes": 287,
+        "lines": 2
+      }
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

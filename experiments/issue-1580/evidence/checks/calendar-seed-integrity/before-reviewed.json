@@ -1,0 +1,24 @@
+{
+  "sourceHead": "2ec6ef93a80c7081a46816d1242bc0f7b843d5ff",
+  "startedAt": "2026-11-17T23:28:56.133080+00:00",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/issue-1589-calendar-currency.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 23.684310901211575,
+  "lines": 256,
+  "sha256": "48c9cd5f3b8b18a282201ccf8cbb48c37cfa5a7de540bd2ee5d6cad8af69954a",
+  "rawLog": "/tmp/issue-1580-research/calendar-seed-regressions-before.log",
+  "authorshipCredit": 0,
+  "reviewedFailures": [
+    "calendar meanings stay globally unique across all seed meaning documents",
+    "handler table rows carry one surface each without pipe-packed aliases"
+  ],
+  "reporter": "spec; the initial helper incorrectly expected TAP markers, after the test command finished with the expected two failures"
+}

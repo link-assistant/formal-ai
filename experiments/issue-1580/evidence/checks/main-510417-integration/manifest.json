@@ -1,0 +1,18 @@
+{
+  "incomingMain": "51041744901d15b9ada67ebe3df2d408e5a27f78",
+  "parentHead": "3479d01bd88a731b48c4f9bd2f3efb927320dfbc",
+  "archiveSha256": "3ad3d74362982f51ccc0569d60b20ac432187fc01adf8e4407b3437276d302b4",
+  "payloadCount": 81,
+  "roundTripVerified": true,
+  "verifiedSourceFiles": 172,
+  "supportedCases": 223,
+  "unsupportedCases": 967,
+  "completeGovernedObjectsUnchangedFromParent": true,
+  "incomingSourcePatchLines": 1141,
+  "conversationCommentsRead": 7,
+  "inlineComments": 0,
+  "reviews": 0,
+  "nativeExecutedLocally": false,
+  "autonomousAuthorshipCredit": 0,
+  "wholePullRequestReviewComplete": false
+}

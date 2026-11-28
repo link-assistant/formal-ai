@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,17 +10,17 @@ const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const blob=bytes=>createHash('sha1').update(Buffer.concat([Buffer.from('blob '+Buffer.byteLength(bytes)+'\0'),Buffer.from(bytes)])).digest('hex');
 const evidence='experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
 function sourceContract(){
- const canonical=read(evidence+'original-release-workflow.yml'),packetSource=read(evidence+'stage-source-coverage.json');
+ const physical=readCanonicalSource(root),canonical=physical.text,packetSource=read(evidence+'stage-source-coverage.json');
  const callerDraft=read(evidence+'candidate-release-caller.yml'),staged=read('.github/workflows/release-staged.yml');
  return {canonical,packetSource,callerDraft,staged,contract:compileContract({canonical,callerDraft,staged,packet:JSON.parse(packetSource),YAML,
-  retainedSourceProof:{originalSource:canonical,packetSource}})};
+  retainedSourceProof:{originalSource:canonical,physicalSourceFiles:physical.files,packetSource}})};
 }
 function authorityFixture(){
  const {contract,canonical,packetSource,callerDraft,staged}=sourceContract();
- assert.equal(contract.routes.length,52);assert.equal(contract.bindings,104);assert.equal(contract.sources.length,4);
+ assert.equal(contract.routes.length,52);assert.equal(contract.bindings,104);assert.equal(contract.sources.length,6);
  const route=contract.routes[0],expected={repository:'link-assistant/formal-ai',head:'a'.repeat(40),run:'123',attempt:'1',runnerName:'synthetic-runner',
   caller:route.caller,ordinal:route.ordinal,stageJob:route.stageJob,operationSha256:route.operationSha256};
- const bodies=[callerDraft,staged,canonical,packetSource];const entries=contract.sources.map((source,index)=>({path:source.path,type:'blob',mode:'100644',sha:blob(bodies[index])}));
+ const physical=readCanonicalSource(root);const bodies=[callerDraft,staged,...physical.files.map(file=>file.text),packetSource];const entries=contract.sources.map((source,index)=>({path:source.path,type:'blob',mode:'100644',sha:blob(bodies[index])}));
  const calls=[],job={id:42,run_id:123,run_attempt:1,head_sha:expected.head,name:route.descendantName,runner_name:expected.runnerName,runner_id:7,
   status:'in_progress',completed_at:null,started_at:'2026-10-11T00:00:00Z',url:'https://api.github.com/repos/'+expected.repository+'/actions/jobs/42'};
  const run={id:123,run_attempt:1,repository:{full_name:expected.repository},head_repository:{full_name:expected.repository},head_sha:expected.head,
@@ -41,7 +42,7 @@ function authorityFixture(){
 test('legacy issued-receipt entry uses complete unfiltered exact membership with all source bytes',async()=>{
  const {authority,expected,route,calls}=authorityFixture(),receipt=await authority.observe(expected);
  assert.equal(authority.context(receipt,expected).job,route.caller);
- assert.equal(calls.length,9);assert.ok(calls.every(pathname=>!pathname.includes('ahead_of_')));
+ assert.equal(calls.length,11);assert.ok(calls.every(pathname=>!pathname.includes('ahead_of_')));
  assert.throws(()=>authority.context({...receipt},expected));
 });
 test('actual89a selector422 coexists with exact unfiltered membership; replay never promotes stale sampling',()=>{

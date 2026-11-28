@@ -1,0 +1,229 @@
+{
+  "at": "2026-11-22T07:50:17.529832+00:00",
+  "baseHead": "a558f83430dd1b114839ca979a02a71730abfac9",
+  "before": {
+    "cases": 9,
+    "passed": 1,
+    "failed": 8
+  },
+  "after": {
+    "cases": 10,
+    "passed": 10,
+    "failed": 0
+  },
+  "relatedChecks": {
+    "files": 4,
+    "cases": 41,
+    "passed": 41
+  },
+  "template": {
+    "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+    "head": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+    "path": ".github/workflows/security.yml",
+    "comparisonLines": [
+      51,
+      74
+    ],
+    "sha256": "6b6646121e46350a4ad1db24b20e3b46ce5d3628984065f4bd14cc5f5a75bc0c",
+    "practice": "NUL-delimited tracked lock inventory and aggregate findings across every lock"
+  },
+  "productionPolicy": "Keep primary --deny warnings and independent --deny unsound --deny yanked unchanged; retain first failing audit status. Advisory proof validation still precedes audits.",
+  "proceduralFailure": "Four abbreviated evidence paths in the prior archival commit, created after its final gate, raised the unchanged filename ratchet from 90 to 94. Rename those paths using full words.",
+  "files": [
+    {
+      "file": "before.sh.gz",
+      "bytes": 7760,
+      "sha256": "8d101de64fefc5870ce4da7c95d6cf76bf5bde11781b3d01ec1cec4417206a5a",
+      "gzipSHA256": "d178333f303cc159aae9812526e2537c3fa8268171980b2ae45286afa0eeaa1c"
+    },
+    {
+      "file": "before.log.gz",
+      "bytes": 10470,
+      "sha256": "38a23b972b881cf23624f6edd22d6773987c8f74ed9e7b319b4a6ad3c679fdc4",
+      "gzipSHA256": "81a03abd1b65261ceb0f05638aebfea707e3c4bb4b507368ce809e655ac02a47"
+    },
+    {
+      "file": "before.json.gz",
+      "bytes": 129,
+      "sha256": "bc4d7f43d8aabf894d2536163d293a688a28fb497f19d0396c971eff7e0118a4",
+      "gzipSHA256": "3619fdcfb785563a4edd2c08c4604b5cdef7e4fac4fc7bcb028f163f7b1f8e02"
+    },
+    {
+      "file": "after-results.json.gz",
+      "bytes": 963,
+      "sha256": "957dddb04d62401ae69f7e63dd183324f8859439d1131a8f9e04426f45e80dab",
+      "gzipSHA256": "358e1e85cbe2681b287e171f20b10b9311151bdb5780804475959b507f6c2496"
+    },
+    {
+      "file": "gates-results.json.gz",
+      "bytes": 807,
+      "sha256": "41003371d8c22814e425d98d10fadd02f33184d7241715abb17b7a5e766c3c38",
+      "gzipSHA256": "61e1fb4b2739362b5466e32aebf279be9b8b0370a118e8b4faa8bd85ce6ae3f6"
+    },
+    {
+      "file": "template-security.yml.gz",
+      "bytes": 6837,
+      "sha256": "6b6646121e46350a4ad1db24b20e3b46ce5d3628984065f4bd14cc5f5a75bc0c",
+      "gzipSHA256": "78dc514f81fa827924875f27a23c68ff54a42be5d282f2fa1a912b85df43f1f8"
+    },
+    {
+      "file": "after-0.log.gz",
+      "bytes": 1028,
+      "sha256": "cf288bccf8b3ef01c6452252b59b8a3034a5645eacebdf231cbcaa1482b620e3",
+      "gzipSHA256": "cf22b5198bf2105a53a96a90d1ee66c0a352b35bce618809c760dcd57525e6eb"
+    },
+    {
+      "file": "after-1.log.gz",
+      "bytes": 387,
+      "sha256": "1399f865bd525f493f1ae4f6568fbc6dc3370f811604b7b44a3ef1064203f3b3",
+      "gzipSHA256": "e0875766918511af9ea7d55206b1c913b026dcbae70658527e740dda5eb9ad67"
+    },
+    {
+      "file": "after-2.log.gz",
+      "bytes": 862,
+      "sha256": "6145f5a40a9ce5e8c49ae72d7c1a54411916027c8f613fa59fe91f1ce2cf9ccc",
+      "gzipSHA256": "ac1552afc0a41f162b52ea5c792e71c0af8dff2b5db0657daaeddf61e70f7a6a"
+    },
+    {
+      "file": "after-3.log.gz",
+      "bytes": 693,
+      "sha256": "299308b0f874d6ca049ba73de3e1c3a8a631c7e24ed9cafc2ca1e3e497dcdfeb",
+      "gzipSHA256": "86191fc49aac6e6bd1c5e4a8853483ef5ac9bb54b7e3871392d203fe5b616fc0"
+    },
+    {
+      "file": "after-4.log.gz",
+      "bytes": 2808,
+      "sha256": "71cec58201c3b82e81db5489a75b3f87f4172d08174a00c61e45bb5b8df7182f",
+      "gzipSHA256": "f23152864e48de55b0c68189df52aa0c2a0878643a204edef1f4790a6d925108"
+    },
+    {
+      "file": "lint-shell-scripts.log.gz",
+      "bytes": 66,
+      "sha256": "382ccd84e6265ac0345763c4e64c2d59d3a328198941e67482fd2a0aeb929b74",
+      "gzipSHA256": "457e7e7879622794ac585d91de901ef964cbc3c9db82f09b6913a2f6a68feb87"
+    },
+    {
+      "file": "check-file-size.log.gz",
+      "bytes": 63,
+      "sha256": "4888c1befcc12a95dd70b9f7b7310ee52e3b0f0cd5f988d354302cfb3e56789a",
+      "gzipSHA256": "9efef438302fae4fcf5a9cd22dfbbfac66705306d4ab8cc365ebe1f4477d628b"
+    },
+    {
+      "file": "check-abbreviations.log.gz",
+      "bytes": 156,
+      "sha256": "4b0c2f724ab52bd0263319d75201e3c89403baa2f55df2075825c1972974d447",
+      "gzipSHA256": "137d1e4aa6a2802e72427b45c9be77764638399dfeb06bae59e7015ebed493af"
+    },
+    {
+      "file": "check-required-documentation.log.gz",
+      "bytes": 76,
+      "sha256": "1d27069ed4034048883f8697e5e5e6de7b486d827f46b2657a9a845edebdf9e6",
+      "gzipSHA256": "b0ba5d4f45360ecb78ab80ad82171ab929638fe11fa5fda4bd714accf0580796"
+    },
+    {
+      "file": "abbreviation-failure-detail.log.gz",
+      "bytes": 423,
+      "sha256": "026e9fa8c961dacbd52548e9f67932c7b645eb2be1079a83ec0de75c3aac7268",
+      "gzipSHA256": "eada109d02a4cca1fc59ffa601064ec6776d9aaae300c3f5558b0661a3f6a23f"
+    },
+    {
+      "file": "abbreviations-list.log.gz",
+      "bytes": 4264,
+      "sha256": "835f4f051bfe3eae9da6695639cb193a48f419512d539478444676b513b23b03",
+      "gzipSHA256": "443b4d049faa9f3f1d69c03bafde49f69c6228e487d0fe5be4b4020413e38ffb"
+    },
+    {
+      "file": "final-gates.json.gz",
+      "bytes": 1062,
+      "sha256": "1baee59acf4b2c3d7b79509ec53a25b9edb8bd6b5cf6349da3c7d5f2ad0144bc",
+      "gzipSHA256": "fadeed12ee08c87eb1542bfdff0a15090746d744b50ab83580591153776d2868"
+    },
+    {
+      "file": "lint-shell-scripts-final.log.gz",
+      "bytes": 66,
+      "sha256": "e01529ce4e4f0593c3f4c0b5ccf1968ead97629ff105a89bf1ede63a405e2fa5",
+      "gzipSHA256": "0571f64936b20171221796c81c9411a256abca95ea58dce5d25c4775325211ee"
+    },
+    {
+      "file": "check-file-size-final.log.gz",
+      "bytes": 64,
+      "sha256": "f3db229a905bca82aeb467e8c8dcf4409f84e6f921164b594f7a7a20accc3cd4",
+      "gzipSHA256": "1f023461a2d782f2fdb9100216d5f28d909e9fad0c309d2af8f9b0751f47cbf2"
+    },
+    {
+      "file": "check-abbreviations-final.log.gz",
+      "bytes": 67,
+      "sha256": "9afcdaf932c05f2ed414e5ad5e09dc3acd9ce4e03b89bdc4dcf7beca2b2692b1",
+      "gzipSHA256": "8cf4b79be8a040a356a3986ee8c2792f51e5dbc7ab23ca0196fe2e5643205ced"
+    },
+    {
+      "file": "check-required-documentation-final.log.gz",
+      "bytes": 76,
+      "sha256": "1d27069ed4034048883f8697e5e5e6de7b486d827f46b2657a9a845edebdf9e6",
+      "gzipSHA256": "b0ba5d4f45360ecb78ab80ad82171ab929638fe11fa5fda4bd714accf0580796"
+    },
+    {
+      "file": "check-changelog-fragment-js-twin-final.log.gz",
+      "bytes": 80,
+      "sha256": "49745cf7b6aca05e1465769133984b3d8053f78d877d3329d67881223d06f99f",
+      "gzipSHA256": "82bca035348a7be28f246385ecb0f61b59531b06237b0a4694487e0569192020"
+    }
+  ],
+  "localRustCompilation": false,
+  "autonomousAuthorshipCredit": 0,
+  "allIssueCriteriaVerified": false,
+  "finalGatesPending": false,
+  "finalGates": [
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "lint-shell-scripts"
+      ],
+      "exit": 0,
+      "log": "lint-shell-scripts-final.log"
+    },
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exit": 0,
+      "log": "check-file-size-final.log"
+    },
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exit": 0,
+      "log": "check-abbreviations-final.log"
+    },
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-required-documentation"
+      ],
+      "exit": 0,
+      "log": "check-required-documentation-final.log"
+    },
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exit": 0,
+      "log": "check-changelog-fragment-js-twin-final.log"
+    }
+  ],
+  "checkedAt": "2026-11-22T07:51:22.653560+00:00"
+}

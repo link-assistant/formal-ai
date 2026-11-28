@@ -1,0 +1,130 @@
+[
+  {
+    "path": "scripts/create-changelog-fragment.rs",
+    "diff": "0415.diff",
+    "sha256": "3c5424a9c99b40e76a8d88e7aa0ef3520575677e40e4048aee2760ca8dc55a6a",
+    "bytes": 1355,
+    "lines": 48,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/create-github-release.rs",
+    "diff": "0416.diff",
+    "sha256": "fca8067e04e02674c0b2e59e1de59c89d43a7372038bef06b48aac9e77f8ac98",
+    "bytes": 1184,
+    "lines": 36,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/desktop-release-evidence.sh",
+    "diff": "0417.diff",
+    "sha256": "5435ead265849f0119f3e52aa95fd3973409b10b7af5900a0b021fd79292e333",
+    "bytes": 1197,
+    "lines": 18,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/generate-requirement-status.mjs",
+    "diff": "0424.diff",
+    "sha256": "e44a429387e38b123501813baac7c47cbcb5d077664d0c103186322fe3ed2226",
+    "bytes": 1147,
+    "lines": 24,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/generate-requirement-status.rs",
+    "diff": "0425.diff",
+    "sha256": "6d504b6ba85677aac9c1c362353e15270cf019b99d3b70239df040f92fb1aff2",
+    "bytes": 1446,
+    "lines": 26,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/generate-worker-bootstrap.mjs",
+    "diff": "0429.diff",
+    "sha256": "cf2693ae918189ab95a2c0fc486ec94b02ae556dbbe5f8a3770d4a9c960aeeb0",
+    "bytes": 2719,
+    "lines": 46,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/generate-worker-crate-modules.mjs",
+    "diff": "0430.diff",
+    "sha256": "8f27656abd5f8adb6131647561718ab10c742754bce00d620cc2e04da0abc26d",
+    "bytes": 1446,
+    "lines": 38,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/generate-worker-prerequisites.mjs",
+    "diff": "0431.diff",
+    "sha256": "6a2b4ae9bea6dc2c65a713ce534deb95fe2c69fde3443a10649a89381f51153e",
+    "bytes": 1063,
+    "lines": 13,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/get-version.rs",
+    "diff": "0433.diff",
+    "sha256": "038398a9813eedbf4226cdc31de4a42b8a526cbbf8aafbcbb685c6238c6cbb65",
+    "bytes": 1092,
+    "lines": 43,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/governed-github-command-provider.mjs",
+    "diff": "0435.diff",
+    "sha256": "df4c1535882806976cec2c9a966a8fd314e370c774e4beffce9f9a35ca0599a3",
+    "bytes": 2186,
+    "lines": 30,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/cargo-package-version.py",
+    "diff": "0438.diff",
+    "sha256": "34dc9dac2dac62c91c0f03fabfb6f343bc5ea9dbbec9e4e3309363994e455893",
+    "bytes": 940,
+    "lines": 27,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/ci-phase-timing.mjs",
+    "diff": "0439.diff",
+    "sha256": "87be1273a37783604e59a03eb4924248c2f9e7604f98c2ffd14e298ab5c11d35",
+    "bytes": 2570,
+    "lines": 35,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/ci-speed-durations.mjs",
+    "diff": "0440.diff",
+    "sha256": "627fdd4a77cce7d1b523389b0ca509282097f5b6816787c52d8eda66286bc7e3",
+    "bytes": 3072,
+    "lines": 47,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/compact-json-leaves.mjs",
+    "diff": "0441.diff",
+    "sha256": "122fc1eb5570939752e731609f8fbed92b76331730e691002c13af92e624e271",
+    "bytes": 1982,
+    "lines": 43,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/requirement-evidence-matrix.mjs",
+    "diff": "0446.diff",
+    "sha256": "8280fb641284b904b8dc693916a2f8de28e4e21df4698db0b87ea9bab9dc8d65",
+    "bytes": 1147,
+    "lines": 21,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/requirements-head-overlay.mjs",
+    "diff": "0447.diff",
+    "sha256": "6d126047430c9c41f1e6495626d342fbc0ea3d054ae1fe087266a65867fbd0cd",
+    "bytes": 509,
+    "lines": 12,
+    "carriedExactDiffReview": false
+  }
+]

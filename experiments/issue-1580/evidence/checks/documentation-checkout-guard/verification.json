@@ -1,0 +1,113 @@
+{
+  "records": [
+    {
+      "name": "before",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before.log.gz",
+      "rawSha256": "813677132229b7ec99fd6df44343150d7a2a6d464ac6ab2481407690b132b6b3",
+      "archiveSha256": "9ec61884491eb775a6b42bf10550b473a06f90cc68264b9a1b3129610ad61ee9"
+    },
+    {
+      "name": "documentation-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "documentation-policy.log.gz",
+      "rawSha256": "1b34f2d210f8c97ee6056aab9a2528efeb6f20ebe35079a70014af0f577d63a5",
+      "archiveSha256": "aa8f60523b4b7bd35615bfd08680fbdce6511aa061c2d36a23a42742e448358f"
+    },
+    {
+      "name": "native-checkout",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-checkout-retry.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-checkout.log.gz",
+      "rawSha256": "ad4f2ab3e7d17e94c2579f29e23447de6de668bdc91d444f550b0294138505a2",
+      "archiveSha256": "97b2ba29b1801782d16fd3b9f47c686d1d9daae65b956753477d99af972cdbae"
+    },
+    {
+      "name": "maintained-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 0,
+      "log": "maintained-policy.log.gz",
+      "rawSha256": "f27f28baddd63cc1179af187c5a361910118449abcf2cf1752184ef6d1113e2e",
+      "archiveSha256": "b2920f291d8b434330fd4576cb63e13f980b5fe34112388e99279b4160a293cb",
+      "resolvedBy": "maintained-policy-repaired",
+      "failure": "The maintained exact-expression assertion also needed the same compile-admission-first order; update it without loosening the allowed step or condition."
+    },
+    {
+      "name": "maintained-policy-repaired",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "maintained-policy-repaired.log.gz",
+      "rawSha256": "a2ccc94688e98d1fc444e5a6bf3f0dd14d3239703a01cffae350986e444e5dff",
+      "archiveSha256": "73b719203d2b2cd09ad323435c81b4d4897ce4c77ba413cd9f7637ab0abdda59"
+    },
+    {
+      "name": "local-gates",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-readable-code,check-changelog-fragment-js-twin,release#1,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-runner-labels,check-ci-speed"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "local-gates.log.gz",
+      "rawSha256": "3312ae2f15aa9aec2143bda1a55de8602a58befbfa9a37f9cd212cc6056dfdec",
+      "archiveSha256": "00f66edfea1fa23ce15d5841d7b2992a77281a12099b1739833d750b41736e62"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false
+}

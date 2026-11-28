@@ -18,11 +18,27 @@ use formal_ai::coding_research_learning::{
 };
 use formal_ai::discovery_production::{
     CachedOrDiscovered, NO_DOCUMENTATION_CAPTURE, ProcedureCache, RediscoverableRecipe,
-    RunContract, all_documentation_captures, bootstrap_cache_active, cached_write_program,
-    documentation_captures, documentation_route_active, documented_catalog_programs, fnv1a64,
-    grammar_exists, knows_language, miss_research_missing, rediscover_from_documentation,
+    RunContract, acquire_documentation_captures, all_documentation_captures,
+    bootstrap_cache_active, cached_write_program, documentation_captures,
+    documentation_route_active, documented_catalog_programs_with_client, fnv1a64, grammar_exists,
+    knows_language, miss_research_missing, rediscover_documented_program_with_client,
 };
 use formal_ai::web_formalize::{PageBlock, formalize_page_with_context};
+
+#[allow(clippy::duplicate_mod)]
+#[path = "../fixtures/coding-discovery/documentation_replay.rs"]
+mod replay;
+
+#[cfg(feature = "meta-language")]
+fn rediscover_from_documentation(
+    language: &str,
+    task: &str,
+    output: &str,
+    contract: RunContract<'_>,
+) -> Result<RediscoverableRecipe, String> {
+    rediscover_documented_program_with_client(language, task, output, contract, &replay::client())
+        .map(|program| program.recipe)
+}
 
 /// The Rust Book page the Rust Hello World is rediscovered from.
 const RUST_BOOK: &str = "https://doc.rust-lang.org/book/ch01-02-hello-world.html";
@@ -290,27 +306,13 @@ fn knows_language_requires_grammar_and_procedure() {
     );
 }
 
-/// The bootstrap tier obeys the policy seed: while `bootstrap` carries
-/// `active "true"` the embedded snapshots are the record of past discovery.
-/// Flipping the seed is the deletion path the issue's wiring completes.
-///
-/// The Hello World snapshots the documentation route reproduces are retired
-/// (Kotlin, PHP, Swift, Lua); the Kotlin factorial still answers from its
-/// Rosetta Code snapshot, and Kotlin stays known through its captures.
 #[test]
-fn bootstrap_tier_is_governed_by_the_policy_seed() {
+fn the_distribution_has_no_bootstrap_procedure_examples() {
     use formal_ai::knowledge::CodingOracle;
-    assert!(
-        bootstrap_cache_active(),
-        "the committed policy keeps the bootstrap active until the wiring retires it"
-    );
+    assert!(!bootstrap_cache_active());
     assert!(CodingOracle::knows_language("kotlin"));
-    assert!(CodingOracle::lookup("factorial", "kotlin").is_some());
-    let retired = ["kotlin", "php", "swift", "lua"]
-        .into_iter()
-        .filter(|language| CodingOracle::lookup("hello_world", language).is_some())
-        .collect::<Vec<_>>();
-    assert_eq!(retired, Vec::<&str>::new(), "retired Hello World snapshots");
+    assert!(CodingOracle::snapshots().is_empty());
+    assert!(CodingOracle::lookup("factorial", "kotlin").is_none());
 }
 
 /// R1165-1/R1165-2: the solver's `WriteProgram` branch reuses a verified
@@ -343,16 +345,18 @@ fn write_program_reuses_the_cached_procedure_only_for_an_unmodified_request() {
 /// the solver's `WriteProgram` branch records the miss with the approval it
 /// lacks instead of answering as if research had run.
 ///
-/// Python counting to three has no documentation capture (its output is
-/// not one printed literal), so its miss is the research miss.
+/// An offline literal exercise renders locally and records the review gap.
 #[test]
 fn miss_route_names_what_research_lacks_on_a_solve() {
     assert_eq!(miss_research_missing(), ["reviewer_approval"]);
-    let response =
-        formal_ai::UniversalSolver::default().solve("Write a Python program that counts to three");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("Write a hello world program in Python");
     assert!(
         response.links_notation.contains(
-            "procedure_cache outcome=miss language=python task=count_to_three \
+            "procedure_cache outcome=miss language=python task=hello_world \
              research_missing=reviewer_approval"
         ),
         "{}",
@@ -367,8 +371,11 @@ fn miss_route_names_what_research_lacks_on_a_solve() {
 /// and records its cache miss.
 #[test]
 fn a_supplied_code_fence_is_not_bound_as_the_hello_world_literal() {
-    let response = formal_ai::UniversalSolver::default()
-        .solve("write me hello world program in Rust, like this one:\n```rust\nfn main() {}\n```");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("write me hello world program in Rust, like this one:\n```rust\nfn main() {}\n```");
     // The program is asserted through the execution recipe, exactly; the
     // answer text around it reports host-dependent execution status.
     let recipe = response
@@ -519,93 +526,27 @@ fn documentation_rediscovery_recomposes_the_captured_example_and_checks_the_run_
     );
 }
 
-/// R1165-1/R1165-2: the solver's `WriteProgram` miss answers from the
-/// rediscovered program.
-///
-/// The derivation records `outcome=discovered` with the page and the
-/// program's content address, and the execution recipe the work-item
-/// executor runs carries the same program.
+/// No publisher bytes are available on a cold offline client. After an
+/// explicit acquisition the same bytes are verified and reused offline.
 #[cfg(feature = "meta-language")]
 #[test]
-fn write_program_miss_answers_from_the_documentation() {
-    let program = "fn main() {\n    println!(\"Hello, world!\");\n}";
-    let response =
-        formal_ai::UniversalSolver::default().solve("write me hello world program in Rust");
-    let event = format!(
-        "procedure_cache outcome=discovered language=rust task=hello_world \
-         rediscovery_source={RUST_BOOK} content_id=0x{:016x}",
-        fnv1a64(program.as_bytes())
-    );
+fn documentation_is_acquired_then_reused_offline() {
+    let client = replay::client();
+    let offline = replay::client().with_online(false);
+    let contract = contract("main.rs", &["rustc main.rs -o main", "./main"]);
+    let discover = |value, client| {
+        rediscover_documented_program_with_client("rust", "hello_world", value, contract, client)
+    };
     assert!(
-        response.links_notation.contains(&event),
-        "{}",
-        response.links_notation
+        matches!(discover("unseen value", &offline), Err(reason) if reason == NO_DOCUMENTATION_CAPTURE)
     );
-    let recipe = response
-        .execution_recipe
-        .expect("a program answer carries its execution recipe");
-    assert_eq!(recipe.source, program);
-}
-
-/// R1165-6: a documented class or object name binds the file the answer
-/// saves and every command, and the derivation records where each command
-/// shown comes from.
-///
-/// Oracle's tutorial declares `class HelloWorldApp` and states `javac
-/// HelloWorldApp.java` and `java HelloWorldApp`, so both commands are the
-/// page's; the Scala book's `object hello` binds the catalog's commands,
-/// whose source stays the catalog. php.net's `echo` prints no trailing
-/// newline, and the derivation records that deviation.
-#[cfg(feature = "meta-language")]
-#[test]
-fn a_documented_program_binds_its_run_contract_and_records_each_command_source() {
-    const ORACLE: &str = "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html";
-    let cases = [
-        (
-            "Java",
-            "HelloWorldApp.java",
-            ["javac HelloWorldApp.java", "java HelloWorldApp"],
-            [ORACLE, ORACLE],
-        ),
-        (
-            "Scala",
-            "Main.scala",
-            ["scalac Main.scala", "scala run Main.scala"],
-            [
-                "catalog",
-                "https://docs.scala-lang.org/scala3/book/taste-hello-world.html",
-            ],
-        ),
-    ];
-    for (name, path, commands, sources) in cases {
-        let response = formal_ai::UniversalSolver::default()
-            .solve(&format!("write me hello world program in {name}"));
-        let language = name.to_ascii_lowercase();
-        for ((role, command), source) in ["check", "run"].iter().zip(commands).zip(sources) {
-            let event = format!(
-                "command_source language={language} task=hello_world role={role} \
-                 source={source} command={command}"
-            );
-            assert!(
-                response.links_notation.contains(&event),
-                "{event}: {}",
-                response.links_notation
-            );
-        }
-        let recipe = response
-            .execution_recipe
-            .unwrap_or_else(|| panic!("{name}: a program answer carries its recipe"));
-        assert_eq!(recipe.path, path, "{name}");
-        assert_eq!(recipe.commands, commands, "{name}");
-    }
-    let php = formal_ai::UniversalSolver::default().solve("write me hello world program in PHP");
-    assert!(
-        php.links_notation.contains(
-            "documentation_deviation language=php task=hello_world trailing_newline=absent"
-        ),
-        "{}",
-        php.links_notation
-    );
+    let first = discover("unseen value", &client).expect("publisher replay");
+    assert!(!first.cached);
+    assert!(first.source_trace.contains("sha256="));
+    let reused = discover("another value", &offline).expect("verified cache");
+    assert!(reused.cached);
+    assert_eq!(reused.recipe.verified_output, "another value");
+    assert_ne!(first.recipe.entry, reused.recipe.entry);
 }
 
 /// A rediscovered row stored in a runtime cache is reused as a hit: the
@@ -632,30 +573,22 @@ fn a_rediscovered_row_is_stored_and_reused() {
     );
 }
 
-/// R1165-1: the documentation captures are pre-cached source data.
-///
-/// Each capture names a byte-for-byte fixture and its SHA-256, and its block
-/// rows are exactly the code blocks the page formalizer reads from those
-/// bytes, so no program in the seed was written by hand. The browser twin is
-/// `rust/tests/web/issue-1165-documentation-captures.test.mjs`.
+/// The seed declares source references. The test transport supplies actual
+/// fixture bytes and verifies the digest before the runtime formalizes them.
 #[test]
-fn documentation_captures_are_the_formalized_fixtures() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("the repository root sits one level above the crate");
-    let captures = all_documentation_captures();
-    assert_eq!(captures.len(), 16);
-    for capture in captures {
-        let bytes = std::fs::read(root.join(&capture.fixture))
-            .unwrap_or_else(|error| panic!("{}: {error}", capture.fixture));
-        assert_eq!(
-            formal_ai::sha256_hex(&bytes),
-            capture.sha256,
-            "{}",
-            capture.fixture
-        );
+fn publisher_references_only_get_blocks_from_explicit_replay() {
+    use formal_ai::SourceTransport;
+    let references = all_documentation_captures();
+    assert_eq!(references.len(), 16);
+    let client = replay::client();
+    for reference in references {
+        assert!(reference.blocks.is_empty());
+        assert!(reference.source_trace.is_empty());
+        let bytes = replay::DocumentationReplay
+            .get(&reference.url)
+            .expect("recorded bytes");
         let blocks: Vec<(String, String)> =
-            formalize_page_with_context(&bytes, Some(&capture.mime), Some(&capture.url))
+            formalize_page_with_context(&bytes, Some(&reference.mime), Some(&reference.url))
                 .1
                 .into_iter()
                 .filter_map(|(_, block)| match block {
@@ -663,30 +596,35 @@ fn documentation_captures_are_the_formalized_fixtures() {
                     _ => None,
                 })
                 .collect();
-        assert_eq!(blocks, capture.blocks, "{}", capture.url);
+        let captures =
+            acquire_documentation_captures(&reference.language, &reference.task, &client);
+        let capture = captures
+            .iter()
+            .find(|row| row.url == reference.url)
+            .expect("explicit replay capture");
+        assert_eq!(blocks, capture.blocks, "{}", reference.url);
+        assert!(
+            capture
+                .source_trace
+                .contains(&formal_ai::sha256_hex(&bytes))
+        );
     }
 }
 
-/// R1165-4: the seed programs retired to the documentation route are
-/// reproduced by it, and the catalog compiles none of them.
-///
-/// `data/seed/hello-world-programs.lino` stores no program for these Hello
-/// World rows (their `program_source` is the documentation route), and the
-/// Rust catalog no longer compiles a template for them: its table takes the
-/// program the documentation captures yield when it is first read, so the
-/// solver's answer and execution recipe carry exactly that program.
+/// The declared documentation pairs are replayable without installed programs.
 #[cfg(feature = "meta-language")]
 #[test]
 fn retired_seed_programs_are_reproduced_by_the_documentation() {
-    let retired: Vec<(String, String, String)> = documented_catalog_programs()
-        .into_iter()
-        .map(|program| {
-            let documented = program
-                .rediscovered
-                .unwrap_or_else(|reason| panic!("{}: {reason}", program.language));
-            (program.language, program.task, documented.recipe.entry)
-        })
-        .collect();
+    let retired: Vec<(String, String, String)> =
+        documented_catalog_programs_with_client(&replay::client())
+            .into_iter()
+            .map(|program| {
+                let documented = program
+                    .rediscovered
+                    .unwrap_or_else(|reason| panic!("{}: {reason}", program.language));
+                (program.language, program.task, documented.recipe.entry)
+            })
+            .collect();
     let expected: Vec<(String, String, String)> = RETIRED_PROGRAMS
         .iter()
         .map(|(language, program, _)| {
@@ -698,14 +636,6 @@ fn retired_seed_programs_are_reproduced_by_the_documentation() {
         })
         .collect();
     assert_eq!(retired, expected);
-    for (language, program, prompt_name) in RETIRED_PROGRAMS {
-        let response = formal_ai::UniversalSolver::default()
-            .solve(&format!("write me hello world program in {prompt_name}"));
-        let recipe = response
-            .execution_recipe
-            .unwrap_or_else(|| panic!("{language}: a program answer carries its recipe"));
-        assert_eq!(recipe.source, *program, "{language}");
-    }
 }
 
 /// `(language, program the documentation yields, name a prompt uses)` for

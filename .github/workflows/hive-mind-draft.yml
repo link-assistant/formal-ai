@@ -19,8 +19,8 @@ jobs:
   build:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     concurrency:
-      group: hive-mind-draft-build-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}-${{ github.ref }}
-      cancel-in-progress: true
+      group: hive-mind-draft-build-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -59,22 +59,23 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24.x
-      - id: hive-source
-        name: Resolve current Hive Mind main once for this attempt
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          sha="$(bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 60 gh api repos/link-assistant/hive-mind/commits/main --jq .sha)"
-          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "hive_mind_main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
+      # Select maintained main during checkout, then seal its actual commit once.
+      # Later jobs consume that identity; they never re-resolve a moving branch.
       - name: Checkout shared maintained Hive Mind decision and attempt
         uses: actions/checkout@v7
         with:
           repository: link-assistant/hive-mind
-          ref: ${{ steps.hive-source.outputs.sha }}
+          ref: refs/heads/main
           path: .hive-mind
           persist-credentials: false
+      - id: hive-source
+        name: Bind the checked-out Hive Mind main commit
+        run: |
+          sha="$(git -C .hive-mind rev-parse --verify 'HEAD^{commit}')"
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
+          test "$sha" = "$(git -C .hive-mind rev-parse --verify 'refs/remotes/origin/main^{commit}')"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "hive_mind_main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
       - name: Install shared automation dependencies
         working-directory: .hive-mind
         run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts
@@ -105,25 +106,27 @@ jobs:
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'image='+image+'\nversion='+version+'\n');
           fs.appendFileSync(process.env.FORMAL_AI_DRAFT_LOG_DIR+'/source-identity.txt',JSON.stringify({hiveCommit:sha,hiveVersion:version,hiveImage:image,selection:'latest-main-resolved-once'})+'\n');
           JS
-      - id: source
-        name: Resolve current main commit
+      - name: Start main source selection evidence
         if: steps.decide.outputs.should_run == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p "$FORMAL_AI_DRAFT_LOG_DIR"
           date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/draft-started-at"
-          sha="$(bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 60 gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
-          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
-      - name: Checkout exact main source
+      - name: Checkout maintained Formal AI main once
         if: steps.decide.outputs.should_run == 'true'
         uses: actions/checkout@v7
         with:
-          ref: ${{ steps.source.outputs.sha }}
+          ref: refs/heads/main
           path: .formal-ai-source
           persist-credentials: false
+      - id: source
+        name: Bind the checked-out Formal AI main commit
+        if: steps.decide.outputs.should_run == 'true'
+        run: |
+          sha="$(git -C .formal-ai-source rev-parse --verify 'HEAD^{commit}')"
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
+          test "$sha" = "$(git -C .formal-ai-source rev-parse --verify 'refs/remotes/origin/main^{commit}')"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
       # Issue #1486: build once per source/toolchain/target/features/lockfile identity.
       # The earliest live claim produces; other drafts reuse its authenticated
       # artifact, and a failed, stale, poisoned or incomplete one is never reused.
@@ -154,9 +157,7 @@ jobs:
         if: steps.shared-build.outputs.mode == 'reuse'
         # A missing or broken artifact falls back to this draft's own build.
         continue-on-error: true
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           artifact-ids: ${{ steps.shared-build.outputs.artifact_id }}
           run-id: ${{ steps.shared-build.outputs.producer_run_id }}
@@ -270,7 +271,7 @@ jobs:
           echo "FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs" >> "$GITHUB_ENV"
           mkdir -p "$RUNNER_TEMP/formal-ai-draft-logs"
           date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/draft-started-at"
-          echo "Attempt budget: 20 minutes including image pull retries; build budget: 22 minutes on a separate runner." > "$RUNNER_TEMP/formal-ai-draft-logs/attempt-policy.txt"
+          echo "Attempt budget: 20 minutes for solve; the image is pulled before it in a 6-minute step, and the attempt pulls again only if that failed. Build budget: 22 minutes on a separate runner." > "$RUNNER_TEMP/formal-ai-draft-logs/attempt-policy.txt"
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -279,9 +280,7 @@ jobs:
           node-version: 24.x
       - name: Restore source and build evidence
         if: ${{ needs.build.outputs.evidence_url != '' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           artifact-ids: ${{ needs.build.outputs.evidence_artifact_id }}
           merge-multiple: true
@@ -290,9 +289,7 @@ jobs:
         if: needs.build.result == 'success'
         # A missing artifact must reach the custody check as a typed deferred outcome.
         continue-on-error: true
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           artifact-ids: ${{ needs.build.outputs.binary_artifact_id }}
           merge-multiple: true
@@ -309,9 +306,11 @@ jobs:
         working-directory: .hive-mind
         run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts
         if: needs.build.result == 'success'
-      - name: Free disk for the Hive Mind image
+      # Issue #1580: run 43738765561 spent 4 of its 30 minutes deleting SDKs from a runner that already had 80 GB
+      # free; pulling the ~9 GB image used 21 GB of it. The cleanup now runs only on a runner short of room.
+      - name: Free disk for the Hive Mind image only when the runner is short of room
         if: needs.build.result == 'success'
-        run: node .hive-mind/scripts/free-disk-space.mjs
+        run: node scripts/free-disk-if-short.mjs 40 node .hive-mind/scripts/free-disk-space.mjs
       - name: Retain native and dialog payloads in the mounted session directory
         if: needs.build.result == 'success'
         run: node scripts/lib/hive-draft-diagnostics.mjs .hive-mind "$FORMAL_AI_DRAFT_LOG_DIR"
@@ -324,9 +323,24 @@ jobs:
         run: |-
           if [ -f "$FORMAL_AI_DRAFT_BINARY" ]; then chmod +x "$FORMAL_AI_DRAFT_BINARY"; fi
           node scripts/hive-draft-attempt.mjs --verify-custody
+      # Issue #1580: run 43813238887 started after another session opened #1581 for its issue, and the shared
+      # attempt continued that pull request (log commits, `formal-ai-draft` label) instead of drafting its own.
+      - id: occupancy
+        name: Leave an issue another session already works on to that session
+        if: needs.build.result == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/hive-mind-draft-result.mjs --occupied
+      # Issue #1580: the same run pulled the image for 5 minutes inside the attempt's 1200 s, leaving solve 15 of
+      # its 20 minutes. A failed pull here is not fatal: the attempt's own pull retries it within its budget.
+      - id: image
+        name: Pull the Hive Mind image before the attempt deadline starts
+        if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''
+        continue-on-error: true
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 360 docker pull --quiet "$FORMAL_AI_DRAFT_IMAGE"
       - id: attempt
         name: Attempt through shared Hive Mind scripts (including image pull retry)
-        if: needs.build.result == 'success'
+        if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''
         env:
           GH_TOKEN: ${{ github.token }}
           AUTOMATION_LAYER: default
@@ -339,7 +353,7 @@ jobs:
           FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-session-evidence.sh" 1200 attempt node .hive-mind/scripts/formal-ai-draft.mjs
       - id: serving
         name: Verify Hive Mind served the admitted selection
-        if: ${{ !cancelled() && steps.custody.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.custody.outcome == 'success' && steps.attempt.outcome != 'skipped' }}
         env:
           FORMAL_AI_ATTEMPT_IDENTITY: ${{ needs.build.outputs.attempt_identity }}
         run: node scripts/hive-draft-attempt.mjs --verify-hive
@@ -384,7 +398,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Link session artifact on the issue when no verified draft exists
-        if: ${{ !cancelled() && steps.exact-pr.outputs.pull_request_number == '' }}
+        if: ${{ !cancelled() && steps.exact-pr.outputs.pull_request_number == '' && steps.occupancy.outputs.occupied_by == '' }}
         env:
           GH_TOKEN: ${{ github.token }}
           DRAFT_ISSUE_NUMBER: ${{ needs.build.outputs.issue_number }}

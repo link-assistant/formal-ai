@@ -1,0 +1,31 @@
+{
+  "complete": true,
+  "sourceHead": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+  "paths": [
+    {
+      "path": "ts/server/worker-script-prerequisites.mts",
+      "beforeSha256": "7a4566e13ff6b7315356c3041da2b605372e4cc89a81d8af1e0228cae5c56901",
+      "afterSha256": "c0965048ab511da7b5570afa1d479beefbda8ee7799bba996a658b8fd494002d",
+      "sourceUnchanged": false
+    },
+    {
+      "path": "ts/worker-script-prerequisites.ts",
+      "beforeSha256": "a84f907f2fe4358b7bf0f297b506580c14a1aaf81c216c0a178ee739c6fcf3f6",
+      "afterSha256": "a44a88e0e407b6bffae5199dc629da8790c74a0610078f7bd3e02f17dff7287e",
+      "sourceUnchanged": false
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_seed_responses_and_language.ts",
+      "beforeSha256": "f750f917a5d66a1ae29aef9177f7b7c45e15adff46d0153371edb2527ba9af9e",
+      "afterSha256": "299df7f3d5867650f491096d1ef9b81cd7e48ba151bf6d681ce7d1c0ba7e7b3a",
+      "sourceUnchanged": false
+    }
+  ],
+  "beforeExitCode": 1,
+  "afterExitCode": 0,
+  "maintainedGeneratorOnly": true,
+  "javascriptSourceChanged": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "completedAt": "2026-11-18T16:37:40.866612+00:00"
+}

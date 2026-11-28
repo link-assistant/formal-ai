@@ -8,25 +8,25 @@ const CASES = [
     language: 'en',
     prompt: 'how install cursor',
     task: 'install cursor',
-    officialMarker: 'official documentation',
+    unverified: 'I couldn’t verify steps',
   },
   {
     language: 'ru',
     prompt: 'как установить cursor',
     task: 'установить cursor',
-    officialMarker: 'официальную документацию',
+    unverified: 'Не удалось найти проверенные инструкции',
   },
   {
     language: 'hi',
     prompt: 'कैसे इंस्टॉल करें cursor',
     task: 'इंस्टॉल करें cursor',
-    officialMarker: 'आधिकारिक documentation',
+    unverified: 'सत्यापित निर्देश नहीं मिले',
   },
   {
     language: 'zh',
     prompt: '如何安装 cursor',
     task: '安装 cursor',
-    officialMarker: '官方 documentation',
+    unverified: '我没能核实',
   },
 ];
 
@@ -83,7 +83,7 @@ test.describe('Issue #501 install how-to prompts', () => {
         'intent:procedural_how_to',
       );
       await expect(body).toContainText(testCase.task);
-      await expect(body).toContainText(testCase.officialMarker);
+      await expect(body).toContainText(testCase.unverified);
       await expect(assistantMessage).toContainText(
         'procedural_how_to:source_gate:official_documentation_first',
       );

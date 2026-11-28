@@ -11,14 +11,21 @@
 //! only when a benchmark gate is green *and* a human approves, and it is reachable
 //! through the agentic interface as the ninth recipe.
 
+#[allow(clippy::duplicate_mod)]
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::CHANGE_TASK;
+use repair_fixture::LEDGER_TASK;
+use repair_fixture::SELF_HEAL_TASK;
+use repair_fixture::{canonical_change_request, task_with_json};
+
 use formal_ai::agentic_coding::{
-    AgenticPlan, CHANGE_PATH, CHANGE_TASK, DRIVER_TOOLS, PlannedToolCall, change_request as recipe,
+    AgenticPlan, CHANGE_PATH, DRIVER_TOOLS, PlannedToolCall, change_request as recipe,
     is_change_request_task, plan_chat_step, run_agentic_task,
 };
 use formal_ai::self_improvement::BenchmarkGateReport;
 use formal_ai::{
-    ChangeRejected, ChangeRequest, ChatMessage, HumanApproval, ToolCall, canonical_change_request,
-    owned_manifest,
+    ChangeRejected, ChangeRequest, ChatMessage, HumanApproval, ToolCall, owned_manifest,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -176,15 +183,11 @@ fn recognises_the_change_task_without_colliding_with_the_sibling_recipes() {
     // Unrelated and sibling requests do not route here.
     assert!(!is_change_request_task("what files are in this folder?"));
     assert!(!is_change_request_task("change this line to uppercase"));
-    assert!(!is_change_request_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
+    assert!(!is_change_request_task(SELF_HEAL_TASK));
     assert!(!is_change_request_task(
         formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
-    assert!(!is_change_request_task(
-        formal_ai::agentic_coding::LEDGER_TASK
-    ));
+    assert!(!is_change_request_task(LEDGER_TASK));
     assert!(!is_change_request_task(
         formal_ai::agentic_coding::EXPLAIN_TASK
     ));
@@ -201,7 +204,7 @@ fn recognises_the_change_task_without_colliding_with_the_sibling_recipes() {
 #[test]
 fn planner_walks_the_change_request_recipe() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(CHANGE_TASK)];
+    let mut messages = vec![ChatMessage::user(change_task(CHANGE_TASK))];
 
     // Step 1: write the generated reviewable pull-request document (no web step — it is
     // a pure function of the request and its grounded target).
@@ -209,14 +212,21 @@ fn planner_walks_the_change_request_recipe() {
     assert_eq!(call.tool, "write_file");
     assert!(call.arguments.contains(CHANGE_PATH));
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
+    assert_eq!(
+        written["content"],
+        recipe::render_document(&canonical_change_request())
+    );
     answer_tool_call(&mut messages, &call, "wrote requested-change.lino");
 
     // Step 2: verify by reading the document back.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "run_command");
     assert!(call.arguments.contains(CHANGE_PATH));
-    answer_tool_call(&mut messages, &call, &recipe::render_document());
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &recipe::render_document(&canonical_change_request()),
+    );
 
     // Step 3: the recipe is exhausted — the final answer carries the reviewable PR.
     match plan_chat_step(&messages, &tools) {
@@ -233,7 +243,7 @@ fn driver_drives_the_change_request_recipe_to_a_write() {
     // End-to-end through the in-repo Agent CLI driver: the loop finishes and writes
     // exactly the generated reviewable pull-request document.
     assert!(DRIVER_TOOLS.contains(&"write_file"));
-    let outcome = run_agentic_task(CHANGE_TASK).expect("workspace");
+    let outcome = run_agentic_task(&change_task(CHANGE_TASK)).expect("workspace");
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
     let write = outcome
         .steps
@@ -241,7 +251,21 @@ fn driver_drives_the_change_request_recipe_to_a_write() {
         .find(|step| step.tool == "write_file")
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
+    assert_eq!(
+        written["content"],
+        recipe::render_document(&canonical_change_request())
+    );
     assert_eq!(written["path"], CHANGE_PATH);
     assert!(outcome.final_answer.contains(CHANGE_PATH));
+}
+
+fn change_task(cue: &str) -> String {
+    let request = canonical_change_request();
+    task_with_json(
+        cue,
+        serde_json::json!({
+            "request": request.request,
+            "target_module": request.target_module,
+        }),
+    )
 }

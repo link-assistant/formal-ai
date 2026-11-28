@@ -1,0 +1,97 @@
+[package]
+name = "formal-ai-release-registry-regressions"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lib]
+path = "../../../scripts/registry.rs"
+
+[[bin]]
+name = "check-release-needed"
+path = "../../../scripts/check-release-needed.rs"
+test = false
+
+[[bin]]
+name = "version-and-commit"
+path = "../../../scripts/version-and-commit.rs"
+test = false
+
+[[bin]]
+name = "check-version-modification"
+path = "../../../scripts/check-version-modification.rs"
+test = false
+
+[[bin]]
+name = "create-changelog-fragment"
+path = "../../../scripts/create-changelog-fragment.rs"
+test = false
+
+[[bin]]
+name = "get-version"
+path = "../../../scripts/get-version.rs"
+test = false
+
+[[bin]]
+name = "get-bump-type"
+path = "../../../scripts/get-bump-type.rs"
+test = false
+
+[[bin]]
+name = "detect-code-changes"
+path = "../../../scripts/detect-code-changes.rs"
+test = false
+
+[[bin]]
+name = "publish-crate"
+path = "../../../scripts/publish-crate.rs"
+test = false
+
+[[bin]]
+name = "wait-for-crate"
+path = "../../../scripts/wait-for-crate.rs"
+test = false
+
+[[bin]]
+name = "collect-changelog"
+path = "../../../scripts/collect-changelog.rs"
+test = false
+
+[[bin]]
+name = "create-github-release"
+path = "../../../scripts/create-github-release.rs"
+test = false
+
+# Compile the exact standalone sources and their split test modules. This
+# isolated manifest avoids another build of the application and its grammars.
+[[test]]
+name = "assemble_requirements"
+path = "../../../scripts/assemble-requirements.rs"
+
+[[test]]
+name = "normalize_ordered_lists"
+path = "../../../scripts/normalize-ordered-lists.rs"
+
+[[test]]
+name = "self_hosting_metric"
+path = "../../../scripts/self-hosting-metric.rs"
+
+[dev-dependencies]
+syn = { version = "2", features = ["full"] }
+
+[dependencies]
+chrono = "0.4"
+regex = "1"
+semver = "1.0.28"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml_edit = "0.25.15"
+ureq = "3.5.2"
+
+[profile.dev]
+debug = 0
+incremental = false
+
+[profile.test]
+debug = 0
+incremental = false

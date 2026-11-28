@@ -1,0 +1,54 @@
+{
+  "before": "f7a71cb86a16e78da0e9ca055c13710d62277739",
+  "repairCommit": "0096a8168cb9f611ac55a611cce602884c888607",
+  "layeredRun": 45151782730,
+  "failedGroups": [
+    7,
+    8
+  ],
+  "originalFailureLines": {
+    "unpackDeadline": 23445,
+    "interruptedDpkg": 23461,
+    "ec2MirrorDeadlines": [
+      22530,
+      22553
+    ]
+  },
+  "unchangedCurrentRegressionResults": {
+    "agenticBefore": {
+      "tests": 12,
+      "passed": 7,
+      "failed": 5
+    },
+    "mirrorBefore": {
+      "tests": 16,
+      "passed": 15,
+      "failed": 1
+    },
+    "after": {
+      "passed": 54,
+      "failed": 0,
+      "files": 5
+    }
+  },
+  "affectedGatesPassed": 8,
+  "shellSyntaxFilesPassed": 3,
+  "attempts": 2,
+  "attemptSeconds": 60,
+  "retryDelaySeconds": 5,
+  "stepBudgetSeconds": 150,
+  "localPackageManagerEffects": "mocked only; no system packages installed or configured",
+  "localRustBuild": false,
+  "hostedRepairQualification": "pending",
+  "draftFailures": "Retained initial helper assertions and inner-shell quoting failure; non-verbatim staging request earns no verification credit.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 701642,
+    "sha256": "53a31dda9a075e03b2a2320ab059de12d1e8bb298f1ed7d5d71ecbbfd0f6f65d"
+  },
+  "members": 105,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T10:42:49.989179+00:00"
+}

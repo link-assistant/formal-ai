@@ -157,7 +157,15 @@ fn main() {
         usage("the repository root must contain rust/Cargo.toml");
     }
 
-    let dependencies = collect(&repo);
+    let npm_manifests = manifest_collection::tracked_npm_paths(&repo).unwrap_or_else(|error| {
+        eprintln!("check-dependencies-latest: {error}");
+        std::process::exit(EXIT_UNVERIFIABLE);
+    });
+    let dependencies = collect(&repo, Some(&npm_manifests)).unwrap_or_else(|error| {
+        eprintln!("check-dependencies-latest: {error}");
+        std::process::exit(EXIT_UNVERIFIABLE);
+    });
+
     let snapshot = if refresh || !offline {
         match live_snapshot(&dependencies) {
             Ok(snapshot) => snapshot,
@@ -270,51 +278,40 @@ fn usage(message: &str) -> ! {
     std::process::exit(2);
 }
 
+#[path = "check-dependencies-manifests.rs"]
+mod manifest_collection;
+
 /// Every dependency the repository declares, across all five ecosystems.
-pub fn collect(repo: &Path) -> Vec<Dependency> {
+pub fn collect(repo: &Path, npm_manifests: Option<&[PathBuf]>) -> Result<Vec<Dependency>, String> {
     let mut dependencies = Vec::new();
-    collect_cargo(repo, &mut dependencies);
-    collect_npm(repo, &mut dependencies);
+    manifest_collection::collect_cargo(repo, &mut dependencies)?;
+    if let Some(manifests) = npm_manifests {
+        collect_npm_manifests(manifests, &mut dependencies)?;
+    } else {
+        collect_npm(repo, &mut dependencies)?;
+    }
     collect_workflows(repo, &mut dependencies);
     collect_dockerfile(repo, &mut dependencies);
     collect_rust_version(repo, &mut dependencies);
-    dependencies
+    Ok(dependencies)
 }
 
-fn collect_cargo(repo: &Path, dependencies: &mut Vec<Dependency>) {
-    let manifest_path = repo.join("rust/Cargo.toml");
-    let Ok(text) = fs::read_to_string(&manifest_path) else {
-        return;
-    };
-    let lock_versions = fs::read_to_string(repo.join("rust/Cargo.lock"))
-        .map(|text| parse_cargo_lock(&text))
-        .unwrap_or_default();
-    for (name, declared, line, blocked) in parse_cargo_manifest(&text) {
-        // A registry version is the currency this gate audits; path, git and
-        // workspace-inherited requirements have no registry answer.
-        let Some(resolved) = lock_versions.get(&name) else {
-            continue;
-        };
-        dependencies.push(Dependency {
-            ecosystem: Ecosystem::CratesIo,
-            name,
-            declared: Some(declared),
-            resolved: resolved.clone(),
-            path: manifest_path.clone(),
-            line,
-            blocked,
-        });
-    }
-}
-
-fn collect_npm(repo: &Path, dependencies: &mut Vec<Dependency>) {
+fn collect_npm(repo: &Path, dependencies: &mut Vec<Dependency>) -> Result<(), String> {
     let mut manifests = Vec::new();
     walk_for(repo, "package.json", &mut manifests);
     manifests.sort();
+    collect_npm_manifests(&manifests, dependencies)
+}
+
+fn collect_npm_manifests(
+    manifests: &[PathBuf],
+    dependencies: &mut Vec<Dependency>,
+) -> Result<(), String> {
     for manifest_path in manifests {
-        let Ok(text) = fs::read_to_string(&manifest_path) else {
-            continue;
-        };
+        let text = fs::read_to_string(manifest_path)
+            .map_err(|error| format!("{}: {error}", manifest_path.display()))?;
+        serde_json::from_str::<serde_json::Value>(&text)
+            .map_err(|error| format!("{}: {error}", manifest_path.display()))?;
         let lock_versions = npm_lock_versions(&manifest_path);
         for (name, declared, line, blocked) in parse_package_json(&text) {
             let Some((registry_name, requirement)) = npm_registry_identity(&name, &declared) else {
@@ -335,6 +332,7 @@ fn collect_npm(repo: &Path, dependencies: &mut Vec<Dependency>) {
             });
         }
     }
+    Ok(())
 }
 
 /// The exact versions a directory's lockfile resolves, preferring whichever
@@ -604,26 +602,41 @@ fn rewrite_cargo_line(text: &str, dependency: &Dependency, latest: &str) -> Stri
 }
 
 fn rewrite_npm_line(text: &str, dependency: &Dependency, latest: &str) -> String {
-    let latest = without_build_metadata(latest);
-    rewrite_line_at(text, dependency.line, |line| {
-        let declared = dependency.declared.as_deref()?;
-        let (name, requirement) = npm_registry_identity(&dependency.name, declared)?;
-        let alias = if declared.starts_with("npm:") {
-            format!("npm:{name}@")
-        } else {
-            String::new()
-        };
-        let prefix = ['^', '~', '>', '=']
-            .iter()
-            .find(|c| requirement.starts_with(**c))
-            .map(std::string::ToString::to_string)
-            .unwrap_or_default();
-        Some(line.replacen(
-            &format!("\"{declared}\""),
-            &format!("\"{alias}{prefix}{latest}\""),
-            1,
-        ))
-    })
+    let Some(declared) = dependency.declared.as_deref() else {
+        return text.to_string();
+    };
+    let Some(member) = npm_manifest::dependency_members(text)
+        .into_iter()
+        .find(|member| {
+            member.line == dependency.line
+                && member.declared == declared
+                && member.blocked == dependency.blocked
+                && npm_registry_identity(&member.name, declared)
+                    .is_some_and(|(name, _)| name == dependency.name)
+        })
+    else {
+        return text.to_string();
+    };
+    let Some((name, requirement)) = npm_registry_identity(&dependency.name, declared) else {
+        return text.to_string();
+    };
+    let alias = if declared.starts_with("npm:") {
+        format!("npm:{name}@")
+    } else {
+        String::new()
+    };
+    let prefix = ['^', '~', '>', '=']
+        .iter()
+        .find(|character| requirement.starts_with(**character))
+        .map(std::string::ToString::to_string)
+        .unwrap_or_default();
+    let updated = format!("{alias}{prefix}{}", without_build_metadata(latest));
+    let mut rewritten = text.to_string();
+    rewritten.replace_range(
+        member.start..member.end,
+        &serde_json::to_string(&updated).expect("encode the updated npm requirement"),
+    );
+    rewritten
 }
 
 fn rewrite_uses_line(text: &str, dependency: &Dependency, latest: &str) -> String {
@@ -677,30 +690,8 @@ fn rewrite_line_at(
     out
 }
 
-/// Findings as flat lino records, one per drift.
-#[cfg_attr(test, allow(dead_code))]
-pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
-    let mut out = String::new();
-    for finding in findings {
-        let dependency = &finding.dependency;
-        let _ = writeln!(
-            out,
-            "currency_finding\n  ecosystem \"{}\"\n  name \"{}\"\n  resolved \"{}\"\n  latest \"{}\"\n  path \"{}\"\n  line {}\n  blocked {}\n",
-            dependency.ecosystem.key(),
-            dependency.name,
-            dependency.resolved,
-            finding.latest,
-            dependency.path.display(),
-            dependency.line,
-            dependency.blocked.is_some(),
-        );
-    }
-    for name in unverifiable {
-        let _ = writeln!(out, "unverifiable_dependency\n  name \"{name}\"\n");
-    }
-    out
-}
-
+#[path = "check-dependencies-latest-npm.rs"]
+mod npm_manifest;
 #[path = "check-dependencies-latest-parsers.rs"]
 mod parsers;
 pub use parsers::*;
@@ -712,6 +703,11 @@ pub use action_release::*;
 #[path = "check-dependencies-snapshot.rs"]
 mod snapshot_io;
 pub use snapshot_io::{read_snapshot, write_snapshot};
+
+/// Render dependency findings through the shared snapshot implementation.
+pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
+    snapshot_io::render_lino(findings, unverifiable)
+}
 
 fn ecosystem_of(id: &str) -> Option<Ecosystem> {
     match id.split('/').next()? {

@@ -1,0 +1,4 @@
+{"chineseAggregation":["并且","同时","以及"],"cjkAlphanumeric":true}
+{"name":"adjacent-cjk-single-quote","text":"统计'盐并且胡椒'并且报告大小","actual":{"relation":"aggregation","parts":["统计'盐","胡椒'","报告大小"]},"expected":{"relation":"aggregation","parts":["统计'盐并且胡椒'","报告大小"]},"pass":false}
+{"name":"adjacent-cjk-double-quote","text":"统计\"盐并且胡椒\"并且报告大小","actual":{"relation":"aggregation","parts":["统计\"盐并且胡椒\"","报告大小"]},"expected":{"relation":"aggregation","parts":["统计\"盐并且胡椒\"","报告大小"]},"pass":true}
+{"name":"russian-double-quote","text":"Посчитай \"соль и перец\" и назови размер","actual":{"relation":"aggregation","parts":["Посчитай \"соль и перец\"","назови размер"]},"expected":{"relation":"aggregation","parts":["Посчитай \"соль и перец\"","назови размер"]},"pass":true}

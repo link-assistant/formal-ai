@@ -1,0 +1,138 @@
+[
+  {
+    "file": "44988162716.log.gz",
+    "rawBytes": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "run": {
+      "conclusion": "skipped",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162716,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:31Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162716",
+      "workflowName": "Issue 1028 Agent CLI binary-tree ladder"
+    },
+    "rawLines": 0
+  },
+  {
+    "file": "44988162640.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "2f2aa66d1bcec5f56c86c3e13adeedde8f235de5ec124d8d25f0f61c03c666af",
+    "archiveSha256": "df2a79b3db4bfd997255e8b1a0aafdd29fa1d613a67c47ec653e235403f2791f",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162640,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:39Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162640",
+      "workflowName": "Proactive failure report Agent CLI E2E"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162539.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "d094e3d3f4925a0bf154d3132bb960dcee7509ce303dcb4301f4033a16e5ea16",
+    "archiveSha256": "7f2563fac7dbddf4c6a7e432e6b9368ca762c5ce3aff5c851b5a31c0a0674041",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162539,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:38Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162539",
+      "workflowName": "Self-hosting evidence"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162547.log.gz",
+    "rawBytes": 4583,
+    "rawSha256": "e687a603444accc53bae8e0e7c267dfe350b046ca93c8c580e29a2952041f421",
+    "archiveSha256": "12bca0084bdcd441b7a197cc09afda0e6e9c154dd400ffa4c8aa44fbfc4206d4",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162547,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:36Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162547",
+      "workflowName": "Write-Effect Ladder"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162843.log.gz",
+    "rawBytes": 24121,
+    "rawSha256": "7918c0e26ca7c5e383b54018f9f435568af7c261de82e97c8d4386d207d12465",
+    "archiveSha256": "aace4c415989435c41c1d46f10ae20cf5d87303e40df56264c2fdf3477a06094",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162843,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:46Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162843",
+      "workflowName": "Desktop Release"
+    },
+    "rawLines": 197
+  },
+  {
+    "file": "44988162518.log.gz",
+    "rawBytes": 235058,
+    "rawSha256": "28cec43c9c8616fc07f9952be922b1dbb5fa07437e2525574b54063198885e83",
+    "archiveSha256": "670b73a368213e8a7056fc7b1064e15936aaaba6f49ca8a77d5600e9c2b1a3a8",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162518,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:44Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162518",
+      "workflowName": "Coverage"
+    },
+    "rawLines": 1591
+  },
+  {
+    "file": "44988162548.log.gz",
+    "rawBytes": 54375,
+    "rawSha256": "15163caba13e9fcacc321a29e5fe70c4d6dbff747756289a85b44ccac71103f7",
+    "archiveSha256": "6b63ef49080480ef615bfc1d0f6b0c2f0a9defe81e4c711e95c81a9b30324ff2",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162548,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:43Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162548",
+      "workflowName": "Documentation policy"
+    },
+    "rawLines": 446
+  },
+  {
+    "file": "44988162696.log.gz",
+    "rawBytes": 25367,
+    "rawSha256": "36245d1d508165cde71fbf69c4c4c18884af1f5ca28ed81b09d2c574fa5a09b2",
+    "archiveSha256": "9a072b9149093e3d235af22c1d6e27310ccbbdf2ccbf8a3511f2ad9e389e1518",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162696,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:47Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162696",
+      "workflowName": "Publish source networks"
+    },
+    "rawLines": 226
+  }
+]

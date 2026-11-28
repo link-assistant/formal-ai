@@ -11,11 +11,17 @@
 //! interface, and the committed `data/meta/self-healing-case.lino` is byte-for-byte
 //! what the Agent CLI writes — never hand-authored.
 
+#[allow(clippy::duplicate_mod)]
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::SELF_HEAL_TASK;
+use repair_fixture::{canonical_case, canonical_failure_trace, task_with_json, trace_value};
+
 use formal_ai::agentic_coding::{
     AgenticPlan, DRIVER_TOOLS, PlannedToolCall, plan_chat_step, run_agentic_task, self_ast,
     self_heal,
 };
-use formal_ai::{ChatMessage, RepairOutcome, SourceRoundTrip, ToolCall};
+use formal_ai::{ChatMessage, RepairOutcome, ToolCall};
 use lino_objects_codec::format::parse_indented;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
@@ -40,7 +46,7 @@ fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, res
 
 #[test]
 fn self_healing_case_closes_the_loop_and_stays_human_gated() {
-    let case = self_heal::case();
+    let case = canonical_case();
 
     // The loop reasoned about a real failure the system could not answer directly.
     assert_eq!(
@@ -78,8 +84,8 @@ fn a_failing_benchmark_gate_blocks_promotion_but_still_records_the_case() {
     // Same failure, but the benchmark ratchet would regress: the lesson is learned
     // yet adoption is blocked — the human gate holds.
     let case = formal_ai::RepairCase::from_trace(
-        formal_ai::canonical_failure_trace(),
-        SourceRoundTrip::for_pinned_target(),
+        canonical_failure_trace(),
+        repair_fixture::pinned_round_trip(),
         formal_ai::BenchmarkGateReport::issue_362_from_counts(3, 1),
     );
     assert_eq!(case.outcome, RepairOutcome::BlockedByBenchmark);
@@ -105,7 +111,7 @@ fn source_round_trip_is_lossless_for_a_real_module() {
 
 #[test]
 fn repair_case_renders_valid_links_notation() {
-    let case = self_heal::case();
+    let case = canonical_case();
     let lino = case.links_notation();
     let attachment_boundary = "\n  source_content\n";
     let trace_boundary = "\n  failure_trace\n";
@@ -158,7 +164,7 @@ fn repair_case_renders_valid_links_notation() {
 
 #[test]
 fn recognises_the_self_heal_task() {
-    assert!(self_heal::is_self_heal_task(self_heal::SELF_HEAL_TASK));
+    assert!(self_heal::is_self_heal_task(SELF_HEAL_TASK));
     assert!(self_heal::is_self_heal_task(
         "Please run your self-healing loop on that failure."
     ));
@@ -182,13 +188,13 @@ fn recognises_the_self_heal_task() {
         "store the cst/ast of our meta algorithm so it can reason about itself"
     ));
     // The self-heal task itself must not trip the self-AST router.
-    assert!(!self_ast::is_self_ast_task(self_heal::SELF_HEAL_TASK));
+    assert!(!self_ast::is_self_ast_task(SELF_HEAL_TASK));
 }
 
 #[test]
 fn planner_walks_the_self_heal_recipe() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(self_heal::SELF_HEAL_TASK)];
+    let mut messages = vec![ChatMessage::user(healing_task())];
 
     // Step 1: no web step — the repair case is a pure function of the canonical
     // failure, so the planner goes straight to writing the generated document.
@@ -196,20 +202,27 @@ fn planner_walks_the_self_heal_recipe() {
     assert_eq!(call.tool, "write_file");
     assert!(call.arguments.contains(self_heal::SELF_HEAL_PATH));
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    assert_eq!(written["content"], self_heal::render_document());
+    assert_eq!(
+        written["content"],
+        self_heal::render_document(&self_heal::case_from_task(&healing_task()).unwrap())
+    );
     answer_tool_call(&mut messages, &call, "wrote self-healing-case.lino");
 
     // Step 2: verify by reading the document back.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "run_command");
     assert!(call.arguments.contains(self_heal::SELF_HEAL_PATH));
-    answer_tool_call(&mut messages, &call, &self_heal::render_document());
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &self_heal::render_document(&self_heal::case_from_task(&healing_task()).unwrap()),
+    );
 
     // Step 3: the recipe is exhausted — the final answer carries the repair case.
     match plan_chat_step(&messages, &tools) {
         Some(AgenticPlan::Final(answer)) => {
             assert!(answer.contains(self_heal::SELF_HEAL_PATH));
-            assert!(answer.contains("human-approved"));
+            assert!(answer.contains("human approval"));
         }
         other => panic!("expected a final answer, got {other:?}"),
     }
@@ -217,20 +230,16 @@ fn planner_walks_the_self_heal_recipe() {
 
 #[test]
 fn committed_self_healing_case_is_generated_and_written_by_the_driver() {
-    // Preserve the historical failure/proposal record; its old counts are diagnostic.
-    let committed = include_str!("../../../../data/meta/self-healing-case.lino");
-    let current = self_heal::render_document();
-    let proposal = |document: &str| {
-        let prefix = document.split("  source_round_trip\n").next().unwrap();
-        let trace = document.split_once("  failure_trace\n").unwrap().1;
-        format!("{prefix}  failure_trace\n{trace}")
-    };
-    assert_eq!(proposal(committed), proposal(&current));
-    assert!(current.contains("outcome \"awaiting_review\""));
+    let case = self_heal::case_from_task(&healing_task()).unwrap();
+    let current = self_heal::render_document(&case);
+    assert!(current.contains("outcome \"blocked_by_benchmark\""));
+    assert!(
+        current.contains("failure_prompt \"List the files but sort the results in reverse order\"")
+    );
     assert!(current.contains("faithful \"true\""));
     assert!(!current.contains("total_link_count"));
     assert!(!current.contains("named_node_count"));
-    let round_trip = SourceRoundTrip::for_pinned_target();
+    let round_trip = repair_fixture::pinned_round_trip();
     assert_eq!(
         self_ast::render_network_source(&round_trip.source_document).unwrap(),
         self_ast::target_source()
@@ -240,7 +249,7 @@ fn committed_self_healing_case_is_generated_and_written_by_the_driver() {
     // End-to-end: the in-repo Agent CLI drives the loop to completion and writes
     // exactly this document. DRIVER_TOOLS advertises write_file + run_command.
     assert!(DRIVER_TOOLS.contains(&"write_file"));
-    let outcome = run_agentic_task(self_heal::SELF_HEAL_TASK).expect("workspace");
+    let outcome = run_agentic_task(&healing_task()).expect("workspace");
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
     let write = outcome
         .steps
@@ -248,7 +257,20 @@ fn committed_self_healing_case_is_generated_and_written_by_the_driver() {
         .find(|step| step.tool == "write_file")
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], self_heal::render_document());
+    assert_eq!(
+        written["content"],
+        self_heal::render_document(&self_heal::case_from_task(&healing_task()).unwrap())
+    );
     assert_eq!(written["path"], self_heal::SELF_HEAL_PATH);
     assert!(outcome.final_answer.contains(self_heal::SELF_HEAL_PATH));
+}
+
+fn healing_task() -> String {
+    task_with_json(
+        SELF_HEAL_TASK,
+        serde_json::json!({
+            "source_module": "src/event_log.rs",
+            "trace": trace_value(canonical_failure_trace()),
+        }),
+    )
 }

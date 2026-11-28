@@ -1,0 +1,148 @@
+{
+  "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "commit": "3a034b27a56067971ca74dd4c74c7707056b215d",
+  "observedAt": "2026-11-18T13:13:12.306897+00:00",
+  "files": [
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "d383bce663bc9c7de1513b951131c937864d7676",
+      "sha256": "b1ea5a8b7a2c103e2bad5a92a36229ea56397642fb48db733af0db6d3dfd3899",
+      "lines": 511,
+      "literalSourceReadComplete": true,
+      "decision": "Automatic status functions bypass implicit prerequisite success; bounded original/candidate controls are filed upstream as #27."
+    },
+    {
+      "path": ".github/workflows/templates.yml",
+      "gitBlob": "adf605c631aabe41731480f4492e268fdab1aaa6",
+      "sha256": "2ef77aeb71cf1a3be3037e75f555a271716ad5cb4d06338ec76e3ee09d73daf0",
+      "lines": 159,
+      "literalSourceReadComplete": true,
+      "decision": "All four captured source subtrees remain current CI inputs; all 221 files are present in the conservative reference graph. Path history alone does not exclude execution."
+    },
+    {
+      "path": "scripts/src/VersionReleaser.php",
+      "gitBlob": "a9da3bb74ce1effbe6c6e124c18479ae095db0c7",
+      "sha256": "2a3250cbf9cd3bf605799f3b670fbb6df1d45528aba8e0c6cbfe16e6c15a55ff",
+      "lines": 105,
+      "literalSourceReadComplete": true,
+      "decision": "Commit errors throw, but branch/tag push return values are discarded before successful release outputs. Real local rejection controls reproduce both boundaries."
+    },
+    {
+      "path": "scripts/src/Git.php",
+      "gitBlob": "4b96ef5a1b4b84b1106bfe449671cd005fc007b1",
+      "sha256": "5c6d151f7bcda91c6161af83a62455b5c2aba4b54f103bed605924af04884efa",
+      "lines": 61,
+      "literalSourceReadComplete": true,
+      "decision": "add/commit/tag use mustRun; both publication methods return unchecked Process::run results. Disposable candidate changes those two calls only."
+    },
+    {
+      "path": "scripts/src/Process.php",
+      "gitBlob": "ae2ffa8c921a7c50993b581ca86183543670739a",
+      "sha256": "97a1b126035a71434739ecc962d73c74b44ea8ea802263b74031e04332b43bbf",
+      "lines": 63,
+      "literalSourceReadComplete": true,
+      "decision": "Separates status-bearing run from throwing mustRun. Existing Formal AI release commands already propagate nonzero pushes."
+    },
+    {
+      "path": "scripts/src/ProcessResult.php",
+      "gitBlob": "a7eb3aad719f3b0d16d2d928b3deaab85a6e5a8b",
+      "sha256": "b16970ed6e98e100c00dc3716c0084c1186f0e1a41cfafc96de2696657147d1c",
+      "lines": 28,
+      "literalSourceReadComplete": true,
+      "decision": "An unsuccessful process remains a structured result until the caller inspects ok() or uses mustRun."
+    },
+    {
+      "path": "scripts/src/Project.php",
+      "gitBlob": "34b9699fc8e8a632220a80ecf33ae1aae83b950a",
+      "sha256": "6c665acc039b4a2fd75687d95a745dc7a71d2025c3de6c903b4702300c22018d",
+      "lines": 139,
+      "literalSourceReadComplete": true,
+      "decision": "Locates manifest, reads identity/version, edits the version field and identifies the sentinel package; valid-input release fixture retains this implementation."
+    },
+    {
+      "path": "scripts/src/ReleasePreflight.php",
+      "gitBlob": "47910e4c2d17894edbf47c1cdf074c954c74a400",
+      "sha256": "935d6af58d4aed190395e3cdfd9f43e82dc79cb164b6be53fc1f93f6bf7414db",
+      "lines": 137,
+      "literalSourceReadComplete": true,
+      "decision": "Packagist and receive-pack probes distinguish verified, failed and unknown; the receive-pack path checks a complete advertisement without changing refs."
+    },
+    {
+      "path": "scripts/src/ReleaseDecider.php",
+      "gitBlob": "7130e6ff242e008c1aaaa3dcb15e404a6d0671cf",
+      "sha256": "c6fb3f601e520079b653f594c020e624086987202c36d49a97025d009d1520b4",
+      "lines": 75,
+      "literalSourceReadComplete": true,
+      "decision": "Registry/GitHub state and fragments drive new-release versus self-heal selection. This review alone is not live registry verification."
+    },
+    {
+      "path": "scripts/version-and-commit.php",
+      "gitBlob": "4064e001df56da13a05dd5a60076b80b18d47deb",
+      "sha256": "0214f276d8732a2591b4e0d41d2600fe74aef7358d07bc6136be9070ad5d393d",
+      "lines": 63,
+      "literalSourceReadComplete": true,
+      "decision": "Actual CLI emits version_committed=true after the unchecked release method. Both changeset and instant modes are executed in the regression."
+    },
+    {
+      "path": "scripts/bootstrap.php",
+      "gitBlob": "4ef7ddbcc46eafe8b46c6eef5c8dcfb8c26f27ab",
+      "sha256": "39969a7ebce086784466a314923a658704e7e4dd9f362c239f080e49f06c5595",
+      "lines": 46,
+      "literalSourceReadComplete": true,
+      "decision": "Falls back to local PSR-4 loading when Composer vendor code is absent; release reproduction installs no packages."
+    },
+    {
+      "path": "tests/Pipeline/VersionReleaserTest.php",
+      "gitBlob": "fb3f9887ddde2465e917c7311a4f2bd934630fad",
+      "sha256": "2a42c08c212f993ca956bcdc5d7be5c1c02227bc28af77d3d6e91de10e717034",
+      "lines": 119,
+      "literalSourceReadComplete": true,
+      "decision": "Existing tests deliberately omit a remote and accept silent push failures, covering local commit/tag creation but missing publication rejection."
+    },
+    {
+      "path": "scripts/src/ChangelogFragments.php",
+      "gitBlob": "e611720367bd38cdf7f2d7ed75ada499ef47e424",
+      "sha256": "88c156fcaa052e8f359e8dd23ecb5a37e7d3b52a18309080cd0a09b779d864b3",
+      "lines": 211,
+      "literalSourceReadComplete": true,
+      "decision": "Valid fragments are selected deterministically, merged by category and cleared during a release. The real-Git controls retain both release modes and successful fragment consumption."
+    },
+    {
+      "path": "scripts/src/SemVer.php",
+      "gitBlob": "bc7695453b4a62d664509d7cb4b95a7929fd2722",
+      "sha256": "4ff127e182aa545f201edac764dc79adb30045307941305d9dc77ba9b20323c5",
+      "lines": 81,
+      "literalSourceReadComplete": true,
+      "decision": "Existing version parsing and bump precedence are retained; regression uses a valid patch bump with exact 1.2.4 remote content."
+    },
+    {
+      "path": "scripts/src/Changelog.php",
+      "gitBlob": "f3330cb406ba905ea96d88bbdb032b7958ae3c5a",
+      "sha256": "b2bdfb66ec179c8d9f013b54d339a46b7e11b56d2a3db561d0ff3d159e87be07",
+      "lines": 107,
+      "literalSourceReadComplete": true,
+      "decision": "Preserves the existing insertion marker behavior used by the release fixture; no changelog implementation is copied into production."
+    },
+    {
+      "path": "scripts/src/Cli.php",
+      "gitBlob": "4eb25923e67273d4f5f8abeff298a26f9c345310",
+      "sha256": "54aeb58748c06c88d2b829f5719783f578d36aceca698ae15989e728350076e9",
+      "lines": 48,
+      "literalSourceReadComplete": true,
+      "decision": "Normalizes getopt string/flag inputs; regression executes the original CLI with its supported equals-form options."
+    },
+    {
+      "path": "scripts/src/Actions.php",
+      "gitBlob": "8aceb323f774706d5bb90bcb8642a916c5ea09d3",
+      "sha256": "c138ee2bbdd43ac59b164a2ec5e261623a93c8e264fdf4d5e9b0aabcc36c1984",
+      "lines": 73,
+      "literalSourceReadComplete": true,
+      "decision": "Release outputs are inspected through the actual GITHUB_OUTPUT file, keeping process success distinct from remote publication state."
+    }
+  ],
+  "fullyReadFiles": 17,
+  "fullyReadLines": 2026,
+  "wholeRepositorySemanticReviewComplete": false,
+  "livePublicationVerified": false,
+  "independentAuthorshipCredit": 0
+}

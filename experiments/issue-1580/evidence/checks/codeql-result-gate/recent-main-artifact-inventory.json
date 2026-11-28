@@ -1,0 +1,65 @@
+{
+  "observedAt": "2026-11-20T07:40:32.221212+00:00",
+  "run": {
+    "conclusion": "success",
+    "createdAt": "2026-11-18T18:51:15Z",
+    "databaseId": 44374193717,
+    "headSha": "53cbe4430f8b65330f47728401fc83b09977129f",
+    "status": "completed",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44374193717"
+  },
+  "artifacts": [],
+  "records": [
+    {
+      "name": "recent-main-security-runs",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--workflow",
+        "security.yml",
+        "--branch",
+        "main",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,createdAt,conclusion,headSha,status,url"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "recent-main-security-runs.stdout.gz",
+        "rawSha256": "59933146750843cfe6336d7eadb6a1e8c21eec6355ae8acfcac53283038cec37",
+        "archiveSha256": "08380b35af392e30c47ed4af7a73f404f7bf1cc753cb4865cc20c879b110c280"
+      },
+      "stderr": {
+        "file": "recent-main-security-runs.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+      }
+    },
+    {
+      "name": "main-security-artifacts-44374193717",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs/44374193717/artifacts",
+        "--paginate"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main-security-artifacts-44374193717.stdout.gz",
+        "rawSha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c",
+        "archiveSha256": "d96b230484c61c27d8dc91a86780b45a4d7d3ec4f119aaff8ec466ead3f6bb72"
+      },
+      "stderr": {
+        "file": "main-security-artifacts-44374193717.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+      }
+    }
+  ],
+  "newCodeqlGateExecutedAgainstTheseReports": false,
+  "fullIssueComplete": false
+}

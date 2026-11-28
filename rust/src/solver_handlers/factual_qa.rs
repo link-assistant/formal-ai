@@ -1,36 +1,20 @@
 //! Subject-verified factual Q&A (issue #1172 R2 and R6).
 //!
-//! R2: a seeded fact may answer only when the question's formalized subject
-//! resolves to the record's `subject_qid` (and the question's relation to the
-//! record's relation). The subject comes from the question formalizer first —
-//! a [`FormalizationRole::Subject`] slot whose anchor is already a Wikidata
-//! item — and otherwise from the clause of the prompt that carries the asked
-//! relation, resolved through the fact store's own label index (aliases and
-//! localized subject labels mapped to their Q-id). The longest whole-word
-//! label wins; a tie between different Q-ids resolves to nothing, so an
-//! ambiguous subject never picks a record by declaration order. Alias plus
-//! keyword matching ([`FactRecord::matches_normalized`]) survives only as the
-//! last-resort surface hint, for records that carry no Q-id at all, and the
-//! gate that admitted a record is logged as `fact_lookup:subject_gate`.
-//!
-//! R6: "Compare X and Y" over two seeded subjects aligns both subjects' facts
-//! by relation and states each difference; when one side is seeded and the
-//! other is not, the answer is an honest gap naming the missing side. Two
-//! unseeded sides leave the prompt to the research route.
-//!
-//! The comparison cues and joiners are the `fact_comparison_cue` and
-//! `fact_comparison_joiner` meanings of `data/seed/meanings-facts.lino`; the
-//! wording is `data/seed/multilingual-responses-entities.lino`. The browser
-//! twin is `js/worker/formal_ai_worker_factual_qa.js`.
+//! Comparisons independently resolve both subject names, align their publisher
+//! claims by relation, and disclose missing evidence. Grammar and response
+//! templates are shared with the browser factual QA worker.
 
 use std::sync::OnceLock;
 
 use super::finalize_simple;
-use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
+use crate::fact_live::{
+    capture_client, locate, relation_clause, resolve_facts_live, role_surfaces,
+};
 use crate::language::detect as detect_language;
 use crate::seed::{self, FactRecord, Meaning};
+use crate::source_fetch::{CachedSourceClient, SourceTransport};
 use crate::translation::{FormalizationAnchorKind, FormalizationRole, formalize_prompt_candidates};
 
 /// Semantic role: a word asking to compare two subjects.
@@ -39,11 +23,6 @@ const ROLE_FACT_COMPARISON_CUE: &str = "fact_comparison_cue";
 const ROLE_FACT_COMPARISON_JOINER: &str = "fact_comparison_joiner";
 /// The prefix a formalization anchor id carries for a Wikidata item.
 const WIKIDATA_ANCHOR_PREFIX: &str = "wikidata:";
-/// Punctuation that ends a clause, and with it a subject slot.
-const CLAUSE_BOUNDARIES: [char; 13] = [
-    ',', ';', ':', '(', ')', '—', '!', '?', '，', '；', '：', '。', '？',
-];
-
 /// A subject slot resolved to one Q-id, with the label that resolved it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ResolvedSubject {
@@ -140,22 +119,6 @@ pub(super) fn question_relation(normalized: &str) -> Option<&'static Meaning> {
         })
 }
 
-/// The clause of `text` that carries the relation (the whole text when no
-/// clause does), so "the capital of Canada, not the USA" keeps "Canada".
-pub(super) fn relation_clause<'a>(text: &'a str, relation: Option<&Meaning>) -> &'a str {
-    let Some(relation) = relation else {
-        return text;
-    };
-    text.split(CLAUSE_BOUNDARIES)
-        .find(|clause| {
-            let clause = normalize_prompt(clause);
-            relation
-                .words()
-                .any(|word| FactRecord::contains_word_sequence(&clause, word))
-        })
-        .unwrap_or(text)
-}
-
 /// The formalized question: the asked relation and the subject's Q-id.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SubjectGate {
@@ -232,39 +195,6 @@ pub(super) fn render_template(intent: &str, language: &str, values: &[(&str, &st
     rendered
 }
 
-/// The normalized surfaces of every meaning carrying `role`, longest first.
-pub(super) fn role_surfaces(role: &str) -> Vec<String> {
-    let mut surfaces: Vec<String> = Vec::new();
-    for meaning in seed::lexicon().meanings_with_role(role) {
-        for word in meaning.words() {
-            let surface = if contains_cjk(word) {
-                word.to_lowercase()
-                    .chars()
-                    .filter(|character| *character != '…' && !character.is_whitespace())
-                    .collect()
-            } else {
-                normalize_prompt(word)
-            };
-            if !surface.is_empty() && !surfaces.contains(&surface) {
-                surfaces.push(surface);
-            }
-        }
-    }
-    surfaces.sort_by_key(|surface| std::cmp::Reverse(surface.chars().count()));
-    surfaces
-}
-
-/// Where `surface` starts in `text` as a whole word (CJK: as a substring).
-pub(super) fn locate(text: &str, surface: &str) -> Option<usize> {
-    if surface.is_empty() {
-        return None;
-    }
-    if contains_cjk(surface) {
-        return text.find(surface);
-    }
-    format!(" {text} ").find(&format!(" {surface} "))
-}
-
 /// The two sides of a comparison: the prompt minus its cue, split at the
 /// first joiner.
 fn comparison_sides(normalized: &str) -> Option<(String, String)> {
@@ -288,40 +218,14 @@ fn comparison_sides(normalized: &str) -> Option<(String, String)> {
     (!left.is_empty() && !right.is_empty()).then(|| (left.to_owned(), right.to_owned()))
 }
 
-/// One subject's seeded facts, one per relation (first record wins).
+/// One verified subject and its available relations.
 struct SubjectFacts {
+    qid: String,
     label: String,
     values: Vec<(String, String)>,
 }
 
 impl SubjectFacts {
-    fn of(subject: &ResolvedSubject, language: &str) -> Self {
-        let mut label = String::new();
-        let mut values: Vec<(String, String)> = Vec::new();
-        for record in fact_records()
-            .iter()
-            .filter(|record| record.subject_qid == subject.qid && !record.relation.is_empty())
-        {
-            if values
-                .iter()
-                .any(|(relation, _)| *relation == record.relation)
-            {
-                continue;
-            }
-            if label.is_empty() {
-                record.subject_label_for(language).clone_into(&mut label);
-            }
-            values.push((
-                record.relation.clone(),
-                record.value_label_for(language).to_owned(),
-            ));
-        }
-        if label.is_empty() {
-            label.clone_from(&subject.surface);
-        }
-        Self { label, values }
-    }
-
     fn value(&self, relation: &str) -> Option<&str> {
         self.values
             .iter()
@@ -345,39 +249,84 @@ pub(super) fn relation_label(relation: &str, language: &str) -> String {
         .to_owned()
 }
 
-/// "Compare X and Y": both seeded subjects aligned by relation, with the
-/// differences stated; one seeded side is an honest gap naming the other.
+/// Compare the verified claims already in the runtime cache.
 pub fn try_fact_comparison(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    let normalized = normalize_prompt(prompt);
-    let (left_side, right_side) = comparison_sides(&normalized)?;
+    try_live_fact_comparison(prompt, log, &capture_client(true))
+}
+
+/// Read two bounded subject names from a comparison request.
+pub(crate) fn fact_comparison_subjects(normalized: &str) -> Option<(String, String)> {
+    let (left, right) = comparison_sides(normalized)?;
+    (left != right
+        && [&left, &right]
+            .into_iter()
+            .all(|side| side.split_whitespace().count() <= 12))
+    .then_some((left, right))
+}
+
+/// Compare publisher claims for two independently verified subjects.
+pub(super) fn try_live_fact_comparison<T: SourceTransport>(
+    prompt: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    let (left, right) = fact_comparison_subjects(&normalize_prompt(prompt))?;
     let language = detect_language(prompt).slug();
-    match (
-        resolve_fact_subject(&left_side),
-        resolve_fact_subject(&right_side),
-    ) {
+    let relations: Vec<_> = seed::lexicon()
+        .meanings_with_role(seed::ROLE_FACT_RELATION)
+        .map(|meaning| meaning.slug.as_str())
+        .collect();
+    let mut resolve = |side: &str| {
+        let facts = match resolve_facts_live(client, &relations, side, language) {
+            Ok(facts) => facts,
+            Err(error) => {
+                log.append("fact_comparison:unavailable", error.to_string());
+                return None;
+            }
+        };
+        let first = facts.first()?;
+        let mut seen = std::collections::BTreeSet::new();
+        for fact in &facts {
+            log.append("source", fact.reference_url.as_str());
+            for capture in &fact.captures {
+                if seen.insert(capture.source_url()) {
+                    capture.record(log);
+                }
+            }
+        }
+        Some(SubjectFacts {
+            qid: first.subject_qid.clone(),
+            label: first.subject_label.clone(),
+            values: facts
+                .into_iter()
+                .map(|fact| (fact.relation, fact.value))
+                .collect(),
+        })
+    };
+    let left_facts = resolve(&left);
+    let right_facts = resolve(&right);
+    match (left_facts, right_facts) {
         (Some(left), Some(right)) if left.qid != right.qid => {
             compare_subjects(prompt, &left, &right, language, log)
         }
-        (Some(known), None) => comparison_gap(prompt, &known, &right_side, language, log),
-        (None, Some(known)) => comparison_gap(prompt, &known, &left_side, language, log),
+        (Some(known), None) => comparison_gap(prompt, &known, &right, language, log),
+        (None, Some(known)) => comparison_gap(prompt, &known, &left, language, log),
         _ => None,
     }
 }
 
 fn compare_subjects(
     prompt: &str,
-    left: &ResolvedSubject,
-    right: &ResolvedSubject,
+    left_facts: &SubjectFacts,
+    right_facts: &SubjectFacts,
     language: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let left_facts = SubjectFacts::of(left, language);
-    let right_facts = SubjectFacts::of(right, language);
     if left_facts.values.is_empty() || right_facts.values.is_empty() {
         return None;
     }
-    log.append("fact_comparison:left", left.qid.clone());
-    log.append("fact_comparison:right", right.qid.clone());
+    log.append("fact_comparison:left", left_facts.qid.clone());
+    log.append("fact_comparison:right", right_facts.qid.clone());
     let missing = render_template("fact_comparison_missing_value", language, &[]);
     let mut relations: Vec<&str> = Vec::new();
     for (relation, _) in left_facts.values.iter().chain(&right_facts.values) {
@@ -429,8 +378,8 @@ fn compare_subjects(
         log.append("fact_comparison:relation", relation.to_owned());
         log.append(event, relation.to_owned());
     }
-    log.append("wikidata", left.qid.clone());
-    log.append("wikidata", right.qid.clone());
+    log.append("wikidata", left_facts.qid.clone());
+    log.append("wikidata", right_facts.qid.clone());
     let (rows, differences) = (rows.join("\n"), differences.join("\n"));
     let body = render_template(
         "fact_comparison",
@@ -454,12 +403,11 @@ fn compare_subjects(
 
 fn comparison_gap(
     prompt: &str,
-    known: &ResolvedSubject,
+    facts: &SubjectFacts,
     missing_side: &str,
     language: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let facts = SubjectFacts::of(known, language);
     if facts.values.is_empty() {
         return None;
     }
@@ -483,7 +431,7 @@ fn comparison_gap(
         })
         .collect::<Vec<_>>()
         .join("\n");
-    log.append("fact_comparison:known", known.qid.clone());
+    log.append("fact_comparison:known", facts.qid.clone());
     log.append("fact_comparison:missing", missing.to_owned());
     let body = render_template(
         "fact_comparison_gap",

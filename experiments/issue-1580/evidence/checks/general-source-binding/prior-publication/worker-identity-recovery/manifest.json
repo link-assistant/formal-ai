@@ -1,0 +1,25 @@
+{
+  "records": [
+    {
+      "file": "2026-11-18T15-59-38.594Z.json.gz",
+      "rawSha256": "be76971ba13c2e52adfcd9fa49b32deadded99edba52ee1d342ff5f4b0b7272f",
+      "archiveSha256": "16f65468f83a25605aa26175024d5892d82d56477a2d539b2025919e799b93d7",
+      "status": 0,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    },
+    {
+      "file": "2026-11-18T15-59-59.260Z.json.gz",
+      "rawSha256": "06fb8ee41c442920be0c9dd3847b86785883030c34b1431583e7dc7e22bf5d8d",
+      "archiveSha256": "08d802ddc65be4c7dc9ca7d69b23da9f54767e59fbd270d7010c1c91e6f2f2d4",
+      "status": 0,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    }
+  ],
+  "purpose": "Frozen coherent snapshot used only to inspect and refresh the maintained worker prerequisite identities; every command and all supplied reasoning retain zero validation and independent capability credit."
+}

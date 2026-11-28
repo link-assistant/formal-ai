@@ -1,0 +1,1157 @@
+{
+  "head": "6903d9bd28ac96f3e73b35d700dce1415c0f5ac6",
+  "allRunsTerminal": true,
+  "completeRawWorkflowLogs": 33,
+  "checks": 163,
+  "annotations": 29,
+  "annotationLevels": {
+    "failure": 7,
+    "notice": 21,
+    "warning": 1
+  },
+  "workflowConclusions": {
+    "failure": 3,
+    "success": 29,
+    "skipped": 1
+  },
+  "nativeGroupConclusions": {
+    "Native type and lint check / Native contracts (reasoning-1)": "success",
+    "Native type and lint check / Native contracts (coding-1)": "success",
+    "Native type and lint check / Native contracts (hive-2)": "success",
+    "Native type and lint check / Native contracts (reasoning-2)": "success",
+    "Native type and lint check / Native contracts (hive-3)": "success",
+    "Native type and lint check / Native contracts (hive-4)": "success",
+    "Native type and lint check / Native contracts (hive-1)": "success",
+    "Native type and lint check / Native contracts (interfaces)": "success",
+    "Native type and lint check / Native contracts (benchmarks)": "success",
+    "Native type and lint check / Native contracts (coding-2)": "success"
+  },
+  "allActionableCurrentRunFailuresRepairedLocally": true,
+  "newHeadHostedExecutionPending": true,
+  "unresolvedWarning": "crates.io publish authority cannot be established by public/read-only requests",
+  "freshRegistryObservation": "command-stream 1.13.0 and link-calculator 0.24.0 both still require Chrono",
+  "files": [
+    {
+      "file": "001-6903-complete-terminal-44978282355.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282355.log",
+      "bytes": 25366,
+      "lines": 226,
+      "sha256": "72a5e0c7ed49b4bffd62a2c30604a1426170937fca469e64bbffa285770cfe1c",
+      "compressedSha256": "239d29553b3d46448c87fabaff3732cef15ecac4899deaeaaa902af3bab00ac1"
+    },
+    {
+      "file": "002-6903-complete-terminal-44978282355.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282355.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "003-6903-complete-terminal-44978282360.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282360.log",
+      "bytes": 25489,
+      "lines": 226,
+      "sha256": "5245713c3f6b46ffcaed8a79bab42f56285a5e3c6e95b9666d07d8848372770b",
+      "compressedSha256": "44a9f8cecb40960dd4730d107c26e7a98ab04955b4d8b854fe4ea6797f8a646c"
+    },
+    {
+      "file": "004-6903-complete-terminal-44978282360.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282360.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "005-6903-complete-terminal-44978282386.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282386.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "3fc10cc9a622832a8885558e37eed63f21c4ec3fa406e38723b886fc997be0d1",
+      "compressedSha256": "bf2bb87a0be8a8684e16dff56ed5de7db7b430acb34c220c75379f82fec2fc5e"
+    },
+    {
+      "file": "006-6903-complete-terminal-44978282386.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282386.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "007-6903-complete-terminal-44978282397.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282397.log",
+      "bytes": 52400,
+      "lines": 436,
+      "sha256": "290338afdb0beb11458b6b44e361f3fec540d684dddedba3bf1bb53a8e874fce",
+      "compressedSha256": "c721af87495c71f91aa2e7e9d1cef0193fa196083dd009069e2ef340aec28e6a"
+    },
+    {
+      "file": "008-6903-complete-terminal-44978282397.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282397.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "009-6903-complete-terminal-44978282402.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282402.log",
+      "bytes": 9633,
+      "lines": 79,
+      "sha256": "e41c0f36f41c1457c637b74842ab4d43cb40c35f88600a46c6f32fd8629020a8",
+      "compressedSha256": "cd390eff67e1bd86bbb49530f0603b018ab6b473f375c48281e49f4a7fef6a86"
+    },
+    {
+      "file": "010-6903-complete-terminal-44978282402.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282402.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "011-6903-complete-terminal-44978282413.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282413.log",
+      "bytes": 62585,
+      "lines": 404,
+      "sha256": "c7f8baac91991de15bf76591dc0bc0bf40759a938c027076bb4d911d2f59f229",
+      "compressedSha256": "95b999e3958871a15044461f109b3b1d7d838ba8c8ef9a08a8283603b57d13cd"
+    },
+    {
+      "file": "012-6903-complete-terminal-44978282413.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282413.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "013-6903-complete-terminal-44978282422.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282422.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "dada8b7cf485eda886f7fb6038f391fc6291753d5a15c9027c3018d1c9e69709",
+      "compressedSha256": "1349c7b5e6497236811e20b1d344b7ba06e7895a476a3754a7e8b233d1d6d553"
+    },
+    {
+      "file": "014-6903-complete-terminal-44978282422.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282422.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "015-6903-complete-terminal-44978282442.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282442.log",
+      "bytes": 54656,
+      "lines": 454,
+      "sha256": "f64f7fa31171460297e74d36313a7abe3386965d55876d853154950a25487715",
+      "compressedSha256": "122ed1261e0e8361523e057a083f92151bfcc788d5cb63272e15680b565929b3"
+    },
+    {
+      "file": "016-6903-complete-terminal-44978282442.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282442.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "017-6903-complete-terminal-44978282447.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282447.log",
+      "bytes": 51268,
+      "lines": 418,
+      "sha256": "b7d400fb2d8d11473cc6fe627249a292d02f4434390776d28bf64647eaabe710",
+      "compressedSha256": "a82e5c6ceb9c829c51c2f06a41b64b9f2bb6193a1470f41657dc0fd120c7762f"
+    },
+    {
+      "file": "018-6903-complete-terminal-44978282447.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282447.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "019-6903-complete-terminal-44978282476.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282476.log",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "020-6903-complete-terminal-44978282476.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282476.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "021-6903-complete-terminal-44978282488.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282488.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "554297c078e30825df8403fcd4e40752e0200290f27a331c4ee71187c61ffe80",
+      "compressedSha256": "38c61d96701e34fbfcb2df3140e8293e99e0a96b60530eb477edcfb5c7bed7bb"
+    },
+    {
+      "file": "022-6903-complete-terminal-44978282488.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282488.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "023-6903-complete-terminal-44978282491.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282491.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "51508d8fad9e227b3fe69be38678d6fdf94259aa42d70cdce1d928fff9c81707",
+      "compressedSha256": "9ad1b7394e6dc8159ca2886b9e112b6f73763b90048e5034e8210d80a84080ed"
+    },
+    {
+      "file": "024-6903-complete-terminal-44978282491.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282491.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "025-6903-complete-terminal-44978282492.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282492.log",
+      "bytes": 92942,
+      "lines": 798,
+      "sha256": "8ebe73686483063d2f32b482296740182254fc1e0101a128bf4334bb0fc3f480",
+      "compressedSha256": "4bf25b7a54c68c85d4921fbf0a3b1eba6eb241113c538d33a354b4faa15c0627"
+    },
+    {
+      "file": "026-6903-complete-terminal-44978282492.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282492.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "027-6903-complete-terminal-44978282497.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282497.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "ccfafb2acd5a5f0c36e09c3ad52c23c8f8ca00f6a7e15d7e4df91441f88ad2c0",
+      "compressedSha256": "13fe7605d0c98c7b3566cbf0875e7cecb953484e8f38d474cf30fe2815c4fa3f"
+    },
+    {
+      "file": "028-6903-complete-terminal-44978282497.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282497.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "029-6903-complete-terminal-44978282498.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282498.log",
+      "bytes": 4588,
+      "lines": 38,
+      "sha256": "0d27ad1a47e10e18213ebad720d431f77258c106fdfb3106e23b372840af54bc",
+      "compressedSha256": "9133e487cb5774d1fd1b3b1d2dc68d63398705709aa095797d4aae7a343e33e0"
+    },
+    {
+      "file": "030-6903-complete-terminal-44978282498.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282498.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "031-6903-complete-terminal-44978282511.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282511.log",
+      "bytes": 108226,
+      "lines": 697,
+      "sha256": "2f04f0860817320bf75983fb963b3237265529ce29635ef34d58c76b76bcc308",
+      "compressedSha256": "b37f2882a8ac6265e9d025e4097bf128cb3e18dc57469b17b53877685b5545da"
+    },
+    {
+      "file": "032-6903-complete-terminal-44978282511.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282511.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "033-6903-complete-terminal-44978282522.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282522.log",
+      "bytes": 31545,
+      "lines": 280,
+      "sha256": "c97e5f7cbd7dc77c2736612cd8cdd3de621d48b9a48dda6c6fac10f67a57abda",
+      "compressedSha256": "0413345df07803636ba47144f6bca8c392350e95bc6ce246b35176399870d192"
+    },
+    {
+      "file": "034-6903-complete-terminal-44978282522.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282522.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "035-6903-complete-terminal-44978282529.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282529.log",
+      "bytes": 4803446,
+      "lines": 25613,
+      "sha256": "458abe06385f3e771a353536ef231541f3e0053500d3ddd7f3b4931fb9d3c4f2",
+      "compressedSha256": "85cc7cbd39964bef5bfe1c1b4f8b4d607947b6a5eda2c68df9ad3f1096a5f3c0"
+    },
+    {
+      "file": "036-6903-complete-terminal-44978282529.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282529.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "037-6903-complete-terminal-44978282532.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282532.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "288005b312c77bb4e2bcd24b18699a35b99f667922a7c1ef96eaa10e7196096b",
+      "compressedSha256": "6b92fbb5c56dbf98f14405e53bb3d347c30e219991439773b1cd718b2620c712"
+    },
+    {
+      "file": "038-6903-complete-terminal-44978282532.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282532.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "039-6903-complete-terminal-44978282548.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282548.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "ffddd8ef6f96e8d4a499c511f368f8adadcffa5ba903aa4e42ffeac726e871b1",
+      "compressedSha256": "6d5c354933c9cd41350261a4f2012f84b402f3c7a6fa913f543705a5e3ac2c04"
+    },
+    {
+      "file": "040-6903-complete-terminal-44978282548.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282548.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "041-6903-complete-terminal-44978282549.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282549.log",
+      "bytes": 4587,
+      "lines": 38,
+      "sha256": "b167a9a623e6f6007834bf9fc8db413f943ba7dc4609f46042d23b932abbcd08",
+      "compressedSha256": "262b78a93dfdad26c0d969a4f5506e83e24e4f157bc59587baa72bf40b5b9390"
+    },
+    {
+      "file": "042-6903-complete-terminal-44978282549.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282549.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "043-6903-complete-terminal-44978282561.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282561.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "839d48288d480b8c3b2f058e0079ddff8a1e6068cf5071afa7a638f7c4892a66",
+      "compressedSha256": "c40a0c2331a4ae1a899395b1b41a35c8efd2abae26643a12905958c3ec2bc205"
+    },
+    {
+      "file": "044-6903-complete-terminal-44978282561.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282561.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "045-6903-complete-terminal-44978282563.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282563.log",
+      "bytes": 35097,
+      "lines": 331,
+      "sha256": "78b5588fb1b8ac0d868ebc2063bdefb169c280f42eddd82f5c8759661959c7da",
+      "compressedSha256": "c4c0a218f28a41fcfee7960da1867bdc184daf7bde29648ef5429727d9602919"
+    },
+    {
+      "file": "046-6903-complete-terminal-44978282563.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282563.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "047-6903-complete-terminal-44978282568.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282568.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "00f5c368685c5f978525d760457fe2a3ae9a89b075691b1239fdba78aba4de0a",
+      "compressedSha256": "1b2bc695a6df1c8c758268be55005e8ab25713ebae33dacdaacb1908d53273f4"
+    },
+    {
+      "file": "048-6903-complete-terminal-44978282568.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282568.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "049-6903-complete-terminal-44978282591.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282591.log",
+      "bytes": 414710,
+      "lines": 2728,
+      "sha256": "e73494f5fcf7b03af6f072eb22a28c7072b38a213aa3f11328d00c45bfefe790",
+      "compressedSha256": "a1655069e6f10e9611a957cb07ee2486dd5f96854a487de234cfeb2afd844122"
+    },
+    {
+      "file": "050-6903-complete-terminal-44978282591.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282591.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "051-6903-complete-terminal-44978282592.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282592.log",
+      "bytes": 77157,
+      "lines": 518,
+      "sha256": "70e5332658d1c6e7434c311968a321a91059655fca9edcf4c8ec9267490a39e2",
+      "compressedSha256": "d45549d10bf636c657eb3ea23da974cbe31c1c3e7189a5a05eb447fe8021eb35"
+    },
+    {
+      "file": "052-6903-complete-terminal-44978282592.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282592.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "053-6903-complete-terminal-44978282593.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282593.log",
+      "bytes": 24119,
+      "lines": 197,
+      "sha256": "e3816bcb5c7c63c071678013184274eb68a3a1f5d59884bab641293e007dd174",
+      "compressedSha256": "8810799de9511d3d4f11e88f211bc81b52c6678135c31d1ce59f166cb101571e"
+    },
+    {
+      "file": "054-6903-complete-terminal-44978282593.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282593.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "055-6903-complete-terminal-44978282595.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282595.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "1c3cccb5b7051588801099e86c5b2abb51475531dba10628fae6f9e0aac21c8b",
+      "compressedSha256": "a0eec0bcb1dac3bf697b823484fe300e65932b03961b6e936637f5dd063351c8"
+    },
+    {
+      "file": "056-6903-complete-terminal-44978282595.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282595.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "057-6903-complete-terminal-44978282596.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282596.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "8522a013cf35ab09a896d943943e74d5d877f3112f233b9268cd5c4fa7dfd17c",
+      "compressedSha256": "c0c11ad273821c50ccf5087ebb88baead5a4650d6d51ac64050ccf4329ffc40c"
+    },
+    {
+      "file": "058-6903-complete-terminal-44978282596.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282596.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "059-6903-complete-terminal-44978282603.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282603.log",
+      "bytes": 235065,
+      "lines": 1591,
+      "sha256": "316cca8ac9a6923416cee3392ced7f8bd6b5df14c5c7045050ff0b20f872df78",
+      "compressedSha256": "c143f63607646b29f372cfd44afc623ca043b6d977715c779cc1f25987ed2c9a"
+    },
+    {
+      "file": "060-6903-complete-terminal-44978282603.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282603.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "061-6903-complete-terminal-44978282675.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282675.log",
+      "bytes": 12154789,
+      "lines": 71085,
+      "sha256": "94e8aab4c252f6cd0a58b1d5aa15f37245d9f06fabc4c66bee0c9773dbb7aaf9",
+      "compressedSha256": "996765141b5b613cdc02504153e16f1b237c4ea4162c1c5b9170642bb49ed553"
+    },
+    {
+      "file": "062-6903-complete-terminal-44978282675.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282675.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "063-6903-complete-terminal-44978282690.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282690.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "06bfd37e644d1a50f39513ec4f6e4dc0537f770f520d99c9a36c50decd20fe6e",
+      "compressedSha256": "1cf821cbaf3a0c93c92ab8b9c9f331a113820e37ca64b9cf5dff7b40ce242d56"
+    },
+    {
+      "file": "064-6903-complete-terminal-44978282690.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282690.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "065-6903-complete-terminal-44978282721.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282721.log",
+      "bytes": 4581,
+      "lines": 38,
+      "sha256": "e9d1b6b76411f02f7c015b922cd4512f7d2c62b8ceadcc5afc0c1b36ce8c961a",
+      "compressedSha256": "5e76e5eceed8dee0c7272b1c0cf8d42f968a9db1b9ba599fd88f9c08755a1e59"
+    },
+    {
+      "file": "066-6903-complete-terminal-44978282721.log.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/44978282721.log.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "067-6903-complete-terminal-annotations-137072956255.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956255.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "068-6903-complete-terminal-annotations-137072956255.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956255.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "069-6903-complete-terminal-annotations-137072956308.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956308.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "070-6903-complete-terminal-annotations-137072956308.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956308.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "071-6903-complete-terminal-annotations-137072956542.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956542.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "072-6903-complete-terminal-annotations-137072956542.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956542.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "073-6903-complete-terminal-annotations-137072956574.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956574.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "074-6903-complete-terminal-annotations-137072956574.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956574.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "075-6903-complete-terminal-annotations-137072956665.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956665.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "076-6903-complete-terminal-annotations-137072956665.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956665.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "077-6903-complete-terminal-annotations-137072956719.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956719.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "078-6903-complete-terminal-annotations-137072956719.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956719.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "079-6903-complete-terminal-annotations-137072956727.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956727.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "080-6903-complete-terminal-annotations-137072956727.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956727.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "081-6903-complete-terminal-annotations-137072956962.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956962.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "082-6903-complete-terminal-annotations-137072956962.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072956962.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "083-6903-complete-terminal-annotations-137072957015.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957015.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "084-6903-complete-terminal-annotations-137072957015.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957015.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "085-6903-complete-terminal-annotations-137072957021.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957021.json",
+      "bytes": 751,
+      "lines": 1,
+      "sha256": "663507a0d2a688384bb3e0414bbc9cd23a1e3a67d6861643535f86b28351c6ce",
+      "compressedSha256": "b49c08c510f157e351f1d10c67848887c224b93c674dd391212f637b845b40de"
+    },
+    {
+      "file": "086-6903-complete-terminal-annotations-137072957021.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957021.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "087-6903-complete-terminal-annotations-137072957074.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957074.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "088-6903-complete-terminal-annotations-137072957074.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957074.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "089-6903-complete-terminal-annotations-137072957082.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957082.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "090-6903-complete-terminal-annotations-137072957082.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957082.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "091-6903-complete-terminal-annotations-137072957116.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957116.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "092-6903-complete-terminal-annotations-137072957116.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957116.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "093-6903-complete-terminal-annotations-137072957129.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957129.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "094-6903-complete-terminal-annotations-137072957129.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957129.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "095-6903-complete-terminal-annotations-137072957151.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957151.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "096-6903-complete-terminal-annotations-137072957151.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957151.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "097-6903-complete-terminal-annotations-137072957210.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957210.json",
+      "bytes": 367,
+      "lines": 1,
+      "sha256": "c2c26dbea5e3e1f8d016a536b2eee38c46e7b4cd9e7fe6528febcf17195cc9a1",
+      "compressedSha256": "901034f749613cfe643e517a6023d2e74154063ad0bd667a385a558c9bcf44c6"
+    },
+    {
+      "file": "098-6903-complete-terminal-annotations-137072957210.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957210.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "099-6903-complete-terminal-annotations-137072957246.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957246.json",
+      "bytes": 757,
+      "lines": 1,
+      "sha256": "b834d27682ae0264977b53bbc60d51ea5a48f19120c538d015dcd086dc9821af",
+      "compressedSha256": "ad77580c86c013aa164283309153fc6563230868af907908c25f5418df88a748"
+    },
+    {
+      "file": "100-6903-complete-terminal-annotations-137072957246.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957246.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "101-6903-complete-terminal-annotations-137072957253.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957253.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "102-6903-complete-terminal-annotations-137072957253.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957253.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "103-6903-complete-terminal-annotations-137072957595.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957595.json",
+      "bytes": 439,
+      "lines": 1,
+      "sha256": "12faf45d574059cb12e2b72d823ba5528dbde2f07ab4dfbf8ed51d718fdf3901",
+      "compressedSha256": "8261fae615480928c8e45a1048b93f64eda949e810a50595d74deba2f155907a"
+    },
+    {
+      "file": "104-6903-complete-terminal-annotations-137072957595.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072957595.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "105-6903-complete-terminal-annotations-137072958284.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072958284.json",
+      "bytes": 442,
+      "lines": 1,
+      "sha256": "88d49cbf7cfab58553cf5ddfaa686fd7e8f9f73be499c9658c4a1c7737808777",
+      "compressedSha256": "d288eca4e95a09fd547baf7f88f39a93a49eed1e5cd76a543358887172748add"
+    },
+    {
+      "file": "106-6903-complete-terminal-annotations-137072958284.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137072958284.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "107-6903-complete-terminal-annotations-137073024936.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073024936.json",
+      "bytes": 311,
+      "lines": 1,
+      "sha256": "df7fd52eb6c01dbd9749d1c11cdcf34114be918a886d5da33d2981f104ecf3df",
+      "compressedSha256": "f1415331b5ddefa5aace995b6bfa242df5823cfd4b453abad32e829f60e2d2e6"
+    },
+    {
+      "file": "108-6903-complete-terminal-annotations-137073024936.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073024936.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "109-6903-complete-terminal-annotations-137073025026.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073025026.json",
+      "bytes": 311,
+      "lines": 1,
+      "sha256": "0b2798868914f14d4ec3d3ac6a61a546ffcede0e7a432c46ae65839edc1b874b",
+      "compressedSha256": "c9dd78b5512488f609af70c9bab9408fe5eeab54efc3af56ac5042d360e00aa2"
+    },
+    {
+      "file": "110-6903-complete-terminal-annotations-137073025026.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073025026.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "111-6903-complete-terminal-annotations-137073043000.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073043000.json",
+      "bytes": 334,
+      "lines": 1,
+      "sha256": "d50d66d9d4ed03f5b4ef04e81f0669b6340407fa98ad3e8c417e16c92e244558",
+      "compressedSha256": "96930d652883b81c6ac339364c8e01d32ea8fe472c2a5c89e4a85b128add6867"
+    },
+    {
+      "file": "112-6903-complete-terminal-annotations-137073043000.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073043000.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "113-6903-complete-terminal-annotations-137073043040.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073043040.json",
+      "bytes": 637,
+      "lines": 1,
+      "sha256": "a3355643622bfebf3a745d27df2a22a0e2bc623a1037b3e5b1e1f5a731cb0892",
+      "compressedSha256": "6953d7b116f11e2f462f9f2d3131af65afee62968a8150419c4817cd0515b8a2"
+    },
+    {
+      "file": "114-6903-complete-terminal-annotations-137073043040.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137073043040.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "115-6903-complete-terminal-annotations-137083404425.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137083404425.json",
+      "bytes": 628,
+      "lines": 1,
+      "sha256": "c59f89da8b879b536c8e2dd9cc0aa466f0de82b1d87c4df9ed9ec4c33f56efd1",
+      "compressedSha256": "594cabe50c528251d73234a1426994a16b59dedf41c154007e1e1584d9e4fddc"
+    },
+    {
+      "file": "116-6903-complete-terminal-annotations-137083404425.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/annotations-137083404425.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "117-6903-complete-terminal-check-annotations.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/check-annotations.json",
+      "bytes": 151262,
+      "lines": 3929,
+      "sha256": "a95986d000bb85b7efc19f0e92183e00c623e56d12e1eefb4e5ef430a500004a",
+      "compressedSha256": "4d4f13fe7515756d6e9060ca7bcf9f3b31c395c82485acb90b39f015eed879cf"
+    },
+    {
+      "file": "118-6903-complete-terminal-check-annotations.json.wrapped.txt.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/check-annotations.json.wrapped.txt",
+      "bytes": 13347,
+      "lines": 138,
+      "sha256": "938f04ff244d6d9f0069a5af7cbf262fb946602ab28c2dfa2284cdd5136a996c",
+      "compressedSha256": "7c4c96929cb0e20d3ed606e105e30a54f453f8623ffdb87840ca78a9f5fa2cf4"
+    },
+    {
+      "file": "119-6903-complete-terminal-checks-pages.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/checks-pages.json",
+      "bytes": 582896,
+      "lines": 1,
+      "sha256": "78434d75f86d7f45f215244ea9013504189325b609fe01c1367f97f4c9f80a3b",
+      "compressedSha256": "444f21f341bea5c41aeeac413705e424f384ee5557156e8707b9883b15584e05"
+    },
+    {
+      "file": "120-6903-complete-terminal-checks-pages.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/checks-pages.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "121-6903-complete-terminal-diagnostics.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/diagnostics.json",
+      "bytes": 26825,
+      "lines": 302,
+      "sha256": "5bd9ba98b33716d221616141a75911e8b3de34f663f714fb6a8127d28ff47fb8",
+      "compressedSha256": "c43f35128e179a0c48de01d336ec232645334985e4cd887ff997cbe9ac753df5"
+    },
+    {
+      "file": "122-6903-complete-terminal-diagnostics.json.wrapped.txt.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/diagnostics.json.wrapped.txt",
+      "bytes": 23336,
+      "lines": 247,
+      "sha256": "256a9524afa35008d70c55b0a98364ab246d21061d84f0bbde0b92d94821a13d",
+      "compressedSha256": "fd8a714017dd720adda5b3ea2a0080d973dd12f15931a03f9321fbd32b1df62b"
+    },
+    {
+      "file": "123-6903-complete-terminal-outcome.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/outcome.json",
+      "bytes": 21106,
+      "lines": 539,
+      "sha256": "dcba61e97897833a6f66f4464e63f09f127679c9fd2d0b3483532c246fb4dc55",
+      "compressedSha256": "8fde875da2416e44253b413a392255b030b07b8b6950cf607a653aba5027f709"
+    },
+    {
+      "file": "124-6903-complete-terminal-progress.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/progress.json",
+      "bytes": 19805,
+      "lines": 530,
+      "sha256": "8da3306aca4712ca9f586140996428015a689875f172a961d8ffc010c0820aad",
+      "compressedSha256": "580e2019b903f5927bea6cddb14dabbb0889485cdc3b2690d7dd008830e6cf20"
+    },
+    {
+      "file": "125-6903-complete-terminal-runs.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/runs.json",
+      "bytes": 31267,
+      "lines": 1,
+      "sha256": "80c72129cb039f7f9250e04ed35502a9bb3af05333bf01bd82abfadb9ccabd25",
+      "compressedSha256": "91ed150318a113ea734ec9b12b7d0248042cf791b154468f88183c8258124f1e"
+    },
+    {
+      "file": "126-6903-complete-terminal-runs.json.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/runs.json.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "127-6903-complete-terminal-waiting.json.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/waiting.json",
+      "bytes": 95,
+      "lines": 6,
+      "sha256": "db2175cdff9972c2488fad1491b639a05be5c6779b420cbff551a907df75e461",
+      "compressedSha256": "6e895ad306b1f85779fa1f0f38e219acb9900f6268e2ec9e3b21b5fe58bf6cf2"
+    },
+    {
+      "file": "128-6903-complete-terminal-worker.log.gz",
+      "source": "/tmp/issue-1580-research/6903-complete-terminal/worker.log",
+      "bytes": 3093,
+      "lines": 93,
+      "sha256": "23a3a76e9bfd02593f78843ffa0e92775da6ed310a3c30d86cb08b7df492c90c",
+      "compressedSha256": "f5416f9c6239623c8420571385f0ac6f3e7c82adc2feab03886c13a0f5d0c573"
+    },
+    {
+      "file": "129-6903-chrono-upstream-calculator-issue.json.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/calculator-issue.json",
+      "bytes": 4405,
+      "lines": 1,
+      "sha256": "af904eb5e3bd5dd90829f41c47c2fb618a57cd1f9aa1f429596dd1c184231b99",
+      "compressedSha256": "dac0f9dbc8c618d6fa952fb4e7b346513f2948d41c930655cfb1022534302dc3"
+    },
+    {
+      "file": "130-6903-chrono-upstream-calculator-issue.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/calculator-issue.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "131-6903-chrono-upstream-command-stream-dependencies.json.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/command-stream-dependencies.json",
+      "bytes": 4617,
+      "lines": 1,
+      "sha256": "71c3ce2abb3a0e620b4b8ad1ef955ac5fbd9145dc5b66de1db49edf41d73e9b4",
+      "compressedSha256": "42d089d91b0a6e5595457fe8754e6ae70bd5f74bdbc492e58d14cb01238cab91"
+    },
+    {
+      "file": "132-6903-chrono-upstream-command-stream-issue.json.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/command-stream-issue.json",
+      "bytes": 5467,
+      "lines": 1,
+      "sha256": "37ca62374ff987590697a6f035e110a9089f8a58bd348b7b984a53609ce54678",
+      "compressedSha256": "a02638a78863f0777a2b428d016d7173553b91cedfaeb554431473fd74e5d0fb"
+    },
+    {
+      "file": "133-6903-chrono-upstream-command-stream-issue.stderr.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/command-stream-issue.stderr",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "134-6903-chrono-upstream-command-stream-registry.json.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/command-stream-registry.json",
+      "bytes": 93442,
+      "lines": 1,
+      "sha256": "bab46d97ecf8d7a0395ce01f6991916b0078803c3496d64237a8ee63d98db5ed",
+      "compressedSha256": "01a5e1fbc1259b6a19109958793a25578535fc0c1a8745b0df557b53b62ff6de"
+    },
+    {
+      "file": "135-6903-chrono-upstream-link-calculator-dependencies.json.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/link-calculator-dependencies.json",
+      "bytes": 3673,
+      "lines": 1,
+      "sha256": "f332e0e90205f19d85c5880e562b886b6d085038e043454860c33c7a22937ce2",
+      "compressedSha256": "5d34dc293ddcf46b2cd1f28f3779460985d2c137c42fd43637dd97edb7b2fcb9"
+    },
+    {
+      "file": "136-6903-chrono-upstream-link-calculator-registry.json.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/link-calculator-registry.json",
+      "bytes": 131816,
+      "lines": 1,
+      "sha256": "28aa823db5f8bdb4697214a07c5d9fd992bd5eff91823d6e84914461790536b5",
+      "compressedSha256": "5e3483197359102126a800f3a6e9ac3629e0c5e61d1faa541e3d5027be526e95"
+    },
+    {
+      "file": "137-6903-chrono-upstream-observed-at.txt.gz",
+      "source": "/tmp/issue-1580-research/6903-chrono-upstream/observed-at.txt",
+      "bytes": 33,
+      "lines": 1,
+      "sha256": "5633a7bd5878055a2cbbab401225bf3ed5db32f0a0bbd9469beb925bc6b676f4",
+      "compressedSha256": "e6966ed63fe8097c74270159e3719441369f9d519553d2a8acd420918a3f78f1"
+    },
+    {
+      "file": "138-issue-1580-research-archive-6903-terminal-round.py.gz",
+      "source": "/tmp/issue-1580-research/archive-6903-terminal-round.py",
+      "bytes": 8786,
+      "lines": 99,
+      "sha256": "d9b454664ce026e31cd75837169c1b5089c54c187cbb5a89510fc3ef9d7f9569",
+      "compressedSha256": "afc3630682c0f9d916600018c4a7615cfde03cae63b7808ee677c0ff605ea6d1"
+    },
+    {
+      "file": "139-issue-1580-research-refresh-chrono-upstream-6903.py.gz",
+      "source": "/tmp/issue-1580-research/refresh-chrono-upstream-6903.py",
+      "bytes": 1615,
+      "lines": 18,
+      "sha256": "574d904129580893a649d4925803f21bee1ea9a671dc224c14083ad00f557109",
+      "compressedSha256": "99078ba9ab6f4cdc63c979188d51c04756ca1dcdab0606218d46ae37e752eaf5"
+    },
+    {
+      "file": "140-issue-1580-research-refresh-chrono-upstream-6903-driver.log.gz",
+      "source": "/tmp/issue-1580-research/refresh-chrono-upstream-6903-driver.log",
+      "bytes": 516,
+      "lines": 7,
+      "sha256": "46de2c476e18a50c8e2fe5bd643d51ce4862f551cf0adfedd985c8a355d4b4e4",
+      "compressedSha256": "d4dea4d4a62f6da25e6f297ef5eef2902f0635f23676a4aa69b9f9c86b5c0b83"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

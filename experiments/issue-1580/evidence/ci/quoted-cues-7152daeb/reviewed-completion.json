@@ -1,0 +1,122 @@
+{
+  "head": "7152daeb69796ca0213df51b9dfc6a03460c2e80",
+  "workflowCount": 23,
+  "success": 23,
+  "failed": [],
+  "downloadedJobPayloadsReviewed": [
+    {
+      "jobId": 134743168987,
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "rawLines": 1832,
+      "rawSha256": "433aeeebb3ca9dcb209eb11bd4ae0d979a612730c16cf122dca0e934aacc8f13",
+      "literallyPrintedLineNumbers": [
+        1630,
+        1631,
+        1632,
+        1633,
+        1634,
+        1637,
+        1638,
+        1639,
+        1640,
+        1641,
+        1642,
+        1643,
+        1644,
+        1645,
+        1648,
+        1649,
+        1650,
+        1651,
+        1652,
+        1699,
+        1700,
+        1701,
+        1705,
+        1706,
+        1707,
+        1712,
+        1713,
+        1714,
+        1715,
+        1716,
+        1717,
+        1718,
+        1719
+      ],
+      "wholeLogLiterallyRead": false
+    },
+    {
+      "jobId": 134742346272,
+      "name": "js tier (node --check over js, suite group 1)",
+      "rawLines": 4998,
+      "rawSha256": "32244e1f2625418a87e21643ffa71e8d3db23b51841521f1a737e4630869debc",
+      "literallyPrintedLineNumbers": [
+        2717,
+        2719,
+        4939,
+        4941,
+        4942,
+        4943,
+        4944,
+        4946
+      ],
+      "wholeLogLiterallyRead": false
+    },
+    {
+      "jobId": 134742346320,
+      "name": "js tier (node --check over js, suite group 2)",
+      "rawLines": 2759,
+      "rawSha256": "86fbd3da89de784ceeac5e709f66803cf47499c897940131d6f2904b26dd5d96",
+      "literallyPrintedLineNumbers": [
+        2701,
+        2703,
+        2704,
+        2705,
+        2706,
+        2708
+      ],
+      "wholeLogLiterallyRead": false
+    }
+  ],
+  "nativeTestsExecuted": [
+    "calendar_and_currency_share_the_worker_acceptance_cases",
+    "every_fixture_case_replays_to_the_javascript_event_sequence",
+    "production_composition_preserves_concrete_output_obligations",
+    "production_composition_retains_only_selected_child_evidence",
+    "production_composition_still_solves_untyped_independent_tasks",
+    "validated_prime_candidates_keep_their_intent_in_every_response_language",
+    "both_openai_protocols_handle_forced_functions_in_either_agent_mode"
+  ],
+  "nativeTestPassCount": 7,
+  "nativeEvidenceRegressionExecuted": true,
+  "httpTestPassCount": 2,
+  "sharedExecutorFixtureCasesAtThisHead": 41,
+  "javascriptShards": [
+    {
+      "passed": 1440,
+      "skipped": 4
+    },
+    {
+      "passed": 1268,
+      "skipped": 13
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "nativeCueFixtureExecuted": true,
+  "fixtures": [
+    {
+      "path": "rust/tests/fixtures/meta-executor-parity.json",
+      "sha256": "0657136c9c6a0b378192d6742dc4dbffe9c5bd520bfeedaa2b5c9b9b43384d7e"
+    },
+    {
+      "path": "rust/tests/fixtures/meta-executor-status-parity.json",
+      "sha256": "392ada0ec67a39f1fa282290e264fe445851476400e1393b43783477e520b28b"
+    },
+    {
+      "path": "rust/tests/fixtures/meta-executor-cue-parity.json",
+      "sha256": "d857330def9e51a2a3e9e64b43f42dcef3886405b8c02dff9d2b00c9dbbed5d3"
+    }
+  ]
+}

@@ -72,15 +72,55 @@ fn command(template: &str, source: &str, plan: &serde_json::Value) -> String {
 pub(super) fn recipe_source_command(path: &str) -> String {
     command(value("command"), source_program(), &json!({"path":path}))
 }
+/// Read all declared supporting owners in one bounded command.
+pub(super) fn recipe_sources_command(paths: &[&str]) -> String {
+    command(value("command"), source_program(), &json!({"paths": paths}))
+}
+/// Require every declared owner exactly once, in declaration order.
+pub(super) fn recipe_sources_result(
+    output: &str,
+    paths: &[&str],
+) -> Option<Vec<RecipeSourceResult>> {
+    let value: serde_json::Value = serde_json::from_str(&observed_payload(output)?).ok()?;
+    let observations = value.get("observations")?.as_array()?;
+    if value.get("schema")?.as_str()? != "workspace-sources-v1"
+        || !value.get("success")?.as_bool()?
+        || !value.get("complete")?.as_bool()?
+        || paths.is_empty()
+        || paths.len() > 16
+        || paths
+            .iter()
+            .collect::<std::collections::BTreeSet<_>>()
+            .len()
+            != paths.len()
+        || observations.len() != paths.len()
+    {
+        return None;
+    }
+    observations
+        .iter()
+        .zip(paths)
+        .map(|(value, path)| recipe_source_value(value, path))
+        .collect()
+}
 /// Decode only after the caller proves the exact successful command receipt.
 #[must_use]
 pub(super) fn recipe_source_result(output: &str, path: &str) -> Option<RecipeSourceResult> {
     let payload = observed_payload(output)?;
     let value: serde_json::Value = serde_json::from_str(&payload).ok()?;
+    recipe_source_value(&value, path)
+}
+fn recipe_source_value(value: &serde_json::Value, path: &str) -> Option<RecipeSourceResult> {
     if value.get("schema")?.as_str()? != "workspace-source-v1"
         || value.get("path")?.as_str()? != path
         || !value.get("success")?.as_bool()?
         || !value.get("complete")?.as_bool()?
+    {
+        return None;
+    }
+    let serialized = value.to_string();
+    if super::tool_result::incomplete_receipt(&serialized)
+        || super::tool_result::reported_exit_code(&serialized).is_some_and(|code| code != 0)
     {
         return None;
     }
@@ -122,6 +162,51 @@ pub(super) fn recipe_source_receipt<'a>(progress: &'a Progress, command: &str) -
     Some(&frame.detail)
 }
 
+/// A supporting owner retains its own epoch when another owner is written.
+pub(super) fn recipe_source_preimage(
+    progress: &Progress,
+    path: &str,
+    paths: &[&str],
+) -> Option<RecipeSourceResult> {
+    let single = recipe_source_command(path);
+    let mut commands = vec![single.clone()];
+    if paths.len() > 1 && paths.contains(&path) {
+        commands.push(recipe_sources_command(paths));
+    }
+    for command in commands {
+        let Some(receipt) = recipe_source_receipt(progress, &command) else {
+            continue;
+        };
+        let result = if command == single {
+            recipe_source_result(receipt, path)
+        } else {
+            paths
+                .iter()
+                .position(|owner| *owner == path)
+                .and_then(|index| {
+                    recipe_sources_result(receipt, paths)
+                        .and_then(|results| results.get(index).cloned())
+                })
+        };
+        let probe = progress.research_attempts().iter().rposition(|attempt| {
+            attempt.capability == Capability::Run
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .and_then(command_argument)
+                    .is_some_and(|value| value == command)
+        });
+        if let Some(probe) = probe
+            && progress
+                .latest_source_mutation_index(path)
+                .is_none_or(|mutation| mutation < probe)
+            && result.is_some()
+        {
+            return result;
+        }
+    }
+    None
+}
 /// Exact source evidence is invalid after a later write to that owner.
 #[must_use]
 pub(super) fn recipe_source_matches(progress: &Progress, path: &str, source: &str) -> bool {

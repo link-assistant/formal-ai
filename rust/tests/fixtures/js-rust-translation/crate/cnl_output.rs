@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=963c861da4b3ebf1ee923080bd713eef1c8a9b173f355c0a0dd0c1fb0d58c057 bytes=27770
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1bbeb36c369b3e33b634f86006b0b23bbe5c496aa77d3c53b1aeb4702f114b55 bytes=27862
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=1
 
@@ -40,7 +40,7 @@ pub mod ml_array {
 // | import {
 // |   CNL_LANGUAGE_PATH, allPairs, answerableQuestions, builtinCheck, canonicalPrompt, compileGrammar, graphHolds,
 // |   graphKey, graphLogic, outputSentences, parseGrammarPolicy, parseLanguageGrammar, promptAnalysis, realizations,
-// |   utteranceGraphs,
+// |   utteranceGraphs, referenceValues,
 // | } from './cnl_grammar.mjs';
 use crate::cnl_grammar::CNL_LANGUAGE_PATH;
 
@@ -54,7 +54,7 @@ pub const CNL_POLICY_PATH: &str = "data/seed/cnl-output.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers arrow callback of .map() | arrow function | assignment of a field or element | call of an imported function | field access | global value Boolean | method call .filter() | method call .map() | method call .split() | null | object without a $ tag
+// formal-ai:blockers arrow callback of .map() | arrow function | assignment of a field or element | call of an imported function | field access | global value Boolean | method call .filter() | method call .join() | method call .map() | null | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal regular expression

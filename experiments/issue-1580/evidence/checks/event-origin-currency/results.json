@@ -1,0 +1,116 @@
+{
+  "complete": true,
+  "sourceHead": "d3adb3ce0b471b94f173b204b1e0091903c8a958",
+  "checks": [
+    {
+      "name": "typescript-writer",
+      "file": "typescript-writer.log.gz",
+      "rawSha256": "e7b6cce6cc20e9a8d11d72f6da7f3406e4797f14f12e5f275c621d25bd4a1fb0",
+      "archiveSha256": "18388bf0b868f4bde6e1a142300c7d9241de96293d70944f37d1786f6376ed7f",
+      "lines": 1,
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 2.513
+    },
+    {
+      "name": "typescript-check",
+      "file": "typescript-check.log.gz",
+      "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+      "archiveSha256": "470114e67442962d059d5b1f9ab7bd0243317a5033019e789f7d7e52c9fb1820",
+      "lines": 1,
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 2.356
+    },
+    {
+      "name": "repaired-local-gates",
+      "file": "repaired-local-gates.log.gz",
+      "rawSha256": "e02fd7a0f67d85812962d949f493e696fd072fbf52da7754f317205c6406682b",
+      "archiveSha256": "e59b52ef01c4d6ae877c2849afc96df98f06b122f2380dfb77f80e5fed58a703",
+      "lines": 8,
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-worker-line-budget,check-worker-line-budget-js-twin,check-debug-stage-sources,check-language-parity,check-language-parity-js-twin,check-language-change-parity"
+      ],
+      "exitCode": 0,
+      "seconds": 12.858
+    },
+    {
+      "name": "whitespace",
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.205
+    }
+  ],
+  "gatePayloads": [
+    {
+      "name": "gate-check-debug-stage-sources",
+      "file": "gate-check-debug-stage-sources.log.gz",
+      "rawSha256": "f611d67f647e22765665e8cd3974c7c85927e0d955d4ebb6b231805ae59f9a1e",
+      "archiveSha256": "1476ebd5a9c8af0304dda605b9f96ba35ea200ad3624fcee0b61d84204053fe5",
+      "lines": 2,
+      "gateName": "check-debug-stage-sources"
+    },
+    {
+      "name": "gate-check-language-change-parity",
+      "file": "gate-check-language-change-parity.log.gz",
+      "rawSha256": "93ed09342753e23cb36b9eb5c30ef751ed6d3512c7d852cd252c62b193a1cf4a",
+      "archiveSha256": "34e05cfed4dbf37b24efe68de97729dcffd10150bc05573b020bb67e2a5688b4",
+      "lines": 6,
+      "gateName": "check-language-change-parity"
+    },
+    {
+      "name": "gate-check-language-parity-js-twin",
+      "file": "gate-check-language-parity-js-twin.log.gz",
+      "rawSha256": "0832784ee0ac06716efdec73c7fbb4c2966b946ddf24aa648b4d38e2ac370487",
+      "archiveSha256": "744fadd2fcd03bfb4899eecf16c4a895a9427ef95e515d0f6e325be189811200",
+      "lines": 2,
+      "gateName": "check-language-parity-js-twin"
+    },
+    {
+      "name": "gate-check-language-parity",
+      "file": "gate-check-language-parity.log.gz",
+      "rawSha256": "0a8018346c18ffe8512cbfee983f5a1b9023e02a4e94b461b5b1a189191e0728",
+      "archiveSha256": "df5a4183b5471241d35b5b1b496d48d74efa80b1fdf4b22bb08c7e3d7a4e5b76",
+      "lines": 2,
+      "gateName": "check-language-parity"
+    },
+    {
+      "name": "gate-check-worker-line-budget-js-twin",
+      "file": "gate-check-worker-line-budget-js-twin.log.gz",
+      "rawSha256": "0d64e1e9e2a496f3d6889f3fe6e7b7510941b49e44d6f632fbfb9d398a35dbe2",
+      "archiveSha256": "0ed6a2c27caa32bf9ff08110140cbc8ffd536bd00fc68ac7e4552c5dcb81494b",
+      "lines": 2,
+      "gateName": "check-worker-line-budget-js-twin"
+    },
+    {
+      "name": "gate-check-worker-line-budget",
+      "file": "gate-check-worker-line-budget.log.gz",
+      "rawSha256": "d5d8e1763ae800723962c6e8065d06223dd38fa5be644107ea74909559e8529d",
+      "archiveSha256": "0e518ffedf816062ae5e9a894392e940a02a9ad715f9ce4af8cddc98b294ea19",
+      "lines": 189,
+      "gateName": "check-worker-line-budget"
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

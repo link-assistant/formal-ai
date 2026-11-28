@@ -1,0 +1,130 @@
+[
+  {
+    "ordinal": 494,
+    "path": "ts/worker-bootstrap-responses.ts",
+    "diffSha256": "d65e546b28aed4fde9eb942e86d7cc170ae41b8927ed92fd83d04fde9fa5e5b4",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker-bootstrap-responses.js",
+    "sha256": "bc9914fc3aef0078f69cc2965ec5fa94572030f612ef4195aa798e3663ea16ea"
+  },
+  {
+    "ordinal": 495,
+    "path": "ts/worker-modules.ts",
+    "diffSha256": "78201b5350a2e770661d1f9ee389ce4590b73a5d7fc0b8545ab8ffd0d23eeb64",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker-modules.js",
+    "sha256": "fe1aa746e8b31405cb90633784c5fe918105dee01854811a01ff76fe5be309de"
+  },
+  {
+    "ordinal": 496,
+    "path": "ts/worker-script-prerequisites.ts",
+    "diffSha256": "dcbf255319f5fa32e58f4da1380b429633d0bf42b9c436961b1f1a03fb1191e6",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker-script-prerequisites.js",
+    "sha256": "0e2b62bcda746cea94964b150d66872339dc0be9087fc5675026d9bdfe981dcb"
+  },
+  {
+    "ordinal": 497,
+    "path": "ts/worker/formal_ai_worker.ts",
+    "diffSha256": "99c07f2978f50c16727cb08d12783b520bb6822c67afbb61f76bfca8a021a6cb",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker.js",
+    "sha256": "fcdf34aa3411663ccf83add75f2cd77d88ca586077b18f4464df9a06d5f38166"
+  },
+  {
+    "ordinal": 498,
+    "path": "ts/worker/formal_ai_worker_arithmetic_and_numeric_lists.ts",
+    "diffSha256": "f45117d115ef5a2933dae36ed0ea9449bd0edb98b5be9c9029838ecd102d5ca9",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js",
+    "sha256": "098865c48e91125eb8e1a4d8dc43b5bfb217bfabcdff08c08aee0fae7bda3b8a"
+  },
+  {
+    "ordinal": 499,
+    "path": "ts/worker/formal_ai_worker_calendar_and_proofs.ts",
+    "diffSha256": "a9083e3e962c6e474a0f6f3425b64dc0e9eb289530c0bf327553f66983afc0a8",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_calendar_and_proofs.js",
+    "sha256": "1d7da8066790597befaa938c59c7cfc89c0ba3a5ecd22d2160a0186c3297f356"
+  },
+  {
+    "ordinal": 500,
+    "path": "ts/worker/formal_ai_worker_calendar_offset.ts",
+    "diffSha256": "7b1e15941a9b0d6c95131337be0114011b43b404ec4a5dd3dbb7214f648f23c1",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_calendar_offset.js",
+    "sha256": "83f5f3e6a2b20a80c9e350a8bfdcfd41efcd3752af5f962fe38a349a32b62464"
+  },
+  {
+    "ordinal": 501,
+    "path": "ts/worker/formal_ai_worker_candidate_validation.ts",
+    "diffSha256": "09b6d476acfe29fdb98d0299af6780b4368d80470acfbbb4a64defbf2edb171c",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_candidate_validation.js",
+    "sha256": "b4251997bb19aedf5e20692cbced3c1a7ea75af408d9883c87931b60f61f9e96"
+  },
+  {
+    "ordinal": 502,
+    "path": "ts/worker/formal_ai_worker_code_refactoring.ts",
+    "diffSha256": "572b1e4b61ed55399fa57fa282c81d6c7dcbb7cbdbc33f0df032bd5348fc2122",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_code_refactoring.js",
+    "sha256": "4408472875827c2f50c89e068a93193d8ced5d65435d6c9e232eacc8b2a60f66"
+  },
+  {
+    "ordinal": 503,
+    "path": "ts/worker/formal_ai_worker_code_tasks.ts",
+    "diffSha256": "c0f81f974a03d79bbe1f9ac244a9b3511135902d549536c87a49b64c1aebdda0",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_code_tasks.js",
+    "sha256": "3522146c9a09e1cadc42006e354602c5d918ab37d75ce33c93592c9600d059c7"
+  },
+  {
+    "ordinal": 504,
+    "path": "ts/worker/formal_ai_worker_concept_queries_and_arithmetic.ts",
+    "diffSha256": "28c70fd9e9be055e3e6d2542b546bee28c96a81391add8c924e089d78fb17765",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_concept_queries_and_arithmetic.js",
+    "sha256": "1ea52f2a8913210b64380e9764c0892e67b2334b0aa7557aceb4a35e362d7686"
+  },
+  {
+    "ordinal": 505,
+    "path": "ts/worker/formal_ai_worker_crate_cnl_grammar.ts",
+    "diffSha256": "8c62bd23753122fd64f800859156cb055b425524b2b644af9ea61977a445f3b3",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_cnl_grammar.js",
+    "sha256": "e768cd126f63179c9ad0f8dde2c555a7758a72cd4d6162242711d9da693e1812"
+  },
+  {
+    "ordinal": 506,
+    "path": "ts/worker/formal_ai_worker_crate_cnl_output.ts",
+    "diffSha256": "ed411b368464b87df4a64f0979cf9075572fa59a0de77e04e0cdba02bac5c321",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_cnl_output.js",
+    "sha256": "0b2fa69e1faf7ea489e752dd1ddfcaef95f01e7da972c2e042342844dbe19fc8"
+  },
+  {
+    "ordinal": 507,
+    "path": "ts/worker/formal_ai_worker_crate_meta_executor.ts",
+    "diffSha256": "3542861b46826ac40061b424e2b103de5c9b31280179e43790aa78c9de83a448",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_meta_executor.js",
+    "sha256": "06335decb6dbd335da6416f97f7fd781cd680a92ee8625df537b063f99cf0ad2"
+  },
+  {
+    "ordinal": 508,
+    "path": "ts/worker/formal_ai_worker_crate_proposition_structure.ts",
+    "diffSha256": "adcf901bd38a67f0f0486be83038794c8f18ebaeca6013921ea9731aae43497f",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_proposition_structure.js",
+    "sha256": "d13715c86b9a59cd0e93284a09e804981b2792a8ec3565b5573f65bb389cfefe"
+  },
+  {
+    "ordinal": 509,
+    "path": "ts/worker/formal_ai_worker_crate_seed_registry.ts",
+    "diffSha256": "5ff8ebb9f83e0bde8428f7eebe51e1545bcbddac588fa9b7e4e04a0f8e16c097",
+    "kind": "exact-typescript-javascript-copy",
+    "counterpart": "js/worker/formal_ai_worker_crate_seed_registry.js",
+    "sha256": "80288472d8b5fc762a3b7462d584da93ba8c7c9c8d8b0b3193dcb4a263233560"
+  }
+]

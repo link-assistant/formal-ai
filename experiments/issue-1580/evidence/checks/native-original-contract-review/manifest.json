@@ -1,0 +1,144 @@
+{
+  "before": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "head": "d8f4c1632e68d6e9957a46e48c6342d91466688c",
+  "files": [
+    {
+      "ordinal": 0,
+      "path": "rust/tests/unit/issue_498_google_trends.rs",
+      "lines": 17,
+      "sha256": "18225fd8979ed2142b70abf407e318bdd73be39fa484d8fcadc248c1a0118c76",
+      "archive": "00.diff.gz",
+      "archiveSha256": "546b980292a07462a3bedd24358ff98115b261ff71fe0272f8b31bfcbda47cbe",
+      "review": "Only the expected no-provider-response guidance changes; catalog cardinality and multilingual assertions remain."
+    },
+    {
+      "ordinal": 1,
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "lines": 332,
+      "sha256": "a3aaf3ea218d95e3ea97965901e4717ad9a7518c0ed2a6378f09a154dba40391",
+      "archive": "01.diff.gz",
+      "archiveSha256": "7a6b0db6f26ec98df1c2f1e7c1a5840d65bcbb357e43eda14ef39e49ac814dd5",
+      "review": "Compiler failure is correlated to its actual tool-call ID. Named-branch helper retains all original push assertions and the ten-step ceiling. Kotlin delivery retains a 24-step ceiling and adds physical Git checks. The separate Codex delivery fixture grows from ten to eighteen observed calls and is not an unchanged original-budget replay."
+    },
+    {
+      "ordinal": 2,
+      "path": "rust/tests/unit/ci-cd/workflow_release.rs",
+      "lines": 366,
+      "sha256": "d287d9ce3c7f15dd4cc211fac08eb91e7ef4883440821ffb0d7471a08def75f7",
+      "archive": "02.diff.gz",
+      "archiveSha256": "4223d776ac9ad59da9dc7bd13c58b06bf38f32ac7eb692fff21a11af7830ed67",
+      "review": "Pages assertion preserves 600000 ms while following the owned protocol and accepting flow YAML. Timeout and API-doc tests move into workflow_policy.rs. The secret-only release policy is inherited main policy, not evidence that omitted E2E release gates executed."
+    },
+    {
+      "ordinal": 3,
+      "path": "rust/tests/unit/docs_requirements/agent_cli_shell.rs",
+      "lines": 67,
+      "sha256": "4a9e456aa5815e302efd0bb2f297da572f4d737896d2410f9b78a76463a86ad0",
+      "archive": "03.diff.gz",
+      "archiveSha256": "51c288f9e7ebfa4fb6930354dbfe7408ad73e79f870214d8eb242edbd55533ba",
+      "review": "Source-trace assertions follow compiled extracted owners, retaining both flag and environment admission."
+    },
+    {
+      "ordinal": 4,
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+      "lines": 307,
+      "sha256": "4787adc4118255febde2943cf58293753cbfb96a18ad31b7dfd356d35e1c0a36",
+      "archive": "04.diff.gz",
+      "archiveSha256": "e9b2991aa13d3ce1aba456ed7483087656d66e9a60082f7fad2a0a575fa3e3d5",
+      "review": "All four original language/setup and verifier assertions remain in a shared helper, each registered separately. Source/Git observations are physical; compiler/network observations remain explicit fixtures."
+    },
+    {
+      "ordinal": 5,
+      "path": "rust/tests/unit/web_requests.rs",
+      "lines": 94,
+      "sha256": "8f63195a3e83d51e9bdc24ae4dc15be46345cfb1734d7d0c939acae41b356940",
+      "archive": "05.diff.gz",
+      "archiveSha256": "5b86042a1d1f775772d19f52ff2409809cc0d38b075502e66262c0128bc39381",
+      "review": "All language/query/routing assertions remain; explicit offline SolverConfig makes no-provider-answer comparisons deterministic. This is not live-network coverage."
+    },
+    {
+      "ordinal": 6,
+      "path": "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+      "lines": 221,
+      "sha256": "2cc1f29029a248a2aaa638bf7a4030d107fab6f6fbe1760338580cea234eb00c",
+      "archive": "06.diff.gz",
+      "archiveSha256": "61427e0424392b0ab28d84ad2b9139b76ad9f176276ded7594bf576d6bf9d5c9",
+      "review": "English procedure helper and case tables move to fixtures.rs. Russian wikiHow host and slug expectations follow localized production routing; the original tea assertion body is unchanged."
+    },
+    {
+      "ordinal": 7,
+      "path": "rust/tests/unit/specification/formalization.rs",
+      "lines": 19,
+      "sha256": "ce836862aaf2dba45a7c10543b27fe755f155bb5fa0929b055d921d7814765ff",
+      "archive": "07.diff.gz",
+      "archiveSha256": "857fa758e2438f57846d74e58ecd4825ff693a222ceab85bf44afe9af7eb5aca",
+      "review": "Explicit offline configuration fixes provenance variability while retaining complete same-prompt/config answer equality."
+    },
+    {
+      "ordinal": 8,
+      "path": "rust/tests/unit/page_formalization_route.rs",
+      "lines": 54,
+      "sha256": "faa3f5d3c004dc7150bb064d929e061216b1902ab265a0d878fb5688fe7ebde3",
+      "archive": "08.diff.gz",
+      "archiveSha256": "4b76566df2061c92a78a4f06f67a519fc168ba762f0809f02fa92de8763e51b4",
+      "review": "All five language summaries retain sentence/statement/fact/round-trip counts; causal vocabulary recognition changes only unknown-term count from 196 to 195."
+    },
+    {
+      "ordinal": 9,
+      "path": "rust/tests/integration/with_formal_ai_argv.rs",
+      "lines": 53,
+      "sha256": "ece1af43c5c949cb2d80a1b2058068f3bc553b20dc6dee4c7843749e8b1bcce5",
+      "archive": "09.diff.gz",
+      "archiveSha256": "5df6d3ba9d34b75c2218dcb837e98f28f42e84f09262e7e35d51a03f293070ee",
+      "review": "Exact argv parity still covers argument and piped prompt forms; expected Claude permissions and Grok -p follow current clients."
+    },
+    {
+      "ordinal": 10,
+      "path": "rust/tests/unit/ci-cd/network_download_retry.rs",
+      "lines": 17,
+      "sha256": "6db70088e160a08c95b8659a21d792a29b75aee06f2b9f66dd5852f17912ff3c",
+      "archive": "10.diff.gz",
+      "archiveSha256": "66f09ba769da6edef71a79cd7d683c0e356bc88f0275517d08753e6da63a3d41",
+      "review": "Two new actual remote-download sites join the existing retry inventory; existing required sites remain."
+    },
+    {
+      "ordinal": 11,
+      "path": "rust/tests/integration/with_formal_ai.rs",
+      "lines": 215,
+      "sha256": "b980eef4db748a05111a4126690ee8210ac88f134aea829983b252dd68cf5617",
+      "archive": "11.diff.gz",
+      "archiveSha256": "22d9d4f05421c84c7c87d0f637ab004bf1fe03842de337a3ad42d6d75b4e125b",
+      "review": "Both interactive modes retain exact expected argv and startup stderr remains empty. Global configuration/undo assertions move into global_configuration.rs."
+    },
+    {
+      "ordinal": 12,
+      "path": "rust/tests/integration/issue_819_tui_isolation.rs",
+      "lines": 40,
+      "sha256": "24129cc8b287dbbaaee736b9129efb3657dfbd1babbb8b54201898206490393c",
+      "archive": "12.diff.gz",
+      "archiveSha256": "d5fd04a806e4aeddd675503f780ebc893a5258e19ad251d6d700e26166b2d940",
+      "review": "Original TUI and raw-request nonleak assertions remain, with trace logging enabled and retained diagnostic-file assertions added."
+    },
+    {
+      "ordinal": 13,
+      "path": "rust/tests/unit/specification/debug_session.rs",
+      "lines": 29,
+      "sha256": "21b48e784116ae0644a890e426d2c956972027b61e37565d5d30bab3294c2c2c",
+      "archive": "13.diff.gz",
+      "archiveSha256": "938b6df397a87ee7d3d911203294bdc083a6b8859b7247944a14e2934f242f17",
+      "review": "The served event-order assertion remains; rule verification source now points to actual record_answer_test ownership."
+    }
+  ],
+  "originalChangedTestContracts": 22,
+  "completeFileDiffsRead": 14,
+  "reviewedExtractedOwners": [
+    "rust/tests/unit/issue_1133_hive_mind_three_runs/extended/commit_expectations.rs",
+    "rust/tests/unit/specification/reasoning_paths_procedures/fixtures.rs",
+    "rust/tests/unit/ci-cd/workflow_release/workflow_policy.rs"
+  ],
+  "originalBudgetFailuresStillOpen": 3,
+  "unchangedOriginalReplayClaim": false,
+  "currentNativeExecutionBoundSeparately": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

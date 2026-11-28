@@ -1,0 +1,10 @@
+Cargo source package inventory
+Total paths: 1313
+Packaged agentic source declarations:
+embedded/data/agentic-coding/fisherman-lexicon.lino
+embedded/data/seed/meanings-translation.lino
+src/agentic_coding/corpus.rs
+src/agentic_coding/formalization_recipe.rs
+src/agentic_coding/meaning_detail.rs
+Packaged publisher-agentic fixtures, historical synopsis, and raw Wikidata lexeme responses:
+None

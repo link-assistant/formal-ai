@@ -1,0 +1,9 @@
+{
+  "templateCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "templateHelperSha256": "a81157c87d5cf7fa9e0db8af4bf17cd7ffc0d02c0cdead5240ca3ae1ffc55c6d",
+  "beforeExitCode": 1,
+  "beforeRawSha256": "4460059e8b00d55972a901577de2fd9940ef390a726f3cac647e61b5cc2fd03f",
+  "nativeOrLiveCodeqlExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

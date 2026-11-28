@@ -1,0 +1,14 @@
+✔ formalize <url> answers the statements of the fetched page in every language (4264.705189ms)
+✔ the bare form formalizes too (245.735299ms)
+✔ a refused fetch says so and formalizes nothing (155.72257ms)
+✔ offline, the answer says nothing was fetched (170.485277ms)
+✔ a formalization request with no URL stays with the formalization handler (101.663331ms)
+✔ a plain fetch still shows the page body (213.451763ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9869.6839

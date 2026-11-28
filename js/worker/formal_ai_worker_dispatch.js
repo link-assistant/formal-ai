@@ -79,7 +79,8 @@ function synchronousHandlerCandidates(context, registry = promotedHandlerOrder(b
     run: () => {
       const hit = claimRouteRun(record.name, context.prompt, context.normalized, context.history, () =>
         handlerImplementation(record, context)(...(record.arguments || []).map((path) => handlerContextValue(context, path))));
-      return handlerResultMatches(record, hit) ? hit : null;
+      const keep = (result) => handlerResultMatches(record, result) ? result : null;
+      return hit && typeof hit.then === "function" ? hit.then(keep) : keep(hit);
     },
   }));
 }

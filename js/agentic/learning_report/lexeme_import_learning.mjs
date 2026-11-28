@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: 'bulk_lexeme_import_integrity_and_dual_agent_cli_e2e_pass',
   path: LEXEME_IMPORT_LEARNING_PATH,
   taskValue: LEXEME_IMPORT_LEARNING_PATH,
-  memoryPath: 'data/meta/issue-660-lexeme-import-learning.lino',
   subjectMessage: 'learning_report_subject_lexeme_import_learning',
 }, 'isLexemeImportLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const LEXEME_IMPORT_LEARNING_TASK = LEXEME_IMPORT_LEARNING_PATH;
 
 /** Mirrors `fn is_lexeme_import_learning_task` in rust/src/agentic_coding/learning_report/lexeme_import_learning.rs. @param {string} prompt */
 export const isLexemeImportLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/learning_report/lexeme_import_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/learning_report/lexeme_import_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

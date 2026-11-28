@@ -1,0 +1,34 @@
+{
+  "head": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "runId": 44262999002,
+  "failureAttempt": 1,
+  "fullyReadFailedJobPayloadLines": [
+    1522,
+    1863
+  ],
+  "failedJobPayloadLineCount": 342,
+  "errorLines": {
+    "group2": [
+      1645,
+      1646,
+      1647,
+      1676
+    ],
+    "group1": [
+      1816,
+      1817,
+      1818,
+      1847
+    ]
+  },
+  "testsExecutedInFailedJobs": false,
+  "nativeWorkflowSuccess": 44262999525,
+  "transportCauseEstablished": false,
+  "limitsChanged": false,
+  "firstMissingBlobIsEntireRequest": false,
+  "independentAuthorshipCredit": 0,
+  "nativeJobId": 134660858273,
+  "retryRequestedAt": "2026-11-18T08:08:08.695402+00:00",
+  "retryCommandExitCode": 0,
+  "retryOutput": ""
+}

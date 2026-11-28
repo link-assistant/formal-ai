@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/file-size-literal-growth.test.mjs';
 // PR #1188 (SCRIPTS-B): the JavaScript twins of the five rust-script checks
 // agents hit most -- check-file-size, check-debt-ratchet,
 // check-hardcoded-language, check-minimal-core-boundary and
@@ -19,7 +20,7 @@ import {
   canonicalizeNormal, canonicalizeRaw, extractLiterals, isMultiWordPhrase, isUserFacingLiteral,
   isUserFacingProse, parseAllowlist, renderAllowlist,
 } from '../../../scripts/check-hardcoded-language.mjs';
-import { fileLimit, growingPathsFromNumstat } from '../../../scripts/check-file-size.mjs';
+import { checkListedFiles, fileLimit, growingPathsFromNumstat } from '../../../scripts/check-file-size.mjs';
 import { announcesCorrection, checkAgainstPrevious, parseRatchet } from '../../../scripts/check-debt-ratchet.mjs';
 import { leadingSummary, shardName } from '../../../scripts/check-worker-line-budget.mjs';
 import { compareRuns } from '../../../scripts/lib/checks-twin-parity.mjs';
@@ -92,6 +93,61 @@ describe('Rust standard-library semantics the twins share', () => {
 });
 
 describe('check-file-size.mjs', () => {
+  test('size exclusions are relative to a checkout inside a target directory', () => {
+    const parent = fixture({});
+    const root = join(parent, 'target', 'checkout');
+    write(root, 'src/retarget.rs', numbered(1001));
+    write(root, '.github/scripts/tool.rs', numbered(1001));
+    write(root, 'target/ignored.rs', Buffer.from([0xff]));
+    try {
+      const result = run('check-file-size.mjs', [], root);
+      assert.equal(result.status, 1, result.stdout + result.stderr);
+      assert.match(result.stdout, /src\/retarget\.rs: 1001 lines/u);
+      assert.match(result.stdout, /\.github\/scripts\/tool\.rs: 1001 lines/u);
+      assert.equal(result.stderr, '');
+    } finally { rmSync(parent, { recursive: true, force: true }); }
+  });
+
+  test('unreadable maintained text fails instead of reporting a clean size gate', () => {
+    const root = fixture({ 'src/broken.rs': Buffer.from([0xff]) });
+    try {
+      const messages = [];
+      const result = run('check-file-size.mjs', [], root);
+      assert.equal(result.status, 1, result.stdout + result.stderr);
+      const checked = checkListedFiles(root, new Set(['src/broken.rs']), line => messages.push(line));
+      assert.equal(checked.errors.length, 1);
+      assert.match(messages[0], /Error: Could not read .*src\/broken\.rs: stream did not contain valid UTF-8/u);
+      assert.match(result.stderr, /stream did not contain valid UTF-8/u);
+      assert.doesNotMatch(result.stdout, /All checked files are within/u);
+      assert.deepEqual(readFileSync(join(root, 'src/broken.rs')), Buffer.from([0xff]));
+    } finally { rmSync(root, { recursive: true, force: true }); }
+  });
+
+  test('unavailable size-gate roots remain errors in the completed observation', () => {
+    const root = fixture({});
+    try {
+      const messages = [];
+      const checked = checkListedFiles(join(root, 'missing'), null, line => messages.push(line));
+      assert.equal(messages.length, 1);
+      assert.equal(checked.errors.length, 1);
+      assert.match(messages[0], /Error: IO error for operation on .*missing: No such file or directory/u);
+    } finally { rmSync(root, { recursive: true, force: true }); }
+  });
+
+  test('size-gate exclusions retain their existing text and Git inventory boundaries', () => {
+    const root = fixture({
+      'src/good.rs': '// valid\n', 'src/unlisted.rs': Buffer.from([0xff]),
+      'target/invalid.rs': Buffer.from([0xff]), 'assets/icon.png': Buffer.from([0xff]),
+    });
+    try {
+      const checked = checkListedFiles(root, new Set(['src/good.rs', 'target/invalid.rs', 'assets/icon.png']));
+      assert.deepEqual(checked.errors ?? [], []);
+      assert.deepEqual(checked.warnings, []);
+      assert.deepEqual(checked.violations, []);
+      assert.deepEqual(checked.embeddedDataViolations, []);
+    } finally { rmSync(root, { recursive: true, force: true }); }
+  });
+
   test('limits follow the Rust table', () => {
     assert.equal(fileLimit('js/app/main.jsx').label, 'Maintained');
     assert.equal(fileLimit('vscode/package-lock.json'), null);
@@ -99,7 +155,7 @@ describe('check-file-size.mjs', () => {
     assert.equal(fileLimit('data/cache/wikidata/lexeme/L3302.json'), null);
     assert.equal(fileLimit('/r/js/worker/formal_ai_worker_seed_responses_and_language.js').label, 'Worker JavaScript');
     assert.equal(fileLimit('/r/.github/workflows/release.yml').label, 'GitHub Actions workflow');
-    assert.deepEqual(growingPathsFromNumstat('12\t0\tsrc/growing.rs\n3\t3\tsrc/same.rs\n1\t8\tsrc/shrinking.rs\n-\t-\ta.png\n'), ['src/growing.rs']);
+    assert.deepEqual(growingPathsFromNumstat('12\t0\tsrc/growing.rs\x003\t3\tsrc/same.rs\x001\t8\tsrc/shrinking.rs\x00-\t-\ta.png\x00'), ['src/growing.rs']);
   });
 
   test('a warning, a violation and embedded worker data print as the Rust script prints them', () => {

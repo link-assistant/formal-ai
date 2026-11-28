@@ -57,6 +57,18 @@ for client in claude opencode codex agent gemini qwen aider grok; do
   done
 done
 
+release_ports() {
+  local port pids
+  for port in "$@"; do
+    if command -v fuser >/dev/null 2>&1; then
+      fuser -k -TERM "$port/tcp" >/dev/null 2>&1 || true
+    elif command -v lsof >/dev/null 2>&1; then
+      pids=$(lsof -t -iTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)
+      [ -z "$pids" ] || kill $pids 2>/dev/null || true
+    fi
+  done
+}
+
 for client in claude agent codex gemini qwen aider grok; do
   home="$WORKDIR/$client-report"
   mkdir -p "$home"/{bin,data,config,cache,state}
@@ -117,6 +129,10 @@ for client in claude agent codex gemini qwen aider grok; do
     tail -n 70 "$log" >&2
     failure=1
   fi
+  # A failed check kills its client with SIGTERM, which can leave the
+  # `formal-ai with` server holding the shared ports; the next client would
+  # then reuse a stale server or hit "address in use" (issue #1637).
+  release_ports 19409 19410
 done
 
 # Existing PTY replay exercises report selection, every export, and the final

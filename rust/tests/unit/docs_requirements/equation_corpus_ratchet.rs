@@ -27,7 +27,7 @@ fn issue_891_equation_corpus_documents_are_traceable() {
         ],
     );
 
-    let traceability = read(root.join("docs/requirements-traceability.md"));
+    let traceability = crate::assembled_docs::traceability_at(&root);
     assert_contains_all(
         "docs/requirements-traceability.md",
         &traceability,

@@ -1,0 +1,60 @@
+{
+  "records": [
+    {
+      "name": "release",
+      "argv": [
+        "gh",
+        "api",
+        "repos/koalaman/shellcheck/releases/latest"
+      ],
+      "exitCode": 0,
+      "rawSha256": "2f5f15e6fd538e1146ab71187fb873c8292da9a8af69cb781347fe79abcd8817"
+    },
+    {
+      "name": "download",
+      "argv": [
+        "gh",
+        "release",
+        "download",
+        "v0.11.0",
+        "--repo",
+        "koalaman/shellcheck",
+        "--pattern",
+        "shellcheck-v0.11.0.linux.x86_64.tar.xz",
+        "--dir",
+        "/tmp/issue-1580-research/shellcheck-release"
+      ],
+      "exitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "version",
+      "argv": [
+        "/tmp/issue-1580-research/shellcheck-release/bin/shellcheck",
+        "--version"
+      ],
+      "exitCode": 0,
+      "rawSha256": "fc9eec16b4191d058a295813ca9afbe9d2b37b59975da860170726be162a3924"
+    },
+    {
+      "name": "shell-gate",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "lint-shell-scripts"
+      ],
+      "exitCode": 0,
+      "rawSha256": "80d9a74e56813853af653194fe7536bd0d40a72bc4f45dfaae672f44c088735c"
+    }
+  ],
+  "complete": true,
+  "releaseUrl": "https://github.com/koalaman/shellcheck/releases/tag/v0.11.0",
+  "releaseTag": "v0.11.0",
+  "archive": "shellcheck-v0.11.0.linux.x86_64.tar.xz",
+  "archiveSha256": "8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198",
+  "githubAssetDigest": "sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198",
+  "executableSha256": "4da528ddb3a4d1b7b24a59d4e16eb2f5fd960f4bd9a3708a15baddbdf1d5a55b",
+  "scope": "Official release binary extracted to scratch PATH for unchanged shell lint gate; no repository gate or system package changed."
+}

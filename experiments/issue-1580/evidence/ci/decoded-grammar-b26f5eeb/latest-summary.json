@@ -1,0 +1,11 @@
+{
+  "observedAt": "20261118T060239304877Z",
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "runCount": 23,
+  "completedSuccessful": 23,
+  "nonPassingCompleted": [],
+  "active": [],
+  "scopeGatedSuccessIsNativeAcceptance": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

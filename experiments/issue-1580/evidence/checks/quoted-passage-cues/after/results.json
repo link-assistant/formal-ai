@@ -1,0 +1,51 @@
+{
+  "complete": false,
+  "checks": [
+    {
+      "name": "format-source",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "rust/src/meta_executor.rs",
+        "rust/src/meta_executor/decomposition.rs",
+        "rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.129,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "seed-writer",
+      "argv": [
+        "node",
+        "scripts/generate-seed-registry.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 0.084,
+      "rawLines": 8,
+      "rawSha256": "1279428e5ec7e58c281d860e81aa9a2fca085124391653b6a388b91d2569f011",
+      "archiveSha256": "25f7842a8a9e2ba452afcdbe79e634efe52357447bd4381b2d7409995393879d"
+    },
+    {
+      "name": "worker-writer",
+      "argv": [
+        "node",
+        "scripts/generate-worker-crate-modules.mjs",
+        "--write"
+      ],
+      "exitCode": 1,
+      "seconds": 0.843,
+      "rawLines": 12,
+      "rawSha256": "739b72fb4360d6c6c85c33e95207b426163af3a64f0c316e6a714af49f44e138",
+      "archiveSha256": "d0ecd299aa86e9057336382638af1d9b2a21517757ec839bd394aeec5d314344"
+    }
+  ],
+  "observedAt": "2026-11-18T09:54:45.207352+00:00",
+  "nativeExecuted": false,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 152257\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

@@ -73,6 +73,10 @@ fn selected_functions(request: &ChatCompletionRequest) -> Vec<(&str, &Value)> {
                     .iter()
                     .flat_map(|entry| &entry.aliases)
                     .any(|alias| alias.eq_ignore_ascii_case(candidate))
+                // A shell, file or web tool the permission gate classifies by
+                // name (`local_shell` is Run) stays behind that gate even when
+                // it is not a registry alias.
+                || crate::agentic_coding::planner::tool_capability(candidate).is_some()
             {
                 return None;
             }

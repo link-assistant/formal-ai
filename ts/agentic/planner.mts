@@ -63,7 +63,6 @@ import * as intentRouter from './intent_router.mjs';
 import * as learningReport from './learning_report.mjs';
 import * as ledger from './ledger.mjs';
 import * as localSearch from './local_search.mjs';
-import * as meaningDetail from './meaning_detail.mjs';
 import * as moduleExports from './module_exports.mjs';
 import * as moduleFunction from './module_function.mjs';
 import * as mutatingAction from './mutating_action.mjs';
@@ -78,6 +77,7 @@ import { Progress } from './progress.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
 import * as repairStrategy from './repair_strategy.mjs';
+import { repairIntent } from './repair_input.mjs';
 import * as reportIssue from './report_issue.mjs';
 import * as restartFeedback from './restart_feedback.mjs';
 import * as selfAst from './self_ast.mjs';
@@ -378,13 +378,22 @@ function planRequestPreflight(task, messages, toolNames) {
   };
 }
 
-/** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner.rs. */
+/** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner/request_routes.rs. */
 async function planChatStepRoutes(messages, toolNames, received) {
   checkedRoutePrecedence();
   traceRoute('agentic_received', received);
   const effective = continuedAgentTask(messages, received) ?? received;
   const task = objectiveText(effective);
   traceRoute('agentic_task', task);
+  const intent = repairIntent(task);
+  if (intent.length < task.length) {
+    for (const [predicate, step] of [[selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep],
+      [changeRequest.isChangeRequestTask, documentRecipe.planChangeRequestStep],
+      [repairStrategy.isRepairStrategyTask, documentRecipe.planRepairStrategyStep],
+      [rebuildPlan.isRebuildTask, documentRecipe.planRebuildStep]]) {
+      if (predicate(intent)) return await step(messages, toolNames, task);
+    }
+  }
   const preflight = planRequestPreflight(task, messages, toolNames);
   if (preflight.claimed) return preflight.plan;
   if (
@@ -401,13 +410,18 @@ async function planChatStepRoutes(messages, toolNames, received) {
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
   // telling the quoted text from the instruction, so the request is declined
   // before any arm reads its payload as words to act on (PR #1188 G71).
-  const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null) ?? computerUsePlanAgenticStep(messages, toolNames);
+  const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null)
+    ?? (hasAuthoritativeLiteralWrite(task) ? null : computerUsePlanAgenticStep(messages, toolNames));
   if (computerUse !== null) return computerUse;
   if (hasAuthoritativeLiteralWrite(task) && !ownsCompleteEditRequest(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const obligations = taskObligations.obligations(task);
     if (obligations !== null) return await planObligationsStep(task, messages, toolNames, obligations);
     const general = composeGeneralChangePlan(task);
     if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+  }
+  if (task.split('\n').some((line) => line.trimEnd() === '```lino')) {
+    const report = learningReport.route(task);
+    if (report !== null) return learningReport.planReportStep(report, task, messages, toolNames);
   }
   const answer = programContractAnswer(task);
   if (answer !== null) {
@@ -458,7 +472,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
   const compiled = procedure.compileTask(task);
   if (compiled !== null) return procedure.planStep(messages, toolNames, compiled);
   const report = learningReport.route(task);
-  if (report !== null) return learningReport.planReportStep(report, messages, toolNames);
+  if (report !== null) return learningReport.planReportStep(report, task, messages, toolNames);
   const artifact = (await codeArtifact.planCodeArtifactStep(task, messages, toolNames)) ?? (await missingSemanticImplementation(task, messages, toolNames));
   if (artifact !== null) return artifact;
   for (const [predicate, step] of [[selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep], [dreamingAudit.isDreamingAuditTask,
@@ -469,7 +483,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
          documentRecipe.planRebuildStep], [googleTrendsLearning.isGoogleTrendsLearningTask, documentRecipe.planGoogleTrendsLearningStep],
          [googleTrendsCatalog.isGoogleTrendsCatalogTask, documentRecipe.planGoogleTrendsCatalogStep], [questionCatalog.isQuestionCatalogTask,
          documentRecipe.planQuestionCatalogStep]]) {
-    if (predicate(task)) return await step(messages, toolNames);
+    if (predicate(task)) return await step(messages, toolNames, task);
   }
   // The file-analysis arm. After its typed read, where a name or literal is
   // used inside the workspace is a content search (PR #1188 T90): grep it,
@@ -533,7 +547,8 @@ async function planLaterRoutes(task, messages, toolNames) {
   if (formalizationRecipe.isFormalizationTask(task)) {
     return await formalizationRecipe.planFormalizationStep(task, messages, toolNames);
   }
-  if (meaningDetail.isMeaningDetailTask(task)) return await documentRecipe.planMeaningDetailStep(task, messages, toolNames);
+  const meaning = documentRecipe.planMeaningDetailStep(task, messages, toolNames);
+  if (meaning !== null) return meaning;
   if (diagram.isDiagramTask(task)) return await documentRecipe.planDiagramStep(messages, toolNames);
   return planOpenRoutes(task, messages, toolNames);
 }

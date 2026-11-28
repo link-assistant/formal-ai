@@ -1,0 +1,17 @@
+{
+  "source": "bd586bfd24275b7b2fc757dff9d1a2fe74b6cba2",
+  "gatesPassed": 4,
+  "whitespaceCheckPassed": true,
+  "completeAggregateReview": false,
+  "hostedQualification": "pending",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2430,
+    "sha256": "55d8dbf36e752d8bb14c988a8f2973a8847f2f4c6e2e64f9077a3021209421c6"
+  },
+  "members": 12,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:20:23.005610+00:00"
+}

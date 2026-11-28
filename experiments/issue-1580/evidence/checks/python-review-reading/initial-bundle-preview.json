@@ -1,0 +1,8 @@
+{
+  "path": "experiments/issue-1580/evidence/checks/python-review-reading/initial-bundle-preview.log.gz",
+  "rawBytes": 2174030,
+  "rawSha256": "03386e48125a10753dca85edf216091918abe19d82192400b07ace5c139ec348",
+  "compressedSha256": "4c185e494b822a384cef069791e2ceae39238ba43a12951f2fc20358e154dce6",
+  "fullPageReadingCredit": false,
+  "correction": "The corrected 400-line reader explicitly defers both generated JavaScript bundles and both lockfiles. Pages 1-8 were subsequently fully read without the minified bundle."
+}

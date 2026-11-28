@@ -56,7 +56,7 @@ fn issue_1021_requirements_are_written_down_and_traceable() {
     );
     // The shard is the editable source; REQUIREMENTS.md is assembled from it.
     let shard = read(shard_path());
-    let traceability = read(root.join("docs/requirements-traceability.md"));
+    let traceability = crate::assembled_docs::traceability_at(&root);
     for id in requirement_ids() {
         assert!(
             requirements.contains(&format!("| {id} |")),
@@ -148,7 +148,7 @@ fn the_undelivered_requirements_are_reported_rather_than_dropped() {
         .expect("the repository root sits one level above the crate");
     let case_study = read(root.join("docs/case-studies/issue-1021/README.md"));
     let shard = read(shard_path());
-    let traceability = read(root.join("docs/requirements-traceability.md"));
+    let traceability = crate::assembled_docs::traceability_at(&root);
 
     for id in ["R1021-14", "R1021-22"] {
         assert!(
@@ -305,7 +305,7 @@ fn every_test_the_traceability_rows_cite_exists() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let traceability = read(root.join("docs/requirements-traceability.md"));
+    let traceability = crate::assembled_docs::traceability_at(&root);
 
     let mut checked = 0usize;
     for line in traceability.lines() {

@@ -1,0 +1,13 @@
+{
+  "complete": true,
+  "head": "e6ca6bc899a8e846de2dc885d3124547b64fd906",
+  "sourceHead": "39487885e",
+  "priorPublishedHead": "1388db5502f71d0f2bcf522da01ef8fdb8a6ef89",
+  "pushExecuted": true,
+  "observedAt": "2026-11-19T18:18:33.037105+00:00",
+  "fullIssueComplete": false,
+  "newNativeExecution": "pending exact-head hosted CI",
+  "independentAuthorshipCredit": 0,
+  "verifiedPayloads": 60,
+  "reason": "The prior batch is published as e6ca6bc8 after its recorded gate. Its completed failed CI is reviewed separately; no passing current CI or complete issue acceptance is inferred."
+}

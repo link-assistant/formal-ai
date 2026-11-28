@@ -1,0 +1,82 @@
+{
+  "head": "2c9d93c5c61b5a8372f3e7634db1a979085d3c64",
+  "workflowCount": 23,
+  "success": 21,
+  "failure": 2,
+  "archivedCommandRecords": 35,
+  "allPayloadHashesVerified": 70,
+  "fullWorkflowPayloadsLiterallyRead": false,
+  "nativeJob": "https://github.com/link-assistant/formal-ai/actions/runs/44386721819/job/135093530725",
+  "nativeRawSha256": "76754826b09568a5e4c94efe1ad33ec485993c60c6442a7743ddcd68bfe2e67c",
+  "nativeLiteralLinesRead": [
+    1625,
+    1758
+  ],
+  "nativePassedBeforeAbort": 60,
+  "nativeFailed": 1,
+  "results": [
+    {
+      "state": "ok",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "state": "ok",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "state": "ok",
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "state": "ok",
+      "passed": 22,
+      "failed": 0
+    },
+    {
+      "state": "ok",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "state": "ok",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "state": "FAILED",
+      "passed": 17,
+      "failed": 1
+    }
+  ],
+  "laterNativeTargetsNotExecuted": true,
+  "actionableFailures": [
+    {
+      "workflow": "Layered CI",
+      "run": 44386721601,
+      "error": "generated native registry is current: generated registry is stale",
+      "location": "rust/tests/web/rust-specification-generated-programs.test.mjs:129",
+      "cause": "Canonical CNL source change left the native registry source witness stale. Regeneration changed one rust/src/cnl_output.rs SHA256 only, with all 158 executable programs unchanged.",
+      "localFixCommit": "0875e4c94a7636c31bb53cdaff16c494e4113049"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44386721819,
+      "error": "a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses: en, hi, zh, es fail calendar event routing",
+      "location": "rust/tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs:290",
+      "cause": "The calendar handler ignored existing shared scheduling-act stems and clock-reference meanings.",
+      "localFix": "Shared-role recognition in Rust and JavaScript calendar handlers; 13 focused JavaScript cases pass, native replay still pending."
+    }
+  ],
+  "workflowFailureCollectionCommit": "9913960e5779a4b527fcf687ca9342aacf6b6763",
+  "localizedInputAdmissionCommit": "932b05a8047efd9eab9b8e1b3d71d270580207e8",
+  "spokenHourValueAccuracyStillOpen": true,
+  "javascriptFullDispatchRussianParityStillOpen": true,
+  "originalNativeContractsVerifiedBeforeNewMapping": 10,
+  "originalNativeContractsOpenBeforeNewMapping": 43,
+  "originalBudgetFailuresOpen": 3,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -37,6 +37,10 @@ use std::path::Path;
 use std::process::exit;
 use walkdir::WalkDir;
 
+#[path = "lib/github-actions-log.rs"]
+mod github_actions_log;
+use github_actions_log::safe_log_text;
+
 /// Versioned public API prefixes whose next path segment names a resource.
 const API_ROUTE_PREFIXES: &[&str] = &["/v1/", "/api/formal-ai/v1/"];
 
@@ -289,7 +293,13 @@ fn check_directory(cwd: &Path) -> CheckResult {
                 }
             }
             Err(error) => {
-                eprintln!("Warning: Could not read {}: {error}", path.display());
+                eprintln!(
+                    "{}",
+                    safe_log_text(&format!(
+                        "Warning: Could not read {}: {error}",
+                        path.display()
+                    ))
+                );
             }
         }
     }
@@ -355,7 +365,9 @@ fn print_violations(result: &CheckResult) {
             println!("{}", route_annotation(violation));
             println!(
                 "  {}:{}: `{}`",
-                violation.file, violation.line, violation.route
+                safe_log_text(&violation.file),
+                violation.line,
+                safe_log_text(&violation.route)
             );
         }
         println!();
@@ -368,12 +380,17 @@ fn print_violations(result: &CheckResult) {
             if violation.line == 0 {
                 println!(
                     "  {}: `{}` ({})",
-                    violation.file, violation.name, violation.kind
+                    safe_log_text(&violation.file),
+                    safe_log_text(&violation.name),
+                    violation.kind
                 );
             } else {
                 println!(
                     "  {}:{}: `{}` ({})",
-                    violation.file, violation.line, violation.name, violation.kind
+                    safe_log_text(&violation.file),
+                    violation.line,
+                    safe_log_text(&violation.name),
+                    violation.kind
                 );
             }
         }

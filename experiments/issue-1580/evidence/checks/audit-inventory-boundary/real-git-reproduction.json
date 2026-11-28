@@ -1,0 +1,21 @@
+[
+  {
+    "command": [
+      "bash",
+      "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/fixtures/python-template/scripts/audit-npm-locks.sh"
+    ],
+    "status": 0,
+    "stdout": "::notice::No package-lock.json is tracked; nothing to audit.\n",
+    "stderr": "fatal: not a git repository (or any of the parent directories): .git\n"
+  },
+  {
+    "command": [
+      "bash",
+      "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/fixtures/python-template/scripts/audit-npm-locks.sh",
+      "--list"
+    ],
+    "status": 0,
+    "stdout": "\n",
+    "stderr": "fatal: not a git repository (or any of the parent directories): .git\n"
+  }
+]

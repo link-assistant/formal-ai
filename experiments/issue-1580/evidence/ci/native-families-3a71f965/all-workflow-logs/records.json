@@ -1,0 +1,715 @@
+[
+  {
+    "workflow": "Regenerate native session projections",
+    "run": 44702570628,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570628",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570628",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570628.stdout.log.gz",
+      "rawSha256": "13db00ab3d1bc4c859bd34253d37f1e94d71d8b23f0dfc6817c5933dc78445d6",
+      "archiveSha256": "e04cd2efaf21fcbb5d24f18205db65fd527bb6362d99fdc1bc0e61dd43db6819",
+      "bytes": 4581,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570628.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Workflows",
+    "run": 44702570352,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570352",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570352",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570352.stdout.log.gz",
+      "rawSha256": "bce5e47c8e4c0e37c31aa2355feb292e66903c01940bae569dad69bb34271a22",
+      "archiveSha256": "5d11c0fdcdd76889c4729a00181354ac7cf8e7d80aa045716d11bfca80fa328d",
+      "bytes": 167671,
+      "lines": 1100
+    },
+    "stderr": {
+      "file": "44702570352.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Agentic CLI Matrix",
+    "run": 44702570614,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570614",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570614",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570614.stdout.log.gz",
+      "rawSha256": "b14832bfbcee0705c8756050589bff81a982db92832d5235634f994a64880cf0",
+      "archiveSha256": "e04698dcfeb95a7db5e3f247c6b8d3c6ba75defa847255e5fe72edda0a9d3742",
+      "bytes": 4581,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570614.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Publish source networks",
+    "run": 44702570196,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570196",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570196",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570196.stdout.log.gz",
+      "rawSha256": "7a7e12a2b3ef133abae31198f21df27d66b298a0a30e91f84869082236cb9b93",
+      "archiveSha256": "388413fb75cbb330b7e9387bd53f04b2800740f0b8131d130a23521366b70061",
+      "bytes": 25367,
+      "lines": 226
+    },
+    "stderr": {
+      "file": "44702570196.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Stock Rust Install",
+    "run": 44702570584,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570584",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570584",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570584.stdout.log.gz",
+      "rawSha256": "a2f64dc73a2b7110e8e033996eab92bfba8c26d4a33bc8f1467ac068fe0ba838",
+      "archiveSha256": "5d7d8cd32f4ae5800fb7cb28c3210354e50d14fdea0470d93c678dfdd151d050",
+      "bytes": 4580,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570584.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Self-development status",
+    "run": 44702570500,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570500",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570500",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570500.stdout.log.gz",
+      "rawSha256": "2935126f4784053cebbd792bf9247d878eb7fc58204369f91b4d81368b49b741",
+      "archiveSha256": "fa55f7097bf93f0306275d07d6fe0ecf906096a5c6d1c08265de22cbfd4eeb51",
+      "bytes": 4584,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570500.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Coverage",
+    "run": 44702570001,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570001",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570001",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570001.stdout.log.gz",
+      "rawSha256": "71dfa9fefb7d259e7c6186968344294c421349aebbeb2486aa0c21d80434cd61",
+      "archiveSha256": "4a1b7937239a0f6762952d09b8bee75cb31319f0a73620ed8f567d97634e91c6",
+      "bytes": 233786,
+      "lines": 1582
+    },
+    "stderr": {
+      "file": "44702570001.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "container-images",
+    "run": 44702570518,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570518",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570518",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570518.stdout.log.gz",
+      "rawSha256": "a372c784ee01eea30bfe6e33df2ffee69eea0e7864827c8dd064548dc0acebf8",
+      "archiveSha256": "3586ea40c38b4bc02d800660be77ef61c0037f89174bef7fb8fdb04e9a3aa140",
+      "bytes": 4581,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570518.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Verify full readable source content",
+    "run": 44702570522,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570522",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570522",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570522.stdout.log.gz",
+      "rawSha256": "6adda475d29801916d104385598b684e3371fbe6fa0f99c8cf190f0d0c1a3878",
+      "archiveSha256": "d2694501ebeb290f0e8055ef56e4caea4fcb4a1a71bbed981b31da66d7cd1ec2",
+      "bytes": 4584,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570522.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "External Benchmarks",
+    "run": 44702570609,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570609",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570609",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570609.stdout.log.gz",
+      "rawSha256": "68369e3e1aa16b55daa0664794de2bec3f70a6308aad70d6402ba9c7ab5ac4b1",
+      "archiveSha256": "56d130f85397dd46c49a99665ccce26077cd4dfc5ad7cce648c6af80dec728bf",
+      "bytes": 4580,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570609.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Source scanner qualification and debt inventory",
+    "run": 44702570024,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570024",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570024",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570024.stdout.log.gz",
+      "rawSha256": "0c7e383f16e7defe91b3c77a4d17fcb77692c2683b8fabfffea673ad510a0df8",
+      "archiveSha256": "a98028dae52f551818260784225815bae4cea845859133d8da5e4fc98b486077",
+      "bytes": 51547,
+      "lines": 429
+    },
+    "stderr": {
+      "file": "44702570024.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Guarded staged release authority refusal",
+    "run": 44702570187,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570187",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570187",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570187.stdout.log.gz",
+      "rawSha256": "64e6c913c6324a5678084ccc0660f7499af6153ef39e1bbeee980f20895d8aa2",
+      "archiveSha256": "25e3174e3721dfc563cea7130f256e20cf7ff38c532d495006775096f37e5912",
+      "bytes": 62440,
+      "lines": 403
+    },
+    "stderr": {
+      "file": "44702570187.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Self-hosting evidence",
+    "run": 44702570566,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570566",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570566",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570566.stdout.log.gz",
+      "rawSha256": "294957ea7dcfee08f19123cd8e86da8a5d3cca27104c9e43520f49db89a63076",
+      "archiveSha256": "6e43abe9af190407338193ef5446e8e8077c8ae91e62e507d82e0daa2cab861e",
+      "bytes": 4581,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570566.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Documentation policy",
+    "run": 44702570091,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570091",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570091",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570091.stdout.log.gz",
+      "rawSha256": "ec46edc37be7eb4fe98dbabe87e436d282330167b9a6f63a67fc1efde33acf46",
+      "archiveSha256": "58d461c0e42275e5edebdc476401d0c1f2d97e156f65932a3a35fa6bea07cc8f",
+      "bytes": 51269,
+      "lines": 418
+    },
+    "stderr": {
+      "file": "44702570091.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Broken Link Checker",
+    "run": 44702569988,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702569988",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702569988",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702569988.stdout.log.gz",
+      "rawSha256": "a3114f204e2c30979a18eea9f08e9a195793efdccad04e9b51acaf13458cec4b",
+      "archiveSha256": "cf5c85ee0adb2921f56b1c7228394dc151088069896b2681d6bb25a24e933dee",
+      "bytes": 42271,
+      "lines": 340
+    },
+    "stderr": {
+      "file": "44702569988.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Desktop Release",
+    "run": 44702570769,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570769",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570769",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570769.stdout.log.gz",
+      "rawSha256": "0b15e392c518e3eb9b51bce97a88bd8871ee54fd55144ad594a24daa27bb70f7",
+      "archiveSha256": "3ac7a772b8f92664567dbedbe22f2b0d3295dd9433dcfa451918f6fd1d047a34",
+      "bytes": 24119,
+      "lines": 197
+    },
+    "stderr": {
+      "file": "44702570769.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Publish VS Code extension",
+    "run": 44702570135,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570135",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570135",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570135.stdout.log.gz",
+      "rawSha256": "28f3af3720302ffa42015cce0eccb6b30abc901510674cbdc2606cba68469e40",
+      "archiveSha256": "1cf078915cdfab6a2754783367f51d5de093d83a49469a99335042a602263ed1",
+      "bytes": 35099,
+      "lines": 331
+    },
+    "stderr": {
+      "file": "44702570135.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Proactive failure report Agent CLI E2E",
+    "run": 44702570307,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570307",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570307",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570307.stdout.log.gz",
+      "rawSha256": "9ea1748ee1fe9db60d69cffa6c3f4a12296e61b5d13c4cdb6548b3beb4f433f8",
+      "archiveSha256": "f7033611fccbceb311088241621f0b70c3f6f48fb81cae33d1f4b31db5fe6329",
+      "bytes": 4581,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570307.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Benchmark Corpus Gate",
+    "run": 44702570123,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570123",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570123",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570123.stdout.log.gz",
+      "rawSha256": "523523a54d715c820d258d904648e77b80b3e23c3bdcbcb248eda0bd70eaadcc",
+      "archiveSha256": "033d9328125603ea200204e373422dc08d789c2087c04e20e7314628ff24aa2e",
+      "bytes": 4581,
+      "lines": 38
+    },
+    "stderr": {
+      "file": "44702570123.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Publish browser engine",
+    "run": 44702570238,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570238",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570238",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570238.stdout.log.gz",
+      "rawSha256": "2edca37a3a127889a31c479dcfdc405fc7631f57cb402707e37f543083880197",
+      "archiveSha256": "53372498e1e1372f50f945f4a61ba3a207d1063369c84873a2e946be82a7d73b",
+      "bytes": 25487,
+      "lines": 226
+    },
+    "stderr": {
+      "file": "44702570238.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Security",
+    "run": 44702570410,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570410",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570410",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570410.stdout.log.gz",
+      "rawSha256": "2d15ba3f72740014274243ca1f5fc12ac4c1a8a94eeb5b831cff220402d1be05",
+      "archiveSha256": "ae6b22ea63629b38e5f8af6bcf2f5cf4453dc3db55b7c380326bf6aea8becad6",
+      "bytes": 90197,
+      "lines": 778
+    },
+    "stderr": {
+      "file": "44702570410.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "Layered CI",
+    "run": 44702570483,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570483",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570483",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570483.stdout.log.gz",
+      "rawSha256": "e17d83dce2b32dfd9a558c602e7d97252e119d22d079039ecb0cf33e555127cb",
+      "archiveSha256": "13a646da9f89c4963562febd38ef515410c05e5667d6eb7fcf8e1a830f0356ef",
+      "bytes": 2204038,
+      "lines": 12550
+    },
+    "stderr": {
+      "file": "44702570483.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "workflow": "CI/CD Pipeline",
+    "run": 44702570685,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44702570685",
+    "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+    "conclusion": "success",
+    "argv": [
+      "gh",
+      "run",
+      "view",
+      "44702570685",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--log"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "44702570685.stdout.log.gz",
+      "rawSha256": "c86735d299a666e7d2b3759501d0b4557e7e826ed96f50467ec327382c231526",
+      "archiveSha256": "a7846ef86d6bcb936d7d59a2b164770c800aa909c370c37d29dba80b7d35655c",
+      "bytes": 7083797,
+      "lines": 43414
+    },
+    "stderr": {
+      "file": "44702570685.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

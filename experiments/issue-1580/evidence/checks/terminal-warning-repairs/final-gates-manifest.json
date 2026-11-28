@@ -1,0 +1,109 @@
+{
+  "sourceHead": "3b8a5ab75b7e5b87116a525f9e80b7b469c76a4c",
+  "checks": {
+    "complete": true,
+    "checks": [
+      {
+        "name": "check-file-size",
+        "exit": 0,
+        "seconds": 4.751,
+        "path": "/tmp/issue-1580-research/terminal-warning-final-gates/check-file-size.log"
+      },
+      {
+        "name": "check-file-size-js-twin",
+        "exit": 0,
+        "seconds": 3.983,
+        "path": "/tmp/issue-1580-research/terminal-warning-final-gates/check-file-size-js-twin.log"
+      },
+      {
+        "name": "check-readable-code",
+        "exit": 0,
+        "seconds": 10.23,
+        "path": "/tmp/issue-1580-research/terminal-warning-final-gates/check-readable-code.log"
+      },
+      {
+        "name": "check-abbreviations",
+        "exit": 0,
+        "seconds": 3.35,
+        "path": "/tmp/issue-1580-research/terminal-warning-final-gates/check-abbreviations.log"
+      },
+      {
+        "name": "check-ci-speed",
+        "exit": 0,
+        "seconds": 0.334,
+        "path": "/tmp/issue-1580-research/terminal-warning-final-gates/check-ci-speed.log"
+      },
+      {
+        "name": "workflows",
+        "exit": 0,
+        "seconds": 1.126,
+        "path": "/tmp/issue-1580-research/terminal-warning-final-gates/workflows.log"
+      },
+      {
+        "name": "whitespace",
+        "exit": 0,
+        "seconds": 0.283,
+        "path": "/tmp/issue-1580-research/terminal-warning-final-gates/whitespace.log"
+      }
+    ]
+  },
+  "files": [
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/outcome.json",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-outcome.json.gz",
+      "bytes": 1287,
+      "sha256": "d1b4ae0a6e6f63c974a1cd6f9da59f5c7fd2085c452648804f31b43d89a57781",
+      "compressedSha256": "161a492a07676fc0c0ddc4bffe3b8d080858ac3a0d5df4e5a7dd6f3ba00d0ccf"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/check-file-size.log",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-check-file-size.log.gz",
+      "bytes": 63,
+      "sha256": "c2dc18be8bf3c1fb31e80519acacd88f2f8288964ceb0d9e2da81c286fbdb388",
+      "compressedSha256": "96c87b450cce42d12829842b84da11860b3f963334aa9106e05f598fb7514752"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/check-file-size-js-twin.log",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-check-file-size-js-twin.log.gz",
+      "bytes": 71,
+      "sha256": "204f0d31eec82b8088baea7f3ed0fe3f3769eaa9bfedffee015e412b6b093604",
+      "compressedSha256": "597e3811195b632df72c61ab54b20b586b14bfde53968f8cf3d7b9bb2543c7ff"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/check-readable-code.log",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-check-readable-code.log.gz",
+      "bytes": 68,
+      "sha256": "b265c6c3074f63c3b3d85f0a50dda4b0b219066817312424c7e205e19ee040c3",
+      "compressedSha256": "ce2f8bd22338f81a53348146a4ed4d445afa609c9a2863e96440e738131a7570"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/check-abbreviations.log",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-check-abbreviations.log.gz",
+      "bytes": 67,
+      "sha256": "bcecbb026f87d3eaa79206d4436323630f7e6abbf32b294dcb5733ad7e91bb7b",
+      "compressedSha256": "6f5f3d5dd33f4c02038a2445c495730a125b7eb98984332cdab73fe0d681ba9d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/check-ci-speed.log",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-check-ci-speed.log.gz",
+      "bytes": 62,
+      "sha256": "cba0a1228ced1c5dd5a7b9b444d1c25b7946725dd41d1cbe2f120fb89549bdde",
+      "compressedSha256": "6b3cbd2207bf9462a0e65d09b345d96b1b9f6cb906cc94bba051783a57da3e6c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/workflows.log",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-workflows.log.gz",
+      "bytes": 57,
+      "sha256": "baedfb5f868ee8a8cbc62632c2435689a47cba976f0788c084a213e63be82066",
+      "compressedSha256": "a6fae7f805f63cddd842e4400b52d780890da78a7ad4e7e65810b86074a22925"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-warning-final-gates/whitespace.log",
+      "archive": "experiments/issue-1580/evidence/checks/terminal-warning-repairs/final-whitespace.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

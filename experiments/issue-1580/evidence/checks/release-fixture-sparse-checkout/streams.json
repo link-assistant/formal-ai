@@ -1,0 +1,65 @@
+[
+  {
+    "file": "bound-release-fixture-checkout.py.gz",
+    "rawSha256": "0eb1b0afdb1c7ebd1615e3852eb8ea1f5ee2032e8fbdd8e5c6daed70f22e24c4",
+    "archiveSha256": "841afd1c6e0cf65b88ceb125cd5a443440f3f3d85abb69bba4ae7eee325342a2",
+    "bytes": 4150,
+    "lines": 54
+  },
+  {
+    "file": "before.test.mjs.gz",
+    "rawSha256": "24e42714e602164f8f43018609feafcab6cf4a93c49dc20f0b2cfb9a42f6d856",
+    "archiveSha256": "80c331d378030095dd9b4cc9d0477d5faaf50952d1f9da6ba4f012d1faf0afa0",
+    "bytes": 6730,
+    "lines": 179
+  },
+  {
+    "file": "focused-result.json.gz",
+    "rawSha256": "c1e16cc2f3551f9df91e8e29cf35a4c6df073a0724832aa55d91133896df5d02",
+    "archiveSha256": "4a7a614b36259ea1580a163aa1cae21b3a9e86f549738a282253ff83a1d6580f",
+    "bytes": 94,
+    "lines": 5
+  },
+  {
+    "file": "focused.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "focused.stdout.gz",
+    "rawSha256": "1b8a9314add3cb3746f91431fd8a306b25f7cf47844666e7dcc58153ffb48a76",
+    "archiveSha256": "17c441b795c9f5b3f726a58a8e457c8ca1dba733972fbdaf72ecdc286ad72581",
+    "bytes": 771,
+    "lines": 16
+  },
+  {
+    "file": "interrupted-all-javascript-gates.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "interrupted-all-javascript-gates.stdout.gz",
+    "rawSha256": "bd8afcd45029d5e34e0c22a75e0e93444b88ecabeeed909e965669aa5ba65db5",
+    "archiveSha256": "c02d58534e36681530b7691bde8fe52c58ca33b5e35b08cce374278356c19f98",
+    "bytes": 1627,
+    "lines": 32
+  },
+  {
+    "file": "interrupted-full-gates.json.gz",
+    "rawSha256": "4bde505a18c9acd41e9dce93f3b5ad41ae93147253eb0d7356d9526e37bdc332",
+    "archiveSha256": "a9dbedca0612b758d6053172b74607ec45eadedfb85f7634c28c22a45789ef90",
+    "bytes": 435,
+    "lines": 12
+  },
+  {
+    "file": "interrupted-worker.log.gz",
+    "rawSha256": "b9aa4d9e22409cd36cbeee1aaddc088d0ffe964cad79fec76f444bb162bdb9be",
+    "archiveSha256": "da3f7943f69995aed51d4aafb9623d17dc79249801dfe7499126261442488a42",
+    "bytes": 3279,
+    "lines": 16
+  }
+]

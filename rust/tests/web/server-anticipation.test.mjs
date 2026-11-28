@@ -24,7 +24,8 @@ import {
   whyPrediction,
 } from '../../../js/server/anticipation.mjs';
 import { solveIntent } from '../../../js/server/dreaming-replay.mjs';
-import { learningCycleLinksNotation } from '../../../js/server/learning-cycle.mjs';
+import { googleTrendsLearningCycle, learningCycleLinksNotation } from '../../../js/server/learning-cycle.mjs';
+import { readRepoFile } from '../../../js/server/lino.mjs';
 import { learningCycleRecordPath, runCoreDreamingOnce } from '../../../js/server/dreaming-runtime.mjs';
 import { SyncStore, exportLinksNotation, memoryEvent, parseLinksNotation } from '../../../js/server/memory-store.mjs';
 import { answerFromPrelearnedCache } from '../../../js/server/standing-requirements.mjs';
@@ -205,9 +206,13 @@ test('the real solver: repeated actual requests do not inflate the class hit rat
   assert.ok(ledger.includes('hit_rate_basis_points "10000"'));
 });
 
-test('idle dreaming persists the ledger and the learning-cycle record; a later live request records a hit', () => {
+test('idle dreaming persists the ledger and the learning-cycle record; a later live request records a hit', (t) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-anticipation-idle-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   const file = path.join(dir, 'memory.lino');
+  const frontier = readRepoFile('docs/case-studies/issue-701/replay/learning-frontier-google-trends.lino');
+  // Learning consumes a supplied frontier; the production seed has no frozen capture.
+  fs.writeFileSync(path.join(dir, 'memory.learning-frontier.lino'), frontier);
   fs.writeFileSync(file, exportLinksNotation(scriptedRequests(), 2));
   runCoreDreamingOnce(file, { env: { ...process.env, FORMAL_AI_LIVE_API: '0' }, classify: fixtureClassify });
 
@@ -219,6 +224,7 @@ test('idle dreaming persists the ledger and the learning-cycle record; a later l
   assert.ok(ledger.includes('status "consent_required"'), ledger);
   const record = fs.readFileSync(learningCycleRecordPath(file), 'utf8');
   assert.ok(record.includes('mode "proposal_only"') && !record.includes('proposals "0"'));
+  assert.equal(record, learningCycleLinksNotation(googleTrendsLearningCycle(frontier)) + '\n');
   assert.equal(parseLinksNotation(fs.readFileSync(file, 'utf8')).filter((event) => event.kind === 'anticipation_prediction').length, 3);
 
   const store = SyncStore.open({ ...process.env, FORMAL_AI_MEMORY_PATH: file, FORMAL_AI_RECORD_CHAT: '1' }, file);

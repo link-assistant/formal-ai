@@ -5,6 +5,9 @@ use formal_ai::agentic_coding::{HARDCODED_LANGUAGE_LEARNING_PATH, REPORTS, run_a
 
 const DIFFERENTLY_WORDED_TASK: &str = "Examine the R379 source-language audit observations through associative auto-learning, retain evidence for each proposed amendment, require review before adoption, and write hardcoded-language-learning-report.lino";
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../../data/meta/issue-659-hardcoded-language-learning.lino");
+
 #[test]
 fn issue_659_report_is_derived_from_persisted_observations() {
     let memory = include_str!("../../../../data/meta/issue-659-hardcoded-language-learning.lino");
@@ -22,7 +25,7 @@ fn issue_659_report_is_derived_from_persisted_observations() {
 
 #[test]
 fn issue_659_learning_remains_human_review_gated() {
-    let report = hardcoded_language_learning::render_document();
+    let report = hardcoded_language_learning::render_document_from(REPORT_MEMORY);
     assert!(report.starts_with("hardcoded_language_learning_report\n  issue \"659\"\n"));
     assert!(report.contains("decision \"awaiting_human_review\""));
     assert!(report.contains(
@@ -48,7 +51,10 @@ fn generalized_table_routes_different_issue_659_wording() {
 
 #[test]
 fn formal_ai_executes_the_whole_issue_659_learning_task() {
-    let outcome = run_agentic_task(DIFFERENTLY_WORDED_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{DIFFERENTLY_WORDED_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
     assert_eq!(outcome.steps.len(), 2);
@@ -59,7 +65,7 @@ fn formal_ai_executes_the_whole_issue_659_learning_task() {
     assert_eq!(arguments["path"], HARDCODED_LANGUAGE_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        hardcoded_language_learning::render_document()
+        hardcoded_language_learning::render_document_from(REPORT_MEMORY)
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));
@@ -70,5 +76,8 @@ fn committed_agent_cli_artifact_is_byte_reproducible() {
     let committed = include_str!(
         "../../../../docs/case-studies/issue-659/agent-cli-evidence/hardcoded-language-learning-report.lino"
     );
-    assert_eq!(committed, hardcoded_language_learning::render_document());
+    assert_eq!(
+        committed,
+        hardcoded_language_learning::render_document_from(REPORT_MEMORY)
+    );
 }

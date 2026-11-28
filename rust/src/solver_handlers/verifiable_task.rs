@@ -10,13 +10,13 @@ use crate::agent::{AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
 use crate::coding::fragment_catalog::FragmentCatalog;
 use crate::coding::ir_lowering::lowering_for;
 use crate::coding::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
-use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::execution_evidence::{Evidence, EvidenceSource, ObservationKind};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use crate::verifiable_task::{
     TaskExpectation, VerifiableTask, normalized_category, recognise_verifiable,
 };
+use crate::{engine::SymbolicAnswer, engine_answer::VERIFIABLE_TASK_EXECUTION_LINK};
 
 use super::{finalize_simple, try_pattern_inference};
 
@@ -147,7 +147,7 @@ pub fn try_verifiable_task_with_online(
         if corroborated { 1.0 } else { 0.7 },
     );
     symbolic.evidence_links.push(format!(
-        "verifiable_task:executed:{}:{}",
+        "{VERIFIABLE_TASK_EXECUTION_LINK}{}:{}",
         answer.derivation_id,
         answer.value.trim()
     ));
@@ -342,15 +342,14 @@ fn derive_count(
                     .split_whitespace()
                     .all(|token| token.len() < 3 || gloss.contains(token))
         });
-        let seeded_sources = (!retrieved_match)
-            .then(|| {
-                crate::verifiable_task::seeded_membership_sources(
-                    &entity.surface,
-                    subject,
-                    &task.prose_language,
-                )
-            })
-            .flatten();
+        // Retain the seed taxonomy proof even when retrieval also matches:
+        // populating the source cache must not
+        // erase the grounded membership path from the composition trace.
+        let seeded_sources = crate::verifiable_task::seeded_membership_sources(
+            &entity.surface,
+            subject,
+            &task.prose_language,
+        );
         if retrieved_match || seeded_sources.is_some() {
             count += entity.multiplicity.parse::<i128>().unwrap_or(1);
             urls.extend(outcome.items.into_iter().map(|sense| sense.source_url));
@@ -792,4 +791,3 @@ fn symbolic_check(derivation_id: &str, slug: &str, observed: &[u8]) -> Evidence 
     evidence.produced_by = format!("verifiable_task:{slug}");
     evidence
 }
-

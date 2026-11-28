@@ -1,0 +1,88 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "records": [
+    {
+      "name": "full-consumer",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/hive-work-item-consumer.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 163.53600833402015,
+      "file": "full-consumer.log.gz",
+      "rawSha256": "47f10d0def8a10e3723452f456656b2f282301d890067c52a5940f5125f73e64",
+      "archiveSha256": "ee139e16bd12cfffdaee1a836c089560d639eec2b6410b8280153538dc2de89b"
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.14084115903824568,
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "javascript-syntax",
+      "argv": [
+        "node",
+        "--check",
+        "experiments/issue-1580/native-hive-fixture-probe.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.06845108116976917,
+      "file": "javascript-syntax.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "relevant-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-readable-code"
+      ],
+      "exitCode": 0,
+      "seconds": 115.24776736507192,
+      "file": "relevant-gates.log.gz",
+      "rawSha256": "8c8fda6c98123eb2cc1e3000be2d222485c7de177ec1ef01e1124dd2e1ad6bc0",
+      "archiveSha256": "e00b8d876bd5b21bb9be23f7695f922fd1a74f901809f3e6e7318fd6d816d69e"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "experiments/issue-1580/native-hive-fixture-probe.mjs",
+      "sha256": "99d40f0294d6b7f38e608c5722beaaed139e1980ebf8d56cb953804a8878c616"
+    },
+    {
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+      "sha256": "cccf1f184896fcdf0d5616fa5364270289bb124b1902c777843c6590a43948ce"
+    },
+    {
+      "path": "rust/tests/web/hive-work-item-consumer.test.mjs",
+      "sha256": "5d61629e345e27a96b9024b4576e642261df3373bb612b05db7de3c7eb378ae2"
+    },
+    {
+      "path": "changelog.d/20261120_031000_issue_1580_hive_workspace.md",
+      "sha256": "52d8d0619495ecde666b19ae41d7d60dbe2a421ed322b1d4772d469d84351fd2"
+    }
+  ],
+  "rustCompiledLocally": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

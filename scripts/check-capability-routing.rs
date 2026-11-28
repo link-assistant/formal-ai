@@ -190,45 +190,52 @@ fn phrase_rows(text: &str) -> u64 {
         .count() as u64
 }
 
-fn function_body<'a>(text: &'a str, signature: &str) -> &'a str {
-    let Some(start) = text.find(signature) else {
-        return "";
-    };
-    let tail = &text[start..];
-    let Some(open) = tail.find('{') else {
-        return "";
-    };
-    let body = &tail[open + 1..];
-    let mut depth = 1_i64;
+fn function_body<'a>(text: &'a str, signature: &str) -> Option<&'a str> {
+    let (_, tail) = text.split_once(signature)?;
+    let (_, body) = tail.split_once('{')?;
+    let mut depth = 1;
     for (index, character) in body.char_indices() {
         match character {
             '{' => depth += 1,
             '}' => {
                 depth -= 1;
                 if depth == 0 {
-                    return &body[..index];
+                    return Some(&body[..index]);
                 }
             }
             _ => {}
         }
     }
-    ""
+    None
 }
 
-/// Top-level conditional route arms in the two planner dispatch functions.
-/// This counts the general source-order cascade, not names of individual
-/// handlers, and therefore remains meaningful while handlers are migrated.
-fn planner_route_arms(text: &str) -> u64 {
+/// Top-level conditional branches of the general source-order cascade.
+fn count_route_conditions(text: &str, signature: &str) -> Option<u64> {
+    let body = function_body(text, signature)?;
+    Some(
+        body.lines()
+            .filter(|line| *line == "    if" || line.starts_with("    if "))
+            .count() as u64,
+    )
+}
+
+fn planner_route_arms(root: &Path) -> Result<u64, String> {
     [
-        "fn plan_chat_step_routes(",
-        "pub(super) fn plan_settled_routes(",
+        (
+            "rust/src/agentic_coding/planner/request_routes.rs",
+            "fn plan_chat_step_routes(",
+        ),
+        (
+            "rust/src/agentic_coding/planner.rs",
+            "fn plan_settled_routes(",
+        ),
     ]
     .into_iter()
-    .map(|signature| {
-        function_body(text, signature)
-            .lines()
-            .filter(|line| line.starts_with("    if "))
-            .count() as u64
+    .map(|(path, signature)| {
+        let source =
+            fs::read_to_string(root.join(path)).map_err(|error| format!("{path}: {error}"))?;
+        count_route_conditions(&source, signature)
+            .ok_or_else(|| format!("{path}: missing or incomplete {signature}"))
     })
     .sum()
 }
@@ -247,14 +254,11 @@ fn static_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
         "intent-routing-phrase-rows".to_owned(),
         phrase_rows(&intent_routing),
     );
-    let planner = fs::read_to_string(root.join("rust/src/agentic_coding/planner.rs"))
-        .map_err(|error| format!("planner.rs: {error}"))?;
-    measured.insert(
-        "planner-route-arms".to_owned(),
-        planner_route_arms(&planner),
-    );
-    let frontier = fs::read_to_string(root.join("rust/tests/unit/capability-routing/issue_1138_frontier_classes.rs"))
-        .map_err(|error| format!("issue_1138_frontier_classes.rs: {error}"))?;
+    measured.insert("planner-route-arms".to_owned(), planner_route_arms(root)?);
+    let frontier = fs::read_to_string(
+        root.join("rust/tests/unit/capability-routing/issue_1138_frontier_classes.rs"),
+    )
+    .map_err(|error| format!("issue_1138_frontier_classes.rs: {error}"))?;
     let expected = [
         "news_class_routes_to_a_live_search",
         "non_understanding_class_re_renders_the_previous_turn",
@@ -549,7 +553,23 @@ mod tests {
 
     #[test]
     fn planner_measure_counts_only_top_level_dispatch_conditions() {
-        let source = "fn plan_chat_step_routes() {\n    if one {\n        if nested {}\n    }\n}\npub(super) fn plan_settled_routes() {\n    if two {}\n}\n";
-        assert_eq!(planner_route_arms(source), 2);
+        let request_routes = "fn plan_chat_step_routes() {\n    if one {\n        if nested {}\n    }\n    if\n    two {}\n}\n";
+        let settled_routes = "pub(super) fn plan_settled_routes() {\n    if three {}\n}\n";
+        assert_eq!(
+            count_route_conditions(request_routes, "fn plan_chat_step_routes("),
+            Some(2)
+        );
+        assert_eq!(
+            count_route_conditions(settled_routes, "fn plan_settled_routes("),
+            Some(1)
+        );
+        assert_eq!(
+            count_route_conditions(settled_routes, "fn plan_chat_step_routes("),
+            None
+        );
+        assert_eq!(
+            count_route_conditions("fn plan_chat_step_routes() {", "fn plan_chat_step_routes("),
+            None
+        );
     }
 }

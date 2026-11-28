@@ -15,6 +15,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+import { indexedProcedure, indexedProcedureBody, unrelatedProcedure } from "./support/indexed-procedure-capture.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const FIXTURE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/issue-991");
@@ -169,6 +170,45 @@ test("insufficient evidence is reported instead of invented", async () => {
   assert.ok(guide.outcomes.some((outcome) => outcome.detail.includes("no_relevant_result")));
 });
 
+test("the browser follows ranked URLs and takes steps from the matching publisher document", async () => {
+  const requested = [];
+  const privateUrl = "https://127.0.0.1/guide";
+  const captures = new Map([
+    [indexedProcedure.page, { body: indexedProcedureBody() }],
+    [unrelatedProcedure.page, { body: unrelatedProcedure.body }],
+  ]);
+  const context = await bootWorker(captures, requested);
+  context.__indexedResults = [privateUrl, unrelatedProcedure.page, indexedProcedure.page].map(url => ({
+    url, title: indexedProcedure.task, excerpt: "A search excerpt is not an instruction.",
+  }));
+  context.__indexedPrompt = `How to ${indexedProcedure.task}?`;
+  evaluate(context, "runWebSearchQuery = async () => ({ evidence: [], diagnostics: { fused: __indexedResults } })");
+  const answer = plain(await evaluate(context, "tryProceduralHowTo(__indexedPrompt, 'en')"));
+  assert.equal(answer.intent, "procedural_how_to");
+  assert.match(answer.guide.steps[0].text, indexedProcedure.firstStep);
+  assert.match(answer.content, indexedProcedure.finalAction);
+  assert.doesNotMatch(answer.content, /archive it|search excerpt/iu);
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === indexedProcedure.page
+    && step.sha256 === indexedProcedure.sha256));
+  assert.ok(requested.includes(unrelatedProcedure.page));
+  assert.ok(requested.includes(indexedProcedure.page));
+  assert.ok(!requested.includes(privateUrl));
+  requested.length = 0;
+  const replay = plain(await evaluate(context, "tryProceduralHowTo(__indexedPrompt, 'en', { offline: true })"));
+  assert.match(replay.guide.steps[0].text, indexedProcedure.firstStep);
+  assert.equal(requested.length, 0);
+});
+
+test("distinct ordered procedures under one matching heading require a narrower task", async () => {
+  const context = await bootWorker(new Map());
+  context.__ambiguousPage = `<main><h1>Assembling a garden bench</h1>
+    <h2>Metal kit</h2><ol><li>Position the feet.</li><li>Bolt on the seat.</li></ol>
+    <h2>Wooden kit</h2><ol><li>Oil the planks.</li><li>Nail on the seat.</li></ol></main>`;
+  const steps = (task) => plain(evaluate(context, "indexedProcedureSteps")(context.__ambiguousPage, task, "en", 5));
+  assert.deepEqual(steps("assemble a garden bench"), []);
+  assert.deepEqual(steps("assemble a garden bench from a metal kit"), ["Position the feet.", "Bolt on the seat."]);
+});
+
 test("per-service accessibility is remembered for at least seven days", async () => {
   const context = await bootWorker(loadCaptures());
   const ttl = evaluate(context, "SERVICE_ACCESSIBILITY_TTL_SECONDS");
@@ -264,7 +304,7 @@ test("the browser worker and the Rust solver synthesise the same guide", async (
   }
 });
 
-test("the procedural how-to answer is the synthesised guide when it is sufficient", async () => {
+test("the English procedural answer presents a complete primary procedure with its citation", async () => {
   const context = await bootWorker(loadCaptures());
   const answer = plain(
     await evaluate(context, 'tryProceduralHowTo("how to make pancakes?", "en", {})'),
@@ -274,9 +314,10 @@ test("the procedural how-to answer is the synthesised guide when it is sufficien
   assert.ok(answer.evidence.some((line) => line.startsWith("how_to:bounds ")));
   assert.ok(answer.evidence.some((line) => line.startsWith("how_to:step rank=1 ")));
   assert.match(answer.content, /## How to make pancakes/u);
+  assert.match(answer.content, /^1\. Crack the eggs/mu);
+  assert.doesNotMatch(answer.content, /Checking if input|Valid==False|2 cups \(18oz\/510g\)/u);
 
-  // A task no service documents must fall through to the pre-existing plan
-  // rather than lose the answer the worker used to give.
+  // A task with no verified steps still returns a useful reply and trace.
   const fallback = plain(
     await evaluate(
       context,
@@ -286,4 +327,57 @@ test("the procedural how-to answer is the synthesised guide when it is sufficien
   assert.equal(fallback.intent, "procedural_how_to");
   assert.ok(fallback.evidence.some((line) => line.startsWith("how_to:insufficient_evidence")));
   assert.ok(fallback.evidence.includes("procedural_how_to:stage:recursive_fetch_check"));
+});
+
+// Issue #1632 (R1): a transient wikiHow failure must not silence the priority
+// how-to source for the seven-day accessibility TTL. Twin of
+// rust/tests/source/source_tests/how_to_guide/production_tests.rs.
+test("a cached wikiHow failure does not skip the priority how-to source", { timeout: 60_000 }, async () => {
+  const context = await bootWorker(loadCaptures());
+  const synthesize = async () => plain(await evaluate(context, 'synthesizeHowToGuide("make pancakes", {})'));
+  const baseline = await synthesize();
+  assert.equal(baseline.outcomes.find((outcome) => outcome.sourceId === "wikihow")?.status, "contributed");
+
+  const keys = plain(evaluate(context, "Array.from(sourceWalkAccessibility.keys())"));
+  assert.ok(keys.length > 0, "the walk records service accessibility");
+  for (const key of keys) {
+    context.__key = key;
+    evaluate(context, 'howToObserveService(__key, "unreachable", "curl: (28) Operation timed out", howToNowSeconds())');
+  }
+
+  const guide = await synthesize();
+  const wikihow = guide.outcomes.find((outcome) => outcome.sourceId === "wikihow");
+  assert.equal(wikihow.status, "contributed", JSON.stringify(wikihow));
+  assert.ok(guide.steps.length > 0, "the guide has real steps");
+  for (const key of keys) {
+    context.__key = key;
+    const unreachable = evaluate(context, "sourceWalkServiceKnownUnreachable(__key, howToNowSeconds())");
+    assert.equal(unreachable, !key.startsWith("wikihow"), `accessibility of ${key} after the retry`);
+  }
+});
+
+// Issue #1632 (R2): the degraded web-search reply names only what was used, so
+// it no longer lists the unexecuted provider plan in any supported language.
+const UNAVAILABLE_CASES = [
+  { language: "en", marker: "No captured provider response" },
+  { language: "ru", marker: "нет захваченного ответа провайдера" },
+  { language: "hi", marker: "प्रदाता प्रतिक्रिया" },
+  { language: "zh", marker: "已捕获提供商响应" },
+  { language: "es", marker: "respuesta capturada del proveedor" },
+];
+
+test("the web-search-unavailable reply lists no unused sources in any language", { timeout: 60_000 }, async () => {
+  const context = await bootWorker(new Map());
+  for (const { language, marker } of UNAVAILABLE_CASES) {
+    context.__language = language;
+    const answer = plain(evaluate(
+      context,
+      'guardCannedWebSearchAnswer({ content: "Web search requested", query: "как какать" }, __language)',
+    ));
+    assert.ok(answer.content.includes(marker), `${language}: ${answer.content}`);
+    assert.ok(answer.content.includes("как какать"), `${language} names the query`);
+    for (const unused of ["DuckDuckGo", "Internet Archive", "Wikidata", "Wiktionary", "Wikinews"]) {
+      assert.ok(!answer.content.includes(unused), `${language} lists unused source ${unused}: ${answer.content}`);
+    }
+  }
 });

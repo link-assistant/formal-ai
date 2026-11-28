@@ -1,0 +1,81 @@
+[
+  {
+    "name": "rustfmt",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "rust/src/solver.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.209,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lines": 0,
+    "log": "rustfmt.log.gz"
+  },
+  {
+    "name": "worker-prerequisites",
+    "argv": [
+      "node",
+      "scripts/generate-worker-prerequisites.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 1.429,
+    "sha256": "bc697aab7b12a1f70642ba473ab523b79d3374bf4e6376a89c2e80fe62af575a",
+    "lines": 1,
+    "log": "worker-prerequisites.log.gz"
+  },
+  {
+    "name": "runtime-inventory",
+    "argv": [
+      "node",
+      "scripts/generate-runtime-feature-inventory.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 1.089,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lines": 0,
+    "log": "runtime-inventory.log.gz"
+  },
+  {
+    "name": "native-programs",
+    "argv": [
+      "node",
+      "scripts/lib/generate-native-specification-programs.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 20.503,
+    "sha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746",
+    "lines": 1,
+    "log": "native-programs.log.gz"
+  },
+  {
+    "name": "translation-verify",
+    "argv": [
+      "node",
+      "scripts/translate-js-rust.mjs",
+      "--verify"
+    ],
+    "exitCode": 1,
+    "seconds": 3.324,
+    "sha256": "38bf8e2173f5e7d7f0244c16578cc1738517960a4d0ba059803ef785bdd6de33",
+    "lines": 5,
+    "log": "translation-verify.log.gz"
+  },
+  {
+    "name": "witness-candidate",
+    "argv": [
+      "node",
+      "experiments/issue-1584/review-witness.mjs",
+      "/tmp/issue-1580-research/language-main-integration/merged-candidate"
+    ],
+    "exitCode": 0,
+    "seconds": 11.622,
+    "sha256": "d9ffce5f6dfc7d6a1335c471f0c9df25159ad095e0fec8c4034133dfea552e17",
+    "lines": 1,
+    "log": "witness-candidate.log.gz"
+  }
+]

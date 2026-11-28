@@ -1,0 +1,23 @@
+{
+  "logs": {
+    "derivation_capture": true,
+    "dialog_capture": false,
+    "directory": "/tmp/formal-ai-1613-evidence/formal-development/logs",
+    "status": "writable"
+  },
+  "memory": {
+    "active_path": "/tmp/formal-ai-1613-evidence/formal-development/memory.lino",
+    "compatible": true,
+    "configured_path": "/tmp/formal-ai-1613-evidence/formal-development/memory.lino",
+    "maximum_readable_schema_version": 2,
+    "migration_required": false,
+    "migration_state": "missing",
+    "minimum_readable_schema_version": 1,
+    "mode": "read_write",
+    "schema_version": null,
+    "target_schema_version": 2
+  },
+  "model": "formal-ai",
+  "status": "ok",
+  "version": "0.356.0"
+}

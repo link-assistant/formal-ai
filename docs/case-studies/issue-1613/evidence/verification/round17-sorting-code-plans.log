@@ -1,0 +1,17 @@
+✔ a sorting-algorithm request gets the reviewable snippet with its execution status (4221.985057ms)
+✔ the sorting snippet carries a test when one is requested (2.474415ms)
+✔ composes sorting functions and executable tests for each requested order (4342.024688ms)
+✔ execution failures are reported with the full trace (125.069573ms)
+✔ an English PDF request returns the document plan (105.397895ms)
+✔ a Russian PDF request returns the Russian plan (543.58506ms)
+✔ a software artifact defers the document plan to the project handler (0.817074ms)
+✔ conflicting sources are surfaced instead of silently resolved (166.807587ms)
+✔ a destructive shell request without agent mode is refused by the seed rule (142.653526ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12938.82142

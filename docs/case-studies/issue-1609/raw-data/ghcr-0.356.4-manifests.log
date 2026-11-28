@@ -1,0 +1,12 @@
+2026-11-22T09:37:43Z
+ghcr.io/link-assistant/formal-ai:0.356.4
+HTTP/2 200
+docker-content-digest: sha256:c9d1bbfa30a92358daed777f7cc6edb4d0360278cdd8f76f1432cfbd7edde270
+ghcr.io/link-assistant/formal-ai:latest
+HTTP/2 200
+docker-content-digest: sha256:c9d1bbfa30a92358daed777f7cc6edb4d0360278cdd8f76f1432cfbd7edde270
+ghcr.io/link-assistant/formal-ai:0.356.4-slim
+HTTP/2 404
+ghcr.io/link-assistant/formal-ai:slim
+HTTP/2 200
+docker-content-digest: sha256:1a6124dac7d04f41fde6807ef387ed0001ae86624bcd44776c7f2c8ca5c93f8b

@@ -411,7 +411,7 @@ fn six_supported_coding_clients_share_the_completion_contract() {
         ),
         (
             "claude",
-            "acceptEdits",
+            "<--permission-mode> <auto>",
             "http://127.0.0.1:8080/api/anthropic",
         ),
         ("opencode", "--auto", "http://127.0.0.1:8080/api/openai/v1"),

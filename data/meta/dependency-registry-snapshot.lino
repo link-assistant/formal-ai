@@ -176,6 +176,8 @@ registry_entry github_action/actions/deploy-pages
 registry_entry github_action/actions/download-artifact
   latest "v8.0.2"
   source_url "https://api.github.com/repos/actions/download-artifact/releases/latest"
+  release-commit "9000827ccba6bdab643e8b6fd33ac0654aef8333"
+  tag-source-url "https://api.github.com/repos/actions/download-artifact/git/ref/tags/v8.0.2"
 registry_entry github_action/actions/setup-node
   latest "v7.0.0"
   source_url "https://api.github.com/repos/actions/setup-node/releases/latest"
@@ -307,3 +309,32 @@ registry_entry npm/minimatch
   latest "11.0.3"
   source_url "https://registry.npmjs.org/minimatch"
   observed_at "2026-10-31"
+
+# Issue #1637: dependencies absent from the snapshot, observed 2026-11-25; every older answer and the cohort refresh time are unchanged.
+registry_entry crates_io/syn
+  latest "3.0.10"
+  source_url "https://crates.io/api/v1/crates/syn"
+registry_entry crates_io/chrono
+  latest "0.4.45"
+  source_url "https://crates.io/api/v1/crates/chrono"
+registry_entry crates_io/semver
+  latest "1.0.28"
+  source_url "https://crates.io/api/v1/crates/semver"
+registry_entry crates_io/ureq
+  latest "3.5.2"
+  source_url "https://crates.io/api/v1/crates/ureq"
+registry_entry npm/secretlint
+  latest "14.1.0"
+  source_url "https://registry.npmjs.org/secretlint"
+registry_entry npm/@google/gemini-cli
+  latest "0.71.1"
+  source_url "https://registry.npmjs.org/@google/gemini-cli"
+registry_entry npm/@qwen-code/qwen-code
+  latest "0.28.4"
+  source_url "https://registry.npmjs.org/@qwen-code/qwen-code"
+registry_entry npm/opencode-ai
+  latest "1.19.6"
+  source_url "https://registry.npmjs.org/opencode-ai"
+registry_entry npm/@link-foundation/ui-links
+  latest "0.1.2"
+  source_url "https://registry.npmjs.org/@link-foundation/ui-links"

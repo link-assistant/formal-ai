@@ -3,7 +3,7 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::coding_function_catalog::python_docs::{StdlibIndex, StdlibPart};
-use formal_ai::coding_task_spec::recognise;
+use formal_ai::coding_task_spec::{ArtifactShape, recognise};
 use formal_ai::composition::compose;
 use formal_ai::concept_discovery::{ConceptMap, DiscoveryCatalog};
 use formal_ai::concept_lookup::LookupOutcome;
@@ -85,7 +85,24 @@ fn count_to_one_hundred_requests_derive_the_full_inclusive_output() {
         .filter(|case| case.family == "count_to_100")
     {
         let spec = recognise(&case.prompt).unwrap_or_else(|| panic!("{}", case.language));
-        assert_eq!(spec.name, "main");
+        // Since 9b1ab09ca the catalog's count task is operand-bound ("count to",
+        // "посчитай до", "数到", "cuenta hasta"), so a paraphrase the seed names
+        // takes that task as its identity; one it does not name (the held-out
+        // Hindi imperative) keeps the `main` fallback. Either way the request is
+        // a program with no callable signature.
+        assert!(
+            ["main", "count_to_three"].contains(&spec.name.as_str()),
+            "{}: {}",
+            case.language,
+            spec.name
+        );
+        assert_eq!(
+            spec.artifact_shape,
+            ArtifactShape::Program,
+            "{}",
+            case.language
+        );
+        assert!(spec.parameters.is_empty(), "{}", case.language);
         let concepts = discover(&spec, &DiscoveryCatalog::default());
         let selected = compose(&spec, &concepts)
             .selected

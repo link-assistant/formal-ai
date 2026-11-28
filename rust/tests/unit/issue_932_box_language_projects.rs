@@ -28,19 +28,23 @@ const TRADITIONAL_INIT_COMMANDS: &[(&str, &str)] = &[
     ("ruby", "bundle init"),
 ];
 
-fn expected_program(language: &str) -> &'static str {
+/// The program the catalog composes when no publisher page was read.
+///
+/// Since 10a6f2855 (PR #1614) no capture bytes are bundled: a hello-world
+/// answer quotes the publisher's documented program only when that page could
+/// be acquired (live, or from the source cache), and otherwise composes the
+/// catalog program from `data/seed/hello-world-programs.lino`. Which of the two
+/// a run gets therefore depends on the network and the cache, so this pins the
+/// composed program exactly and [`cites_a_publisher_page`] tells the two apart.
+fn composed_program(language: &str) -> &'static str {
     match language {
         "rust" => {
             r#"fn main() {
     println!("Hello, world!");
 }"#
         }
-        "python" => r"print('Hello, world!')",
-        "javascript" => r#"console.log("Hello, world!");"#,
-        "typescript" => {
-            r#"// Greets the world.
-console.log("Hello, world!");"#
-        }
+        "python" => r#"print("Hello, world!")"#,
+        "javascript" | "typescript" => r#"console.log("Hello, world!");"#,
         "go" => {
             r#"package main
 
@@ -51,31 +55,25 @@ func main() {
 }"#
         }
         "java" => {
-            r#"/**
- * The HelloWorldApp class implements an application that
- * simply prints "Hello World!" to standard output.
- */
-class HelloWorldApp {
+            r#"class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, world!"); // Display the string.
+        System.out.println("Hello, world!");
     }
 }"#
         }
-        "ruby" => {
-            r#"# The famous Hello World
-# Program is trivial in
-# Ruby. Superfluous:
-#
-# * A "main" method
-# * Newline
-# * Semicolons
-#
-# Here is the Code:
-
-puts "Hello, world!""#
-        }
-        other => panic!("no documented program for {other}"),
+        "ruby" => r#"puts "Hello, world!""#,
+        other => panic!("no composed program for {other}"),
     }
+}
+
+/// Whether the answer quotes a registered publisher page for the language's
+/// hello world, which it names as the program's rediscovery source.
+fn cites_a_publisher_page(language: &str, response: &formal_ai::SymbolicAnswer) -> bool {
+    formal_ai::discovery_production::documentation_captures(language, "hello_world")
+        .iter()
+        .any(|capture| {
+            response.answer.contains(&capture.url) || response.links_notation.contains(&capture.url)
+        })
 }
 
 #[test]
@@ -248,12 +246,14 @@ fn generated_programs_are_identical_across_prompt_locales() {
                         project.language, project.code_fence, response.answer
                     )
                 });
-            assert_eq!(
-                fenced_block(&response.answer, &project.code_fence).as_deref(),
-                Some(expected_program(&project.language)),
-                "{}/{locale} must show the canonical program exactly",
-                project.language
-            );
+            if !cites_a_publisher_page(&project.language, &response) {
+                assert_eq!(
+                    program,
+                    composed_program(&project.language),
+                    "{}/{locale} must show the composed catalog program exactly",
+                    project.language
+                );
+            }
             assert!(
                 program.contains(&contract.expected_output),
                 "{}/{locale} program never prints {}: {program}",

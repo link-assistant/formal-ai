@@ -5,6 +5,8 @@ import {execFileSync} from 'node:child_process';
 import {cpSync,mkdirSync,mkdtempSync,readFileSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {dirname,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {gunzipSync} from 'node:zlib';
 import {buildSelectedWasm,dependencyPaths,verifySelectedWasm,wasmCompilerArguments} from '../../../scripts/build-selected-wasm.mjs';
 
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -200,13 +202,31 @@ test('actual distribution generator separates offline receipts from repeatable n
   assert.match(readFileSync(join(f.root,'js/precache-manifest.js'),'utf8'),/formal_ai_worker\.receipt\.json/u);
   assert.deepEqual(JSON.parse(readFileSync(join(f.root,'js/formal_ai_worker.receipt.json'),'utf8')),result.record);
   put(packageRoot,'assets/stale-file.js','stale');put(packageRoot,'assets/formal_ai_worker.receipt.json','stale receipt');
+  put(f.root,'js/source-cache/retired-capture.lino','test_capture "A hypothetical publisher response"\n');
   const changed={...result.record,identity:{...result.record.identity,run:'456',attempt:'2'}};
   put(f.root,'js/formal_ai_worker.receipt.json',JSON.stringify(changed));
   const second=project();assert.deepEqual(second,first);
   assert.deepEqual(JSON.parse(readFileSync(join(f.root,'js/formal_ai_worker.receipt.json'),'utf8')),changed);
   assert.equal(second.files.some(path=>path.includes('stale')||path.includes('receipt')),false);
-  assert.match(readFileSync(join(f.root,'js/precache-manifest.js'),'utf8'),/formal_ai_worker\.receipt\.json/u);
+  const manifest = readFileSync(join(f.root,'js/precache-manifest.js'),'utf8');
+  assert.match(manifest,/formal_ai_worker\.receipt\.json/u);
+  assert.doesNotMatch(manifest,/source-cache\//u);
   console.log(JSON.stringify({scope:'actual Python generator plus inert npm pack; no compiler/browser/publication proof',first,second}));
+});
+
+test('Formal AI reproduces the browser source capture exclusion', t => {
+  const evidence = new URL('../../../docs/case-studies/issue-1613/evidence/formal-development/browser-cache-exclusion/', import.meta.url);
+  const source = gunzipSync(readFileSync(new URL('generator-input.py.gz', evidence)));
+  const prompt = readFileSync(new URL('request.txt', evidence), 'utf8').trim();
+  const outcome = readFileSync(new URL('outcome.txt', evidence), 'utf8');
+  const expected = /^([a-f0-9]{64}) {2}scripts\/generate-web-distribution\.py$/mu.exec(outcome)?.[1];
+  assert.ok(expected);
+  const workspace = mkdtempSync(join(tmpdir(), 'formal-ai-browser-capture-exclusion-'));
+  t.after(() => rmSync(workspace, {recursive: true, force: true}));
+  put(workspace, 'scripts/generate-web-distribution.py', source);
+  const drive = fileURLToPath(new URL('../../../experiments/js_dogfood/drive.mjs', import.meta.url));
+  execFileSync(process.execPath, [drive, '--dir', workspace, '--steps', '5', prompt], {stdio: 'pipe'});
+  assert.equal(digest(readFileSync(join(workspace, 'scripts/generate-web-distribution.py'))), expected);
 });
 
 // Parse only the original static compiler command and its script-directory paths.

@@ -1,0 +1,17 @@
+{
+  "renamed": [
+    {
+      "before": "incoming-incoming-stat.stderr.gz",
+      "after": "incoming-change-summary.stderr.gz",
+      "compressedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "before": "incoming-incoming-stat.stdout.gz",
+      "after": "incoming-change-summary.stdout.gz",
+      "compressedSha256": "68356d849427b4ca5740121c3ad59178bc118d84b479c4992d8fc6ccde7fab03"
+    }
+  ],
+  "originalSourcePathsRetained": true,
+  "rawAndCompressedBytesUnchanged": true,
+  "ratchetLimitChanged": false
+}

@@ -1,0 +1,99 @@
+{
+  "priorRevision": "8c15185e617f0a0a38edc991224163ae281b1b42",
+  "previousWitnessSha256": "e0d0a26aacd53f4e5fe50097cd89e30e1a2074c1bac37e2177c205eb33112dd0",
+  "currentWitnessSha256": "cda3dafe84ac80aeda7891bc8c58c58fb8bc818afd8ee8d4e408a837251d41a2",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "total": 1189,
+  "carried": 221,
+  "unsupported": 968,
+  "reviewed": [
+    {
+      "id": "rust/tests/unit/specification/openai_compatibility.rs::streaming_chat_completion_emits_reasoning_content_delta",
+      "helper": "rust/tests/unit/specification/openai_compatibility/streaming_diagnostics.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/openai_compatibility.rs::streaming_responses_emit_reasoning_summary_events",
+      "helper": "rust/tests/unit/specification/openai_compatibility/streaming_diagnostics.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/openai_compatibility.rs::authenticated_routes_accept_bearer_token",
+      "helper": "rust/tests/unit/specification/openai_compatibility/streaming_diagnostics.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/openai_compatibility.rs::authenticated_routes_reject_missing_bearer_token",
+      "helper": "rust/tests/unit/specification/openai_compatibility/streaming_diagnostics.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/openai_compatibility.rs::rate_limit_metadata_is_exposed",
+      "helper": "rust/tests/unit/specification/openai_compatibility/streaming_diagnostics.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/openai_compatibility.rs::responses_api_attaches_trace_link",
+      "helper": "rust/tests/unit/specification/openai_compatibility/streaming_diagnostics.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/external_benchmarks.rs::upstream_records_are_parsed_into_gradable_cases",
+      "helper": "rust/tests/unit/specification/external_benchmarks/upstream_records.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/external_benchmarks.rs::a_full_slice_runs_as_offset_shards_that_add_up",
+      "helper": "rust/tests/unit/specification/external_benchmarks/upstream_records.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/self_hosting_metric.rs::release_pipeline_and_ledger_remain_pinned_to_the_metric",
+      "helper": "rust/tests/unit/specification/self_hosting_metric/release_policy.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/text_manipulation.rs::apostrophes_in_english_prose_do_not_swallow_the_quoted_operands",
+      "helper": "rust/tests/unit/specification/text_manipulation/framed_operands.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/text_manipulation.rs::apostrophe_delimited_operands_are_recognized_in_every_supported_language",
+      "helper": "rust/tests/unit/specification/text_manipulation/framed_operands.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/text_manipulation.rs::chained_operations_run_in_the_order_the_request_states_them",
+      "helper": "rust/tests/unit/specification/text_manipulation/framed_operands.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/text_manipulation.rs::counting_questions_ask_the_seeded_count_of_the_framed_unit",
+      "helper": "rust/tests/unit/specification/text_manipulation/framed_operands.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/text_manipulation.rs::line_prefix_filter_reads_its_argument_and_composes_with_counts",
+      "helper": "rust/tests/unit/specification/text_manipulation/framed_operands.rs",
+      "completeAssertionTokensConserved": true
+    },
+    {
+      "id": "rust/tests/unit/specification/text_manipulation.rs::counting_a_seeded_character_class_counts_its_members",
+      "helper": "rust/tests/unit/specification/text_manipulation/framed_operands.rs",
+      "completeAssertionTokensConserved": true
+    }
+  ],
+  "fixtureChanges": 1,
+  "sourceManifestChangedOwners": 4,
+  "sourceManifestAddedHelpers": 4,
+  "completeObjectDeltaReviewed": true,
+  "allNativeTestIdentitiesRetained": true,
+  "carriedCaseIdentitiesUnchanged": true,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "maintainedIssueTestsPassed": 253,
+  "evidenceArchiveNamesCorrected": 6,
+  "previousEvidenceArchivesReverified": 355,
+  "verificationAt": "2026-11-21T17:05:43.522103+00:00"
+}

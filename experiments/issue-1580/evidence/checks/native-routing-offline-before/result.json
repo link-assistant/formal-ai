@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 1,
+  "payloads": {
+    "stdout": {
+      "file": "stdout.log.gz",
+      "rawSha256": "cf2520ac9b882f27e3edf1ab1459b5e0d9b855c9f53ca00f942c2b88ca6fb438",
+      "archiveSha256": "4fdc1c6d1bf250a92d7bde8fecfd7843671e4b63a564c28e5890ab28078e693c",
+      "lines": 84
+    },
+    "stderr": {
+      "file": "stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  "expectedFailureBeforeWorkflowRepair": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

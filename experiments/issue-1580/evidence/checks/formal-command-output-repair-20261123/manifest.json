@@ -1,0 +1,29 @@
+{
+  "before": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "sourceSha256": "e902cffa5828242e71a353dda11d6214917e7b78d6005fcb3e4ddc062921264c",
+  "regression": {
+    "beforePassed": 5,
+    "beforeFailed": 11,
+    "afterPassed": 16,
+    "afterFailed": 0
+  },
+  "actualFormalDriverRoundTrip": true,
+  "originalWrapperExitCode": 19,
+  "repairedWrapperExitCode": 0,
+  "originalTraceBytes": 143,
+  "repairedTraceBytes": 222,
+  "affectedGatesPassed": 7,
+  "javascriptSyntaxChecksPassed": 2,
+  "whitespaceCheckPassed": true,
+  "hostedQualification": "not pushed; unfinished",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 12721,
+    "sha256": "1e56a8c57a31635491831a5836ccce091282b6bea98a412343cf4e35e6210188"
+  },
+  "members": 26,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T11:58:25.712622+00:00"
+}

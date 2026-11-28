@@ -1,0 +1,30 @@
+{
+  "hostedHead": "b459d0b0f66ddf285815ef20553f43e4460bd41a",
+  "run": 45085971679,
+  "actualMergeCommit": "c0f4f72d7cbb1ef2cf848b43b6537df6023015af",
+  "artifactId": 14778573986,
+  "producerAttempt": 1,
+  "failedJobs": [
+    137406760782,
+    137406760817,
+    137406760874
+  ],
+  "hostedFailuresObserved": 4,
+  "localDocumentationBefore": "one assertion failure",
+  "localChecks": {
+    "documentationWithForcedLanguages": "pass",
+    "originalAuthoredSeedAndExtension": "2 pass",
+    "nativeModuleGraph": "13 pass",
+    "jsRustProjectionCurrency": "pass",
+    "rustfmt2024": "pass",
+    "sourceCensus": "95 files; 17692 outside-core lines; exact measured source growth",
+    "nativeRegressions": "pending hosted execution"
+  },
+  "payloadCount": 24,
+  "roundTripVerified": true,
+  "archiveSha256": "d739383ae1e1fdc77d27c7125466b4064201e29a2ab919eb31769274e66331b7",
+  "localRustExecution": false,
+  "independentAuthorshipCredit": 0,
+  "currentRunTerminal": false,
+  "fullIssueComplete": false
+}

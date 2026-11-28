@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-ci-speed,check-runner-labels,lint-shell-scripts"
+  ],
+  "exitCode": 0,
+  "log": "gates-workflow.log.gz",
+  "rawSha256": "1b6c5a3605a982161ee962cfe05b017dcda6994463165258101ad16dbc54dd32",
+  "offlineAuditStandIns": false
+}

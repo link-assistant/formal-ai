@@ -1,0 +1,23 @@
+✔ heavy original job bodies remain intact and default PR dispatches cannot allocate them (1000.551063ms)
+✔ main keeps production builds and original selected integrations (500.603869ms)
+✔ fast inventory retains coding, questions, reports and captured CI failure regressions (36.010732ms)
+✔ fast source lint is mandatory on PRs without invoking native compilation (69.466238ms)
+✔ explicit translation regeneration selects only the source emitter on every ref (66.149822ms)
+✔ measured TeachF integration stays on main while fast coding and QA controls remain selected (13.31047ms)
+✔ essential PR checkouts reserve their original test clocks and avoid unrelated archive hydration (20.798236ms)
+✔ base identity acquisition needs only its script and keeps one shared pin per workflow (1.828379ms)
+✔ TypeScript parity acquires its complete source inputs instead of the unrelated repository tree (7.70327ms)
+✔ JavaScript checkout keeps source and the real learning fixture while omitting historical log payloads (104.280549ms)
+✔ fast source checkout retains every measured tracked source while excluding only unmeasured archives (770.121242ms)
+✔ Cargo security acquisition retains the full crate and audit proofs without unrelated evidence (86.640424ms)
+✔ live link integration is explicit main-only while parser regressions stay mandatory and bounded (37.698692ms)
+✔ secrets scanning retains full history and every current file within separate finite phases (25.322335ms)
+✔ complete Coding Ladder is explicit main-only with mandatory default consistency and honest deferral (79.568964ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3083.86383

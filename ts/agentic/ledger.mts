@@ -1,11 +1,6 @@
-// The issue-#558 learning-ledger recipe (rust/src/agentic_coding/ledger.rs).
-//
-// The Rust document is `crate::learning_ledger::canonical_ledger().links_notation()`;
-// the committed data/meta/learning-ledger.lino is asserted byte-for-byte equal
-// to it (rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs), so the port reads it.
-
-import { cached, childrenNamed, parseLino, readText } from './host.mjs';
+import { cached, childrenNamed, host, parseLino, childValue } from './host.mjs';
 import { agenticMessage } from './messages.mjs';
+import { quote } from './crate/change_request.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
 
 /** The top-level `name` node (the shared parser returns a lone top node itself). */
@@ -13,8 +8,6 @@ const topNode = (parsed, name) => (parsed?.name === name ? parsed : childrenName
 
 /** Mirrors `const LEDGER_PATH`. */
 export const LEDGER_PATH = 'learning-ledger.lino';
-
-const COMMITTED_LEDGER = 'data/meta/learning-ledger.lino';
 
 /** Mirrors `const LEDGER_KEYWORDS` (a `|`-separated list in agentic-messages.lino). */
 const ledgerKeywords = () => cached('ledger-keywords', () => agenticMessage('ledger_keywords').split('|'));
@@ -29,14 +22,32 @@ export function isLedgerTask(prompt) {
     || (lower.includes('promote') && (lower.includes('lesson') || lower.includes('learning')) && lower.includes('ledger'));
 }
 
-/** Mirrors `fn render_document` in rust/src/agentic_coding/ledger.rs. */
+/** Project the operator's approved lesson records into the reviewable ledger. */
 export function renderDocument() {
-  return cached('ledger-document', () => `${trimEnd(readText(COMMITTED_LEDGER))}\n`);
+  const text = host().readReviewDocument?.('approved_lessons') ?? null;
+  const root = text === null ? null : topNode(parseLino(text), 'approved_lessons');
+  if (text !== null && !root) throw Error('InvalidApprovedLessons');
+  const lessons = root ? childrenNamed(root, 'lesson') : [];
+  const keys = ['case_id', 'failure_prompt', 'module_path', 'rule_id', 'modifier', 'resolved_task', 'benchmark_suite', 'benchmark_passed', 'reviewer'];
+  const identifiers = new Set();
+  const field = (key, value) => `    ${key} "${quote(value)}"\n`;
+  let document = `learning_ledger\n  engine "meta_language"\n  human_gated "true"\n  lesson_count "${lessons.length}"\n`;
+  for (const lesson of lessons) {
+    const identifier = lesson.id || lesson.value;
+    const values = keys.map(key => childValue(lesson, key)?.trim());
+    const passed = Number(values[7]);
+    if (!identifier || identifiers.has(identifier) || values.some(value => !value) || !/^\d+$/u.test(values[7]) || !Number.isSafeInteger(passed)) throw Error('InvalidApprovedLessons');
+    identifiers.add(identifier);
+    values[7] = String(passed);
+    document += '  lesson\n' + field('lesson_id', identifier);
+    keys.forEach((key, index) => { document += field(key, values[index]); });
+  }
+  return document;
 }
 
 /** Mirrors `fn final_answer` in rust/src/agentic_coding/ledger.rs (`LearningLedger::len`). */
 export function finalAnswer(document) {
-  const ledger = topNode(parseLino(renderDocument()), 'learning_ledger');
+  const ledger = topNode(parseLino(document), 'learning_ledger');
   return agenticMessage('ledger_final_answer', {
     count: childrenNamed(ledger, 'lesson').length,
     path: LEDGER_PATH,

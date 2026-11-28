@@ -1,0 +1,58 @@
+{
+  "records": [
+    {
+      "analysisId": 2198915200,
+      "argv": [
+        "gh",
+        "api",
+        "--allow-escape-sequences",
+        "-H",
+        "Accept: application/sarif+json",
+        "repos/link-assistant/formal-ai/code-scanning/analyses/2198915200"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main-analysis-2198915200.stdout.gz",
+        "rawSha256": "86c8198563aee6f5a3df969ea8870a30cd7fa02fea83c9a93ab1adba0230d2ed",
+        "archiveSha256": "20560a59390d8d3f3bd0054ce495e75d2378f837a51fdbad6cfa491bef7b9b14",
+        "bytes": 101685
+      },
+      "stderr": {
+        "file": "main-analysis-2198915200.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0
+      }
+    },
+    {
+      "analysisId": 2198826017,
+      "argv": [
+        "gh",
+        "api",
+        "--allow-escape-sequences",
+        "-H",
+        "Accept: application/sarif+json",
+        "repos/link-assistant/formal-ai/code-scanning/analyses/2198826017"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main-analysis-2198826017.stdout.gz",
+        "rawSha256": "d53662bf28c6f987485cb5e279bd30c789e0fde5be28399342a046cb458d1def",
+        "archiveSha256": "71ad511e997be83a9c849d7c23c67576032727c25f858ba098f4c0cff08d93f4",
+        "bytes": 127218
+      },
+      "stderr": {
+        "file": "main-analysis-2198826017.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0
+      }
+    }
+  ],
+  "exportedReportValidationExitCode": 1,
+  "reportsAreGitHubAnalysisExports": true,
+  "reportsAreOriginalProducerArtifacts": false,
+  "newHeadCodeqlExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

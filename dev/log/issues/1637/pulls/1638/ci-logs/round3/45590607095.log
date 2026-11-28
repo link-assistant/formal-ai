@@ -1,0 +1,452 @@
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	﻿2026-11-25T10:00:50.3157105Z ##[group]Run node scripts/check-readable-code.mjs
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3157594Z ^[[36;1mnode scripts/check-readable-code.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3157930Z ^[[36;1mnode scripts/check-file-size.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3158230Z ^[[36;1mnode scripts/check-ci-speed.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3158574Z ^[[36;1mnode scripts/check-hardcoded-language.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3158912Z ^[[36;1mnode scripts/check-js-literals.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3159223Z ^[[36;1mnode scripts/check-tests-as-docs.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3159544Z ^[[36;1mnode scripts/assemble-requirements.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3159896Z ^[[36;1mnode scripts/generate-requirement-status.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3160250Z ^[[36;1mnode scripts/check-requirement-status.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3160590Z ^[[36;1mnode scripts/render-status.mjs --check^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3160947Z ^[[36;1mnode scripts/render-progressive-plan.mjs --check^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3161695Z ^[[36;1mnode scripts/mirror-package-data.mjs --check^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3162093Z ^[[36;1mnode scripts/check-fast-governance.mjs^[[0m
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3388606Z shell: /usr/bin/bash -e {0}
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3388873Z env:
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3389079Z   GIT_CONFIG_COUNT: 1
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3389328Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3389606Z   GIT_CONFIG_VALUE_0: main
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3389837Z   CARGO_NET_RETRY: 10
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3390063Z   CARGO_HTTP_MULTIPLEXING: false
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3390311Z   CARGO_TERM_COLOR: always
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3390538Z   FORMAL_AI_CI_VERBOSE: false
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3390777Z   FORMAL_AI_NON_LINUX_CI: run
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3391235Z   RUSTFLAGS: -Dwarnings
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3391469Z   RUST_BACKTRACE: full
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3391852Z   CARGO_REGISTRY_TOKEN: ***
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3392149Z   CARGO_TOKEN: ***
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3392387Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3392895Z   DOCKERHUB_IMAGE: konard/formal-ai
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:50.3393143Z ##[endgroup]
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:55.8665980Z readable code: 5830 code files are multi-line and readable (1 exemption(s) in use)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:55.9054783Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:55.9055618Z Checking file line limits: Rust 1000, every other maintained text format 1500...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:55.9056089Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.1533582Z All checked files are within their line limits
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.1534183Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.2667515Z CI speed: 204 of 212 jobs in 61 workflows meet the 30-minute limit and 8 carry a recorded exception; long jobs start first; test shards are planned longest-first.
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.3078198Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.3079482Z Checking rust/src/ for hardcoded user-facing natural language (R379)...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.3080302Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.9938461Z Detected prose literals: 611 | allowlisted: 611
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.9938916Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.9939518Z No new hardcoded natural language; allowlist is in sync (611 entries).
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:57.9940024Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:58.8230502Z natural-language literals (worker): 376 (ceiling 376)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:58.8234142Z natural-language literals (meta): 0 (ceiling 0)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:58.8234964Z natural-language literals (server): 0 (ceiling 0)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:00:58.8235794Z natural-language literals (agentic): 0 (ceiling 0)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.5284789Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.5285790Z Checking behavioural tests show exact example answers (R234-2)...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.5286298Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.5300685Z All loose-only behavioural tests are tracked in the 297-row burn-down allowlist; every other answer assertion is exact
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.5301478Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.6046715Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.6047788Z Checking REQUIREMENTS.md and docs/requirements/assembled/ against docs/requirements/ (181 shards)...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.6048365Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.6049271Z REQUIREMENTS.md and its 6 part(s) match the shards.
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.6049566Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:02.7834056Z requirement-status ledger is current (169 files)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:03.3072264Z requirement-status parity holds for 1529 assembled requirements
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:03.7931207Z status surfaces are current
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.2698349Z progressive plan: 1529 requirements; recorded 34, measured 3, partial 128; 916 pinned only by Rust
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.3966388Z package-data mirror: 323 files demanded, 0 refreshed (0 bytes), all byte-equal
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7049089Z fast-governance language-parity: PASS (273ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7050997Z language parity: 42 explicit dated gaps; debt rows are exact
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7051561Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7692049Z fast-governance minimal-core: FAIL (63ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7692528Z minimal-core boundary audit failed:
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7692948Z rust/src/solver_handler_how.rs grew from 836 to 843 lines
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7693601Z rust/src/solver_handlers/benchmark_prompts.rs grew from 501 to 505 lines
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7694232Z rust/src/solver_handlers/program_synthesis.rs grew from 211 to 218 lines
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7694884Z rust/src/solver_handlers/summarization_request.rs grew from 127 to 136 lines
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7695360Z source_lines_max grew from 36677 to 36704
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7695734Z outside_core_lines_max grew from 17648 to 17666
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:04.7695951Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:05.1543075Z fast-governance current-debt-ceilings: PASS (385ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:05.1544155Z Current debt ceilings match measured source; base nonincrease is checked by the existing separate gate
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:05.1544613Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.2543564Z fast-governance honest-closure: PASS (2099ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.2544446Z closure audit (data/meta/closure-audit.lino):
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.2545182Z   unresolved_distinct_honest: measured 1012 / reviewed 1012
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.2545797Z closure audit holds
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.2546021Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.3665511Z fast-governance role-namespace: PASS (112ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.3667374Z roles: 673 (345 also meanings, 328 predicate-only)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.3671733Z checked /home/runner/work/formal-ai/formal-ai/data/seed/roles.lino
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.3672141Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.5007645Z fast-governance seed-metadata: PASS (134ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.5008652Z seed metadata: audited 2634 concepts; 1081 per-record gaps captured in data
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.5009210Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.5697204Z fast-governance response-language-parity: PASS (69ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.5698220Z data/meta/response-language-parity-debt.lino is current
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.5698672Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6554575Z fast-governance worker-line-budget: PASS (86ms)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6555251Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6555829Z Checking the UI-glue line budget for the split JavaScript worker...
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6556356Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6556715Z Worker JavaScript line counts (js/worker/*.js):
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6557385Z       89 /     89  js/worker/formal_ai_worker.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6558066Z       84 /     84  js/worker/formal_ai_worker_agent_workspace.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6558938Z      814 /    814  js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6559876Z      741 /    742  js/worker/formal_ai_worker_behavior_rules_and_self_facts.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6560828Z      187 /    187  js/worker/formal_ai_worker_browser_runtime.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6561863Z     1117 /   1146  js/worker/formal_ai_worker_calendar_and_proofs.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6562436Z      715 /    715  js/worker/formal_ai_worker_calendar_offset.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6562991Z       26 /     27  js/worker/formal_ai_worker_candidate_validation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6563603Z      659 /    659  js/worker/formal_ai_worker_capabilities_and_runtime_rules.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6564203Z      170 /    170  js/worker/formal_ai_worker_catalog_parameters.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6564765Z      223 /    230  js/worker/formal_ai_worker_claim_evidence.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6565288Z      277 /    277  js/worker/formal_ai_worker_claim_operands.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6565824Z       40 /     40  js/worker/formal_ai_worker_closed_programs.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6566398Z      829 /    843  js/worker/formal_ai_worker_code_examples.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6567310Z      203 /    210  js/worker/formal_ai_worker_code_plans.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6567900Z      333 /    333  js/worker/formal_ai_worker_code_refactoring.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6568396Z      815 /    815  js/worker/formal_ai_worker_code_synthesis.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6568927Z      534 /    534  js/worker/formal_ai_worker_code_task_support.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6569422Z     1083 /   1083  js/worker/formal_ai_worker_code_tasks.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6569997Z     1393 /   1393  js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6570931Z       42 /     42  js/worker/formal_ai_worker_compiled_procedure.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6572193Z      383 /    383  js/worker/formal_ai_worker_concept_lookup.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6573217Z     1065 /   1269  js/worker/formal_ai_worker_concept_queries_and_arithmetic.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6573875Z       60 /     60  js/worker/formal_ai_worker_conversation_followups.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6574406Z       66 /     66  js/worker/formal_ai_worker_conversation_history.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6574949Z       29 /     29  js/worker/formal_ai_worker_conversation_summary_request.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6575479Z      153 /    153  js/worker/formal_ai_worker_coreference.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6575978Z       16 /     16  js/worker/formal_ai_worker_crate_ascii_character.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6576481Z       22 /     23  js/worker/formal_ai_worker_crate_callback_values.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6576922Z      507 /    520  js/worker/formal_ai_worker_crate_cnl_grammar.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6577355Z      497 /    500  js/worker/formal_ai_worker_crate_cnl_output.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6577790Z      264 /    278  js/worker/formal_ai_worker_crate_coding_catalog.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6578271Z       72 /   1000  js/worker/formal_ai_worker_crate_command_output_contract.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6579035Z       69 /     69  js/worker/formal_ai_worker_crate_concise_dependency_restatement.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6579548Z      193 /    193  js/worker/formal_ai_worker_crate_content.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6580389Z       66 /     66  js/worker/formal_ai_worker_crate_conversation_summary.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6581828Z      226 /    229  js/worker/formal_ai_worker_crate_dependency_summarization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6582772Z      197 /    198  js/worker/formal_ai_worker_crate_dialogue_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6583561Z       80 /     85  js/worker/formal_ai_worker_crate_engine.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6584354Z       69 /     69  js/worker/formal_ai_worker_crate_engine_stable_identifier.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6585157Z      172 /    180  js/worker/formal_ai_worker_crate_event_log.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6585920Z      390 /    414  js/worker/formal_ai_worker_crate_fact_derivation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6586690Z       29 /     29  js/worker/formal_ai_worker_crate_final_payload.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6587440Z       46 /     47  js/worker/formal_ai_worker_crate_final_result.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6588232Z       50 /     55  js/worker/formal_ai_worker_crate_formalization_grammar.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6589105Z      180 /    180  js/worker/formal_ai_worker_crate_formalization_segment.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6589940Z       82 /     83  js/worker/formal_ai_worker_crate_google_trends_feed.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6590678Z      150 /    153  js/worker/formal_ai_worker_crate_host.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6591643Z      214 /    231  js/worker/formal_ai_worker_crate_intent_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6592593Z      206 /    206  js/worker/formal_ai_worker_crate_intent_formalization_requirements.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6593474Z      474 /    474  js/worker/formal_ai_worker_crate_language.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6594216Z      134 /    134  js/worker/formal_ai_worker_crate_least_action.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6594979Z      115 /    115  js/worker/formal_ai_worker_crate_links_format.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6595812Z       54 /     54  js/worker/formal_ai_worker_crate_literal_authoring_contract.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6596695Z       27 /     27  js/worker/formal_ai_worker_crate_literal_body_ownership.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6597753Z      168 /    168  js/worker/formal_ai_worker_crate_literal_content.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6598724Z       19 /     19  js/worker/formal_ai_worker_crate_literal_instruction_view.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6599558Z       36 /     55  js/worker/formal_ai_worker_crate_lowercase_spans.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6600310Z       50 /     50  js/worker/formal_ai_worker_crate_messages.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6601730Z      531 /    534  js/worker/formal_ai_worker_crate_meta_executor.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6602601Z      254 /    275  js/worker/formal_ai_worker_crate_method_registry.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6603092Z      115 /    115  js/worker/formal_ai_worker_crate_modules.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6603533Z      163 /    287  js/worker/formal_ai_worker_crate_normal_markov.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6603999Z       33 /   1000  js/worker/formal_ai_worker_crate_normalization_cache.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6604477Z       53 /     53  js/worker/formal_ai_worker_crate_operation_owner.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6604937Z      114 /    117  js/worker/formal_ai_worker_crate_page_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6605757Z       98 /     98  js/worker/formal_ai_worker_crate_plan.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6606573Z      446 /    446  js/worker/formal_ai_worker_crate_proposition_structure.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6607417Z      148 /    148  js/worker/formal_ai_worker_crate_quoted_segments.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6607943Z       33 /     33  js/worker/formal_ai_worker_crate_raw_lowercase_span.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6608425Z      145 /    145  js/worker/formal_ai_worker_crate_recursive_execution.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6608920Z      195 /    201  js/worker/formal_ai_worker_crate_requirement_extraction.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6609425Z      188 /    188  js/worker/formal_ai_worker_crate_round_trip_translation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6609911Z      273 /    301  js/worker/formal_ai_worker_crate_rust_str.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6610493Z      149 /    163  js/worker/formal_ai_worker_crate_seed.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6610939Z       99 /    108  js/worker/formal_ai_worker_crate_seed_caller_context.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6611726Z       69 /     69  js/worker/formal_ai_worker_crate_seed_concepts.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6612182Z      314 /    347  js/worker/formal_ai_worker_crate_seed_meanings.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6612612Z       33 /     33  js/worker/formal_ai_worker_crate_seed_parser.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6613032Z       63 /    144  js/worker/formal_ai_worker_crate_seed_registry.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6613458Z       59 /     59  js/worker/formal_ai_worker_crate_seed_reports.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6613933Z       45 /     45  js/worker/formal_ai_worker_crate_seed_terminal_commands.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6614481Z       38 /     38  js/worker/formal_ai_worker_crate_shell-command-negative-ownership.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6615033Z      183 /    198  js/worker/formal_ai_worker_crate_shell_command_policy.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6615519Z      166 /    177  js/worker/formal_ai_worker_crate_skill_compiler.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6615973Z      365 /    395  js/worker/formal_ai_worker_crate_skill_procedure.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6616462Z      215 /    229  js/worker/formal_ai_worker_crate_skill_procedure_artifact.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6616980Z      113 /    113  js/worker/formal_ai_worker_crate_solver_event_projection.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6617484Z      262 /    262  js/worker/formal_ai_worker_crate_solver_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6617966Z      100 /    100  js/worker/formal_ai_worker_crate_statement_relation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6618450Z      455 /    496  js/worker/formal_ai_worker_crate_summarization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6618932Z      285 /    285  js/worker/formal_ai_worker_crate_summarization_dedup.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6619445Z      154 /    167  js/worker/formal_ai_worker_crate_summarization_dialog.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6619966Z      153 /    169  js/worker/formal_ai_worker_crate_summarization_identifier.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6620488Z      207 /    207  js/worker/formal_ai_worker_crate_summarization_markdown.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6621533Z      167 /    182  js/worker/formal_ai_worker_crate_summarization_vocabulary.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6622072Z       46 /     46  js/worker/formal_ai_worker_crate_task_decomposition_cues.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6622572Z      643 /    666  js/worker/formal_ai_worker_crate_text_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6623064Z      117 /    117  js/worker/formal_ai_worker_crate_theorem_claim_binding.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6623613Z      479 /    479  js/worker/formal_ai_worker_crate_translation_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6624101Z       91 /     91  js/worker/formal_ai_worker_crate_typed_meaning.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6624550Z      145 /    145  js/worker/formal_ai_worker_crate_unread_structure.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6624993Z       80 /     80  js/worker/formal_ai_worker_crate_write_lexicon.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6625421Z       35 /     35  js/worker/formal_ai_worker_crate_write_lino.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6625844Z      191 /    219  js/worker/formal_ai_worker_crate_write_str.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6626249Z      672 /    672  js/worker/formal_ai_worker_creative.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6626663Z      586 /    649  js/worker/formal_ai_worker_creative_writing.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6627089Z      135 /    135  js/worker/formal_ai_worker_currency_quotes.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6627495Z      329 /    329  js/worker/formal_ai_worker_derivation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6627895Z      164 /    164  js/worker/formal_ai_worker_dispatch.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6628319Z      120 /    120  js/worker/formal_ai_worker_documentation_method.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6628765Z       66 /    115  js/worker/formal_ai_worker_documented_commands.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6629238Z     1250 /   1250  js/worker/formal_ai_worker_equations_and_word_problems.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6629696Z       38 /    376  js/worker/formal_ai_worker_fact_derivation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6630300Z     1307 /   1307  js/worker/formal_ai_worker_facts_and_software_phrases.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6630746Z      948 /    948  js/worker/formal_ai_worker_factual_qa.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6631531Z       89 /     89  js/worker/formal_ai_worker_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6632124Z      778 /    778  js/worker/formal_ai_worker_formalization_request.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6632594Z      310 /    310  js/worker/formal_ai_worker_formalization_support.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6633042Z      482 /    482  js/worker/formal_ai_worker_formalization_targets.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6633485Z     1134 /   1134  js/worker/formal_ai_worker_format_conversion.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6633923Z      235 /    235  js/worker/formal_ai_worker_handler_rule_values.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6634351Z      819 /    819  js/worker/formal_ai_worker_handler_rules.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6634755Z      733 /    735  js/worker/formal_ai_worker_how_to_guide.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6635176Z      129 /    129  js/worker/formal_ai_worker_indexed_procedures.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6635703Z      633 /    633  js/worker/formal_ai_worker_installation_and_software_followups.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6636210Z     1154 /   1157  js/worker/formal_ai_worker_meaning_lexicon.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6636648Z      110 /    110  js/worker/formal_ai_worker_memory_inspection.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6637074Z      674 /    674  js/worker/formal_ai_worker_memory_programs.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6657708Z      160 /    160  js/worker/formal_ai_worker_meta_composite.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6658219Z     1198 /   1198  js/worker/formal_ai_worker_meta_reasoner.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6658679Z      644 /    647  js/worker/formal_ai_worker_meta_synthesis.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6659103Z      554 /    554  js/worker/formal_ai_worker_native_lanes.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6659565Z      105 /    105  js/worker/formal_ai_worker_natural_language_tools.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6660039Z      100 /    100  js/worker/formal_ai_worker_network_snapshot.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6660468Z      302 /    302  js/worker/formal_ai_worker_notation.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6660907Z      753 /    754  js/worker/formal_ai_worker_number_constraints.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6661894Z      412 /    505  js/worker/formal_ai_worker_obligation_plans.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6662328Z      488 /    488  js/worker/formal_ai_worker_obligations.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6662770Z      124 /    124  js/worker/formal_ai_worker_page_formalization.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6663216Z      637 /    637  js/worker/formal_ai_worker_pattern_inference.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6663647Z      108 /    108  js/worker/formal_ai_worker_policy_gates.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6664063Z      126 /    126  js/worker/formal_ai_worker_practical_help.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6664480Z      269 /    269  js/worker/formal_ai_worker_product_search.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6664922Z     1248 /   1250  js/worker/formal_ai_worker_program_blueprints.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6665354Z      425 /    425  js/worker/formal_ai_worker_program_ir.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6665762Z      974 /   1030  js/worker/formal_ai_worker_program_plans.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6666188Z      282 /    318  js/worker/formal_ai_worker_program_requests.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6666622Z       46 /     48  js/worker/formal_ai_worker_project_summaries.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6667046Z      279 /    279  js/worker/formal_ai_worker_prompt_data.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6667488Z      180 /    180  js/worker/formal_ai_worker_quantity_constraints.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6667942Z      223 /    223  js/worker/formal_ai_worker_reasoning_guards.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6668355Z      143 /    259  js/worker/formal_ai_worker_recurrence.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6668781Z      113 /    113  js/worker/formal_ai_worker_recurrence_discovery.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6669227Z      184 /    184  js/worker/formal_ai_worker_recurrence_objects.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6669655Z      273 /    273  js/worker/formal_ai_worker_release_timeline.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6670131Z      221 /    221  js/worker/formal_ai_worker_requirement_contradiction.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6670756Z        6 /    219  js/worker/formal_ai_worker_requirement_extraction.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6671533Z     1051 /   1210  js/worker/formal_ai_worker_search_queries_and_how_to.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6672043Z       18 /     18  js/worker/formal_ai_worker_search_statement_fusion.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6672492Z       20 /     20  js/worker/formal_ai_worker_seed_captures.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6672951Z      797 /    922  js/worker/formal_ai_worker_seed_responses_and_language.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6673412Z      512 /    512  js/worker/formal_ai_worker_shell_compose.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6673856Z     1031 /   1031  js/worker/formal_ai_worker_software_project_plans.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6674284Z     1359 /   1359  js/worker/formal_ai_worker_solve.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6674673Z      413 /    413  js/worker/formal_ai_worker_solver_events.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6675109Z      140 /    140  js/worker/formal_ai_worker_source_callable_contracts.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6675565Z       36 /     36  js/worker/formal_ai_worker_source_endpoints.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6675974Z       41 /     41  js/worker/formal_ai_worker_source_fetch.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6676420Z      107 /    107  js/worker/formal_ai_worker_source_qualified_definition.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6676894Z       16 /     16  js/worker/formal_ai_worker_source_qualified_events.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6677340Z      296 /    299  js/worker/formal_ai_worker_source_walk.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6677775Z      829 /    832  js/worker/formal_ai_worker_statement_verification.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6678214Z     1070 /   1070  js/worker/formal_ai_worker_statistics.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6678622Z      122 /    122  js/worker/formal_ai_worker_text_payload.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6679033Z      753 /    903  js/worker/formal_ai_worker_text_transform.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6679470Z       14 /     14  js/worker/formal_ai_worker_tool_execution_policy.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6679924Z      150 /    151  js/worker/formal_ai_worker_translation_composition.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6680463Z     1185 /   1231  js/worker/formal_ai_worker_translation_recall_and_compound_interest.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6680991Z      100 /    100  js/worker/formal_ai_worker_triz.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6681858Z      721 /    721  js/worker/formal_ai_worker_units.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6682261Z       33 /     33  js/worker/formal_ai_worker_unknown_language.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6682686Z      155 /    155  js/worker/formal_ai_worker_verifiable_task.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6683115Z     1023 /   1023  js/worker/formal_ai_worker_web_formalize.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6683591Z     1168 /   1168  js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6684095Z     1316 /   1317  js/worker/formal_ai_worker_web_search_and_projects.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6684548Z      256 /    256  js/worker/formal_ai_worker_wikihow.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6684993Z     1344 /   1392  js/worker/formal_ai_worker_wikipedia_and_shell_commands.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6685464Z      121 /    121  js/worker/formal_ai_worker_word_relations.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6685929Z     1274 /   1279  js/worker/formal_ai_worker_write_program_and_research.js
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6686223Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6686411Z   total: 66257 lines (summed ceilings 70579, target 3000)
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6686652Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6686999Z Every module is within its own ceiling. 63257 line(s) above the 3000-line UI-glue target.
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6687986Z Migrate more solver logic into the Rust→WASM worker, then run
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6688593Z `rust-script scripts/check-worker-line-budget.rs --write` to lock in the drop.
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6688936Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6688944Z 
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6692043Z {"scope":"current source governance; not base nonincrease or tests-as-docs parity","results":[{"name":"language-parity","passed":true,"status":0,"durationMs":273},{"name":"minimal-core","passed":false,"status":1,"durationMs":63},{"name":"current-debt-ceilings","passed":true,"status":0,"durationMs":385},{"name":"honest-closure","passed":true,"status":0,"durationMs":2099},{"name":"role-namespace","passed":true,"status":0,"durationMs":112},{"name":"seed-metadata","passed":true,"status":0,"durationMs":134},{"name":"response-language-parity","passed":true,"status":0,"durationMs":69},{"name":"worker-line-budget","passed":true,"status":0,"durationMs":86}]}
+Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-25T10:01:07.6707198Z ##[error]Process completed with exit code 1.
+Pipeline Status	Fail the run when a required job was cancelled or failed	﻿2026-11-25T10:02:40.6590789Z ##[group]Run bash scripts/check-pipeline-status.sh
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.6591331Z ^[[36;1mbash scripts/check-pipeline-status.sh^[[0m
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9192800Z shell: /usr/bin/bash -e {0}
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9193320Z env:
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9193655Z   GIT_CONFIG_COUNT: 1
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9193985Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9194284Z   GIT_CONFIG_VALUE_0: main
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9194858Z   CARGO_NET_RETRY: 10
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9195178Z   CARGO_HTTP_MULTIPLEXING: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9195758Z   CARGO_TERM_COLOR: always
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9196067Z   FORMAL_AI_CI_VERBOSE: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9196342Z   FORMAL_AI_NON_LINUX_CI: run
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9196670Z   RUSTFLAGS: -Dwarnings
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9196952Z   RUST_BACKTRACE: full
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9197870Z   CARGO_REGISTRY_TOKEN: ***
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9198246Z   CARGO_TOKEN: ***
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9198523Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9198892Z   DOCKERHUB_IMAGE: konard/formal-ai
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9203456Z   NEEDS_JSON: {
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "fast-pr-lint": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "failure",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-type-check": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "hive-source-provenance": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "detect-changes": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "toml-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "docs-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "workflow-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "pipeline-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "agentic-routing-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "any-code-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "native-type-check": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "rs-changed": "true"
+Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-build": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-slim": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "secrets-scan": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "version-check": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "release-preflight": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "base": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "commit": "7b9f98d48d8ccab667b65157f6ba96e824b6971f"
+Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "lint": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "doc-tests": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "macos-core-tests": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "auto-release": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "manual-release": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-container-images": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog-pr": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-local": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-agent-cli-e2e": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build-artifacts": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-response-observations": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "box-language-projects": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "deploy-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "server-parity": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  }
+Pipeline Status	Fail the run when a required job was cancelled or failed	}
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9208506Z   IS_MAIN: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9208817Z ##[endgroup]
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9379271Z Failed jobs:    fast-pr-lint
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9379970Z Cancelled jobs: <none>
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9401107Z ##[error]Pipeline failed. Failing jobs: fast-pr-lint
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-25T10:02:40.9409398Z ##[error]Process completed with exit code 1.

@@ -12,7 +12,7 @@
 // formal_ai_worker_handler_rule_values.js.
 
 /**
- * Tokens of one rule line: whitespace-separated, quotes keep spaces.
+ * Tokens of one rule line: quotes keep spaces; a reference group stays one operand.
  * @param {string} line
  * @returns {string[]}
  */
@@ -20,14 +20,25 @@ function handlerRulesTokenize(line) {
   const tokens = [];
   let current = "";
   let quote = "";
+  let depth = 0;
   for (const character of Array.from(line)) {
     if (quote !== "" && character === quote) {
       quote = "";
-      tokens.push(current);
-      current = "";
+      if (depth > 0) current += character;
+      else {
+        tokens.push(current);
+        current = "";
+      }
     } else if (quote === "" && (character === '"' || character === "'")) {
       quote = character;
-    } else if (quote === "" && /\s/u.test(character)) {
+      if (depth > 0) current += character;
+    } else if (quote === "" && character === "(") {
+      depth += 1;
+      current += character;
+    } else if (quote === "" && character === ")" && depth > 0) {
+      depth -= 1;
+      current += character;
+    } else if (quote === "" && depth === 0 && /\s/u.test(character)) {
       if (current !== "") {
         tokens.push(current);
         current = "";
@@ -256,6 +267,10 @@ function handlerRulesParseValue(node) {
     case "transform": // R1188-U20: a named text transform of the free-text payload (Rust ValueSource::Transform)
       if (node.args.length < 3) throw new Error("handler-rules:transform_without_name");
       return { name, source, text: "", key: node.args[2] };
+    case "list_code":
+      if (node.args.length < 3) throw new Error("handler-rules:list_code_without_language");
+      if (node.args[3] !== undefined && node.args[3] !== "test") throw new Error("handler-rules:unknown_list_code_form");
+      return { name, source, text: node.args[3], key: node.args[2] };
     case "response": // #918: the seeded response whose intent the template names, in the prompt language
       if (node.args.length < 3) throw new Error("handler-rules:response_without_intent");
       return { name, source, text: "", key: node.args[2] };

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "failingRun": 44843761970,
+  "failingHead": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86",
+  "diagnosticCount": 64,
+  "firstMissingImportLine": 42913,
+  "unusedParentImportLine": 42990,
+  "sourceIdentities": [
+    {
+      "path": "rust/src/seed.rs",
+      "beforeSha256": "b9f16626abf5eeb5b190d14e75933a09d030e93feda5c9564bed2a628888ec6e",
+      "afterSha256": "e8612c994aa735c9046108837616f07db8079a86d5f3e6340ad71ed72109ad32"
+    },
+    {
+      "path": "rust/src/protocol.rs",
+      "beforeSha256": "01ef575b175e0a642317521cf02f1fca9c20e122e727098e95cd81896c215ad2",
+      "afterSha256": "7ab24f3de81b1e84bcef1ff9d6e3e539669fda13ef1424cda00f78bf73d87233"
+    }
+  ],
+  "nativeCompilationPerformedLocally": false,
+  "hostedCompilationAfterRepair": "pending",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

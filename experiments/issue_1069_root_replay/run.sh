@@ -44,7 +44,7 @@ cp "$RIGHT_EFFECT" "$work/.agent-ladder/verified-children/node-2.lino"
 git -C "$work" add .agent-ladder/verified-children
 git -C "$work" commit -qm ladder-verified-child-effects
 
-setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_LOG_LEVEL=trace \
   FORMAL_AI_MEMORY_PATH="$work/.git/formal-ai-memory/memory.lino" \
   FORMAL_AI_DREAMING=0 "$BIN" serve --agent-mode --host 127.0.0.1 --port "$PORT" \
   >"$work/formal-ai.log" 2>&1 &

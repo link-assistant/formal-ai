@@ -1,0 +1,30 @@
+{
+  "sourceHead": "070b9748cfddbdad80dfd802c79d697b82cce99c",
+  "sources": [
+    {
+      "path": "rust/tests/unit/specification/reasoning_loop.rs",
+      "file": "preserved-reasoning-loop.rs.gz",
+      "rawSha256": "3021bacffc77bcc74db3845736f7165df0c126dc274678184bb40daebeab2d49",
+      "archiveSha256": "04354e4a52f42ac9350740aca868d4ad9c84099467bdc79253c4d58adc61f45e",
+      "originalSha256": "3021bacffc77bcc74db3845736f7165df0c126dc274678184bb40daebeab2d49",
+      "entireOriginalFilePreserved": true,
+      "testCount": 17
+    },
+    {
+      "path": "rust/tests/unit/specification/formalization.rs",
+      "file": "preserved-formalization.rs.gz",
+      "rawSha256": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3",
+      "archiveSha256": "95dc7a42834c208404a8cec8d1d7f41119803ad325990d852c8cd2587d97182e",
+      "originalSha256": "96038b52dc0f1ce195bf9f3034ca7a82a5707c58d3ffacbcb9d59a9f0e5dff65",
+      "entireOriginalFilePreserved": false,
+      "testCount": 11
+    }
+  ],
+  "testCount": 28,
+  "reasoningLoopOriginalBytesPreserved": true,
+  "interpretationTestCorrectionPredatesThisTarget": true,
+  "nativeExecuted": false,
+  "hostedVerification": "pending next published head",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

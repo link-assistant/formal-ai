@@ -1,0 +1,84 @@
+[
+  {
+    "name": "focused-shards",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "experiments/issue-1580/native-regression-groups.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 6.068310945061967,
+    "file": "pre-checkout-focused-shards.log.gz",
+    "rawSha256": "83f5640beaad089330f1c298f7a053adb65d0eed369aea9ba56b08ce59e93fac",
+    "archiveSha256": "288a44e54a8b4b5ff747725414f4bfb94baa722e2df81c8cb14953e510f81430",
+    "lines": 172
+  },
+  {
+    "name": "maintained-native-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 9.784447571029887,
+    "file": "pre-checkout-maintained-native-policy.log.gz",
+    "rawSha256": "4bf43f2ecb28fd09fbd7da92c08685aed017024af4c185c92a4f5cad3d442341",
+    "archiveSha256": "96c2fd8b5dd56aa16427fa20f74ed4c92df19dda4a289104e428e43b5b8a3124",
+    "lines": 490
+  },
+  {
+    "name": "shellcheck",
+    "argv": [
+      "shellcheck",
+      "scripts/ci-native-regressions.sh",
+      "scripts/run-with-budget-warning.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.3058387010823935,
+    "file": "pre-checkout-shellcheck.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "shell-syntax",
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/ci-native-regressions.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.0074780890718102455,
+    "file": "pre-checkout-shell-syntax.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "http-rustfmt",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/integration/http_server.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.09750647586770356,
+    "file": "pre-checkout-http-rustfmt.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  }
+]

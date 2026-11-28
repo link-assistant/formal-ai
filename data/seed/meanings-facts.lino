@@ -29,7 +29,7 @@ meanings
     grounded-in P36
     defined-by knowledge_relation
     role fact_relation
-    lexeme en capital
+    lexeme en capital "capital city"
     lexeme ru столица столицы столицей
     lexeme hi राजधानी
     lexeme zh 首都
@@ -83,29 +83,73 @@ meanings
     grounded-in P170
     defined-by knowledge_relation
     role fact_relation
-    lexeme en "who painted" painted painter artist
-    lexeme ru "кто написал" написал художник
-    lexeme hi "किसने बनाई" चित्रकार कलाकार
-    lexeme zh 谁画的 画家
-    lexeme es "quién pintó" pintó pintor pintora artista
+    lexeme en painter "who painted" "painter of" painted artist
+    lexeme ru художник "кто написал" написал
+    lexeme hi चित्रकार "किसने बनाई" कलाकार
+    lexeme zh 画家 是谁画的 谁画的
+    lexeme es pintor "quién pintó" pintó pintora artista
   built_year
     grounded-in P571
     defined-by knowledge_relation
+    defined-by year_period
     role fact_relation
-    lexeme en when built construction
-    lexeme ru когда построена построили
-    lexeme hi बनी बनाई कब
-    lexeme zh 何时 建于 建造
-    lexeme es cuándo construido construida construcción
+    lexeme en "inception year" inception built "construction of" construction "founded" "established"
+    lexeme ru "год основания" "начало строительства" построена построили основан основана
+    lexeme hi "स्थापना वर्ष" "निर्माण की शुरुआत" बनी बनाई
+    lexeme zh 始建年份 始建日期 建于 建造 建成 成立
+    lexeme es "año de fundación" fundación construido construida construcción fundado fundada
+  opening-date
+    grounded-in P1619
+    defined-by knowledge_relation
+    defined-by time
+    role fact_relation
+    lexeme en "opening date" "inaugurate" "inaugurated" "opened" open
+    lexeme ru "даты открытия" "дата открытия" открылась открыт открыли открыта
+    lexeme hi "उद्घाटन की तारीख" उद्घाटन खुली खुला
+    lexeme zh 开幕日期 開幕日期 开放 開放 揭幕
+    lexeme es "fechas de inauguración" "fecha de inauguración" inaugurado inaugurada abrió
+  inception
+    grounded-in P571
+    defined-by time
+    lexeme en inception
+    lexeme ru возникновение
+    lexeme hi आरंभ
+    lexeme zh 起始时间
+    lexeme es fundación
+  start
+    defined-by inception
+    defined-by time
+    lexeme en start
+    lexeme ru начать начало
+    lexeme hi आरंभ
+    lexeme zh 开始
+    lexeme es empezar inicio
   physical_constant
-    grounded-in Q173227
+    grounded-in P1181
     defined-by knowledge_relation
     role fact_relation
-    lexeme en "speed of light" "what is" "how fast"
-    lexeme ru "скорость света" какова "чему равна"
-    lexeme hi "प्रकाश की गति" कितनी
-    lexeme zh 光速 是多少
-    lexeme es "velocidad de la luz" "cuál es" "qué tan rápido"
+    lexeme en "numeric value" "what is" "how fast" "what is the value of"
+    lexeme ru "численное значение" какова "чему равна" "чему равен"
+    lexeme hi "संख्यात्मक मान" कितनी कितना
+    lexeme zh 数值 是多少 多快
+    lexeme es "valor numérico" "cuál es" "qué tan rápido"
+  inventor
+    grounded-in P61
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en inventor "who created" "who made" "who invented" "created by"
+    lexeme ru изобретатель "кто создал" "кто изобрёл" "создал"
+    lexeme hi आविष्कारक "किसने बनाया" "किसने आविष्कार किया"
+    lexeme zh 发明者 谁创建了 谁发明了 谁创造了 谁创建 谁发明 谁创造
+    lexeme es inventor "quién creó" "quién inventó" inventora
+  fact_subject_connector
+    defined-by knowledge_subject
+    role fact_subject_connector
+    lexeme en "s" "which city" "what city" "what year" "year did" start
+    lexeme ru "какая" "какое" "каков" "какова"
+    lexeme hi "क्या है" "कौन सा"
+    lexeme zh "是什么" "是什麼" "是什么时候" "是什麼時候" 什么时候 什麼時候 的
+    lexeme es "es" "son" "la" "las" "el" "los" "de" "del" "cuál" "cuáles"
   fact_comparison_request
     defined-by compare
     defined-by knowledge_relation

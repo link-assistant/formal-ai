@@ -1,0 +1,20 @@
+{
+  "source": "114d366e89d6717f8d9990d8c0ed2d308e13832a",
+  "gatesPassed": 4,
+  "whitespaceCheckPassed": true,
+  "freshFeedbackUnchanged": true,
+  "mainAncestor": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "queuedAndInProgressEmpty": true,
+  "preDraftCheckCredit": 0,
+  "initialSealAssertion": "Status log contains multiple spaces after Failed jobs; exact raw bytes retained and parser accepts whitespace without changing the observed verdict",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 24651,
+    "sha256": "c33efffefc6243f27d01ec2189e0319a6c554ec4319c4ada163484b60c816a7b"
+  },
+  "members": 44,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:57:16.683620+00:00"
+}

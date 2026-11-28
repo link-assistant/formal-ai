@@ -168,7 +168,11 @@ fn conversational_signature_is_found_after_a_native_language_function_word() {
 
 #[test]
 fn conversational_program_without_a_named_callable_uses_the_main_entry_point() {
-    let spec = recognise("Write a Python program to count to 100 inclusive.")
+    // The catalog's count task is operand-bound since 9b1ab09ca ("count to",
+    // "count from", ...), so "count to 100" now resolves to that task's
+    // identity (see the resolved-task test below). This request names no
+    // catalog task, which is what leaves `main` as the honest fallback.
+    let spec = recognise("Write a Python program to print the squares of the numbers up to 10.")
         .expect("program request without a signature");
     assert_eq!(spec.artifact_shape, ArtifactShape::Program);
     assert_eq!(spec.name, "main");

@@ -30,7 +30,11 @@
 #   FORMAL_AI_APT_PRIVILEGE         privilege escalation prefix (sudo); empty
 #                                   when already root, as tests are
 #   FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK  1 opts into the second-attempt alternate
+#   FORMAL_AI_APT_OFFICIAL_MIRROR_FIRST  1 prepares an existing Ubuntu mirror list
+#                                   before the first attempt (default 0)
 #   FORMAL_AI_APT_MIRROR_LIST       regular mirror-list fixture or runner path
+#   FORMAL_AI_APT_RECOVER_DPKG_ON_TIMEOUT  1 configures pending packages inside
+#                                   the next existing attempt (default 0)
 set -euo pipefail
 
 # The per-attempt deadline is `scripts/run-with-deadline.sh`, not GNU `timeout`:
@@ -54,12 +58,24 @@ apt_get="${FORMAL_AI_APT_GET:-apt-get}"
 privilege="${FORMAL_AI_APT_PRIVILEGE-sudo}"
 packages="$*"
 
-# Opted-in Ubuntu callers may use the existing second attempt on the official
-# alternate after a process deadline. Other callers keep their original sources.
+# Opted-in Ubuntu callers may prefer the official alternate before the first
+# attempt or after a process deadline. Other callers keep their original sources.
 mirror_fallback="${FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK:-0}"
 mirror_list="${FORMAL_AI_APT_MIRROR_LIST:-/etc/apt/apt-mirrors.txt}"
+mirror_first="${FORMAL_AI_APT_OFFICIAL_MIRROR_FIRST:-0}"
+recover_dpkg="${FORMAL_AI_APT_RECOVER_DPKG_ON_TIMEOUT:-0}"
 [[ "$mirror_fallback" = 0 || "$mirror_fallback" = 1 ]] || {
   echo "official Ubuntu mirror fallback must be 0 or 1" >&2
+  exit 2
+}
+
+[[ "$mirror_first" = 0 || "$mirror_first" = 1 ]] || {
+  echo "first-attempt Ubuntu mirror preference must be 0 or 1" >&2
+  exit 2
+}
+
+[[ "$recover_dpkg" = 0 || "$recover_dpkg" = 1 ]] || {
+  echo "interrupted dpkg recovery must be 0 or 1" >&2
   exit 2
 }
 
@@ -93,8 +109,15 @@ status=0
 for ((attempt = 1; attempt <= attempts; attempt++)); do
   started=$SECONDS
   use_alternate=0
-  if [ "$mirror_fallback" = 1 ] && [ "$attempt" -eq 2 ] && [ "$status" -eq 124 ]; then
+  # Prefer the official HTTPS source before spending a deadline on the
+  # regional HTTP mirror. Runners without an Ubuntu mirror list keep their sources.
+  if { [ "$mirror_first" = 1 ] && [ "$attempt" -eq 1 ] && [ -e "$mirror_list" ]; } ||
+    { [ "$mirror_fallback" = 1 ] && [ "$attempt" -eq 2 ] && [ "$status" -eq 124 ]; }; then
     use_alternate=1
+  fi
+  recover_configuration=0
+  if [ "$recover_dpkg" = 1 ] && [ "$status" -eq 124 ]; then
+    recover_configuration=1
   fi
   # The deadline runs *inside* the privilege escalation so it signals apt-get
   # itself; killing an unprivileged parent would leave root's apt holding the
@@ -104,13 +127,20 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
   attempt_command=(
     "$deadline" "$attempt_seconds" bash -c '
       set -e
-      use_alternate="$1"; mirror_list="$2"; mirror_script="$3"; shift 3
+      use_alternate="$1"; mirror_list="$2"; mirror_script="$3"
+      recover_configuration="$4"; shift 4
+      # A deadline can interrupt unpack/configure, not just a network request.
+      # Keep recovery within the existing attempt privilege and clock.
+      if [ "$recover_configuration" = 1 ]; then
+        echo "Configuring pending packages after the previous APT deadline."
+        dpkg --configure --pending
+      fi
       if [ "$use_alternate" = 1 ]; then
         bash "$mirror_script" "$mirror_list"
       fi
       "$0" -o DPkg::Lock::Timeout=60 update -q
       "$0" -o DPkg::Lock::Timeout=60 install -y -q "$@"
-    ' "$apt_get" "$use_alternate" "$mirror_list" "$script_directory/prepare-ubuntu-apt-mirror.sh" "$@"
+    ' "$apt_get" "$use_alternate" "$mirror_list" "$script_directory/prepare-ubuntu-apt-mirror.sh" "$recover_configuration" "$@"
   )
   [ -z "$privilege" ] || attempt_command=("$privilege" "${attempt_command[@]}")
 

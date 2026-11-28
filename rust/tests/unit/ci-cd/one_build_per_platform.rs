@@ -23,9 +23,9 @@
 //!   │     ├── test                  (downloads the executables)
 //!   │     ├── docker-build          (downloads the binary)
 //!   │     └── test-agent-cli-e2e    (downloads the binary)
-//!   └── macos-core-tests            (its own archive, one compile per platform)
-//!         └── build (packaging)     ── after every check
-//!               └── release
+//!   ├── macos-core-tests            (its own archive, one compile per platform)
+//!   └── build (packaging)           (staged release, its own publishable binary)
+//!         └── release
 //! ```
 
 use std::fs;
@@ -177,7 +177,9 @@ fn one_job_builds_and_the_rest_download() {
         ("test", "formal-ai-test-executables"),
         ("docker-build", "download-formal-ai-binary"),
         ("test-agent-cli-e2e", "download-formal-ai-binary"),
-        ("build", "download-formal-ai-binary"),
+        // `build` (packaging) is not a consumer since 4c6d5653b: the staged
+        // release builds and verifies its own publishable binary and needs only
+        // `detect-changes` (see `independent_checks_do_not_wait_for_the_build`).
     ] {
         let block = super::workflow_fixtures::job_block(&workflow, job);
         assert!(

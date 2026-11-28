@@ -1,0 +1,49 @@
+{
+  "publishedHead": "e93881cb64a78a19253088c19f09a1f1b816229c",
+  "run": 44982575990,
+  "logRawSha256": "ab74b518c369da27af8bcbfc262243d1d93ecf7df24ab4ceaa263ed01531b390",
+  "originalCases": 53,
+  "allCurrentNamedCasesPassed": 53,
+  "parts": [
+    {
+      "file": "current-passes-00.json",
+      "records": 8,
+      "sha256": "2345f9b901753d0afc508f32940935d0d3f4f169936ba6d8cf7abfb51d648d99"
+    },
+    {
+      "file": "current-passes-01.json",
+      "records": 8,
+      "sha256": "6cec6d25909f84c690e92e7f2335a372d170ba7a439144907f5d2ca8a3af23b2"
+    },
+    {
+      "file": "current-passes-02.json",
+      "records": 8,
+      "sha256": "7a7801d62c29f512fb458a860d7a5fe968c0a610c5b273b44f3dc9532987e39f"
+    },
+    {
+      "file": "current-passes-03.json",
+      "records": 8,
+      "sha256": "049db46010182b94be317e0dc5b29c833fbf1e669e90831bcc9132e187eb487f"
+    },
+    {
+      "file": "current-passes-04.json",
+      "records": 8,
+      "sha256": "b605d698e7b0b259040a4eae7260a63f2f0084eda5c1c66dbd37863c12d0d6da"
+    },
+    {
+      "file": "current-passes-05.json",
+      "records": 8,
+      "sha256": "58fb0b6f8df89e6b5d19d82af32631f9b2bc6ba49ac8f054a6615bea7a8f768e"
+    },
+    {
+      "file": "current-passes-06.json",
+      "records": 5,
+      "sha256": "620e24156dfbb689c1aa08cf2415b79bf6e8511aadd8a6a64bec2ba90978881b"
+    }
+  ],
+  "sourceBindingForUniqueLeafCandidatesStillRequired": false,
+  "originalBudgetFailuresStillOpen": 3,
+  "fullIssueComplete": false,
+  "multilineOutputAndDuplicateLeafNamesExplicitlyQualified": true,
+  "changedContractsRemainDistinctFromStrictReplay": true
+}

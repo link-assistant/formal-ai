@@ -1,0 +1,37 @@
+{
+  "cause": "new feedback filename pr-comments.json abbreviates pull request",
+  "repair": "rename to pull-request-conversation.json; baseline remains 90",
+  "pushExecuted": false,
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/native-interface-publication/outcome.json",
+      "file": "outcome.json.gz",
+      "rawSha256": "8bb8dde62d439e396c1119c8ac99961235e468caada923c50186c1e9fa8581dd",
+      "archiveSha256": "4c755f18292c59b9d0bcc21a178dd6470f96991f575a8f90384bd879de429a7e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/native-interface-publication/documentation-gates.stdout",
+      "file": "documentation-gates.stdout.gz",
+      "rawSha256": "ed2034ba41bee2ca231043539cb0fcdbb4872c09305e01d476cafe6f47bc0931",
+      "archiveSha256": "f13d4bd51f15cd6fe14a82a88bc0abf10bfc922192a8007aaeb2674f686d541f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/native-interface-publication/documentation-gates.stderr",
+      "file": "documentation-gates.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "experiments/formal_ai_subagent/sandboxes/gates/check-abbreviations.log",
+      "file": "check-abbreviations.log.gz",
+      "rawSha256": "4fbb5b7254099b4357aad5545a2ed7fb3351391f5de936615334b6beef5396fd",
+      "archiveSha256": "67624127727d2cbcb27943f9623845b25523fecf7b474ae8a6c53d66dc1a9cd2"
+    },
+    {
+      "source": "/tmp/issue-1580-research/abbreviation-file-list.log",
+      "file": "abbreviation-file-list.log.gz",
+      "rawSha256": "5cf76e5135f5180d465b01a4f44c2e0b49c1cb86e650e7a92c375a1d0b185bc9",
+      "archiveSha256": "e09384b2e849254b03865acf8021253261cd9dbcf3a41a85b5a308f294c8e2df"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "productionBeforeSha256": "e7d876e5c8ef5af89889689cb2f00a8156ada3195b12bd47d3cc1a34c097298a",
+  "originalCopiedCasesRetained": 5,
+  "newNativeCases": 3,
+  "localRustExecution": false,
+  "nativeHostedVerificationPending": true,
+  "independentAuthorshipCredit": 0
+}

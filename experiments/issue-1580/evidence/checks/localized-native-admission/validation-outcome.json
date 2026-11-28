@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "head": "932b05a8047efd9eab9b8e1b3d71d270580207e8",
+  "sourceHashes": {
+    "scripts/ci-pull-request-admission.mjs": "859e9999f50bf2f23cf847791d19f9e97a42f612972f1b00469f2269b7141c19",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "ed601d67bf35d2a12bac7e56715f70ac0ca63bf4c15634228d02569f1b1c5971",
+    "changelog.d/issue-1580-localized-native-admission.md": "d7dac6ee614680062442909d7eba4384090458c5c4b9da228524b4b9ba610b59"
+  },
+  "adjacentTestsPassed": 22,
+  "affectedGatesPassed": 7,
+  "nativeExecutedLocally": false,
+  "pushExecuted": false,
+  "independentAuthorshipCredit": 0
+}

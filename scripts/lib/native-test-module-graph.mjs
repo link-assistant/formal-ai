@@ -308,18 +308,39 @@ export function readNativeTestModuleGraph(root) {
     targets: targets.map((t) => ({ ...t, path: relative(root, t.path) })),
   };
 }
+/**
+ * Bind `path::function` (optionally `path::function@target`) to one registered
+ * native caller. One source file may be compiled into several Cargo test
+ * targets (for example `unit` and a focused `reasoning_contracts` replay); the
+ * `@target` qualifier names which compiled copy is meant, so the binding stays
+ * explicit instead of guessing (issue #1637).
+ */
 export function bindOriginalSourceCase(graph, id, actualListing = null) {
   const split = id.lastIndexOf("::");
   assert.ok(split > 0);
+  const at = id.indexOf("@", split);
+  const target = at < 0 ? null : id.slice(at + 1);
+  assert.notEqual(target, "", "empty target qualifier: " + id);
   const source = id.slice(0, split),
-    name = id.slice(split + 2);
-  const matches = graph.functions.filter(
+    name = id.slice(split + 2, at < 0 ? undefined : at);
+  const candidates = graph.functions.filter(
     (row) => row.source === source && row.function === name,
   );
+  const matches =
+    target === null
+      ? candidates
+      : candidates.filter((row) => row.target === target);
+  const targets = [...new Set(candidates.map((row) => row.target))].sort();
   assert.equal(
     matches.length,
     1,
-    "source test has no unique registration: " + id,
+    "source test has no unique registration: " +
+      id +
+      (target === null && targets.length > 1
+        ? " (compiled into targets " +
+          targets.join(", ") +
+          "; qualify the case as <path>::<function>@<target>)"
+        : ""),
   );
   const row = matches[0];
   assert.notEqual(

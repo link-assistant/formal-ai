@@ -1,0 +1,855 @@
+{
+  "source": "cec9207c3e139e2212f6d4ea478ff1b88e17be7c",
+  "run": 45093409488,
+  "attempt": 1,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/45093409488",
+  "scope": "Actual read-only Actions and Rust CodeQL producers and diagnostic queries. Complete successful producer execution does not establish included-file semantic coverage or main alert resolution.",
+  "independentAuthorshipCredit": 0,
+  "archive": {
+    "path": "complete-producer.tar.gz",
+    "bytes": 15572400,
+    "sha256": "06d37e0c530bd49b467b296ce526f46c6157a96eb3c0c8b234a759dc1990d4c0"
+  },
+  "roundTripVerified": true,
+  "sarif": [
+    {
+      "language": "rust",
+      "path": "rust.sarif",
+      "results": 0,
+      "invocationsSuccessful": true,
+      "notificationLevels": {
+        "note": 57,
+        "none": 9221
+      }
+    },
+    {
+      "language": "actions",
+      "path": "actions.sarif",
+      "results": 0,
+      "invocationsSuccessful": true,
+      "notificationLevels": {
+        "none": 5967
+      }
+    }
+  ],
+  "includedStringComparison": {
+    "source": "cec9207c3e139e2212f6d4ea478ff1b88e17be7c",
+    "queryResultSha256": "f4c8deba276a13b8804423cef2b4c62c1e536c9395326936547624d5a6140a6e",
+    "rows": 2108,
+    "states": {
+      "literal-expansion": 1854,
+      "unexpanded": 253,
+      "other-expansion": 1
+    },
+    "controlFlow": {
+      "no-expansion-cfg-node": 1823,
+      "expansion-has-cfg-node": 285
+    },
+    "files": 259,
+    "literalComparisonCounts": {
+      "empty-expansion-of-nonempty-source": 541,
+      "literal-requires-rust-decoder": 24,
+      "non-literal-or-unbound-span": 1279,
+      "matches-exact-source": 9,
+      "included-source-unavailable": 1
+    },
+    "scope": "Exact source spans with one literal relative include path and JSON-compatible quoted text only; macro contexts are not collapsed into an application coverage claim."
+  },
+  "files": [
+    {
+      "path": "actions/actions.sarif",
+      "bytes": 2545590,
+      "sha256": "e57184613f06ba1e82273ee4d327ad02706ea27a744ce750950c9b290fc26047"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/12645217dd895210/Cargo.lock",
+      "bytes": 14579,
+      "sha256": "172b13041561880db7113205586663022396c9f017c8cf292ad36bb62ce0d019"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/12645217dd895210/Cargo.toml",
+      "bytes": 231,
+      "sha256": "a56dafc67c70036c1960caee03adf582be83ff4c183ada99a8ceb0053107da9e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/12645217dd895210/build.jsonl",
+      "bytes": 45375,
+      "sha256": "7c2cf6d0d5b6e4e18e04ed9427f000131973fd30135b69ca4ddd48bdf9a56f36"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/12645217dd895210/build.jsonl.stderr",
+      "bytes": 176,
+      "sha256": "737a233010aad122198937ae461ae62dcf7396a600716b92ced570467a5facd1"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/12645217dd895210/metadata.json",
+      "bytes": 201860,
+      "sha256": "db398009651b288de088aa37d01a028a165ad79a625a1b26a06836c7b71047f9"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/12645217dd895210/metadata.json.stderr",
+      "bytes": 97,
+      "sha256": "04e33758246c55245b99dc940236a67f5f66fc61d722b2a6efd60d86dc25ad1b"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/1316d95fb76c6203/Cargo.lock",
+      "bytes": 11764,
+      "sha256": "f06fc45a4d978b706472874ccc664e53991128f7571de35426affe15e5aeaf94"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/1316d95fb76c6203/Cargo.toml",
+      "bytes": 199,
+      "sha256": "695ee8412ee6abc2ad5b280141058790242d35042447c797fdd6b9e645055276"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/1316d95fb76c6203/build.jsonl",
+      "bytes": 35389,
+      "sha256": "e7c3ee2b993be24e41b4c885eeaeccd6b979ec1454dc0e7691ecfde1a7153e53"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/1316d95fb76c6203/build.jsonl.stderr",
+      "bytes": 176,
+      "sha256": "0483d989293468e01ef53eb3d7df5338b594eb774575c5ad246700629d7f0e19"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/1316d95fb76c6203/metadata.json",
+      "bytes": 143968,
+      "sha256": "029ca976e1f50eaf73fa1c210ba6aa377029560545e17ff6cd83e11d335fa338"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/1316d95fb76c6203/metadata.json.stderr",
+      "bytes": 85,
+      "sha256": "7c3001c29eea184b2b9b222d90652e4e121cdb56e09c00e2613e9c68a1b950a4"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/221d9a76c8fceaaa/Cargo.lock",
+      "bytes": 4590,
+      "sha256": "977f3892fb12795c37f3d03888c88f36fd6073f3d377cbebfa9864b0cfeacebd"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/221d9a76c8fceaaa/Cargo.toml",
+      "bytes": 195,
+      "sha256": "a96861b118678e30de4e26ff056b13a0d581bad9c4d6cbe5dc7f379f2e8b4995"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/221d9a76c8fceaaa/build.jsonl",
+      "bytes": 11573,
+      "sha256": "187d0f9badd1e71004855cfce8f07eba6345981dda3e59f889f0378445e5b3b2"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/221d9a76c8fceaaa/build.jsonl.stderr",
+      "bytes": 626,
+      "sha256": "4778d7e38fa153395ca9b37751a59869d136d9e3449b0b5d8bcc8c0cd91c2372"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/221d9a76c8fceaaa/metadata.json",
+      "bytes": 64372,
+      "sha256": "ebfac54dbe3c83a3c3125f57b779541d02c812a3556ff432bb7e971ebaeb29da"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/221d9a76c8fceaaa/metadata.json.stderr",
+      "bytes": 604,
+      "sha256": "17e7956b28bac903069dd771c4aebd48b971da321c9f6220115d7d99c6519fd3"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2c790c438a178f71/Cargo.lock",
+      "bytes": 2783,
+      "sha256": "f06ba5d95e388464a29f08b96e1b65deecba1c4cbcc893f91636bf60ec1f6194"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2c790c438a178f71/Cargo.toml",
+      "bytes": 179,
+      "sha256": "f27c9e2bffc8a46fc0dfd450efc9daa95843ad6941fc29a8fc011a73a553d616"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2c790c438a178f71/build.jsonl",
+      "bytes": 12039,
+      "sha256": "3c363051485f9a256696481228af7d50a961e28f211ac6c443291bfc3ed0740b"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2c790c438a178f71/build.jsonl.stderr",
+      "bytes": 553,
+      "sha256": "c4e2ad8b32a3732f166f42b95ebd4ff6a7bbae861cee45a0bef361cc75ac5662"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2c790c438a178f71/metadata.json",
+      "bytes": 40364,
+      "sha256": "aa249a3504bf17a779384376e1b0d58e1b11c5f2d1b84da0041189da25b9488f"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2c790c438a178f71/metadata.json.stderr",
+      "bytes": 467,
+      "sha256": "d4d2d62775820071689fabf6fc2d987b9a90ce30ba20aed3dde7d0fad4f82cc7"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2ccbf02459894e9d/Cargo.lock",
+      "bytes": 3621,
+      "sha256": "37be650607653a42c9f220e1a99f23aded73519f0054fcf08d216e4cc693472e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2ccbf02459894e9d/Cargo.toml",
+      "bytes": 181,
+      "sha256": "aaf2f8c51a381c9c5689fda0a4f017ec379e00326516293557705ee9318a7698"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2ccbf02459894e9d/build.jsonl",
+      "bytes": 7099,
+      "sha256": "27137e0c4bca10b37352ad241c92cf7c5a54977c1090518a36d056e0a37599bb"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2ccbf02459894e9d/build.jsonl.stderr",
+      "bytes": 176,
+      "sha256": "d0102e6a98b9cf3680622d554d60fa330e8c1f4175f7a60f4f146118be097e67"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2ccbf02459894e9d/metadata.json",
+      "bytes": 47092,
+      "sha256": "5940d7a8042c481a348035e4a578b7ecc790855185f0e22dc0013f2fb62caf61"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/2ccbf02459894e9d/metadata.json.stderr",
+      "bytes": 97,
+      "sha256": "c560bd79716c0ba0038e610a7608b35e4085159b929280c09baf4f79820c689e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/37531ac60e290e1c/Cargo.lock",
+      "bytes": 12099,
+      "sha256": "f1251e793c00907c3f41f54d18e6d3a0583abc02738afcde46e1214b274ff39d"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/37531ac60e290e1c/Cargo.toml",
+      "bytes": 212,
+      "sha256": "78e37cb2046eff04bceeddc572947e79c65d5dc922fed3a87f3cef0c8c20c71b"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/37531ac60e290e1c/build.jsonl",
+      "bytes": 15831,
+      "sha256": "e053ced77c60df800581e81a5ad849ce5bd0078e09258a237a8d6a2f74682f3e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/37531ac60e290e1c/build.jsonl.stderr",
+      "bytes": 300,
+      "sha256": "36a7c59bbe5a53c22f05c8ca43b9edef6016bfb9e1a5a14fa2e03c9940c60721"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/37531ac60e290e1c/metadata.json",
+      "bytes": 82341,
+      "sha256": "de41422c7800ef1cb000df604626721fc7bfe2fd9fa5b0e2a9a01509b671fffc"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/37531ac60e290e1c/metadata.json.stderr",
+      "bytes": 245,
+      "sha256": "db6bd99bb108b3c6dc6e84cd4d58ea8ac21aae5d5b48dbae1048e2a61e9d9028"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/495a29db9933c11c/Cargo.lock",
+      "bytes": 2963,
+      "sha256": "abe25b0cc943c55774d376be36b70a3192e9fdcdf83a3f6bd6eae11043ba886b"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/495a29db9933c11c/Cargo.toml",
+      "bytes": 374,
+      "sha256": "cfc67f876bcd9389bcfb6ccd6efb84375b6efd15fed0899b4587ff17cb1b960c"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/495a29db9933c11c/build.jsonl",
+      "bytes": 13125,
+      "sha256": "26960ad7e673aa0ed7ba9e1827b6eca3ee6a3b20080b065eb0dfe8f58d634192"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/495a29db9933c11c/build.jsonl.stderr",
+      "bytes": 364,
+      "sha256": "7a52b0580a8de9e495d8fbb5340d646726a69e1e7491d4623a3298c2e52e64b4"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/495a29db9933c11c/metadata.json",
+      "bytes": 47309,
+      "sha256": "5c7ae4a44840d6afab3ca43f5eaed6a75bf2bccafcd560a492d0ce186800c7f7"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/495a29db9933c11c/metadata.json.stderr",
+      "bytes": 249,
+      "sha256": "5a8d969588d5020d13f94280095a55de0f72ee002632375d873d1db6ed7419cb"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5328bef5af2217e1/Cargo.lock",
+      "bytes": 1353,
+      "sha256": "c2523af74cc0e421fd57c2cde503479d4344128a78cf7552d3753a192b728488"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5328bef5af2217e1/Cargo.toml",
+      "bytes": 171,
+      "sha256": "f575312190a374fe539b69f862be57e2fb2bdefe44d03ef537b9430908245fb7"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5328bef5af2217e1/build.jsonl",
+      "bytes": 5295,
+      "sha256": "2ab31eb0f1b7f29822f74e9b4696a7b20e2d7d88092f301dab7c8b9a2d4c43ef"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5328bef5af2217e1/build.jsonl.stderr",
+      "bytes": 176,
+      "sha256": "4d854c3eabfc87cecd123af738dc63feac9e8d26c3b0aac0b65dcb39c4a4343b"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5328bef5af2217e1/metadata.json",
+      "bytes": 21117,
+      "sha256": "26cd906051d9eb3aa39c862366a1872a2c5739159c3823839b127078287f578e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5328bef5af2217e1/metadata.json.stderr",
+      "bytes": 96,
+      "sha256": "be0f4e6609bcccd7a66560ff5bbc839d37423e040ae0dc43cb81611517c7b868"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5df2c1e776364203/Cargo.lock",
+      "bytes": 3828,
+      "sha256": "b8898763be06602b93021dbcb2f1a3e5ef6800d59a166c7407d39d41b1568ec3"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5df2c1e776364203/Cargo.toml",
+      "bytes": 247,
+      "sha256": "ebff5bbf37ac193d33c3ae94d75e13761ab93347a5c4cd5bc2e887dc07fe2fdf"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5df2c1e776364203/build.jsonl",
+      "bytes": 17370,
+      "sha256": "de79e4d78045e98e9005e065d3ad03e297ef6b05652e15c9c7bdc6ac04716161"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5df2c1e776364203/build.jsonl.stderr",
+      "bytes": 478,
+      "sha256": "cd0c14d4830d8b19248b196a04b1bf0d65885a0e442c8eca78bda390af43cc9d"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5df2c1e776364203/metadata.json",
+      "bytes": 56940,
+      "sha256": "00228b8b37d73d6b9b9263d478edeaab151a60e3e277bb8b401ed6ec30384330"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/5df2c1e776364203/metadata.json.stderr",
+      "bytes": 390,
+      "sha256": "67d418889f25aaf55a6d87b28c969ac2a4b35ddf8f4fdec86206cf53d32c520c"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/64a5b88124fb2105/Cargo.lock",
+      "bytes": 2689,
+      "sha256": "91329deb1cbedde19fd72b2f440d6e08e4fc6d6cae6dd4b9d10bc448e4209d80"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/64a5b88124fb2105/Cargo.toml",
+      "bytes": 245,
+      "sha256": "9a542d28e1a98c2acafc5d5213b430c47fd99bd33f1ae371b5f6e25b6f4116b7"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/64a5b88124fb2105/build.jsonl",
+      "bytes": 15882,
+      "sha256": "5d7f4f72f88d9dbd26d8a966cc8babe24fb94bb6a1ba7a1a33814d3a637a7359"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/64a5b88124fb2105/build.jsonl.stderr",
+      "bytes": 209,
+      "sha256": "b894bf753d535c08197cd351324e02ee16062fa9688cf960d2c883152c11d27e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/64a5b88124fb2105/metadata.json",
+      "bytes": 52262,
+      "sha256": "d19417dadbadc970665975955798aebf15eb36b06704cd31d8d47e4c5c6f440f"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/64a5b88124fb2105/metadata.json.stderr",
+      "bytes": 209,
+      "sha256": "5c79093b06fade4d51848127c4f942efd1e6422718da6cf94560b83501aedb66"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/86ad51a501498e31/Cargo.lock",
+      "bytes": 14606,
+      "sha256": "192d4247367d6aa678028e1c9b00456549ff3934ab3830c89552c6442f6b3733"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/86ad51a501498e31/Cargo.toml",
+      "bytes": 286,
+      "sha256": "6011105d76ce99b6e75a00974ce2ced533daf31fb083425b5268fcac5c55ee98"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/86ad51a501498e31/build.jsonl",
+      "bytes": 53543,
+      "sha256": "a240e45baa9ab06e71ce2de219ff5e87501c99f29ebbee0fe9dfb24d5b1fd68f"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/86ad51a501498e31/build.jsonl.stderr",
+      "bytes": 1012,
+      "sha256": "4f62e6295133f191cd8e44963640bb82d8ade029b55de5b53a2609f87fcc3603"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/86ad51a501498e31/metadata.json",
+      "bytes": 232834,
+      "sha256": "25fedc5491a37ada12fd8377293b60ee4639dd67e55a731471be310ad2728a05"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/86ad51a501498e31/metadata.json.stderr",
+      "bytes": 984,
+      "sha256": "43d18e787b531a6c6fed3458d8be4a29c14042dbffdd4277626b849a2374052c"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/8c33a3b3a68e6789/Cargo.lock",
+      "bytes": 2662,
+      "sha256": "8c89c69c8a46fadca51c6fe2fc73577eacaf874d28d2fc4bac1ecec7ea2f0af4"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/8c33a3b3a68e6789/Cargo.toml",
+      "bytes": 176,
+      "sha256": "d6e7e6886df757655c12a565f29b9f9f75652b36d68a77a3743d4f0728402ffc"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/8c33a3b3a68e6789/build.jsonl",
+      "bytes": 7746,
+      "sha256": "03b7157fcdf59f069d0a2beed6e03648411d12dc58c6ab7305b6d1268b48cb3f"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/8c33a3b3a68e6789/build.jsonl.stderr",
+      "bytes": 209,
+      "sha256": "7bd8f62b66b2110970929c8480e3a1f4817cda30fd8b6bebbffac35bb9eaefb2"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/8c33a3b3a68e6789/metadata.json",
+      "bytes": 21428,
+      "sha256": "fab2ac706077311488b5600abbc59c7fa2e44d42fcdab3378c843c9bf8907852"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/8c33a3b3a68e6789/metadata.json.stderr",
+      "bytes": 97,
+      "sha256": "2fed1fa7fc0f2755f8192063ff02c013167b531139fc3235a3f4952a95451f35"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/9ae4fc014a2771dc/Cargo.lock",
+      "bytes": 1292,
+      "sha256": "bdd0bed49d04327432365cd6f23816e1b590fc611a89baa5d2ef9f6a2a87c3c1"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/9ae4fc014a2771dc/Cargo.toml",
+      "bytes": 188,
+      "sha256": "df1c495c5728500fedc78e0c686d9e8dbc3853a442dcd253d03ba17fddc71f5e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/9ae4fc014a2771dc/build.jsonl",
+      "bytes": 4623,
+      "sha256": "4a2b8c63028bf09238e87e8e77eca3273f263faae5dbd17080670381f0c6de37"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/9ae4fc014a2771dc/build.jsonl.stderr",
+      "bytes": 303,
+      "sha256": "a81a0b7a5ebd690b669fac4292d36cdec3fd1298061e551e7191176c014674ae"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/9ae4fc014a2771dc/metadata.json",
+      "bytes": 22196,
+      "sha256": "92b0f2b02a064e76a57d6fd93766b299077eaab915b623b9daa9614c5ecccbcc"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/9ae4fc014a2771dc/metadata.json.stderr",
+      "bytes": 306,
+      "sha256": "85e942e07bde3d675ea550e6a07d903d0af44efb43919c0fb93e2da4f3f5a0b4"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/a331799206e5b9e3/Cargo.lock",
+      "bytes": 2250,
+      "sha256": "6c67805d829966a0f44e014ba841017341e7e2f0724d3bb00515ed2f7f3836b8"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/a331799206e5b9e3/Cargo.toml",
+      "bytes": 233,
+      "sha256": "a4514b0bb21fd55f448d393e71027e18258ff4c11342dad0d6f5413558d5ee47"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/a331799206e5b9e3/build.jsonl",
+      "bytes": 7579,
+      "sha256": "d49f8e8926e7a94ee8c119dd3845b4e928af5e1ff95b466d032ba759959bb84a"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/a331799206e5b9e3/build.jsonl.stderr",
+      "bytes": 263,
+      "sha256": "0ae7bc47eee63289a81e4de796e29c897de9c3c66700173bff6618e6ca82b31b"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/a331799206e5b9e3/metadata.json",
+      "bytes": 31309,
+      "sha256": "22e5986fa739403ff1d8e6251a1b010a5117c0438302dccf5b99499f9aab3206"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/a331799206e5b9e3/metadata.json.stderr",
+      "bytes": 143,
+      "sha256": "351af4863fdd124a9ec6813f982e52f21d045451a13eaa71f2a5d6f3ec6c200e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/b53d1772e892e370/Cargo.toml",
+      "bytes": 157,
+      "sha256": "97d1a1b60a7b6561a135b2ed874fde83ddbacc63458a493df2bf97732b71aef7"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/b58ff3583d93af8e/Cargo.lock",
+      "bytes": 20922,
+      "sha256": "2452c84e2191e06ddd049b244e0f5b88d4c287c8589088f909eca8cdd42565da"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/b58ff3583d93af8e/Cargo.toml",
+      "bytes": 303,
+      "sha256": "11fa57b0dcae59702c81eb9271de387e72355b445af50144741f2815bc9a3bdb"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/b58ff3583d93af8e/build.jsonl",
+      "bytes": 57776,
+      "sha256": "492ad950d6acc85f03e2b7bbb5d4a3e1db0bd914f9bfadc271afbe1f6b44e0dd"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/b58ff3583d93af8e/build.jsonl.stderr",
+      "bytes": 176,
+      "sha256": "7b35b88ec7fd33cf99f7791039003f7a1e298f8d27b35ba87a3267519a96aa45"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/b58ff3583d93af8e/metadata.json",
+      "bytes": 250890,
+      "sha256": "ce673cf6fac42812f13fb101bf7479fff649e47670305408d6056680a88f93c2"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/b58ff3583d93af8e/metadata.json.stderr",
+      "bytes": 97,
+      "sha256": "ad8f8abae13c2e84d356bfb3e94d26f41a3d3f785d8acc03f4f8ffac2cd2ac90"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/baa3532ef833fc37/Cargo.toml",
+      "bytes": 157,
+      "sha256": "d99fc75b24e00fbb28999ccc4ee4d9440163936e957036b7830af44e8f9df272"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/cb1fdd20d95249ed/Cargo.lock",
+      "bytes": 1333,
+      "sha256": "577c67802d9442cecb1b5ad88d6272edea11e656b7a22b0a949c7198f51f8573"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/cb1fdd20d95249ed/Cargo.toml",
+      "bytes": 173,
+      "sha256": "aa7c2aab7c98f41a5b783bf54a5eaa9dc6bb0ceafe299c8530a36b9a87afd99e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/cb1fdd20d95249ed/build.jsonl",
+      "bytes": 2310,
+      "sha256": "4e6ae0dbdad0e536fdce85cf59d04c87766427ad5c7caf7e7f95c2746ed143d3"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/cb1fdd20d95249ed/build.jsonl.stderr",
+      "bytes": 234,
+      "sha256": "2370521ee56faba6fb827988976c31a4a08e12c0e8e78005b673c97c447a00c4"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/cb1fdd20d95249ed/metadata.json",
+      "bytes": 6240,
+      "sha256": "4bedcbc6ff2ec967dda7e181c24dff12a44d9fd9125925b29bef33622b663d5e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/cb1fdd20d95249ed/metadata.json.stderr",
+      "bytes": 178,
+      "sha256": "3d7c0f8e2e60154a6cb8932fe88c73be08034ec29ad7be04dd4f052e20bc9a0e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/contexts.json",
+      "bytes": 22015,
+      "sha256": "149410c64e9aa2bf668c61f2ba706a86d33198120668745de071db6cc27b80c1"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/da3d117f1174a545/Cargo.lock",
+      "bytes": 1111,
+      "sha256": "c5573f6c2d1e22504e2dc728c230566a1c993a0c486a43b967809feb8373ceae"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/da3d117f1174a545/Cargo.toml",
+      "bytes": 208,
+      "sha256": "2f9e5eb70e548307a8ea0b0d793f8d5d87cf4c7b223e05eb83d503b0d7628e6f"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/da3d117f1174a545/build.jsonl",
+      "bytes": 6095,
+      "sha256": "f3b11bc167a19affd06b3bf7edeb82ce63c219c2c39f0e15d4323a8fdb516d7c"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/da3d117f1174a545/build.jsonl.stderr",
+      "bytes": 202,
+      "sha256": "4b89aa65e331cba72fdae5a60117260ef5c3403401c71ef6796c74c20c102e3a"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/da3d117f1174a545/metadata.json",
+      "bytes": 26755,
+      "sha256": "d85a4b895e495f0e8bbf2ad6fbc61a8b5f93f005451b13b443e66c87f641a246"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/da3d117f1174a545/metadata.json.stderr",
+      "bytes": 143,
+      "sha256": "3ec7038789ff8380e07135c7fcf2ac4de32389b82706732f79a06d63bcab4c18"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/edc596ce5f2c6f0c/Cargo.lock",
+      "bytes": 5504,
+      "sha256": "149378593b2256f3aef12d0fbe6152d95d943f1011f99678eb188dc71de9e8cc"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/edc596ce5f2c6f0c/Cargo.toml",
+      "bytes": 269,
+      "sha256": "311f1049879cf4269d197470b183b6fac40353cc15e75a961e11b61fa684c7ee"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/edc596ce5f2c6f0c/build.jsonl",
+      "bytes": 25866,
+      "sha256": "143a1c60dbaf407750f8bfb5ac423c113d6e851cce383cbf938f08d350fd32ee"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/edc596ce5f2c6f0c/build.jsonl.stderr",
+      "bytes": 176,
+      "sha256": "ba048f7b1d2fd1a43b0cbde32fc5634b643a0efe65de88373c71af638c8c4015"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/edc596ce5f2c6f0c/metadata.json",
+      "bytes": 110300,
+      "sha256": "6f54154a3ab4e3e34369c38cbedf008b82a2397ce7e92776313147edbfc5484e"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/edc596ce5f2c6f0c/metadata.json.stderr",
+      "bytes": 97,
+      "sha256": "de4cdd723b4d605bb64747607abb3f42abd86983f58263d4a06e65b9c80fc925"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/rustc-version.txt",
+      "bytes": 196,
+      "sha256": "b569b0c98ea3133c7252b4b8ea6b39b7b353813df0dd5f5c412c355691424112"
+    },
+    {
+      "path": "contexts/_temp/codeql-rust-contexts/rustc-version.txt.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "contexts/formal-ai/formal-ai/js/wasm-worker/rust-project.json",
+      "bytes": 730,
+      "sha256": "8a1698ada772f37e41f1a2459a5f664528174f5456b8651533e2931abadf5294"
+    },
+    {
+      "path": "contexts/formal-ai/formal-ai/scripts/rust-project.json",
+      "bytes": 562760,
+      "sha256": "046bb3d0673f6cb130f9dce7459fcc6c2e67d9281f809892e670cf8e69b67888"
+    },
+    {
+      "path": "observations/analyze-current-codeql-payloads.py",
+      "bytes": 3271,
+      "sha256": "a1547320252c6290aee2ce43fdde9862ad55e9d630171c634bf021036f65760d"
+    },
+    {
+      "path": "observations/codeql-cec-artifacts.json",
+      "bytes": 2230,
+      "sha256": "abb3e09f718e9697719af387c721d3508bcc1735903e9e79d5acab87e928445e"
+    },
+    {
+      "path": "observations/codeql-cec-complete.log",
+      "bytes": 833826,
+      "sha256": "9f767276f86604170d73fc6300ae4f5a003d52bc141774b277d2f464744155b2"
+    },
+    {
+      "path": "observations/codeql-cec-payload-source-comparison.json",
+      "bytes": 283837,
+      "sha256": "12ebef1e25f52894b14f7db69e4abf1e4c441275ac219b3f04262d69f9268475"
+    },
+    {
+      "path": "observations/codeql-existing-include-str-issues.json",
+      "bytes": 141,
+      "sha256": "94749f42cab377ab864933487574fe270f163d8e9a862fb8c2ec8b4e91b5f264"
+    },
+    {
+      "path": "observations/codeql-literal-implementation.qll",
+      "bytes": 6274,
+      "sha256": "6333804c49ef4f633046424987b0d8439e00ba7db777df6c1cf772b2d24fea42"
+    },
+    {
+      "path": "observations/codeql-textvalue-source-search.json",
+      "bytes": 2182,
+      "sha256": "3772f0dd27b475cd6681aea8561d7d231b2c551c459abec49f509919d4ec7910"
+    },
+    {
+      "path": "observations/rust-analyzer-fn-macro.rs",
+      "bytes": 33315,
+      "sha256": "465b807c1c5d2aa0c0c56b99cccc8b76530ac16e7271ec67c5bc9b6b4befe698"
+    },
+    {
+      "path": "observations/rust-analyzer-source-pin.txt",
+      "bytes": 41,
+      "sha256": "75b445091df422cd42af26820faf57814f5c4a949f6a6007be556b0838e1d051"
+    },
+    {
+      "path": "queries/IncludedStringPayloads.ql",
+      "bytes": 1396,
+      "sha256": "eeb84162315440b60e8aa2f647d99d42a69fbdaaa3ca2f8fb523e7f7f39f4167"
+    },
+    {
+      "path": "queries/MacroContexts.ql",
+      "bytes": 725,
+      "sha256": "762d3bd84356e257aa0828d95baf9aa34db594f59f7a8cc6537857210e47f1b5"
+    },
+    {
+      "path": "rust/included-string-payloads/IncludedStringPayloads.ql",
+      "bytes": 1396,
+      "sha256": "eeb84162315440b60e8aa2f647d99d42a69fbdaaa3ca2f8fb523e7f7f39f4167"
+    },
+    {
+      "path": "rust/included-string-payloads/codeql-database.yml",
+      "bytes": 354,
+      "sha256": "5df8a96988589c8263d0a94fa164278ed2eb7f7491b03a4494b139f37a905a5b"
+    },
+    {
+      "path": "rust/included-string-payloads/codeql-pack.lock.yml",
+      "bytes": 605,
+      "sha256": "d97b8e23428d76f96070e2dcfd14cab267615882e7a0d130c4199433b8b31cbb"
+    },
+    {
+      "path": "rust/included-string-payloads/decode.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/included-string-payloads/decode.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/included-string-payloads/evaluation.jsonl",
+      "bytes": 12646740,
+      "sha256": "9f633691151da515aa7ea319b83b245e44f4a9bb84b51b74b1c37237aa91d07a"
+    },
+    {
+      "path": "rust/included-string-payloads/included-string-payloads.bqrs",
+      "bytes": 13763254,
+      "sha256": "92c93e203436a15a74594f781a665382e86bc66b2d50c9ac44fe7de2e34a42d4"
+    },
+    {
+      "path": "rust/included-string-payloads/included-string-payloads.json",
+      "bytes": 15139268,
+      "sha256": "f4c8deba276a13b8804423cef2b4c62c1e536c9395326936547624d5a6140a6e"
+    },
+    {
+      "path": "rust/included-string-payloads/manifest.json",
+      "bytes": 5845,
+      "sha256": "9d5dd577697da7ea6290929daf88d9149e04d2f88cffe5391e744d63c4d1d3ca"
+    },
+    {
+      "path": "rust/included-string-payloads/memory.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/included-string-payloads/memory.stdout",
+      "bytes": 20,
+      "sha256": "9d6d436999dab838c235e1b111a449f377ce54d7472b2db601c4cb726d83c99c"
+    },
+    {
+      "path": "rust/included-string-payloads/qlpack.yml",
+      "bytes": 383,
+      "sha256": "dc1dbd41e9fd796dd38b45ff9febe378ae6126c1e997700c46460e6c21c59798"
+    },
+    {
+      "path": "rust/included-string-payloads/query.stderr",
+      "bytes": 740,
+      "sha256": "ed19848bbe02da50a3129d1ce3bff22800ec264c66eb50474f193c4f648b8933"
+    },
+    {
+      "path": "rust/included-string-payloads/query.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/included-string-payloads/version.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/included-string-payloads/version.stdout",
+      "bytes": 1530,
+      "sha256": "947c5c0baee2f14f2b7611b25591a98dc7ca304efb7d5090361aaa40b5e9ec66"
+    },
+    {
+      "path": "rust/macro-contexts/MacroContexts.ql",
+      "bytes": 725,
+      "sha256": "762d3bd84356e257aa0828d95baf9aa34db594f59f7a8cc6537857210e47f1b5"
+    },
+    {
+      "path": "rust/macro-contexts/codeql-database.yml",
+      "bytes": 354,
+      "sha256": "5df8a96988589c8263d0a94fa164278ed2eb7f7491b03a4494b139f37a905a5b"
+    },
+    {
+      "path": "rust/macro-contexts/codeql-pack.lock.yml",
+      "bytes": 605,
+      "sha256": "d97b8e23428d76f96070e2dcfd14cab267615882e7a0d130c4199433b8b31cbb"
+    },
+    {
+      "path": "rust/macro-contexts/decode.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/macro-contexts/decode.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/macro-contexts/macro-contexts.bqrs",
+      "bytes": 3487712,
+      "sha256": "bfd5d2d4bb0b69c980d4e88a3c31159cc8b95a6683e30ff9097f9e0b674d51f2"
+    },
+    {
+      "path": "rust/macro-contexts/macro-contexts.json",
+      "bytes": 38516471,
+      "sha256": "b484272d7ac7d73ee3f162a96793d9048f3a5afe6dcfa6829044d15766c9f679"
+    },
+    {
+      "path": "rust/macro-contexts/manifest.json",
+      "bytes": 5526,
+      "sha256": "cbbc1425ab125aa126435ef49a0495255f0b14c20b4045173d25bdf8ceebff5d"
+    },
+    {
+      "path": "rust/macro-contexts/memory.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/macro-contexts/memory.stdout",
+      "bytes": 20,
+      "sha256": "7c39de9eabbb659c168ef8e55a4a7701845510344af1bec1bfa5c6b443b82659"
+    },
+    {
+      "path": "rust/macro-contexts/qlpack.yml",
+      "bytes": 383,
+      "sha256": "dc1dbd41e9fd796dd38b45ff9febe378ae6126c1e997700c46460e6c21c59798"
+    },
+    {
+      "path": "rust/macro-contexts/query.stderr",
+      "bytes": 691,
+      "sha256": "3a2e65107b8ee66b4694bae230d9d9558784a083de7e7aee2deb1cf8f1142410"
+    },
+    {
+      "path": "rust/macro-contexts/query.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/macro-contexts/version.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rust/macro-contexts/version.stdout",
+      "bytes": 1530,
+      "sha256": "947c5c0baee2f14f2b7611b25591a98dc7ca304efb7d5090361aaa40b5e9ec66"
+    },
+    {
+      "path": "rust/rust.sarif",
+      "bytes": 3917195,
+      "sha256": "60b2713d46ab60155739a4ff84c0c5adeda9a0f89ee11ae18ed9dae08a324647"
+    }
+  ]
+}

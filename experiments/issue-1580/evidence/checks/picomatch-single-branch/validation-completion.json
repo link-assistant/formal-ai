@@ -1,0 +1,64 @@
+{
+  "allPassed": true,
+  "results": [
+    {
+      "name": "canonical-data-mirrors",
+      "command": [
+        "node",
+        "scripts/mirror-package-data.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 1.877,
+      "rawSha256": "51b8b1215954c03b11be020b39241fd887b75441329425691748b9c1b72468e1",
+      "nodeHeapMiB": 256,
+      "peakChildRssKiBCumulative": 69876
+    },
+    {
+      "name": "final-security-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/picomatch-security-backport.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.568,
+      "rawSha256": "7953ae7eeb5166464857963910877b949ee8a7e8f6b0944fc475236c6ae6b210",
+      "nodeHeapMiB": 256,
+      "peakChildRssKiBCumulative": 69876
+    },
+    {
+      "name": "fast-profile-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 4.496,
+      "rawSha256": "ae3fc9196f757ef00939ebf2b94b23d496d1fa366ab11b8f4eec3742fd37348a",
+      "nodeHeapMiB": 256,
+      "peakChildRssKiBCumulative": 220768
+    },
+    {
+      "name": "complete-local-gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 867.32,
+      "rawSha256": "edac3c62615d9238c3a2833944f673e949a42ab52b224182d84e3de0208d817d",
+      "nodeHeapMiB": 256,
+      "peakChildRssKiBCumulative": 1011444
+    }
+  ],
+  "nativeExecuted": false,
+  "autonomousAuthorshipCredit": 0
+}

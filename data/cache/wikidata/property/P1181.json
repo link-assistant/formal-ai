@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "P1181": {
+      "type": "property",
+      "datatype": "quantity",
+      "id": "P1181",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "numeric value"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "числовое значение"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "數值"
+        },
+        "es": {
+          "language": "es",
+          "value": "valor numérico"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "numerical value of a number, a mathematical constant, or a physical constant"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "числовое значение числа (например, 1) или константы (например, «пи»)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "某數字（例：1）或常數（圓周率）的數值"
+        },
+        "es": {
+          "language": "es",
+          "value": "valor numérico de un número (ej.: 1) o de una constante (ej.: pi)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "value"
+          },
+          {
+            "language": "en",
+            "value": "numerical value"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "численное значение"
+          },
+          {
+            "language": "ru",
+            "value": "значение"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "数值"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

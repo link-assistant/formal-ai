@@ -71,10 +71,42 @@ function nearestCoreferenceAntecedent(history) {
   return null;
 }
 
+function coreferenceFactRewrite(normalized, antecedent, pronoun) {
+  return replaceBoundedToken(normalized, pronoun.token,
+    antecedent.aliases?.[0] || antecedent.displayName?.toLowerCase());
+}
+
+async function tryCoreferenceLiveFact(prompt, normalized, history, preferences, context) {
+  const pronoun = matchingCoreferencePronoun(normalizePrompt(textTransformCommandHead(prompt)));
+  const resolved = nearestCoreferenceAntecedent(history);
+  if (!pronoun?.token || !resolved) return null;
+  const { antecedent } = resolved;
+  const rewritten = coreferenceFactRewrite(normalized, antecedent, pronoun);
+  if (!rewritten || !factLiveQuestion(rewritten)) return null;
+  const resolution = `${pronoun.token}=${antecedent.displayName}`;
+  const trace = [
+    { kind: "coreference:resolved", payload: resolution },
+    { kind: "coreference:rewrite", payload: rewritten },
+  ];
+  const answer = await tryFactQuery(rewritten, rewritten, preferences);
+  if (!answer) {
+    context.solverEvents = trace;
+    return null;
+  }
+  return {
+    ...answer,
+    solverEvents: [...trace, ...(answer.solverEvents || [])],
+    evidence: [
+      `coreference:resolved:${resolution}`,
+      `coreference:rewrite:${rewritten}`,
+      ...answer.evidence,
+    ],
+  };
+}
+
 function tryCoreferenceFactLookup(prompt, normalized, history) {
   const pronoun = matchingCoreferencePronoun(normalizePrompt(textTransformCommandHead(prompt)));
-  if (!pronoun || !pronoun.token) return null;
-
+  if (!pronoun?.token) return null;
   const resolved = nearestCoreferenceAntecedent(history);
   if (!resolved) return null;
   const { antecedent, previous } = resolved;
@@ -108,11 +140,14 @@ function tryCoreferenceFactLookup(prompt, normalized, history) {
     });
   }
 
-  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.
-  if (!antecedent.body) return null;
+  const rewritten = coreferenceFactRewrite(normalized, antecedent, pronoun);
+  const question = rewritten && factLiveQuestion(rewritten);
+  if (question && question.relation !== "physical_constant") return null;
+  const content = antecedent.body || answerFor("coreference_resolved_reference", detectLanguage(prompt))
+    .replace(/\{referent\}/gu, () => antecedent.displayName);
   const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];
   if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);
   const solverEvents = [{ kind: "coreference:resolved", payload: `${pronoun.token}=${antecedent.displayName}` }];
   if (antecedent.wikidata) solverEvents.push({ kind: "wikidata", payload: antecedent.wikidata });
-  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
+  return { intent: antecedent.intent, content, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
 }

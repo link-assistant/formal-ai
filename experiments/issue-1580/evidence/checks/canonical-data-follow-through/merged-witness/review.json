@@ -1,0 +1,18 @@
+{
+  "ours": "a785a99b5b3291eadedc072e9effda51de0b3b75",
+  "theirs": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "ancestor": "7b7e189d770c4fbd8786b996d065282422e93b5c",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "previousSha256": "3c7c7e7c1309feadae29e33c9a2fb9c4cfecab19137f6179039aef3f9eedcb79",
+  "currentSha256": "3939e27a59defd1025f418bb88de7dd6dffc10d6ddda1706d7613953b5a5a733",
+  "completeObjectEqualsBothParentChanges": true,
+  "preservedOurs": 28,
+  "preservedIncoming": 4,
+  "counts": [
+    1185,
+    221,
+    964
+  ],
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

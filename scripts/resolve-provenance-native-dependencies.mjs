@@ -8,9 +8,7 @@ import assert from 'node:assert/strict';
 export const nativeProvenanceDependencies=Object.freeze({
  blake3:'{ version = "1.8.7", features = ["rayon"] }',
  ring:'"0.17"',
- tracing:'"0.1.44"',
- wgpu:'{ version = "30.0.1", optional = true }',
- pollster:'{ version = "0.4.0", optional = true }'
+ tracing:'"0.1.44"'
 });
 export function nativeProvenanceManifest(source){
  const section='[target.\'cfg(not(target_arch = "wasm32"))\'.dependencies]\n';
@@ -24,7 +22,7 @@ export function nativeProvenanceManifest(source){
   if(existing.length){assert.equal(existing.length,1);assert.equal(existing[0][0],name+' = '+value,'existing dependency differs');assert.ok(nativeSection.includes(existing[0][0]),'dependency belongs to another target');}
   else missing.push(name+' = '+value+'\n');
  }
- const feature='provenance-gpu = ["dep:wgpu", "dep:pollster"]';
+ const feature='provenance-gpu = []';
  const current=[...source.matchAll(/^provenance-gpu\s*=.*$/gmu)];
  if(current.length){assert.equal(current.length,1);assert.equal(current[0][0],feature,'existing feature differs');}
  return source.replace(section,section+missing.join('')).replace(features,features+(current.length?'':feature+'\n'));

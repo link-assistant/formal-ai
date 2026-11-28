@@ -1,0 +1,38 @@
+[
+  {
+    "name": "cnl-output",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/cnl-output.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.895,
+    "file": "cnl-output.log.gz",
+    "rawSha256": "f620a56ddac526706266d407cde2ce82f889bd4f588cf389f4ff0125e41536ac",
+    "archiveSha256": "2f12a4fb0eda79bae7db6170200707899d4af528fa7a2325cbb1a1e2fe2385ab",
+    "lines": 24
+  },
+  {
+    "name": "cnl-parity",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/cnl-parity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 50.456,
+    "file": "cnl-parity.log.gz",
+    "rawSha256": "9939985344d984fde7899b58ce16f26790453785808f1092de7de2c595982abb",
+    "archiveSha256": "69e68ee0502741c192428e71964e8ef3e31ae04cc4cc46b5f6a535e9835c3bd6",
+    "lines": 14
+  }
+]

@@ -211,7 +211,7 @@ impl ChangeRejected {
 
 /// A user-requested change that passed the tests and was approved — a merged pull
 /// request. Deterministic: every field comes from the request, gate, and approval.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct AcceptedChange {
     /// The originating change-request id (provenance back to the request).
     pub change_id: String,
@@ -246,20 +246,6 @@ impl AcceptedChange {
             self.reviewer,
         )
     }
-}
-
-/// Build the canonical, fully-worked change request.
-///
-/// A concrete user request ("let users ask Formal AI to reverse-sort program output")
-/// targeting the deterministic planner — the module that would route the new
-/// capability. Deterministic and self-contained — used by the agentic recipe, the
-/// example, and the tests.
-#[must_use]
-pub fn canonical_change_request() -> ChangeRequest {
-    ChangeRequest::for_module(
-        "Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.",
-        "src/agentic_coding/planner.rs",
-    )
 }
 
 /// Derive a requirement statement from a raw request.

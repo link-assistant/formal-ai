@@ -1,0 +1,43 @@
+{
+  "sourceHead": "4e6887e39d5cb844a0f40d66dc90911e19516c8a",
+  "nativeCreatorRegressionCasesAdded": 2,
+  "nativeCreatorCasesExecuted": false,
+  "rustfmtPassed": true,
+  "fixtureMockCasesPassed": 2,
+  "nativeGroupJavascriptCasesPassed": 63,
+  "rustCompiledLocally": false,
+  "independentAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false,
+  "files": [
+    {
+      "file": "01.log.gz",
+      "source": "safe-creator-logging/creator-before.rs",
+      "bytes": 3527,
+      "sha256": "e4d34ff0321d409025cfcaa51d6f1a4d6bb78448147038fc2062947550911536"
+    },
+    {
+      "file": "02.log.gz",
+      "source": "safe-creator-logging/creator-log-fix.patch",
+      "bytes": 6562,
+      "sha256": "409e68bfa80401f4708bace53a9d9bdc485dbe6e4f9433902513f31083096800"
+    },
+    {
+      "file": "03.log.gz",
+      "source": "current-warning-checks/format.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "04.log.gz",
+      "source": "current-warning-checks/fixture.log",
+      "bytes": 521,
+      "sha256": "72dbeb0dfe718e753684d7d99ff09bfb85800077607515ce191978048354bfb5"
+    },
+    {
+      "file": "05.log.gz",
+      "source": "current-warning-checks/native-groups.log",
+      "bytes": 6980,
+      "sha256": "6236706fa6eba194ec1b91b8369c0c0fe6a5054382780069a045252934fc1baf"
+    }
+  ]
+}

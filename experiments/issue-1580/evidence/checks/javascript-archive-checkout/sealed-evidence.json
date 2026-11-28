@@ -1,0 +1,12 @@
+{
+  "recordedAt": "2026-11-18T08:41:03.242994+00:00",
+  "sourceCommit": "8ace3291f83b2f5c7a667740cdad31c485467e24",
+  "publishedInput": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "validationArchivesVerified": 17,
+  "focusedProfileTests": 17,
+  "sparseRegressionTests": 88,
+  "priorImmutableCommandRows": 2988,
+  "newCommandHashesVerified": 80,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

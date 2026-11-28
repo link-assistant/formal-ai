@@ -1,0 +1,27 @@
+{
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "beforeSha256": "e2ea3efb185e9e92c2f90ee743b5a6d1bc4cd89c8c34376e08b44f91bb87eae7",
+  "afterSha256": "4812f698a6381311bbf6e75c9af0ed8bdaa5af74ed7d886b42be01c66f4f4959",
+  "completeCaseObjectsUnchanged": true,
+  "unsupportedObjectsUnchanged": true,
+  "caseCount": 221,
+  "unsupportedCount": 964,
+  "differences": [
+    {
+      "index": 38,
+      "path": "rust/tests/unit/specification/formalization.rs",
+      "before": "96038b52dc0f1ce195bf9f3034ca7a82a5707c58d3ffacbcb9d59a9f0e5dff65",
+      "after": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3"
+    }
+  ],
+  "command": [
+    "/home/box/.nvm/versions/node/v26.13.0/bin/node",
+    "--max-old-space-size=256",
+    "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+    "--refresh-reviewed-baseline",
+    "--reviewed-reader-sha=861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+    "--previous-baseline-sha=e2ea3efb185e9e92c2f90ee743b5a6d1bc4cd89c8c34376e08b44f91bb87eae7"
+  ],
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

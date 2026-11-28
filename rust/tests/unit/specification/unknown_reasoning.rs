@@ -79,14 +79,15 @@ fn unknown_reasoning_retries_public_knowledge_cache() {
 #[test]
 fn unresolved_bare_term_routes_to_web_search_after_local_sources_miss() {
     let cases = [
-        ("English", "cursor"),
-        ("Russian", "курсор"),
-        ("Hindi", "कर्सर"),
-        ("Chinese", "光标"),
+        ("English", "snorflax"),
+        ("Russian", "снорфлакс"),
+        ("Hindi", "स्नोरफ्लैक्स"),
+        ("Chinese", "斯诺弗拉克斯"),
     ];
 
     for (language, prompt) in cases {
-        let response = answer(prompt);
+        // Test the local miss and handoff without a live provider filling the cache.
+        let response = answer_offline(prompt);
 
         assert_eq!(
             response.intent, "web_search",

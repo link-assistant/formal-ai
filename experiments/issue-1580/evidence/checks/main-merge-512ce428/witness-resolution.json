@@ -1,0 +1,31 @@
+{
+  "method": "Three-way binary merge of exactly four non-overlapping fixture SHA-256 leaves from main. All full case objects, assertions, unsupported inventory and the independently reviewed native source witness are retained; normal complete-inventory validation remains required.",
+  "changed": [
+    {
+      "caseIndex": 79,
+      "file": "rust/tests/unit/mod.rs",
+      "sha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183"
+    },
+    {
+      "caseIndex": 81,
+      "file": "rust/tests/unit/mod.rs",
+      "sha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183"
+    },
+    {
+      "caseIndex": 190,
+      "file": "rust/tests/unit/mod.rs",
+      "sha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183"
+    },
+    {
+      "caseIndex": 193,
+      "file": "rust/tests/unit/mod.rs",
+      "sha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183"
+    }
+  ],
+  "total": 1185,
+  "cases": 221,
+  "unsupported": 964,
+  "sourceManifest": 131,
+  "sha256": "f6cb2488ea79b01df79598946f5397a89f2b107ad8c24a4393102b4e98616f97",
+  "independentAuthorshipCredit": 0
+}

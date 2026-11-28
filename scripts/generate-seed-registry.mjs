@@ -4,7 +4,7 @@
 //
 // data/meta/seed-registry.lino is the one inventory of data/seed/*.lino; this
 // generator canonicalizes it (sorted, union-merge repeats folded) and writes
-// rust/src/seed/embedded_registry.rs and js/seed-files.js from it.
+// rust/src/seed/{embedded_registry,embedded_files}.rs and js/seed-files.js from it.
 //
 // Usage:
 //   node scripts/generate-seed-registry.mjs           # verify
@@ -17,6 +17,7 @@ const REGISTRY = 'data/meta/seed-registry.lino';
 const SEED_DIR = 'data/seed';
 const RUST_TARGET = 'src/seed/embedded_registry.rs';
 const WEB_TARGET = 'js/seed-files.js';
+const RUST_FILES_TARGET = 'src/seed/embedded_files.rs';
 const MAX_WIDTH = 100;
 
 const byteOrder = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
@@ -134,16 +135,7 @@ export function renderRust(registry) {
       : `pub const ${constant(seed)}: &str =\n    include_str!("../../embedded/${seedPath(seed)}");`;
     out += '\n';
   }
-  out += '\n/// Embedded copy of every Links Notation seed file. Returned in registry\n'
-    + '/// order so callers can render the merged bundle deterministically.\n'
-    + '#[must_use]\n'
-    + "pub fn seed_files() -> Vec<(&'static str, &'static str)> {\n    vec![\n";
-  for (const seed of embeddedSeeds.filter((candidate) => candidate.bundle)) {
-    const oneLine = `        ("${seedPath(seed)}", ${constant(seed)}),`;
-    out += oneLine.length <= MAX_WIDTH ? `${oneLine}\n`
-      : `        (\n            "${seedPath(seed)}",\n            ${constant(seed)},\n        ),\n`;
-  }
-  out += '    ]\n}\n';
+  out += '\ninclude!("embedded_files.rs");\n';
   out += '\n/// The registered set of multilingual-response files, walked by\n'
     + '/// [`super::multilingual_responses`].\n'
     + '///\n'
@@ -162,6 +154,22 @@ export function renderRust(registry) {
     + 'pub const MEANING_FILES: &[&str] = &[\n';
   for (const seed of embeddedSeeds.filter((candidate) => candidate.lexicon.has('meaning'))) out += `    ${constant(seed)},\n`;
   out += '];\n';
+  return out;
+}
+
+export function renderRustFiles(registry) {
+  const embeddedSeeds = registry.seeds.filter(embedded);
+  let out = '// Generated bundle inventory from data/meta/seed-registry.lino; do not edit by hand.\n';
+  out += '\n/// Embedded copy of every Links Notation seed file. Returned in registry\n'
+    + '/// order so callers can render the merged bundle deterministically.\n'
+    + '#[must_use]\n'
+    + "pub fn seed_files() -> Vec<(&'static str, &'static str)> {\n    vec![\n";
+  for (const seed of embeddedSeeds.filter((candidate) => candidate.bundle)) {
+    const oneLine = `        ("${seedPath(seed)}", ${constant(seed)}),`;
+    out += oneLine.length <= MAX_WIDTH ? `${oneLine}\n`
+      : `        (\n            "${seedPath(seed)}",\n            ${constant(seed)},\n        ),\n`;
+  }
+  out += '    ]\n}\n';
   return out;
 }
 
@@ -229,16 +237,19 @@ export function sourceQualifiedSeedOwners(root) {
   const sourcePath = 'rust/' + RUST_TARGET;
   const sourceBytes = regularBytes(sourcePath);
   if (!sourceBytes.equals(Buffer.from(renderRust(registry)))) throw new Error('generated declaration source drift');
+  const includedSourcePath = 'rust/' + RUST_FILES_TARGET;
+  const includedSourceBytes = regularBytes(includedSourcePath);
+  if (!includedSourceBytes.equals(Buffer.from(renderRustFiles(registry)))) throw new Error('generated bundle source drift');
   const declarations = registry.seeds.filter(embedded).map(seed => {
     const symbol = constant(seed);
     if (!/^[A-Za-z0-9_-]+$/u.test(seed.name) || !/^[A-Z_][A-Z0-9_]*$/u.test(symbol)) throw new Error('unsupported generated declaration name');
     return {seed_path: seedPath(seed), module_path: RUST_TARGET, symbol, kind: 'const'};
   });
   if (new Set(declarations.map(row => row.symbol)).size !== declarations.length) throw new Error('ambiguous generated declaration owners');
-  if (!regularBytes(REGISTRY).equals(registryBytes) || !regularBytes(sourcePath).equals(sourceBytes)) throw new Error('generated declaration inputs changed');
+  if (!regularBytes(REGISTRY).equals(registryBytes) || !regularBytes(sourcePath).equals(sourceBytes) || !regularBytes(includedSourcePath).equals(includedSourceBytes)) throw new Error('generated declaration inputs changed');
   const digest = bytes => createHash('sha256').update(bytes).digest('hex');
   return {registryPath: REGISTRY, registrySha256: digest(registryBytes), sourcePath,
-    sourceSha256: digest(sourceBytes), declarations};
+    sourceSha256: digest(sourceBytes), includedSourcePath, includedSourceSha256: digest(includedSourceBytes), declarations};
 }
 
 function main() {
@@ -265,6 +276,7 @@ function main() {
   const targets = [
     [REGISTRY, join(root, REGISTRY), renderRegistry(registry, header)],
     [RUST_TARGET, join(root, 'rust', RUST_TARGET), renderRust(registry)],
+    [RUST_FILES_TARGET, join(root, 'rust', RUST_FILES_TARGET), renderRustFiles(registry)],
     [WEB_TARGET, join(root, WEB_TARGET), renderWeb(registry)],
   ];
   const stale = [];

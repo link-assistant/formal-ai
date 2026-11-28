@@ -1,0 +1,88 @@
+{
+  "observedAt": "2026-11-18T19:19:01.403811+00:00",
+  "records": [
+    {
+      "name": "fetch-main",
+      "argv": [
+        "git",
+        "-c",
+        "gc.auto=0",
+        "fetch",
+        "origin",
+        "main"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main-fetch-main.stdout.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+      },
+      "stderr": {
+        "file": "main-fetch-main.stderr.gz",
+        "rawSha256": "199d99c5a7769718fd18d511fbf459ee2f6a161e36adfafe665a46031f74e988",
+        "archiveSha256": "8167e33d15a3c133ae91657ea584d9b2f1c9645237f3cbef3e37d053db53a841"
+      }
+    },
+    {
+      "name": "main-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main-main-head.stdout.gz",
+        "rawSha256": "6f674250dd7a08adf0f561f99ccbe15ca03226028532de1d6d27140c62e41282",
+        "archiveSha256": "00bc666a0f885c9c8a1fe798ed7d681137e5700f76ef157230b98467ea35c5c9"
+      },
+      "stderr": {
+        "file": "main-main-head.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+      }
+    },
+    {
+      "name": "main-ancestor",
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "origin/main",
+        "HEAD"
+      ],
+      "exitCode": 1,
+      "stdout": {
+        "file": "main-main-ancestor.stdout.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+      },
+      "stderr": {
+        "file": "main-main-ancestor.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+      }
+    },
+    {
+      "name": "recent-main",
+      "argv": [
+        "git",
+        "log",
+        "-5",
+        "--format=%H %cI %s",
+        "origin/main"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "main-recent-main.stdout.gz",
+        "rawSha256": "371b625a2d254a33929039f1d6e99e974711de2f9248d2b77605c519fdbe2274",
+        "archiveSha256": "1125f434934311a4c7ec957d91a0b53241850ad8f8973767bb9f384831d6fce8"
+      },
+      "stderr": {
+        "file": "main-recent-main.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+      }
+    }
+  ]
+}

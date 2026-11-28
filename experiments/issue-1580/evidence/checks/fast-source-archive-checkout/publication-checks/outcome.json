@@ -1,0 +1,175 @@
+{
+  "createdAt": "2026-11-18T01:05:08.761230+00:00",
+  "commands": [
+    {
+      "name": "check-ci-speed",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-ci-speed"
+      ],
+      "exitCode": 0,
+      "seconds": 1.971,
+      "rawSha256": "4b4bbd2c135ecd64d654d2af16e834f3e877d0c506a4f1475f758c5fbe7ca351",
+      "rawBytes": 62,
+      "rawLines": 3
+    },
+    {
+      "name": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 4.514,
+      "rawSha256": "264a04f6b5aa4d0e73bfa30236569edd211e8421e35ebb7f030479e9b174e03b",
+      "rawBytes": 67,
+      "rawLines": 3
+    },
+    {
+      "name": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 1,
+      "seconds": 5.596,
+      "rawSha256": "f498811578b5b8c011c5d68e9af5aa64f4a9c86dfa83e84cf59b2ed60c52d9b1",
+      "rawBytes": 144,
+      "rawLines": 3
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 1,
+      "seconds": 6.383,
+      "rawSha256": "9a99388ca8b15135880bb17147b0ae93c24592fe5890a5e79c41f7c763bb6432",
+      "rawBytes": 168,
+      "rawLines": 3
+    },
+    {
+      "name": "check-changelog-fragment-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 2.091,
+      "rawSha256": "df3aa41c72cf4173daba10137140060a440817c92a38088cca94986a20c2b63b",
+      "rawBytes": 80,
+      "rawLines": 3
+    },
+    {
+      "name": "check-reconstructed-changelog",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-reconstructed-changelog"
+      ],
+      "exitCode": 0,
+      "seconds": 25.344,
+      "rawSha256": "3cde4bf9d6e9c48b9ee848e9b4c5abe03b050f68f7f7f94dd4e128a85d8ad7ae",
+      "rawBytes": 78,
+      "rawLines": 3
+    },
+    {
+      "name": "evidence-check#1",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "evidence-check#1"
+      ],
+      "exitCode": 0,
+      "seconds": 1.681,
+      "rawSha256": "697a49a90f968c3e772ed5c6b722e6547bf2a614e9ff8e06543a46e3948912ad",
+      "rawBytes": 64,
+      "rawLines": 3
+    },
+    {
+      "name": "runner-labels",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/check-runner-labels.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.87,
+      "rawSha256": "ac12b3e7a5796e591f44427b1da5c5a2f4c8b949e40ed07bc335adc5a27c45d9",
+      "rawBytes": 149,
+      "rawLines": 1
+    },
+    {
+      "name": "deployed-projection",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-staged-release.mjs",
+        "--check-deployed"
+      ],
+      "exitCode": 0,
+      "seconds": 0.947,
+      "rawSha256": "a123fd60c6a798dbd6687b4b74ab6d3660426ab8089305156cb3cbdd16a450ce",
+      "rawBytes": 135,
+      "rawLines": 2
+    },
+    {
+      "name": "source-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.768,
+      "rawSha256": "ced715c49f44cbd3ac6be1754239e9f6d549a8849f68fef6968585724c75dde8",
+      "rawBytes": 1838,
+      "rawLines": 24
+    },
+    {
+      "name": "diff-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.474,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0,
+      "rawLines": 0
+    }
+  ],
+  "sources": {
+    ".github/workflows/release.yml": "a858e77148b02fd8e53e7bd440670df11b31087d2717a0e5b8089aa53be09497",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs": "d6e4c77e2a3b72cf6582f815e4e0390d5349d9031d3cbd533e64971d76b0b223",
+    "docs/case-studies/issue-1580/checkout-archive-checkpoint.md": "498a0fbbd1a88e697b3b4546959bab9fb343014a3e6bd2e7de5ceb757e17470a",
+    "docs/case-studies/issue-1580/templates/java-historical-partial-review.json": "dc5793fa494575d4468159939c8c288214f37ffcbdb9ea93f4f6d07ab15d6051",
+    "experiments/issue-1580/work-plan.md": "a4bef5ed1d620ebb2e9a9eb0183d2b620ac48cb7325767ca244223752fb6cd15",
+    "experiments/issue-1580/evidence/supplied-bootstrap-20261117.tar.gz": "9db3cd91e0515804155ca3371964eeb6e715a5cbe61e7dc878280ea565648959"
+  }
+}

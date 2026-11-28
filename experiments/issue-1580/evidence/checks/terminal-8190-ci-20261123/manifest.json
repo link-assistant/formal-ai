@@ -1,0 +1,25 @@
+{
+  "source": "8190c9efaa82777e576b7bae18297d2de33dcf9d",
+  "workflows": 33,
+  "conclusions": {
+    "skipped": 1,
+    "success": 31,
+    "cancelled": 1
+  },
+  "pipelineRun": 45136124038,
+  "pipelineStatusJobFailedForCancelledNativeChecks": true,
+  "nativeConsumersDidNotExecute": true,
+  "nativeProducerAndRegistrySucceeded": true,
+  "missingLogsAreNotExecutionEvidence": true,
+  "localRerunRepairCommit": "bd586bfd24275b7b2fc757dff9d1a2fe74b6cba2",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2278954,
+    "sha256": "b70d79464cea8dd54c4f380c04ed7bf83f299d5d3ee66f2307b94830669ca13c"
+  },
+  "members": 71,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:55:08.599234+00:00"
+}

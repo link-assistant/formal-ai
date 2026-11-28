@@ -1,0 +1,9 @@
+{
+  "complete": true,
+  "allPassedAfterFix": true,
+  "regressionReproduced": true,
+  "nativeExecutedLocally": false,
+  "shellFailureControls": 3,
+  "independentAuthorshipCredit": 0,
+  "failedInitialTestDraftPreserved": true
+}

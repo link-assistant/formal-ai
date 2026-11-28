@@ -481,7 +481,7 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
 /// An explicit count stated with a mention ("prints `Hi` twice") binds that
 /// many lines, and a later mention marked as a repetition ("… and then
 /// prints `Hi` again") binds a further line (issue #1162, the print-twice
-/// task); see [`explicit_count`] and [`output_again`]. Repeated mentions
+/// task); see `explicit_count` and `output_again`. Repeated mentions
 /// of one literal without such a mark keep its largest count (issue #1166).
 #[must_use]
 pub fn bound_output_literals(text: &str) -> Vec<String> {

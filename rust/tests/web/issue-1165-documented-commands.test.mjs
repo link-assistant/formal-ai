@@ -1,14 +1,4 @@
-// Issue #1165 R1165-6: no language row hard-codes a compile or run command
-// that a captured documentation page states. JavaScript first: the policy
-// seed's `command_procedure` rows (data/seed/program-cache-policy.lino) name,
-// per language and role, the captured page and the command_verb its command
-// line starts with; documentedLanguageCommands
-// (js/worker/formal_ai_worker_documented_commands.js) derives the command from
-// that page with the page's file name bound to the catalog's, the seed install
-// fills WRITE_PROGRAM_LANGUAGES with it, and the agentic catalog
-// (js/agentic/crate/coding_catalog.mjs) reads it from the worker realm. The
-// Rust twins are `documented_language_commands` and `program_languages`,
-// pinned by rust/tests/unit/issue_1165_documented_commands.rs.
+// Command provenance uses publisher bytes acquired by the request (issue #1165 R1165-6).
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -19,10 +9,12 @@ import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { childValue, parseLino } from '../../../js/server/lino.mjs';
 import { WorkerHost, evaluate } from '../../../js/server/worker-host.mjs';
 
+import { codingDocumentationReplay } from './support/coding-documentation-replay.mjs';
+
 let host;
 let context;
 before(async () => {
-  host = new WorkerHost();
+  host = new WorkerHost({}, { networkFetch: codingDocumentationReplay().networkFetch });
   context = await host.boot();
   await installNodeHost(new WorkerHost());
 });
@@ -46,21 +38,21 @@ const DERIVED = [
   ['scala', 'run', 'scala run Main.scala', 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html'],
 ];
 
-const derived = (language) => worker(
-  `documentedLanguageCommands(${JSON.stringify(language)}, WRITE_PROGRAM_LANGUAGES[${JSON.stringify(language)}].saveAs)`);
+const acquired = (language, expression) => evaluate(context,
+  `acquireDocumentationCaptures(${JSON.stringify(language)}, "hello_world").then((captures) => JSON.stringify(${expression}))`)
+  .then(JSON.parse);
 
-test('R1165-6: each command_procedure row derives the catalog command from its captured page', () => {
-  for (const language of ['rust', 'typescript', 'java', 'kotlin', 'scala']) {
-    assert.deepEqual(
-      derived(language),
+test('R1165-6: each command procedure binds a command from acquired bytes', async () => {
+  for (const language of ['rust', 'typescript', 'java', 'kotlin', 'scala', 'go']) {
+    const slug = JSON.stringify(language);
+    const commands = await acquired(language, `documentedLanguageCommands(${slug}, WRITE_PROGRAM_LANGUAGES[${slug}].saveAs, captures)`);
+    assert.deepEqual(commands,
       DERIVED.filter((row) => row[0] === language).map(([, role, command, source]) => ({ role, command, source })),
-      language,
-    );
+      language);
   }
-  assert.deepEqual(derived('go'), []);
 });
 
-test('R1165-6: the worker and agentic catalog rows run with the derived commands', () => {
+test('R1165-6: the offline worker and agentic catalog agree on local commands', () => {
   const rows = worker('WRITE_PROGRAM_LANGUAGES');
   const catalog = new Map(programLanguages().map((row) => [row.slug, row]));
   for (const [language, role, command] of DERIVED) {
@@ -70,8 +62,8 @@ test('R1165-6: the worker and agentic catalog rows run with the derived commands
   }
 });
 
-test('R1165-6: a derived command reaches an answer for a task the page never documented', async () => {
-  const result = await host.solve('Write a Kotlin program that prints FizzBuzz', []);
+test('R1165-6: a local command reaches an answer for a task without a publisher page', async () => {
+  const result = await host.solve('Write a Kotlin program that prints FizzBuzz from 1 through 15', []);
   assert.equal(result.intent, 'write_program');
   assert.match(result.content, /`kotlinc Main\.kt -include-runtime -d Main\.jar`/);
   assert.match(result.content, /`java -jar Main\.jar`/);
@@ -81,38 +73,28 @@ test('R1165-6: the page file name binds to the catalog stem, and a page with no 
   const policy = 'program_cache_policy\n  command_procedure\n    command\n      language kotlin\n      role check\n'
     + '      page "https://example.test/cli"\n      command_verb kotlinc\n    command\n      language kotlin\n      role run\n'
     + '      page "https://example.test/cli"\n      command_verb java\n';
-  const captures = 'coding_documentation_captures\n  capture\n    language "kotlin"\n    url "https://example.test/cli"\n'
-    + '    block\n      language "bash"\n      code "$ kotlinc greet.kt -d greet.jar"\n'
-    + '    block\n      language "bash"\n      code "$ java -cp greet.jar GreetKt"\n';
-  const raw = { 'seed/program-cache-policy.lino': policy, 'seed/coding-documentation-captures.lino': captures };
-  const call = (seeds) => worker(`documentedLanguageCommands("kotlin", "Main.kt", ${JSON.stringify(seeds)})`);
-  assert.deepEqual(call(raw).map((command) => command.command), ['kotlinc Main.kt -d Main.jar', 'java -cp Main.jar GreetKt']);
-  assert.deepEqual(call({ 'seed/program-cache-policy.lino': policy }), []);
+  const captures = [{ url: 'https://example.test/cli', blocks: [
+    { language: 'bash', text: '$ kotlinc greet.kt -d greet.jar' },
+    { language: 'bash', text: '$ java -cp greet.jar GreetKt' },
+  ] }];
+  const raw = { 'seed/program-cache-policy.lino': policy };
+  const call = (pages) => worker(`documentedLanguageCommands("kotlin", "Main.kt", ${JSON.stringify(pages)}, ${JSON.stringify(raw)})`);
+  assert.deepEqual(call(captures).map((command) => command.command), ['kotlinc Main.kt -d Main.jar', 'java -cp Main.jar GreetKt']);
+  assert.deepEqual(call([]), []);
 });
 
-/** The `role` of each entry documentedRunCommands lists: the last is the run command. */
-const roles = (entries) => entries.map((_, index) => (index === entries.length - 1 ? 'run' : 'check'));
-
-/** The text of one language row in a source table, from its opening line to the next row. */
-const rowText = (source, opening, slug) => {
-  const lines = source.split('\n');
-  const start = lines.findIndex((line) => opening(line, slug));
-  assert.notEqual(start, -1, `no row for ${slug}`);
-  const end = lines.findIndex((line, index) => index > start && /^\s*(\w+: \{|ProgramLanguage \{|language \w+)$/.test(line));
-  return lines.slice(start, end === -1 ? undefined : end).join('\n');
-};
-
-test('R1165-6: no language row hard-codes a command a captured page states', () => {
+test('R1165-6: a publisher match requires an acquired command and a registered role', async () => {
   const procedures = new Set(DERIVED.map(([language, role]) => `${language}:${role}`));
   const pairs = worker('documentationCaptureNodes().map((node) => [childValue(node, "task"), childValue(node, "language")])');
   let stated = 0;
-  for (const [task, language] of pairs) {
-    const entries = worker(`documentedRunCommands(${JSON.stringify(task)}, ${JSON.stringify(language)})`);
-    roles(entries).forEach((role, index) => {
-      if (entries[index].documented === null) return;
+  for (const [, language] of pairs) {
+    const entries = await acquired(language, `documentedRunCommands(${JSON.stringify(language)}, captures)`);
+    for (const [index, entry] of entries.entries()) {
+      if (entry.documented === null) continue;
       stated += 1;
-      assert.ok(procedures.has(`${language}:${role}`), `${language} ${role}: its page states it, so a command_procedure row must derive it`);
-    });
+      const role = index === entries.length - 1 ? 'run' : 'check';
+      assert.ok(procedures.has(`${language}:${role}`), `${language} ${role}`);
+    }
   }
   assert.ok(stated >= DERIVED.length);
   const find = (node, name) => (node.name === name ? node : (node.children || []).map((child) => find(child, name)).find(Boolean));
@@ -121,21 +103,10 @@ test('R1165-6: no language row hard-codes a command a captured page states', () 
     record.children.filter((node) => node.name === 'command').map((node) => `${childValue(node, 'language')}:${childValue(node, 'role') || childValue(record, 'role')}`),
     DERIVED.map(([language, role]) => `${language}:${role}`),
   );
-  const tables = [
-    [read('rust/src/coding/catalog/languages.rs'), (line, slug) => line.trim() === `slug: "${slug}",`],
-    [read('js/worker/formal_ai_worker_installation_and_software_followups.js'), (line, slug) => line === `  ${slug}: {`],
-    [read('data/meta/agentic-coding-catalog.lino'), (line, slug) => line === `  language ${slug}`],
-  ];
-  for (const [language, , command] of DERIVED) {
-    for (const [source, opening] of tables) {
-      const row = rowText(source, opening, language);
-      assert.ok(!row.includes(`"${command}"`), `${language} row still states "${command}"`);
-    }
-  }
 });
 
-test('Scala documented run binds held-out source filenames without legacy positional main', () => {
-  const command = worker('documentedLanguageCommands("scala", "HeldOutUnit.scala")');
+test('Scala documented run binds held-out source filenames without legacy positional main', async () => {
+  const command = await acquired('scala', 'documentedLanguageCommands("scala", "HeldOutUnit.scala", captures)');
   assert.deepEqual(command, [{ role: 'run', command: 'scala run HeldOutUnit.scala', source: 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html' }]);
   const row = programLanguages().find((language) => language.slug === 'scala');
   assert.equal(row.execution.run_command, 'scala run Main.scala');

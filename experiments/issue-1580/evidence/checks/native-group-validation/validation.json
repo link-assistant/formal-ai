@@ -1,0 +1,131 @@
+{
+  "complete": true,
+  "allChecksPassed": true,
+  "records": [
+    {
+      "name": "before-group-selection",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "file": "before-group-selection.log.gz",
+      "rawSha256": "882be06c2297920bc68a5950015ae16d0bc6f2a255b08b404be18376acfad183",
+      "archiveSha256": "b67f995ac3f638163ee0dd3fd2c74853037bcf43ca113b51e00f14889ff052d9",
+      "lines": 303,
+      "tapSummary": {
+        "tests": 16,
+        "pass": 6,
+        "fail": 10,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "implement-groups",
+      "argv": [
+        "python3",
+        "/tmp/issue-1580-research/implement-native-groups.py"
+      ],
+      "exitCode": 0,
+      "file": "implement-groups.log.gz",
+      "rawSha256": "aee7a91c0b5620b71aed215c434008017d43a512c6bcdbad687d175b18856d5d",
+      "archiveSha256": "8d6fdf7db49e3be088817088b6b2847f0f0eea7a66090ac1e8bae3cca13d931b",
+      "lines": 3,
+      "tapSummary": {}
+    },
+    {
+      "name": "after-group-selection",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "after-group-selection.log.gz",
+      "rawSha256": "1625b40a093abedbaca033b20f8153a995e9892f430dbe34b08499c12b8e7417",
+      "archiveSha256": "d02d69ee03207d82f4e6c1c84fa768fdc60813046181f750568ecca7c7159ecb",
+      "lines": 106,
+      "tapSummary": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "maintained-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "maintained-policy.log.gz",
+      "rawSha256": "a902ba421616312650338e697242ef0f22b4eaad5b407e821f92a6c720b609f0",
+      "archiveSha256": "3662fc67d88e5870f0e20a4a9e00c3efebef70dd7238df8bb68e71656df9b53f",
+      "lines": 424,
+      "tapSummary": {
+        "tests": 69,
+        "pass": 69,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "name": "shell-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "file": "shell-syntax.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "tapSummary": {}
+    },
+    {
+      "name": "shellcheck",
+      "argv": [
+        "shellcheck",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "file": "shellcheck.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "tapSummary": {}
+    }
+  ],
+  "sourceSha256": {
+    "scripts/ci-native-regressions.sh": "64b7befd32dc6c9ee336075184cfc180f76c7be91f404a9a126c059133dc1b6c",
+    ".github/workflows/native-type-check.yml": "58822ae4b03231dde4a59fe18329a68e76386c612043f9de539fae0f9f5ddf43",
+    "experiments/issue-1580/native-regression-groups.test.mjs": "209455a32011cf2f3e3018e1e505bc8cefb1de6a341c6421d6d4e97914fd3e20",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "3b8ab4bc2ae8570847ab236fb3b91d8402d2241247b48d71d8fe194eaf1fe76d"
+  },
+  "rustCompiledLocally": false,
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,19 @@
+# Dependency manifest coverage, 2026-11-23
+
+Issue #1580 requires applying the complete template practices, including current dependencies throughout the maintained projects. The existing collector read only rust/Cargo.toml and the dependency workflow re-resolved only rust/Cargo.lock. Two active isolated Rust projects were omitted. The npm collector walked the filesystem, included untracked manifests, and silently skipped manifest read errors.
+
+The new scripts/dependency-manifests.json policy classifies all six tracked files whose exact basename is Cargo.toml: three active projects, two preserved historical reproducers, and one intentionally empty path-classification fixture. Historical manifests retain their issue-linked reproduction purpose. Archived evidence files ending in -Cargo.toml are source observations, not additional packages.
+
+The checked Git inventory also identifies all fourteen tracked package.json files. A failed or partial Git listing, malformed policy, unclassified Cargo manifest, missing classified manifest, duplicate classification, unexplained preservation, nonempty empty fixture, or unreadable npm manifest fails the observation. Production collection uses the checked npm list; untracked files cannot silently extend the dependency set. Missing files after inventory also fail collection.
+
+The Rust collector reads each active project's own manifest and adjacent lockfile. An unlocked project's declared minimum is checked instead of being silently omitted. Fresh official crates.io responses observed regex 1.13.2 and serde_json 1.0.154; those minimums replace the issue-1558 harness's broad major-only declarations. The two historical reproducers retain their original dependencies.
+
+The maintained workflow first completes the manifest inventory, then invokes Cargo separately for each active project. Replaying the actual previous shell step with a recording Cargo function produced one invocation. Replaying the new shell step with the real inventory and the same recording function produced three invocations, including the release-registry producer. This experiment records command selection; it does not execute Cargo resolution or compilation.
+
+The initial focused run passed nine manifest-maintenance JavaScript controls and six neighboring dependency-workflow controls. The controls exercise tracked coverage, missing classifications and files, duplicate entries, failed and incomplete Git listings, and refusal to start any resolver after an inventory failure. The complete source changes receive another focused run before commit. Native collector regressions are included in the maintained workflow-contract target and require the next hosted run. The newly included existing ecosystem test derives its checkout anchor from the current workflow rather than an obsolete action.
+
+The original captured streams, the failed-before command-selection observation, registry responses, and final check records will be retained with this checkpoint. A local command recorder does not establish a successful hosted maintenance run, complete repository dependency currency, or acceptance of the other issue requirements. Supplied controller and source changes receive zero independent-authorship credit.
+
+Related pull request: https://github.com/link-assistant/formal-ai/pull/1581.
+
+All eleven final command records succeed, including the nine manifest controls, six neighboring workflow controls, native-artifact JavaScript controls, exact tracked inventory, TypeScript currency, formatting and both size/readability gates. The original observations and source snapshots round-trip in the [evidence manifest](../../../experiments/issue-1580/evidence/checks/dependency-manifest-coverage-20261123/manifest.json). Full clean gates and hosted native qualification remain pending.

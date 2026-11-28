@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "head": "193546c746ab6a88aed96f58ff5d2c4f7a11ff3a",
+  "sourceHead": "33aca392f9b992d8fffc45d099ebff20c7a77f16",
+  "registryHead": "76ecc9dd8d4fa3e3d77a56c373d205be3d063f6b",
+  "priorPublishedHead": "5f64ad16450a84ae1384d6fba753ab0efbd47866",
+  "pushExecuted": true,
+  "observedAt": "2026-11-19T17:03:43.466362+00:00",
+  "fullIssueComplete": false,
+  "newNativeExecution": "pending exact-head hosted CI",
+  "independentAuthorshipCredit": 0,
+  "verifiedPayloads": 60,
+  "reason": "All six final documentation gates pass. Exact remote head, main ancestry, empty pre-push queue and clean post-publication tree are verified. The whole PR diff still exceeds the GitHub 300-file diff limit and remains unfinished."
+}

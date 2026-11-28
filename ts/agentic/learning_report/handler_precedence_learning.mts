@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: 'routing_precedence_from_seed_and_parity_fixture_pass',
   path: HANDLER_PRECEDENCE_LEARNING_PATH,
   taskMessage: 'learning_report_task_handler_precedence_learning',
-  memoryPath: 'data/meta/issue-663-handler-precedence-learning.lino',
   subjectMessage: 'learning_report_subject_handler_precedence_learning',
 }, 'isHandlerPrecedenceLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const task = reportApi.task;
 
 /** Mirrors `fn is_handler_precedence_learning_task` in rust/src/agentic_coding/learning_report/handler_precedence_learning.rs. @param {string} prompt */
 export const isHandlerPrecedenceLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/learning_report/handler_precedence_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/learning_report/handler_precedence_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

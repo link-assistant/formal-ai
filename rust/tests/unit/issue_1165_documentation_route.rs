@@ -9,21 +9,28 @@
 //! browser twins are in `rust/tests/web/issue-1165-documentation-captures.test.mjs`.
 
 use formal_ai::discovery_production::{
-    DocumentedCommand, documented_catalog_programs, documented_command_matches,
-    documented_run_commands, language_has_documented_procedure,
+    DocumentedCommand, acquire_documentation_captures, documented_catalog_programs_with_client,
+    documented_command_matches, documented_run_commands_from, language_has_documented_procedure,
 };
+
+#[allow(clippy::duplicate_mod)]
+#[path = "../fixtures/coding-discovery/documentation_replay.rs"]
+mod replay;
 
 /// `(catalog command, documented line)` for a captured language.
 fn documented(language: &str) -> Vec<(String, Option<String>)> {
-    documented_run_commands(language, "hello_world")
-        .into_iter()
-        .map(
-            |DocumentedCommand {
-                 catalog,
-                 documented,
-             }| (catalog, documented),
-        )
-        .collect()
+    documented_run_commands_from(
+        language,
+        &acquire_documentation_captures(language, "hello_world", &replay::client()),
+    )
+    .into_iter()
+    .map(
+        |DocumentedCommand {
+             catalog,
+             documented,
+         }| (catalog, documented),
+    )
+    .collect()
 }
 
 fn row(catalog: &str, documented: Option<&str>) -> (String, Option<String>) {
@@ -117,7 +124,7 @@ fn documented_commands_of_every_captured_language() {
 /// `(file, [(role, command, source)])`.
 #[cfg(feature = "meta-language")]
 fn bound(language: &str) -> (String, Vec<(String, String, String)>) {
-    let program = documented_catalog_programs()
+    let program = documented_catalog_programs_with_client(&replay::client())
         .into_iter()
         .find(|program| program.language == language)
         .unwrap_or_else(|| panic!("{language} is retired to the documentation route"))
@@ -195,13 +202,14 @@ fn the_documented_run_contract_of_every_bound_language() {
 #[cfg(feature = "meta-language")]
 #[test]
 fn only_the_php_page_example_prints_no_trailing_newline() {
-    let deviations: Vec<(String, String)> = documented_catalog_programs()
-        .into_iter()
-        .filter_map(|program| {
-            let deviation = program.rediscovered.ok()?.deviation?;
-            Some((program.language, deviation))
-        })
-        .collect();
+    let deviations: Vec<(String, String)> =
+        documented_catalog_programs_with_client(&replay::client())
+            .into_iter()
+            .filter_map(|program| {
+                let deviation = program.rediscovered.ok()?.deviation?;
+                Some((program.language, deviation))
+            })
+            .collect();
     assert_eq!(
         deviations,
         [(String::from("php"), String::from("trailing_newline=absent"))]
@@ -286,40 +294,33 @@ fn the_documentation_route_knows_the_languages_it_rediscovers() {
     );
 }
 
-/// The derivation names what verified a documented program: the recorded
-/// harness run only when the program is the one that run executed (the Rust
-/// Book's equals the template the issue-8 harness ran, by `content_id`),
-/// otherwise its page and the decomposition check, and the answer's
-/// execution status says the same.
+/// The derivation identifies the current source and its decomposition check.
 #[cfg(feature = "meta-language")]
 #[test]
-fn a_documented_program_cites_only_the_run_that_verified_it() {
-    let rust = formal_ai::UniversalSolver::default().solve("write me hello world program in Rust");
-    assert!(
-        rust.links_notation.contains(
-            "program_verification language=rust task=hello_world \
-             content_id=0x544f96663d886356 verification=recorded"
-        ),
-        "{}",
-        rust.links_notation
-    );
+fn a_documented_program_cites_its_capture_and_decomposition() {
+    let entries = documented_catalog_programs_with_client(&replay::client());
+    let events = |language: &str| {
+        let entry = entries
+            .iter()
+            .find(|entry| entry.language == language)
+            .unwrap();
+        formal_ai::discovery_production::documentation_events(
+            language,
+            &entry.task,
+            entry.rediscovered.as_ref().unwrap(),
+        )
+    };
+    let rust = events("rust");
+    assert!(rust.iter().any(|(kind, payload)| *kind == "program_verification" && payload.contains("content_id=0x544f96663d886356 verification=decomposition source=https://doc.rust-lang.org/book/ch01-02-hello-world.html")));
     let page = "https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples";
-    let python =
-        formal_ai::UniversalSolver::default().solve("write me hello world program in Python");
-    assert!(
-        python.links_notation.contains(&format!(
-            "program_verification language=python task=hello_world \
-             content_id=0x{:016x} verification=decomposition source={page}",
-            formal_ai::discovery_production::fnv1a64(b"print('Hello, world!')")
-        )),
-        "{}",
-        python.links_notation
-    );
+    let python = events("python");
     assert!(
         python
-            .links_notation
-            .contains(&format!("execution_environment {page}")),
-        "{}",
-        python.links_notation
+            .iter()
+            .any(|(kind, payload)| *kind == "program_verification"
+                && payload.contains(&format!("verification=decomposition source={page}")))
     );
+    assert!(python.iter().any(|(kind, payload)| *kind == "source:http"
+        && payload.contains(page)
+        && payload.contains("sha256=")));
 }

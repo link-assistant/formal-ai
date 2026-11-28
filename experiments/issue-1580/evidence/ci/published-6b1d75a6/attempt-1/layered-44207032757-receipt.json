@@ -1,0 +1,17 @@
+{
+  "run": 44207032757,
+  "head": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "attempt": 1,
+  "rawSha256": "f41501ad6b22de64f61b8e5e10aa403e6f36b60b9d61aaf3028e09805dc8bc97",
+  "rawBytes": 1134530,
+  "rawLines": 6596,
+  "log": "layered-44207032757.log.gz",
+  "failures": [
+    {
+      "databaseId": 134475584343,
+      "name": "js tier (node --check over js, suite group 2)",
+      "conclusion": "failure"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

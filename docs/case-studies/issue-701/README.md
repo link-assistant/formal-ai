@@ -24,11 +24,11 @@ demonstrably change answers**, with a before/after pair on record for each one.
 - Raw GitHub snapshots: [`raw-data/`](raw-data/)
 - Online research notes: [`raw-data/online-research.md`](raw-data/online-research.md)
 - Frozen pre-adoption frontier (the durable failure record):
-  [`../../../data/meta/learning-frontier-google-trends.lino`](../../../data/meta/learning-frontier-google-trends.lino)
+  [Historical frontier](replay/learning-frontier-google-trends.lino)
 - Adoption ledger (the before/after capability deltas):
-  [`../../../data/meta/learning-adoption-ledger.lino`](../../../data/meta/learning-adoption-ledger.lino)
+  [Historical adoption ledger](replay/learning-adoption-ledger.lino)
 - Trends learning report (the coverage split):
-  [`../../../data/meta/google-trends-learning.lino`](../../../data/meta/google-trends-learning.lino)
+  [Historical learning report](../issue-498/replay/google-trends-learning.lino)
 - Promoted surfaces: [`../../../data/seed/learned-request-openers.lino`](../../../data/seed/learned-request-openers.lino)
 - Scheduled proposal-only run: [`../../../.github/workflows/learning-cycle.yml`](../../../.github/workflows/learning-cycle.yml)
 
@@ -53,13 +53,23 @@ each language wraps around a term to ask about it (`… के बारे म�
 `介绍一下 …`, `Дай контекст Google Trends для …`). That is a *slot form*, not a
 fact, and it generalizes over every term.
 
-The before state is not deleted. `data/meta/learning-frontier-google-trends.lino`
+The archived `replay/learning-frontier-google-trends.lino`
 freezes all 60 pre-adoption verdicts permanently, so the failure stays auditable
 after the gap closed (R425, R701-6).
 
 ## 2. The adoption contract
 
-`formal-ai learn cycle --frontier google-trends --dry-run` runs one cycle:
+Pass a report with `--from` to run the proposal-only cycle. Replay the archived
+frontier from the repository root with:
+
+```sh
+formal-ai learn cycle --frontier google-trends --dry-run \
+  --from docs/case-studies/issue-701/replay/learning-frontier-google-trends.lino
+```
+
+The scheduled run captures a current report and passes it to the same command.
+The idle runtime reads an explicitly supplied `<memory>.learning-frontier.lino`
+record when present. The cycle performs these steps:
 
 ```
 frontier item  →  candidate surface  →  held-out validation  →  promotion proposal
@@ -89,7 +99,7 @@ and the scheduled workflow fails if `git diff -- data/seed` is non-empty.
 ## 3. Proving the capability delta
 
 A proposal that is accepted must be shown to have *changed something*. The
-adoption ledger (`data/meta/learning-adoption-ledger.lino`) records one row per
+adoption ledger (`replay/learning-adoption-ledger.lino`) records one row per
 adopted item:
 
 ```

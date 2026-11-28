@@ -43,6 +43,23 @@ export function recipeSourceCommand(path) {
   })));
 }
 
+/** One bounded read-only command for the recipe's supporting artifact owners. */
+export function recipeSourcesCommand(paths) {
+  const installed = policy();
+  return installed.command.replace(/\{(?:source|plan)\}/gu, slot => shellQuote(slot === '{source}' ? installed.source : jsonText({paths})));
+}
+
+/** Decode a complete ordered batch; omissions, duplicates and foreign owners fail. */
+export function recipeSourcesResult(output, paths) {
+  let value;
+  try { value = JSON.parse(observedPayload(output)); } catch { return null; }
+  if (value?.schema !== 'workspace-sources-v1' || value.success !== true || value.complete !== true
+    || !Array.isArray(value.observations) || paths.length === 0 || paths.length > 16
+    || new Set(paths).size !== paths.length || value.observations.length !== paths.length) return null;
+  const results = value.observations.map((item, index) => recipeSourceValue(item, paths[index]));
+  return results.every(result => result !== null) ? results : null;
+}
+
 /** Mirrors `fn recipe_source_result`; caller must first bind the exact command. */
 export function recipeSourceResult(output, path) {
   const payload = observedPayload(output);
@@ -53,7 +70,12 @@ export function recipeSourceResult(output, path) {
   } catch {
     return null;
   }
+  return recipeSourceValue(value, path);
+}
+function recipeSourceValue(value, path) {
   if (value === null || typeof value !== 'object' || Array.isArray(value) || value.schema !== 'workspace-source-v1' || value.path !== path || value.success !== true || value.complete !== true) return null;
+  const serialized = jsonText(value), code = reportedExitCode(serialized);
+  if (incompleteReceipt(serialized) || code !== null && code !== 0) return null;
   if (value.absent === true && value.error_code === 'ENOENT' && !('source' in value)) {
     return {
       absent: true,
@@ -78,6 +100,24 @@ export function recipeSourceReceipt(progress, command) {
   if (frame?.binding !== 'exact' || !frame.succeeded || incompleteReceipt(frame.detail)
     || exit !== null && exit !== 0) return null;
   return frame.detail;
+}
+
+/** Exact owner freshness applies independently to every member of a batch. */
+export function recipeSourcePreimage(progress, path, paths = []) {
+  const commands = [recipeSourceCommand(path)];
+  if (paths.length > 1 && paths.includes(path)) commands.push(recipeSourcesCommand(paths));
+  for (const command of commands) {
+    const receipt = recipeSourceReceipt(progress, command);
+    if (receipt === null) continue;
+    const result = command === commands[0] ? recipeSourceResult(receipt, path)
+      : recipeSourcesResult(receipt, paths)?.[paths.indexOf(path)];
+    if (!result) continue;
+    const probe = progress.attempts.findLastIndex(attempt => attempt.capability === Capability.Run
+      && attempt.arguments !== null && commandArgument(attempt.arguments) === command);
+    const mutation = progress.latestSourceMutationIndex(path);
+    if (probe >= 0 && (mutation === null || mutation < probe)) return result;
+  }
+  return null;
 }
 
 /** Mirrors `fn recipe_source_matches`; later writes invalidate an earlier probe. */

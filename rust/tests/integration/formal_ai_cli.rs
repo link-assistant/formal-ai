@@ -8,6 +8,8 @@ use crate::http_server::{
     http_get_json, http_post_json, reserve_loopback_port, spawn_formal_ai_server,
 };
 
+mod benchmark_report;
+
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 fn tmpdir() -> std::path::PathBuf {

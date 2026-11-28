@@ -1,0 +1,7 @@
+{
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "regressionFailsBefore": true,
+  "policyPassesAfter": true,
+  "testOnlyStructuredOutputChangesSelectNativeCliReplay": true
+}

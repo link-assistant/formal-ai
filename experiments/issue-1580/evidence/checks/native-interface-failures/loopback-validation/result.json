@@ -1,0 +1,45 @@
+{
+  "commands": [
+    {
+      "name": "regression",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/attachment-url-scope.test.mjs"
+      ],
+      "exitCode": 0,
+      "logSha256": "19c4249adeb7f8b07be370fb9f2482fceb585b858082ada03884e533e35c8665"
+    },
+    {
+      "name": "format",
+      "command": [
+        "rustfmt",
+        "--check",
+        "rust/src/solver_handlers/web_requests/url_parse.rs"
+      ],
+      "exitCode": 1,
+      "logSha256": "e7e846cf87f9bfb9e33b420a8ad1df91b12c8cc60e3f0977eba69c98d4200cbd"
+    },
+    {
+      "name": "projection",
+      "command": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 1,
+      "logSha256": "bed26a9e12cdfbb4d47a70c0c96c311ddd1cbd2836363f4174467c954a52db0d"
+    }
+  ],
+  "sourceHashes": {
+    "rust/src/solver_handlers/web_requests/url_parse.rs": "0910013093357a9e7cd059f5b2d8c76406521c8cf5351b920d425fb1a5342cb7",
+    "js/worker/formal_ai_worker_write_program_and_research.js": "f9c78f8db7d8a3b8662fd06dedc9ccc44b9a52703a1c08625655bdde08cb4c3d",
+    "js/agentic/crate/solver_handlers_web_search.mjs": "3bc4bbb367b55ee55c271a1c8f94f8635071f4e7f20c81d05369ed2fb1b7a3c6",
+    "rust/tests/web/attachment-url-scope.test.mjs": "e2651ca1ea515b5789a14dba47d49af2c46501ac7222d6a9e5c8c1489fe375fa"
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

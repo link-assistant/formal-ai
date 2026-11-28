@@ -1,0 +1,27 @@
+{
+  "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+  "commit": "065985538e6d1ede54116e11b70f5a2f1f6ad7b3",
+  "files": [
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": "scripts/ci/check-pipeline-status.mjs",
+      "gitBlob": "735af75ee15c212cec98a9f192587c4eabac436e",
+      "sha256": "e414d0a8f96a51d8be9b3f702e01fdf8c7f008ccf977557184c66edbdbc32b49"
+    },
+    {
+      "path": "scripts/ci/runner-acquisition.mjs",
+      "gitBlob": "6dfec1d449f69d31c256f44712217a6235042cdf",
+      "sha256": "de9903c89fae9e10ac0743916f9f0964a8db7fa3d50e44bd987c321c25f55a86"
+    },
+    {
+      "path": "scripts/github-actions-log.mjs",
+      "gitBlob": "cdc8d636d7eafe24c58bb811dad3d17c9d073ac4",
+      "sha256": "29d1a076b214deb7f9ade9636ecd1263aca13514c7a1ada48253c95c743c8182"
+    }
+  ],
+  "purpose": "Unmodified current upstream pipeline reader and imports for bounded offline malformed-result reproductions; no hosted workflow or upstream repair claim."
+}

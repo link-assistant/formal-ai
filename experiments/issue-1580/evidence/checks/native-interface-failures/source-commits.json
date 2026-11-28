@@ -1,0 +1,29 @@
+{
+  "commits": [
+    {
+      "commit": "405ba38abbd4de06fa7a99d9099b37af5a18bd6c",
+      "message": "Replay native dialog and Hive contracts with current physical fixtures",
+      "paths": {
+        "rust/tests/fixtures/hive-mind/offline_delivery.rs": "d8c13899d476d1c3741ccca617dd930ba2f6904eed9b8dce02aa5833d6f3bf8f",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs.rs": "c2dd14419907faba37f73bf9d05f4e4744db90ef3ba38c7996f5e11e1701f7f9",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs": "8e5119e58505698f4dc2fef71b8c90ef31ac890174b959ec20d571799fbc88c2",
+        "rust/tests/integration/http_server.rs": "d0ec5b49608cea0136045956fa6e9e2a2222ec5081ded6739242159926884984",
+        "rust/tests/integration/issue_819_tui_isolation.rs": "1ed6de6ff03f0743f087104aedf8d836f169b99fb21924a87cd728151eb92fc6",
+        "rust/tests/web/hive-work-item-consumer.test.mjs": "cfa2ea812e4dc325df7ee5f43472cf6abebc58d486783c07c93667e9568cceaf",
+        "rust/tests/web/server-retained-dialog-silent.test.mjs": "3d072b0b38951271364b416a4c10654830365b1c74aae0795efb17c870d159f8",
+        "experiments/issue-1580/native-hive-fixture-probe.mjs": "f32a001168165b62a4b72479b2a46f792a0a44c6a2c999ffa4e337a7c5d2da09"
+      }
+    },
+    {
+      "commit": "901854e0c962ca45bb7ae6e5f2d670ef58f80dbb",
+      "message": "Overlap isolated native contracts and preserve every group failure",
+      "paths": {
+        "scripts/ci-native-regressions.sh": "218bbe39cbdea650e79dca1e10b797a333dd26885a51661d7846ae7a1bae3f15",
+        "rust/tests/web/default-branch-build-policy.test.mjs": "441c0c0b9f71dfc9360d177dfa044398f1709fc3e537ba49a6776284bc838e11"
+      }
+    }
+  ],
+  "nativeExecution": "pending hosted CI; no local Rust execution",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

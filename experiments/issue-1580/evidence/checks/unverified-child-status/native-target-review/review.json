@@ -1,0 +1,35 @@
+{
+  "parent": "510c24983e5bbacb0e5ab21d2de491af56902055",
+  "files": [
+    {
+      "path": ".github/workflows/native-type-check.yml",
+      "sha256": "38563e93f70c51cdd2840975400a1f08b8b1a6882bc58461c4e0ee463d60456e"
+    },
+    {
+      "path": "rust/Cargo.toml",
+      "sha256": "a912c4c3df70ecc9304bc892c29845c6f4919d5020dff63f4f21f90eca9fb5eb"
+    },
+    {
+      "path": "rust/tests/web/default-branch-build-policy.test.mjs",
+      "sha256": "c611c09b575447a9697c1dbcaf102ffea375955af0cef112371435f4120facee"
+    },
+    {
+      "path": "docs/ci-cd/default-branch-builds.md",
+      "sha256": "d53dc60dedfeac613c49ed5e2f884cdc9cce2f5b9d0815256111fc9b143fbd75"
+    },
+    {
+      "path": "changelog.d/20261117_120000_issue-1580-ci-regressions.md",
+      "sha256": "ae4cfea122a0225d4f5d77f2ee93928aad0f9528c5eef8e9bec5a298794709b8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+      "sha256": "75aa7066055539c243ae62accbf50a30f166ecf079036fff10c5fe361f8e8495"
+    }
+  ],
+  "textDiffFullyRead": true,
+  "existingNativeModuleFullyRead": true,
+  "binaryInventoryComparedAsCompleteObjects": true,
+  "nativeExecuted": false,
+  "hostedCiPendingPublication": true,
+  "independentAuthorshipCredit": 0
+}

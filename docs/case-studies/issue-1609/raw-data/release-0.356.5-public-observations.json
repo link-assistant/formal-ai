@@ -1,0 +1,286 @@
+{
+  "observedAt": "2026-11-22T16:28:49Z",
+  "release": {
+    "source_commit": "43b31443025d6b632d3352f86512e01abb8f658a",
+    "source_tree": "5dd18137e2d09af13f9f3dfe71bdded83389d4ef",
+    "package_version": "0.356.5",
+    "release_tag": "v0.356.5",
+    "producer_run": "45020746043"
+  },
+  "crateIndex": {
+    "name": "formal-ai",
+    "vers": "0.356.5",
+    "cksum": "5356ff189324ce3d9cbcf3a2bc77e9928ec16edb42bd50eeda421952e54c9aef",
+    "yanked": false
+  },
+  "manifests": {
+    "ghcr.io/link-assistant/formal-ai:0.356.5": {
+      "digest": "sha256:99bc9871075bb0785a05f22dc14f77de4b071fa52b1acc335353dc95e848ab44",
+      "mediaType": "application/vnd.docker.distribution.manifest.list.v2+json",
+      "platforms": [
+        {
+          "digest": "sha256:8472dd3eed865ecae62813bdefc0efe5b6b0f747f3ab27c129ed89a9627957ba",
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          }
+        },
+        {
+          "digest": "sha256:13ab515532849fd5262e1483af453c51183241fe1a6e364954f8e2b854423548",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+          }
+        }
+      ]
+    },
+    "ghcr.io/link-assistant/formal-ai:0.356.5-slim": {
+      "digest": "sha256:613366bc8c43882fffd6cb33daa0f5952b64660329d87a8fe5f127893b194403",
+      "mediaType": "application/vnd.docker.distribution.manifest.list.v2+json",
+      "platforms": [
+        {
+          "digest": "sha256:167a1f613f9aa8721dfdea11f278a3157f55c75a1b68b997bd28458df74f9c6e",
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          }
+        },
+        {
+          "digest": "sha256:99089ce0c2e2e6b6854aa3ec529ff54ffacd39ddcd28ef2d58ce16c8f204de0b",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+          }
+        }
+      ]
+    },
+    "docker.io/konard/formal-ai:0.356.5": {
+      "digest": "sha256:0b5a4d5ac515bfe14f4a4b0fa4240a883f4419011c5a95c8d5a1ac1d52a6db16",
+      "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+      "platforms": []
+    }
+  },
+  "runtimeReceipts": {
+    "full": {
+      "version": 1,
+      "image": "ghcr.io/link-assistant/formal-ai@sha256:c488d41bcbe84dcca397160ff885f1c7042eb6cdd2084fd3c8bb8dc6086dc573",
+      "source_commit": "43b31443025d6b632d3352f86512e01abb8f658a",
+      "package_version": "0.356.5",
+      "executable": {
+        "path": "/usr/local/bin/formal-ai",
+        "sha256": "c0dcbd4d657c5e8685d7b03e0602605c992a572c9c24100776dbf854a67c0dd4"
+      },
+      "version_output": "formal-ai 0.356.5"
+    },
+    "slim": {
+      "version": 1,
+      "image": "ghcr.io/link-assistant/formal-ai@sha256:f0795fefbcb2c902878c650bdc4f3f4fe6bd64400fdb54a065771409e2cdb042",
+      "source_commit": "43b31443025d6b632d3352f86512e01abb8f658a",
+      "package_version": "0.356.5",
+      "executable": {
+        "path": "/usr/local/bin/formal-ai",
+        "sha256": "c0dcbd4d657c5e8685d7b03e0602605c992a572c9c24100776dbf854a67c0dd4"
+      },
+      "version_output": "formal-ai 0.356.5",
+      "producer_run": "45020746043",
+      "producer_attempt": "1"
+    },
+    "mirror": {
+      "version": 1,
+      "image": "konard/formal-ai@sha256:0b5a4d5ac515bfe14f4a4b0fa4240a883f4419011c5a95c8d5a1ac1d52a6db16",
+      "source_commit": "43b31443025d6b632d3352f86512e01abb8f658a",
+      "package_version": "0.356.5",
+      "executable": {
+        "path": "/usr/local/bin/formal-ai",
+        "sha256": "c0dcbd4d657c5e8685d7b03e0602605c992a572c9c24100776dbf854a67c0dd4"
+      },
+      "version_output": "formal-ai 0.356.5"
+    }
+  },
+  "browserPublication": {
+    "schema": "release-browser-publication/v1",
+    "binding": {
+      "sourceCommit": "43b31443025d6b632d3352f86512e01abb8f658a",
+      "sourceTree": "5dd18137e2d09af13f9f3dfe71bdded83389d4ef",
+      "protocolCommit": "43b31443025d6b632d3352f86512e01abb8f658a",
+      "protocolSha256": "cc07f62f3c15c936f5c7cbf2e694701c577ea6eb6dc9537848ea8915a221ccbb",
+      "run": "45032739332",
+      "attempt": "1",
+      "packageName": "@link-assistant/formal-ai-engine",
+      "version": "0.356.5"
+    },
+    "archive": {
+      "name": "link-assistant-formal-ai-engine-0.356.5.tgz",
+      "bytes": 5366475,
+      "sha256": "44d39ed3195133f8717e59fa52fb25f9c50f1d4eb1b26a658e42fb82de23ace1",
+      "integrity": "sha512-+FMQfT16p26h40D9cFJZVSgJaZLuBo3YXnoV0g2LIYbIXbrPEzYBLCOBlzS0Zq/hj6acVfcGG4yvfoh6sIZuEw=="
+    },
+    "workerReceiptSha256": "d7b4dbaf561e45c88117abfc748e0cb1e8ee2dd793a46eb1d00587ace7d039fe",
+    "npm": {
+      "status": "skipped-unconfigured",
+      "required": false
+    },
+    "publicationAuthority": false,
+    "producer": {
+      "repository": "link-assistant/formal-ai",
+      "run": "45032739332",
+      "attempt": "1",
+      "job": "package",
+      "event": "workflow_run",
+      "workflowCommit": "43b31443025d6b632d3352f86512e01abb8f658a"
+    }
+  },
+  "publicDownloadJobs": {
+    "conclusion": "success",
+    "headSha": "43b31443025d6b632d3352f86512e01abb8f658a",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 137253018417,
+        "name": "resolve"
+      },
+      {
+        "conclusion": "success",
+        "id": 137253090852,
+        "name": "browser-public-package"
+      },
+      {
+        "conclusion": "success",
+        "id": 137253090884,
+        "name": "macos-public-packages (macos-15, arm64)"
+      },
+      {
+        "conclusion": "success",
+        "id": 137253090901,
+        "name": "all-public-bytes"
+      },
+      {
+        "conclusion": "success",
+        "id": 137253091116,
+        "name": "macos-public-packages (macos-15-intel, x64)"
+      }
+    ]
+  },
+  "releaseJobs": [
+    {
+      "completed_at": "2026-11-22T13:14:13Z",
+      "conclusion": "success",
+      "id": 137217553364,
+      "name": "Auto Release / auto publish-crate",
+      "started_at": "2026-11-22T13:08:27Z",
+      "steps": [
+        {
+          "completed_at": "2026-11-22T13:10:59Z",
+          "name": "Verify independent source compiler protocol and main tag authority"
+        },
+        {
+          "completed_at": "2026-11-22T13:14:10Z",
+          "name": "Publish to Crates.io"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-11-22T13:22:54Z",
+      "conclusion": "success",
+      "id": 137220302804,
+      "name": "Auto Release / auto registry-availability",
+      "started_at": "2026-11-22T13:14:31Z",
+      "steps": [
+        {
+          "completed_at": "2026-11-22T13:16:59Z",
+          "name": "Verify independent source compiler protocol and main tag authority"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-11-22T13:32:17Z",
+      "conclusion": "success",
+      "id": 137222641020,
+      "name": "Auto Release / auto published-crate-smoke",
+      "started_at": "2026-11-22T13:22:57Z",
+      "steps": [
+        {
+          "completed_at": "2026-11-22T13:26:24Z",
+          "name": "Verify independent source compiler protocol and main tag authority"
+        },
+        {
+          "completed_at": "2026-11-22T13:32:13Z",
+          "name": "Smoke test the published crate"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-11-22T13:55:56Z",
+      "conclusion": "success",
+      "id": 137225130068,
+      "name": "Auto Release / auto publish-verify-images",
+      "started_at": "2026-11-22T13:32:19Z",
+      "steps": [
+        {
+          "completed_at": "2026-11-22T13:35:40Z",
+          "name": "Verify independent source compiler protocol and main tag authority"
+        },
+        {
+          "completed_at": "2026-11-22T13:50:41Z",
+          "name": "Publish Docker image to GHCR"
+        },
+        {
+          "completed_at": "2026-11-22T13:53:02Z",
+          "name": "Publish and verify the slim GHCR sidecar"
+        },
+        {
+          "completed_at": "2026-11-22T13:53:02Z",
+          "name": "Verify the published GHCR image is anonymously pullable"
+        },
+        {
+          "completed_at": "2026-11-22T13:53:03Z",
+          "name": "Verify anonymous access to the immutable published manifest"
+        },
+        {
+          "completed_at": "2026-11-22T13:53:03Z",
+          "name": "Configure Docker Hub publishing"
+        },
+        {
+          "completed_at": "2026-11-22T13:54:31Z",
+          "name": "Publish Docker image to Docker Hub"
+        },
+        {
+          "completed_at": "2026-11-22T13:54:45Z",
+          "name": "Post Publish and verify the slim GHCR sidecar"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-11-22T14:04:18Z",
+      "conclusion": "failure",
+      "id": 137232338452,
+      "name": "Build GitHub Pages artifact / Build GitHub Pages artifact",
+      "started_at": "2026-11-22T13:59:25Z",
+      "steps": [
+        {
+          "completed_at": "2026-11-22T13:59:57Z",
+          "name": "Verify trusted release branch matches the requested artifact commit"
+        }
+      ]
+    }
+  ],
+  "pages": {
+    "deployed": {
+      "created_at": "2026-11-05T17:58:33Z",
+      "environment_url": "https://link-assistant.github.io/formal-ai/",
+      "log_url": "https://github.com/link-assistant/formal-ai/actions/runs/42062109916/job/127429052754",
+      "state": "success"
+    },
+    "deploymentCommit": "aa7a8005e52c775dd39d21bfbdc47fb278e0e742",
+    "htmlVersionMeta": "<meta name=\"formal-ai-version\" content=\"0.355.34\" />",
+    "liveBrowserReplay": {
+      "observedAt": "2026-11-22T16:31:00Z",
+      "version": "0.355.34",
+      "worker": "wasm worker",
+      "english": true,
+      "russian": true,
+      "reportTarget": "https://github.com/link-assistant/formal-ai/issues/new",
+      "reportIncludesBoth": true
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "collected": true,
+  "head": "e93881cb64a78a19253088c19f09a1f1b816229c",
+  "runId": 44982847617,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982847617",
+  "conclusion": "success",
+  "producerFiles": 33,
+  "originalBytes": 91420395,
+  "semanticCoverageProven": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

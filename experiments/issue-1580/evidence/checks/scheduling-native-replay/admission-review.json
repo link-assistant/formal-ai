@@ -1,0 +1,41 @@
+{
+  "publishedHead": "0f8c178ca9c4a2c6fd9bf07e67a2babd450436bb",
+  "before": {
+    "tests": 26,
+    "pass": 24,
+    "fail": 2
+  },
+  "after": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0
+  },
+  "unchangedSourceFiles": [
+    {
+      "path": "rust/tests/unit/issue_1138_place_timezone.rs",
+      "sha256": "e74bdac523ca85b3e44e5faf62a11ba2c5ee235ac1687c3058eea15900eef1d0",
+      "unchangedFromPublishedHead": true,
+      "tests": 4
+    },
+    {
+      "path": "rust/tests/unit/solver/issue_869_meeting_scheduling.rs",
+      "sha256": "89fed7651bf7baa9c5c71bf1d667c8d7d672a54ec22aadeafcc6fdb031bd8898",
+      "unchangedFromPublishedHead": true,
+      "tests": 5
+    },
+    {
+      "path": "rust/tests/unit/specification/spoken_hour_scheduling.rs",
+      "sha256": "93256f16fbd0f25c7a74580bfb51fc2a6bc1471e5683ff7194a49461aa068a09",
+      "unchangedFromPublishedHead": true,
+      "tests": 2
+    },
+    {
+      "path": "rust/tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs",
+      "sha256": "033c88826794e1e0f1baf40cd9954836a11aa553f0648a95a0f281920c16786a",
+      "unchangedFromPublishedHead": true,
+      "tests": 7
+    }
+  ],
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0
+}

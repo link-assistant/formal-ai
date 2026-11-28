@@ -1,0 +1,34 @@
+{
+  "run": "44230021091",
+  "attempt": 2,
+  "conclusion": "failure",
+  "headSha": "edffcb183a7a7f9d5d17967cfea94071aee57a90",
+  "status": "completed",
+  "aggregate": {
+    "path": "layered-44230021091-attempt-2.log.gz",
+    "bytes": 1500607,
+    "lines": 9547,
+    "sha256": "7de918e74c607b1847754e08d7833f9a59de26aa5b3f52d0e1b2a3c65bc47149"
+  },
+  "inventory": {
+    "path": "jobs.json.gz",
+    "bytes": 22163,
+    "lines": 1,
+    "sha256": "4ac2dde9346ac3cec45402ae09e62c10f0941c1313a0e57293196d6d440538af"
+  },
+  "failures": [
+    {
+      "id": 134558393446,
+      "name": "ts tier (js<->ts file-set parity)",
+      "conclusion": "failure",
+      "started_at": "2026-11-18T03:38:14Z",
+      "completed_at": "2026-11-18T03:38:30Z",
+      "log": {
+        "path": "job-134558393446.log.gz",
+        "bytes": 24798,
+        "lines": 320,
+        "sha256": "0683ff1370cdcc53b75bee48cff6f5904c1bc68b61611c851a29f7432e1184fa"
+      }
+    }
+  ]
+}

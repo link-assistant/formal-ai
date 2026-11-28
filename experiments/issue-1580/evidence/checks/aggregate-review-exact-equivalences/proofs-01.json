@@ -1,0 +1,130 @@
+[
+  {
+    "ordinal": 197,
+    "path": "rust/embedded/data/seed/cnl-language-zh.lino",
+    "diffSha256": "31fcb9238f9cda5d92d9e20cc8771781581d7d0dd436277fb606f3a7162be55a",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/cnl-language-zh.lino",
+    "sha256": "105a2b0ea949c20f48004073432061a01e1c3939094a2ccbefa2f629338b71dc"
+  },
+  {
+    "ordinal": 198,
+    "path": "rust/embedded/data/seed/cnl-output.lino",
+    "diffSha256": "2ddd2cea6930c3e50f88a18b37d0c4d0b23e8a9065bfff67f5fdf2393e1f11b0",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/cnl-output.lino",
+    "sha256": "d7bd7c4fb5f48486be1df0b449e1e686e73dbb9fb26535cd6dd3a560b3a81bcb"
+  },
+  {
+    "ordinal": 199,
+    "path": "rust/embedded/data/seed/code-review-rules.lino",
+    "diffSha256": "cabab123f780cb18427c6ae6cfb19b0014064d5e23ae4f6fe0044aae6297c473",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/code-review-rules.lino",
+    "sha256": "7b366c4238b778d9fa409e42c30673c45c08ff32e85164d9dbf00acd0abf7122"
+  },
+  {
+    "ordinal": 200,
+    "path": "rust/embedded/data/seed/code-task-cues.lino",
+    "diffSha256": "572416a54dd747293d4580547f15afda4fd134bb881482005745491c83ac42de",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/code-task-cues.lino",
+    "sha256": "e8f6600831f5103d4ec6a8c5386e247b5fb60d062e209c78a94eeb3b4d6ad21f"
+  },
+  {
+    "ordinal": 201,
+    "path": "rust/embedded/data/seed/entity-names.lino",
+    "diffSha256": "2e29b6d7f66558d7e694b929af6221be559370f142bfaf74674b59f70d9da7b2",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/entity-names.lino",
+    "sha256": "1a971fda34e2b3166d7c5c3d6f6965fa3fdbae0c76b84cc4726141dcbbdccafd"
+  },
+  {
+    "ordinal": 202,
+    "path": "rust/embedded/data/seed/google-trends-prompts.lino",
+    "diffSha256": "67d21c4dcadb9901a5964b7aaa6c4c0b022b6a0894b9641e179ef6ad543a522e",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/google-trends-prompts.lino",
+    "sha256": "589a2477b200e941d00f819f0f8c0a7b00855f1961d5a22845dbc273f0cd4faa"
+  },
+  {
+    "ordinal": 203,
+    "path": "rust/embedded/data/seed/handler-promotions.lino",
+    "diffSha256": "e086dc50b077dfe0143296d3a038a8dafbb736b9d625bf3d6997785f957bdcce",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/handler-promotions.lino",
+    "sha256": "8913405b3a5c273b08437de2fd4db4a064035a867c3841da05f9c7de955da82d"
+  },
+  {
+    "ordinal": 204,
+    "path": "rust/embedded/data/seed/handler-rules.lino",
+    "diffSha256": "316b3f3eb198d5ef109eba57b049ae04e1f13a607e5b40580943aa13b793c045",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/handler-rules.lino",
+    "sha256": "bdb591aca832411199e40333c7da372140e4a7594347e67ddc66f90fcc785290"
+  },
+  {
+    "ordinal": 205,
+    "path": "rust/embedded/data/seed/meanings-calendar.lino",
+    "diffSha256": "1132f864b71bfdcf00f41d29c2de1731ca4e7c5604c0ecf0b0faef1e53b1c289",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-calendar.lino",
+    "sha256": "f8c5883b99332b5cfd17d470c675bc3c04716181eafe3681e5138fae4f742be5"
+  },
+  {
+    "ordinal": 206,
+    "path": "rust/embedded/data/seed/meanings-concept-lookup.lino",
+    "diffSha256": "fb34bd274c3887d399c97502a9aad7f3f48c29fbb33134661f4c599be9b14d43",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-concept-lookup.lino",
+    "sha256": "a32261b0e61d8c6460c2d8c3afb82e906f77efa8f6ac0e106dd39d671ff598aa"
+  },
+  {
+    "ordinal": 207,
+    "path": "rust/embedded/data/seed/meanings-how.lino",
+    "diffSha256": "41d55d06cd77f6f55f5c63ee7f40ddf9d8963091426b49f50bc48f2c758a2cbb",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-how.lino",
+    "sha256": "ecb71e924471262fee08e6577570aefadf0e1fe6b469740dfc0b1fad0b20f285"
+  },
+  {
+    "ordinal": 208,
+    "path": "rust/embedded/data/seed/meanings-occupations.lino",
+    "diffSha256": "1b7578b278e14f3efce304ae9c60f047e103a666c67613f13bbaae8364e4a2ff",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-occupations.lino",
+    "sha256": "28904076195aa4251afe4a70655041b1d3c1fb3d3930300a83d1a8b4e23d8ea0"
+  },
+  {
+    "ordinal": 209,
+    "path": "rust/embedded/data/seed/meanings-response-intents-additional.lino",
+    "diffSha256": "555a6048ea8d8d366755e283d7c7a871f4eea89770cb6c5bdce9eda4e5f7b274",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-response-intents-additional.lino",
+    "sha256": "011526272749b240c13dd1b8f38f815e68d1b890fbe23be82db25dba05eb76c5"
+  },
+  {
+    "ordinal": 210,
+    "path": "rust/embedded/data/seed/meanings-response-intents-handlers-additional.lino",
+    "diffSha256": "ad1b7ad1f372d4d00052499a5f5a8c516db8cb69186e651f988ce1672c8ae8d2",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-response-intents-handlers-additional.lino",
+    "sha256": "2ed4f065f3b40379296eab58668dd829cfb406cddc9fe0daf28711ea80d19ce5"
+  },
+  {
+    "ordinal": 211,
+    "path": "rust/embedded/data/seed/meanings-response-intents-handlers.lino",
+    "diffSha256": "bba89246f7c7ea8677a2dbaa08c5e6e748f5b08a163c225209e91ff73fb4959e",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-response-intents-handlers.lino",
+    "sha256": "044c77efed797208f5bcff343e60ea0c88fa9703414a2e79c21691bf38ef2c5b"
+  },
+  {
+    "ordinal": 212,
+    "path": "rust/embedded/data/seed/meanings-response-intents.lino",
+    "diffSha256": "708997bbd1c3864683ef2ff8dfdbb4219ad598741a96ce3980e993ef31fb7c5f",
+    "kind": "exact-embedded-canonical-copy",
+    "counterpart": "data/seed/meanings-response-intents.lino",
+    "sha256": "54c64c7415fe09027872c743d601b0b94dfa338caca60aa5ae4684f511f10769"
+  }
+]

@@ -1,0 +1,11 @@
+# Git lockfile inventory integrity
+
+The unchanged complete Python template `audit-npm-locks.sh` treats failed or partial Git inventory as a successful empty/subset audit. Its disposable candidate fails before listing/auditing. Three executable cases cover both modes, true tracked/empty Git inventories, a space-containing path, an untracked lock, severity forwarding and advisory refusal. No real advisory registry is contacted.
+
+Formal AI's own `check-javascript-dependencies.sh` had the same process-substitution boundary. New regressions fail against the prior implementation (8 pass/2 fail); the repair passes all 10 tests. It captures and checks one Git inventory before starting any audit. Git selects only lockfile names, avoiding the measured 49-second intermediate full-file Bash scan; final focused execution takes about six seconds. Existing retries, request bounds, thresholds and failure handling remain covered.
+
+`python-before` disables the candidate guard: 2 pass/1 fail. `python-after` restores it: 3 pass. `maintained-final` executes the maintained entrypoint: 34 pass, no skips. Each child has a five-second wall deadline; Node heap is capped at 96 MiB. Complete logs and checksums, including the intermediate passing but slower implementation, are retained. Negative runs are expected regression evidence, not current verification failures.
+
+The current upstream head and complete 157-item duplicate snapshot plus relevant PR #134/#152 and issue #132 comments are retained. The report is filed as [Python template #158](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/158) with immutable evidence at `1cc2d536a`. `filed-report.json` preserves the exact body and identity; no upstream repair is claimed. Independent reasoning remains 0/20 accepted. All broader issue #1580 criteria remain active.
+
+Relevant local gates pass. The registered dependency gate uses offline npm/Bun stand-ins and verifies all actual tracked lockfiles were invoked; this is execution/inventory verification, not a live advisory result. The first abbreviation gate rejected a new evidence filename; spelling pull request in full repaired it without changing the ratchet. Its initial failure and passing recheck are both retained.

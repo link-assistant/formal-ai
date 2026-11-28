@@ -1,0 +1,256 @@
+{
+  "dependencies": [
+    {
+      "id": 38770143,
+      "version_id": 3424538,
+      "crate_id": "assert_cmd",
+      "req": "^2.2.2",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38770128,
+      "version_id": 3424538,
+      "crate_id": "async-trait",
+      "req": "^0.1.92",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770129,
+      "version_id": 3424538,
+      "crate_id": "chrono",
+      "req": "^0.4.45",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770144,
+      "version_id": 3424538,
+      "crate_id": "fancy-regex",
+      "req": "^0.19.2",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38770130,
+      "version_id": 3424538,
+      "crate_id": "filetime",
+      "req": "^0.2.29",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770131,
+      "version_id": 3424538,
+      "crate_id": "glob",
+      "req": "^0.3.4",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770132,
+      "version_id": 3424538,
+      "crate_id": "libc",
+      "req": "^0.2.190",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770133,
+      "version_id": 3424538,
+      "crate_id": "nix",
+      "req": "^0.31.3",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "signal",
+        "process",
+        "fs"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770134,
+      "version_id": 3424538,
+      "crate_id": "once_cell",
+      "req": "^1.21.4",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770135,
+      "version_id": 3424538,
+      "crate_id": "portable-pty",
+      "req": "^0.9.0",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770136,
+      "version_id": 3424538,
+      "crate_id": "regex",
+      "req": "^1.13.1",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770137,
+      "version_id": 3424538,
+      "crate_id": "serde",
+      "req": "^1.0.229",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "derive"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770138,
+      "version_id": 3424538,
+      "crate_id": "serde_json",
+      "req": "^1.0.151",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770145,
+      "version_id": 3424538,
+      "crate_id": "serde_json",
+      "req": "^1.0.151",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "unbounded_depth"
+      ],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38770146,
+      "version_id": 3424538,
+      "crate_id": "tempfile",
+      "req": "^3.27.0",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38770139,
+      "version_id": 3424538,
+      "crate_id": "thiserror",
+      "req": "^2.0.21",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770140,
+      "version_id": 3424538,
+      "crate_id": "tokio",
+      "req": "^1.53.2",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "full",
+        "process",
+        "signal"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770147,
+      "version_id": 3424538,
+      "crate_id": "tokio-test",
+      "req": "^0.4.6",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38770141,
+      "version_id": 3424538,
+      "crate_id": "vt100",
+      "req": "^0.16.2",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38770142,
+      "version_id": 3424538,
+      "crate_id": "which",
+      "req": "^8.0.6",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    }
+  ]
+}

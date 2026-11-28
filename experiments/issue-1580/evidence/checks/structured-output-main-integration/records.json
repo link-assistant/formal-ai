@@ -1,0 +1,107 @@
+[
+  {
+    "name": "previous-branch-witness",
+    "argv": [
+      "git",
+      "show",
+      ":2:experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "previous-branch-witness.stdout.gz",
+      "rawSha256": "071f50ca86edcdf82ad96272954665d9397a86cbbde88e4128350a09418e74d1",
+      "lines": 17958,
+      "bytes": 1836174
+    },
+    "stderr": {
+      "file": "previous-branch-witness.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "previous-main-witness",
+    "argv": [
+      "git",
+      "show",
+      ":3:experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "previous-main-witness.stdout.gz",
+      "rawSha256": "38ee9dd10b5dab49aad7cca22deda84940d0981780ac5e2e46da1dcc1a2c1834",
+      "lines": 17958,
+      "bytes": 1836222
+    },
+    "stderr": {
+      "file": "previous-main-witness.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "package-data-mirror",
+    "argv": [
+      "node",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "package-data-mirror.stdout.gz",
+      "rawSha256": "1388a05b4f151495f9088b609ca5403eb7ddeb46563f92a28b21ab37bce28dde",
+      "lines": 1,
+      "bytes": 83
+    },
+    "stderr": {
+      "file": "package-data-mirror.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "runtime-feature-inventory",
+    "argv": [
+      "node",
+      "scripts/generate-runtime-feature-inventory.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "runtime-feature-inventory.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "bytes": 0
+    },
+    "stderr": {
+      "file": "runtime-feature-inventory.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "typescript-projections",
+    "argv": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "typescript-projections.stdout.gz",
+      "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+      "lines": 1,
+      "bytes": 28
+    },
+    "stderr": {
+      "file": "typescript-projections.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "bytes": 0
+    }
+  }
+]

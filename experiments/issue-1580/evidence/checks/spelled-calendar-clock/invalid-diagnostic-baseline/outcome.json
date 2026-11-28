@@ -1,0 +1,21 @@
+{
+  "phase": "before",
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/calendar-clock-preservation.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 12.876,
+  "file": "calendar-clock-preservation.log.gz",
+  "rawSha256": "a996ab3cf235f13134df4e0fd73c9414a896ba2d7e695a879a387ef1a958d862",
+  "archiveSha256": "2ae0b5bb8210a4cc3f4b60fd47f59f4737e540eb31b687c8c409915680a6cab8",
+  "lines": 549,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "observedAt": "2026-11-18T22:41:53.723629+00:00"
+}

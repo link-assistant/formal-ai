@@ -1,0 +1,109 @@
+{
+  "complete": true,
+  "checks": [
+    {
+      "name": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "rust/src/unknown_opener.rs",
+        "rust/tests/source/unknown_opener_language_tests.rs"
+      ],
+      "exit": 0,
+      "seconds": 0.076,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "source-test-placement",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/source-test-placement-twin.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 1.603,
+      "bytes": 559,
+      "sha256": "9f546fe0a9177847eaa2de216bb30a1216538a0613f4be06733f169c05d0babe"
+    },
+    {
+      "name": "wasm-worker-inputs",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1569-wasm-worker-inputs.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.282,
+      "bytes": 539,
+      "sha256": "e684f4176a72a19d52dec7e8757499d9334747e0ca0e3e8f2b35104319d426ea"
+    },
+    {
+      "name": "localized-worker",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/worker-unknown-language.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 5.387,
+      "bytes": 671,
+      "sha256": "a76bcb714e6db31a969fedb840418a99eb997c240b79529424d3bfc36562b031"
+    },
+    {
+      "name": "core-boundary",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "minimal-core-boundary"
+      ],
+      "exit": 1,
+      "seconds": 0.169,
+      "bytes": 84,
+      "sha256": "6d0756af18bac227027ee5b4a24988f79078b03fd23ba099c00313c22487199d"
+    },
+    {
+      "name": "rust-format",
+      "command": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "rust/src/unknown_opener.rs",
+        "rust/tests/source/unknown_opener_language_tests.rs",
+        "rust/src/web_engine_core.rs"
+      ],
+      "exit": 0,
+      "seconds": 0.076,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.347,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

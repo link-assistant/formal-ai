@@ -62,7 +62,7 @@ this file says which slice carried what.
   cases (one `frontier_prompt` per case, prompt excerpt from the upstream
   record, suites that ran replace their items, suites that did not run keep
   theirs); the scheduled workflow commits it beside the ledger and
-  `formal-ai learn cycle --frontier upstream-benchmarks` replays it. The first
+  `formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...]` replays it. The first
   committed record comes from the 2026-09-07 scheduled run's failure artifact,
   so its prompt column carries the grader detail until the next run writes
   excerpts. The ledger gate already failed a fallen pass count

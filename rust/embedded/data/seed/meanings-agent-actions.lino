@@ -61,15 +61,28 @@ meanings
     precondition "a practical request asks to use a toilet or describes an urgent bowel need"
     effect "names the goal whose guidance is grounded in the declared NHS source"
     unit "not applicable"
-    example "the toilet goal binds its source and response identifiers"
+    example "the toilet goal specifies which section and terms identify relevant guidance"
     grounding "https://www.nhs.uk/conditions/constipation/"
-  practical-help-toilet
+  urge
+    defined-by concept
+    role noun
+    precondition "a person experiences a bodily need"
+    effect "expresses the impulse to act on the need"
+    unit "not applicable"
+    example "an urge can occur before a person acts"
+    lexeme en urge
+    lexeme ru позыв
+    lexeme hi हाजत
+    lexeme zh 便意
+    lexeme es "ganas de ir al baño"
+    grounding "https://en.wiktionary.org/wiki/urge#Noun"
+  practical-help-source-guidance
     defined-by answer
     role localized_response_template
-    precondition "the selected toilet goal has supporting trusted-source evidence"
-    effect "renders actionable guidance in the user's language with its source link"
+    precondition "a captured trusted source contains an excerpt relevant to the registered goal"
+    effect "renders a source attribution in the user's language with the observed excerpt"
     unit "not applicable"
-    example "the response recommends using a toilet and asks for the remaining difficulty"
+    example "a quote from the matched section follows its source link"
     grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   practical-help-toilet-unavailable
     defined-by answer
@@ -99,7 +112,7 @@ meanings
     defined-by inquiry
     role agent_action_report_subject
     lexeme en issue bug problem github repository repo
-    lexeme ru баг проблема проблеме ошибка ошибке issue
+    lexeme ru баг проблема проблеме проблему ошибка ошибке ошибку issue "отчёт об ошибке" "отчет об ошибке"
     lexeme hi समस्या त्रुटि
     lexeme zh 问题 错误
     lexeme es issue incidencia problema error fallo repositorio
@@ -562,6 +575,30 @@ meanings
     unit "not applicable"
     example "the kotlinlang.org command-line compiler page"
     grounding "data/seed/sources-registry.lino"
+  data-feed
+    defined-by document
+    role software_artifact_kind
+    precondition "a registered publisher provides a machine-readable series of current records"
+    effect "the runtime verifies the response capture and derives observations from the records"
+    unit "publisher record"
+    example "a regional RSS feed of current search topics"
+    grounding "data/seed/sources-registry.lino"
+  learning-frontier-report-required
+    defined-by document
+    role localized-response-template
+    precondition "the requested learning frontier has no supplied report"
+    effect "the learning command requests the report path"
+    unit "report"
+    example "a user supplies the output of a regional feed analysis"
+    grounding "rust/src/cli_learn.rs"
+  learning-frontier-report-conflict
+    defined-by document
+    role localized-response-template
+    precondition "a supplied report declares a frontier different from the requested or preceding frontier"
+    effect "identifies the report the command could not combine"
+    unit "report"
+    example "two supplied report files declare different frontiers"
+    grounding "rust/src/cli_learn.rs"
   role_slot
     defined-by method
     role action
@@ -602,13 +639,34 @@ meanings
     unit "not applicable"
     example "rust from write me a sorting algorithm in Rust"
     grounding "data/seed/handler-rules.lino"
-  algorithm_snippet
+  algorithm_request
+    defined-by action
+    role action
+    precondition "the request asks for a procedure that can be applied to inputs"
+    effect "composes a callable operation and binds any supplied examples to its tests"
+    unit "not applicable"
+    example "a sorting algorithm with a test"
+    lexeme en algorithm
+    lexeme ru алгоритм
+    lexeme hi एल्गोरिदम
+    lexeme zh 算法
+    lexeme es algoritmo
+    grounding "data/seed/operation-vocabulary.lino"
+  algoritmo
+    defined-by algorithm_request
+    role action
+    precondition "a Spanish request names an algorithm"
+    effect "grounds the operation vocabulary in the callable procedure meaning"
+    unit "not applicable"
+    example "un algoritmo de ordenación con una prueba"
+    grounding "data/seed/operation-vocabulary.lino"
+  list_code
     defined-by method
     role action
-    precondition "an algorithm rule needs the snippet family of the language it found"
-    effect "reads the algorithm_snippet row keyed by that language, and the python family for a language with no snippet of its own"
-    unit "not applicable"
-    example "javascript for javascript, python for go"
+    precondition "a handler rule captures code for a list operation and target language"
+    effect "composes a callable or test scaffold with the operation idiom; a test uses concrete operands or generated inputs"
+    unit "source text"
+    example "list_code language test"
     grounding "data/seed/handler-rules.lino"
   document_software_artifact
     defined-by method

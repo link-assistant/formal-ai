@@ -1,0 +1,22 @@
+[
+  {
+    "workflow": "layered",
+    "runId": 44157124124,
+    "conclusion": "failure",
+    "headSha": "826289fc78154dcd894199ed966f366176be0afb",
+    "rawSha256": "ff65d4b944355e1e64f59caf949def9ccfd6a7b5160a1a0cbd6ce7d0ec8d94f4",
+    "rawBytes": 6959699,
+    "rawLines": 34467,
+    "log": "layered-44157124124.log.gz"
+  },
+  {
+    "workflow": "agentic",
+    "runId": 44157124408,
+    "conclusion": "failure",
+    "headSha": "826289fc78154dcd894199ed966f366176be0afb",
+    "rawSha256": "523eafcfa080a0a60bf5217a101ebaf7320a57373237850f1ed70b5368fc3c8d",
+    "rawBytes": 1165619,
+    "rawLines": 7657,
+    "log": "agentic-44157124408.log.gz"
+  }
+]

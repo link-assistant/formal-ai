@@ -1,0 +1,71 @@
+{
+  "files": [
+    {
+      "path": "client-reports-after.log.gz",
+      "bytes": 977,
+      "sha256": "a9a3643d69926311d5bcac7da9ebaf44a4d210eddfe1b74ac1b840d406f47456"
+    },
+    {
+      "path": "description-owners.log.gz",
+      "bytes": 3013,
+      "sha256": "1b3c3bf4863c4fd7448d2e3c53bafecf9642c8b9df7561a05c0ce3d8dedb6cf9"
+    },
+    {
+      "path": "focused-outcomes.json.gz",
+      "bytes": 283,
+      "sha256": "cc0fc2a2ad0324f23c50477f521b923077fa87d476e2a3bbaa8e8293e4a98527"
+    },
+    {
+      "path": "headroom-after.log.gz",
+      "bytes": 425,
+      "sha256": "3360601cedfd68a37d157efaaabb1daea3ded3744b51b201c4144e4c6482e426"
+    },
+    {
+      "path": "run.json.gz",
+      "bytes": 47041,
+      "sha256": "6c90f8ee0045fc80e25bb4166ca3f8fb6c077ed88e6b87541581b22013646c2f"
+    },
+    {
+      "path": "rustfmt.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "schema-after.log.gz",
+      "bytes": 2431,
+      "sha256": "a45d81226d312bcc4edc0796ee1a0d16b426602916263d0f0135293be22a61e5"
+    },
+    {
+      "path": "schema-before.exit.gz",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "schema-before.log.gz",
+      "bytes": 4393,
+      "sha256": "a22620d92d53ca5b563931805f01374c95398501766d1e8857e7d522b7b081cc"
+    },
+    {
+      "path": "schema-owners.log.gz",
+      "bytes": 1489,
+      "sha256": "69b3203577ecea0193fb5c6e9a24f96db27e06709f095fe60eab93119816c1f2"
+    },
+    {
+      "path": "sparse-after.log.gz",
+      "bytes": 1877,
+      "sha256": "250f4ff65157a9f8cbcf5c6b364fbb0594a1f5f92d5c5bf2df01e9a13f3bd8e0"
+    },
+    {
+      "path": "sparse-before.exit.gz",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "sparse-before.log.gz",
+      "bytes": 2375,
+      "sha256": "2d929cacff8beced37e235346bce4c51bef060c49477bc7a2e81ace4b6c0a9f6"
+    }
+  ],
+  "sourceCommit": "de79e6ece67142fe8c6012059e6eb2bc0300e7bd",
+  "authorshipCredit": 0
+}

@@ -15,6 +15,7 @@
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import test from 'node:test';
+import { parseLino } from '../../../js/server/lino.mjs';
 
 import { REPO_ROOT } from './support/browser-runtime.mjs';
 
@@ -26,13 +27,27 @@ function budgets() {
   const shards = new Map();
   for (const name of readdirSync(BUDGET_DIR).filter((entry) => entry.endsWith('.lino'))) {
     const text = readFileSync(`${BUDGET_DIR}/${name}`, 'utf8');
-    const module = /^\s*module "([^"]+)"/m.exec(text)?.[1];
-    const ceiling = Number(/^\s*ceiling (\d+)/m.exec(text)?.[1]);
-    const rationale = /^\s*rationale "([\s\S]*)"\s*$/m.exec(text)?.[1] ?? '';
+    const {module, ceiling, rationale} = budgetFields(text);
     shards.set(module, { name, ceiling, rationale });
   }
   return shards;
 }
+
+function budgetFields(text) {
+  const document = parseLino(text);
+  const value = key => document.children.find(child => child.name === key)?.value ?? '';
+  return {module: value('module'), ceiling: Number(value('ceiling')), rationale: value('rationale')};
+}
+
+test('budget rationale accepts both Links Notation quote forms and preserves emptiness', () => {
+  for (const rationale of ['"Written reason"', "'Written reason'"]) {
+    assert.deepEqual(budgetFields('worker_module_budget\n  module "fixture.js"\n  ceiling 9\n  rationale ' + rationale + '\n'),
+      {module: 'fixture.js', ceiling: 9, rationale: 'Written reason'});
+  }
+  for (const rationale of ['""', "''"]) {
+    assert.equal(budgetFields('worker_module_budget\n  rationale ' + rationale + '\n').rationale, '');
+  }
+});
 
 /** Line count as the gate counts it (`str::lines`: a trailing newline ends the last line). */
 function lineCount(text) {
@@ -101,6 +116,7 @@ test('generated seed registry preserves every canonical seed within its existing
     assert.deepEqual(Array.from(context.self.FORMAL_AI_CRATE_RESPONSE_SEEDS), responses);
   };
   assert.equal(actual, registryFileOf(meanings, responses));
+  for (const line of actual.split('\n')) assert(line.length <= 100, 'readable generated registry width');
   verify(actual);
   const targetBudget = budgets().get('js/worker/formal_ai_worker_crate_seed_registry.js')
     ?? budgets().get('formal_ai_worker_crate_seed_registry.js');

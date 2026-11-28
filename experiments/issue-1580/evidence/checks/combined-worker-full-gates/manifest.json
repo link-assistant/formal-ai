@@ -1,0 +1,19 @@
+{
+  "head": "32363d09636554c7ccba7a0a41241d34639ce358",
+  "exitCode": 0,
+  "seconds": 502.078,
+  "pass": 89,
+  "fail": 0,
+  "skip": 54,
+  "finishedAt": "2026-11-22T20:58:27.425399+00:00",
+  "cleanBefore": true,
+  "cleanAfter": true,
+  "afterStatus": "",
+  "rustExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "archiveSha256": "302d2cb514a7e16e6ea335c628bef848bfdac7f82e4ad8ded2ad98dfa4e63863",
+  "payloadCount": 99,
+  "roundTripVerified": true,
+  "hostedCombinedHeadChecks": "pending",
+  "broaderIssueAcceptance": "unfinished"
+}

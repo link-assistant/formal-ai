@@ -24,10 +24,11 @@ import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { planRecovery, planRecoveryWithIdentity } from './prerequisite_recovery.mjs';
 import { Progress, qualifiedToolAttempt, qualifiedCommandAttempt, writeMatches } from './progress.mjs';
-import { recipeSourceCommand, recipeSourceResult, recipeSourceMatches, recipeSourceReceipt, recipeSourceUpdateCommand, recipeSourceUpdateResult, planRecipeCiFallback
+import { recipeSourceCommand, recipeSourceResult, recipeSourceMatches, recipeSourceReceipt, recipeSourcesCommand, recipeSourcesResult, recipeSourcePreimage, recipeSourceUpdateCommand, recipeSourceUpdateResult, planRecipeCiFallback
     , recipeDeliveryReference, recipeSourceRefusal } from './recipe_resume.mjs';
 import { validateProgram } from './host.mjs';
-import { requestedIn as requestedCiWorkflow, attach as attachCiWorkflow } from './ci_workflow.mjs';
+import { requestedIn as requestedCiWorkflow, attachWith as attachCiWorkflow } from './ci_workflow.mjs';
+import { forGeneration } from './crate/version_resolution.mjs';
 import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
 import { feedbackNeedsChanges, pullRequestFeedbackFilter } from './restart_feedback.mjs';
 import { commandArgument, failureMessage, reportedExitCode as toolReportedExitCode, shellStep } from './tool_result.mjs';
@@ -56,7 +57,9 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   const attached = attachExecutionRecipe(symbolicAnswer ?? {}, symbolicAnswer?.synthesized_program).execution_recipe;
   if (!attached) return null;
   const recipe = requestedRecipe(latestUserRequest(messages) ?? '', attached);
-  if (requestedCiWorkflow(objective)) attachCiWorkflow(recipe, objective);
+  let workflowVersions;
+  const versions = () => workflowVersions ??= forGeneration();
+  if (requestedCiWorkflow(objective)) attachCiWorkflow(recipe, objective, versions);
   const writeTool = toolFor(toolNames, Capability.Write) ?? toolNames.find(name => isWorkspaceCreationTool(name));
   if (!writeTool) return null;
   const runTool = toolFor(toolNames, Capability.Run);
@@ -73,7 +76,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   };
   const resume = commit !== null && isPullRequestTarget(commit);
   const repositoryCi = resume && requestedCiWorkflow(objective);
-  const workflow = repositoryCi ? recipeWorkflow(recipe, objective) : null;
+  const workflow = repositoryCi ? recipeWorkflow(recipe, objective, versions) : null;
   const expectedCommands = [...recipe.commands];
   if (commit && workflow === null) expectedCommands.push(recipeCommitCommand(recipe, commit));
   if (commit && workflow === null) expectedCommands.push(...prCompletionCommands(recipe, commit, requirementsTarget?.reference ?? commit.reference));
@@ -90,6 +93,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
       }
     }
   }
+  const supportingPaths = recipe.supporting_files.map(file => file.path);
   const nextFile = () => {
     if (progress.files_written === 0) return [recipe.path, recipe.source];
     const file = recipe.supporting_files[progress.files_written - 1];
@@ -107,7 +111,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
         path: recipe.path,
         source: recipe.source
       }, ...recipe.supporting_files];
-      const owned = files.every(file => recipeFileMatches(observation, file));
+      const owned = files.every(file => recipeFileMatches(observation, file, supportingPaths));
       const observed = failureMessage(failure.reported, true, false) ?? failure.reported;
       const identity = bound?.binding === 'exact' && owned ? programRecoveryCommand(objective, recipe, step, observed) : null;
       if (recoveryOnly && identity === null) return null;
@@ -136,7 +140,8 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   if (file) {
     if (resume && !progress.source_checked.has(file[0])) {
       return planOne(runTool, jsonText({
-        command: recipeSourceCommand(file[0])
+        command: progress.files_written === 1 && supportingPaths.length > 1
+          ? recipeSourcesCommand(supportingPaths) : recipeSourceCommand(file[0])
       }));
     }
     if (resume && progress.source_preimages.get(file[0])?.absent === false) {
@@ -159,7 +164,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   const acceptance = acceptanceReport(objective, recipe, progress.command_outputs.slice(0, recipe.commands.length));
   return finalAnswer(acceptance === '' ? answer : `${answer}\n${acceptance}\n`);
 }
-function recipeFileMatches(observation, file) {
+function recipeFileMatches(observation, file, supportingPaths = []) {
   const index = observation.latestSourceMutationIndex(file.path);
   const attempt = index === null ? null : observation.attempts[index];
   if (attempt?.succeeded && attempt.arguments !== null) {
@@ -173,14 +178,16 @@ function recipeFileMatches(observation, file) {
       if (frame?.binding === 'exact' && frame.succeeded) return true;
     }
   }
-  return recipeSourceMatches(observation, file.path, file.source);
+  if (recipeSourceMatches(observation, file.path, file.source)) return true;
+  const preimage = recipeSourcePreimage(observation, file.path, supportingPaths);
+  return preimage?.absent === false && preimage.source === file.source;
 }
-function recipeWorkflow(recipe, objective) {
+function recipeWorkflow(recipe, objective, versions) {
   const expected = {
     ...recipe,
     supporting_files: []
   };
-  attachCiWorkflow(expected, objective);
+  attachCiWorkflow(expected, objective, versions);
   const workflow = expected.supporting_files[0];
   if (!workflow || !recipe.supporting_files.some(file => file.path === workflow.path && file.source === workflow.source)) return null;
   return /^name: ([^\r\n]+)$/mu.exec(workflow.source)?.[1] ?? null;
@@ -268,6 +275,8 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
     last_command_index: -1
   };
   const files = [[recipe.path, recipe.source], ...recipe.supporting_files.map(file => [file.path, file.source])];
+  const supportingPaths = recipe.supporting_files.map(file => file.path);
+  const batchCommand = supportingPaths.length > 1 ? recipeSourcesCommand(supportingPaths) : null;
   const observedIds = new Set();
   for (let index = start; index < messages.length; index += 1) {
     const message = messages[index];
@@ -299,11 +308,35 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
         matchesRun = command === expected || at >= 0 && command.slice(at + marker.length) === expected;
       }
     }
+    const matchesBatch = resume && progress.files_written === 1 && batchCommand !== null
+      && capability === Capability.Run && commandArgument(call.function.arguments) === batchCommand;
     const matchesProbe = resume && pending !== undefined && capability === Capability.Run && commandArgument(call.function.arguments) === recipeSourceCommand(pending[0]);
     const updateCommand = resume && pending !== undefined ? recipeSourceUpdateCommand(pending[0], pending[1], progress.source_preimages.get(pending[0])) : null;
     const matchesUpdate = capability === Capability.Run && updateCommand !== null && commandArgument(call.function.arguments) === updateCommand;
-    if (!matchesWrite && !matchesRun && !matchesProbe && !matchesUpdate) continue;
+    if (!matchesWrite && !matchesRun && !matchesProbe && !matchesUpdate && !matchesBatch) continue;
     const output = plainText(message.content);
+    if (matchesBatch) {
+      const observed = Progress.scan(messages.slice(start, index + 1));
+      const receipt = recipeSourceReceipt(observed, batchCommand);
+      const results = receipt === null ? null : recipeSourcesResult(receipt, supportingPaths);
+      if (results === null) {
+        progress.failure = {reported:output, exit_code:reportedExitCode(output), from_run:false};
+        progress.failure_index = index;
+      } else {
+        progress.failure = null;
+        for (let member = 0; member < supportingPaths.length; member++) {
+          progress.source_checked.add(supportingPaths[member]);
+          progress.source_preimages.set(supportingPaths[member], results[member]);
+        }
+        while (progress.files_written < files.length) {
+          const [path, source] = files[progress.files_written];
+          const before = recipeSourcePreimage(observed, path, supportingPaths);
+          if (before?.absent !== false || before.source !== source) break;
+          progress.files_written++;
+        }
+      }
+      continue;
+    }
     if (matchesUpdate) {
       const receipt = recipeSourceReceipt(Progress.scan(messages.slice(start, index + 1)), updateCommand);
       if (receipt !== null && recipeSourceUpdateResult(receipt, pending[0])) {
@@ -357,6 +390,12 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
     progress.failure = null;
     if (matchesWrite) {
       progress.files_written += 1;
+      while (progress.files_written < files.length) {
+        const [path, source] = files[progress.files_written];
+        const before = recipeSourcePreimage(Progress.scan(messages.slice(start, index + 1)), path, supportingPaths);
+        if (before?.absent !== false || before.source !== source) break;
+        progress.files_written++;
+      }
     } else if (capability === Capability.Run) {
       progress.commands_done += 1;
       progress.last_command_index = index;
@@ -367,18 +406,20 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
   if (resume) {
     const observed = Progress.scan(messages);
     const pending = files[progress.files_written];
-    if (pending !== undefined && progress.source_checked.has(pending[0])
-      && recipeSourceReceipt(observed, recipeSourceCommand(pending[0])) === null) {
-      progress.source_checked.delete(pending[0]);
-      progress.source_preimages.delete(pending[0]);
-      progress.source_invalidated = true;
+    // A contradictory callback invalidates every owner from its shared receipt.
+    // Completed writes retain their own exact mutation evidence below.
+    for (const path of [...progress.source_checked]) {
+      if (recipeSourcePreimage(observed, path, supportingPaths) !== null) continue;
+      progress.source_checked.delete(path);
+      progress.source_preimages.delete(path);
+      if (pending?.[0] === path) progress.source_invalidated = true;
     }
     for (let index = 0; index < progress.files_written; index += 1) {
       const [path, content] = files[index];
       if (!recipeFileMatches(observed, {
         path,
         source: content
-      })) {
+      }, supportingPaths)) {
         progress.files_written = index;
         progress.source_checked.delete(path);
         progress.source_invalidated = true;

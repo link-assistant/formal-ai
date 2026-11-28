@@ -11,6 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R1002"
     delivered "grounding chain with recursive gloss subgoals"
+    automated_test "rust/tests/web/support/meta-reasoner/learning.test.mjs"
   requirement
     id "R1003"
     delivered "example-driven typed synthesis with counterexamples"
@@ -27,6 +28,7 @@ requirement_status_ledger_shard
   requirement
     id "R1007"
     delivered "learned chunks persisted through memory operations"
+    automated_test "rust/tests/web/support/meta-reasoner/learning.test.mjs"
   requirement
     id "R1008"
     delivered "derivation on every answer (JS)"

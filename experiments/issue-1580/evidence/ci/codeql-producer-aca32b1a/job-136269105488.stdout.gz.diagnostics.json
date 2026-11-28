@@ -1,0 +1,18 @@
+[
+  {
+    "line": 518,
+    "text": "Cargo audit\tAudit committed Cargo.lock\t2026-11-20T12:13:05.1072195Z Proving RUSTSEC-2025-0057 is still blocked upstream: fxhash@0.2.1 (https://github.com/link-assistant/web-capture/issues/155)"
+  },
+  {
+    "line": 519,
+    "text": "Cargo audit\tAudit committed Cargo.lock\t2026-11-20T12:13:09.7223197Z Proving RUSTSEC-2026-0543 is still blocked upstream: chrono@0.4.45 (https://github.com/link-foundation/command-stream/issues/238)"
+  },
+  {
+    "line": 536,
+    "text": "Cargo audit\tAudit committed Cargo.lock\t2026-11-20T12:13:14.3296506Z ^[[0m^[[0m^[[1m^[[33mID:       ^[[0m RUSTSEC-2024-0449"
+  },
+  {
+    "line": 537,
+    "text": "Cargo audit\tAudit committed Cargo.lock\t2026-11-20T12:13:14.3297144Z ^[[0m^[[0m^[[1m^[[33mURL:      ^[[0m https://rustsec.org/advisories/RUSTSEC-2024-0449"
+  }
+]

@@ -1,0 +1,67 @@
+✖ native Agent CLI requires a retrieved capture for a known benchmark issue (10476.432317ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11679.881217
+
+✖ failing tests:
+
+test at rust/tests/web/issue-1396-native.test.mjs:105:1
+✖ native Agent CLI requires a retrieved capture for a known benchmark issue (10476.432317ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /offline/u. Input:
+
+  'Parent: #651\n' +
+    '\n' +
+    '## Motivation and evidence\n' +
+    '\n' +
+    'The repeated requirement to measure Formal AI against **real external benchmarks** has been narrowed into repository-local proxies every time it was asked:\n' +
+    '\n' +
+    `- Issue #408 / PR #416: the maintainer asked to "fully pass at least 10% of each benchmark's tests" (CoEdIT, EditEval, SWE-bench and similar), then "pass all of them", and wrote mid-thread: "My requirement were completely ignored." What shipped instead is 1,440 self-generated "repository-local" cases with a self-defined 3/30 floor. No upstream benchmark case executes.\n` +
+    '- Issue #440: "pass all benchmarks we know of for coding tasks" — absent from closing PR #472.\n' +
+    '- Issue #303 closed while the coding benchmark slice stood at 0/5; the current industry slice (`data/benchmarks/industry-suite.lino`) is a 10-case hand-picked subset.\n' +
+    '- Issue #362: a CI-runnable/nightly bulk suite on external datasets was requested; downloads exist only behind an ignored, env-gated test with no scheduled CI wiring.\n' +
+    '- Issue #625: the agentic e2e half (real phrasing matrices asserted in CI) was dropped from PR #631.\n' +
+    '\n' +
+    '`docs/benchmarks.md` states full upstream datasets are never vendored — that policy is fine, but it must not prevent *running* upstream cases.\n' +
+    '\n' +
+    '## Requirements\n' +
+    '\n' +
+    '1. Build a benchmark harness that downloads (at test time, cached under the existing provenance/cache policy — never vendored) real upstream slices and executes them against the solver: HumanEval, MBPP, GSM8K, MATH, BIG-bench object counting first; then CoEdIT/EditEval for text editing (issue #408) and a SWE-bench-lite slice for agentic coding.\n' +
+    "2. Report **honest scores**: `passed / total` per suite against the *upstream* case set (not a curated subset). 0% or 2% are acceptable first values; fake floors are not (mirrors the honesty rule of issue #657's self-hosting metric).\n" +
+    '3. Wire a scheduled (nightly or weekly) CI job that runs the harness on a bounded slice per suite (e.g. first N deterministic cases, N configurable) and publishes results to a committed ledger `data/benchmarks/external-results.lino` with date, suite, slice size, pass count, and solver version.\n' +
+    '4. Add a monotonic per-suite ratchet: a PR may not reduce any recorded upstream pass count (extends the existing `minimum_pass_count` discipline from repository-local suites to upstream ones).\n' +
+    '5. Keep license discipline: only permissively licensed suites are fetched; record license per suite in `data/benchmarks/LICENSES.md`.\n' +
+    '6. Keep reporting honest: when a suite cannot run in CI (size, license, network policy), record an explicit `benchmark_unavailable` entry with the reason instead of silently substituting a local proxy.\n' +
+    '\n' +
+    '## Acceptance criteria\n' +
+    '\n' +
+    '- `cargo test --test unit external_benchmarks -- --ignored` (or a dedicated `formal-ai benchmark run --suite humaneval --slice 20` CLI) executes ≥ 20 real upstream HumanEval cases end to end and prints `passed=<n> failed=<m> total=20`.\n' +
+    '- The scheduled workflow exists in `.github/workflows/`, runs green, and appends to the results ledger.\n' +
+    '- `docs/benchmarks.md` gains an "External (upstream) results" section with the honest current numbers.\n' +
+    '- The ratchet test fails when a recorded upstream pass count regresses.\n' +
+    '\n' +
+    '## Dependencies\n' +
+    '\n' +
+    '- Blocks #657 (E38 self-hosting metric benefits from honest external scores) and #656 (E37 promotion gates should be able to cite upstream benchmark deltas, not only local ones).\n' +
+    '- Related: #662 (E43 search can use benchmark tests as fitness), #671 (E52 agentic matrix), #674 (E55).\n' +
+    '\n' +
+    '## Process\n' +
+    '\n' +
+    'Collect data to `docs/case-studies/issue-{id}` (timeline, requirement list, per-requirement solution plans, survey of existing harnesses — e.g. HuggingFace `evaluate`, OpenAI `simple-evals`, SWE-bench tooling), and land everything in a single PR that is not closed until every requirement above is fully addressed or explicitly recorded as blocked with evidence.\n' +
+    '\n'
+
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/issue-1396-native.test.mjs:125:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Parent: #651\n\n## Motivation and evidence\n\nThe repeated requirement to measure Formal AI against **real external benchmarks** has been narrowed into repository-local proxies every time it was asked:\n\n- Issue #408 / PR #416: the maintainer asked to "fully pass at least 10% of each benchmark\'s tests" (CoEdIT, EditEval, SWE-bench and similar), then "pass all of them", and wrote mid-thread: "My requirement were completely ignored." What shipped instead is 1,440 self-generated "repository-local" cases with a self-defined 3/30 floor. No upstream benchmark case executes.\n- Issue #440: "pass all benchmarks we know of for coding tasks" — absent from closing PR #472.\n- Issue #303 closed while the coding benchmark slice stood at 0/5; the current industry slice (`data/benchmarks/industry-suite.lino`) is a 10-case hand-picked subset.\n- Issue #362: a CI-runnable/nightly bulk suite on external datasets was requested; downloads exist only behind an ignored, env-gated test with no scheduled CI wiring.\n- Issue #625: the agentic e2e half (real phrasing matrices asserted in CI) was dropped from PR #631.\n\n`docs/benchmarks.md` states full upstream datasets are never vendored — that policy is fine, but it must not prevent *running* upstream cases.\n\n## Requirements\n\n1. Build a benchmark harness that downloads (at test time, cached under the existing provenance/cache policy — never vendored) real upstream slices and executes them against the solver: HumanEval, MBPP, GSM8K, MATH, BIG-bench object counting first; then CoEdIT/EditEval for text editing (issue #408) and a SWE-bench-lite slice for agentic coding.\n2. Report **honest scores**: `passed / total` per suite against the *upstream* case set (not a curated subset). 0% or 2% are acceptable first values; fake floors are not (mirrors the honesty rule of issue #657\'s self-hosting metric).\n3. Wire a scheduled (nightly or weekly) CI job that runs the harness on a bounded slice per suite (e.g. first N deterministic cases, N configurable) and publishes results to a committed ledger `data/benchmarks/external-results.lino` with date, suite, slice size, pass count, and solver version.\n4. Add a monotonic per-suite ratchet: a PR may not reduce any recorded upstream pass count (extends the existing `minimum_pass_count` discipline from repository-local suites to upstream ones).\n5. Keep license discipline: only permissively licensed suites are fetched; record license per suite in `data/benchmarks/LICENSES.md`.\n6. Keep reporting honest: when a suite cannot run in CI (size, license, network policy), record an explicit `benchmark_unavailable` entry with the reason instead of silently substituting a local proxy.\n\n## Acceptance criteria\n\n- `cargo test --test unit external_benchmarks -- --ignored` (or a dedicated `formal-ai benchmark run --suite humaneval --slice 20` CLI) executes ≥ 20 real upstream HumanEval cases end to end and prints `passed=<n> failed=<m> total=20`.\n- The scheduled workflow exists in `.github/workflows/`, runs green, and appends to the results ledger.\n- `docs/benchmarks.md` gains an "External (upstream) results" section with the honest current numbers.\n- The ratchet test fails when a recorded upstream pass count regresses.\n\n## Dependencies\n\n- Blocks #657 (E38 self-hosting metric benefits from honest external scores) and #656 (E37 promotion gates should be able to cite upstream benchmark deltas, not only local ones).\n- Related: #662 (E43 search can use benchmark tests as fitness), #671 (E52 agentic matrix), #674 (E55).\n\n## Process\n\nCollect data to `docs/case-studies/issue-{id}` (timeline, requirement list, per-requirement solution plans, survey of existing harnesses — e.g. HuggingFace `evaluate`, OpenAI `simple-evals`, SWE-bench tooling), and land everything in a single PR that is not closed until every requirement above is fully addressed or explicitly recorded as blocked with evidence.\n\n',
+    expected: /offline/u,
+    operator: 'match',
+    diff: 'simple'
+  }

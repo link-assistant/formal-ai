@@ -1,0 +1,83 @@
+{
+  "head": "bd6fe77b98aa1cb89c53bfc0667107f6afb13122",
+  "commandRecords": 89,
+  "verifiedStreams": 178,
+  "workflowCount": 27,
+  "success": 23,
+  "skipped": 1,
+  "failed": [
+    {
+      "id": 44855584149,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584149"
+    },
+    {
+      "id": 44855584441,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441"
+    },
+    {
+      "id": 44855577716,
+      "name": "Security",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855577716"
+    }
+  ],
+  "failedPipelineJobs": [
+    {
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697122966"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (reasoning-2)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123100"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-1)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123106"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (benchmarks)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123116"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (interfaces)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123134"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (reasoning-1)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123148"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-2)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123156"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (hive-3)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123190"
+    },
+    {
+      "name": "Native type and lint check / Native contracts (coding)",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136697123200"
+    },
+    {
+      "name": "Pipeline Status",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44855584441/job/136701341621"
+    }
+  ],
+  "literalWholeLogReviewComplete": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

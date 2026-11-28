@@ -253,7 +253,14 @@ fn collection_edit_reads_transforms_writes_and_observes_workspace_bytes() {
         json_arguments(&read.arguments)["path"],
         "scripts/detect-code-changes.rs"
     );
-    push_result(&mut messages, "read_1", &read, BEFORE);
+    // c3b3d235f binds a list edit to a complete owned read frame (the shape the
+    // driver's read tool returns), exactly as the JS twin of this test does.
+    push_result(
+        &mut messages,
+        "read_1",
+        &read,
+        &formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(BEFORE),
+    );
 
     let write = only_call(plan_chat_step(&messages, &tools));
     assert_eq!(write.tool, "write_file");

@@ -1,0 +1,11 @@
+{
+  "pass": 83,
+  "fail": 3,
+  "excluded": 52,
+  "failed": [
+    "check-notation",
+    "check-package-self-containment",
+    "check-status-render"
+  ],
+  "sourcePayload": "../final-gates/all-gates.log.gz"
+}

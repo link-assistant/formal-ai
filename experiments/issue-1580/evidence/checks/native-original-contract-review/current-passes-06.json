@@ -1,0 +1,118 @@
+[
+  {
+    "originalTest": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+            "line": 64525,
+            "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-22T04:12:40.3151733Z test debug_session::a_served_chat_turn_answers_only_after_its_last_stage ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces",
+            "line": 66211,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:24.4703405Z test pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "paraphrased_algebra_prompt_reaches_same_derivation",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "paraphrased_algebra_prompt_reaches_same_derivation",
+            "line": 61768,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:41.3647310Z test paraphrased_algebra_prompt_reaches_same_derivation ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::synthesis::object_counting_filters_items_by_requested_category",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "object_counting_filters_items_by_requested_category",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "object_counting_filters_items_by_requested_category",
+            "line": 61767,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:39.8869430Z test object_counting_filters_items_by_requested_category ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "specification::unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss",
+        "method": "exact focused-module source registration; multiline libtest output retained where present",
+        "matches": [
+          {
+            "name": "unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss",
+            "line": 66228,
+            "endLine": 66228,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:30.9033515Z test unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss ... ok",
+            "completeContext": [
+              "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:29.2397147Z test unknown_reasoning::unknown_reasoning_retries_public_knowledge_cache ... ok",
+              "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:29.7969764Z test unknown_reasoning::unmatched_prompt_records_unknown_reasoning_trace ... ok",
+              "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:30.9033515Z test unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss ... ok",
+              "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:31.6813320Z test web_requests::event_listing_prompts_route_to_web_search_handler ... ok",
+              "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:13:31.8241606Z test web_requests::extended::implicit_research_question_routes_to_web_search_handler ... ok"
+            ]
+          }
+        ],
+        "uniqueMatch": true,
+        "sourceBinding": {
+          "head": "e93881cb64a78a19253088c19f09a1f1b816229c",
+          "testFile": "rust/tests/unit/specification/unknown_reasoning.rs",
+          "testFileSha256": "76563be50c44825988eb3948281a931347b6af27ea95f7478056c3e4e5da7682",
+          "moduleFile": "rust/tests/unit/reasoning_contracts.rs",
+          "moduleFileSha256": "25485d514ce9280eaebf07bab39c7c6b8c9239c469d81e75bf964bb2fcd09062",
+          "moduleDeclaration": "mod unknown_reasoning;"
+        }
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  }
+]

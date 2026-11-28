@@ -11,18 +11,12 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("hardcoded_language_fixture_context_gate_and_agent_cli_e2e_pass"),
     path: HARDCODED_LANGUAGE_LEARNING_PATH,
     task: HARDCODED_LANGUAGE_LEARNING_TASK,
-    memory: include_str!("../../../embedded/data/meta/issue-659-hardcoded-language-learning.lino"),
     subject: "R379",
 };
 
 #[must_use]
 pub fn is_hardcoded_language_learning_task(prompt: &str) -> bool {
     REPORT.matches(prompt)
-}
-
-#[must_use]
-pub fn render_document() -> String {
-    REPORT.render_document()
 }
 
 #[must_use]

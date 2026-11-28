@@ -81,8 +81,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: benchmark-corpus-gate-${{ github.ref }}
-  cancel-in-progress: true
+  group: benchmark-corpus-gate-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
 
 jobs:
   pr-check-profile:
@@ -168,12 +168,7 @@ jobs:
           persist-credentials: false
 
       - name: Download the corpus gate executable
-        uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           name: corpus-gate-executable
           path: corpus-gate
@@ -188,9 +183,17 @@ jobs:
           TEST_WARN_RATIO_PERCENT: 70
           SHARD_INDEX: ${{ strategy.job-index }}
           SHARD_TOTAL: ${{ strategy.job-total }}
+          # Issue #1637: runners were killed mid-shard without naming a prompt.
+          # Log each prompt and its duration, and memory and disk every 30s.
+          FORMAL_AI_CORPUS_TRACE: '1'
         run: |
           set -euo pipefail
           chmod +x corpus-gate/integration
+          (while sleep 30; do
+            echo "[corpus-resources] $(date -u +%T) $(free -m | awk 'NR==2{print "mem used="$3"MiB available="$7"MiB"}') $(df -h / | awk 'NR==2{print "disk used="$3" available="$4}')"
+          done) &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || true' EXIT
           export FORMAL_AI_CORPUS_SHARD="$((SHARD_INDEX + 1))/${SHARD_TOTAL}"
           # cargo runs an integration test from the package root; so does this.
           cd rust

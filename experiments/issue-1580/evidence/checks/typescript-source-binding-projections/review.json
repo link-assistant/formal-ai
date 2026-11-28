@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "payloadsHashVerified": 14,
+  "allThreePairsByteEqual": true,
+  "receiptCorrection": "The first helper reused a diff filename for two generated prerequisite files. This restores both exact already-recorded payloads under distinct filenames; the retired manifest is retained and is not the verification manifest.",
+  "recoveredDiffs": [
+    {
+      "originalName": "diff-worker-script-prerequisites",
+      "distinctName": "diff-ts-server-worker-script-prerequisites.mts",
+      "originalBytesRecoveredExactly": true
+    },
+    {
+      "originalName": "diff-worker-script-prerequisites",
+      "distinctName": "diff-ts-worker-script-prerequisites.ts",
+      "originalBytesRecoveredExactly": true
+    },
+    {
+      "originalName": "diff-formal_ai_worker_seed_responses_and_language",
+      "distinctName": "diff-ts-worker-formal_ai_worker_seed_responses_and_language.ts",
+      "originalBytesRecoveredExactly": true
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

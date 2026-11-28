@@ -1,0 +1,66 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 227,
+    "totalPages": 254,
+    "completeFiles": 137,
+    "partialFiles": 1,
+    "literalLines": 13859,
+    "nextForwardPage": 228,
+    "remainingPages": 27,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    228,
+    229,
+    230,
+    231,
+    232,
+    233,
+    234,
+    235,
+    236,
+    237
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+      "newReadLines": [
+        232,
+        282
+      ],
+      "cumulativeReadLines": [
+        1,
+        282
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+      "newReadLines": [
+        1,
+        95
+      ],
+      "cumulativeReadLines": [
+        1,
+        95
+      ],
+      "partialNextLine": "96, parts 1\u20134 of 9",
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 237,
+    "totalPages": 254,
+    "completeFiles": 138,
+    "partialFiles": 1,
+    "literalLines": 14005,
+    "nextForwardPage": 238,
+    "remainingPages": 17,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "All ten pages were literally read without truncation. They finish the second captured Maven registry inventory and continue the third through Plexus, Woodstox, CommonMark, dom4j and Jetty histories. Complete split lines are counted only after every part is read. Jetty server line 96 is partial and earns no complete-line credit yet. Historical publication lists do not establish current safety, compatibility or semantic application. Seventeen literal pages and semantic comparison remain unfinished. Supplied work earns zero independent authorship credit."
+  ]
+}

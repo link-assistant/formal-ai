@@ -1,0 +1,54 @@
+[
+  {
+    "name": "issue-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1580/comments",
+      "--paginate"
+    ],
+    "file": "issue-comments.json.gz",
+    "count": 1,
+    "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+    "archiveSha256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25"
+  },
+  {
+    "name": "conversation-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1581/comments",
+      "--paginate"
+    ],
+    "file": "conversation-comments.json.gz",
+    "count": 9,
+    "rawSha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302",
+    "archiveSha256": "25c0208e382e3d407bea7998dc7a72f2e184580bb1a6f897aadaaad054ac450c"
+  },
+  {
+    "name": "inline-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/comments",
+      "--paginate"
+    ],
+    "file": "inline-comments.json.gz",
+    "count": 0,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "name": "reviews",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/reviews",
+      "--paginate"
+    ],
+    "file": "reviews.json.gz",
+    "count": 0,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  }
+]

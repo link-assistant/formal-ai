@@ -29,7 +29,7 @@ use crate::solver_handlers::{
     handle_planning_request, handle_product_search, handle_regex_synthesis,
     handle_shell_command_compose, handle_sql_synthesis, handle_statistics,
     handle_summarization_request, handle_test_generation, handle_text_rewrite,
-    handle_unit_conversion, handle_word_problem, try_arithmetic, try_brainstorming_request,
+    handle_unit_conversion, handle_word_problem, try_brainstorming_request,
     try_calendar_create_event, try_calendar_reasoning, try_compound_interest, try_concept_lookup,
     try_conversation_memory, try_coreference_request, try_document_originality_check,
     try_document_request, try_fact_checking, try_fact_lookup, try_fact_lookup_with_offline,
@@ -43,7 +43,7 @@ use crate::solver_handlers::{
     try_software_project_request, try_summarization_request, try_task_decomposition_with_depth,
     try_text_manipulation, try_text_manipulation_with_history, try_translation, try_url_navigate,
     try_verifiable_task, try_web_search, try_web_search_with_offline, try_world_state,
-    try_write_script,
+    try_write_script, try_write_script_with_offline,
 };
 use crate::triz_solver::handle_triz;
 
@@ -82,13 +82,46 @@ fn handle_arithmetic(
     _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    arithmetic_with_online(prompt, log, crate::solver_config::read_network_allowed())
+}
+
+/// The arithmetic method body shared by the handler table and the contextual
+/// override, so the override's live network setting keeps the same guards.
+fn arithmetic_with_online(
+    prompt: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
     // The browser asks the shell composer before arithmetic, so a command it
     // composes is its answer even where a digit and a `/` promote arithmetic
     // here ("find .log files larger than 10 MB under /var", issue #1177).
     if shell_compose_claims(prompt) {
         return None;
     }
-    crate::quantity_constraint::try_answer(prompt, log).or_else(|| try_arithmetic(prompt, log))
+    // A conversion through the Julian year is the unit handler's: the
+    // calculator reads "2 years in days" with a 365-day year (730 days), the
+    // SI catalogue with the Julian year (730.5 days), and the browser's
+    // calculator declines it for the unit handler (issue #1639, issue #1588
+    // intent spans).
+    if crate::solver_handlers::derives_julian_year_conversion(
+        prompt,
+        &crate::engine::normalize_prompt(prompt),
+    ) {
+        return None;
+    }
+    // A seeded number-property request owns its operands before loose expression extraction.
+    if let Some(choice) = crate::solver_helpers::record_validation(log, prompt) {
+        return Some(crate::solver_handlers::finalize_simple(
+            prompt,
+            log,
+            &choice.intent,
+            "response:number_property_prime",
+            &choice.answer,
+            1.0,
+        ));
+    }
+    crate::quantity_constraint::try_answer(prompt, log)
+        .or_else(|| crate::solver_handlers::try_arithmetic_with_online(prompt, log, online))
 }
 
 fn handle_javascript_execution(
@@ -227,6 +260,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "fact_checking",
     "world_state",
     "web_search",
+    "docs_method_explanation",
     // Issue #991: the procedural handler must execute the bounded multi-source
     // synthesis, which needs the runtime's offline flag to decide whether the
     // capture client may go to the network. It stays a *contextual* override of
@@ -234,11 +268,13 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     // discovery-plan handler remains the fallback when the evidence is thin.
     "procedural_how_to",
     "procedural_how_to_followup",
+    "summarization",
     // Issue #1172 R3/R8: a fact question no seeded record answers is asked
     // of Wikidata, and an explanation is composed from retrieved pages, both
     // through the capture client, which needs the runtime's offline flag. The
     // regular `fact_lookup` row stays the seeded-only variant.
     "fact_lookup",
+    "coreference",
 ];
 
 /// Method names that run before the regular handler table.
@@ -276,6 +312,20 @@ pub fn try_contextual_override(
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
+        "docs_method_explanation" => {
+            crate::solver_handlers::documentation_method::try_with_offline(
+                prompt,
+                log,
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+            )
+        }
+        "arithmetic" => arithmetic_with_online(prompt, log, !runtime.solver_config.offline),
+        "compound_interest" => crate::solver_handlers::compound_interest::try_with_online(
+            prompt,
+            normalized,
+            log,
+            !runtime.solver_config.offline,
+        ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
         }
@@ -290,7 +340,13 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            !runtime.solver_config.offline,
+            !runtime.solver_config.offline && crate::solver_config::read_network_allowed(),
+        ),
+        "write_script" => try_write_script_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         "shell_command_transform" => {
             try_shell_command_transform_with_history(prompt, normalized, log, history)
@@ -324,6 +380,11 @@ pub fn try_contextual_override(
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
+        "summarization" => crate::solver_handlers::try_summarization_request_with_offline(
+            prompt,
+            log,
+            runtime.solver_config.offline,
+        ),
         // Issue #1172 R1172-5: a definition request the seeded concepts do
         // not cover is answered from the registry's dictionary sources. A
         // seeded concept, or no dictionary sense, leaves the row to the plain
@@ -348,6 +409,14 @@ pub fn try_contextual_override(
             normalized,
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+        ),
+        "coreference" => crate::solver_handlers::try_coreference_with_client(
+            prompt,
+            normalized,
+            log,
+            &crate::fact_live::capture_client(
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+            ),
         ),
         _ => return ContextualOutcome::NotHandled,
     };
@@ -601,3 +670,7 @@ fn resolve_handler(
 pub fn handler_for_method(name: &str) -> Option<SpecializedHandler> {
     resolve_handler(name, &crate::rule_interpreter::handler_names()).map(|(_, handler)| handler)
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/solver_dispatch/production_tests.rs"]
+mod tests;

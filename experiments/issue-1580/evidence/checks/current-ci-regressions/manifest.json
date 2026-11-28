@@ -1,0 +1,149 @@
+{
+  "draftedFromHead": "65e78a232511890545cdfdbc428a119bf32e721e",
+  "remoteHeadReviewed": "3479d01bd88a731b48c4f9bd2f3efb927320dfbc",
+  "remoteRuns": {
+    "terminal": 64,
+    "success": 57,
+    "failure": 4,
+    "skipped": 3
+  },
+  "initialFullGates": {
+    "head": "65e78a232511890545cdfdbc428a119bf32e721e",
+    "trackedDraftSha256": "50f800d95da9b7ce2ea3cff6350bee6bbc8f152731d10dfc763bf7df9cf341c0",
+    "exitCode": 1,
+    "seconds": 484.793,
+    "pass": 80,
+    "fail": 9,
+    "skip": 54,
+    "finishedAt": "2026-11-22T20:16:26.625930+00:00",
+    "rustExecuted": false,
+    "independentAuthorshipCredit": 0
+  },
+  "refinedFocused": [
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-minimal-core-boundary-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 0.417,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/0.log"
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-minimal-core-boundary"
+      ],
+      "exitCode": 0,
+      "seconds": 0.536,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/1.log"
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-prompt-specialization"
+      ],
+      "exitCode": 0,
+      "seconds": 7.088,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/2.log"
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-tests-as-docs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.212,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/3.log"
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 6.529,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/4.log"
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-worker-line-budget-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 0.67,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/5.log"
+    },
+    {
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-worker-line-budget"
+      ],
+      "exitCode": 0,
+      "seconds": 0.365,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/6.log"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/catalog-operand-provenance.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 4.759,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/7.log"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/worker-receipt-regeneration.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.454,
+      "log": "/tmp/issue-1580-research/refined-focused-gates/8.log"
+    }
+  ],
+  "nativeCompilationOrExecutionLocal": false,
+  "hostedNativeVerification": "pending",
+  "workerRegeneration": "pending explicit hosted producer",
+  "upstreamReport": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/265",
+  "retainedCensus": {
+    "captures": 167,
+    "archiveSha256": "cdcc1f7873acb793e3fa71a5facc060adbdd54dadafd97e1624e4d49f696ec22"
+  },
+  "archiveSha256": "03b4114a6df2c442454d3ce291b498d94ee6f59817ba1f147340a211a5e2656d",
+  "payloadCount": 521,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false
+}

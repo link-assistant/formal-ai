@@ -39,7 +39,8 @@ try {
     process.stdout.write(`${line}\n`);
     const event = JSON.parse(line);
     if (event.type === 'system' && event.subtype === 'init') {
-      assert.equal(event.permissionMode, 'default');
+      // `formal-ai with claude` passes --permission-mode auto since #1632 (faa55b564).
+      assert.equal(event.permissionMode, client === 'claude' ? 'auto' : 'default', line);
     }
     if (client === 'claude') {
       if (event.type === 'assistant' && event.message.content.some(item => item.type === 'tool_use'

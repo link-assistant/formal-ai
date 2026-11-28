@@ -1,0 +1,40 @@
+{
+  "cause": "Formal AI shell wrapper 60000ms command cap killed foreground harness. No ongoing processes remained. This interrupted run is not a completed verification.",
+  "commandOutputComplete": false,
+  "archives": [
+    {
+      "archive": "sparse-01-fast-pull-request-production-profile.log.gz",
+      "sha256": "1c9a877dcdec64f15ac6596a113fb47870e546a9d925e09c0489f1c26a91be1f",
+      "bytes": 969
+    },
+    {
+      "archive": "sparse-02-issue-1580-client-output-constraints.log.gz",
+      "sha256": "a530ea331621cee72e1d8ff67686d54ce3b0ff4c4e6acb38a8b3dfaac729a448",
+      "bytes": 395
+    },
+    {
+      "archive": "sparse-03-issue-982-native-session-observation.log.gz",
+      "sha256": "c96dd0fc18a09ae5e2c9c1d5fa4e7db1fc71895709a0ca0aadea25cda7286bbb",
+      "bytes": 289
+    },
+    {
+      "archive": "sparse-omitted-paths.txt.gz",
+      "sha256": "4c0ede58e489629c317334e7cc7e22558614e2853a24cae4973028b6ff59488c",
+      "bytes": 1751519
+    },
+    {
+      "archive": "stderr.raw.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "archive": "stdout.raw.gz",
+      "sha256": "ae8d7dba4c289b1adafe00b91fe12b627bdbe50f5ffcc28d603c5527fc063778",
+      "rawSha256": "3ccbb83259413a4aadde4b14b646cf9333fa0b7c8d8bf768fb8437602b6a7c41",
+      "rawBytes": 1701
+    }
+  ],
+  "memoryEvents": "low 0\nhigh 0\nmax 148934\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

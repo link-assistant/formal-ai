@@ -669,23 +669,23 @@ multilingual_responses
   response response_web_search_wikinews_article_en
     intent web_search_wikinews_article
     language en
-    text "Wikinews has a news article titled \"{title}\"."
+    text 'Wikinews has a news article titled "{title}".'
   response response_web_search_wikinews_article_ru
     intent web_search_wikinews_article
     language ru
-    text "В Wikinews есть новостная статья «{title}»."
+    text 'В Wikinews есть новостная статья «{title}».'
   response response_web_search_wikinews_article_zh
     intent web_search_wikinews_article
     language zh
-    text "Wikinews 有“{title}”这篇新闻。"
+    text 'Wikinews 有“{title}”这篇新闻。'
   response response_web_search_wikinews_article_hi
     intent web_search_wikinews_article
     language hi
-    text "Wikinews में \"{title}\" के लिए समाचार लेख है।"
+    text 'Wikinews में "{title}" के लिए समाचार लेख है।'
   response response_web_search_wikinews_article_es
     intent web_search_wikinews_article
     language es
-    text "Wikinews tiene un artículo de noticias titulado «{title}»."
+    text 'Wikinews tiene un artículo de noticias titulado «{title}».'
   response response_research_result_followup_no_results_en
     intent research_result_followup_no_results
     language en

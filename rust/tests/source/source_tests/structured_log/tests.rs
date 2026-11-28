@@ -217,3 +217,35 @@ fn actual_diagnostic_producer_bounds_metadata_after_redaction() {
     );
     assert!(!stderr.contains(SECRET));
 }
+
+#[test]
+fn writability_probe_preserves_log_files_and_leaves_no_empty_session() {
+    let directory = std::env::temp_dir().join(format!(
+        "formal-ai-log-probe-{}-{}",
+        std::process::id(),
+        SEQUENCE.fetch_add(1, Ordering::Relaxed)
+    ));
+    fs::create_dir(&directory).expect("isolated log directory");
+    let existing = directory.join("previous.lino");
+    fs::write(&existing, "retained diagnostic\n").expect("previous log");
+    check_log_directory(&directory).expect("writable sink");
+    assert_eq!(fs::read_dir(&directory).expect("log listing").count(), 1);
+    assert_eq!(
+        fs::read_to_string(&existing).expect("retained log"),
+        "retained diagnostic\n"
+    );
+    assert!(
+        check_log_directory(&existing).is_err(),
+        "a regular file is not a log directory"
+    );
+    let mut file = open_log_file(&directory).expect("first diagnostic opens the session");
+    writeln!(file, "actual diagnostic").expect("diagnostic write");
+    drop(file);
+    assert_eq!(
+        fs::read_dir(&directory)
+            .expect("written log listing")
+            .count(),
+        2
+    );
+    fs::remove_dir_all(directory).expect("remove isolated log directory");
+}

@@ -1,0 +1,30 @@
+{
+  "source": "707206270b42f9cb48178308ce6810a7cd9d86e4",
+  "completeLocalVerification": true,
+  "fullGateCounts": {
+    "PASS": 89,
+    "FAIL": 0,
+    "SKIP": 54
+  },
+  "gateEntries": 143,
+  "tenReportedWarningsRemoved": true,
+  "sourceConservationVerified": true,
+  "rawPriorEvidenceIndexesPreserved": true,
+  "earlierFullGateFailurePreserved": true,
+  "abortedRunPreservedAsIncomplete": true,
+  "fourModuleCeilings": {
+    "before": 3982,
+    "after": 3979
+  },
+  "nativeVerification": "pending next hosted source head",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 993617,
+    "sha256": "740e650eec23bcb3468c0efd3b90dc7300e9d02b14484b900c5d55e128da667f"
+  },
+  "members": 300,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "recordedAt": "2026-11-23T05:50:58.872677+00:00"
+}

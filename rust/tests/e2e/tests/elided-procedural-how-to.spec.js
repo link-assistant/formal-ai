@@ -54,9 +54,8 @@ test.describe('Issue #485 multilingual elided procedural how-to', () => {
       'intent:compound_response',
     );
     await expect(body).toContainText('Здравствуйте');
-    await expect(body).toContainText('План поиска процедуры');
+    await expect(body).toContainText('Не удалось найти проверенные инструкции');
     await expect(body).toContainText('подключить mysql к node js');
-    await expect(body).toContainText('действие connect, объект mysql к node js');
     await expect(body).not.toContainText('Я пока не знаю');
     await expect(assistantMessage).toContainText('procedural_how_to:action:connect');
     await expect(assistantMessage).toContainText(

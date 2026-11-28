@@ -1,0 +1,29 @@
+{
+  "sourceHead": "0b74d3b102290b98d8ad3632e8b00e944b742d03",
+  "pipelineRun": 45206750486,
+  "admissionJob": 137805885687,
+  "admissionCasesPassed": 294,
+  "selectedLogReviewOnly": true,
+  "allLogLinesRead": false,
+  "collectorInsertionCasesPassed": 12,
+  "newNativeParserCasesPassed": 2,
+  "physicalSizeObservationErrorCasesPassed": 2,
+  "securityRun": 45206750111,
+  "auditJob": 137804434394,
+  "actualAuditedLocks": 3,
+  "completePipelineQualified": false,
+  "correctedColdCacheHostedQualified": false,
+  "sourceSizeDebtComplete": false,
+  "advisoryMigrationsComplete": false,
+  "allApplicableTemplatePracticesVerified": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 330502,
+    "sha256": "d696e3c557ea8292b5e34cb731f1312033b1e6e3a1b7219727ac76c6669541a3"
+  },
+  "members": 37,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T16:11:36.907615+00:00"
+}

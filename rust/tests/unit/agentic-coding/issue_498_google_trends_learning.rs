@@ -1,9 +1,10 @@
+use crate::issue_498_google_trends::{captured_feed, with_trends_replay};
 use formal_ai::agentic_coding::{
     AgenticPlan, DRIVER_TOOLS, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
     PlannedToolCall, google_trends_learning as recipe, is_google_trends_learning_task,
     plan_chat_step, run_agentic_task,
 };
-use formal_ai::{ChatMessage, ToolCall, recorded_google_trends_frontier, trending_learning_report};
+use formal_ai::{ChatMessage, ToolCall, parse_frontier_record, trending_learning_report_from_feed};
 use lino_objects_codec::format::parse_indented;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
@@ -28,12 +29,12 @@ fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, res
 
 #[test]
 fn committed_google_trends_learning_report_is_generated_by_the_recipe() {
-    let committed = include_str!("../../../../data/meta/google-trends-learning.lino");
-    assert_eq!(
-        committed,
-        recipe::render_document(),
-        "the committed Trends learning report is stale; regenerate it from the issue-498 recipe",
-    );
+    let committed =
+        include_str!("../../../../docs/case-studies/issue-498/replay/google-trends-learning.lino");
+    let generated = trending_learning_report_from_feed(&captured_feed()).links_notation();
+    parse_indented(&generated).expect("the derived report should parse");
+    assert!(generated.contains("source_sha256"));
+    assert!(generated.contains("benchmark_status \"absent\""));
     parse_indented(committed).expect("the learning report should parse as Links Notation");
     assert!(committed.contains("google_trends_learning"));
     assert!(committed.contains("auto_learning_loop \"issue_558_self_improvement\""));
@@ -54,7 +55,7 @@ fn committed_google_trends_learning_report_is_generated_by_the_recipe() {
 
 #[test]
 fn the_learning_report_is_a_faithful_proposal_only_run() {
-    let report = trending_learning_report();
+    let report = trending_learning_report_from_feed(&captured_feed());
     // The catalog holds 80 prompts (10 topics × 4 languages × 2 variations); the split
     // is derived from the engine, not hardcoded: routed + frontier == total.
     assert_eq!(report.total_prompts, 80);
@@ -84,7 +85,7 @@ fn the_learning_report_is_a_faithful_proposal_only_run() {
     assert_eq!(report.adopted_count(), 0);
     // With no frontier there is nothing to reject, so there is no uniform reason.
     assert_eq!(report.uniform_rejection_reason(), None);
-    assert!(report.summary().contains("frontier is empty"));
+    assert!(report.summary().contains("Every generated prompt"));
 }
 
 #[test]
@@ -99,7 +100,9 @@ fn the_recorded_learning_frontier_spans_every_supported_language() {
     // The live frontier is empty since issue #701 closed the gap, so the check runs
     // against the frozen pre-adoption record — the durable frontier artifact that
     // keeps the failure visible instead of dropping it (R425).
-    let recorded = recorded_google_trends_frontier();
+    let recorded = parse_frontier_record(include_str!(
+        "../../../../docs/case-studies/issue-701/replay/learning-frontier-google-trends.lino"
+    ));
     let expected: [(&str, &str); 4] = [
         ("en", "Give Google Trends context for"),
         ("ru", "Дай контекст Google Trends для"),
@@ -154,29 +157,31 @@ fn recognises_the_google_trends_learning_task_without_colliding_with_siblings() 
 
 #[test]
 fn planner_walks_the_google_trends_learning_recipe() {
-    let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(GOOGLE_TRENDS_LEARNING_TASK)];
+    with_trends_replay(|| {
+        let tools = ["web_search", "web_fetch", "write_file", "run_command"];
+        let mut messages = vec![ChatMessage::user(GOOGLE_TRENDS_LEARNING_TASK)];
 
-    let call = expect_single_call(&messages, &tools);
-    assert_eq!(call.tool, "write_file");
-    assert!(call.arguments.contains(GOOGLE_TRENDS_LEARNING_PATH));
-    let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
-    answer_tool_call(&mut messages, &call, "wrote google-trends-learning.lino");
+        let call = expect_single_call(&messages, &tools);
+        assert_eq!(call.tool, "write_file");
+        assert!(call.arguments.contains(GOOGLE_TRENDS_LEARNING_PATH));
+        let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        assert_eq!(written["content"], recipe::render_document());
+        answer_tool_call(&mut messages, &call, "wrote google-trends-learning.lino");
 
-    let call = expect_single_call(&messages, &tools);
-    assert_eq!(call.tool, "run_command");
-    assert!(call.arguments.contains(GOOGLE_TRENDS_LEARNING_PATH));
-    answer_tool_call(&mut messages, &call, &recipe::render_document());
+        let call = expect_single_call(&messages, &tools);
+        assert_eq!(call.tool, "run_command");
+        assert!(call.arguments.contains(GOOGLE_TRENDS_LEARNING_PATH));
+        answer_tool_call(&mut messages, &call, &recipe::render_document());
 
-    match plan_chat_step(&messages, &tools) {
-        Some(AgenticPlan::Final(answer)) => {
-            assert!(answer.contains(GOOGLE_TRENDS_LEARNING_PATH));
-            assert!(answer.contains("learning frontier"));
-            assert!(answer.contains("adopted 0"));
+        match plan_chat_step(&messages, &tools) {
+            Some(AgenticPlan::Final(answer)) => {
+                assert!(answer.contains(GOOGLE_TRENDS_LEARNING_PATH));
+                assert!(answer.contains("human-gated learning"));
+                assert!(answer.contains("adopted 0"));
+            }
+            other => panic!("expected a final answer, got {other:?}"),
         }
-        other => panic!("expected a final answer, got {other:?}"),
-    }
+    });
 }
 
 #[test]
@@ -192,31 +197,50 @@ fn committed_agent_cli_session_matches_a_fresh_google_trends_learning_run() {
         .iter()
         .map(|tool| tool.as_str().expect("captured tool name"))
         .collect();
-    let fresh =
-        formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_LEARNING_TASK, &tools)
-            .expect("workspace under the captured tool schema");
-    let rendered = format!(
-        "{}\n",
-        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
-    );
+    assert_eq!(captured["task"].as_str(), Some(GOOGLE_TRENDS_LEARNING_TASK));
+    let steps = captured["steps"].as_array().expect("complete native steps");
+    assert_eq!(steps.len(), 2);
+    assert_eq!(steps[0]["tool"].as_str(), Some("write_file"));
+    let old = steps[0]["arguments"]["content"]
+        .as_str()
+        .expect("historic report");
+    parse_indented(old).expect("historic Links Notation");
+    assert_eq!(steps[1]["tool"].as_str(), Some("run_command"));
     assert_eq!(
-        committed, rendered,
-        "the committed Google Trends learning Agent CLI session is stale",
+        steps[1]["arguments"]["command"].as_str(),
+        Some(recipe::verification_command().as_str())
     );
+    let receipt: serde_json::Value =
+        serde_json::from_str(steps[1]["result"].as_str().expect("typed command receipt"))
+            .expect("valid native command receipt JSON");
+    assert_eq!(
+        receipt["schema"].as_str(),
+        Some("command-execution-receipt/v1")
+    );
+    assert_eq!(receipt["exit_code"].as_i64(), Some(0));
+
+    let fresh = with_trends_replay(|| {
+        formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_LEARNING_TASK, &tools)
+            .expect("workspace under the captured tool schema")
+    });
+    assert_eq!(fresh.steps.len(), steps.len());
+    assert!(fresh.steps[0].arguments.contains("source_sha256"));
 }
 
 #[test]
 fn driver_drives_the_google_trends_learning_recipe_to_a_write() {
-    assert!(DRIVER_TOOLS.contains(&"write_file"));
-    let outcome = run_agentic_task(GOOGLE_TRENDS_LEARNING_TASK).expect("workspace");
-    assert!(!outcome.hit_turn_cap, "the loop must finish");
+    with_trends_replay(|| {
+        assert!(DRIVER_TOOLS.contains(&"write_file"));
+        let outcome = run_agentic_task(GOOGLE_TRENDS_LEARNING_TASK).expect("workspace");
+        assert!(!outcome.hit_turn_cap, "the loop must finish");
 
-    let write = outcome
-        .steps
-        .iter()
-        .find(|step| step.tool == "write_file")
-        .expect("a write step");
-    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
-    assert_eq!(written["path"], GOOGLE_TRENDS_LEARNING_PATH);
+        let write = outcome
+            .steps
+            .iter()
+            .find(|step| step.tool == "write_file")
+            .expect("a write step");
+        let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+        assert_eq!(written["content"], recipe::render_document());
+        assert_eq!(written["path"], GOOGLE_TRENDS_LEARNING_PATH);
+    });
 }

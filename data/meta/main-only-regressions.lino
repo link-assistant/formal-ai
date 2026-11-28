@@ -87,6 +87,100 @@ main-run 41804771645
       failed "Self-development status: language-parity-gaps measured 52 above ceiling 42"
       check rust/tests/web/debt-ceiling-fast-lane.test.mjs
       marker "41804771645"
+main-run 43815999666
+  javascript-twin
+    regression concrete-output-composition
+      introduced-by "PR #1576, recursive production entry"
+      failed "generic composition replaced a concrete source-output intent with joined refusal text"
+      check rust/tests/web/issue-1580-production-composition.test.mjs
+      marker "production composition preserves concrete output obligations"
+    regression concept-full-width-punctuation
+      introduced-by "terminal query normalization"
+      failed "compound_courtesy_and_question_are_answered_in_source_order: Redis是什么？ remained unknown"
+      check rust/tests/web/issue-1580-production-composition.test.mjs
+      marker "concept queries trim terminal punctuation"
+main-run 44117975432
+  javascript-twin
+    regression calendar-clock-punctuation
+      introduced-by "clock normalization during request-span recognition (observed on main 512ce428)"
+      failed "meeting participant/time/Georgia and Tbilisi scheduling fell through after normalized clock punctuation disappeared"
+      check rust/tests/web/calendar-clock-preservation.test.mjs
+      marker "calendar preserves the clock in"
+main-run 44157124408
+  javascript-twin
+    regression live-client-output-constraint-refusals
+      introduced-by "PR #1595, merged as 826289fc"
+      failed "OpenCode line limits and Qwen quoted language examples replaced observed file text with refusals"
+      check rust/tests/web/issue-1580-client-output-constraints.test.mjs
+      marker "main run 44157124408"
+    regression opencode-source-envelope
+      introduced-by "OpenCode path/content Read envelope (observed on main 826289fc)"
+      failed "transport path/type/content tags and numbered rows leaked into the final file text"
+      check rust/tests/web/source-read-provenance.test.mjs
+      marker "OpenCode path-bound source envelope"
+main-run 44157125186
+  javascript-twin
+    regression concise-greeting-refusal
+      introduced-by "PR #1595, merged as 826289fc"
+      failed "cli_serve_exposes_agentic_tool_protocols_over_loopback: Answer concisely replaced the Hi greeting with an output refusal"
+      check rust/tests/web/issue-1580-client-output-constraints.test.mjs
+      marker "main run 44157125186"
+main-run 44174503458
+  javascript-twin
+    regression causal-seed-page-summary-count
+      introduced-by "PR #1602, merged as 058e9bef"
+      failed "Moon page summary expected 196 unknown terms after causal English lexemes reduced the count to 195"
+      check rust/tests/web/page-formalization-route.test.mjs
+      marker "195 of 423 terms"
+    regression generated-native-source-witness-currency
+      introduced-by "source witness changes observed at main 058e9bef"
+      failed "rust-specification-generated-programs: generated registry is stale"
+      check rust/tests/web/rust-specification-generated-programs.test.mjs
+      marker "generated native registry is current"
+    regression passage-meta-candidate-network-ownership
+      introduced-by "recursive candidate research observed at main 058e9bef"
+      failed "a supplied-passage answer made twenty unnecessary external provider requests"
+      check rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs
+      marker "quoted passage is answered from its own sentence with no network call"
+    regression opt-in-binding-diagnostic-contract
+      introduced-by "private logging contract observed at main 058e9bef"
+      failed "unbound nested required values expected a raw schema in public metadata instead of the lazy private diagnostic"
+      check rust/tests/web/issue-1328-bounded-retries.test.mjs
+      marker "private schema and arguments remain lazy"
+main-run 44188508650
+  javascript-twin
+    regression algebra-source-operand-composition
+      introduced-by "recursive parent validation observed on main 015a6831"
+      failed "synthesis algebra intent and renumbered assignment cases returned calculation_error instead of 11 and 17"
+      check rust/tests/web/issue-1580-algebra-substitution.test.mjs
+      marker "Given y = 4 and x = 3, evaluate (x^2 + 2y)."
+    regression calendar-meaning-slug-collision
+      introduced-by "PR #1597, merged as 015a6831"
+      failed "meaning_slugs_are_globally_unique: calendar-duration-sum named a handler cue and a response intent"
+      check rust/tests/web/issue-1589-calendar-currency.test.mjs
+      marker "calendar meanings stay globally unique"
+    regression calendar-pipe-packed-table-values
+      introduced-by "PR #1597, merged as 015a6831"
+      failed "seed_lino_values_never_pipe_pack_multi_values: handler-rules.lino:1236 year|years"
+      check rust/tests/web/issue-1589-calendar-currency.test.mjs
+      marker "calendar and currency vocabulary rows carry one surface each without pipe-packed aliases"
+main-run 44188508228
+  javascript-twin
+    regression health-schema-access-mode
+      introduced-by "commit ec6ade5cd (server ephemeral memory mode)"
+      failed "server-memory-schema: health schema assertion omitted the supported read_write mode"
+      check rust/tests/web/server-memory-schema.test.mjs
+      marker "mode: 'read_only'"
+    regression hive-cache-replay-network-policy
+      introduced-by "default-on source reads observed on main 015a6831"
+      failed "hive-work-item-consumer: empty source cache expected baseline but live publisher returned a pin"
+      check rust/tests/web/hive-work-item-consumer.test.mjs
+      marker "Cache/baseline replay is explicitly offline"
+    regression version-cache-replay-network-policy
+      introduced-by "default-on source reads observed on main 015a6831"
+      failed "issue-1168-source-cache: empty source cache expected baseline but live publisher returned a pin"
+      check rust/tests/web/issue-1168-source-cache.test.mjs
+      marker "process.env.FORMAL_AI_LIVE_FETCH = '0'"
 main-run 44953310700
   workflow-policy
     regression codex-report-marketplace-cleanup
@@ -108,3 +202,156 @@ main-run 44968089085
       workflow .github/workflows/native-type-check.yml
       check rust/tests/web/issue-1609-client-reports.test.mjs
       marker "Gemini report replay from main run 44968089085"
+main-run 45001543202
+  workflow-policy
+    regression dind-memory-path
+      introduced-by "PR #1611 added the server smoke to the full image"
+      failed "DinD serve exited with PermissionDenied before /health because box could not access /root/.formal-ai"
+      check rust/tests/web/container-node-runtime.test.mjs
+      marker "DinD memory path from main run 45001543202"
+main-run 45020746043
+  javascript-twin
+    regression pages-rustdoc-private-links
+      introduced-by "commit 049c4bbf97"
+      failed "Pages rustdoc rejected links from bound_output_literals to private output helpers"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Pages rustdoc from main run 45020746043 has no links to private output helpers"
+    regression pages-rustdoc-grammar-filename
+      introduced-by "commit 00d426c1c1"
+      failed "Pages rustdoc interpreted the grammar filename placeholder as an unclosed HTML tag"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Pages rustdoc from main run 45020746043 treats the grammar filename as literal text"
+
+main-run 45295717630
+  javascript-twin
+    regression public-release-serial-transfer-deadline
+      introduced-by "serial public-byte verification at main 0e550f6d56"
+      failed "public verifier timed out after checking 26 of 74 assets for v0.356.11"
+      check rust/tests/web/verify-public-release-downloads.test.mjs
+      marker "Main run 45295717630 exhausted the serial verifier"
+
+main-run 45212862106
+  workflow-policy
+    regression dependency-updater-cache-budget
+      introduced-by "unreferenced source-cache records observed on main 03a636334"
+      failed "check-cache-budget: 42 unreferenced Wikidata and WordNet records"
+      check rust/tests/web/dependencies-maintenance-workflow.test.mjs
+      marker "main run 45212862106 cache-budget replay"
+
+main-run 45175845066
+  workflow-policy
+    regression learning-cycle-live-capture-deadline
+      introduced-by "unbounded live capture observed on main 03a636334"
+      failed "Google Trends live capture reached the learning-cycle job deadline before producing proposal diagnostics"
+      check rust/tests/web/issue-1571-workflow-diagnostics.test.mjs
+      marker "Replays main run 45175845066"
+
+main-run 45197910485
+  focused-native
+    regression external-benchmark-ratchet-discards-failure-report
+      introduced-by "ledger validation precedes diagnostics on main 03a636334"
+      failed "HumanEval, MBPP and GSM8K each exited on the ratchet before writing a retained learning proposal"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs
+      marker "ratchet rejection still uploads review-gated diagnostics"
+  workflow-policy
+    regression swebench-parquet-reader-unavailable
+      introduced-by "missing dataset reader observed on main 03a636334"
+      failed "SWE-bench Lite could not decode the pinned upstream Parquet data because pyarrow.parquet was unavailable"
+      check rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs
+      marker "Replays main run 45197910485"
+
+main-run 45018538750
+  workflow-policy
+    regression agent-cli-ladder-verifier-deadline-evidence
+      introduced-by "verifier evidence copied after exit on main 09711c000"
+      failed "Agent CLI leaf 2.2.2.2.1 reached its deadline without retaining its native test logs or verifier receipt"
+      check rust/tests/web/agent-cli-ladder-failure-evidence.test.mjs
+      marker "Replays main run 45018538750"
+    regression agent-cli-ladder-learning-test-scope
+      introduced-by "module-wide import projection on main 09711c000"
+      failed "Agent CLI leaf 2.2.2.2.1 selected five frontier tests that did not exercise the changed ledger"
+      check rust/tests/web/ladder-registered-tests.test.mjs
+      marker "Replays main run 45018538750"
+
+main-run 45549993600
+  javascript-twin
+    regression native-capture-case-in-two-cargo-targets
+      introduced-by "commit 634eb760a path-included unit sources into the reasoning_contracts target"
+      failed "native-response-observations: source test has no unique registration (2 !== 1) for five capture cases"
+      check rust/tests/web/native-test-module-graph.test.mjs
+      marker "every committed native capture case binds to exactly one registered caller (issue #1637)"
+  workflow-policy
+    regression verify-package-claude-auto-permission-mode
+      introduced-by "PR #1636 (issue #1632), commit faa55b564"
+      failed "verify-package: claude report asserted permissionMode default, the orphaned server failed every later client"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "main run 45549993600"
+    regression pages-deployment-synthetic-build-version
+      introduced-by "PR #1581, commit f8718c44e"
+      failed "deploy-pages: POST /pages/deployments responded HTTP 404 for a synthetic pages_build_version"
+      check rust/tests/web/pages-deployment.test.mjs
+      marker "the build version is the source commit SHA"
+
+main-run 45636781871
+  focused-native
+    regression rustfmt-diff-reached-main
+      introduced-by "PR #1638, commit 15ae736ab"
+      failed "check-formatting: cargo fmt --check diff in rust/tests/unit/specification/concept_lookup_meta_algorithm.rs"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Issue #1639: formatting was main-only"
+    regression intent-span-duration-misroute
+      introduced-by "fixture row 91a64e8d3, exposed after PR #1638 fixed an earlier failure in the same test"
+      failed "issue_1588_intent_spans: \"how many days are in 2 years?\" routed to concept_measurement_lookup, not unit_conversion"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Issue #1639: main-only Rust regressions now replay in the focused native lane."
+    regression minimal-core-seed-pin-stale
+      introduced-by "PRs #1581, #1599 and #1614 added seed rows without moving the pin"
+      failed "minimal_core_and_seed_metadata::coding_path_has_complete_metadata_and_every_other_gap_is_data: left 1081, right 1073"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Both failed only in the full shards of main run 45636781871."
+  javascript-twin
+    regression end-to-end-request-trace-below-log-level
+      introduced-by "PR #1592, commit ec6ade5cd"
+      failed "E2E Tests (agent CLI): expected ≥5 chat completions, got 0 (loop stalled?)"
+      check rust/tests/web/agent-cli-ladder-failure-evidence.test.mjs
+      marker "issue #1639: every harness launch that traces requests also enables the trace level"
+    regression issue-707-reference-naming-schemes
+      introduced-by "PR #1614, commit 66169b8fa"
+      failed "E2E Tests (computer-use-generalization): local reference rejected for notes_count_and_pack"
+      check rust/tests/web/agent-cli-ladder-failure-evidence.test.mjs
+      marker "issue #1639: the #707 reference compares the explicit plan in one naming scheme"
+    regression aider-report-menu-line-start
+      introduced-by "PR #1581, merge 8711d61f2"
+      failed "Auto Release / verify-package: aider issue report failed"
+      check rust/tests/web/issue-1609-client-reports.test.mjs
+      marker "issue #1639: the one-line menu broke a line-start matcher"
+  workflow-policy
+    regression native-capture-replay-child-case
+      introduced-by "PR #1638, commit 15ae736ab"
+      failed "native-response-observations: 28 capture cases selected, 27 accepted"
+      check rust/tests/web/native-test-module-graph.test.mjs
+      marker "no committed native capture case re-executes its body in a replay child (issue #1639)"
+    regression full-shards-read-live-publishers
+      introduced-by "PR #1582, commit c0e480a36 (read access default-on)"
+      failed "Test (full) shards 1, 3 and 6 killed at the 1080s budget while default solvers waited on live publishers"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Issue #1639: the full and specification shards deny live reads."
+main-run 45636781444
+  focused-native
+    regression corpus-amplifying-fragment-oom
+      introduced-by "observed on main 513e4d954; live concept discovery since PR #1582 reached an unbounded composition verification"
+      failed "Benchmark Corpus Gate shards 1, 2 and 6: the runner lost communication after the composition search fed an amplifying fragment its own output"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Issue #1639: the corpus runaway replays through the coding contracts."
+main-run 45659315559
+  workflow-policy
+    regression lone-pattern-match-flattened
+      introduced-by "PR #1581, commit f400d7ab2"
+      failed "Issue 1028 ladder / Join the legs into one run: the plan has 1 shard(s), 0 wrote a result"
+      check rust/tests/web/native-test-artifact.test.mjs
+      marker "issue #1639: a lone pattern match extracts under its artifact name, as two matches do"

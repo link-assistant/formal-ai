@@ -1,0 +1,80 @@
+{
+  "authorship": "Supplied procedures; independent Formal AI authorship is zero.",
+  "files": [
+    {
+      "file": "run.before.sh.gz",
+      "bytes": 5583,
+      "sha256": "149a75e5cad59988087a379c9a162118a89aa3cbab187fa2a02afe1e40b5c6b5"
+    },
+    {
+      "file": "codex-lifetime-before.log.gz",
+      "bytes": 8235,
+      "sha256": "756c229921167b0a9d00f5ac4e4362129ad6d9aa61f180ab0327fee00abac18c"
+    },
+    {
+      "file": "codex-lifetime-after.log.gz",
+      "bytes": 554,
+      "sha256": "4e18abb1f46335e168765f13b667858487a479e6d584f1d675d2732bd15fa72a"
+    },
+    {
+      "file": "codex-lifetime-both-routes.log.gz",
+      "bytes": 10817,
+      "sha256": "a9ad1c75b33bd3f9916871709eab9d51bbfea04527119ba99c338c246097cac6"
+    },
+    {
+      "file": "codex-lifetime-both-routes-final.log.gz",
+      "bytes": 1053,
+      "sha256": "36a31d9c0fe1f788981625eb79a987a749bf07ce57632decaff782e682a8079d"
+    },
+    {
+      "file": "focused-test-map-after.log.gz",
+      "bytes": 753,
+      "sha256": "706d7e67f0732e9bfe1d629db38b7ffe29c84195d60f585e7180c554c076eed2"
+    },
+    {
+      "file": "cleanup-gate-workflows.log.gz",
+      "bytes": 57,
+      "sha256": "18953e9eabe4688d1fe6b36bb1deadf075186c50f4799b68d5ad089dcd623cfe"
+    },
+    {
+      "file": "cleanup-gate-file-size.log.gz",
+      "bytes": 72,
+      "sha256": "b7515942707d20a8346fbcafeb7156212d41094baf31030cfa0a70d45bad6364"
+    },
+    {
+      "file": "cleanup-gate-check-file-size.log.gz",
+      "bytes": 63,
+      "sha256": "53f0ede80088927ae1c1c0dbee77e9a518606fd66de23b50b87a883ebcda4d0d"
+    },
+    {
+      "file": "cleanup-gate-check-abbreviations.log.gz",
+      "bytes": 67,
+      "sha256": "1cdd4d716ee48508242e352b5206ce014602ad3b88e47adf27adc12bc926346d"
+    },
+    {
+      "file": "cleanup-gate-check-readable-code.log.gz",
+      "bytes": 68,
+      "sha256": "3dcbdf378b8e4853153941199349892476630b14d700491e0106cec376357252"
+    },
+    {
+      "file": "draft-owned-codex.py.gz",
+      "bytes": 5699,
+      "sha256": "6a2cec5d63f4a29ab318bab802ef87ea6c524369ac908ca1ab220349ce198b3f"
+    },
+    {
+      "file": "finish-cleanup-tests.py.gz",
+      "bytes": 2247,
+      "sha256": "f8dace11b3135ad7184097cb2ef114d20e8229340eeafa5c24d44e233cfd81bd"
+    },
+    {
+      "file": "repair-bunx-fixture.py.gz",
+      "bytes": 1448,
+      "sha256": "945d4947c728439af6192d52846ae2a00a3dc46797b25d6d3e823ccb172161a5"
+    },
+    {
+      "file": "commit-codex-cleanup.py.gz",
+      "bytes": 6135,
+      "sha256": "c41c242c5611b7dd7c4976521e0ba274df01c5994970bfa1c9feaccfc73c4c0c"
+    }
+  ]
+}

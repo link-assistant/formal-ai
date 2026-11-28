@@ -1,0 +1,12 @@
+✔ issue #1613: a budget blueprint reports caller assumptions and changing sourced city costs (10070.845797ms)
+✔ issue #1613: a travel blueprint ranks supplied visa and cost observations and flags a changed budget (2608.646612ms)
+✔ issue #1613: a portfolio blueprint values explicit holdings from caller-selected observations (3056.63164ms)
+✔ issue #1613: source metrics compare actual files without rendering a predetermined verdict (946.255198ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17981.212265

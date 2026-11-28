@@ -1,0 +1,4 @@
+Formal AI JavaScript server model formal-ai/0.356.4
+Agent CLI 0.27.0 model argument formal-ai/formal-ai
+Agent CLI session ses_dfd09952fffeaZXqgXPSZ7jU1A
+Verified output SHA-256 ee1ab52ea79abd0a4c938d4d75fe2693f1313baf37a5e7e903b6f5af5f7163b6

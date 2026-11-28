@@ -3,6 +3,10 @@
 Issue [#901](https://github.com/link-assistant/formal-ai/issues/901).
 Case study written on the `qa-reasoning-coding-bulk-fixes` branch.
 
+The current worksheet takes its demands from the request. The historical
+twenty-case corpus is now an explicit test fixture. See the
+[issue #1613 follow-up](../issue-1613/README.md#triz-worksheets-from-stated-demands).
+
 ## What the issue asks
 
 > TRIZ … the most attention goes to abstraction of ways to generalize

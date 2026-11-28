@@ -36,6 +36,26 @@ test('steps classify into the phases the issue names; unnamed actions and post s
   for (const [name, phase] of Object.entries(expected)) assert.equal(classifyStep(name), phase, name);
 });
 
+test('local artifact adapters retain transfer timing and the unnamed image-load fallback', () => {
+  for (const action of ['./.github/actions/download-artifact', './.hive-protocol/.github/actions/download-artifact', './_protocol/.github/actions/download-artifact']) {
+    const name = 'Run ' + action;
+    assert.equal(classifyStep(name), 'transfer', name);
+    const record = measureRun({run: run(3, 'Original Hive Mind three-client delivery'), jobs: [{
+      name: 'leg', conclusion: 'success', created_at: at(0), started_at: at(1), completed_at: at(41), steps: [
+        step(1, name, 1, 11), step(2, 'Load and reverify same-run source-bound task image', 11, 21),
+        step(3, name, 21, 41),
+      ],
+    }]});
+    assert.equal(record.phase['image-transfer'].seconds, 10);
+    assert.equal(record.phase.transfer.seconds, 20);
+    assert.equal(record.phase.other.seconds, 0);
+    assert.equal(classifyStep('Post ' + name), 'runner');
+  }
+  for (const name of ['Run ./download-artifact', 'Run ./.github/actions/download-artifact-other', 'Run ./.github/actions/download-artifact/unrelated']) {
+    assert.equal(classifyStep(name), 'other', name);
+  }
+});
+
 test('recorded delivery baseline: the per-leg multi-GB image download dominates, three useful attempts', () => {
   const record = measureRun(baseline('40475832633'));
   assert.equal(record.run.workflow, 'Original Hive Mind three-client delivery');

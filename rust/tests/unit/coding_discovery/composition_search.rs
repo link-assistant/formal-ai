@@ -283,3 +283,170 @@ fn a_reduction_over_three_scalar_parameters_reads_all_three() {
         .expect("the reduction lowers");
     assert!(lowered.contains("return a + b + c\n"), "{lowered}");
 }
+
+#[test]
+fn closed_program_sequence_slots_have_typed_base_cases() {
+    let catalog = FragmentCatalog::bootstrap();
+    let spec = CodingTaskSpec {
+        language: "python".to_owned(),
+        artifact_shape: ArtifactShape::Program,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
+        name: "main".to_owned(),
+        parameters: Vec::new(),
+        return_annotation: None,
+        imports: Vec::new(),
+        requirement_sentences: vec!["materialize iterable as list".to_owned()],
+        examples: Vec::new(),
+        expected_stdout: None,
+        prose_language: "en".to_owned(),
+    };
+    let bounds = SearchBounds {
+        max_candidates: 8,
+        max_depth: 2,
+    };
+    let structures = ["python_materialize_list".to_owned()];
+    let first = search_with_structures(&spec, &catalog, bounds, &structures);
+    assert!(
+        !first.is_empty(),
+        "closed programs can apply ranked sequence operations"
+    );
+    assert!(first.len() <= bounds.max_candidates);
+    assert!(
+        first
+            .iter()
+            .all(|ir| ir.parameters.is_empty() && ir.type_check(&catalog).is_ok())
+    );
+    assert!(
+        first.iter().any(|ir| matches!(
+            &ir.body,
+            formal_ai::program_ir::IrNode::Apply { fragment, arguments }
+                if fragment == "python_materialize_list" && matches!(arguments.as_slice(),
+                    [formal_ai::program_ir::IrNode::Literal { text, .. }] if text == "[]")
+        )),
+        "the empty sequence is an actual typed argument, not an invented input"
+    );
+    let lower = lowering_for("python").unwrap();
+    assert!(first.iter().all(|ir| lower.lower(ir, &catalog).is_ok()));
+    assert_eq!(
+        first.iter().map(ProgramIr::content_id).collect::<Vec<_>>(),
+        search_with_structures(&spec, &catalog, bounds, &structures)
+            .iter()
+            .map(ProgramIr::content_id)
+            .collect::<Vec<_>>()
+    );
+    assert!(
+        search_with_structures(&spec, &FragmentCatalog::default(), bounds, &structures).is_empty()
+    );
+}
+
+/// Every `pairwise_distinct` application nested inside another one.
+fn nested_pairwise_applications(node: &formal_ai::program_ir::IrNode, inside: bool) -> usize {
+    use formal_ai::program_ir::IrNode;
+    let children: Vec<&IrNode> = match node {
+        IrNode::Parameter { .. } | IrNode::Literal { .. } => Vec::new(),
+        IrNode::Apply { arguments, .. } => arguments.iter().collect(),
+        IrNode::Each {
+            items,
+            body,
+            predicate,
+            ..
+        } => [items.as_ref(), body.as_ref()]
+            .into_iter()
+            .chain(predicate.as_deref())
+            .collect(),
+        IrNode::Fold {
+            items,
+            initial,
+            body,
+            ..
+        } => vec![items.as_ref(), initial.as_ref(), body.as_ref()],
+        IrNode::Repeat { from, to, body, .. } => vec![from.as_ref(), to.as_ref(), body.as_ref()],
+        IrNode::Recurrence {
+            base,
+            transition,
+            index,
+            ..
+        } => base
+            .iter()
+            .chain([transition.as_ref(), index.as_ref()])
+            .collect(),
+        IrNode::RecursiveReduce {
+            target,
+            items,
+            next,
+            admissible,
+            base_test,
+            base,
+            local,
+            ..
+        } => target
+            .iter()
+            .chain(next)
+            .chain([
+                items.as_ref(),
+                base_test.as_ref(),
+                base.as_ref(),
+                local.as_ref(),
+            ])
+            .chain(admissible.as_deref())
+            .collect(),
+        IrNode::Condition {
+            test,
+            then_branch,
+            else_branch,
+        } => vec![test.as_ref(), then_branch.as_ref(), else_branch.as_ref()],
+        IrNode::Bind { value, body, .. } => vec![value.as_ref(), body.as_ref()],
+        IrNode::Emit { value } | IrNode::Return { value } => vec![value.as_ref()],
+    };
+    let pairs = matches!(node, IrNode::Apply { fragment, .. } if fragment == "pairwise_distinct");
+    usize::from(pairs && inside)
+        + children
+            .into_iter()
+            .map(|child| nested_pairwise_applications(child, inside || pairs))
+            .sum::<usize>()
+}
+
+/// Issue #1639: `pairwise_distinct` maps a sequence of `n` items to `n(n-1)/2`
+/// pairs, and its result still fits its own input slot. Nested six and seven
+/// deep over four numbers it needs about 1.1 GB and then ~10^14 tuples, which
+/// is the 15 GB the Benchmark Corpus Gate hit on `near_pair`. The search must
+/// keep applying the fragment once while never feeding an amplifying fragment
+/// its own output.
+#[test]
+fn an_amplifying_fragment_is_never_applied_to_its_own_output() {
+    let spec = recognise(concat!(
+        "Implement Python function near_pair(numbers, threshold). Return whether ",
+        "at least one distinct pair has a difference that is less than the threshold."
+    ))
+    .expect("the request is a coding task");
+    let structures = [
+        "quantifier_any",
+        "pairwise_distinct",
+        "predicate_abs_diff_lt",
+    ]
+    .map(str::to_owned);
+    let programs = search_with_structures(
+        &spec,
+        &FragmentCatalog::bootstrap(),
+        SearchBounds::default(),
+        &structures,
+    );
+    assert!(
+        programs.iter().any(|ir| ir
+            .fragments
+            .iter()
+            .any(|fragment| fragment == "pairwise_distinct")),
+        "the pairwise structure must still be enumerated"
+    );
+    let nested: Vec<String> = programs
+        .iter()
+        .filter(|ir| nested_pairwise_applications(&ir.body, false) > 0)
+        .map(ProgramIr::to_links_notation)
+        .collect();
+    assert!(
+        nested.is_empty(),
+        "pairwise_distinct was applied to its own output: {nested:#?}"
+    );
+}

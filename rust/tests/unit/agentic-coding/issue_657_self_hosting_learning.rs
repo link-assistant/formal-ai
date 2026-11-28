@@ -6,6 +6,9 @@ use formal_ai::agentic_coding::{
     run_agentic_task,
 };
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../../data/meta/issue-657-self-hosting-learning.lino");
+
 #[test]
 fn self_hosting_learning_is_derived_and_review_gated() {
     let baseline = include_str!("../../../../data/meta/issue-657-self-hosting-learning.lino");
@@ -35,7 +38,10 @@ fn self_hosting_learning_is_derived_and_review_gated() {
 
 #[test]
 fn formal_ai_executes_self_hosting_learning_through_agent_cli() {
-    let outcome = run_agentic_task(SELF_HOSTING_LEARNING_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{SELF_HOSTING_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
@@ -46,7 +52,7 @@ fn formal_ai_executes_self_hosting_learning_through_agent_cli() {
     assert_eq!(arguments["path"], SELF_HOSTING_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        self_hosting_learning::render_document()
+        self_hosting_learning::render_document_from(REPORT_MEMORY)
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));
@@ -95,7 +101,7 @@ fn report_identities_are_unique() {
 #[test]
 fn no_report_carries_another_reports_issue() {
     for report in REPORTS {
-        let document = report.render_document();
+        let document = report.render_document_from(REPORT_MEMORY);
         let issues: Vec<&str> = document
             .lines()
             .filter_map(|line| line.trim().strip_prefix("issue "))
@@ -113,7 +119,7 @@ fn no_report_carries_another_reports_issue() {
 #[test]
 fn a_gated_report_states_the_decision_its_gate_implies() {
     for report in REPORTS {
-        let document = report.render_document();
+        let document = report.render_document_from(REPORT_MEMORY);
         assert!(
             document.starts_with(&format!("{}\n", report.head)),
             "{} must lead with its own head",
@@ -140,7 +146,7 @@ fn a_gated_report_states_the_decision_its_gate_implies() {
 #[test]
 fn reports_share_a_canonical_field_order() {
     for report in REPORTS {
-        let document = report.render_document();
+        let document = report.render_document_from(REPORT_MEMORY);
         let head_fields: Vec<&str> = document
             .lines()
             .skip(1)
@@ -215,13 +221,14 @@ fn a_report_ranks_any_persisted_network() {
         promotion_gate: Some("fixture_gate"),
         path: "fixture-learning-report.lino",
         task: "write fixture-learning-report.lino",
-        memory: "demo_memory\n  event \"observation:only\"\n    kind \"message\"\n    role \
-                 \"user\"\n    content \"single observation\"\n    accessCount \"2\"\n    \
-                 writeCount \"1\"\n",
         subject: "fixture observations",
     };
 
-    let document = FIXTURE.render_document();
+    let document = FIXTURE.render_document_from(
+        "demo_memory\n  event \"observation:only\"\n    kind \"message\"\n    role \
+                 \"user\"\n    content \"single observation\"\n    accessCount \"2\"\n    \
+                 writeCount \"1\"\n",
+    );
     assert!(document.starts_with("fixture_learning_report\n  issue \"0\"\n"));
     assert!(document.contains("promotion_gate \"fixture_gate\""));
     assert!(document.contains("expression_count \"1\""));

@@ -1,0 +1,145 @@
+{
+  "observedAt": "2026-11-18T08:47:05.827328+00:00",
+  "head": "bfe5ac0f3babe512f1bf0a03935bd1d220f9e40f",
+  "runs": [
+    {
+      "id": 44269762855,
+      "name": "CI/CD Pipeline",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 44269762005,
+      "name": "Verify full readable source content",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762352,
+      "name": "Proactive failure report Agent CLI E2E",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762122,
+      "name": "Publish browser engine",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762113,
+      "name": "Regenerate native session projections",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269761740,
+      "name": "Publish VS Code extension",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269761561,
+      "name": "Guarded staged release authority refusal",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762514,
+      "name": "Broken Link Checker",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269761935,
+      "name": "container-images",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269761699,
+      "name": "Source scanner qualification and debt inventory",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 44269761673,
+      "name": "Publish source networks",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762209,
+      "name": "Stock Rust Install",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269761651,
+      "name": "Coverage",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762451,
+      "name": "Desktop Release",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762163,
+      "name": "External Benchmarks",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762317,
+      "name": "Workflows",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269761543,
+      "name": "Documentation policy",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762266,
+      "name": "Self-hosting evidence",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762418,
+      "name": "Benchmark Corpus Gate",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269761686,
+      "name": "Security",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762053,
+      "name": "Layered CI",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 44269762277,
+      "name": "Self-development status",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44269762500,
+      "name": "Agentic CLI Matrix",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

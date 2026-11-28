@@ -1,0 +1,41 @@
+[
+  {
+    "language": "js",
+    "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+    "commit": "74de898dd6ce548af5bcb9359e1dae75fd4ebd75",
+    "files": [
+      {
+        "path": "scripts/deploy-pages.mjs",
+        "gitBlob": "daf912b49d64f380eda494e5399fe44128149017",
+        "sha256": "916a2b9409c12f5b54b3d5237e1453258f2ee9ff7e403e6c516dc6b52dae8fc3"
+      },
+      {
+        "path": "scripts/github-api.mjs",
+        "gitBlob": "bc84822c119b0fe8cfc4d52ae25f043edcc92b6d",
+        "sha256": "1f8a977639173761df9aa264c1131066efac3c0681dff5e6a7697932d31fbc6d"
+      },
+      {
+        "path": "LICENSE",
+        "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+        "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+      }
+    ]
+  },
+  {
+    "language": "python",
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "commit": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+    "files": [
+      {
+        "path": ".github/actions/deploy-pages/deploy.mjs",
+        "gitBlob": "72aa5b97e648df9f187e2c7ea3f9b2a7ce422834",
+        "sha256": "77fb2f039379ae84e760688e4efbc5927abb1cf3eefb68d39df857dc9f39e45d"
+      },
+      {
+        "path": "LICENSE",
+        "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+        "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+      }
+    ]
+  }
+]

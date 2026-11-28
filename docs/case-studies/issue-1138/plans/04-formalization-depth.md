@@ -95,7 +95,7 @@ counted by record kind:
 | `context` | 2 | `:95-102` |
 
 The source text it describes is 395 bytes:
-`data/agentic-coding/fisherman-synopsis.txt`, seven Russian sentences. **The entire
+`rust/tests/fixtures/publisher-agentic/fisherman-synopsis.txt`, seven Russian sentences. **The entire
 semantic depth of the formalizer is one trait and one procedure, both about one
 document.**
 

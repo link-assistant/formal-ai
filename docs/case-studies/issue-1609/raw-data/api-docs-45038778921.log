@@ -1,0 +1,36 @@
+Source log: gh api --allow-escape-sequences repos/link-assistant/formal-ai/actions/jobs/137258774387/logs
+Run: 45038778921
+8354 2026-11-22T15:45:25.2848743Z [2026-11-22T15:42:46.721Z DEBUG sccache::config] Attempting to read config file at "/home/runner/.config/sccache/config"
+8355 2026-11-22T15:45:25.2850413Z [2026-11-22T15:42:46.721Z DEBUG sccache::config] Couldn't open config file: failed to open file `/home/runner/.config/sccache/config`: No such file or directory (os error 2)
+8356 2026-11-22T15:45:25.2851699Z [2026-11-22T15:42:46.722Z DEBUG sccache::commands] Server sent CompileStarted
+8357 2026-11-22T15:45:32.1463448Z  Documenting formal-ai v0.356.5 (/home/runner/work/formal-ai/formal-ai/rust)
+8358 2026-11-22T15:45:39.4750501Z error: public documentation for `bound_output_literals` links to private item `explicit_count`
+8359 2026-11-22T15:45:39.4751313Z    --> src/intent_formalization/obligations.rs:484:18
+8360 2026-11-22T15:45:39.4751753Z     |
+8361 2026-11-22T15:45:39.4752444Z 484 | /// task); see [`explicit_count`] and [`output_again`]. Repeated mentions
+8362 2026-11-22T15:45:39.4753263Z     |                  ^^^^^^^^^^^^^^ this item is private
+8363 2026-11-22T15:45:39.4753894Z     |
+8364 2026-11-22T15:45:39.4754551Z     = note: this link will resolve properly if you pass `--document-private-items`
+8365 2026-11-22T15:45:39.4755628Z     = note: `-D rustdoc::private-intra-doc-links` implied by `-D warnings`
+8366 2026-11-22T15:45:39.4756240Z     = help: to override `-D warnings` add `#[allow(rustdoc::private_intra_doc_links)]`
+8367 2026-11-22T15:45:39.4756567Z
+8368 2026-11-22T15:45:39.4756994Z error: public documentation for `bound_output_literals` links to private item `output_again`
+8369 2026-11-22T15:45:39.4757523Z    --> src/intent_formalization/obligations.rs:484:41
+8370 2026-11-22T15:45:39.4757822Z     |
+8371 2026-11-22T15:45:39.4758273Z 484 | /// task); see [`explicit_count`] and [`output_again`]. Repeated mentions
+8372 2026-11-22T15:45:39.4758847Z     |                                         ^^^^^^^^^^^^ this item is private
+8373 2026-11-22T15:45:39.4759197Z     |
+8374 2026-11-22T15:45:39.4759610Z     = note: this link will resolve properly if you pass `--document-private-items`
+8375 2026-11-22T15:45:39.4759901Z
+8376 2026-11-22T15:45:39.5487971Z error: unclosed HTML tag `id`
+8377 2026-11-22T15:45:39.5488688Z    --> src/cnl_output/grammar.rs:231:28
+8378 2026-11-22T15:45:39.5489124Z     |
+8379 2026-11-22T15:45:39.5489823Z 231 | /// Parse one cnl-language-<id>.lino file into plain data.
+8380 2026-11-22T15:45:39.5490513Z     |                            ^^^^
+8381 2026-11-22T15:45:39.5490966Z     |
+8382 2026-11-22T15:45:39.5491752Z     = note: `-D rustdoc::invalid-html-tags` implied by `-D warnings`
+8383 2026-11-22T15:45:39.5492697Z     = help: to override `-D warnings` add `#[allow(rustdoc::invalid_html_tags)]`
+8384 2026-11-22T15:45:39.5493147Z
+8385 2026-11-22T15:45:40.0021734Z error: could not document `formal-ai`
+8386 2026-11-22T15:45:40.0398324Z ##[endgroup]
+8387 2026-11-22T15:45:40.0399615Z ##[error]gate `check-rust-api-documentation` failed (exit status: 101); see data/meta/ci-gates/check-rust-api-documentation.lino

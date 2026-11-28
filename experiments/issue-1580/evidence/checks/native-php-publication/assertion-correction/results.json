@@ -1,0 +1,34 @@
+{
+  "head": "471816d4e0458527343be2783d939a7b308971bf",
+  "observedAt": "2026-11-18T12:59:05.936861+00:00",
+  "patchSha256": "8a930f4545dc60ed124bd6efeb140c434678063b791f318a2927d519804e9725",
+  "checks": [
+    {
+      "name": "rustfmt",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "/tmp/gh-issue-solver-1794900398048/rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "/tmp/gh-issue-solver-1794900398048/rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "reason": "Native evidence links use event IDs; exact evaluated expression remains asserted in links_notation.",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

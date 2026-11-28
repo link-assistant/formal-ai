@@ -1,0 +1,14 @@
+{
+  "observedAt": "2026-11-21T16:41:57.990142+00:00",
+  "sourceHead": "8c15185e617f0a0a38edc991224163ae281b1b42",
+  "archives": 355,
+  "maintainedTestsPassed": 208,
+  "javascriptGatesPassed": 88,
+  "javascriptGatesSkipped": 53,
+  "sourceWarnings": 55,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "formalSessions": 33,
+  "provenanceCutoff": "2026-11-21T15-45-52"
+}

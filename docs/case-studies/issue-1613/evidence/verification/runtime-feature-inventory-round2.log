@@ -1,0 +1,16 @@
+✔ every shared route remains visible and corpus declarations do not establish runtime parity (295.377842ms)
+✔ native command denominator is visibly unresolved rather than inferred from JS names (78.392417ms)
+✔ a missing or new route cannot disappear from the generated denominator (70.663419ms)
+✔ table extraction refuses dynamic, missing and ambiguous authoritative members (1.305776ms)
+✔ browser message ownership and dynamic response shapes fail closed (2.125135ms)
+✔ source changes force inventory regeneration without promoting evidence (324.602865ms)
+✔ CLI comparisons are actual AST selectors, not matching comment text (0.624705ms)
+✔ declarative feature rows stay one per line and generated-data tampering fails check (210.203285ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1669.5312

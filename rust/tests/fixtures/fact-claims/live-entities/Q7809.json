@@ -1,0 +1,153 @@
+{
+  "entities": {
+    "Q7809": {
+      "id": "Q7809",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "UNESCO"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ЮНЕСКО"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संयुक्त राष्ट्र शैक्षिक, वैज्ञानिक और सांस्कृतिक संगठन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "联合国教育、科学及文化组织"
+        },
+        "es": {
+          "language": "es",
+          "value": "UNESCO"
+        }
+      },
+      "claims": {
+        "P571": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P571",
+              "hash": "2e934a32e12a969a70c9d8256690b09b69d1e1fd",
+              "datavalue": {
+                "value": {
+                  "time": "+1945-11-16T00:00:00Z",
+                  "timezone": 0,
+                  "before": 0,
+                  "after": 0,
+                  "precision": 11,
+                  "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                },
+                "type": "time"
+              },
+              "datatype": "time"
+            },
+            "type": "statement",
+            "id": "Q7809$e33063e0-4f73-7e3b-6028-c9c0c52fbb29",
+            "rank": "normal",
+            "references": [
+              {
+                "hash": "9876b4af4f605efa5bf5388d13f1d8b058972a9b",
+                "snaks": {
+                  "P854": [
+                    {
+                      "snaktype": "value",
+                      "property": "P854",
+                      "hash": "9138d8075d87c403122ec4b4eb89b0c51c90dce8",
+                      "datavalue": {
+                        "value": "https://www.un.org/youthenvoy/2013/08/unesco-united-nations-educational-scientific-and-cultural-organization/",
+                        "type": "string"
+                      },
+                      "datatype": "url"
+                    }
+                  ],
+                  "P813": [
+                    {
+                      "snaktype": "value",
+                      "property": "P813",
+                      "hash": "a6e1d66416f9ffd370beb5b419e0ed5d4e7cec50",
+                      "datavalue": {
+                        "value": {
+                          "time": "+2024-11-27T00:00:00Z",
+                          "timezone": 0,
+                          "before": 0,
+                          "after": 0,
+                          "precision": 11,
+                          "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                        },
+                        "type": "time"
+                      },
+                      "datatype": "time"
+                    }
+                  ]
+                },
+                "snaks-order": [
+                  "P854",
+                  "P813"
+                ]
+              },
+              {
+                "hash": "b30664f6b6245e7596f3c3ea65335d8d623b95ac",
+                "snaks": {
+                  "P813": [
+                    {
+                      "snaktype": "value",
+                      "property": "P813",
+                      "hash": "936b0bf79b3a5966ceb745f0632f68e4cbad7597",
+                      "datavalue": {
+                        "value": {
+                          "time": "+2024-11-28T00:00:00Z",
+                          "timezone": 60,
+                          "before": 0,
+                          "after": 0,
+                          "precision": 11,
+                          "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                        },
+                        "type": "time"
+                      },
+                      "datatype": "time"
+                    }
+                  ],
+                  "P854": [
+                    {
+                      "snaktype": "value",
+                      "property": "P854",
+                      "hash": "8da49c1b1bec69502e6d3a15e37aad4fe1b74a0d",
+                      "datavalue": {
+                        "value": "https://hdl.handle.net/10796/85d8b00e-f6fa-48bd-af49-ea8775a039bc",
+                        "type": "string"
+                      },
+                      "datatype": "url"
+                    }
+                  ],
+                  "P1683": [
+                    {
+                      "snaktype": "value",
+                      "property": "P1683",
+                      "hash": "786fa5ef54731073d191e7e4709945354c209234",
+                      "datavalue": {
+                        "value": {
+                          "text": "1945-11-16",
+                          "language": "nl"
+                        },
+                        "type": "monolingualtext"
+                      },
+                      "datatype": "monolingualtext"
+                    }
+                  ]
+                },
+                "snaks-order": [
+                  "P813",
+                  "P854",
+                  "P1683"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

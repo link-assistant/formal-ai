@@ -1,0 +1,83 @@
+{
+  "sourceCommit": "e46254ac53c360e4c45652fa7abd63fb0d9ecad7",
+  "testedMergeCommit": "158c4151a2c66ecc5871d0370f11e19ef5e1dd9f",
+  "run": 45240466225,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/45240466225",
+  "runConclusion": "success",
+  "completeObservations": 922,
+  "modeledWorkers": 4,
+  "warningSeconds": 270,
+  "budgetSeconds": 360,
+  "runnerOverheadAllowanceSeconds": 30,
+  "unobservedFallbackSeconds": 0.4,
+  "rawLogSha256": "a0892fbafe15c724eba662993c4d1db18889731e04b06c7d9030182d97750df1",
+  "durationsSha256": "1c2199d9a117b2cfb1bde14fee580421907b90673f4d2477cd722cc0ad299024",
+  "priorSchedulingFloorSha256": "b735dcbadbdce0f5d8217d2b761d7d9d90db4271fef6442de1dfedbe27773f12",
+  "warnings": [
+    {
+      "shard": 9,
+      "warningSeconds": 270,
+      "rawLogLine": 3248,
+      "text": "2026-11-23T18:44:45.2134165Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."
+    },
+    {
+      "shard": 7,
+      "warningSeconds": 270,
+      "rawLogLine": 9514,
+      "text": "2026-11-23T18:44:51.2729677Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."
+    }
+  ],
+  "jobs": [
+    {
+      "job": "js tier (node --check over js, suite group 9)",
+      "id": 137923871744,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 4)",
+      "id": 137923871867,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 7)",
+      "id": 137923871880,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 1)",
+      "id": 137923871892,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 5)",
+      "id": 137923871916,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 8)",
+      "id": 137923871966,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 3)",
+      "id": 137923871970,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 2)",
+      "id": 137923872066,
+      "conclusion": "success"
+    },
+    {
+      "job": "js tier (node --check over js, suite group 6)",
+      "id": 137923872088,
+      "conclusion": "success"
+    }
+  ],
+  "executionProof": false,
+  "autonomousAuthorshipCredit": 0,
+  "schedulingFactor": 1.65,
+  "schedulingFactorScope": "proposed scheduling weights; not the measured run configuration",
+  "reserveProbeCandidates": 13,
+  "reserveProbeAllFitCohorts": 11
+}

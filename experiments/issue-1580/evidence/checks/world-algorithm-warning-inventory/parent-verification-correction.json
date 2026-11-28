@@ -1,0 +1,9 @@
+{
+  "originalInventoryCountsStillValid": true,
+  "initialAssertionUsedThreeNonexistentPaths": true,
+  "actualFiveParentPathsNowCheckedForExistenceWarningAbsenceAndLineCount": true,
+  "originalOutcomeSha256": "b8b0ad538e6e8c7dfb164e98f8814ecf4d2a45e250095d00432592995ab7019c",
+  "warningCount": 92,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

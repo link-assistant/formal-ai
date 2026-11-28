@@ -1,0 +1,17 @@
+[
+  {
+    "file": "package-batch-native-assessment.log.gz",
+    "rawSha256": "07adfb2a128a158e3f9f64ff115241bf60b1709cee6ce7f68e7140bf68d86a88",
+    "archiveSha256": "77b859108c1dc1bd10601c6bd4c9e2518a4af9ad1fb563f13098c7aaa048d8b4"
+  },
+  {
+    "file": "package-batch-native-assessment-corrected.log.gz",
+    "rawSha256": "7e55dd170210915ad0922bfcb2727f36febeb7865b1333617a21ab37bd35a347",
+    "archiveSha256": "f05186fc04fe6578a3986515ae8c084776c84c29313eac8675cd37d549ee007f"
+  },
+  {
+    "file": "package-batch-native-assessment-corrected-2.log.gz",
+    "rawSha256": "a0bdc8e516ef54a5c8391c0fd9bbc9a614ad24bd22fdf1669354b1ea2ec44008",
+    "archiveSha256": "efdb6cf40ecc025153178381e4f3b9c4a2cb6c45ad5387298cd5f8fe94e7509e"
+  }
+]

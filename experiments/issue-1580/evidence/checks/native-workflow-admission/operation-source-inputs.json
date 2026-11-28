@@ -1,0 +1,65 @@
+{
+  "probeExitCode": 0,
+  "sources": [
+    {
+      "path": ".github/workflows/release-staged.yml",
+      "sha256": "a041a93826b166f6557d1e303460e638382eebac301431864abd8b60c6b39e5a"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "sha256": "625cc84c5c2a9773e5e04d427590df6b4686d7ce15fb8c9cb5e80ebd61d0b9ad"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+      "sha256": "f37cb545b39492e1dd988b6cf1b25d328a47a06e1291a86eed47d37ab7ae631e"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+      "sha256": "625cc84c5c2a9773e5e04d427590df6b4686d7ce15fb8c9cb5e80ebd61d0b9ad"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+      "sha256": "8654a6bf8d2a9d26998971d3a87db2e3110ea86c2192e23967cc89b5f4db23ce"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+      "sha256": "81754b18b2cc927ed0e2b17562436747e8500bf9bba12b055a38b5da5910cf31"
+    },
+    {
+      "path": "scripts/checked-release-operation-view.mjs",
+      "sha256": "8c895156653bb3776e251dd862e5451c9e906370a1f475bf53e5e7db4a100098"
+    },
+    {
+      "path": "scripts/generate-staged-release.mjs",
+      "sha256": "269f1c6e635fadffd4c997d5ccac94991eb811d6a012efad04702694b43d9c44"
+    },
+    {
+      "path": "scripts/governed-github-command-provider.mjs",
+      "sha256": "3294bf7326e957108c0853ad732f320a0888854b2a421a9df2d71dc8a6da2148"
+    },
+    {
+      "path": "scripts/lib/ci-speed-workflows.mjs",
+      "sha256": "58c6cd40dbfa925b856416d87fd71873802f7aeb44e28d1cf91249533e609bf0"
+    },
+    {
+      "path": "scripts/maintained-staged-authority.mjs",
+      "sha256": "e3818f52e3c6ae6ac349cd81796b9a3dbbabb32b997f7273667f1c9ef5ccacd6"
+    },
+    {
+      "path": "scripts/native-staged-release-operation-view.mjs",
+      "sha256": "f865f7641f62ad249678c1ee2bba4262b4884ecc397d6f1943b5984aee597ac9"
+    },
+    {
+      "path": "scripts/refresh-release-specification-witness.mjs",
+      "sha256": "0b7e450262eab790c353c1d2b6725eb52b3b9973c7450f91dc7dd9b51b0c9382"
+    },
+    {
+      "path": "scripts/release-source-freshness.mjs",
+      "sha256": "7dbe7c30f32f38b6a6794c420d49f568e9d3860ea5454383a56e4c70583d1fae"
+    },
+    {
+      "path": "scripts/staged-caller-authority.mjs",
+      "sha256": "a247980d93cd92a7213680effcbcf2f7caacf6b4c260eb3ee8dc540a66f98403"
+    }
+  ]
+}

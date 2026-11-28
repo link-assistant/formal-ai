@@ -1,0 +1,17 @@
+{
+  "allPayloadHashesVerified": true,
+  "payloads": 93,
+  "executableGates": 86,
+  "explicitExclusions": 52,
+  "failedGates": 0,
+  "singleSourceIdentityChange": {
+    "path": "sourceManifest/116/sha256",
+    "source": "rust/tests/unit/specification/synthesis.rs",
+    "before": "257e83c8d00c70af9ce40adeb4708cc63fb778b103487d4accb0da9545e872b9",
+    "after": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93"
+  },
+  "completeInventoryDeepEqual": true,
+  "localNativeExecution": false,
+  "allDetailedGatePayloadsLiterallyRead": false,
+  "independentAuthorshipCredit": 0
+}

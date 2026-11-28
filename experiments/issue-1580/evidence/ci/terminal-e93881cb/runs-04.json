@@ -1,0 +1,36 @@
+[
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:36Z",
+      "databaseId": 44982575671,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:48Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575671",
+      "workflowName": "Source scanner qualification and debt inventory"
+    },
+    "file": "44982575671.log.gz",
+    "rawBytes": 52097,
+    "rawLines": 433,
+    "rawSha256": "d7d92a22544d1de777ea459ed9115ded4b44981b577a7de0ee379eccf390b656",
+    "archiveSha256": "2367747877ce1bc1c7a2b5bdd8e7b05cb56f0a8fc3d9403e22ef16ca83b0597e"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:36Z",
+      "databaseId": 44982575709,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T04:02:25Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575709",
+      "workflowName": "Layered CI"
+    },
+    "file": "44982575709.log.gz",
+    "rawBytes": 4808712,
+    "rawLines": 25778,
+    "rawSha256": "68374dbfe03fdc780da4e0d335940788e2e5659281e4014b9f686d693ace3a8a",
+    "archiveSha256": "b47b1a18881497368d99c878c87dfb4a2aad0cdd2ba73f8e82b92956a40ddab0"
+  }
+]

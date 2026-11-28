@@ -1,0 +1,130 @@
+[
+  {
+    "path": "rust/embedded/data/meta/restart-hygiene.lino",
+    "diff": "0191.diff",
+    "sha256": "47c668f24bc5aacff8084d90ff724d2c7fae37b5e7544033811927bb06c21dcf",
+    "bytes": 2232,
+    "lines": 20,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/embedded/data/seed/text-formalization.lino",
+    "diff": "0227.diff",
+    "sha256": "5e648166b64e1189278be09aea4a994dded9143d8c2c97da196629248dd44f28",
+    "bytes": 892,
+    "lines": 26,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/embedded/data/seed/workspace-discovery-contracts.lino",
+    "diff": "0228.diff",
+    "sha256": "f73dba3db33565dba7a5ab041ac9b2c064ac1fc95731a8c309045c307ba915b9",
+    "bytes": 1534,
+    "lines": 16,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/embedded/js/worker/formal_ai_worker.js",
+    "diff": "0229.diff",
+    "sha256": "932dc02ecee216434b1dcc671fae55eaa314231e950408f3a1b8d9f57eb59371",
+    "bytes": 590,
+    "lines": 12,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/examples/generate_grammar_projection_rules/main.rs",
+    "diff": "0231.diff",
+    "sha256": "95426ad71e5188b3152db133fb122270ba29e295880aea49c21ce0f54269a42b",
+    "bytes": 1004,
+    "lines": 22,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/agentic_coding/file_read/source.rs",
+    "diff": "0241.diff",
+    "sha256": "da69e3b31e56c1a736651a3d5bf6c519e70d0285c3d6521eba892001040c199c",
+    "bytes": 1407,
+    "lines": 34,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "rust/src/agentic_coding/progress/fetch_read_receipt.rs",
+    "diff": "0253.diff",
+    "sha256": "2f70534038da3b4a76b8719384f63627eb95296c877ba99153384ce9fb42f114",
+    "bytes": 2345,
+    "lines": 57,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/agentic_coding/progress/work_item_read_receipt.rs",
+    "diff": "0254.diff",
+    "sha256": "ab8c68a5f5726095a22192fa80b02bb4373996a146c806bc57d53201b5ef9975",
+    "bytes": 2946,
+    "lines": 70,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/agentic_coding/recipe_resume.rs",
+    "diff": "0255.diff",
+    "sha256": "fe3e67e746ec068353a9b3afff139c4e2ee22089b5a0c65f57910a5158e8d8ea",
+    "bytes": 4667,
+    "lines": 115,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "rust/src/agentic_coding/report_issue.rs",
+    "diff": "0258.diff",
+    "sha256": "90ee96c5dccd945d66677dd93a8f5ec346bc829058a6349f37e804810edcea1c",
+    "bytes": 738,
+    "lines": 19,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/agentic_coding/tool_result.rs",
+    "diff": "0264.diff",
+    "sha256": "a8113b18202c3c6a405427c5dae69781c285309477b4c9b9f92a061f098f001d",
+    "bytes": 2524,
+    "lines": 66,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/agentic_coding/tool_result/quotation.rs",
+    "diff": "0265.diff",
+    "sha256": "5b4f0bd54575e4ec49710b1b75a37f52d42b2317191bcf00fc5d75b7a820dc67",
+    "bytes": 1843,
+    "lines": 47,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/agentic_coding/tool_result/source_observation.rs",
+    "diff": "0266.diff",
+    "sha256": "b416ee226ba55901df22f3fdcaa7265d281466fa8d107317aaf110a49e253090",
+    "bytes": 3596,
+    "lines": 92,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "rust/src/cnl_output.rs",
+    "diff": "0282.diff",
+    "sha256": "aa60bae8ec67da3c89765abfd3924c2ec5579008f82787703572505c7d4b4880",
+    "bytes": 906,
+    "lines": 26,
+    "carriedExactDiffReview": true
+  },
+  {
+    "path": "rust/src/coding/composition.rs",
+    "diff": "0285.diff",
+    "sha256": "e07f044d3bc0e7bdf8cabb31b270dcf4bc32411dba92368f7be2d5a1883368de",
+    "bytes": 5094,
+    "lines": 124,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "rust/src/coding/composition/ir_draft.rs",
+    "diff": "0286.diff",
+    "sha256": "0fc211ee59a56acd257b079ca49f7b12cc3ec12069544997cdd2544c11cad138",
+    "bytes": 4117,
+    "lines": 105,
+    "carriedExactDiffReview": false
+  }
+]

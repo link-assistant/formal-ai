@@ -35,6 +35,36 @@ the gate or appear as a user change. See [Output and
 sessions](output-sessions.md#software-authoring-completion-records) for the
 strict NDJSON result contract.
 
+### Repair proposals and reviewed records
+
+The agentic repair recipes take structured data in a final fenced `json` block.
+The request above the block selects the operation. Paths refer to owned Rust
+source and start with `src/`, relative to the crate root.
+
+| Request | JSON fields |
+| --- | --- |
+| Record a repair case | `source_module` and one `trace` |
+| Classify a failure and produce a repair strategy | `traces`, an array of one to 32 traces |
+| Change Formal AI | `request`, the proposed change text, and `target_module` |
+| Reattach the improved worker | `change_id`, the approved change to plan |
+
+Each trace has the original `prompt` and an `events` array of one to 128
+entries. Each entry has a supported solver event `kind` and a text `payload`.
+The input block is limited to 128 KiB. Repair cases record the trace and a
+verified source round trip. A submitted trace leaves the benchmark gate absent.
+Any proposed lesson therefore requires separate benchmark and human review.
+
+The operator can set `FORMAL_AI_ACCEPTED_CHANGES` to a JSON array file with
+reviewed changes. Each row contains `change_id`, `request`, `requirement`,
+`target_module`, `test`, `reviewer`, `benchmark_suite`, and a positive integer
+`benchmark_passed`. The request matches exactly one row. The resulting
+document describes the build, swap, verification, and rollback steps.
+
+`FORMAL_AI_APPROVED_LESSONS` points to the operator's approved Links Notation
+ledger. The native solver consults it for matching prompts, and either planner
+can export it for inspection. With no configured ledger, the export has zero
+lessons. Each review file has a 1 MiB limit.
+
 ### Permission-gated orchestration controller
 
 Explicit controller runs add a canonical permission boundary, verification

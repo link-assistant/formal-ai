@@ -1,0 +1,54 @@
+[
+  {
+    "gate": "check-file-size",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0,
+    "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-file-size.log.gz",
+    "sha256": "ac0b6ac0bdfcbdc675934d0fcab399b650dfed7e41fbfb38a6a309040054cfce",
+    "lines": 3
+  },
+  {
+    "gate": "check-file-size-js-twin",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "exitCode": 0,
+    "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-file-size-js-twin.log.gz",
+    "sha256": "b22af0da649a94974f157e9bad79f3e30e0a042b799c7f2dfe71e319e1e73d22",
+    "lines": 3
+  },
+  {
+    "gate": "check-changelog-fragment-js-twin",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-changelog-fragment-js-twin"
+    ],
+    "exitCode": 0,
+    "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-changelog-fragment-js-twin.log.gz",
+    "sha256": "df3aa41c72cf4173daba10137140060a440817c92a38088cca94986a20c2b63b",
+    "lines": 3
+  },
+  {
+    "gate": "check-ci-speed",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-ci-speed"
+    ],
+    "exitCode": 0,
+    "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-ci-speed.log.gz",
+    "sha256": "9e93e1a73e6ed14ad3d1b9f991faef7fd2352b355f6f42e14e9c11aebffd7663",
+    "lines": 3
+  }
+]

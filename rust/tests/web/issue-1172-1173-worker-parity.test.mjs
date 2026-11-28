@@ -11,6 +11,7 @@ import path from "node:path";
 import { test } from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+import { loadHistoricalFactFixtures } from "./support/fact-fixtures.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 
@@ -31,7 +32,7 @@ const worker = createWorkerContext({
     return { ok: false, status: 404, text: async () => "" };
   },
 });
-const ready = evaluate(worker, "loadSeed()");
+const ready = loadHistoricalFactFixtures(worker);
 
 async function solve(prompt) {
   await ready;

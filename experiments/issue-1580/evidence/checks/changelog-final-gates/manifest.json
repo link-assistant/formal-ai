@@ -1,0 +1,38 @@
+{
+  "counts": {
+    "PASS": 89,
+    "FAIL": 0,
+    "SKIP": 53
+  },
+  "nativeExecutionClaim": false,
+  "files": [
+    {
+      "name": "all-gates.stdout.gz",
+      "bytes": 6940,
+      "lines": 144,
+      "sha256": "c98b990034607de4190cf44ce045f405c4c051963cd02ac6787f4569702cdcb0",
+      "retainedSha256": "ef1b3b0c75a735739e5a6bbebb1a90807de3f35552be7f4110a6050b01164a6d"
+    },
+    {
+      "name": "all-gates.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "outcome.json",
+      "bytes": 219,
+      "lines": 10,
+      "sha256": "d7b2a02cc0be72522384a2ca8fff41910ce18f0c7a3d232e9a49327b821007bf",
+      "retainedSha256": "d7b2a02cc0be72522384a2ca8fff41910ce18f0c7a3d232e9a49327b821007bf"
+    },
+    {
+      "name": "worker.py",
+      "bytes": 648,
+      "lines": 7,
+      "sha256": "570024cec2efcb80f89a71f3c5fdc8fdc5f104ce5d8df65f0abc3512f7de1e4e",
+      "retainedSha256": "570024cec2efcb80f89a71f3c5fdc8fdc5f104ce5d8df65f0abc3512f7de1e4e"
+    }
+  ]
+}

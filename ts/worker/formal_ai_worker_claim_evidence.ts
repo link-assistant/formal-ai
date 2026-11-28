@@ -95,11 +95,9 @@ function claimEvidenceRecallQueryTerm(normalized) {
   }));
 }
 
-/** Whether a seeded summary topic's detection keyword occurs (Rust `SummaryTopicSeeds::pick_topic`). */
+/** Whether the request names a subject (Rust `SummaryTopicSeeds::subject`). */
 function claimEvidenceSummaryTopic(normalized) {
-  const text = seedRawText(SEED_RAW, "summary-topics.lino") || "";
-  return text.split("\n").filter((line) => /^\s+detection_keywords /u.test(line))
-    .some((line) => [...line.matchAll(/"([^"]+)"/gu)].some((match) => String(normalized || "").includes(match[1])));
+  return Boolean(summarySubject(summaryTopicSeeds(), String(normalized || "")));
 }
 
 /** A document the originality check reads: an attachment, a text sample or a supplied payload (Rust `names_document_operand`). */
@@ -164,10 +162,8 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
     || shellTransformLoopCommand(String(prompt || "")) !== null,
   // (c) The specification a composer builds from.
   composition_topic: (prompt, normalized) => creativeTopicWords(normalized, detectLanguage(String(prompt || ""))).length > 0,
-  advice_topic: (prompt, normalized) => creativeRecords("advice_topic").some((record) => childValue(record, "topic").length > 0
-    && creativeChildValues(record, "surface").some((surface) => normalized.includes(surface))),
-  cached_destination: (prompt, normalized) => creativeDestinations().some((entry) =>
-    entry.surfaces.some((surface) => normalized.includes(surface.toLowerCase()))),
+  advice_observations: (prompt) => suppliedCreativeAdvice(prompt) !== null,
+  destination_observations: (prompt) => suppliedCreativePlaces(prompt) !== null,
   pattern_constraints: (prompt) => {
     const scan = regexSynthesisScanMentions(String(prompt || "").toLowerCase());
     return regexSynthesisCompose(scan.classes, scan.separators) !== null;
@@ -176,11 +172,11 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
     .map((token) => token.replace(/^[^\p{L}\p{N}_]+|[^\p{L}\p{N}_]+$/gu, "")).filter((token) => token !== "")) !== null,
   filesystem_object: (prompt) => shellComposeSedSubstitution(prompt) !== null
     || codeTaskTokens(String(prompt || "").toLowerCase()).some((token) => codeTaskMapWords("file_context").includes(token)),
-  function_spec: (prompt) => extractPythonFunctionName(prompt) !== "" || Boolean(recurrenceSourceMatch(prompt)),
-  script_language: (prompt) => {
-    const language = programLanguageFromPrompt(normalizeProgramPrompt(prompt));
-    return Boolean(language && writeProgramTemplate("hello_world", language));
-  },
+  function_spec: (prompt, normalized) => looksLikePythonFunctionSynthesis(prompt, normalized)
+    && (extractPythonFunctionName(prompt) !== "" || claimEvidenceContentBeyond(prompt, [
+      "coding_request_verb", "coding_request_object", ROLE_PROGRAM_SYNTHESIS_SUBJECT, "program_language_alias",
+    ])),
+  script_language: (prompt, normalized) => writeScriptLanguage(prompt, normalized) !== null,
   program_task: (prompt) => writeProgramParameters(prompt) != null,
   document_format: (prompt) => documentPlanFormat(String(prompt || "").toLowerCase()) !== null,
   install_steps: (prompt, normalized) => claimEvidenceInstallSteps(prompt, normalized),
@@ -208,20 +204,20 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   recall_query_term: (prompt, normalized) => claimEvidenceRecallQueryTerm(normalized),
   supplied_payload: (prompt) => claimEvidencePayload(prompt) !== "",
   summary_topic: (prompt, normalized) => claimEvidenceSummaryTopic(normalized),
-  brainstorm_category: (prompt, normalized) => ((BRAINSTORM_SEEDS || {}).categories || [])
-    .some((category) => containsAny(normalized, category.detectionKeywords)),
-  persona_or_topic: (prompt, normalized) => ((PERSONA_SEEDS || {}).personas || []).some((persona) => containsAny(normalized, persona.aliases))
-    || ((PERSONA_SEEDS || {}).topics || []).some((topic) => containsAny(normalized, topic.detectionKeywords)),
+  brainstorm_topic: (prompt, normalized) => creativeTopicWords(
+    brainstormRequestTopic(BRAINSTORM_SEEDS || {}, normalized), detectLanguage(prompt),
+  ).length > 0,
+  roleplay_facts: (prompt) => roleplayFacts(roleplayRequest(prompt)) !== null,
   document_operand: (prompt) => claimEvidenceDocumentOperand(prompt),
   translation_text: (prompt) => Boolean(extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt)
     || /`[^`]+`/u.test(String(prompt || "")) || textTransformFreeTextPayload(prompt)),
-  triz_precedent: (prompt) => trizRelevantTasks(prompt, trizBenchmarkTasks()).length > 0,
-  algorithm_operation: (prompt) => operationMatchesSlug("sort", normalizePrompt(String(prompt || "").toLowerCase())),
+  triz_demands: (prompt) => trizDemands(prompt) !== null,
+  algorithm_operation: (prompt, normalized) => ["sort", "reverse_sort"].some((slug) => operationMatchesSlug(slug, normalized)),
   source_reference: (prompt) => firstUrlCandidate(prompt) !== null || /(^|\s)[\w.-]*\/[\w.\/-]+/u.test(String(prompt || "")),
   stated_claim: (prompt) => claimEvidenceStatedClaim(extractProofClaim(normalizePrompt(prompt))),
   assistant_subject: (prompt, normalized) => claimEvidenceAddressesAssistant(normalized) || !claimEvidenceNamesOtherSubject(prompt),
   memory_query_statement: (prompt) => claimEvidenceMemoryQueryStatement(prompt),
   fact_subject: (prompt, normalized) => Boolean(gatedFactRecord(normalized, prompt) || explanationConcept(prompt)
-    || tryPromptTextQuestion(prompt, normalized) || tryFactComparison(prompt, normalized)),
+    || tryPromptTextQuestion(prompt, normalized) || factLiveQuestion(prompt) || factComparisonSubjects(normalized)),
   learnable_source: (prompt) => matchLearningDirective(String(prompt || "").toLowerCase()) !== null,
 });

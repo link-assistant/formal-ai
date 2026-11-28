@@ -241,7 +241,11 @@ fn every_javascript_lock_surface_has_one_explicit_advisory_gate() {
     assert!(gate.contains("stage web"));
     assert!(gate.contains("scripts/check-javascript-dependencies.sh"));
     assert!(script.contains("git ls-files"));
-    assert!(script.contains("$NF == name"));
+    // 1cc2d536a replaced the `awk '$NF == name'` filter with a basename match
+    // over an inventory captured before any audit starts, so a failing
+    // `git ls-files` can no longer hide behind a process substitution.
+    assert!(script.contains("tracked_files=\"$(git ls-files --"));
+    assert!(script.contains("[[ \"${lock##*/}\" == \"$lock_name\" ]] || continue"));
     assert!(script.contains("queue_locks \"bun.lock\" bun audit"));
     assert!(script.contains("queue_locks \"package-lock.json\" npm audit"));
     // Queueing an audit is not running one. Both surfaces are audited concurrently,

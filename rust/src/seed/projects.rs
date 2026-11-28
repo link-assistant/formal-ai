@@ -1,27 +1,24 @@
-//! Curated GitHub-project registry loaded from `data/seed/projects.lino`.
+//! GitHub repository identities loaded from `data/seed/projects.lino`.
 //!
 //! Each `project_*` entry encodes one open-source project from the promoted
-//! repository organizations. The entry carries
-//! everything that project lookup call sites need to
-//! describe the project at any summarization length:
+//! repository organizations. The shipped entries carry repository selectors,
+//! language and category hints, display names, topics and aliases.
 //!
 //! - identity metadata (`org`, `name`, `display_name`, `url`),
 //! - the primary programming `language`,
 //! - a coarse `category` and a list of `aliases` (pipe-delimited),
-//! - a 1–5 word `topic` used by the topic-mode summarizer,
-//! - any number of `statement "..."` blocks, each tagged with a `kind`
-//!   (purpose, feature, language, identity, install, example, misc) and a
-//!   numeric `weight` (0–100) so the summarizer can keep the highest-weighted
-//!   statements when the caller asks for a tighter response.
+//! - a 1–5 word `topic` used by the topic-mode summarizer.
+//!
+//! Records passed to the summarizer may also have `statement "..."` blocks
+//! tagged with a `kind` and a numeric `weight` so the summarizer can keep
+//! the highest-weighted statements when the caller asks for a shorter response.
 //!
 //! Optional `localized "<lang>"` blocks override `display_name` and the
 //! statement list per language. Empty fields fall back to the outer English
 //! values so a localization only needs to differ where it actually does.
 //!
-//! `project_lookup` treats this registry as the authoritative source for
-//! promoted project answers: when the prompt asks about `Hive Mind` /
-//! `hive-mind` (or any other registered project), the answer starts from the
-//! curated statements here before any fallback web search.
+//! Project lookup uses the registry to identify a repository and obtains its
+//! description through source capture.
 
 use super::PROJECTS_LINO;
 use super::parser::{LinoNode, parse_lino, split_pipe_list};
@@ -69,6 +66,8 @@ pub struct ProjectRecord {
     pub name: String,
     pub display_name: String,
     pub url: String,
+    pub assistant_project: bool,
+    pub origin_declaration: String,
     pub language: String,
     pub category: String,
     pub aliases: Vec<String>,
@@ -226,6 +225,8 @@ pub fn projects_registry() -> ProjectsRegistry {
             name: entry.find_child_value("name").to_string(),
             display_name: entry.find_child_value("display_name").to_string(),
             url: entry.find_child_value("url").to_string(),
+            assistant_project: entry.find_child_value("assistant-project") == "true",
+            origin_declaration: entry.find_child_value("origin-declaration").to_string(),
             language: entry.find_child_value("language").to_string(),
             category: entry.find_child_value("category").to_string(),
             aliases,

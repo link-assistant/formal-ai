@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "modulePaths": [
+    {
+      "parent": "rust/src/world_model.rs",
+      "child": "rust/src/world_model/dialogue_memory.rs",
+      "originalLines": 1000,
+      "parentLines": 815,
+      "childLines": 195,
+      "parentSha256": "6fddd0c84ddcdeff8bffa7db438e66a289bb383fc49cf15ab9e81a999e94d1ad",
+      "childSha256": "d989b5eb0f11f3f82e53dcbfc18fb137d765274a874ebef5080858d63489d0b1",
+      "movedBodyNormalizationInverse": true,
+      "parentDeclaredTransformationOnly": true
+    },
+    {
+      "parent": "rust/src/algorithm_discovery.rs",
+      "child": "rust/src/algorithm_discovery/evidence.rs",
+      "originalLines": 973,
+      "parentLines": 811,
+      "childLines": 171,
+      "parentSha256": "bcc9ccb2cd8d2f0e8ee3ddcbfb06314faf323f96ce9decc8b41a1fc588dee789",
+      "childSha256": "eb83da31dbb2cadb57c16bde6451924a503475c4dd359aa3474fedfabcda2e32",
+      "movedBodyNormalizationInverse": true,
+      "parentDeclaredTransformationOnly": true
+    }
+  ],
+  "publicPathsPreserved": true,
+  "localRustExecution": false,
+  "hostedNativeQualificationPending": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

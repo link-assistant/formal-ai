@@ -1,0 +1,42 @@
+{
+  "entries": 513,
+  "parts": [
+    {
+      "file": "records-part-1.json",
+      "sha256": "7ad3778c1edb905175f1df3ba46683d4239d4bf19a0c5719cdbf9f24ce9243ec",
+      "entries": 80
+    },
+    {
+      "file": "records-part-2.json",
+      "sha256": "d53a5fd5c58e7e16abacc8b926835607eb90ce6d832f58be042e889d57918420",
+      "entries": 80
+    },
+    {
+      "file": "records-part-3.json",
+      "sha256": "7acd3ca8c1c83fd914c93e8f833b45594a79272aaa370c7aff5bd5b9ce84b9fe",
+      "entries": 80
+    },
+    {
+      "file": "records-part-4.json",
+      "sha256": "54564cabdd32ceba20efac98e13b1e7eeb4d2a577740ff202679dc2af3c13aa1",
+      "entries": 80
+    },
+    {
+      "file": "records-part-5.json",
+      "sha256": "7175bd1cefd56507f24c7039f76bf6bde90583b1bc1b7fd6c2ecdb8359ab1df0",
+      "entries": 80
+    },
+    {
+      "file": "records-part-6.json",
+      "sha256": "9b013340788668b07fb1715b28ab9a5c6df5f6ac4b4878729a86bdacc6814651",
+      "entries": 80
+    },
+    {
+      "file": "records-part-7.json",
+      "sha256": "357d44fe230ffd51bf7f27a7fb503dec2913c0fe67bd428329b6406c34bf50f3",
+      "entries": 33
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

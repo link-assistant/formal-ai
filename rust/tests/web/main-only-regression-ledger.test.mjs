@@ -5,6 +5,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import YAML from 'yaml';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -61,8 +62,7 @@ test('every recorded regression is complete and unique', () => {
 });
 
 test('each check exists, runs before merge and still carries the replay', () => {
-  const release = read('.github/workflows/release.yml');
-  const nativeJob = release.slice(release.indexOf('\n  native-type-check:\n'));
+  const nativeJob = YAML.parse(read('.github/workflows/release.yml')).jobs['native-type-check'];
   for (const entry of ledger) {
     assert.ok(existsSync(join(ROOT, entry.check)), `${entry.id}: ${entry.check} exists`);
     assert.ok(inventory.has(entry.check), `${entry.id}: ${entry.check} runs in the fast pull-request inventory`);
@@ -70,9 +70,11 @@ test('each check exists, runs before merge and still carries the replay', () => 
     if (entry.workflow !== undefined) {
       assert.ok(existsSync(join(ROOT, entry.workflow)), `${entry.id}: ${entry.workflow} exists`);
       // release.yml calls the reusable native check on pull requests (and only off main).
-      const job = nativeJob.slice(0, nativeJob.indexOf('\n  lint:\n'));
-      assert.ok(job.includes(`uses: ./${entry.workflow}`), `${entry.id}: release.yml calls ${entry.workflow}`);
-      assert.match(job, /if: \$\{\{ !cancelled\(\) && \(github\.event_name == 'pull_request'/u);
+      assert.equal(nativeJob.uses, `./${entry.workflow}`, `${entry.id}: release.yml calls ${entry.workflow}`);
+      assert.ok(nativeJob.needs.includes('fast-pr-lint'));
+      for (const condition of ["!cancelled()", "needs.fast-pr-lint.result == 'success'",
+        "needs.fast-pr-lint.outputs.tested-sha == github.sha", "github.event_name == 'pull_request'",
+        "github.ref != 'refs/heads/main'"]) assert.ok(nativeJob.if.includes(condition), condition);
     }
   }
 });

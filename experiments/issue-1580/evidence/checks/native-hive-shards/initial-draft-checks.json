@@ -1,0 +1,81 @@
+[
+  {
+    "name": "hive-shards",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "experiments/issue-1580/native-regression-groups.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 6.556008706102148,
+    "file": "initial-draft-hive-shards.log.gz",
+    "rawSha256": "522c91df45799efd1ce3846655bd1ad043d842b3ad707be9d673dee979c6d492",
+    "archiveSha256": "d5845ea9a1c965faab611e573bb3a1bb2ea242a711af43f5c514f0f9a3f158dd",
+    "nodeOptionsEnvironmentAbsent": true
+  },
+  {
+    "name": "maintained-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 10.892024792032316,
+    "file": "initial-draft-maintained-policy.log.gz",
+    "rawSha256": "c546209387572509cc9c9c8c1fd84fb276b2d7992b4d2227138b6e3cae32d05f",
+    "archiveSha256": "40a193b244457242a91826726404e44744d5eb97205c6f8ac6f41e3439e55ed9",
+    "nodeOptionsEnvironmentAbsent": true
+  },
+  {
+    "name": "shell-syntax",
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/ci-native-regressions.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.008438010001555085,
+    "file": "initial-draft-shell-syntax.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "nodeOptionsEnvironmentAbsent": true
+  },
+  {
+    "name": "shellcheck",
+    "argv": [
+      "shellcheck",
+      "scripts/ci-native-regressions.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.19258950999937952,
+    "file": "initial-draft-shellcheck.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "nodeOptionsEnvironmentAbsent": true
+  },
+  {
+    "name": "http-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/integration/http_server.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.11506682098843157,
+    "file": "initial-draft-http-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "nodeOptionsEnvironmentAbsent": true
+  }
+]

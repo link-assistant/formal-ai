@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "head": "aca32b1aa27aee55f1d9443f54d6a1c08f77ccb0",
+  "workflowCount": 24,
+  "success": 24,
+  "failed": [],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "collectorRecovery": "Initial collector stopped on transient HTTP 502; original failure retained and remaining requests resumed with three bounded transient retries."
+}

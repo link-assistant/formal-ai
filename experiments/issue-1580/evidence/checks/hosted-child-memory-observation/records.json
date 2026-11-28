@@ -1,0 +1,84 @@
+{
+  "observedAt": "2026-11-20T21:01:16.296517+00:00",
+  "entries": [
+    {
+      "file": "assess-hosted-child-memory-macro-observations.py.gz",
+      "rawSha256": "5a7a1ff9dc0e68f16f2732f99b89ac0cb0a94fe8df7baadc8a65d66ad5fd2d46",
+      "archiveSha256": "dea27e22c81c87d71cea7b017ff6e923ed5a1232bbf800670d1bc2a7d4b2d02b",
+      "bytes": 7464,
+      "lines": 148
+    },
+    {
+      "file": "assess-hosted-child-memory-macro-observations.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "assess-hosted-child-memory-macro-observations.stdout.gz",
+      "rawSha256": "f0993658c6d040f3b5e955f19b1b27f364db83db5af206b0f39fb8bcccad57cf",
+      "archiveSha256": "68c12107bd971834c84cc5022d97e3cbe4739f97e0539d2223eb2fb91c4966cd",
+      "bytes": 3893,
+      "lines": 47
+    },
+    {
+      "file": "assess-hosted-child-memory-producer.log.gz",
+      "rawSha256": "5c72eec2ef60bbeb947378208ade7b9990d3e2fcdd51c74d0e60de0924ec6851",
+      "archiveSha256": "86e89d0bd3c910b995f2963203841d37a9975c67fa8de3d7c47d648ca6ce3524",
+      "bytes": 4172,
+      "lines": 51
+    },
+    {
+      "file": "assess-hosted-child-memory-producer.py.gz",
+      "rawSha256": "372fc826a33a348a0c69a22d5bab32b8c8c885de35ba04d48e29f57dfb918221",
+      "archiveSha256": "b830b1c894ef0b6e7fdb0c0d963d3a851609f7c9b24630a4ad32feee453bc66b",
+      "bytes": 3832,
+      "lines": 66
+    },
+    {
+      "file": "outcome.json.gz",
+      "rawSha256": "d891feb7e5c429c37976d3ddf2470a6b65f145982faf7f88c206f911d72e3fd5",
+      "archiveSha256": "edae2aaa90a130fa67f6a0a6ea7545c058b485a74dad3f42af60d19fb8abb9a5",
+      "bytes": 299,
+      "lines": 10
+    },
+    {
+      "file": "worker.log.gz",
+      "rawSha256": "f5d864c2ebc03141ebdd5db1d19c7295c8bfbc9e55dabb6f81cff93706128fa5",
+      "archiveSha256": "199a0774845df6ca9a42e92fb03b96d9a96801eb8c67cbdc870b5bc79ed4af52",
+      "bytes": 281,
+      "lines": 1
+    },
+    {
+      "file": "collect-child-memory-producer-reports.py.gz",
+      "rawSha256": "df3805f36f43cbfedf31b2ee958cfd6fc465dd0d91be9b57814edb7c6ab4fc6e",
+      "archiveSha256": "72a9b87e3119e6c4ce2a0512d0005e68047de9bd236397d146aa2a116b727eb5",
+      "bytes": 5488,
+      "lines": 90
+    },
+    {
+      "file": "read-hosted-child-memory-streams.log.gz",
+      "rawSha256": "b4b2e2159c5095aa84078476ecfcf2b36dde893f7bb11e7a64cef5cbdcb101a5",
+      "archiveSha256": "2bcdb40d3104de32744a3fdd200a3f4dc161e08b5161301b7479db91481be193",
+      "bytes": 7894,
+      "lines": 165
+    },
+    {
+      "file": "read-hosted-child-memory-streams.py.gz",
+      "rawSha256": "abd068c648da0f40337589c33ad5078f34e6b8f9796b02089b197217a1c0272d",
+      "archiveSha256": "b36831f0e3eee0c7f4d9abfc7e3198a37aff691411cd53195bed61dc769703b7",
+      "bytes": 1242,
+      "lines": 24
+    },
+    {
+      "file": "record-hosted-child-memory-result.py.gz",
+      "rawSha256": "98a58089095d45192a317aea1483fd9571a6379886d1db49b47339339f430d1e",
+      "archiveSha256": "d1466a28f16b8a294f178cf20b972a223eec14ad6cd97c4675297c42f0b75e04",
+      "bytes": 4617,
+      "lines": 65
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

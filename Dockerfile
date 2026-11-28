@@ -28,9 +28,8 @@ RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-
 # 419s and 355s, and it gates the pipeline's finish on its own.
 #
 # The stand-in sources exist because `cargo build` needs the targets its
-# manifest declares. `build.rs` is copied for real -- it reads
-# `data/seed/api-cache/` and emits an empty registry when absent, which is the
-# case in this build, so it does not pull the data tree into this layer.
+# manifest declares. The same `build.rs` generates the owned-source manifest
+# for these stand-ins and for the real source tree in the next layer.
 # Plan 16 L1 moved the crate to `rust/`, so the manifests and the stand-in
 # sources are staged under /app/rust and cargo runs against that manifest.
 COPY rust/Cargo.toml rust/Cargo.lock rust/build.rs rust/
@@ -79,7 +78,7 @@ FROM konard/box-dind:2.10.2
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
 
 ENV HOME=/home/box \
-    FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+    FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino \
     FORMAL_AI_IMAGE_VARIANT=dind \
     FORMAL_AI_START_ISOLATION=docker \
     FORMAL_AI_START_RUNNER="$ --isolated docker --auto-remove-docker-container --" \
@@ -133,9 +132,11 @@ COPY scripts/verify-docker-runtime.sh /usr/local/bin/verify-formal-ai-dind
 COPY scripts/verify-docker-slim-runtime.sh /usr/local/bin/verify-formal-ai-slim
 RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind /usr/local/bin/verify-formal-ai-slim && \
     formal-ai --version
+# The DinD entrypoint runs commands as box. New volumes inherit this ownership.
+RUN install -d -m 0700 -o box -g box /home/box/.formal-ai
 
 EXPOSE 8080
-VOLUME ["/var/lib/docker", "/root/.formal-ai"]
+VOLUME ["/var/lib/docker", "/home/box/.formal-ai"]
 SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["/usr/local/bin/dind-entrypoint.sh"]
 CMD ["formal-ai", "telegram", "--mode", "polling"]

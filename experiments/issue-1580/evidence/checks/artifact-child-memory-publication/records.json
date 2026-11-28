@@ -1,0 +1,19 @@
+{
+  "schema": "issue-1580-artifact-child-memory-publication/v1",
+  "parts": [
+    {
+      "file": "records-part-1.json",
+      "entries": 90,
+      "sha256": "4b047c8960b60515f07c52d7737a8af488e89fea42e52430060832017176ad0c"
+    },
+    {
+      "file": "records-part-2.json",
+      "entries": 49,
+      "sha256": "f5a4cbd1f7b718e482f2567deb882e62ffc1faa0abea45bf34b3aaa43bec5cad"
+    }
+  ],
+  "entries": 139,
+  "allAggregateLinesLiterallyRead": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "name": "shell-syntax",
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/run-with-budget-warning.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.0069455369375646114,
+    "file": "shell-syntax.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "name": "focused-after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "experiments/issue-1580/budget-process-lifetime.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 7.830927261151373,
+    "file": "focused-after.log.gz",
+    "rawSha256": "933478667c6a1e279f5f48cec507312793bc5e78a1f49f4fd9f95922da3abec6",
+    "archiveSha256": "f77fbdd3bc6ea3c83add927b37f1fd4fcf3c638d7ac8ef98386b6bd82f5e22f7"
+  },
+  {
+    "name": "maintained-after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/release-workflow-scope-controls.test.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 16.629249117104337,
+    "file": "maintained-after.log.gz",
+    "rawSha256": "0dbd078db221d18be9f24f3926b1ec29e86469934987e1848d7083738532996c",
+    "archiveSha256": "f3a46ffca66366aeb9a38b0643cbff83b11e745b579fce8b687d8e134eff52f1"
+  }
+]

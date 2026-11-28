@@ -1,0 +1,13 @@
+{
+  "schema": "issue-1580-external-test-move/v1",
+  "source": "rust/src/agentic_coding/tool_result/source_observation.rs",
+  "test": "rust/tests/source/source_tests/agentic_coding/tool_result/source_observation/opencode_tests.rs",
+  "registration": "../../../tests/source/source_tests/agentic_coding/tool_result/source_observation/opencode_tests.rs",
+  "fixtureInclude": "../../../../../../embedded/data/parity/issue-1580-opencode-read-envelope.json",
+  "fixtureSha256": "dfaf6de3c1882a3dedfe16919974f24ec6522855204b566d8350ba0fa5276b4f",
+  "testBodyPreservedExceptRelativeInclude": true,
+  "originalTestBodySha256": "dd61005addfed3dae6f442a66dc09ac4e75584d76e31a459e4de18cecacc420d",
+  "movedTestBodySha256": "f60ecb362acdd023b1af60020d4f3b462e3721c1f5f276ca382b820860a97ce5",
+  "nativeExecution": false,
+  "beforeEvidence": "https://github.com/link-assistant/formal-ai/actions/runs/44180825006#summary"
+}

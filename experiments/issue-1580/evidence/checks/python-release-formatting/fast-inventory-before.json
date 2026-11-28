@@ -1,0 +1,16 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=fast inventory retains",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+  ],
+  "status": 1,
+  "expectedFailure": true,
+  "rawSha256": "18a447daf33ed296f40ef7718b3c76ddc74b8d3f01a74a9d67bf0250312955ca",
+  "log": "fast-inventory-before.log.gz"
+}

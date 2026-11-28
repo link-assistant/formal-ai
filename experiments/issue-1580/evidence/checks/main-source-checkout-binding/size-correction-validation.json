@@ -1,0 +1,34 @@
+{
+  "initialFailure": "Expanded diagnostic assessment exceeded 1500 lines; lossless gzip retained the complete evidence. Policy thresholds remain unchanged.",
+  "checks": [
+    {
+      "name": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "file": "gate-check-file-size-js-twin.log.gz",
+      "rawSha256": "28258401e18e28c4a7557825c1d6027eb20ff8a010dd2315d2f69f3f0f4f87c5",
+      "archiveSha256": "aa8791cb25f9d275f6ff3003585a00f73cce71fd71fc17a7371914480ab05315"
+    },
+    {
+      "name": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "file": "gate-check-file-size.log.gz",
+      "rawSha256": "c70149dfd8a5745ad3df0469325cac87cf82151e226df172e6ecc7e53b203dfe",
+      "archiveSha256": "6f7331a1aefc59ded020fb5c4561d697f15077f134cf3a2c2517f6df895805f6"
+    }
+  ],
+  "fullIssueComplete": false
+}

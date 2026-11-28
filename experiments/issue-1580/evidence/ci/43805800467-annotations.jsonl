@@ -1,0 +1,1 @@
+{"line": 2170, "text": "publish\tUNKNOWN STEP\t2026-11-16T04:46:27.4480430Z ##[warning]This extension consists of 1555 files, out of which 289 are JavaScript files. For performance reasons, you should bundle your extension: https://aka.ms/vscode-bundle-extension. You should also exclude unnecessary files by adding them to your .vscodeignore: https://aka.ms/vscode-vscodeignore."}

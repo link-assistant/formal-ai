@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-11-21T01:02:18.700224+00:00",
+  "main": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "mainAncestor": true,
+  "counts": {
+    "issue-comments": 1,
+    "conversation": 11,
+    "inline": 0,
+    "reviews": 0
+  },
+  "newFeedbackKinds": [],
+  "isDraft": true,
+  "publishedHead": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86",
+  "githubDiffUnavailable": "HTTP 406 maximum 300 files; full local diff against verified PR merge base retained instead",
+  "diff": {
+    "mergeBase": "53cbe4430f8b65330f47728401fc83b09977129f",
+    "file": "published-local.diff.gz",
+    "rawSha256": "44fccf5745a756988186d3461a31b942c655f390ec6ed1569291fde6e1568c54",
+    "bytes": 42541541,
+    "lines": 486867,
+    "literalReviewComplete": false
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

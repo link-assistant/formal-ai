@@ -1,0 +1,130 @@
+[
+  {
+    "path": "scripts/lib/requirements-traceability.mjs",
+    "diff": "0448.diff",
+    "sha256": "7fc660012e5f0a5c3e67da7dde9f83daf64e864f923458e7a62bf43bfa905e53",
+    "bytes": 1216,
+    "lines": 24,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/requirements-traceability.rs",
+    "diff": "0449.diff",
+    "sha256": "12cffa4b9d6164c235de24a6980015db8a70e579c499a96551b562546aed4add",
+    "bytes": 1049,
+    "lines": 25,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/lib/split-meaning-records.mjs",
+    "diff": "0450.diff",
+    "sha256": "3f094b460ce09f44ce2aa832b73e963bbc1df9f14c70b9970527e72e5b45a91f",
+    "bytes": 2690,
+    "lines": 52,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/list-fast-pull-request-tests.mjs",
+    "diff": "0451.diff",
+    "sha256": "1b6e8b142bf5239f646091905d4cd618673db68a2879de3b4d60e799bc070dbb",
+    "bytes": 1281,
+    "lines": 20,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/maintained-staged-authority.mjs",
+    "diff": "0452.diff",
+    "sha256": "20a594e028d349d2bfb6324834252c0a548a350606d9fb19a6a99da078a8b8d5",
+    "bytes": 3993,
+    "lines": 45,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/publish-crate.rs",
+    "diff": "0456.diff",
+    "sha256": "7156a9d9a40fd8f86a0d6cd1665c63b073929883409f17a75da5335a97deebd6",
+    "bytes": 1069,
+    "lines": 44,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/recheck-broken-links.mjs",
+    "diff": "0457.diff",
+    "sha256": "778588e1bf76f1ce0fb77e285c449c9a6fed6b6d808df4738c5afef6502ae1fb",
+    "bytes": 1568,
+    "lines": 39,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/regenerate-worker-receipt.mjs",
+    "diff": "0458.diff",
+    "sha256": "65f1219af5104e9ec7e0b685deda075ddd947a5d636b691243157f3b0ecb1109",
+    "bytes": 3599,
+    "lines": 55,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/run-ordered-javascript-tests.mjs",
+    "diff": "0461.diff",
+    "sha256": "d46d63bb9bc955d2bc61ddb000cfb98b71cdd6301a4edf6a7ec34023f27a1461",
+    "bytes": 979,
+    "lines": 17,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/run-zizmor.mjs",
+    "diff": "0464.diff",
+    "sha256": "202d87b37ad3ff983938a90afea35d5f3d2eb37c6fcb790b44a5d9dd6ff7f154",
+    "bytes": 2842,
+    "lines": 49,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/staged-caller-authority.mjs",
+    "diff": "0472.diff",
+    "sha256": "99798820d2d0d680ee127af4cdc8fdf39420ffe1b49d83905bda30740060575e",
+    "bytes": 3466,
+    "lines": 50,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/translate-es.mjs",
+    "diff": "0473.diff",
+    "sha256": "649eecaa5f42afe5b4b74121263846260030d5e9da1d8e49d56c44044a57394f",
+    "bytes": 725,
+    "lines": 13,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/version-and-commit-tests.rs",
+    "diff": "0474.diff",
+    "sha256": "3f5e7802545742d931050fa2b4292efcaceda07624f78077c8d3acb9b2eaeb29",
+    "bytes": 1886,
+    "lines": 58,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "scripts/wait-for-crate.rs",
+    "diff": "0477.diff",
+    "sha256": "d9c82751793b5bbb808f339372a79b8116dbbaa245d12e82f888087a997e7f94",
+    "bytes": 1283,
+    "lines": 50,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/agentic/capability_router.mts",
+    "diff": "0478.diff",
+    "sha256": "b6e905b73563777f626570d5786580fe906486ad42d7c69874f1d85af6a8b0f8",
+    "bytes": 2291,
+    "lines": 46,
+    "carriedExactDiffReview": false
+  },
+  {
+    "path": "ts/agentic/file_read/source.mts",
+    "diff": "0480.diff",
+    "sha256": "9c49c76a858ab82dba1ccaee3064f2719b59d0afca726b45ee65279898bbce50",
+    "bytes": 1043,
+    "lines": 18,
+    "carriedExactDiffReview": false
+  }
+]

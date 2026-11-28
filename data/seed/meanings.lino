@@ -141,7 +141,7 @@ meanings
     defined-by program
     role program_artifact
     role program_kind
-    lexeme en function func
+    lexeme en function functions func
     lexeme ru функция функцию функцией
     lexeme hi फ़ंक्शन फंक्शन
     lexeme zh 函数

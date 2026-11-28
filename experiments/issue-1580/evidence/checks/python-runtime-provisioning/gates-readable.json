@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-readable-code"
+  ],
+  "exitCode": 0,
+  "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/gates-readable.log.gz",
+  "uncompressedSha256": "54319afeab0e810814247c591776555bfec4239f8f997ebb8526482f23a60722"
+}

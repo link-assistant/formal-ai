@@ -1,6 +1,1 @@
-fn main() {
-    print!(
-        "{}",
-        formal_ai::agentic_coding::rebuild_plan::render_document()
-    );
-}
+include!("rebuild_and_reattach.rs");

@@ -10,6 +10,7 @@
 import { procedureWorkspace } from "./helpers/procedure-workspace.mjs";
 import { before, test } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { installNodeHost } from "../../../js/agentic/node-host.mjs";
@@ -17,6 +18,7 @@ import {host, installHost} from "../../../js/agentic/host.mjs";
 import {readSourceLinks, sourceFromLinks, ownedSourceLinks, writeSourceLinks} from "../../../js/meta/readable-source.js";
 import * as algorithmLearning from "../../../js/agentic/algorithm_learning.mjs";
 import * as procedure from "../../../js/agentic/procedure.mjs";
+import { planChatStep } from "../../../js/agentic/planner.mjs";
 import * as learningReport from "../../../js/agentic/learning_report.mjs";
 import * as associativeLearning from "../../../js/agentic/associative_learning.mjs";
 import * as selfHostingLearning from "../../../js/agentic/learning_report/self_hosting_learning.mjs";
@@ -26,6 +28,8 @@ import * as dreamingAudit from "../../../js/agentic/dreaming_audit.mjs";
 import * as questionCatalog from "../../../js/agentic/question_catalog.mjs";
 import * as googleTrendsCatalog from "../../../js/agentic/google_trends_catalog.mjs";
 import * as googleTrendsLearning from "../../../js/agentic/google_trends_learning.mjs";
+import { loadPromptTemplates } from "../../../js/agentic/crate/google_trends_feed.mjs";
+import { planGoogleTrendsCatalogStep } from "../../../js/agentic/document_recipe.mjs";
 import {
   candidateFromLinksNotation,
   candidateLinksNotation,
@@ -497,21 +501,26 @@ test("Agent CLI procedure localizes an honest unpersisted artifact", () => {
 
 // ---- learning reports (issues #686, #657, #709, ...) -----------------------
 
+const learningTask = (request, memory) => [request, "```lino", memory, "```"].join("\n");
+
 test("the associative report and answer match the committed Agent CLI session", () => {
   const recorded = session(
     "docs/case-studies/issue-686/agent-cli-session-associative-learning.json",
   );
   assert.equal(learningReport.route(recorded.task), associativeLearning.REPORT);
-  const document = associativeLearning.renderDocument();
+  const memory = read("data/meta/associative-learning-case.lino");
+  const task = learningTask(recorded.task, memory);
+  const document = associativeLearning.renderDocumentFrom(memory);
   assert.equal(document, recorded.steps[0].arguments.content);
   assert.equal(
     associativeLearning.finalAnswer(document),
     recorded.final_answer,
   );
-  const messages = [user(recorded.task)];
+  const messages = [user(task)];
   for (const step of recorded.steps) {
     const plan = learningReport.planReportStep(
       associativeLearning.REPORT,
+      task,
       messages,
       recorded.tools_advertised,
     );
@@ -522,11 +531,28 @@ test("the associative report and answer match the committed Agent CLI session", 
   }
   const final = learningReport.planReportStep(
     associativeLearning.REPORT,
+    task,
     messages,
     recorded.tools_advertised,
   );
   assert.equal(final.kind, "final");
   assert.equal(final.answer, recorded.final_answer);
+});
+
+test("the planner ranks supplied observations and asks for missing memory", async () => {
+  const request = "Rank our linked facts and save associative-learning-report.lino";
+  const tools = ["write_file", "run_command"];
+  const absent = await planChatStep([user(request)], tools);
+  assert.equal(absent.kind, "final");
+  assert.match(absent.answer, /fenced `lino` block/u);
+  const interrupted = await planChatStep([user(request + "\n```lino\ndemo_memory")], tools);
+  assert.equal(interrupted.kind, "final");
+  const memory = read("data/meta/associative-learning-case.lino").replaceAll('accessCount "2"', 'accessCount "8"');
+  const supplied = await planChatStep([user(learningTask(request, memory))], tools);
+  assert.equal(supplied.calls[0].tool, "write_file");
+  const artifact = JSON.parse(supplied.calls[0].arguments);
+  assert.equal(artifact.content, associativeLearning.renderDocumentFrom(memory));
+  assert.match(artifact.content, /reads "9"/u);
 });
 
 test("the associative report is derived from persisted usage, not canned", () => {
@@ -583,7 +609,7 @@ test("self-hosting and search-fusion reports are derived and review gated", () =
       .finalAnswer(first)
       .includes("human-review-gated report"),
   );
-  const report = searchFusionLearning.renderDocument();
+  const report = searchFusionLearning.renderDocumentFrom(read("data/meta/issue-709-search-fusion-learning.lino"));
   assert.ok(
     report.startsWith('search_fusion_learning_report\n  issue "709"\n'),
   );
@@ -611,17 +637,20 @@ test("every registered report routes from its own task and identities are unique
 });
 
 test("committed Agent CLI evidence reports match a fresh render", () => {
-  for (const [module, path] of [
+  for (const [module, memory, path] of [
     [
       "learning_report/handler_precedence_learning",
+      "data/meta/issue-663-handler-precedence-learning.lino",
       "docs/case-studies/issue-663/agent-cli-evidence/handler-precedence-learning-report.lino",
     ],
     [
       "learning_report/lexeme_import_learning",
+      "data/meta/issue-660-lexeme-import-learning.lino",
       "docs/case-studies/issue-660/agent-cli-evidence/lexeme-import-learning-report.lino",
     ],
     [
       "learning_report/hardcoded_language_learning",
+      "data/meta/issue-659-hardcoded-language-learning.lino",
       "docs/case-studies/issue-659/agent-cli-evidence/hardcoded-language-learning-report.lino",
     ],
   ]) {
@@ -629,7 +658,7 @@ test("committed Agent CLI evidence reports match a fresh render", () => {
       .reports()
       .find((entry) => path.endsWith(entry.path));
     assert.ok(report, module);
-    assert.equal(learningReport.renderDocument(report), read(path), path);
+    assert.equal(learningReport.renderDocumentFrom(report, read(memory)), read(path), path);
   }
 });
 
@@ -730,7 +759,7 @@ test("the question catalog recipe routes narrowly and answers like the committed
   );
 });
 
-test("the Google Trends recipes route and answer like the committed sessions", () => {
+test("the Google Trends recipes still recognize the recorded task shapes", () => {
   assert.ok(
     googleTrendsCatalog.isGoogleTrendsCatalogTask(
       googleTrendsCatalog.googleTrendsCatalogTask(),
@@ -811,19 +840,87 @@ test("the Google Trends recipes route and answer like the committed sessions", (
       assert.ok(recipe.isGoogleTrendsLearningTask(recorded.task), path);
     else assert.ok(recipe.isGoogleTrendsCatalogTask(recorded.task), path);
     assert.equal(
-      recipe.renderDocument(),
-      recorded.steps[0].arguments.content,
-      path,
-    );
-    assert.equal(
       JSON.parse(JSON.stringify(recorded.steps[1].arguments)).command,
       recipe.verificationCommand(),
       path,
     );
-    assert.equal(
-      recipe.finalAnswer(recipe.renderDocument()),
-      recorded.final_answer,
-      path,
-    );
+  }
+});
+
+test("Trends recipes solve the selected publisher feed and keep its digest across tool turns", async () => {
+  const original = host();
+  const captures = new Map(["US", "DE"].map((region) => {
+    const base = `docs/case-studies/issue-1613/evidence/trends/${region}`;
+    const text = read(`${base}.xml`);
+    const url = read(`${base}.url`).trim();
+    return [url, { text, source_url: url, fetched_at: "1795306791", sha256: createHash("sha256").update(text).digest("hex") }];
+  }));
+  const [us, de] = [...captures.values()];
+  const templates = loadPromptTemplates(read("data/seed/google-trends-prompts.lino"));
+  assert.ok(templates.some(({ language }) => language === "es"));
+  const count = capture => googleTrendsCatalog.parseGoogleTrendsRss(capture.text).length * templates.length;
+  let fetches = 0;
+  const requests = [];
+  try {
+    installHost({
+      ...original,
+      sourceFetch: ({ ttlSeconds }) => {
+        assert.equal(ttlSeconds, 900);
+        return (url) => { fetches += 1; return captures.get(url); };
+      },
+      solve: async (prompt) => {
+        requests.push(prompt);
+        return { intent: prompt.startsWith("Tell me about") ? "unknown" : "web_search", answer: prompt, confidence: 0 };
+      },
+    });
+    const document = await googleTrendsCatalog.renderDocument("Google Trends catalog");
+    assert.ok(document.includes("michigan vs villanova"));
+    assert.ok(document.includes(us.sha256));
+    assert.ok(document.includes(`  prompt_count "${count(us)}"`));
+
+    const report = await googleTrendsLearning.renderDocument("Google Trends learning frontier geo DE");
+    assert.ok(report.includes("juventus turin"));
+    assert.ok(report.includes(de.sha256));
+    assert.match(report, /  learning_frontier "10"/u);
+    assert.match(report, /  learning_run_trace_count "10"/u);
+    assert.match(report, /  learning_run_adopted "0"/u);
+    assert.match(report, /  benchmark_status "absent"/u);
+    assert.equal(requests.length, count(us) + count(de));
+    for (const { template, language } of templates.filter(row => row.language === "es")) {
+      assert.ok(requests.includes(template.replaceAll("{query}", "juventus turin")), language);
+    }
+    assert.ok(requests.some((prompt) => prompt.startsWith("Расскажи") && prompt.includes("juventus turin")));
+
+    assert.equal(await googleTrendsCatalog.renderDocument("Google Trends catalog geo=123"), null);
+    assert.equal(fetches, 2);
+    assert.equal(await googleTrendsCatalog.loadCatalog("", () => ({ ...us, sha256: de.sha256 })), null);
+    assert.deepEqual(googleTrendsCatalog.parseGoogleTrendsRss("<html>source unavailable</html>"), []);
+
+    const task = "Build a Google Trends catalog with prompts geo=DE";
+    const messages = [user(task)];
+    const tools = ["write_file", "run_command"];
+    const write = await planGoogleTrendsCatalogStep(messages, tools, task);
+    const written = JSON.parse(write.calls[0].arguments).content;
+    assert.ok(written.includes(de.sha256));
+    assert.equal(fetches, 3);
+    answerToolCall(messages, write.calls[0], `wrote ${Buffer.byteLength(written)} byte(s) to google-trends-catalog.lino`);
+
+    installHost({ ...original, sourceFetch: () => () => { throw Error("unexpected second source request"); } });
+    const verify = await planGoogleTrendsCatalogStep(messages, tools, task);
+    const command = googleTrendsCatalog.verificationCommand();
+    assert.equal(JSON.parse(verify.calls[0].arguments).command, command);
+    answerToolCall(messages, verify.calls[0], JSON.stringify({
+      schema: "command-execution-receipt/v1", command, complete: true, exit_code: 0,
+      stdout: written.split("\n").slice(0, 12).join("\n"), stderr: "", timed_out: false, truncated: false,
+    }));
+    const result = await planGoogleTrendsCatalogStep(messages, tools, task);
+    assert.equal(result.answer, googleTrendsCatalog.finalAnswer(written));
+
+    installHost({ ...original, sourceFetch: () => () => null });
+    assert.equal(await googleTrendsCatalog.renderDocument(task), null);
+    const offline = await planGoogleTrendsCatalogStep([user(task)], tools, task);
+    assert.match(offline.answer, /feed is unavailable/u);
+  } finally {
+    installHost(original);
   }
 });

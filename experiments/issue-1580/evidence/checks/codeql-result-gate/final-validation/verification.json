@@ -1,0 +1,117 @@
+{
+  "records": [
+    {
+      "label": "new-codeql-regressions",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/security-codeql-results.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 4.669,
+      "file": "new-codeql-regressions.log.gz",
+      "rawSha256": "f05081d51ed822cd9fd08091bffcd56ba7fd0222c7049056e46a6c45cf394121",
+      "archiveSha256": "86c567d09cf217f158247fb2a4b52cb5d67553a6f46afc77b5bc38ca0d92a15d"
+    },
+    {
+      "label": "fast-production-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 4.141,
+      "file": "fast-production-profile.log.gz",
+      "rawSha256": "62aa6e5325a52ed6055435903bd8eb8854a93511eddcc155c4a7924d59c6f76b",
+      "archiveSha256": "59f78a54f09eb176517e36fa5534288d66ecc343636470ac33d78bfaeaab9f0d"
+    },
+    {
+      "label": "maintained-workflow-policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.95,
+      "file": "maintained-workflow-policy.log.gz",
+      "rawSha256": "189fde0759e15e2da9c544439a4e1e1a8d6412627ab65abfd189d3e95b1d4916",
+      "archiveSha256": "c5ce3150c631c6eb3719e2b23f9a83f4ff0c3697323a7f570af270e573700c0b"
+    },
+    {
+      "label": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs",
+        "rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "rust/tests/unit/ci-cd/workflow_fixtures.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.155,
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "label": "all-local-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 811.636,
+      "file": "all-local-gates.log.gz",
+      "rawSha256": "6a6fefe70fc99fde846cd96b31e8085daaa919bcdcdab6dc4431c62599161546",
+      "archiveSha256": "af15df31ae228b058fb0021f5b4263bd513809efec5b80142b48fce955c2f686"
+    },
+    {
+      "label": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.705,
+      "file": "diff-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "label": "staged-diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.102,
+      "file": "staged-diff-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeCompilationExecuted": false,
+  "liveCodeqlExecuted": false,
+  "allSourceFindingsResolved": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

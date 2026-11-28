@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "activeCargo": [
+    "rust/Cargo.toml",
+    "experiments/issue-1558/rust-module-harness/Cargo.toml",
+    "experiments/issue-1580/release-registry/Cargo.toml"
+  ],
+  "preservedCargo": {
+    "experiments/issue-1017-meta-language-quadratic/Cargo.toml": {
+      "kind": "historical-reproducer",
+      "reason": "Preserve the exact dependency that reproduces the quadratic parser defect.",
+      "issue": "https://github.com/link-assistant/formal-ai/issues/1017"
+    },
+    "experiments/lindera-docsrs-repro/Cargo.toml": {
+      "kind": "historical-reproducer",
+      "reason": "Preserve the published lindera-jieba docs.rs failure for upstream reproduction.",
+      "issue": "https://github.com/lindera/lindera/issues/750"
+    },
+    "experiments/issue-1021-php/sample/Cargo.toml": {
+      "kind": "empty-fixture",
+      "reason": "This intentionally empty file is a path-classification fixture, not a Cargo package.",
+      "issue": "https://github.com/link-assistant/formal-ai/issues/1021"
+    }
+  }
+}

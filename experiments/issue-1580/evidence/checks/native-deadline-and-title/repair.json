@@ -1,0 +1,72 @@
+{
+  "complete": true,
+  "results": [
+    {
+      "name": "title-final",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/source-walk-offline-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 17.121,
+      "log": "title-final.log.gz",
+      "archiveSha256": "f00668f22f47bbf0b77207397f9d3db8d387d2482fa64fc7f8e4ccd91a2ab6dd",
+      "rawSha256": "6660aed736a943b8a7a564b275ac51273d6167ab5e1d5812d53507b7df012bbe"
+    },
+    {
+      "name": "procedure-final",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 17.405,
+      "log": "procedure-final.log.gz",
+      "archiveSha256": "042e5591d2a4a71f8d6b407db20a923dda3f691b4cac33ec85e48676faff13fd",
+      "rawSha256": "f1773a9f32c250a23fb364345d22803e629787a4bbfe31dcae54ce5b5289b9fe"
+    },
+    {
+      "name": "budget-final",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-worker-line-budget-js-twin,check-worker-line-budget"
+      ],
+      "exitCode": 0,
+      "seconds": 2.714,
+      "log": "budget-final.log.gz",
+      "archiveSha256": "d7cb4c660709ee557356faf96098117a6325f9550ade1f72a90ff1c0dfb17258",
+      "rawSha256": "4f7600d496539c753a032a319ed06b6e9151640de71ae4aee2a22fa4c84d9987"
+    },
+    {
+      "name": "whitespace-final",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.328,
+      "log": "whitespace-final.log.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "allPassed": true,
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "0af06839dda1b638eb4a990d92199981aa518946a0e7dba2dbdb6091362b2270",
+    "rust/src/source_walk.rs": "c540a67f63609cb231e7b3b56beadd4cfa584b7643d0857a3ece04a3631c5a30",
+    "js/worker/formal_ai_worker_source_endpoints.js": "af9d28a0f508dde226c4b36f8c4b1dd69b35b61235c9332d3e84cee297ce89b9",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "b3616477a84e3a1d88bda17e95310f83d6591fecb3a721a5c99a75cc30d0f1af",
+    "rust/tests/web/source-walk-offline-policy.test.mjs": "81101a3a9c89cf1c6c0aa84689f589c08a8106fb90df505af6ad91cebb9d0775"
+  }
+}

@@ -7,10 +7,14 @@
 //! Splitting them out of `prompt_variations.rs` keeps each test file under
 //! the repository's 1000-line cap (see `scripts/check-file-size.rs`).
 
-use formal_ai::{ConversationTurn, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
+use formal_ai::{ConversationTurn, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
-    FormalAiEngine.answer(prompt)
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve(prompt)
 }
 
 const GENERIC_PROJECT_LOOKUP: &str = "This is a generic project_lookup request for a project or repository.\n\nI am not privileging a specific repository because associative repository promotion is disabled. The next step is to search and summarize matching projects across GitHub, GitLab, Bitbucket and similar hosts.";
@@ -43,16 +47,9 @@ fn russian_hive_mind_prompt_prefers_link_assistant_project() {
     );
     assert_eq!(
         response.answer,
-        "В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде всего имею в виду [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind — это ИИ, который управляет другими ИИ для автоматизации автоматизации.\n\nДругие найденные в интернете репозитории и сущности должна показывать браузерная демо-версия через поиск по запросу `Hive Mind`. Провайдеры: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Ранжирование: reciprocal rank fusion (k = 60). Продвижение ассоциативных репозиториев можно отключить, тогда ответ пойдет по обычному поиску GitHub, GitLab и Bitbucket."
+        "В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде всего имею в виду [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Подтверждённое описание репозитория недоступно.\n\nДругие найденные в интернете репозитории и сущности должна показывать браузерная демо-версия через поиск по запросу `Hive Mind`. Провайдеры: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Ранжирование: reciprocal rank fusion (k = 60). Продвижение ассоциативных репозиториев можно отключить, тогда ответ пойдет по обычному поиску GitHub, GitLab и Bitbucket."
     );
     assert!(response.answer.contains("link-assistant/hive-mind"));
-    // Russian localized description comes from data/seed/projects.lino via the
-    // summarization pipeline ("Hive Mind — это ИИ, который ...").
-    assert!(
-        response.answer.contains("ИИ"),
-        "Russian Hive Mind answer should carry the localized ИИ description, got {}",
-        response.answer,
-    );
     assert!(
         response
             .evidence_links
@@ -73,17 +70,9 @@ fn english_hive_mind_prompt_prefers_link_assistant_project() {
     );
     assert_eq!(
         response.answer,
-        "In the link-assistant, link-foundation, linksplatform repository context, `Hive Mind` should first mean [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind is the AI that controls AIs to do the automation of automation.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `Hive Mind`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
+        "In the link-assistant, link-foundation, linksplatform repository context, `Hive Mind` should first mean [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — No verified repository description is available.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `Hive Mind`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
     );
     assert!(response.answer.contains("link-assistant/hive-mind"));
-    let lower = response.answer.to_lowercase();
-    assert!(
-        lower.contains("ai that controls ais")
-            || lower.contains("orchestrates")
-            || lower.contains("the ai"),
-        "English Hive Mind answer should describe the project, got {}",
-        response.answer,
-    );
     assert!(
         response
             .evidence_links
@@ -139,7 +128,7 @@ fn curated_project_concept_prompt_routes_to_project_lookup() {
     );
     assert_eq!(
         response.answer,
-        "In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should first mean [link-foundation/link-cli](https://github.com/link-foundation/link-cli) — link-cli is the command-line entry point for working with Links Notation files.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `link-cli`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
+        "In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should first mean [link-foundation/link-cli](https://github.com/link-foundation/link-cli) — No verified repository description is available.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `link-cli`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
     );
     assert!(
         response.answer.contains("link-foundation/link-cli"),
@@ -157,24 +146,30 @@ fn curated_project_concept_prompt_routes_to_project_lookup() {
 }
 
 #[test]
-fn curated_project_lookup_records_summarization_evidence() {
+fn offline_project_lookup_records_gap_without_repository_provenance() {
     let response = answer("What is command-stream?");
     assert_eq!(response.intent, "project_lookup");
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link.starts_with("summarization:mode")),
-        "project lookup should log a summarization mode event, got {:?}",
-        response.evidence_links,
+    assert_eq!(
+        response.answer,
+        "In the link-assistant, link-foundation, linksplatform repository context, `command-stream` should first mean [link-foundation/command-stream](https://github.com/link-foundation/command-stream) — No verified repository description is available.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `command-stream`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
     );
     assert!(
         response
             .evidence_links
             .iter()
-            .any(|link| link.starts_with("summarization:language")),
-        "project lookup should log a summarization language event, got {:?}",
-        response.evidence_links,
+            .any(|link| link.starts_with("project:description:"))
+    );
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("source:"))
+    );
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("summarization:mode"))
     );
 }
 
@@ -184,7 +179,7 @@ fn linksplatform_repository_is_promoted_by_default() {
     assert_eq!(response.intent, "project_lookup");
     assert_eq!(
         response.answer,
-        "In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documentation` should first mean [linksplatform/Documentation](https://github.com/linksplatform/Documentation) — LinksPlatform Documentation is the documentation and support root repository for all LinksPlatform projects.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `LinksPlatform Documentation`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
+        "In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documentation` should first mean [linksplatform/Documentation](https://github.com/linksplatform/Documentation) — No verified repository description is available.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `LinksPlatform Documentation`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
     );
     assert!(
         response.answer.contains("linksplatform/Documentation"),
@@ -210,7 +205,7 @@ fn explicit_formal_ai_repository_url_still_routes_to_project_lookup() {
     );
     assert_eq!(
         response.answer,
-        "In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should first mean [link-assistant/formal-ai](https://github.com/link-assistant/formal-ai) — formal-ai is a deterministic symbolic AI that answers without any neural-network inference.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `formal-ai`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
+        "In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should first mean [link-assistant/formal-ai](https://github.com/link-assistant/formal-ai) — No verified repository description is available.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `formal-ai`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
     );
     assert!(
         response.answer.contains("link-assistant/formal-ai"),
@@ -449,52 +444,63 @@ fn bitbucket_repository_url_routes_to_generic_project_lookup() {
 }
 
 #[test]
-fn http_fetch_of_curated_github_url_describes_project_via_summarization() {
-    let response = answer("fetch https://github.com/link-assistant/hive-mind");
-    assert_eq!(
-        response.intent, "http_fetch",
-        "GitHub URL fetch should still resolve as http_fetch, got {} -> {}",
-        response.intent, response.answer,
-    );
-    assert_eq!(
-        response.answer,
-        "HTTP fetch requested for `https://github.com/link-assistant/hive-mind`.\n\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): Hive Mind is the AI that controls AIs to do the automation of automation. Hive Mind orchestrates multiple AI agents to coordinate complex tasks. Hive Mind provides a unified interface for delegating work between AI models.\n\nSource: [https://github.com/link-assistant/hive-mind](https://github.com/link-assistant/hive-mind)"
-    );
-    assert!(
-        response.answer.contains("link-assistant/hive-mind")
-            || response.answer.to_lowercase().contains("the ai")
-            || response.answer.to_lowercase().contains("hive mind"),
-        "curated-URL fetch should describe the project, got {}",
-        response.answer,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link.starts_with("http_fetch:curated_project")),
-        "curated GitHub URL fetch should log http_fetch:curated_project evidence, got {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link.starts_with("summarization:mode")),
-        "curated GitHub URL fetch should record a summarization mode event, got {:?}",
-        response.evidence_links,
-    );
-}
-
-#[test]
-fn http_fetch_of_unknown_url_skips_curated_project_summary() {
-    let response = answer("fetch https://example.com");
+fn http_fetch_of_registered_path_uses_generic_http_request() {
+    let response =
+        answer("fetch https://github.com/link-assistant/hive-mind/issues/7?fixture=offline-fetch");
     assert_eq!(response.intent, "http_fetch");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:request:"))
+    );
     assert!(
         !response
             .evidence_links
             .iter()
-            .any(|link| link.starts_with("http_fetch:curated_project")),
-        "non-curated URL fetch must not log a curated_project event, got {:?}",
-        response.evidence_links,
+            .any(|link| link.starts_with("http_fetch:curated_project"))
     );
+}
+
+#[test]
+fn http_fetch_of_unregistered_url_uses_generic_http_request() {
+    let response = answer("fetch https://example.test/unregistered?fixture=offline-fetch");
+    assert_eq!(response.intent, "http_fetch");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:request:"))
+    );
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:curated_project"))
+    );
+}
+
+#[test]
+fn offline_fetch_reports_the_missing_capture_for_registered_and_unregistered_urls() {
+    for url in [
+        "https://github.com/link-assistant/hive-mind/issues/7?fixture=offline-fetch",
+        "https://example.test/unregistered?fixture=offline-fetch",
+    ] {
+        let response = answer(&format!("fetch {url}"));
+        assert_eq!(response.intent, "http_fetch");
+        assert_eq!(response.answer, format!("no cached capture for {url}"));
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "policy:offline"),
+            "{response:?}",
+        );
+        assert!(
+            response.evidence_links.iter().all(|link| {
+                !link.starts_with("http_fetch:curated_project:") && !link.starts_with("source:")
+            }),
+            "{response:?}",
+        );
+    }
 }

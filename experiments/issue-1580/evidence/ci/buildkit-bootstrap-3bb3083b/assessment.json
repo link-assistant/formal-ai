@@ -1,0 +1,47 @@
+{
+  "observedAt": "2026-11-20T15:47:11.677304+00:00",
+  "publishedHead": "3bb3083ba9d91dbb3b45386083875a1adb9a92f2",
+  "testedMerge": "4ed185a09e8afaa07a949b0b71cb69e5ccca4deb",
+  "mergeParents": [
+    "53cbe4430f8b65330f47728401fc83b09977129f",
+    "3bb3083ba9d91dbb3b45386083875a1adb9a92f2"
+  ],
+  "sourceIdentities": [
+    {
+      "path": ".github/actions/setup-buildx-resilient/action.yml",
+      "sha256": "77029707cceacfd8bd26d502c850ac461fa8e8b332fd88a3c0ec0aed9a4f8531",
+      "publishedHeadEqualsTestedMerge": true
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "sha256": "668c95ef6ba10dc8a6abf13887e7722b37613202331dff75c057ecd1a5d72988",
+      "publishedHeadEqualsTestedMerge": true
+    },
+    {
+      "path": "experiments/issue-1580/buildkit-bootstrap-probe.py",
+      "sha256": "8aa37829b9c7583094ca7dc80507a62f32d94cba9f00a78c632339e737766ce9",
+      "publishedHeadEqualsTestedMerge": true
+    }
+  ],
+  "artifactStreamsVerified": 25,
+  "observations": [
+    {
+      "phase": "initial",
+      "selectedImage": "moby/buildkit@sha256:baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c",
+      "imageId": "sha256:d0ff8587a88d8adf2744704927bc567a23f4e8a1f4e732b579d673623a8a0fb2",
+      "containerId": "d2aa72d1c24998d94cb330fb4719d6d64d0ada6e79591326f87504eaebacf4ff",
+      "actualDockerBootVerified": true
+    },
+    {
+      "phase": "mirror",
+      "selectedImage": "mirror.gcr.io/moby/buildkit@sha256:baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c",
+      "imageId": "sha256:d0ff8587a88d8adf2744704927bc567a23f4e8a1f4e732b579d673623a8a0fb2",
+      "containerId": "0b9371f9ad46df0a836dc78cb9ee313e9d61340087cf29e28f94be23566e1d75",
+      "actualDockerBootVerified": true
+    }
+  ],
+  "actualCanonicalPullFailureCount": 1,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/44764893157",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

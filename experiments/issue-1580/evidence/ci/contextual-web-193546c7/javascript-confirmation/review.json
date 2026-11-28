@@ -1,0 +1,354 @@
+{
+  "complete": true,
+  "head": "193546c746ab6a88aed96f58ff5d2c4f7a11ff3a",
+  "records": [
+    {
+      "run": 44573033729,
+      "job": 135733085897,
+      "argv": [
+        "gh",
+        "run",
+        "view",
+        "44573033729",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--job",
+        "135733085897",
+        "--log"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "job-135733085897.stdout.log.gz",
+        "rawSha256": "1cb70710123537e4756006acfbe9b94b2f951c6aadc35928b8e7328a0d3ca7ad",
+        "archiveSha256": "0c062c9d38a9d10a2e750bcedf45fbebc6678c7d80220d314c152f443f0b13fe",
+        "lines": 4870
+      },
+      "stderr": {
+        "file": "job-135733085897.stderr.log.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "lines": 0
+      },
+      "verdictLines": [
+        {
+          "line": 1236,
+          "text": "2026-11-19T17:05:47.0253898Z # tests 6"
+        },
+        {
+          "line": 1238,
+          "text": "2026-11-19T17:05:47.0254413Z # pass 6"
+        },
+        {
+          "line": 1239,
+          "text": "2026-11-19T17:05:47.0254640Z # fail 0"
+        },
+        {
+          "line": 1325,
+          "text": "2026-11-19T17:06:01.1141359Z # tests 13"
+        },
+        {
+          "line": 1327,
+          "text": "2026-11-19T17:06:01.1141927Z # pass 13"
+        },
+        {
+          "line": 1328,
+          "text": "2026-11-19T17:06:01.1142136Z # fail 0"
+        },
+        {
+          "line": 1408,
+          "text": "2026-11-19T17:06:05.3833371Z # tests 12"
+        },
+        {
+          "line": 1410,
+          "text": "2026-11-19T17:06:05.3833919Z # pass 12"
+        },
+        {
+          "line": 1411,
+          "text": "2026-11-19T17:06:05.3834207Z # fail 0"
+        },
+        {
+          "line": 1437,
+          "text": "2026-11-19T17:06:07.3821229Z # tests 3"
+        },
+        {
+          "line": 1439,
+          "text": "2026-11-19T17:06:07.3821820Z # pass 3"
+        },
+        {
+          "line": 1440,
+          "text": "2026-11-19T17:06:07.3822079Z # fail 0"
+        },
+        {
+          "line": 1461,
+          "text": "2026-11-19T17:06:13.5405596Z # tests 2"
+        },
+        {
+          "line": 1463,
+          "text": "2026-11-19T17:06:13.5406130Z # pass 2"
+        },
+        {
+          "line": 1464,
+          "text": "2026-11-19T17:06:13.5406356Z # fail 0"
+        },
+        {
+          "line": 1628,
+          "text": "2026-11-19T17:06:17.4114743Z # tests 26"
+        },
+        {
+          "line": 1630,
+          "text": "2026-11-19T17:06:17.4115175Z # pass 26"
+        },
+        {
+          "line": 1631,
+          "text": "2026-11-19T17:06:17.4115379Z # fail 0"
+        },
+        {
+          "line": 1745,
+          "text": "2026-11-19T17:06:51.0107257Z # tests 13"
+        },
+        {
+          "line": 1747,
+          "text": "2026-11-19T17:06:51.0107650Z # pass 13"
+        },
+        {
+          "line": 1748,
+          "text": "2026-11-19T17:06:51.0107822Z # fail 0"
+        },
+        {
+          "line": 1792,
+          "text": "2026-11-19T17:06:58.0836054Z # tests 6"
+        },
+        {
+          "line": 1794,
+          "text": "2026-11-19T17:06:58.0836411Z # pass 6"
+        },
+        {
+          "line": 1795,
+          "text": "2026-11-19T17:06:58.0836577Z # fail 0"
+        },
+        {
+          "line": 1839,
+          "text": "2026-11-19T17:07:26.9254508Z # tests 6"
+        },
+        {
+          "line": 1841,
+          "text": "2026-11-19T17:07:26.9254988Z # pass 6"
+        },
+        {
+          "line": 1842,
+          "text": "2026-11-19T17:07:26.9255191Z # fail 0"
+        },
+        {
+          "line": 1892,
+          "text": "2026-11-19T17:07:29.2661308Z # tests 7"
+        },
+        {
+          "line": 1894,
+          "text": "2026-11-19T17:07:29.2670369Z # pass 7"
+        },
+        {
+          "line": 1895,
+          "text": "2026-11-19T17:07:29.2676398Z # fail 0"
+        },
+        {
+          "line": 1933,
+          "text": "2026-11-19T17:07:36.3180811Z # tests 5"
+        },
+        {
+          "line": 1935,
+          "text": "2026-11-19T17:07:36.3181166Z # pass 5"
+        },
+        {
+          "line": 1936,
+          "text": "2026-11-19T17:07:36.3181307Z # fail 0"
+        },
+        {
+          "line": 1974,
+          "text": "2026-11-19T17:07:48.7462485Z # tests 5"
+        },
+        {
+          "line": 1976,
+          "text": "2026-11-19T17:07:48.7462867Z # pass 5"
+        },
+        {
+          "line": 1977,
+          "text": "2026-11-19T17:07:48.7463037Z # fail 0"
+        },
+        {
+          "line": 2057,
+          "text": "2026-11-19T17:07:48.8316185Z # tests 12"
+        },
+        {
+          "line": 2059,
+          "text": "2026-11-19T17:07:48.8316530Z # pass 12"
+        },
+        {
+          "line": 2060,
+          "text": "2026-11-19T17:07:48.8316909Z # fail 0"
+        },
+        {
+          "line": 2116,
+          "text": "2026-11-19T17:07:48.9223349Z # tests 8"
+        },
+        {
+          "line": 2118,
+          "text": "2026-11-19T17:07:48.9223784Z # pass 8"
+        },
+        {
+          "line": 2119,
+          "text": "2026-11-19T17:07:48.9223998Z # fail 0"
+        },
+        {
+          "line": 2241,
+          "text": "2026-11-19T17:07:49.6270442Z # tests 19"
+        },
+        {
+          "line": 2243,
+          "text": "2026-11-19T17:07:49.6270867Z # pass 19"
+        },
+        {
+          "line": 2244,
+          "text": "2026-11-19T17:07:49.6271394Z # fail 0"
+        },
+        {
+          "line": 2294,
+          "text": "2026-11-19T17:07:49.7150988Z # tests 7"
+        },
+        {
+          "line": 2296,
+          "text": "2026-11-19T17:07:49.7151444Z # pass 7"
+        },
+        {
+          "line": 2297,
+          "text": "2026-11-19T17:07:49.7151641Z # fail 0"
+        },
+        {
+          "line": 2359,
+          "text": "2026-11-19T17:07:49.9222397Z # tests 9"
+        },
+        {
+          "line": 2361,
+          "text": "2026-11-19T17:07:49.9222718Z # pass 9"
+        },
+        {
+          "line": 2362,
+          "text": "2026-11-19T17:07:49.9222859Z # fail 0"
+        },
+        {
+          "line": 2542,
+          "text": "2026-11-19T17:07:50.2000538Z # tests 24"
+        },
+        {
+          "line": 2544,
+          "text": "2026-11-19T17:07:50.2000904Z # pass 24"
+        },
+        {
+          "line": 2545,
+          "text": "2026-11-19T17:07:50.2001094Z # fail 0"
+        },
+        {
+          "line": 2757,
+          "text": "2026-11-19T17:07:51.4213598Z # tests 34"
+        },
+        {
+          "line": 2759,
+          "text": "2026-11-19T17:07:51.4213932Z # pass 34"
+        },
+        {
+          "line": 2760,
+          "text": "2026-11-19T17:07:51.4214092Z # fail 0"
+        },
+        {
+          "line": 2816,
+          "text": "2026-11-19T17:07:51.6986818Z # tests 8"
+        },
+        {
+          "line": 2818,
+          "text": "2026-11-19T17:07:51.6987281Z # pass 8"
+        },
+        {
+          "line": 2819,
+          "text": "2026-11-19T17:07:51.6987491Z # fail 0"
+        }
+      ]
+    },
+    {
+      "run": 44573033729,
+      "job": 135733085685,
+      "argv": [
+        "gh",
+        "run",
+        "view",
+        "44573033729",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--job",
+        "135733085685",
+        "--log"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "job-135733085685.stdout.log.gz",
+        "rawSha256": "9716cff045ef90268af646b02ffdb72984e206413ef645e3742b3891f1aa6aef",
+        "archiveSha256": "aa4c3f2fd506dd563b5d4b5b724ec1294a393fe926145f19cf6324200dfacabb",
+        "lines": 3204
+      },
+      "stderr": {
+        "file": "job-135733085685.stderr.log.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "lines": 0
+      },
+      "verdictLines": [
+        {
+          "line": 1328,
+          "text": "2026-11-19T17:07:20.4484521Z \u2714 generated native registry is current (11197.870446ms)"
+        }
+      ]
+    },
+    {
+      "run": 44573034091,
+      "job": 135746524610,
+      "argv": [
+        "gh",
+        "run",
+        "view",
+        "44573034091",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--job",
+        "135746524610",
+        "--log"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "job-135746524610.stdout.log.gz",
+        "rawSha256": "5bea7cd26ccd15782ced46a414351cfe1a842c72859df215160bc49e0d9335eb",
+        "archiveSha256": "21735bdb176964afe59b95c0cc872bb43a596c278425c1bbebe8ce3e8faf4d7b",
+        "lines": 215
+      },
+      "stderr": {
+        "file": "job-135746524610.stderr.log.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "lines": 0
+      },
+      "verdictLines": [
+        {
+          "line": 212,
+          "text": "2026-11-19T17:24:36.2189943Z Cancelled jobs: native-type-check"
+        },
+        {
+          "line": 213,
+          "text": "2026-11-19T17:24:36.2221146Z ##[warning]Cancelled jobs: native-type-check. On a non-default ref this is usually a superseded run."
+        },
+        {
+          "line": 214,
+          "text": "2026-11-19T17:24:36.2229754Z All required jobs succeeded or were legitimately skipped."
+        }
+      ]
+    }
+  ],
+  "fullLiteralReviewClaim": false,
+  "fullIssueComplete": false
+}

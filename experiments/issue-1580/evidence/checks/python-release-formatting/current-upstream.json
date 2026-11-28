@@ -1,0 +1,20 @@
+{
+  "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "head": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+  "issueAndPullRequestCount": 158,
+  "duplicateSnapshotRawSha256": "6e7e6581cac6329535edfa1e92c5e1412af03e612b08f10fc0a0670ee1dfc3e8",
+  "files": [
+    {
+      "path": "scripts/format_release_notes.py",
+      "upstreamBlob": "8e6bdb61e4da36068e2dd931135588c46c8926f0",
+      "sha256": "1d33ffb5d87a6b9a3036231d41ff79e085fd645e8c2611fac959c23c6fd75254",
+      "unchangedFromPinnedFixture": true
+    },
+    {
+      "path": "scripts/release_naming.py",
+      "upstreamBlob": "e5f7625d5cf497682cddd2efceb7f542f0e3f8b2",
+      "sha256": "108bc0396fbe767e97000b0005da91e0a60200790051bc599a12ae89724cff55",
+      "unchangedFromPinnedFixture": true
+    }
+  ]
+}

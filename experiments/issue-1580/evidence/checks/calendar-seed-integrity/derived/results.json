@@ -1,0 +1,33 @@
+[
+  {
+    "label": "format",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/solver_handlers/calendar/month.rs",
+      "rust/src/solver_handlers/calculator_rate.rs"
+    ],
+    "completedAt": "2026-11-17T23:32:20.990912+00:00",
+    "exitCode": 0,
+    "rawBytes": 0,
+    "rawLines": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/derived/format.log.gz"
+  },
+  {
+    "label": "mirror",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/mirror-package-data.mjs"
+    ],
+    "completedAt": "2026-11-17T23:32:21.064438+00:00",
+    "exitCode": 1,
+    "rawBytes": 75,
+    "rawLines": 2,
+    "sha256": "ccc1bd8b830cbaf6547c080f450873c88828f4e1cc25d77f81b6a8d8211a98c0",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/derived/mirror.log.gz"
+  }
+]

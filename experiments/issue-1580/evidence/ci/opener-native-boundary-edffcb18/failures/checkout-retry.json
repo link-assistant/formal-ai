@@ -1,0 +1,15 @@
+{
+  "requestedAt": "2026-11-18T03:33:50.770524+00:00",
+  "run": 44230021091,
+  "head": "edffcb183a7a7f9d5d17967cfea94071aee57a90",
+  "originalAttempt": 1,
+  "failedJob": 134552599041,
+  "originalFailure": "Checkout curl 28 low-speed abort, bad pack header, lazy .bun-version promisor fetch; no application test ran in this job.",
+  "directLogReadLines": [
+    1,
+    171
+  ],
+  "maximumRetries": 1,
+  "transportRootCauseVerified": false,
+  "output": ""
+}

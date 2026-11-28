@@ -1,0 +1,11 @@
+# Clean verification of the collected CI and manifest repairs
+
+The complete local inventory ran on clean source f88528245030c26ed70744365528e5da1e8b3f37. All 143 entries have observations: 89 passed, zero failed, and 54 explicitly require hosted execution. The worktree was clean before and after, and the source identity did not change. No Rust compilation was performed locally.
+
+The [evidence manifest](../../../experiments/issue-1580/evidence/checks/manifest-batch-clean-gates-20261123/manifest.json) retains the complete runner stream, every executed gate stream, command metadata, and verified archive members. It also preserves the complete issue and all three PR feedback types, current main ancestry and empty branch queues, and the 663-line production diff from 17a through this batch. That bounded review is not a claim to have completed the whole aggregate PR review.
+
+The terminal 17a cohort contains 31 successes, two failures and one explicit skip. Both actionable failures are fixed in this batch: maintained TypeScript projections and the native audit invocation selector. New dependency coverage classifies all six tracked Cargo manifests and observes all fourteen tracked npm manifests. Three active Rust packages participate in maintenance; the two historical reproducers and one intentionally empty fixture have explicit preserved purposes. Small workflow controls verify the actual resolver step before and after, including failure on partial Git observations.
+
+The earlier hosted 17a release-registry job passes its native groups and all 33 CLI controls. Exact changelog parser controls also ran in the admission job; its overall failure remains visible. These observations qualify only those executed controls, not successful publication, the whole practice inventory, or the next source.
+
+Actual next-head CI, native execution of the expanded dependency collector, full and consumer-only artifact reruns, remaining template practices and aggregate review, live production and delivery criteria, CodeQL extraction semantics, published dependency closure and serving identity remain unfinished. The PR stays draft and unmerged. Supplied controllers receive zero independent-authorship credit. PR: https://github.com/link-assistant/formal-ai/pull/1581.

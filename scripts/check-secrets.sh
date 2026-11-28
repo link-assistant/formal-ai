@@ -37,13 +37,35 @@ debug() {
 # Captured third-party CI/agent logs kept verbatim as evidence. They are
 # reviewed when added and consist of redacted GitHub Actions output.
 exclude() {
-  grep -zv -e '^docs/case-studies/.*\.log$' -e '^dev/log/.*ci-logs/.*\.log$' || true
+  local status=0
+  grep -zv -e '^docs/case-studies/.*\.log$' -e '^dev/log/.*ci-logs/.*\.log$' || status=$?
+  # grep's no-match status means a valid empty selection; actual errors fail.
+  [ "$status" -le 1 ]
+}
+
+# mapfile alone loses the exit status of a process substitution. Wait for the
+# producer before accepting either an empty or a partially emitted inventory.
+read_inventory() {
+  local descriptor producer
+  exec {descriptor}< <("$@" | exclude)
+  producer=$!
+  mapfile -d '' files <&"$descriptor"
+  exec {descriptor}<&-
+  if ! wait "$producer"; then
+    echo 'Unable to collect complete scanner inventory; no scan performed.' >&2
+    return 1
+  fi
+}
+
+uncommitted_files() {
+  git diff --name-only --diff-filter=ACMRT -z HEAD &&
+    git ls-files -z --others --exclude-standard
 }
 
 files=()
 if [ "${1:-}" = "--all" ]; then
   echo "Scanning every tracked file (this is slow; there is no timeout here)."
-  mapfile -d '' files < <(git ls-files -z | exclude)
+  read_inventory git ls-files -z
 elif [ "$#" -gt 0 ]; then
   files=("$@")
 elif [ -n "${BASE_REF:-}" ]; then
@@ -59,12 +81,10 @@ elif [ -n "${BASE_REF:-}" ]; then
   merge_base="$(git merge-base "$base" HEAD)"
   echo "Scanning files changed in ${merge_base}..HEAD"
   # -z for paths with spaces; ACMRT drops deletions, which have nothing to scan.
-  mapfile -d '' files < <(git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD | exclude)
+  read_inventory git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD
 else
   echo "Scanning uncommitted and untracked changes"
-  mapfile -d '' files < <(
-    { git diff --name-only --diff-filter=ACMRT -z HEAD; git ls-files -z --others --exclude-standard; } | exclude
-  )
+  read_inventory uncommitted_files
 fi
 
 if [ "${#files[@]}" -eq 0 ]; then
@@ -81,16 +101,27 @@ done
 # whatever `latest` was at the moment the job ran, so the same commit could pass
 # today and fail tomorrow with no change of ours, and a compromised publish would
 # execute in CI unreviewed. Bump SECRETLINT_VERSION deliberately.
-SECRETLINT_VERSION="${SECRETLINT_VERSION:-13.0.5}"
+SECRETLINT_VERSION="${SECRETLINT_VERSION:-14.1.0}"
 debug "secretlint ${SECRETLINT_VERSION}"
 
-# npm expands each batch into one quoted shell command. Linux limits each
-# argument (including that command) to 128 KiB, below xargs' default batch
-# size after quoting. Leave room for npm's prefix and shell escaping.
-printf '%s\0' "${files[@]}" |
-  xargs -0 -s 16384 npx --yes \
-    -p "secretlint@${SECRETLINT_VERSION}" \
-    -p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}" \
-    secretlint
+# Feed the exact existing selection through stdin rather than interpolating paths
+# into npm's shell command. The pinned API is loaded once for all archive members.
+export SECRETLINT_VERSION
+scan_files() {
+  if [ "$SECRETLINT_VERSION" = 14.1.0 ]; then
+    # npm exec pins the root package, but resolves its semver transitives again.
+    # Install the committed closure separately from application dependencies.
+    scanner_directory="$(mktemp -d "${TMPDIR:-/tmp}/formal-ai-secretlint.XXXXXX")"
+    trap 'rm -rf -- "$scanner_directory"' EXIT
+    cp .github/secretlint/package.json .github/secretlint/package-lock.json "$scanner_directory/"
+    # Installation must not consume the NUL filename stream intended for the scanner.
+    npm ci --ignore-scripts --no-audit --no-fund --engine-strict --prefix "$scanner_directory" </dev/null >&2
+    PATH="$scanner_directory/node_modules/.bin:$PATH" node scripts/check-secrets-files.mjs
+  else
+    # Preserve the explicit custom-version override; only the default is lock-qualified.
+    npx --yes -p "secretlint@${SECRETLINT_VERSION}" node scripts/check-secrets-files.mjs
+  fi
+}
+printf '%s\0' "${files[@]}" | scan_files
 
 echo "No secrets found."

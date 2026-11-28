@@ -1,0 +1,102 @@
+{
+  "complete": true,
+  "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "commit": "3a034b27a56067971ca74dd4c74c7707056b215d",
+  "observedAt": "2026-11-21T00:32:47.118295+00:00",
+  "sourceIdentities": [
+    {
+      "path": "scripts/bootstrap.php",
+      "sha256": "39969a7ebce086784466a314923a658704e7e4dd9f362c239f080e49f06c5595"
+    },
+    {
+      "path": "scripts/check-version-modification.php",
+      "sha256": "21a2f84d4058cea06d3644fa5840b30a885957000458d85e9d26bfa056cbdabb"
+    },
+    {
+      "path": "scripts/src/Actions.php",
+      "sha256": "c138ee2bbdd43ac59b164a2ec5e261623a93c8e264fdf4d5e9b0aabcc36c1984"
+    },
+    {
+      "path": "scripts/src/Process.php",
+      "sha256": "97a1b126035a71434739ecc962d73c74b44ea8ea802263b74031e04332b43bbf"
+    },
+    {
+      "path": "scripts/src/ProcessResult.php",
+      "sha256": "b16970ed6e98e100c00dc3716c0084c1186f0e1a41cfafc96de2696657147d1c"
+    },
+    {
+      "path": "scripts/src/Project.php",
+      "sha256": "6c665acc039b4a2fd75687d95a745dc7a71d2025c3de6c903b4702300c22018d"
+    }
+  ],
+  "observations": [
+    {
+      "case": "unchanged",
+      "exitCode": 0,
+      "stdout": "composer.json version field is unchanged in this PR.\n",
+      "stderr": "",
+      "originalManifest": {
+        "name": "link-foundation/example-package-name",
+        "version": "1.2.3"
+      },
+      "headManifestText": "{\"name\": \"link-foundation/example-package-name\", \"version\": \"1.2.3\"}\n"
+    },
+    {
+      "case": "changed",
+      "exitCode": 1,
+      "stdout": "::error::This pull request changes the \"version\" field in composer.json (1.2.3 -> 9.9.9). Versions are managed automatically by the release pipeline from changelog fragments \u2014 add one with `composer changeset` instead of editing the version by hand.\n",
+      "stderr": "",
+      "originalManifest": {
+        "name": "link-foundation/example-package-name",
+        "version": "1.2.3"
+      },
+      "headManifestText": "{\"name\": \"link-foundation/example-package-name\", \"version\": \"9.9.9\"}\n"
+    },
+    {
+      "case": "removed",
+      "exitCode": 0,
+      "stdout": "composer.json version field is unchanged in this PR.\n",
+      "stderr": "",
+      "originalManifest": {
+        "name": "link-foundation/example-package-name",
+        "version": "1.2.3"
+      },
+      "headManifestText": "{\"name\": \"link-foundation/example-package-name\"}\n"
+    },
+    {
+      "case": "invalid",
+      "exitCode": 0,
+      "stdout": "composer.json version field is unchanged in this PR.\n",
+      "stderr": "",
+      "originalManifest": {
+        "name": "link-foundation/example-package-name",
+        "version": "1.2.3"
+      },
+      "headManifestText": "{invalid json\n"
+    },
+    {
+      "case": "new-file",
+      "exitCode": 0,
+      "stdout": "composer.json does not exist on the base branch (new file); skipping version-modification check.\n",
+      "stderr": "",
+      "originalManifest": null,
+      "headManifestText": "{\"name\": \"link-foundation/example-package-name\", \"version\": \"9.9.9\"}\n"
+    },
+    {
+      "case": "unavailable-base",
+      "exitCode": 0,
+      "stdout": "composer.json does not exist on the base branch (new file); skipping version-modification check.\n",
+      "stderr": "",
+      "originalManifest": {
+        "name": "link-foundation/example-package-name",
+        "version": "1.2.3"
+      },
+      "headManifestText": "{\"name\": \"link-foundation/example-package-name\", \"version\": \"9.9.9\"}\n"
+    }
+  ],
+  "allGitOriginsLocal": true,
+  "runtimeDependenciesInstalled": false,
+  "templateRepaired": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

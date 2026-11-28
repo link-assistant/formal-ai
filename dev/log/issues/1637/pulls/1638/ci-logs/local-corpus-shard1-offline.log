@@ -1,0 +1,18 @@
+
+running 1 test
+corpus shard 1/6: 234 of 1399 prompts
+test issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener has been running for over 60 seconds
+
+thread 'issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener' (684224) panicked at tests/integration/issue_1138_no_silent_unknown.rs:170:5:
+12 of 234 benchmark prompts reach the unknown opener. Each must instead be routed, lowered to a named fallback, reported as an honest gap that names the capability it needed, or turned into one question naming both readings. First offenders: ["data/benchmarks/computer-use-generalization.lino: \"en \\\"Filter the customers and pack the result into an archive\\\"\"", "data/benchmarks/computer-use-generalization.lino: \"hi \\\"ग\\u{94d}राहको\\u{902} क\\u{947} अद\\u{94d}वितीय मान दिखाओ\\\"\"", "data/benchmarks/computer-use-generalization.lino: \"en \\\"Enumerate the documents and bundle them\\\"\"", "data/benchmarks/computer-use-generalization.lino: \"hi \\\"दस\\u{94d}ताव\\u{947}ज\\u{93c} pack करो फिर unpack करो\\\"\"", "data/benchmarks/computer-use-generalization.lino: \"en \\\"Retrieve the orders and extract the first order id\\\"\"", "data/benchmarks/computer-use-generalization.lino: \"hi \\\"स\\u{94d}थिति प\\u{943}ष\\u{94d}ठ का शीर\\u{94d}षक सह\\u{947}जकर archive करो\\\"\"", "data/benchmarks/computer-use-generalization.lino: \"en \\\"Show the distinct inventory categories\\\"\"", "data/benchmarks/computer-use-generalization.lino: \"hi \\\"inventory क\\u{947} लिए process status दो\\\"\"", "data/benchmarks/nemotron-training-samples.lino: \"Ingest Nemotron legal training sample 005 from Nemotron-Pretraining-Legal-Definition-Classification row 8585 without downloading the source dataset.\"", "data/benchmarks/question-necessity-suite.lino: \"apple is a fruit\"", "data/benchmarks/selection-triz.lino: \"Keep it short. Cover every case. Make the result exhaustive.\"", "data/benchmarks/selection-triz.lino: \"उत\\u{94d}तर छोटा रखो। उस\\u{947} स\\u{902}क\\u{94d}षिप\\u{94d}त बनाओ। हर मामल\\u{947} को कवर करो।\""]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener ... FAILED
+
+failures:
+
+failures:
+    issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 438 filtered out; finished in 424.32s
+
+exit=101 elapsed=424s

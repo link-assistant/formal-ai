@@ -1,0 +1,58 @@
+[
+  {
+    "artifact": {
+      "id": 14638610905,
+      "node_id": "MDg6QXJ0aWZhY3QxNDYzODYxMDkwNQ==",
+      "name": "codeql-results-rust-codeql-readonly",
+      "size_in_bytes": 234587,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14638610905",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14638610905/zip",
+      "expired": false,
+      "digest": "sha256:ab97213715bbe412d81dfcd4e35dd68e2ab3392a116d991948779feb710046e6",
+      "created_at": "2026-11-20T14:49:34Z",
+      "updated_at": "2026-11-20T14:49:34Z",
+      "expires_at": "2027-02-18T14:34:25Z",
+      "workflow_run": {
+        "id": 44754743681,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "763713221c0681393da9266d9ffc9cc7c2bbefe2"
+      }
+    },
+    "relativePath": "rust.sarif",
+    "file": "producer-14638610905-rust.sarif.gz",
+    "rawSha256": "55b13f140c5f9c0a2d3c08dc93a7260b9762c8362b3e4ab10a80654acc1566c4",
+    "archiveSha256": "bac96f3a2dd291cdff530e2148a0292c86ab44daf7a246dd54ad90a9e4761fad",
+    "bytes": 3775870,
+    "lines": 1
+  },
+  {
+    "artifact": {
+      "id": 14636098928,
+      "node_id": "MDg6QXJ0aWZhY3QxNDYzNjA5ODkyOA==",
+      "name": "codeql-results-actions-codeql-readonly",
+      "size_in_bytes": 185435,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14636098928",
+      "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14636098928/zip",
+      "expired": false,
+      "digest": "sha256:01d3f7095cacf667e032d6e90a42befa24ebd4161b46740a0bb68d50b98b2d35",
+      "created_at": "2026-11-20T14:36:53Z",
+      "updated_at": "2026-11-20T14:36:53Z",
+      "expires_at": "2027-02-18T14:34:25Z",
+      "workflow_run": {
+        "id": 44754743681,
+        "repository_id": 1236510803,
+        "head_repository_id": 1236510803,
+        "head_branch": "issue-1580-8d61a32a61e1",
+        "head_sha": "763713221c0681393da9266d9ffc9cc7c2bbefe2"
+      }
+    },
+    "relativePath": "actions.sarif",
+    "file": "producer-14636098928-actions.sarif.gz",
+    "rawSha256": "57b9861421e99056fda2e3be6b5a3f51381d597d8e2f8aed1ab7e5cee4b63d54",
+    "archiveSha256": "acf127f965b9951ab49e23d47458ac597ba1e10f9c5c6e7c1ec4cbbd5c5ba004",
+    "bytes": 2454010,
+    "lines": 1
+  }
+]

@@ -1,0 +1,63 @@
+[
+  {
+    "label": "format",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/solver_handlers/calendar/month.rs",
+      "rust/src/solver_handlers/calculator_rate.rs"
+    ],
+    "completedAt": "2026-11-17T23:33:14.755588+00:00",
+    "exitCode": 0,
+    "rawBytes": 0,
+    "rawLines": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/derived-corrected/format.log.gz"
+  },
+  {
+    "label": "mirror",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "completedAt": "2026-11-17T23:33:15.386002+00:00",
+    "exitCode": 0,
+    "rawBytes": 83,
+    "rawLines": 1,
+    "sha256": "69b31dc31ea144ec77e75c08cbac28cb56789a3f9e7929fba09736e17a31f155",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/derived-corrected/mirror.log.gz"
+  },
+  {
+    "label": "generated-native-programs",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/lib/generate-native-specification-programs.mjs"
+    ],
+    "completedAt": "2026-11-17T23:33:31.533430+00:00",
+    "exitCode": 0,
+    "rawBytes": 19,
+    "rawLines": 1,
+    "sha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/derived-corrected/generated-native-programs.log.gz"
+  },
+  {
+    "label": "generated-debug-stage",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/generate-debug-stage-sources.mjs",
+      "--write"
+    ],
+    "completedAt": "2026-11-17T23:33:32.520794+00:00",
+    "exitCode": 0,
+    "rawBytes": 46,
+    "rawLines": 1,
+    "sha256": "0905d80a02c6747bbeb9dd5f02268b7a8070ea0498b702ea80fc15bb3a64cf79",
+    "archive": "experiments/issue-1580/evidence/checks/calendar-seed-integrity/derived-corrected/generated-debug-stage.log.gz"
+  }
+]

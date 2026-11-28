@@ -1,0 +1,39 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "head": "5af5dfd773bb294216eb028efd62a220535e9f77",
+  "renames": [
+    {
+      "old": "merged-stat.stdout.gz",
+      "new": "merged-statistics.stdout.gz",
+      "rawSha256": "dc81e04cf28e2aa5050b54660f57be0f91027303043127d0f7662c0527293cc3",
+      "archiveSha256": "54ab904be96cf26e2507384d4a576d1150969e624f0b1a94c894c2b3944a5aff",
+      "bytesUnchanged": true
+    },
+    {
+      "old": "merged-stat.stderr.gz",
+      "new": "merged-statistics.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytesUnchanged": true
+    }
+  ],
+  "updatedManifests": [
+    "commands.json"
+  ],
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-abbreviations"
+  ],
+  "exitCode": 0,
+  "seconds": 4.516,
+  "file": "filename-gate.log.gz",
+  "rawSha256": "7888153859515be6f7ed0d54bf1d61352ebe6283ccd0ec9555e0bc7454db6b1a",
+  "archiveSha256": "5c8bdd2d9a7a3690c03d6616f5d14054bab4b46782ea0f8c27dd4d6d46581b2b",
+  "runtimeSourceChanged": false,
+  "ratchetChanged": false,
+  "independentAuthorshipCredit": 0
+}

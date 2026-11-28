@@ -1,0 +1,42 @@
+{
+  "observedAt": "2026-11-17T21:21:56.771178+00:00",
+  "localHead": "8b2e929662530251ed301f8892da218b38837d40",
+  "remoteHead": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67",
+  "branch": "issue-1580-8d61a32a61e1",
+  "records": [
+    {
+      "kind": "latest-branch-runs",
+      "rawSha256": "6c85469af15028289447c6d5ce425b1deec56e59285307c1ce0b0ff4f2aa8603"
+    },
+    {
+      "kind": "in-progress-runs",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "kind": "queued-runs",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "kind": "remote-head-push-runs",
+      "rawSha256": "f2aa3f2f9ea19c33f16347ee49859287a9b12cde87a89f7d6927ecb020c6b673"
+    },
+    {
+      "kind": "issue-comments",
+      "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2"
+    },
+    {
+      "kind": "pull-request-comments",
+      "rawSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb"
+    },
+    {
+      "kind": "pull-request-inline-comments",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "kind": "pull-request-reviews",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    }
+  ],
+  "draft": true,
+  "scope": "Draft checkpoint preflight; no completion or default-branch freshness assertion."
+}

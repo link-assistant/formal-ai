@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "gh",
+    "run",
+    "download",
+    "44595510266",
+    "--repo",
+    "link-assistant/formal-ai",
+    "--name",
+    "google-trends-native-fixtures",
+    "--dir",
+    "/tmp/issue-1580-research/google-native-catalog-artifact/download"
+  ],
+  "exitCode": 0,
+  "run": 44595510266,
+  "head": "3c52b7f528b5f477ba04de297eb02bb41c298c78",
+  "stdout": {
+    "file": "stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  "stderr": {
+    "file": "stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  "files": [
+    {
+      "file": "docs/case-studies/issue-498/agent-cli-session-google-trends.json",
+      "bytes": 126812,
+      "lines": 34,
+      "sha256": "4e2b48c6f29e12b4191a9d409806b5838802f932db3a46a3f32fa82f424f4a9d"
+    },
+    {
+      "file": "generation-identity.txt",
+      "bytes": 713,
+      "lines": 13,
+      "sha256": "739e1c55e0d81e915817185af833783eabed8b6bbdce9a863208f6ff595d58a6"
+    },
+    {
+      "file": "google-trends-catalog.lino",
+      "bytes": 59751,
+      "lines": 980,
+      "sha256": "a13dd57872f088e0eb34eff712e8dad743cd8901f856c8e1ecf41ee736df3f0e"
+    }
+  ],
+  "adopted": false,
+  "nativeSourceIdentityVerified": false,
+  "independentAuthorshipCredit": 0
+}

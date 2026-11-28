@@ -56,6 +56,7 @@ from pathlib import Path
 WORDNET_DIR = Path("data/cache/wordnet/en")
 WIKTIONARY_DIR = Path("data/cache/wiktionary/en")
 VIEW_DIR = Path("data/view/en")
+WORDNET_VIEW_COVERAGE = Path("data/seed/wordnet-view-coverage.lino")
 MERGE_THRESHOLD = 0.5
 
 POS = {
@@ -210,6 +211,29 @@ def build_entity(lemma: str) -> tuple[str, str]:
     return ident, "\n".join(lines) + "\n"
 
 
+def check_wordnet_view_coverage() -> list[str]:
+    """Report missing publisher evidence for views explicitly kept in the seed."""
+    lines = [
+        line for line in WORDNET_VIEW_COVERAGE.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    if not lines or lines[0] != "wordnet-view-coverage":
+        return [f"{WORDNET_VIEW_COVERAGE}: expected wordnet-view-coverage"]
+    lemmas = []
+    for line in lines[1:]:
+        match = re.fullmatch(r"  lemma ([a-z]+(?:-[a-z]+)*)", line)
+        if match is None:
+            return [f"{WORDNET_VIEW_COVERAGE}: invalid lemma declaration {line!r}"]
+        lemmas.append(match[1])
+    if not lemmas or len(lemmas) != len(set(lemmas)):
+        return [f"{WORDNET_VIEW_COVERAGE}: expected distinct required lemmas"]
+    return [
+        f"{lemma}: missing required WordNet senses or LiNo capture"
+        for lemma in lemmas
+        if not (WORDNET_DIR / f"{lemma}.lino").is_file() or not wordnet_senses(lemma)
+    ]
+
+
 def all_lemmas() -> list[str]:
     lemmas = {os.path.basename(p)[:-5] for p in glob.glob(str(WORDNET_DIR / "*.json"))}
     lemmas |= {os.path.basename(p)[:-5] for p in glob.glob(str(WIKTIONARY_DIR / "*.json"))}
@@ -298,6 +322,11 @@ def check() -> int:
 def main(argv: list[str]) -> int:
     if "--selftest" in argv:
         return selftest()
+    problems = check_wordnet_view_coverage()
+    if problems:
+        for problem in problems:
+            print(f"CHECK FAIL: {problem}")
+        return 1
     if "--check" in argv:
         return check()
     return build()

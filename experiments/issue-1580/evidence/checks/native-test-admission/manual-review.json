@@ -1,0 +1,17 @@
+{
+  "localVerified": true,
+  "nativeExecution": false,
+  "initialVmGuardFailureRetained": true,
+  "initialLogsLiterallyRead": true,
+  "retryLogLiterallyRead": true,
+  "sources": {
+    "scripts/ci-pull-request-admission.mjs": "4193ed4b7a71b9821777749cbd2c7be4f1bf2d208dda849264b45af8228fd326",
+    "rust/Cargo.toml": "cbb85842cd7b708620c523d40aaae998f536d61a3b768c1c180bf484eb1fb18e",
+    ".github/workflows/native-type-check.yml": "28f054a2d4310996bbf982e45f4d2bc583c84a2845f94c54416c621d3991df3a",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "5624eabb641265d775e177387c6898cefdbbdc2208a3cc978a34793a717d009c",
+    "docs/ci-cd/default-branch-builds.md": "ae7a2bd334307da315ba4bf51ca5dc11975a8d6dd06511618cd334afb51c3607",
+    "changelog.d/1580-native-regressions.md": "6cf4bcb92f6c25dc27d9e7f1cef18830e1137f09560f73bb34b5b0ec2c709c62"
+  },
+  "independentAuthorshipCredit": 0,
+  "sourcePatchLiterallyRead": true
+}

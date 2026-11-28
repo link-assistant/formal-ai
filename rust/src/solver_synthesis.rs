@@ -14,6 +14,7 @@ use crate::engine::{SymbolicAnswer, answer_links_notation, stable_id};
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::IntentFormalizationCache;
 use crate::least_action::{ActionCost, SolutionCandidate, rank_by_least_action};
+use crate::links_format::push_lino_node;
 use crate::meta_executor::{Draft, TaskOutcome, TaskTest, Verdict, run_task_test};
 use crate::probability::ProbabilityStore;
 use crate::solver::UniversalSolver;
@@ -27,6 +28,10 @@ pub struct SolvedSubImpulse {
     pub independent: bool,
     pub intent: String,
     pub answer: String,
+    /// Evidence retained from the child answer for compositions that consume it.
+    pub evidence_links: Vec<String>,
+    /// Complete child trace, kept separate from the parent candidate log.
+    pub links_notation: String,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -42,6 +47,8 @@ struct ComposedCandidate {
     /// The structural steps of the composition: its least-action cost.
     steps: u32,
     source_result_ids: Vec<String>,
+    /// Only an answer assembled from child answers depends on their verdicts.
+    consumes_sub_answers: bool,
 }
 
 pub fn record_solved_sub_impulse(
@@ -64,6 +71,8 @@ pub fn record_solved_sub_impulse(
         independent: sub_impulse.independent,
         intent: answer.intent.clone(),
         answer: answer.answer.clone(),
+        evidence_links: answer.evidence_links.clone(),
+        links_notation: answer.links_notation.clone(),
     }
 }
 
@@ -198,7 +207,12 @@ pub fn try_synthesize_from_sub_results(
         .collect::<Vec<_>>()
         .join(" "),
     );
-    Some(finalize_composed_candidate(prompt, log, selected))
+    Some(finalize_composed_candidate(
+        prompt,
+        log,
+        selected,
+        sub_results,
+    ))
 }
 
 /// The outcome of each sub-result under its own leaf test.
@@ -218,6 +232,7 @@ fn child_outcomes(sub_results: &[SolvedSubImpulse]) -> Vec<TaskOutcome> {
                 intent: result.intent.clone(),
                 content: result.answer.clone(),
                 confidence: 0.0,
+                evidence: Vec::new(),
             };
             let resolved = run_task_test(&test, Some(&draft), &[]).passed;
             TaskOutcome {
@@ -237,22 +252,30 @@ fn parent_verdict(candidate: &ComposedCandidate, children: &[TaskOutcome]) -> Ve
     let rule =
         |kind: &str| crate::formalization::structural_rule_values("task-decomposition", kind);
     let mut checks = rule("leaf-check");
-    checks.extend(
-        rule("composite-check")
-            .into_iter()
-            .map(|check| format!("{check}:{}", candidate.relation)),
-    );
+    if candidate.consumes_sub_answers {
+        checks.extend(
+            rule("composite-check")
+                .into_iter()
+                .map(|check| format!("{check}:{}", candidate.relation)),
+        );
+    }
     let test = TaskTest {
         task: candidate.target.clone(),
         checks,
-        requires: rule(&format!("{}-requires", candidate.relation))
-            .into_iter()
-            .next(),
+        requires: candidate
+            .consumes_sub_answers
+            .then(|| {
+                rule(&format!("{}-requires", candidate.relation))
+                    .into_iter()
+                    .next()
+            })
+            .flatten(),
     };
     let draft = Draft {
         intent: candidate.intent.clone(),
         content: candidate.answer.clone(),
         confidence: candidate.confidence,
+        evidence: Vec::new(),
     };
     run_task_test(&test, Some(&draft), children)
 }
@@ -302,6 +325,7 @@ fn compose_algebra_substitution(
         evaluation.formatted,
         ("sequence", steps),
         sub_results,
+        false,
     ))
 }
 
@@ -343,6 +367,7 @@ fn compose_remainder_sale(
         evaluation.formatted,
         ("sequence", steps),
         sub_results,
+        false,
     ))
 }
 
@@ -380,6 +405,7 @@ fn compose_compound_response(
         answers.join("\n\n"),
         ("aggregation", steps),
         sub_results,
+        true,
     ))
 }
 
@@ -388,6 +414,7 @@ fn candidate(
     answer: String,
     (relation, steps): (&'static str, usize),
     sub_results: &[SolvedSubImpulse],
+    consumes_sub_answers: bool,
 ) -> ComposedCandidate {
     let source_result_ids = sub_results
         .iter()
@@ -406,6 +433,7 @@ fn candidate(
         relation,
         steps: u32::try_from(steps).unwrap_or(u32::MAX),
         source_result_ids,
+        consumes_sub_answers,
     }
 }
 
@@ -413,6 +441,7 @@ fn finalize_composed_candidate(
     prompt: &str,
     log: &mut EventLog,
     candidate: &ComposedCandidate,
+    sub_results: &[SolvedSubImpulse],
 ) -> SymbolicAnswer {
     let answer = crate::question_necessity::enforce_questions(&candidate.answer, log);
     log.append("intent", candidate.intent.clone());
@@ -420,8 +449,41 @@ fn finalize_composed_candidate(
     log.append("response", candidate.response_link.clone());
     crate::solver_helpers::record_selection(log, &candidate.intent);
     let trace_id = log.append("trace", candidate.intent.clone());
-    let evidence_links = build_evidence_links(prompt, log, &candidate.response_link);
-    let links_notation = answer_links_notation(prompt, &candidate.intent, &answer, log, &trace_id);
+    let mut evidence_links = build_evidence_links(prompt, log, &candidate.response_link);
+    let mut links_notation =
+        answer_links_notation(prompt, &candidate.intent, &answer, log, &trace_id);
+    // A composition inherits provenance only from child answers it actually
+    // consumes. Source-operand calculations do not rely on child verdicts.
+    if candidate.consumes_sub_answers {
+        let mut has_child_traces = false;
+        for result in sub_results
+            .iter()
+            .filter(|result| candidate.source_result_ids.contains(&result.result_id))
+        {
+            for evidence in &result.evidence_links {
+                if !evidence_links.contains(evidence) {
+                    evidence_links.push(evidence.clone());
+                }
+            }
+            if result.links_notation.is_empty() {
+                continue;
+            }
+            if !has_child_traces {
+                if !links_notation.ends_with('\n') {
+                    links_notation.push('\n');
+                }
+                push_lino_node(&mut links_notation, 2, "sub_results", None);
+                has_child_traces = true;
+            }
+            push_lino_node(&mut links_notation, 4, "result", Some(&result.result_id));
+            // Child answer documents encode values on single lines. Indenting
+            // the complete document preserves quoting and scopes its trace.
+            for line in result.links_notation.lines() {
+                writeln!(links_notation, "      {line}")
+                    .expect("writing a child trace to a string cannot fail");
+            }
+        }
+    }
     let thinking_steps = log.thinking_steps_for_answer(&answer);
     SymbolicAnswer {
         intent: candidate.intent.clone(),
@@ -507,7 +569,10 @@ fn extract_requested_expression(prompt: &str) -> Option<String> {
             }
         }
     }
-    None
+    crate::calculation::calculation_expression_candidates(prompt)
+        .into_iter()
+        .find(|candidate| candidate.explicit && !candidate.expression.contains('='))
+        .map(|candidate| candidate.expression)
 }
 
 fn clean_expression(value: &str) -> String {
@@ -644,3 +709,7 @@ fn truncate_for_trace(value: &str, limit: usize) -> String {
     }
     out
 }
+
+#[cfg(test)]
+#[path = "../tests/fixtures/synthesis-parent-tests.rs"]
+mod parent_tests;

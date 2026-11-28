@@ -2,6 +2,10 @@
 
 use lino_objects_codec::format::format_indented_ordered;
 
+#[cfg(test)]
+#[path = "../tests/source/source_tests/links_format/production_tests.rs"]
+mod tests;
+
 /// A name the codec's key escape leaves alone, so the probe record's shape in
 /// [`format_lino_value`] is known exactly.
 const PROBE: &str = "v";

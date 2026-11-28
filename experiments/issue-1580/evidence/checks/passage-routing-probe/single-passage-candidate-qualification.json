@@ -1,0 +1,58 @@
+{
+  "schema": "issue-1580-context-candidate-qualification/v1",
+  "sourceHead": "a97832237cbb365000dd7296050984e4bdd59ebb",
+  "sourceHashes": {
+    "js/agentic/crate/meta_executor.mjs": "05fd1f7cc9b3aa3958f5a92ad48f502a2c17095d1be03bfbaff5036117198cce",
+    "js/worker/formal_ai_worker_solve.js": "9ee18ccde5e045dec9ba9bf8a87ba864ea38b6a2dee654b742487c31e639adf8",
+    "js/worker/formal_ai_worker_factual_qa.js": "1318eb1e5b0cee5a486aebfc296ebff5efb309f1156bdb478405c47549affb13"
+  },
+  "artifact": "experiments/issue-1580/evidence/checks/passage-routing-probe/single-passage-task-context.json.gz",
+  "artifactRawSha256": "391c27f170ebaf3fada47b42c5d647869d979111554a44dea7ff8c5226f25180",
+  "artifactRawBytes": 305557,
+  "qualification": "rejected",
+  "checks": [
+    {
+      "name": "original-context-restored",
+      "passed": true
+    },
+    {
+      "name": "changed-facts-context-restored",
+      "passed": true
+    },
+    {
+      "name": "withheld-child-still-unresolved",
+      "passed": true
+    },
+    {
+      "name": "quoted-connective-remains-protected",
+      "passed": false
+    },
+    {
+      "name": "independent-request-answer-covers-both-results",
+      "passed": false
+    },
+    {
+      "name": "two-independent-passages-both-covered",
+      "passed": false
+    },
+    {
+      "name": "uncovered-subject-still-unresolved",
+      "passed": false
+    },
+    {
+      "name": "standalone-arithmetic-unchanged",
+      "passed": true
+    }
+  ],
+  "productionModifiedByCandidate": false,
+  "nativeExecuted": false,
+  "actualNetworkRequests": 0,
+  "independentAuthorshipCredit": 0,
+  "limits": [
+    "The candidate ran only in a disposable worker VM; it is not a production repair.",
+    "Both variants already misreport completion of the two-passage request; this is not a newly introduced candidate regression.",
+    "The candidate newly reports independent arithmetic complete while omitting the passage answer.",
+    "The shared quotation masks omit ASCII quotes and require a separate repair.",
+    "Selected outcome, binding and meta-execution review is not full literal review of every nested solver trace."
+  ]
+}

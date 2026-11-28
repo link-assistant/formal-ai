@@ -4,7 +4,7 @@ import React from "react";
 import { answerHasDetectedFailure } from "./detected-failure.js";
 import { attachmentMemoryRecord } from "./attachments.jsx";
 import {
-  createMessage, deriveConversationTitle, generateConversationId,
+  createMessage, deriveConversationTitle, generateConversationId, groupConversations, messagesForConversation,
 } from "./conversations.jsx";
 import { normalizeAssistantName } from "./interface-commands.jsx";
 import { recordMemoryEvent } from "./memory-events.jsx";
@@ -19,6 +19,89 @@ import { buildThinkingPreviewSteps } from "./thinking-steps.jsx";
 import { normalizeUiLanguagePreference } from "./user-context.jsx";
 
 const { useCallback, useEffect } = React;
+
+// Projects the append-only conversation event log and owns sidebar list actions.
+export function useConversationList({
+  initialPreferences, conversationEventsRef, conversationTitlesRef, showDeletedConversationsRef,
+  currentConversationRef, setConversations, setMessages, setDemoMode, setCurrentConversationId,
+  setPrompt, setShowDeletedConversations,
+}) {
+  // Issue #27: on mount, hydrate the conversation list from the append-only
+  // event log and restore the active thread's messages. Operates purely as a
+  // projection — no events are mutated.
+  const refreshConversations = useCallback(async (showDeletedOverride) => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      return [];
+    }
+    try {
+      const shouldShowDeleted =
+        typeof showDeletedOverride === "boolean"
+          ? showDeletedOverride
+          : showDeletedConversationsRef.current;
+      const events = await window.FormalAiMemory.listEvents();
+      conversationEventsRef.current = events;
+      const list = groupConversations(events, {
+        showDeleted: shouldShowDeleted,
+      });
+      list.forEach((entry) => {
+        if (entry.title) {
+          conversationTitlesRef.current.set(entry.id, entry.title);
+        }
+      });
+      setConversations(list);
+      return events;
+    } catch (_error) {
+      conversationEventsRef.current = [];
+      return [];
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    refreshConversations().then((events) => {
+      if (cancelled || !Array.isArray(events) || events.length === 0) return;
+      const initialId = initialPreferences.current.currentConversationId;
+      if (!initialId) return;
+      const restored = messagesForConversation(events, initialId);
+      if (restored.length > 0) {
+        setMessages(restored);
+        setDemoMode(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshConversations]);
+
+  const handleShowDeletedConversations = useCallback((event) => {
+    const next = Boolean(event.target.checked);
+    setShowDeletedConversations(next);
+    refreshConversations(next);
+  }, [refreshConversations]);
+
+  const handleDeleteConversation = useCallback(async (entry) => {
+    if (!entry || !entry.id) return;
+    await recordMemoryEvent({
+      kind: "conversation_deleted",
+      role: "system",
+      content: `Conversation deleted: ${entry.title || entry.id}`,
+      sentAt: new Date().toISOString(),
+      conversationId: entry.id,
+      conversationTitle: entry.title || "",
+    });
+    if (entry.id === currentConversationRef.current) {
+      currentConversationRef.current = "";
+      setCurrentConversationId("");
+      setMessages([]);
+      setPrompt("");
+      setDemoMode(false);
+    }
+    setShowDeletedConversations(false);
+    await refreshConversations(false);
+  }, [refreshConversations]);
+
+  return { refreshConversations, handleShowDeletedConversations, handleDeleteConversation };
+}
 
 // Appends user/system/assistant messages to the active conversation and
 // the append-only memory log; tracks agent onboarding and pending tasks.

@@ -1,44 +1,29 @@
 #!/usr/bin/env python3
-"""Ground `data/seed/release-timelines.lino` in the Wikidata cache (issue #892).
+"""Regenerate the historical film-timeline test fixture (issue #892).
 
-The Spider-Man release-order answer used to be a frozen sentence typed into
-`data/seed/facts.lino`, so it could neither gain a newly released film nor tell
-an announced title from a released one. This script keeps the timeline
-*derived* instead:
+The raw SPARQL response and its lossless LiNo twin are kept under
+`rust/tests/fixtures/release-timeline/historical`. The renderer regression
+replays the film dates and localized labels from captures stored together. Runtime timelines acquire publisher data
+through the verified source client.
 
-  1. The SPARQL query checked in next to the cache (`<slug>.rq`) is sent to the
-     Wikidata Query Service and its raw answer stored as
-     `data/cache/wikidata/query/<slug>.json`, with the lossless `.lino` twin the
-     rest of the cache uses. `--refresh` re-fetches; otherwise the checked-in
-     snapshot is reused, so builds and tests stay offline and deterministic.
-  2. Every film the query returns is fetched into
-     `data/cache/wikidata/entity/<Q-id>.json` (labels/descriptions/aliases of
-     the supported languages, the shape the entity cache already uses), so the
-     titles in the seed are checked-in Wikidata labels rather than human
-     guesses.
-  3. The `entry` blocks of the seed timeline are rewritten from those two
-     caches, and the provenance fields (`retrieved-at`, `sha256`) are stamped
-     from the snapshot actually on disk.
-
-Run `python3 scripts/ground-release-timelines.py` (add `--check` to fail instead
-of writing, which is what CI wants). Network is only needed with `--refresh` or
-when an entity is missing from the cache.
+Run `python3 scripts/ground-release-timelines.py --check` for the offline check.
+`--refresh` fetches a new test capture and updates the reviewed comparison data.
 """
 from __future__ import annotations
 
 import hashlib
 import json
-import subprocess
 import sys
 import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
 
+from wikidata_lino_codec import json_cache_file
+
 USER_AGENT = "formal-ai-grounding/1.0 (https://github.com/link-assistant/formal-ai)"
-SEED = Path("data/seed/release-timelines.lino")
+FIXTURE = Path("rust/tests/fixtures/release-timeline/spider-man-replay.lino")
 LANGUAGE_REGISTRY = Path("data/seed/languages.lino")
-ENTITY_CACHE = Path("data/cache/wikidata/entity")
 FETCH_ATTEMPTS = 40
 FETCH_BACKOFF_SECONDS = 15
 
@@ -75,20 +60,8 @@ def get(url: str, accept: str = "application/json") -> bytes:
 
 def encode_lino(root_id: str, json_path: Path, lino_path: Path) -> None:
     """Write the canonical LiNo twin with the codec the whole cache is built with."""
-    subprocess.run(
-        [
-            "cargo",
-            "run",
-            "--quiet",
-            "--example",
-            "wikidata_json_to_lino",
-            "--",
-            root_id,
-            str(json_path),
-            str(lino_path),
-        ],
-        check=True,
-    )
+    document = json.loads(json_path.read_text(encoding="utf-8"))
+    lino_path.write_text(json_cache_file(root_id, document), encoding="utf-8")
 
 
 def write_json(path: Path, document: dict) -> None:
@@ -107,10 +80,10 @@ def fetch_query(source_url: str, query_path: Path, cache_path: Path, slug: str) 
     encode_lino(slug, cache_path, cache_path.with_suffix(".lino"))
 
 
-def fetch_entity(qid: str) -> dict:
+def fetch_entity(qid: str, entity_dir: Path, *, offline: bool) -> dict:
     """Return the cached entity document, fetching and trimming it when absent."""
-    json_path = ENTITY_CACHE / f"{qid}.json"
-    if not json_path.exists():
+    json_path = entity_dir / f"{qid}.json"
+    if not offline and not json_path.exists():
         url = f"https://www.wikidata.org/wiki/Special:EntityData/{qid}.json"
         entity = json.loads(get(url))["entities"][qid]
         trimmed = {
@@ -133,8 +106,8 @@ def fetch_entity(qid: str) -> dict:
             },
         }
         write_json(json_path, {"entities": {qid: trimmed}, "success": 1})
-    lino_path = ENTITY_CACHE / f"{qid}.lino"
-    if not lino_path.exists():
+    lino_path = json_path.with_suffix(".lino")
+    if not offline and not lino_path.exists():
         encode_lino(qid, json_path, lino_path)
     return json.loads(json_path.read_text(encoding="utf-8"))["entities"][qid]
 
@@ -160,7 +133,7 @@ def field(lines: list[str], key: str) -> str:
         stripped = line.strip()
         if stripped.startswith(f"{key} "):
             return stripped[len(key) + 1 :].strip().strip('"')
-    raise SystemExit(f"{SEED}: timeline is missing `{key}`")
+    raise SystemExit(f"{FIXTURE}: timeline is missing `{key}`")
 
 
 def quote(text: str) -> str:
@@ -168,10 +141,12 @@ def quote(text: str) -> str:
     return '"' + text.replace('"', '""') + '"'
 
 
-def render_entries(rows: list[tuple[str, str]], indent: str) -> list[str]:
+def render_entries(
+    rows: list[tuple[str, str]], indent: str, entity_dir: Path, *, offline: bool
+) -> list[str]:
     lines = []
     for qid, date in rows:
-        entity = fetch_entity(qid)
+        entity = fetch_entity(qid, entity_dir, offline=offline)
         lines.append(f"{indent}entry {qid}")
         if date:
             lines.append(f"{indent}  release-date {date}")
@@ -183,7 +158,7 @@ def render_entries(rows: list[tuple[str, str]], indent: str) -> list[str]:
     return lines
 
 
-def render(text: str, refresh: bool) -> str:
+def render(text: str, refresh: bool, *, offline: bool) -> str:
     """Rewrite every timeline's provenance stamp and entry blocks from the cache."""
     lines = text.split("\n")
     output: list[str] = []
@@ -200,16 +175,16 @@ def render(text: str, refresh: bool) -> str:
         while index < len(lines) and lines[index].startswith("    "):
             index += 1
         block = lines[start:index]
-        output.extend(render_timeline(block, refresh))
+        output.extend(render_timeline(block, refresh, offline=offline))
 
     return "\n".join(output)
 
 
-def render_timeline(block: list[str], refresh: bool) -> list[str]:
+def render_timeline(block: list[str], refresh: bool, *, offline: bool) -> list[str]:
     slug = block[0].strip().split(" ", 1)[1]
     cache_path = Path(field(block, "cache-file"))
     query_path = Path(field(block, "query-file"))
-    if refresh or not cache_path.exists():
+    if not offline and (refresh or not cache_path.exists()):
         fetch_query(field(block, "source-url"), query_path, cache_path, slug)
     digest = hashlib.sha256(cache_path.read_bytes()).hexdigest()
     retrieved = today_utc() if refresh else field(block, "retrieved-at")
@@ -229,7 +204,8 @@ def render_timeline(block: list[str], refresh: bool) -> list[str]:
         header.append(line)
     while header and not header[-1].strip():
         header.pop()
-    return header + render_entries(query_rows(cache_path), "    ")
+    entity_dir = cache_path.with_name("wikidata-entities")
+    return header + render_entries(query_rows(cache_path), "    ", entity_dir, offline=offline)
 
 
 def main(argv: list[str]) -> int:
@@ -238,20 +214,24 @@ def main(argv: list[str]) -> int:
     if check and refresh:
         print("--check and --refresh are mutually exclusive", file=sys.stderr)
         return 2
-    text = SEED.read_text(encoding="utf-8")
-    rendered = render(text, refresh)
+    text = FIXTURE.read_text(encoding="utf-8")
+    try:
+        rendered = render(text, refresh, offline=check)
+    except FileNotFoundError as error:
+        print(f"Missing release timeline capture: {error.filename}", file=sys.stderr)
+        return 1
     if rendered == text:
-        print(f"{SEED}: already grounded in the checked-in Wikidata cache")
+        print(f"{FIXTURE}: already grounded in the checked-in Wikidata cache")
         return 0
     if check:
         print(
-            f"{SEED} does not match its Wikidata cache; run "
+            f"{FIXTURE} does not match its Wikidata cache; run "
             "python3 scripts/ground-release-timelines.py",
             file=sys.stderr,
         )
         return 1
-    SEED.write_text(rendered, encoding="utf-8")
-    print(f"{SEED}: rewrote the timelines from the Wikidata cache")
+    FIXTURE.write_text(rendered, encoding="utf-8")
+    print(f"{FIXTURE}: rewrote the timelines from the Wikidata cache")
     return 0
 
 

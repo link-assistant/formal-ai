@@ -33,10 +33,12 @@ pub(super) fn lowered_candidate_is_closed(
     placeholder_names: &BTreeSet<String>,
 ) -> bool {
     let Some(lowering) = crate::coding::ir_lowering::lowering_for(&spec.language) else {
-        return false;
+        return true;
     };
     let Ok(source) = lowering.lower(candidate, catalog) else {
-        return false;
+        // Closure cannot be checked without a surface. Keep the typed IR so
+        // composition records the actual lowering error; it cannot be emitted.
+        return true;
     };
     if spec.language != "python" {
         // Other backends do not currently interpolate binder-bearing fragment

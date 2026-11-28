@@ -1,5 +1,5 @@
 {
-  "grammar": "text-formalization\n  defaults\n    heldout MiXeD\n    override inherited\n  language zz\n    override LoCaL\n    override SECOND\n  language qv\n",
+  "grammar": "text-formalization\n  defaults\n    heldout MiXeD\n    quoted \"\\\"\\\"\"\n    quoted \"\\\"quoted\\\"\"\n    quoted \"\\\"left\"\n    quoted \"right\\\"\"\n    override inherited\n  language zz\n    override LoCaL\n    override SECOND\n  language qv\n  structural-rule heldout-quoted-values\n    value \"\\\"\\\"\"\n    value \"\\\"quoted\\\"\"\n    value \"\\\"left\"\n    value \"right\\\"\"\n",
   "vocabulary": [
     {
       "language": "zz",
@@ -37,6 +37,16 @@
       "language": "zz",
       "kind": "absent",
       "values": []
+    },
+    {
+      "language": "zz",
+      "kind": "quoted",
+      "values": [
+        "\"\"",
+        "\"quoted\"",
+        "\"left",
+        "right\""
+      ]
     }
   ],
   "counts": [
@@ -75,6 +85,18 @@
       "language": "en",
       "repeat": 1,
       "expected": 2
+    }
+  ],
+  "structural": [
+    {
+      "rule": "heldout-quoted-values",
+      "kind": "value",
+      "values": [
+        "\"\"",
+        "\"quoted\"",
+        "\"left",
+        "right\""
+      ]
     }
   ]
 }

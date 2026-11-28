@@ -163,12 +163,18 @@ function tryQuantityConstraint(prompt) {
         solverEvent("quantity_constraint:verdict", String(holds)),
         solverEvent("quantity_constraint:expression", expression),
         solverEvent("quantity_constraint:difference", formatArithmeticResult(difference)),
-        ...solverCalculationEvents(expression, formatArithmeticResult(total), "js")
+        ...solverCalculationEvents(expression, formatArithmeticResult(total), "js", true)
       ]};
   } catch (_error) { return unresolved("arithmetic-unresolved"); }
 }
 
 
-function tryArithmetic(prompt) {
-  return tryQuantityConstraint(prompt) || tryArithmeticExpression(prompt);
+function tryArithmetic(prompt, preferences) {
+  // A seeded number-property request owns its operands before loose expression extraction.
+  const validation = solverPrimeIntervalValidation(prompt);
+  if (validation?.answer) return {
+    intent: NUMBER_PROPERTY_PRIME_SLUG, content: validation.answer, confidence: 1,
+    evidence: ["validation:" + NUMBER_PROPERTY_PRIME_SLUG], solverEvents: validation.events,
+  };
+  return tryQuantityConstraint(prompt) || tryArithmeticExpression(prompt, preferences);
 }

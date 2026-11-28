@@ -1,0 +1,29 @@
+{
+  "hostedSource": "aaac490e3087736f303434502f9710c3228aed4e",
+  "observedAgainstLocalHead": "38b4e36cca799fd99cc88ec05ff373d413c14975",
+  "pipelineRun": 45129261558,
+  "nativePassesByPrefix": {
+    "cargo_package_identity::": 11,
+    "changelog_fragment_file::": 4,
+    "changelog_parsing::release_changelog::": 5,
+    "collect_changelog::": 11,
+    "check_changelog_fragment::": 3,
+    "version_changelog::": 10
+  },
+  "cliMethodsPassed": 33,
+  "versionCliMethodsPassed": 10,
+  "sourceBindings": 16,
+  "wholeLogSha256": "5502d14c1bbf2caa4c9aafdf0d631e836e54e4b6ce13248404d2316be9830c69",
+  "fullTemplatePracticeEquivalenceVerified": false,
+  "actualPublicationVerified": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 57228,
+    "sha256": "a158fc9ae32b09837b6213a9e9c12fc542e8ac76432163b0050b218c4add3b06"
+  },
+  "members": 5,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:27:17.069465+00:00"
+}

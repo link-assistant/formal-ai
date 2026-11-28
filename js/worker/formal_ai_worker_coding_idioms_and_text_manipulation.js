@@ -1,38 +1,6 @@
 // The coding-idiom catalog that renders numeric-list programs, and the
 // text-manipulation request parser and operations.
 // Loaded by ../formal_ai_worker.js.
-function numericListProgramLinks(program) {
-  const lines = [
-    "program_syntax_tree",
-    `  language ${program.languageSlug}`,
-    `  value_type ${program.valueType.label}`,
-    `  operation ${program.canonical}`,
-    `  literal_values ${(program.displayValues || program.literals).join("|")}`,
-  ];
-  for (const statement of program.statements) {
-    if (statement.kind === "literal_list") {
-      lines.push(
-        `  semantic_node literal_list name=${statement.name} mutable=${statement.mutable}`,
-      );
-    } else if (statement.kind === "sort_list" || statement.kind === "reverse_list") {
-      lines.push(
-        `  semantic_node ${statement.kind} source=${statement.source} target=${statement.target} direction=${statement.direction}`,
-      );
-    } else if (statement.kind === "reduce_list") {
-      lines.push(
-        `  semantic_node reduce_list source=${statement.source} target=${statement.target} reducer=${statement.reducer}`,
-      );
-    } else if (statement.kind === "print_joined") {
-      lines.push(
-        `  semantic_node print_joined source=${statement.source} separator="${statement.separator}"`,
-      );
-    } else if (statement.kind === "print_scalar") {
-      lines.push(`  semantic_node print_scalar source=${statement.source}`);
-    }
-  }
-  return lines.join("\n");
-}
-
 // Issue #395: code-idioms knowledge base for the universal list coding
 // algorithm. Byte mirror of data/seed/coding-idioms.lino (regenerate with
 // experiments/generate-coding-idioms-embed.mjs) — each language declares
@@ -268,6 +236,37 @@ function numericListProgramSource(program) {
   return codingExpand(composer, scaffold, 0);
 }
 
+// Use the script's operation idioms with a function parameter as the list.
+// Keep test data separate so the callable accepts any list of its input type.
+function renderListCallable(slug, prompt, normalized, test) {
+  const canonical = detectNumericListOperation(normalized);
+  if (!canonical || numericListFamily(canonical) !== "list_transformation") return null;
+  const catalog = codingIdiomCatalog();
+  if (!catalog) return null;
+  const chain = codingLanguageChain(catalog, slug);
+  const scaffold = codingScaffold(chain, test ? "list_function_test" : "list_function");
+  if (scaffold === null) return null;
+  const items = parseNumericListNumbers(prompt);
+  for (const item of items) {
+    item.text = item.text.replace(/^\+/u, "").replace(/^(-?)0+(?=\d)/u, "$1");
+  }
+  if (test && !items.length) {
+    const values = Array.from({ length: 3 }, (_, value) => value);
+    if (canonical !== "reverse_sort") values.reverse();
+    items.push(...values.map((value) => ({ text: String(value), kind: "number", value })));
+  }
+  const isFloat = items.some((item) => item.text.includes("."));
+  const program = numericListBuildProgram(slug, items, canonical, isFloat);
+  const composer = codingComposer(program, chain);
+  composer.bindings.set("list", "values");
+  if (test) {
+    const expected = computeNumericList(canonical, items, isFloat)
+      .map((text) => ({ text, kind: "number" }));
+    composer.bindings.set("expected", numericListLiterals(expected, program.valueType).join(", "));
+  }
+  return codingExpand(composer, scaffold, 0);
+}
+
 // Issue #395: universal numeric-list coding algorithm. "<operation> these
 // numbers in <language>, give me the code and the result" produces generated
 // code plus the deterministically-computed result. Mirrors try_numeric_list /
@@ -332,6 +331,8 @@ function tryNumericList(prompt, history) {
 
   const canonical = detectNumericListOperation(normalized);
   if (!canonical) return null;
+  if ((canonical === "sort" || canonical === "reverse_sort")
+    && operationMatchesSlug("algorithm_request", normalized)) return tryAlgorithm(prompt);
 
   // Issue #412: a bare follow-up names no language and may not say "code" —
   // recover both from the active coding context before applying the gates.
@@ -471,8 +472,6 @@ function numericListStatedResult(prompt, normalized, canonical) {
 function tryProgramSynthesis(prompt, normalized) {
   const canonical = canonicalizedPrompt(normalized);
   if (!looksLikePythonFunctionSynthesis(prompt, canonical)) return null;
-  const recurrence = trySourceRecurrenceSynthesis(prompt);
-  if (recurrence) return recurrence;
   const functionName = extractPythonFunctionName(prompt);
   if (!functionName) return null;
   const structures = discoveredCodingStructures(canonical);

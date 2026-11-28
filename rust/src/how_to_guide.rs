@@ -17,7 +17,10 @@
 //! live run refreshes them under the same code path.
 
 pub mod extract;
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) mod indexed;
 mod render;
+mod wiki_how;
 
 use std::collections::BTreeMap;
 
@@ -278,6 +281,10 @@ impl HowToGuide {
     pub fn markdown_in(&self, language: &str) -> String {
         render::markdown_in(self, language)
     }
+
+    pub(crate) fn answer_markdown(&self, language: &str) -> String {
+        render::answer_markdown(self, language)
+    }
 }
 
 /// The registry sources that may contribute to `task`, in consultation order.
@@ -311,6 +318,9 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
     synthesize_how_to_guide_in((task, ""), client, preferences, bounds, availability, now)
 }
 
+/// The how-to source asked first and never skipped on a cached failure.
+pub const PRIORITY_HOW_TO_SOURCE: &str = "wikihow";
+
 pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
     (task, language): (&str, &str),
     client: &CachedSourceClient<T>,
@@ -320,7 +330,7 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
     now: u64,
 ) -> HowToGuide {
     let mut guide = HowToGuide {
-        task: crate::source_walk::procedural_source_task(task.trim()).to_owned(),
+        task: task.trim().to_owned(),
         steps: Vec::new(),
         outcomes: Vec::new(),
         conflicts: Vec::new(),
@@ -334,6 +344,7 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
     let extractor = StepExtractor {
         task: &guide.task,
         language,
+        can_search: bounds.max_depth > 0,
     };
     for record in select_sources(&guide.task, preferences, bounds) {
         let Some(url) = extractor.entry_url(&record, &guide.task) else {
@@ -345,7 +356,13 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
             continue;
         };
         let endpoint = crate::source_walk::endpoint_key(&record, &url);
-        if availability.known_unreachable(&endpoint, now) {
+        // wikiHow is the priority source for "how to X?" (issue #1632, R1). A
+        // single timeout, HTTP 429 or 5xx used to mark it unreachable for the
+        // whole seven-day accessibility TTL, and every how-to question then
+        // answered "no verified instructions" without asking wikiHow again.
+        // The cached failure still skips the other services, but the priority
+        // source is always probed; a successful fetch refreshes its record.
+        if record.id != PRIORITY_HOW_TO_SOURCE && availability.known_unreachable(&endpoint, now) {
             guide.outcomes.push(GuideSourceOutcome::new(
                 &record.id,
                 "unreachable_cached",
@@ -356,18 +373,25 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
             continue;
         }
         let mut outcome = WalkSourceOutcome::new(&record.id, "no_steps", url.clone());
-        let steps = walk_source(
-            &record,
-            &url,
-            &extractor,
-            &Walk {
-                client,
-                bounds,
+        let walk = Walk {
+            client,
+            bounds,
+            now,
+        };
+        let mut steps = walk_source(&record, &url, &extractor, &walk, availability, &mut outcome);
+        if record.id == PRIORITY_HOW_TO_SOURCE
+            && steps.len() < MIN_ACCEPTED_STEPS
+            && let Some(recovered) =
+                wiki_how::recover(&record, &url, &extractor, &walk, &mut outcome)
+        {
+            steps = recovered;
+            availability.observe(
+                &endpoint,
+                crate::service_accessibility::ServiceStatus::Reachable,
+                outcome.detail.clone(),
                 now,
-            },
-            availability,
-            &mut outcome,
-        );
+            );
+        }
         if !steps.is_empty() {
             outcome.status = String::from("contributed");
         }
@@ -408,6 +432,41 @@ fn search_url(endpoint: &str, task: &str) -> String {
         "{base}?action=query&list=search&srsearch={}&srlimit=5&format=json&origin=*",
         percent_encode(task)
     )
+}
+
+fn nominal_search(
+    record: &SourceRecord,
+    task: &str,
+    language: &str,
+) -> Option<(String, String, u16)> {
+    let policy = crate::rule_interpreter::handler_policy(
+        "procedural_how_to",
+        &format!("nominal-title-actions-{language}"),
+    )?;
+    let (action, subject) = task.split_once(' ')?;
+    if !policy.split_whitespace().any(|entry| entry == action) {
+        return None;
+    }
+    let declaration = crate::rule_interpreter::handler_table_value(
+        "procedure-nominal-title-namespaces",
+        &record.id,
+    )?;
+    let values = crate::seed::parser::split_pipe_list(&declaration);
+    let [namespace, prefix] = values.as_slice() else {
+        return None;
+    };
+    Some((
+        subject.to_owned(),
+        format!("{prefix}:"),
+        namespace.parse().ok()?,
+    ))
+}
+
+fn mediawiki_api(endpoint: &str) -> bool {
+    endpoint
+        .split('?')
+        .next()
+        .is_some_and(|base| base.ends_with("/api.php"))
 }
 
 /// The Stack Exchange answers of one question, best-voted first.
@@ -457,6 +516,41 @@ fn matches_task(task: &str, candidate: &str) -> bool {
     wanted.iter().all(|word| offered.contains(word))
 }
 
+/// Publisher titles may use a different aspect of the same infinitive. Apply
+/// language policy to whole words and keep every requested topic and polarity.
+fn matches_wiki_title(task: &str, candidate: &str, language: &str) -> bool {
+    let policy = |key: &str| crate::rule_interpreter::handler_policy("procedural_how_to", key);
+    let wanted = topic_words(task);
+    let offered = topic_words(candidate);
+    if let Some(negation) = policy(&format!("negation-{language}"))
+        && negation.split_whitespace().any(|word| {
+            let has_word = |text: &str| {
+                text.to_lowercase()
+                    .split(|character| !crate::source_walk::is_topic_character(character))
+                    .any(|token| token == word)
+            };
+            has_word(task) != has_word(candidate)
+        })
+    {
+        return false;
+    }
+    let prefix = policy(&format!("aspect-prefix-{language}"));
+    let endings = policy(&format!("infinitive-endings-{language}")).unwrap_or_default();
+    !wanted.is_empty()
+        && wanted.iter().all(|word| {
+            offered.contains(word)
+                || prefix.as_ref().is_some_and(|prefix| {
+                    endings.split_whitespace().any(|ending| {
+                        word.strip_suffix(ending)
+                            .is_some_and(|stem| stem.chars().count() >= 3)
+                    }) && offered.iter().any(|other| {
+                        other.strip_prefix(prefix.as_str()) == Some(word.as_str())
+                            || word.strip_prefix(prefix.as_str()) == Some(other.as_str())
+                    })
+                })
+        })
+}
+
 /// The topic words of a phrase: lowercased, de-punctuated, de-pluralised, with
 /// stopwords and one/two-letter fragments dropped.
 fn topic_words(value: &str) -> Vec<String> {
@@ -477,6 +571,15 @@ fn singular(word: &str) -> String {
     }
 }
 
+fn nominal_words(text: &str) -> Vec<String> {
+    text.split(|character| !crate::source_walk::is_topic_character(character))
+        .filter(|word| !word.is_empty())
+        .map(str::to_lowercase)
+        .filter(|word| !matches!(word.as_str(), "a" | "an" | "the"))
+        .map(|word| singular(&word))
+        .collect()
+}
+
 /// The `Procedure` kind's reading of a capture (issue #1138, plan 01 L2).
 ///
 /// Everything that used to be `capture_service` and is *not* specific to a
@@ -488,6 +591,7 @@ fn singular(word: &str) -> String {
 struct StepExtractor<'a> {
     task: &'a str,
     language: &'a str,
+    can_search: bool,
 }
 
 impl CaptureExtractor for StepExtractor<'_> {
@@ -495,6 +599,14 @@ impl CaptureExtractor for StepExtractor<'_> {
 
     fn entry_url(&self, record: &SourceRecord, subject: &str) -> Option<String> {
         crate::source_walk::entry_url_in(record, subject, self.language)
+    }
+
+    fn fallback_entry_url(&self, record: &SourceRecord) -> Option<String> {
+        if !self.can_search || !mediawiki_api(&record.api) {
+            return None;
+        }
+        let endpoint = self.entry_url(record, self.task)?;
+        Some(search_url(&endpoint, self.task))
     }
 
     fn read(
@@ -508,29 +620,55 @@ impl CaptureExtractor for StepExtractor<'_> {
         let task = self.task;
         let endpoint = capture.source_url();
         let url = endpoint.to_owned();
-        let is_wiki = record.api.contains("api.php");
+        let is_wiki = mediawiki_api(&record.api);
+        let is_wikihow = record.id == "wikihow";
+        let nominal = nominal_search(record, task, self.language);
+        let nominal_match = |title: &str| {
+            nominal.as_ref().is_some_and(|(subject, prefix, _)| {
+                title.strip_prefix(prefix).is_some_and(|title| {
+                    let words = nominal_words(subject);
+                    !words.is_empty() && words == nominal_words(title)
+                })
+            })
+        };
+        let full_search = search_url(endpoint, task);
+        let nominal_url = nominal.as_ref().map(|(subject, _, namespace)| {
+            format!("{}&srnamespace={namespace}", search_url(endpoint, subject))
+        });
+        let title_matches =
+            |title: &str| matches_wiki_title(task, title, self.language) || nominal_match(title);
         let mut read = Extracted::default();
         match classify(capture.bytes()) {
+            Payload::Parse { .. } if produced > 0 => {}
             Payload::Parse { title, html } => {
-                let relevant = record.id != "wikihow" || matches_task(task, &title);
-                let localized = record.id == "wikihow"
-                    && endpoint.split('?').next() != record.api.split('?').next();
+                let relevant = is_wiki && title_matches(&title);
                 let found = if !relevant {
                     read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                     Vec::new()
-                } else if localized {
-                    extract::wiki_how_steps(&html, bounds.max_items)
+                } else if is_wikihow {
+                    wiki_how::steps(&html, task, self.language, bounds.max_items)
                 } else {
-                    extract_steps(&html, bounds.max_items)
+                    let labels = crate::rule_interpreter::handler_policy(
+                        "procedural_how_to",
+                        "ordered-section-labels",
+                    )
+                    .unwrap_or_default();
+                    extract::ordered_procedure_steps(
+                        &html,
+                        &labels,
+                        nominal_match(&title),
+                        bounds.max_items,
+                    )
                 };
                 if found.is_empty() && depth < bounds.max_depth {
                     for title in wiki_link_titles(&html, bounds.max_pages_per_service) {
-                        if matches_task(task, &title) {
+                        if title_matches(&title) {
                             read.follow.push(parse_url(endpoint, &title));
                         }
                     }
-                    if !relevant && read.follow.is_empty() {
-                        read.follow.push(search_url(endpoint, task));
+                    if read.follow.is_empty() && is_wiki {
+                        read.follow.push(full_search);
+                        read.follow.extend(nominal_url);
                     }
                 }
                 push_steps(record, capture, depth, &found, &mut read.items);
@@ -567,14 +705,17 @@ impl CaptureExtractor for StepExtractor<'_> {
             Payload::Compressed => {
                 read.detail = Some(trace_record::line("compressed_payload", &[("url", url)]));
             }
-            Payload::OpenSearch { titles, .. } | Payload::Search { titles } => {
+            Payload::OpenSearch { titles, .. } | Payload::Search { titles } if is_wiki => {
                 let relevant: Vec<&String> = titles
                     .iter()
-                    .filter(|title| matches_task(task, title))
+                    .filter(|title| title_matches(title))
                     .take(bounds.max_pages_per_service)
                     .collect();
                 if relevant.is_empty() {
                     read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
+                    if endpoint == full_search {
+                        read.follow.extend(nominal_url);
+                    }
                 }
                 for title in relevant {
                     read.follow.push(parse_url(endpoint, title));
@@ -589,9 +730,16 @@ impl CaptureExtractor for StepExtractor<'_> {
                 // A title guess that misses is not a dead end: the same wiki can
                 // be searched for the task, and the hits parsed one hop deeper.
                 if should_search {
-                    read.follow.push(search_url(endpoint, task));
+                    read.follow.push(full_search);
+                    read.follow.extend(nominal_url);
                 }
             }
+            Payload::OpenSearch { .. } | Payload::Search { .. } => {}
+        }
+        // A later relevant capture replaces the rejected page's outcome detail.
+        // The accepted steps retain their own capture URL and digest.
+        if !read.items.is_empty() {
+            read.detail = Some(capture.source_url().to_owned());
         }
         read
     }
@@ -730,3 +878,7 @@ fn order_steps(mut steps: Vec<GuideStep>, max_steps: usize) -> Vec<GuideStep> {
     steps.truncate(max_steps);
     steps
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/how_to_guide/production_tests.rs"]
+mod tests;

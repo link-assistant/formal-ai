@@ -16,6 +16,7 @@
   {"id":"additional property violation","schema":"extraction","prompt":"{\"count\":2,\"extra\":true}"},
   {"id":"unsupported constraint","schema":"extraction","prompt":"{\"count\":2}","unsupported":"minProperties"},
   {"id":"shell gate","name":"run_command","prompt":"Run pwd in the shell.","gated":true},
+  {"id":"classified shell gate","name":"local_shell","prompt":"List the working directory.","gated":true},
   {"id":"file gate","name":"read_file","prompt":"Read the file README.md.","gated":true},
   {"id":"web gate","hosted":"web_search","prompt":"Search the web for a parcel tracker.","gated":true}
 ]

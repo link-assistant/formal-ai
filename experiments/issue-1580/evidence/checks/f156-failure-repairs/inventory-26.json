@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/retry-current-csharp-delta.py",
+    "file": "0876-evidence.gz",
+    "bytes": 479,
+    "lines": 5,
+    "rawSha256": "2eec839d115df5a1d7fd10b32c4c7acd1a53606d1842498c258f4449b162e627",
+    "archiveSha256": "dde043b47bdccb0d35b23740f2ea534cec47d5b69b26e4ce0e497cdc273a2713"
+  },
+  {
+    "source": "/tmp/issue-1580-research/review-current-rust-related-work.log",
+    "file": "0877-evidence.gz",
+    "bytes": 41434,
+    "lines": 30,
+    "rawSha256": "0f194be88c0542e098877f0c4612d679088516731e89f417576278afd82de2ef",
+    "archiveSha256": "1ecff2aeafb8557dd0c2ea509701f74318287d838f4342fd084b733288777b08"
+  },
+  {
+    "source": "/tmp/issue-1580-research/review-current-rust-related-work.py",
+    "file": "0878-evidence.gz",
+    "bytes": 1918,
+    "lines": 33,
+    "rawSha256": "6c579af25f48a7dc00f5af85e4850770a059d941e66997436ab6d778dc766911",
+    "archiveSha256": "b424db0246d373eefb3b1f6afd7a3802e6b9b047bb689f28ee6df24abb46af4c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-history-comparison/coverage.json",
+    "file": "0879-evidence.gz",
+    "bytes": 4545,
+    "lines": 179,
+    "rawSha256": "239e0bfde83677c998d2f977bb9e580a7ccc4fd8cb6b05bd24fef7a2333b9931",
+    "archiveSha256": "bb686cf0d21f25362d846027e460dd94ee0ebc85155aec991c23672f80c25425"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-history-comparison/issues.json",
+    "file": "0880-evidence.gz",
+    "bytes": 1962710,
+    "lines": 1,
+    "rawSha256": "3644f839218d11c9e3c2620383d3533cf6ec54298e878e4c1de730f6d8f63cb4",
+    "archiveSha256": "3e870de85a0b5df466fb195953466cacfdfa670e60128d72f2aec3783c8042bb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-history-comparison/issues.stderr",
+    "file": "0881-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-conversation.json",
+    "file": "0882-evidence.gz",
+    "bytes": 7267,
+    "lines": 1,
+    "rawSha256": "65ee4107c79b062e612749fe85fc556bf17b7ca8b0ea4ae0bc3db3ecc3d012f1",
+    "archiveSha256": "d84c60bd08c329ff3e92d18d6416ac1e586e6af9e0428138526bcfe1b03897f9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-conversation.stderr",
+    "file": "0883-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-inline.json",
+    "file": "0884-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-inline.stderr",
+    "file": "0885-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-issue.json",
+    "file": "0886-evidence.gz",
+    "bytes": 10736,
+    "lines": 1,
+    "rawSha256": "b77214dc88a9afdb80c0931e7f61dc71feac446fa0dc9f97f2903b76852d9d4b",
+    "archiveSha256": "1ab5f38fbf156b0316564803deb5182898a1dd90020dd132d6b1e9da59a3927f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-issue.stderr",
+    "file": "0887-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-pull.json",
+    "file": "0888-evidence.gz",
+    "bytes": 28194,
+    "lines": 1,
+    "rawSha256": "b1d573de106652d8e9e1255c0cbbaf331c43a05a86cd296d2882201564040314",
+    "archiveSha256": "aad1cc93ee13093f26425719a174c6fe48842b3b52bd5b9972a34f33cd438488"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-pull.stderr",
+    "file": "0889-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-reviews.json",
+    "file": "0890-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/248-reviews.stderr",
+    "file": "0891-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-conversation.json",
+    "file": "0892-evidence.gz",
+    "bytes": 7977,
+    "lines": 1,
+    "rawSha256": "d04c8c615a69e8640c3fc6854f4e913e933e317f2058343f65b5cd5f1f81d24d",
+    "archiveSha256": "df63ad5959b4257270533c821c849aab870aebc408ca2636cb18951a00e980d4"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-conversation.stderr",
+    "file": "0893-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-inline.json",
+    "file": "0894-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-inline.stderr",
+    "file": "0895-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-issue.json",
+    "file": "0896-evidence.gz",
+    "bytes": 12396,
+    "lines": 1,
+    "rawSha256": "c62ebae75ec520ba8bac0e0ad071ef87770b0cc1becc1bc5b749145e09780cc4",
+    "archiveSha256": "d9af947f77660254ac2c42c92abebe2d450fd3a1795b497ff4f255ca4aa6ef98"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-issue.stderr",
+    "file": "0897-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-pull.json",
+    "file": "0898-evidence.gz",
+    "bytes": 29849,
+    "lines": 1,
+    "rawSha256": "9219854ef63189342de5a4bcd91fb4a4ce90377dd5c69b147f033b46633bc79b",
+    "archiveSha256": "443413aa086aff1ed49c29ef73e4231fcc5a6f12b8ef5da40279fe9b36fa853b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-pull.stderr",
+    "file": "0899-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-reviews.json",
+    "file": "0900-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/253-reviews.stderr",
+    "file": "0901-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-conversation.json",
+    "file": "0902-evidence.gz",
+    "bytes": 7148,
+    "lines": 1,
+    "rawSha256": "240a4e18825ea3a3598ce5c8347fc5b3ab6132e9933219b2b9cdd2a3dfac2387",
+    "archiveSha256": "84fd49872ade44770715559bae3dde2e7154d21e4c6643c062ea3576cad46d68"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-conversation.stderr",
+    "file": "0903-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-inline.json",
+    "file": "0904-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-inline.stderr",
+    "file": "0905-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-issue.json",
+    "file": "0906-evidence.gz",
+    "bytes": 7747,
+    "lines": 1,
+    "rawSha256": "bd1716c4b3afe5e32847576fdfa74d27ba56e77a5a8c19d41f8b1805a62914a0",
+    "archiveSha256": "db995c7c524f7f21e9430bd2300702775cc368e9ea4724a205bf6be5d1fa319a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-issue.stderr",
+    "file": "0907-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-pull.json",
+    "file": "0908-evidence.gz",
+    "bytes": 25199,
+    "lines": 1,
+    "rawSha256": "257d5be1e72c8181d789d70725049e5a7b14b9c2ea07edfad4798d720ec58b96",
+    "archiveSha256": "a2a11e6b455b90a167190448d6bf6a06e903e8f2235bdee56da20bdd1f897535"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-pull.stderr",
+    "file": "0909-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/rust-current-related-work/255-reviews.json",
+    "file": "0910-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  }
+]

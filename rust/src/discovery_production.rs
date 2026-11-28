@@ -13,20 +13,17 @@
 //! (mirrored byte-identical under `rust/embedded/data/seed/`) declares which
 //! fields a cache row must carry ([`ProcedureCache::store`] enforces them),
 //! the hash that addresses a row's program ([`fnv1a64`], recomputed on load
-//! so a stored `content_id` can never drift), and whether the embedded
-//! `ORACLE_SNAPSHOTS` bootstrap in `crate::knowledge` still fronts the cache
-//! offline. The cache itself is `data/cache/coding-procedure-cache.lino` —
-//! runtime state, deletable by design.
+//! so a stored `content_id` can never drift), and the publisher discovery
+//! policy. The procedure cache lives in the runtime cache root and can be
+//! removed and populated again.
 //!
 //! The wiring points the issue names — the `SelectedRule::WriteProgram`
 //! branch of `crate::solver` and `plan_work_item_execution` in
 //! `crate::agentic_coding::general_execution` — call
 //! [`cached_or_research`] so a cache miss routes to
-//! [`research_coding_skill_gap`] instead of a template literal, and the
-//! template sets the issue deletes (`hello-world-programs.lino`, the
-//! `ORACLE_SNAPSHOTS` bootstrap, the `entry`/`operation`/`ci_setup`/
-//! `documented_source` fields) retire once every row they covered is
-//! reproduced by a rediscovery run.
+//! [`research_coding_skill_gap`] when the caller supplies expected output and
+//! reviewer approval. Other requests can discover supported procedures from
+//! publisher documentation or compose programs from the requested operands.
 
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
@@ -44,8 +41,7 @@ const POLICY: &str = include_str!("../embedded/data/seed/program-cache-policy.li
 /// The grammar seed that decides whether a language is renderable at all.
 const GRAMMARS: &str = include_str!("../embedded/data/seed/program-cst-grammars.lino");
 
-/// Default location of the deletable cache file, relative to the repository
-/// root. Overridable with `FORMAL_AI_PROCEDURE_CACHE` for isolated runs.
+/// Repository fixture path declared by the shared cache policy.
 pub const DEFAULT_CACHE_FILE: &str = "data/cache/coding-procedure-cache.lino";
 
 /// FNV-1a (64-bit) of the entry program bytes.
@@ -150,11 +146,7 @@ fn required_entry_fields() -> Vec<String> {
         .unwrap_or_default()
 }
 
-/// Whether the policy seed still serves the embedded bootstrap snapshots.
-///
-/// Deleting the bootstrap record in the seed stops every
-/// `ORACLE_SNAPSHOTS`-backed answer with no Rust change — the deletable-cache
-/// contract applied to the compiled-in tier.
+/// Read the historical bootstrap flag for compatibility with old policy files.
 #[must_use]
 pub fn bootstrap_cache_active() -> bool {
     let policy = parse_lino(POLICY);
@@ -248,9 +240,7 @@ pub fn grammar_exists(language: &str) -> bool {
 #[must_use]
 pub fn knows_language(language: &str) -> bool {
     grammar_exists(language)
-        && (bootstrap_cache_active() && crate::knowledge::CodingOracle::knows_language(language)
-            || language_has_cache_row(language)
-            || language_has_documented_procedure(language))
+        && (language_has_cache_row(language) || language_has_documented_procedure(language))
 }
 
 fn language_has_cache_row(language: &str) -> bool {
@@ -262,10 +252,8 @@ fn language_has_cache_row(language: &str) -> bool {
 
 /// The deletable, rediscoverable procedure cache.
 ///
-/// Backed by `data/cache/coding-procedure-cache.lino`: runtime state the
-/// repository ships empty of procedure rows on purpose (rows appear only
-/// after a verified research run) and a test may delete wholesale to prove
-/// every row reproduces.
+/// Rows appear only after a verified research run and can be replayed from
+/// their recorded source.
 #[derive(Debug, Clone, Default)]
 pub struct ProcedureCache {
     path: PathBuf,
@@ -288,11 +276,12 @@ impl ProcedureCache {
     }
 
     /// Load the cache from its default location: `$FORMAL_AI_PROCEDURE_CACHE`
-    /// when set, else the repository's `data/cache` directory found by walking
-    /// up from the working directory.
+    /// when set, otherwise the application runtime cache root.
     #[must_use]
     pub fn load() -> Self {
-        Self::load_at(&default_cache_path())
+        default_cache_path()
+            .as_deref()
+            .map_or_else(Self::default, Self::load_at)
     }
 
     /// The rows currently cached.
@@ -555,26 +544,20 @@ fn gap_field(gap: &CodingResearchGap, field: &str) -> String {
     String::new()
 }
 
-/// Resolve the default cache path: the environment override, else the
-/// repository's `data/cache` found by walking up from the working directory.
+/// Resolve the reviewed procedure cache under the runtime cache root.
 #[must_use]
-pub fn default_cache_path() -> PathBuf {
+pub fn default_cache_path() -> Option<PathBuf> {
     if let Ok(explicit) = std::env::var("FORMAL_AI_PROCEDURE_CACHE")
         && !explicit.trim().is_empty()
     {
-        return PathBuf::from(explicit);
+        return Some(PathBuf::from(explicit.trim()));
     }
-    let mut current = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
-    for _ in 0..6 {
-        let candidate = current.join(DEFAULT_CACHE_FILE);
-        if candidate.exists() || current.join("data/seed").is_dir() {
-            return candidate;
-        }
-        if !current.pop() {
-            break;
-        }
-    }
-    PathBuf::from(DEFAULT_CACHE_FILE)
+    let paths = crate::runtime_cache::runtime_cache_paths().ok()?;
+    Some(paths.runtime_root.join(procedure_cache_filename()?))
+}
+
+fn procedure_cache_filename() -> Option<&'static std::ffi::OsStr> {
+    Path::new(DEFAULT_CACHE_FILE).file_name()
 }
 
 /// Quote a value for the cache file, using the parser's backslash dialect.

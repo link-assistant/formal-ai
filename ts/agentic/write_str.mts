@@ -47,18 +47,25 @@ export function utf8Offset(text, index) {
 
 /** `str::trim_start_matches(predicate)`. */
 export function trimStartMatches(text, predicate) {
-  const chars = Array.from(text);
   let start = 0;
-  while (start < chars.length && predicate(chars[start])) start += 1;
-  return chars.slice(start).join('');
+  while (start < text.length) {
+    const character = String.fromCodePoint(text.codePointAt(start));
+    if (!predicate(character)) break;
+    start += character.length;
+  }
+  return text.slice(start);
 }
 
 /** `str::trim_end_matches(predicate)`. */
 export function trimEndMatches(text, predicate) {
-  const chars = Array.from(text);
-  let end = chars.length;
-  while (end > 0 && predicate(chars[end - 1])) end -= 1;
-  return chars.slice(0, end).join('');
+  let end = text.length;
+  while (end > 0) {
+    // A code point spanning the final two code units is one predicate input.
+    const width = end > 1 && text.codePointAt(end - 2) > 0xffff ? 2 : 1;
+    if (!predicate(text.slice(end - width, end))) break;
+    end -= width;
+  }
+  return text.slice(0, end);
 }
 
 /** `str::trim_matches(predicate)`. */

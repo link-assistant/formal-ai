@@ -123,6 +123,15 @@ pub struct SourceRecord {
     pub license_name: String,
     /// Canonical URL of that license.
     pub license_url: String,
+    /// Human article template (`{origin}/{title}`) for the page an
+    /// `action=parse` capture came from; empty when the source has none.
+    ///
+    /// Issue #1632: citations named the JSON API endpoint instead of the page a
+    /// reader can open, so an answer built from `ru.wikihow.com/хорошо-покакать`
+    /// cited `ru.wikihow.com/api.php?action=parse&page=…`.
+    pub article: String,
+    /// The character the source's article paths use in place of a space.
+    pub article_space: String,
     /// Where captures of this source are cached.
     pub cache_path: String,
     /// Registry note explaining what the source is used for.
@@ -238,6 +247,50 @@ impl SourceRecord {
         url
     }
 
+    /// The human article a captured `action=parse` URL was read from, or
+    /// `None` when the source declares no article template or the URL is not
+    /// a parse request (an archive replay, a search page, …).
+    #[must_use]
+    pub fn article_url(&self, source_url: &str) -> Option<String> {
+        if self.article.is_empty() {
+            return None;
+        }
+        let url = url::Url::parse(source_url).ok()?;
+        if !url.path().ends_with("/api.php") {
+            return None;
+        }
+        let mut action = None;
+        let mut page = None;
+        for (key, value) in url.query_pairs() {
+            match key.as_ref() {
+                "action" => action = Some(value.into_owned()),
+                "page" => page = Some(value.into_owned()),
+                _ => {}
+            }
+        }
+        let page = page.filter(|page| !page.trim().is_empty())?;
+        if action.as_deref() != Some("parse") {
+            return None;
+        }
+        let space = if self.article_space.is_empty() {
+            "_"
+        } else {
+            self.article_space.as_str()
+        };
+        let title = page
+            .trim()
+            .split_whitespace()
+            .map(percent_encode)
+            .collect::<Vec<_>>()
+            .join(&percent_encode(space));
+        let origin = url.origin().ascii_serialization();
+        Some(
+            self.article
+                .replace("{origin}", &origin)
+                .replace("{title}", &title),
+        )
+    }
+
     /// Host of the API endpoint, used as the source label in evidence.
     #[must_use]
     pub fn host(&self) -> &str {
@@ -294,6 +347,8 @@ pub fn source_registry() -> Vec<SourceRecord> {
                 language_api: entry.find_child_value("language_api").to_owned(),
                 license_name: entry.find_child_value("license_name").to_owned(),
                 license_url: entry.find_child_value("license_url").to_owned(),
+                article: entry.find_child_value("article").to_owned(),
+                article_space: entry.find_child_value("article-space").to_owned(),
                 cache_path: entry.find_child_value("cache_path").to_owned(),
                 note: entry.find_child_value("note").to_owned(),
                 need_kinds: seed_list(entry.find_child_value("need_kinds"))

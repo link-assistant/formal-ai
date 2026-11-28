@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-abbreviations,check-file-size-js-twin,check-file-size,check-readable-code"
+  ],
+  "exitCode": 0,
+  "rawSha256": "3c19698e6c4a338dc24909570326779d471fa44255b683f5ea78e484a5dcbfb5",
+  "archiveSha256": "cb48766c799938c287a4b8de1b9c462ca68308bddf0e3e29777dd6ea3c5b4592",
+  "sourceFilesRead": 102,
+  "literalLinesRead": 17346,
+  "fullIssueComplete": false
+}

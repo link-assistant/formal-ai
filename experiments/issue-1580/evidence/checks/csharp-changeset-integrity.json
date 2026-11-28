@@ -1,0 +1,192 @@
+{
+  "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+  "commit": "a5b9a1a46686cfe844f9afa2ace030094969e766",
+  "fixtureSource": "experiments/issue-1580/fixtures/csharp-template/source.json",
+  "regression": "experiments/issue-1580/template-csharp-changeset-integrity.test.mjs",
+  "sourceBoundary": "scripts/merge-changesets.mjs:213-225: ordinary write to randomly generated output, then unconditional removal of every parsed input path.",
+  "observedBefore": "Two valid inputs, including merged-bright-apple.md, deterministic Math.random=0: exit 0 and zero changesets left. The preservation assertion fails: 3 pass / 1 fail.",
+  "candidate": "Change only the disposable copy output write to use {flag: wx}. Existing output yields EEXIST/exit 1 before deleting or modifying either input. Collision recovery/retry is not implemented by this candidate.",
+  "observedAfter": "4 pass / 0 fail / 0 skip; noncollision still selects major and preserves both descriptions in mtime order; malformed input still fails without mutation. Maintained entrypoint: 25 pass / 0 fail / 0 skip.",
+  "checks": {
+    "before": {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-csharp-changeset-integrity.test.mjs"
+      ],
+      "exitCode": 1,
+      "testSha256": "707e4b06cb949059083c3c70cd9b99282ace94680b469b659130f8211124636f",
+      "claim": "The candidate preservation assertion runs against the unchanged pinned merger and must fail. The supplied random source chooses one existing valid input filename deterministically. No network or .NET runtime is involved.",
+      "logSha256": "67fbd9ee848eaa69c276c3f760e68fb0361482e4aae78905e35ec3b6ae49302f",
+      "assertionsVerified": true,
+      "harnessCorrections": "Initial harness assumed TAP output; explicit TAP reporting was added. TAP escapes C# as C\\#; a subsequent check of the preserved log uses the escaped label. Both captured test runs show the same 3 passing / 1 failing preservation test; no application or fixture input changed between those runs.",
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/before.tap.gz",
+      "compression": "gzip; hashes refer to original uncompressed bytes"
+    },
+    "after": {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-csharp-changeset-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "testSha256": "454908fe2b5e04209478d6e938fae955db078ce491a51d4c518614128006f751",
+      "logSha256": "17b21e8b7f85ed733266d72f6cf114b4bd1bea4d2a884fc1b05c65d5386ec00e",
+      "expectedTests": 4,
+      "network": false,
+      "nativeBuild": false,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/after.tap.gz",
+      "compression": "gzip; hashes refer to original uncompressed bytes"
+    },
+    "maintained": {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "exitCode": 0,
+      "testSha256": "249c44a51ece5ca447704f31d3bab2ad155c5fbfe81c91958e68ae2e012b2534",
+      "logSha256": "06eca423c7c34181272499ae13626eb051c0c054ec0b4f1669ffba0ff75642b6",
+      "expectedTests": 25,
+      "network": false,
+      "nativeBuild": false,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/maintained.tap.gz",
+      "compression": "gzip; hashes refer to original uncompressed bytes"
+    }
+  },
+  "upstreamPreflight": [
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-conversation.json.gz",
+      "sha256": "582984a0b4add3072464b2c11b8703ada52cc30b8fc73d783e5d02249933d9d4",
+      "bytes": 12492
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-inline.json.gz",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-issue-78-comments.json.gz",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-issues.json.gz",
+      "sha256": "5827baf8ade5ea1f1ee89ba06a6d149dad3c973abee6b9aac93ac44effdaff2c",
+      "bytes": 1108587
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-latest-source-pulls.json.gz",
+      "sha256": "9c22b7a956d22a2a462399e1079106f6075b07b53dd7328dea49bcb745d244eb",
+      "bytes": 33406
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-matching-items.json.gz",
+      "sha256": "c895ae3815fc14ca1541a741659b33765f0ba6f451018427f8ca0a6d4f1038e8",
+      "bytes": 33372
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-merge-changesets-history.json.gz",
+      "sha256": "ce226d40997e608a17c8f63981e7132d710b8812bfc1cb935dd3a77257d39555",
+      "bytes": 14407
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-pull-83.json.gz",
+      "sha256": "dbdbdfdd6edd64116626e5fb6eba5c6b6f250223dae3d6c62cc6c930a1cddea2",
+      "bytes": 33906
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-pulls.json.gz",
+      "sha256": "8c32d2a436db784027a052e1626e73457429374c8bcc56a01d9d27899ef5ecc8",
+      "bytes": 1520705
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-reviews.json.gz",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/upstream-summary.json.gz",
+      "sha256": "c13efff6ca82b19a5f1b0803f0653da97a5cb9c558e402d70928b03d1fef76c0",
+      "bytes": 2189
+    }
+  ],
+  "priorReports": "Existing C# 78 and its repair PR 83 concern invalid changeset parsing; 60/62 concern untrusted output. Complete matching bodies and the latest source PR 83 conversation/reviews were read. This valid-input filename collision is distinct; upstream source still matches the pin.",
+  "reviewArtifact": "docs/case-studies/issue-1580/templates/csharp-partial-semantic-review.json",
+  "formalAiApplicability": "Formal AI uses Rust changelog fragments rather than this C# merger; no production helper is replaced by this fixture. Reading scripts/create-changelog-fragment.rs exposes a separate unexecuted timestamp/nonexclusive-write collision question. That question remains unfinished; no claim that all Formal AI release writes are safe is made.",
+  "limits": [
+    "No .NET or Bun suite executed",
+    "No template hosted workflow, live publication, registry authentication or network experiment",
+    "Partial semantic review remains incomplete",
+    "This reporting fixture does not implement an upstream repair or complete issue 1580"
+  ],
+  "authorship": "Codex supplied all experiments, candidate edits, assertions and conclusions. Zero independently accepted Formal AI reasoning units.",
+  "gates": [
+    {
+      "gate": "check-file-size",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-file-size.log.gz",
+      "sha256": "ac0b6ac0bdfcbdc675934d0fcab399b650dfed7e41fbfb38a6a309040054cfce",
+      "lines": 3
+    },
+    {
+      "gate": "check-file-size-js-twin",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-file-size-js-twin.log.gz",
+      "sha256": "b22af0da649a94974f157e9bad79f3e30e0a042b799c7f2dfe71e319e1e73d22",
+      "lines": 3
+    },
+    {
+      "gate": "check-changelog-fragment-js-twin",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-changelog-fragment-js-twin.log.gz",
+      "sha256": "df3aa41c72cf4173daba10137140060a440817c92a38088cca94986a20c2b63b",
+      "lines": 3
+    },
+    {
+      "gate": "check-ci-speed",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-ci-speed"
+      ],
+      "exitCode": 0,
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/check-ci-speed.log.gz",
+      "sha256": "9e93e1a73e6ed14ad3d1b9f991faef7fd2352b355f6f42e14e9c11aebffd7663",
+      "lines": 3
+    }
+  ],
+  "logStorage": "Complete raw TAP/spec output is gzip-compressed without changing any bytes, including whitespace in the expected assertion failure. All log hashes refer to original bytes.",
+  "evidenceFilenameCorrection": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/abbreviation-filename-correction.json"
+}

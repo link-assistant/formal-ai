@@ -1,0 +1,249 @@
+[
+  {
+    "name": "before-closure-audit",
+    "argv": [
+      "python3",
+      "scripts/check-closure-audit.py"
+    ],
+    "exitCode": 1,
+    "seconds": 5.839,
+    "stdout": {
+      "file": "before-closure-audit.stdout.gz",
+      "rawSha256": "c3fa48a0b38ec387c33b7710b3569a1015605314d4adf5c89a704586d162b13f",
+      "lines": 3
+    },
+    "stderr": {
+      "file": "before-closure-audit.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "before-notation",
+    "argv": [
+      "node",
+      "scripts/measure-notation.mjs",
+      "--check"
+    ],
+    "exitCode": 1,
+    "seconds": 2.602,
+    "stdout": {
+      "file": "before-notation.stdout.gz",
+      "rawSha256": "c521c27e3d686aa8a3cf6bc2dec99788d38c43f5518d89ffb10e67cd892a4861",
+      "lines": 14
+    },
+    "stderr": {
+      "file": "before-notation.stderr.gz",
+      "rawSha256": "5815d59c43c3dbee0f07ec46f7efff56e00b9dafbead1207394de826522563a5",
+      "lines": 1
+    }
+  },
+  {
+    "name": "after-closure-audit",
+    "argv": [
+      "python3",
+      "scripts/check-closure-audit.py"
+    ],
+    "exitCode": 0,
+    "seconds": 5.757,
+    "stdout": {
+      "file": "after-closure-audit.stdout.gz",
+      "rawSha256": "920023ac0010fa50bd96f7a9b368cc4050cbb985250643d64ffcfbc58a06ea64",
+      "lines": 3
+    },
+    "stderr": {
+      "file": "after-closure-audit.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "lower-notation-ceilings",
+    "argv": [
+      "node",
+      "scripts/measure-notation.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 2.492,
+    "stdout": {
+      "file": "lower-notation-ceilings.stdout.gz",
+      "rawSha256": "82e24551f5bb329a71129a36f20f9cda769b4725e6674ba964efd6724fb08b12",
+      "lines": 14
+    },
+    "stderr": {
+      "file": "lower-notation-ceilings.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "after-notation",
+    "argv": [
+      "node",
+      "scripts/measure-notation.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 3.437,
+    "stdout": {
+      "file": "after-notation.stdout.gz",
+      "rawSha256": "8ece9b018b7b68ac85d0b95629570dc9b174e10c5741ab668f7cc78fff2a6a3e",
+      "lines": 13
+    },
+    "stderr": {
+      "file": "after-notation.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "rustfmt",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/solver_unknown_reasoning.rs",
+      "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.699,
+    "stdout": {
+      "file": "rustfmt.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "rustfmt.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "sync-seed",
+    "argv": [
+      "bash",
+      "scripts/sync-seed.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 6.806,
+    "stdout": {
+      "file": "sync-seed.stdout.gz",
+      "rawSha256": "54c4a2498017924917d8e5e5df4179d9cd691872731367c19d908da74960e841",
+      "lines": 261
+    },
+    "stderr": {
+      "file": "sync-seed.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "mirror-package-data",
+    "argv": [
+      "node",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 0.419,
+    "stdout": {
+      "file": "mirror-package-data.stdout.gz",
+      "rawSha256": "d42d74419524b5270906bbd8700479676abcbd8aec6f9ca08770987a150dba88",
+      "lines": 1
+    },
+    "stderr": {
+      "file": "mirror-package-data.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "runtime-feature-inventory",
+    "argv": [
+      "node",
+      "scripts/generate-runtime-feature-inventory.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 1.142,
+    "stdout": {
+      "file": "runtime-feature-inventory.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "runtime-feature-inventory.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "typescript-projection",
+    "argv": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 2.955,
+    "stdout": {
+      "file": "typescript-projection.stdout.gz",
+      "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+      "lines": 1
+    },
+    "stderr": {
+      "file": "typescript-projection.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.853,
+    "stdout": {
+      "file": "whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "source-diff",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "data/seed/code-task-cues.lino",
+      "rust/src/solver_unknown_reasoning.rs",
+      "data/seed/meanings-concept-lookup.lino",
+      "rust/embedded/data/seed/code-task-cues.lino",
+      "rust/embedded/data/seed/meanings-concept-lookup.lino",
+      "data/meta/runtime-feature-coverage.json",
+      "data/meta/notation-ratchet.lino"
+    ],
+    "exitCode": 0,
+    "seconds": 0.08,
+    "stdout": {
+      "file": "source-diff.stdout.gz",
+      "rawSha256": "47a5ec3814e90a40f71411a943843c15b2e0fb6f197683c3044de2d2c39f4c9d",
+      "lines": 95
+    },
+    "stderr": {
+      "file": "source-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  }
+]

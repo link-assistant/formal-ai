@@ -149,6 +149,14 @@ nobody checked -- re-run once the registry answers." >&2
   return "$status"
 }
 
+# Finish the inventory before starting any audit. A process substitution hides
+# Git failures, including a failure after partial output, from set -e/pipefail.
+tracked_files="$(git ls-files -- 'bun.lock' '**/bun.lock' 'package-lock.json' '**/package-lock.json')" || {
+  status=$?
+  echo "::error::Unable to enumerate JavaScript lockfiles (git ls-files exited $status)." >&2
+  exit "$status"
+}
+
 # One temporary file per stream per lockfile. Concurrent audits would otherwise
 # interleave their output line by line, and a log nobody can attribute to a
 # lockfile is not evidence about any of them.
@@ -201,12 +209,13 @@ queue_locks() {
   local lock
 
   while IFS= read -r lock; do
+    [[ "${lock##*/}" == "$lock_name" ]] || continue
     # A deleted-but-unstaged file can remain in the local index. CI never has
     # that state, but skipping it keeps this check useful while preparing a
     # commit that removes or renames a lock.
     [[ -f "$lock" ]] || continue
     start_audit "$lock" "$@"
-  done < <(git ls-files | awk -F/ -v name="$lock_name" '$NF == name')
+  done <<<"$tracked_files"
 }
 
 queue_locks "bun.lock" bun audit --audit-level=moderate

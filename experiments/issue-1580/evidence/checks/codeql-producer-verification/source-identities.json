@@ -1,0 +1,30 @@
+[
+  {
+    "path": ".github/workflows/security.yml",
+    "sha256": "565df03203d05be40560185016fbb4fa4c40b98509d18bc09d5ad886c16663f6"
+  },
+  {
+    "path": "rust/tests/web/security-codeql-results.test.mjs",
+    "sha256": "8341c7db11b29d6014ff78e8350ae0c1bb580d2f57443d7ef575f8fc7081fb12"
+  },
+  {
+    "path": "data/benchmarks/fast-pull-request-retained-jobs.json",
+    "sha256": "f57965fd9d2830587257e9e5232f4ad3f469711b19fc9136ec012246f6e653bb"
+  },
+  {
+    "path": "changelog.d/1580-codeql-producer-verification.md",
+    "sha256": "8e2e79934d7725d20de8c3bebbbbf3f3f529a9d96dc374bf6a0ca9b8c0e0d0e1"
+  },
+  {
+    "path": "docs/case-studies/issue-1580/codeql-result-checkpoint.md",
+    "sha256": "1f29f768ebfcb43682b5ae3e36d5bf2569beb34fcd74ae17fbd69ca9e81daaa9"
+  },
+  {
+    "path": "docs/case-studies/issue-1580/templates/rust-source-review-progress.json",
+    "sha256": "571e13f70c391154895471d6d0f2a9b20616234d094c5bce6020e1220dfe3ccd"
+  },
+  {
+    "path": "experiments/issue-1580/work-plan.md",
+    "sha256": "900e9008ccd3e416f78ca88b7de206deabb7417ceb4f70c3dbb4cc0c6a348409"
+  }
+]

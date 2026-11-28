@@ -1,0 +1,724 @@
+{
+  "run": {
+    "id": 43813238887,
+    "name": "Hive Mind draft",
+    "node_id": "WFR_kwLOSbOoU88AAAAKM3j4Zw",
+    "head_branch": "main",
+    "head_sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+    "path": ".github/workflows/hive-mind-draft.yml",
+    "display_title": "Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all",
+    "run_number": 41,
+    "event": "issues",
+    "status": "completed",
+    "conclusion": "failure",
+    "workflow_id": 386917813,
+    "check_suite_id": 118609706011,
+    "check_suite_node_id": "CS_kwDOSbOoU88AAAAbnbB8Gw",
+    "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/43813238887",
+    "pull_requests": [],
+    "created_at": "2026-11-16T05:54:24Z",
+    "updated_at": "2026-11-16T06:15:52Z",
+    "actor": {
+      "login": "konard",
+      "id": 1431904,
+      "node_id": "MDQ6VXNlcjE0MzE5MDQ=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1431904?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/konard",
+      "html_url": "https://github.com/konard",
+      "followers_url": "https://api.github.com/users/konard/followers",
+      "following_url": "https://api.github.com/users/konard/following{/other_user}",
+      "gists_url": "https://api.github.com/users/konard/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/konard/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/konard/subscriptions",
+      "organizations_url": "https://api.github.com/users/konard/orgs",
+      "repos_url": "https://api.github.com/users/konard/repos",
+      "events_url": "https://api.github.com/users/konard/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/konard/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "run_attempt": 1,
+    "referenced_workflows": [],
+    "run_started_at": "2026-11-16T05:54:24Z",
+    "triggering_actor": {
+      "login": "konard",
+      "id": 1431904,
+      "node_id": "MDQ6VXNlcjE0MzE5MDQ=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1431904?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/konard",
+      "html_url": "https://github.com/konard",
+      "followers_url": "https://api.github.com/users/konard/followers",
+      "following_url": "https://api.github.com/users/konard/following{/other_user}",
+      "gists_url": "https://api.github.com/users/konard/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/konard/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/konard/subscriptions",
+      "organizations_url": "https://api.github.com/users/konard/orgs",
+      "repos_url": "https://api.github.com/users/konard/repos",
+      "events_url": "https://api.github.com/users/konard/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/konard/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "jobs_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887/jobs",
+    "logs_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887/logs",
+    "check_suite_url": "https://api.github.com/repos/link-assistant/formal-ai/check-suites/118609706011",
+    "artifacts_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887/artifacts",
+    "cancel_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887/cancel",
+    "rerun_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887/rerun",
+    "previous_attempt_url": null,
+    "workflow_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/workflows/386917813",
+    "head_commit": {
+      "id": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+      "tree_id": "9f8173a20e730d26ebf45b04bb685b01e62e4575",
+      "message": "Merge pull request #1577 from link-assistant/issue-1166-36437f5796a8\n\nfix: preserve complete issue meaning in typed obligations and independent acceptance (#1166)",
+      "timestamp": "2026-11-16T04:43:29Z",
+      "author": {
+        "name": "Konstantin Diachenko",
+        "email": "drakonard@gmail.com"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com"
+      }
+    },
+    "repository": {
+      "id": 1236510803,
+      "node_id": "R_kgDOSbOoUw",
+      "name": "formal-ai",
+      "full_name": "link-assistant/formal-ai",
+      "private": false,
+      "owner": {
+        "login": "link-assistant",
+        "id": 245352401,
+        "node_id": "O_kgDODp_H0Q",
+        "avatar_url": "https://avatars.githubusercontent.com/u/245352401?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/link-assistant",
+        "html_url": "https://github.com/link-assistant",
+        "followers_url": "https://api.github.com/users/link-assistant/followers",
+        "following_url": "https://api.github.com/users/link-assistant/following{/other_user}",
+        "gists_url": "https://api.github.com/users/link-assistant/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/link-assistant/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/link-assistant/subscriptions",
+        "organizations_url": "https://api.github.com/users/link-assistant/orgs",
+        "repos_url": "https://api.github.com/users/link-assistant/repos",
+        "events_url": "https://api.github.com/users/link-assistant/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/link-assistant/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/link-assistant/formal-ai",
+      "description": "Don't know everything, know just enough to get to know anything",
+      "fork": false,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai",
+      "forks_url": "https://api.github.com/repos/link-assistant/formal-ai/forks",
+      "keys_url": "https://api.github.com/repos/link-assistant/formal-ai/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/link-assistant/formal-ai/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/link-assistant/formal-ai/teams",
+      "hooks_url": "https://api.github.com/repos/link-assistant/formal-ai/hooks",
+      "issue_events_url": "https://api.github.com/repos/link-assistant/formal-ai/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/link-assistant/formal-ai/events",
+      "assignees_url": "https://api.github.com/repos/link-assistant/formal-ai/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/link-assistant/formal-ai/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/link-assistant/formal-ai/tags",
+      "blobs_url": "https://api.github.com/repos/link-assistant/formal-ai/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/link-assistant/formal-ai/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/link-assistant/formal-ai/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/link-assistant/formal-ai/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/link-assistant/formal-ai/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/link-assistant/formal-ai/languages",
+      "stargazers_url": "https://api.github.com/repos/link-assistant/formal-ai/stargazers",
+      "contributors_url": "https://api.github.com/repos/link-assistant/formal-ai/contributors",
+      "subscribers_url": "https://api.github.com/repos/link-assistant/formal-ai/subscribers",
+      "subscription_url": "https://api.github.com/repos/link-assistant/formal-ai/subscription",
+      "commits_url": "https://api.github.com/repos/link-assistant/formal-ai/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/link-assistant/formal-ai/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/link-assistant/formal-ai/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/link-assistant/formal-ai/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/link-assistant/formal-ai/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/link-assistant/formal-ai/merges",
+      "archive_url": "https://api.github.com/repos/link-assistant/formal-ai/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/link-assistant/formal-ai/downloads",
+      "issues_url": "https://api.github.com/repos/link-assistant/formal-ai/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/link-assistant/formal-ai/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/link-assistant/formal-ai/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/link-assistant/formal-ai/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/link-assistant/formal-ai/labels{/name}",
+      "releases_url": "https://api.github.com/repos/link-assistant/formal-ai/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/link-assistant/formal-ai/deployments"
+    },
+    "head_repository": {
+      "id": 1236510803,
+      "node_id": "R_kgDOSbOoUw",
+      "name": "formal-ai",
+      "full_name": "link-assistant/formal-ai",
+      "private": false,
+      "owner": {
+        "login": "link-assistant",
+        "id": 245352401,
+        "node_id": "O_kgDODp_H0Q",
+        "avatar_url": "https://avatars.githubusercontent.com/u/245352401?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/link-assistant",
+        "html_url": "https://github.com/link-assistant",
+        "followers_url": "https://api.github.com/users/link-assistant/followers",
+        "following_url": "https://api.github.com/users/link-assistant/following{/other_user}",
+        "gists_url": "https://api.github.com/users/link-assistant/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/link-assistant/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/link-assistant/subscriptions",
+        "organizations_url": "https://api.github.com/users/link-assistant/orgs",
+        "repos_url": "https://api.github.com/users/link-assistant/repos",
+        "events_url": "https://api.github.com/users/link-assistant/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/link-assistant/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/link-assistant/formal-ai",
+      "description": "Don't know everything, know just enough to get to know anything",
+      "fork": false,
+      "url": "https://api.github.com/repos/link-assistant/formal-ai",
+      "forks_url": "https://api.github.com/repos/link-assistant/formal-ai/forks",
+      "keys_url": "https://api.github.com/repos/link-assistant/formal-ai/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/link-assistant/formal-ai/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/link-assistant/formal-ai/teams",
+      "hooks_url": "https://api.github.com/repos/link-assistant/formal-ai/hooks",
+      "issue_events_url": "https://api.github.com/repos/link-assistant/formal-ai/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/link-assistant/formal-ai/events",
+      "assignees_url": "https://api.github.com/repos/link-assistant/formal-ai/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/link-assistant/formal-ai/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/link-assistant/formal-ai/tags",
+      "blobs_url": "https://api.github.com/repos/link-assistant/formal-ai/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/link-assistant/formal-ai/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/link-assistant/formal-ai/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/link-assistant/formal-ai/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/link-assistant/formal-ai/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/link-assistant/formal-ai/languages",
+      "stargazers_url": "https://api.github.com/repos/link-assistant/formal-ai/stargazers",
+      "contributors_url": "https://api.github.com/repos/link-assistant/formal-ai/contributors",
+      "subscribers_url": "https://api.github.com/repos/link-assistant/formal-ai/subscribers",
+      "subscription_url": "https://api.github.com/repos/link-assistant/formal-ai/subscription",
+      "commits_url": "https://api.github.com/repos/link-assistant/formal-ai/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/link-assistant/formal-ai/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/link-assistant/formal-ai/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/link-assistant/formal-ai/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/link-assistant/formal-ai/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/link-assistant/formal-ai/merges",
+      "archive_url": "https://api.github.com/repos/link-assistant/formal-ai/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/link-assistant/formal-ai/downloads",
+      "issues_url": "https://api.github.com/repos/link-assistant/formal-ai/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/link-assistant/formal-ai/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/link-assistant/formal-ai/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/link-assistant/formal-ai/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/link-assistant/formal-ai/labels{/name}",
+      "releases_url": "https://api.github.com/repos/link-assistant/formal-ai/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/link-assistant/formal-ai/deployments"
+    }
+  },
+  "jobs": [
+    {
+      "id": 133119379350,
+      "run_id": 43813238887,
+      "workflow_name": "Hive Mind draft",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSbOoU88AAAAe_oiHlg",
+      "head_sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/133119379350",
+      "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/43813238887/job/133119379350",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-16T05:54:24Z",
+      "started_at": "2026-11-16T05:54:27Z",
+      "completed_at": "2026-11-16T06:05:27Z",
+      "name": "build",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T05:54:28Z",
+          "completed_at": "2026-11-16T05:54:29Z"
+        },
+        {
+          "name": "Set session evidence directory on the allocated runner",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T05:54:29Z",
+          "completed_at": "2026-11-16T05:54:29Z"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T05:54:29Z",
+          "completed_at": "2026-11-16T05:55:02Z"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T05:55:02Z",
+          "completed_at": "2026-11-16T05:55:02Z"
+        },
+        {
+          "name": "Resolve current Hive Mind main once for this attempt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-16T05:55:02Z",
+          "completed_at": "2026-11-16T05:55:03Z"
+        },
+        {
+          "name": "Checkout shared maintained Hive Mind decision and attempt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-16T05:55:03Z",
+          "completed_at": "2026-11-16T05:55:41Z"
+        },
+        {
+          "name": "Install shared automation dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T05:55:41Z",
+          "completed_at": "2026-11-16T05:55:46Z"
+        },
+        {
+          "name": "Decide before building source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-16T05:55:46Z",
+          "completed_at": "2026-11-16T05:55:48Z"
+        },
+        {
+          "name": "Bind the current Hive source and its exact runtime version",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T05:55:48Z",
+          "completed_at": "2026-11-16T05:55:48Z"
+        },
+        {
+          "name": "Resolve current main commit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-16T05:55:48Z",
+          "completed_at": "2026-11-16T05:55:49Z"
+        },
+        {
+          "name": "Checkout exact main source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-16T05:55:49Z",
+          "completed_at": "2026-11-16T05:56:20Z"
+        },
+        {
+          "name": "Compute the effective Formal AI build identity",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-16T05:56:20Z",
+          "completed_at": "2026-11-16T05:56:21Z"
+        },
+        {
+          "name": "Claim the build identity for this draft",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-16T05:56:21Z",
+          "completed_at": "2026-11-16T05:56:22Z"
+        },
+        {
+          "name": "Reuse or await the single producer of this build identity",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-16T05:56:22Z",
+          "completed_at": "2026-11-16T05:56:38Z"
+        },
+        {
+          "name": "Download the authenticated shared build",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 15,
+          "started_at": "2026-11-16T05:56:38Z",
+          "completed_at": "2026-11-16T05:56:38Z"
+        },
+        {
+          "name": "Verify the shared build's producer, identity and digest",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-16T05:56:38Z",
+          "completed_at": "2026-11-16T05:56:38Z"
+        },
+        {
+          "name": "Restore shared Cargo registry without an extra cache writer",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-16T05:56:38Z",
+          "completed_at": "2026-11-16T05:57:01Z"
+        },
+        {
+          "name": "Build current main binary in CI",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-16T05:57:01Z",
+          "completed_at": "2026-11-16T06:05:05Z"
+        },
+        {
+          "name": "Record actual source version and binary digest",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-16T06:05:05Z",
+          "completed_at": "2026-11-16T06:05:05Z"
+        },
+        {
+          "name": "Admit one attempt identity for the selected sources and binary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-16T06:05:05Z",
+          "completed_at": "2026-11-16T06:05:06Z"
+        },
+        {
+          "name": "Publish the single exact-main binary for the draft runner",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-16T06:05:06Z",
+          "completed_at": "2026-11-16T06:05:13Z"
+        },
+        {
+          "name": "Describe the successful build for other drafts of the same identity",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-16T06:05:13Z",
+          "completed_at": "2026-11-16T06:05:14Z"
+        },
+        {
+          "name": "Publish the authenticated build product once per identity",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-16T06:05:14Z",
+          "completed_at": "2026-11-16T06:05:21Z"
+        },
+        {
+          "name": "Stage complete redacted build evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-16T06:05:21Z",
+          "completed_at": "2026-11-16T06:05:21Z"
+        },
+        {
+          "name": "Retain main source and build evidence even on failure",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-16T06:05:21Z",
+          "completed_at": "2026-11-16T06:05:23Z"
+        },
+        {
+          "name": "Post Restore shared Cargo registry without an extra cache writer",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 46,
+          "started_at": "2026-11-16T06:05:23Z",
+          "completed_at": "2026-11-16T06:05:23Z"
+        },
+        {
+          "name": "Post Checkout exact main source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 47,
+          "started_at": "2026-11-16T06:05:23Z",
+          "completed_at": "2026-11-16T06:05:23Z"
+        },
+        {
+          "name": "Post Checkout shared maintained Hive Mind decision and attempt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 48,
+          "started_at": "2026-11-16T06:05:23Z",
+          "completed_at": "2026-11-16T06:05:23Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 49,
+          "started_at": "2026-11-16T06:05:23Z",
+          "completed_at": "2026-11-16T06:05:23Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 50,
+          "started_at": "2026-11-16T06:05:23Z",
+          "completed_at": "2026-11-16T06:05:24Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 51,
+          "started_at": "2026-11-16T06:05:24Z",
+          "completed_at": "2026-11-16T06:05:24Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/133119379350",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000264645,
+      "runner_name": "GitHub Actions 1000264645",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 133123072098,
+      "run_id": 43813238887,
+      "workflow_name": "Hive Mind draft",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/43813238887",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOSbOoU88AAAAe_sDgYg",
+      "head_sha": "3c4507b6619a7d6d5f461e3b525cefe64973b3f5",
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/133123072098",
+      "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/43813238887/job/133123072098",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-16T06:05:27Z",
+      "started_at": "2026-11-16T06:05:29Z",
+      "completed_at": "2026-11-16T06:15:51Z",
+      "name": "draft",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T06:05:30Z",
+          "completed_at": "2026-11-16T06:05:31Z"
+        },
+        {
+          "name": "Set session evidence directory on the allocated runner",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T06:05:31Z",
+          "completed_at": "2026-11-16T06:05:31Z"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T06:05:31Z",
+          "completed_at": "2026-11-16T06:06:02Z"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T06:06:02Z",
+          "completed_at": "2026-11-16T06:06:02Z"
+        },
+        {
+          "name": "Restore source and build evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-16T06:06:02Z",
+          "completed_at": "2026-11-16T06:06:03Z"
+        },
+        {
+          "name": "Download the exact-main binary once",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-16T06:06:03Z",
+          "completed_at": "2026-11-16T06:06:06Z"
+        },
+        {
+          "name": "Checkout shared maintained Hive Mind decision and attempt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T06:06:06Z",
+          "completed_at": "2026-11-16T06:06:29Z"
+        },
+        {
+          "name": "Install shared automation dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-16T06:06:29Z",
+          "completed_at": "2026-11-16T06:06:36Z"
+        },
+        {
+          "name": "Free disk for the Hive Mind image",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T06:06:36Z",
+          "completed_at": "2026-11-16T06:08:17Z"
+        },
+        {
+          "name": "Retain native and dialog payloads in the mounted session directory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-16T06:08:17Z",
+          "completed_at": "2026-11-16T06:08:18Z"
+        },
+        {
+          "name": "Verify the admitted binary and sources before any task effect",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-16T06:08:18Z",
+          "completed_at": "2026-11-16T06:08:18Z"
+        },
+        {
+          "name": "Attempt through shared Hive Mind scripts (including image pull retry)",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 12,
+          "started_at": "2026-11-16T06:08:18Z",
+          "completed_at": "2026-11-16T06:15:44Z"
+        },
+        {
+          "name": "Verify Hive Mind served the admitted selection",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-16T06:15:44Z",
+          "completed_at": "2026-11-16T06:15:44Z"
+        },
+        {
+          "name": "Verify this attempt's exact pull request",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 14,
+          "started_at": "2026-11-16T06:15:44Z",
+          "completed_at": "2026-11-16T06:15:45Z"
+        },
+        {
+          "name": "Dispatch checks only after a useful draft is verified",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 15,
+          "started_at": "2026-11-16T06:15:45Z",
+          "completed_at": "2026-11-16T06:15:45Z"
+        },
+        {
+          "name": "Retain failed build outcome while still publishing evidence",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-16T06:15:45Z",
+          "completed_at": "2026-11-16T06:15:45Z"
+        },
+        {
+          "name": "Transfer only private diagnostic files to the artifact reader",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-16T06:15:45Z",
+          "completed_at": "2026-11-16T06:15:45Z"
+        },
+        {
+          "name": "Stage complete redacted attempt evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-16T06:15:45Z",
+          "completed_at": "2026-11-16T06:15:46Z"
+        },
+        {
+          "name": "Upload complete session evidence on success and failure",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-16T06:15:46Z",
+          "completed_at": "2026-11-16T06:15:47Z"
+        },
+        {
+          "name": "Link session artifact on the issue when no verified draft exists",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-16T06:15:47Z",
+          "completed_at": "2026-11-16T06:15:48Z"
+        },
+        {
+          "name": "Post Checkout shared maintained Hive Mind decision and attempt",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 38,
+          "started_at": "2026-11-16T06:15:48Z",
+          "completed_at": "2026-11-16T06:15:48Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 39,
+          "started_at": "2026-11-16T06:15:48Z",
+          "completed_at": "2026-11-16T06:15:48Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 40,
+          "started_at": "2026-11-16T06:15:48Z",
+          "completed_at": "2026-11-16T06:15:48Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 41,
+          "started_at": "2026-11-16T06:15:48Z",
+          "completed_at": "2026-11-16T06:15:49Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/133123072098",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000264690,
+      "runner_name": "GitHub Actions 1000264690",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

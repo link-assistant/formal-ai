@@ -1,0 +1,22 @@
+{
+  "checks": [
+    {
+      "name": "hive-mind-draft-workflow",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/hive-mind-draft-workflow.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.72,
+      "file": "first-validation-hive-mind-draft-workflow.log.gz",
+      "rawSha256": "ce3546c4ec48173c9ef2cad9949aea7754d4b3415d16a55fdec364f8f6307674",
+      "archiveSha256": "58a2c93528043ec2a8af50b15c3522fdcd02616db8cb16c04ab747a6163e1570"
+    }
+  ],
+  "cause": "The test inspected the entire checkout step, including its legitimate should_run condition; restrict the untrusted-source assertion to the checkout inputs."
+}

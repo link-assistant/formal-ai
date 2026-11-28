@@ -270,7 +270,7 @@ function tryPromptData(prompt, forcedLocale) {
       payload.split("\n").some((line) => promptDataSurfaces(rules, "question").includes(normalizePrompt(line.split(/[:：]/u)[0])))) {
     return promptDataRecordAnswer(prompt, rules, locale);
   }
-  if (promptDataStarts(key, rules, "extraction")) return promptDataExtract(key, payload, rules, locale);
+  if (promptDataStarts(key, rules, "extraction")) return parseTextManipulationRequest(prompt, normalizePrompt(prompt)) ? null : promptDataExtract(key, payload, rules, locale);
   if (promptDataStarts(key, rules, "rewrite") &&
       promptDataSurfaces(rules, "omit").some((surface) => promptDataHas(key, surface))) {
     return promptDataReply("rewrite", promptDataField(rules, locale, "gap"), [], rules, locale);

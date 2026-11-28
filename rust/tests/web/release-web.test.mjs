@@ -74,7 +74,8 @@ test('Desktop producer and both package consumers use the same source-bound hand
   assert.match(action,/bun install --frozen-lockfile --ignore-scripts/u);
   assert.match(action,/bun-version-file: \.bun-version/u);
   assert.match(action,/bun run build:web/u);
-  assert.match(action,/NODE_OPTIONS: --disable-warning=DEP0005/u);
+  assert.match(action,/uses: [.]\/[.]github\/actions\/download-artifact/u);
+  assert.doesNotMatch(action,/--disable-warning/u);
   assert.doesNotMatch(action,/run-id:|github-token:|actions\/cache/u);
   assert.match(action,/name: native-release-web/u);
   assert(workflow.split('\n').length-1<=1500);

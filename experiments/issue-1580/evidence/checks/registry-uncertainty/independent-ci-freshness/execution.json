@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "00f954c7bb7871606890e790a92cd85778a3d901",
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/js_dogfood/drive.mjs",
+    "--dir",
+    "/tmp/gh-issue-solver-1794900398048",
+    "--steps",
+    "4",
+    "Assess the validation evidence for pull request 1581. The published commit is 14ef1b5f. Its completed native core job passed 102 workflow-contract tests, including changelog I/O behavior. A later local commit 899de4d12 changes registry failure handling in two release CLIs and adds a new native release-registry job. Another local commit 00f954c7b repairs its unpublished-candidate HTTP fixture. Neither local commit has been pushed. Is registry failure handling verified by the completed core job? Explain what the observed result establishes and what evidence is still needed for the local changes."
+  ],
+  "exitCode": 0,
+  "stdoutSha256": "3c4f01e0692d53fbbb6ed5e8cba4aa136704014da713386c23704a6aa1e841ae",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "accepted": false,
+  "acceptancePendingHumanReview": false,
+  "autonomousAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "reviewedBy": "coordinating agent",
+  "reason": "The complete Formal AI response reports an unparseable request and supplies no CI evidence assessment. Exit zero is not successful reasoning.",
+  "acceptedUnits": 0,
+  "fixedDenominator": 20
+}

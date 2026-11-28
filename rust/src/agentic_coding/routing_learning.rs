@@ -15,18 +15,12 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("reported_matrix_and_unseen_paraphrases_pass"),
     path: ROUTING_LEARNING_PATH,
     task: ROUTING_LEARNING_TASK,
-    memory: include_str!("../../embedded/data/meta/issue-712-routing-learning.lino"),
     subject: "routing observations and amendments",
 };
 
 #[must_use]
 pub fn is_routing_learning_task(prompt: &str) -> bool {
     REPORT.matches(prompt)
-}
-
-#[must_use]
-pub fn render_document() -> String {
-    REPORT.render_document()
 }
 
 /// Derive a review artifact from any persisted routing-observation network.

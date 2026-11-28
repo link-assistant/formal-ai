@@ -1,0 +1,29 @@
+{
+  "allPassed": true,
+  "sourceHead": "1ee15aea8e4d25fd80fc0cb323bd6edd99e62c10",
+  "sourceHashes": {
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8": "f1af9cf348db3c46aa6569a5142a5b52f36e56fa776d328df3e7765c86297eae",
+    "rust/Cargo.toml": "bd74b9a63d0c4111623a92b6c594b4817f1de52af52c4ba460bc8b8dac28c1b9",
+    "scripts/lib/rust-specification-cases.mjs": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+    "rust/tests/web/rust-specification-fixture-integrity.test.mjs": "a9c449d5a16d5ce92bed525f681b210008be0f8fd3481537409db41e8d996293",
+    "rust/tests/web/rust-specification-unicode-identifiers.test.mjs": "4d5eb0f13a53bd1fc4993908d443fc77a0633f30bf012f69d981dcc24ddc93e9",
+    "changelog.d/issue-1580-reasoning-cargo-witness.md": "e22442957957035feca061b07e62fb756dbae6d314523d4c3dc500a74972f1aa"
+  },
+  "focusedTests": 36,
+  "gateCounts": {
+    "PASS": 87,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "allPayloadHashesVerified": true,
+  "detailedGatePayloads": 87,
+  "literalReview": {
+    "bothBeforeLogs": true,
+    "bothAfterLogs": true,
+    "completeObjectComparison": true,
+    "completeGateAggregate": true,
+    "allDetailedGateLogs": false
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

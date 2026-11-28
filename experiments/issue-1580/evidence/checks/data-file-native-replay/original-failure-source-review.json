@@ -1,0 +1,61 @@
+{
+  "originalLogSha256": "6677b1a7ec34736fca5ac168353f249723c7fca3f55a8478d8870051ca7cabc6",
+  "originalLogLines": 69890,
+  "literalSpansReviewed": [
+    {
+      "startLine": 65551,
+      "endLine": 65554,
+      "lines": [
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.5791205Z ",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.5791684Z thread 'data_files::meaning_slugs_are_globally_unique' (14099) panicked at tests/unit/data_files.rs:648:5:",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.5793020Z meaning slugs must be globally unique; duplicated: [(\"calendar-duration-sum\", [\"/home/runner/work/formal-ai/formal-ai/rust/../data/seed/meanings-calendar.lino\", \"/home/runner/work/formal-ai/formal-ai/rust/../data/seed/meanings-response-intents.lino\"])]",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.5849247Z stack backtrace:"
+      ]
+    },
+    {
+      "startLine": 65580,
+      "endLine": 65585,
+      "lines": [
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.6681725Z test data_files::seed_lino_values_never_pipe_pack_multi_values ... FAILED",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.6702131Z thread 'data_files::seed_lino_values_never_pipe_pack_multi_values' (14105) panicked at tests/unit/data_files.rs:235:13:",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.6703055Z test data_files::technical_scalar::canonical_compound_prefix_patterns_keep_pipe_lists_and_spoofs_refused ... ok",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.6727811Z /home/runner/work/formal-ai/formal-ai/rust/../data/seed/handler-rules.lino:1236 packs the `row` multi-value with `|`; use a reference list `row (\"a\" \"b\")` instead:     row \"en\" \"year|years\"",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.6728935Z test data_files::technical_scalar::declared_regex_pairs_preserve_nontechnical_pipe_rejection ... ok",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:57.6741540Z stack backtrace:"
+      ]
+    },
+    {
+      "startLine": 65613,
+      "endLine": 65618,
+      "lines": [
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:58.0729856Z ",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:58.0731309Z thread 'data_files::lino_data_files_are_parseable_human_readable_and_bounded' (14095) panicked at tests/unit/data_files.rs:62:13:",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:58.0732341Z /home/runner/work/formal-ai/formal-ai/rust/../data/seed/client-integrations.lino contains invalid canonical Links Notation: Syntax error at line 413, column 67: expected \"(\", a reference or end of line, found \":\"",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:58.0733266Z 413 | ...modelConfigs.overrides=json+:[{\\\"match\\\":{\\\"model\\\":\\\"{model}\\\"},\\\"modelConfig\\\"...",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:58.0733728Z     |                                            ^",
+        "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T22:37:58.0734007Z stack backtrace:"
+      ]
+    }
+  ],
+  "currentSources": [
+    {
+      "path": "rust/tests/unit/data_files.rs",
+      "publishedSourceSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+      "originalSourceSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+      "unchangedFromPublishedHead": true,
+      "unchangedFromOriginalMain": true
+    },
+    {
+      "path": "rust/tests/unit/data_files/technical_scalar.rs",
+      "publishedSourceSha256": "2697597552f0861080e6b22e4a672aed0f671ac18d8cf6611f2329fde4407b64",
+      "originalSourceSha256": "2697597552f0861080e6b22e4a672aed0f671ac18d8cf6611f2329fde4407b64",
+      "unchangedFromPublishedHead": true,
+      "unchangedFromOriginalMain": true
+    }
+  ],
+  "existingTargetTests": 22,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "observedAt": "2026-11-18T18:14:23.042715+00:00"
+}

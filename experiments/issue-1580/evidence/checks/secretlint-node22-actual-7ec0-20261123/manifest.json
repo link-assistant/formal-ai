@@ -1,0 +1,26 @@
+{
+  "sourceHead": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+  "securityRun": 45218148807,
+  "job": 137844798092,
+  "artifact": 14838503659,
+  "node": "v22.23.5",
+  "npm": "10.9.9",
+  "actualEngineCasesPassed": 7,
+  "mismatchSemanticCode": "EUSAGE",
+  "lockedAuditVulnerabilities": 0,
+  "verifiedSourceIdentities": 7,
+  "completeJobLogRetained": true,
+  "jobLogReview": "Targeted runtime and probe lines 178-216; all seven result records and six case logs read",
+  "allApplicablePracticeVerified": false,
+  "wholeCurrentCohortComplete": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 15682,
+    "sha256": "c215d1dd12b4e59df6acb49ba42bc5e46222f470ea1db94ed2f404230cc7409e"
+  },
+  "members": 22,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T16:46:24.034202+00:00"
+}

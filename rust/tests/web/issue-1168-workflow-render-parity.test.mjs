@@ -4,8 +4,9 @@
 // runtimes render it from the offline shipped baseline and must produce the
 // fixture text rust/tests/unit/issue_1168_workflow_render_parity.rs asserts.
 
-import { before, test } from 'node:test';
+import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
+import {offlineSourceCache} from '../../../experiments/issue-1162/offline-source-cache.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { readText } from '../../../js/agentic/host.mjs';
@@ -13,9 +14,12 @@ import { programContractAnswer } from '../../../js/agentic/crate/coding_program_
 import { baselineVersionSet, forGeneration } from '../../../js/agentic/crate/version_resolution.mjs';
 import { render, renderWith } from '../../../js/agentic/ci_workflow.mjs';
 
+let restoreSourceCache;
 before(async () => {
+  restoreSourceCache = offlineSourceCache();
   await installNodeHost(new WorkerHost());
 });
+after(() => restoreSourceCache?.());
 
 function fixture() {
   return JSON.parse(readText('rust/tests/fixtures/issue-1168/workflow-render-parity.json'));

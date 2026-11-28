@@ -1,0 +1,63 @@
+{
+  "observedAt": "2026-11-20T12:25:11.972817+00:00",
+  "baseline": "aca32b1aa27aee55f1d9443f54d6a1c08f77ccb0",
+  "workflowSemanticComparison": {
+    "workflows": 19,
+    "transfers": 97,
+    "addedCheckouts": 10,
+    "expandedSparseCheckouts": 4
+  },
+  "focusedTestPasses": {
+    "native-test-artifact": 16,
+    "native-release-workflow": 9,
+    "relocated-build-stage-controls": 60,
+    "hive-original-delivery-evidence": 19,
+    "verify-public-release-downloads": 40,
+    "hive-mind-draft-workflow": 14,
+    "native-workflow-cache-bindings": 12,
+    "release-web": 9,
+    "default-branch-build-policy": 97,
+    "security-codeql-results": 17,
+    "fast-pull-request-production-profile": 18,
+    "documentation-only-ci-policy": 32,
+    "ci-speed": 25,
+    "ci-phase-timing": 10
+  },
+  "totalFocusedTestPasses": 378,
+  "actualPythonZipCases": 8,
+  "gates": {
+    "exitCode": 0,
+    "passed": 87,
+    "skipped": 53,
+    "seconds": 867.671
+  },
+  "negativeControls": [
+    "unmigrated workflow consumers",
+    "caller Python environment mutation",
+    "local download timing classified as other",
+    "legitimate empty pattern selection refused"
+  ],
+  "compatibility": [
+    "all original selectors, predicates and unrelated workflow fields compared",
+    "trusted workflow checkouts supply complete local adapter closure",
+    "52 governed staged-release operations and 104 output bindings retained",
+    "caller interpreter selection preserved",
+    "empty pattern/all selection creates no files"
+  ],
+  "helperFailuresPreserved": [
+    "YAML module resolution outside workspace",
+    "scalar step handling",
+    "deployed projection regenerated in dependency order",
+    "quoted sparse-checkout newline repair",
+    "partial migration and witness assertions",
+    "invalid JavaScript literal corrected",
+    "native cache source-compiler proof rejects inherited NODE_OPTIONS",
+    "first full-gate attempt exceeded the shell tool command budget",
+    "new verbose evidence index exceeded 1500 lines; one complete JSON record per line preserves all fields without a policy change"
+  ],
+  "hostedMigrationExecuted": false,
+  "historicalSelectedSourceRendererQualified": false,
+  "pagesDeprecationFixed": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

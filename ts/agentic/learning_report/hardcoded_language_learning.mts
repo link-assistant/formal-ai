@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: 'hardcoded_language_fixture_context_gate_and_agent_cli_e2e_pass',
   path: HARDCODED_LANGUAGE_LEARNING_PATH,
   taskValue: HARDCODED_LANGUAGE_LEARNING_PATH,
-  memoryPath: 'data/meta/issue-659-hardcoded-language-learning.lino',
   subjectMessage: 'learning_report_subject_hardcoded_language_learning',
 }, 'isHardcodedLanguageLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const HARDCODED_LANGUAGE_LEARNING_TASK = HARDCODED_LANGUAGE_LEARNING_PATH
 
 /** Mirrors `fn is_hardcoded_language_learning_task` in rust/src/agentic_coding/learning_report/hardcoded_language_learning.rs. @param {string} prompt */
 export const isHardcodedLanguageLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/learning_report/hardcoded_language_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/learning_report/hardcoded_language_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

@@ -1,0 +1,162 @@
+[
+  {
+    "originalTest": "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+            "line": 66184,
+            "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T04:08:36.8870955Z test google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "place_timezone::a_tbilisi_mention_resolves_through_the_city_entity",
+            "line": 61745,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:23.1558299Z test place_timezone::a_tbilisi_mention_resolves_through_the_city_entity ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+            "line": 64539,
+            "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-22T04:12:55.2190580Z test google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish",
+            "line": 67025,
+            "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-22T04:29:48.4830015Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_706_any_language::a_language_without_localized_openers_reports_a_gap_not_english",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "a_language_without_localized_openers_reports_a_gap_not_english",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "a_language_without_localized_openers_reports_a_gap_not_english",
+            "line": 62053,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:04:29.0934604Z test a_language_without_localized_openers_reports_a_gap_not_english ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "handler_migration::unsupported_write_program_fails_with_a_named_skill_gap",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "handler_migration::unsupported_write_program_fails_with_a_named_skill_gap",
+            "line": 70215,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:19:07.9327009Z test handler_migration::unsupported_write_program_fails_with_a_named_skill_gap ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "data_files::meaning_slugs_are_globally_unique",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "meaning_slugs_are_globally_unique",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "meaning_slugs_are_globally_unique",
+            "line": 61685,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:05.2988420Z test meaning_slugs_are_globally_unique ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "data_files::seed_lino_values_never_pipe_pack_multi_values",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "seed_lino_values_never_pipe_pack_multi_values",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "seed_lino_values_never_pipe_pack_multi_values",
+            "line": 61690,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:05.4664072Z test seed_lino_values_never_pipe_pack_multi_values ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  }
+]

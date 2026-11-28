@@ -15,37 +15,17 @@
 //! Nothing here applies a change: the recipe's product is the reviewable repair
 //! case, so the "recompile and reattach" guardrail (observable, testable,
 //! reversible, human-approved) is preserved. Neural inference stays a NON-GOAL —
-//! the document is a deterministic function of the canonical failure case.
+//! the document follows the supplied failure trace and source module.
 
-use std::sync::OnceLock;
+use serde::Deserialize;
 
-use crate::self_healing::{canonical_case, RepairCase};
+use crate::self_healing::{RepairCase, SourceRoundTrip};
+use crate::self_improvement::BenchmarkGateReport;
 
-/// The workspace path the planner writes the generated repair-case document to.
+use super::repair_input::{TraceInput, data, owned_source};
+use super::wording::agentic_message;
+
 pub const SELF_HEAL_PATH: &str = "self-healing-case.lino";
-
-/// The canonical repair case, computed once per process.
-///
-/// Building it parses a real module through the CST/AST engine (a source → links
-/// round-trip), which is deliberately non-trivial; the recipe touches it several
-/// times per run (planner write step, verify step, final answer) and a server may
-/// serve it repeatedly, so memoising keeps the loop responsive without changing its
-/// deterministic result.
-fn cached_case() -> &'static RepairCase {
-    static CASE: OnceLock<RepairCase> = OnceLock::new();
-    CASE.get_or_init(canonical_case)
-}
-
-/// A *differently worded* request for the self-healing recipe.
-///
-/// The router recognises the intent from the words, not a hardcoded string.
-/// Deliberately avoids the self-AST keywords ("cst/ast", "abstract-syntax",
-/// "reason about itself") so the two self-inspection recipes never collide.
-pub const SELF_HEAL_TASK: &str =
-    "When you cannot answer an input, run your self-healing loop: reason about the \
-     failure, map it onto the source that would change with a source-to-links \
-     round-trip, learn a benchmark-gated lesson, and record the repair case in \
-     Links Notation for human approval.";
 
 /// Keywords that mark a user turn as the self-healing recipe.
 const SELF_HEAL_KEYWORDS: [&str; 6] = [
@@ -103,37 +83,42 @@ pub fn is_self_heal_task(prompt: &str) -> bool {
             && (lower.contains("heal") || lower.contains("learn a")))
 }
 
-/// Render the self-healing repair-case document (Links Notation) for the canonical
-/// worked case. Deterministic and ends with exactly one trailing newline.
-///
-/// The output is what the Agent CLI writes to [`SELF_HEAL_PATH`] and what
-/// `data/meta/self-healing-case.lino` is committed as, asserted byte-for-byte in
-/// the issue-#558 tests.
-#[must_use]
-pub fn render_document() -> String {
-    format!("{}\n", cached_case().links_notation().trim_end())
+#[derive(Deserialize)]
+struct RepairInput {
+    trace: TraceInput,
+    source_module: String,
 }
 
-/// The canonical worked repair case backing the recipe. Exposed so tests can assert
-/// the loop reached a reviewable, human-gated outcome without rebuilding it.
-#[must_use]
-pub fn case() -> RepairCase {
-    cached_case().clone()
+/// Ground a supplied trace in owned source and record the proposal for review.
+pub fn case_from_task(task: &str) -> Result<RepairCase, &'static str> {
+    let input = data::<RepairInput>(task).ok_or("self_heal_input_needed")?;
+    let trace = input.trace.into_trace().ok_or("self_heal_input_needed")?;
+    let source = owned_source(&input.source_module).ok_or("self_heal_input_needed")?;
+    let source_round_trip = SourceRoundTrip::for_module(input.source_module, source);
+    if !source_round_trip.faithful {
+        return Err("self_heal_source_unavailable");
+    }
+    Ok(RepairCase::from_trace(
+        trace,
+        source_round_trip,
+        BenchmarkGateReport::absent_for_issue_362(),
+    ))
 }
 
-/// The self-contained final answer: a natural-language summary plus the generated
-/// repair-case document inline.
 #[must_use]
-pub fn final_answer(document: &str) -> String {
-    let case = cached_case();
-    format!(
-        "Ran the self-healing loop on an input the system could not answer directly: reasoned about \
-         the failure trace, mapped it onto {module} with a verified source-to-links round-trip, \
-         learned a benchmark-gated lesson, and recorded an auditable repair case ({outcome}). \
-         Nothing was applied — adoption stays a human-approved review step.\n\n\
-         Generated document ({SELF_HEAL_PATH}):\n\n{document}",
-        module = case.source_round_trip.module_path,
-        outcome = case.outcome.slug(),
-        document = document.trim_end(),
+pub fn render_document(case: &RepairCase) -> String {
+    format!("{}\n", case.links_notation().trim_end())
+}
+
+#[must_use]
+pub fn final_answer(case: &RepairCase, document: &str) -> String {
+    agentic_message(
+        "self_heal_final_answer",
+        &[
+            ("module", &case.source_round_trip.module_path),
+            ("outcome", case.outcome.slug()),
+            ("path", SELF_HEAL_PATH),
+            ("document", document.trim_end()),
+        ],
     )
 }
