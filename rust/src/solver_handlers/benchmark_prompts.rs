@@ -13,8 +13,6 @@ use crate::seed::{
 };
 use crate::world_model_dialog::resolve_coreference_antecedent;
 
-pub(crate) const SUMMARIZATION_REFUSAL_EVENT: &str = "summarization:refusal";
-
 fn summary_topic_seed_data() -> &'static SummaryTopicSeeds {
     static CELL: OnceLock<SummaryTopicSeeds> = OnceLock::new();
     CELL.get_or_init(seed::summary_topic_seeds)
@@ -44,7 +42,7 @@ pub(crate) fn try_summarization_request_with_offline(
         .subject(&lower)
         .and_then(|subject| derived_topic_summary(subject, language, log, offline));
     if derived.is_none() {
-        log.append(SUMMARIZATION_REFUSAL_EVENT, "unresolved_subject");
+        log.append("summarization:refusal", "unresolved_subject".to_owned());
     }
     let (topic, body, source) = derived.unwrap_or_else(|| {
         let label = prompt
