@@ -1,5 +1,6 @@
 //! Shared response-format obligation and projection for Chat and Responses.
 mod arrays;
+mod verdict;
 
 use super::{
     AnswerMetadata, AnswerProvenance, AnswerStatus, ChatCompletion, ChatCompletionRequest,
@@ -116,6 +117,9 @@ impl<'a> Obligation<'a> {
             });
             if !derived.no_evidence.is_empty() {
                 detail["no_evidence"] = json!(derived.no_evidence);
+            }
+            if let Some(verdict) = derived.verdict {
+                detail["verdicts"] = json!({(verdict.name): verdict.trace});
             }
             let status = if derived.placeholders.is_empty() {
                 AnswerStatus::Answered
@@ -323,14 +327,113 @@ fn record_rules(rules: &mut BTreeMap<String, String>, pointer: String, value: &V
     }
 }
 
-struct StructuredDerivation {
+fn resolved_field<'a>(root: &'a Value, field: &'a Value) -> &'a Value {
+    field
+        .get("$ref")
+        .and_then(Value::as_str)
+        .and_then(|pointer| schema::reference(root, pointer))
+        .unwrap_or(field)
+}
+
+fn object_fields(schema: &Value) -> &Value {
+    if schema.get("properties").is_some() {
+        schema
+    } else {
+        resolved_field(schema, schema)
+    }
+}
+
+struct VerdictProjection<'a> {
+    name: &'a str,
+    value: Value,
+    trace: verdict::Trace<'a>,
+    conclusive: bool,
+}
+
+impl VerdictProjection<'_> {
+    fn record(&self, rules: &mut BTreeMap<String, String>, placeholders: &mut Vec<String>) {
+        let pointer = field_pointer("", self.name);
+        if self.conclusive {
+            rules.insert(pointer, self.trace.rule.to_owned());
+        } else {
+            rules.remove(&pointer);
+            placeholders.push(pointer);
+        }
+    }
+}
+
+fn verdict_projection<'a>(
+    schema: &'a Value,
+    fields: &'a Value,
+    source: &'a str,
+) -> Option<VerdictProjection<'a>> {
+    let labels = ["met", "not_met", UNKNOWN].map(|label| json!(label));
+    let binary = [Value::Bool(true), Value::Bool(false), Value::Null];
+    let mut candidates =
+        fields
+            .get("properties")?
+            .as_object()?
+            .iter()
+            .filter_map(|(name, field)| {
+                let accepts = |value: &Value| schema::valid(value, field, schema);
+                let resolved = resolved_field(schema, field);
+                if resolved
+                    .get("enum")
+                    .and_then(Value::as_array)
+                    .is_some_and(|choices| {
+                        labels
+                            .iter()
+                            .all(|label| choices.contains(label) && accepts(label))
+                    })
+                {
+                    return Some((name.as_str(), &labels));
+                }
+                (binary.iter().all(accepts)
+                    && ![json!(""), json!(0), json!([]), json!({})]
+                        .iter()
+                        .any(accepts))
+                .then_some((name.as_str(), &binary))
+            });
+    let first = candidates.next()?;
+    let second = candidates.next();
+    let (name, choices) = if let Some(second) = second {
+        unique(
+            std::iter::once(first)
+                .chain(std::iter::once(second))
+                .chain(candidates)
+                .filter(|(name, _)| key_name(name) == "verdict"),
+        )
+        .flatten()?
+    } else {
+        first
+    };
+    let verdict = verdict::criterion_verdict(source)?;
+    let index = match verdict.result {
+        Some(true) => 0,
+        Some(false) => 1,
+        None => 2,
+    };
+    Some(VerdictProjection {
+        name,
+        value: choices[index].clone(),
+        trace: verdict.trace,
+        conclusive: verdict.result.is_some(),
+    })
+}
+
+struct StructuredDerivation<'a> {
     value: Value,
     placeholders: Vec<String>,
     rules: BTreeMap<String, String>,
     no_evidence: Vec<String>,
+    verdict: Option<VerdictProjection<'a>>,
 }
 
-fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDerivation> {
+fn derive<'a>(
+    schema: &'a Value,
+    source: &'a str,
+    answer: &str,
+) -> Option<StructuredDerivation<'a>> {
     let satisfies = |value: &Value| {
         value.is_object() && schema::portable(value, 0) && schema::valid(value, schema, schema)
     };
@@ -342,19 +445,36 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
     } else {
         "input_json"
     };
-    let supplied = formal.or_else(|| {
-        serde_json::from_str::<Value>(source)
-            .ok()
-            .filter(Value::is_object)
-    });
-    if let Some(value) = supplied.as_ref().filter(|value| satisfies(value)) {
+    let source_object = serde_json::from_str::<Value>(source)
+        .ok()
+        .filter(Value::is_object);
+    let fields = object_fields(schema);
+    let verdict = if source_object.is_none() && source.len() <= 8192 {
+        verdict_projection(schema, fields, source)
+    } else {
+        None
+    };
+    let supplied = formal.or(source_object);
+    if supplied.as_ref().is_some_and(&satisfies) {
+        let mut value = supplied?;
+        if let Some(item) = &verdict {
+            value[item.name] = item.value.clone();
+            if !satisfies(&value) {
+                return None;
+            }
+        }
         let mut rules = BTreeMap::new();
-        record_rules(&mut rules, String::new(), value, supplied_rule);
+        let mut placeholders = Vec::new();
+        record_rules(&mut rules, String::new(), &value, supplied_rule);
+        if let Some(item) = &verdict {
+            item.record(&mut rules, &mut placeholders);
+        }
         return Some(StructuredDerivation {
-            value: value.clone(),
-            placeholders: Vec::new(),
+            value,
+            placeholders,
             rules,
             no_evidence: Vec::new(),
+            verdict,
         });
     }
     if supplied.is_none() && source.len() > 8192 {
@@ -377,30 +497,21 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
         .filter(|expression| expression.len() <= 80)
         .and_then(|expression| crate::arithmetic::evaluate_fallback_formatted(&expression).ok())
         .and_then(|number| serde_json::from_str::<Value>(&number).ok());
-    let fields = if schema.get("properties").is_some() {
-        schema
-    } else {
-        schema
-            .get("$ref")
-            .and_then(Value::as_str)
-            .and_then(|pointer| schema::reference(schema, pointer))
-            .unwrap_or(schema)
-    };
     let mut output = Map::new();
     let mut field_rules = BTreeMap::new();
     let mut placeholders = Vec::new();
     let mut no_evidence = Vec::new();
     if let Some(properties) = fields.get("properties").and_then(Value::as_object) {
         for (name, field) in properties {
+            if let Some(item) = verdict.as_ref().filter(|item| item.name == name) {
+                output.insert(name.clone(), item.value.clone());
+                continue;
+            }
             let is_required = fields
                 .get("required")
                 .and_then(Value::as_array)
                 .is_some_and(|keys| keys.iter().any(|key| key == name.as_str()));
-            let resolved = field
-                .get("$ref")
-                .and_then(Value::as_str)
-                .and_then(|pointer| schema::reference(schema, pointer))
-                .unwrap_or(field);
+            let resolved = resolved_field(schema, field);
             let description = field
                 .get("description")
                 .and_then(Value::as_str)
@@ -480,6 +591,9 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
             record_rules(&mut rules, pointer, &value[&name], rule);
         }
     }
+    if let Some(item) = &verdict {
+        item.record(&mut rules, &mut placeholders);
+    }
     placeholders.sort_unstable();
     no_evidence.sort_unstable();
     Some(StructuredDerivation {
@@ -487,6 +601,7 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<StructuredDeriva
         placeholders,
         rules,
         no_evidence,
+        verdict,
     })
 }
 

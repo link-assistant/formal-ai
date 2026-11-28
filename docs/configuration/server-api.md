@@ -79,6 +79,31 @@ array, the server returns an empty array, lists its pointer as a placeholder,
 and records the property name in the derivation's `no_evidence` array.
 An explicitly supplied empty JSON array is evidence.
 
+To evaluate a criterion, supply a `Criterion:` and a `Resume:`, `Text:`, or
+`Evidence:` section in the prompt. Russian labels include `Критерий:`,
+`Резюме:`, and `Текст:`. The schema needs a property that accepts the enum
+`"met"`, `"not_met"`, and `"unknown"` or the three values `true`, `false`,
+and `null`. If several fields qualify, name the intended property `verdict`.
+
+Skill criteria use affirmative, negative, and exclusive statements about the
+skill. Minimum-duration criteria compare the corresponding dated period with
+the threshold. Year-to-year periods use the difference in calendar years.
+Full ISO dates use completed anniversaries. With mixed precision, the rule
+returns a determinate verdict if every date consistent with the stated
+precision gives the same comparison. An open-ended period such as
+`since 2018` needs a reference in the prompt such as
+`Today is 2026-11-01` or `Reference date: 2026-11-01`. An open-ended period
+without a reference yields `"unknown"` or `null`, independent of the server clock.
+
+The `structured_output` detail contains `verdicts` keyed by the original
+schema property name. Each entry gives its `rule` and quotes the source in
+`evidence`. A duration comparison that uses a reference also includes
+`reference`. For example, the text `Go developer from 2018 to 2024`
+supports `"met"` for `at least 3 years of Go` under `minimum_duration`.
+Conclusive verdicts also name the rule in `formal_ai.rules`. Inconclusive
+verdicts are listed in `formal_ai.placeholders` and keep the reason and
+evidence in `verdicts`.
+
 Formal AI validates both strict and non-strict requests. It can return a
 schema-allowed `null` or `"unknown"` for a missing required value. In that
 case the valid JSON is returned with `status: "unanswered"` and

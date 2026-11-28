@@ -10,6 +10,7 @@ import { stableId } from './ids.mjs';
 import { isMap } from './protocol-values.mjs';
 import { thinkingStep } from './thinking.mjs';
 import { stringArrayEvidence, stringArrayItems } from './structured-array.mjs';
+import { criterionVerdict } from './structured-verdict.mjs';
 import { portableValue, schemaIssue, schemaReference, validOutput } from './structured-schema.mjs';
 
 const JSON_OBJECT = { type: 'object' };
@@ -106,16 +107,59 @@ function evidenceFor(name, field, description, source, answer, number, key) {
   return undefined;
 }
 
-function fillObject(schema, source, answer, number, supplied, suppliedRule) {
-  const fields = schema.properties ? schema : schemaReference(schema, schema.$ref) ?? schema;
+function objectFields(schema) {
+  return schema.properties ? schema : schemaReference(schema, schema.$ref) ?? schema;
+}
+
+function fieldDescription(field, resolved) {
+  return typeof field?.description === 'string' ? field.description : resolved?.description;
+}
+
+function verdictProjection(schema, fields, source) {
+  const candidates = [];
+  const labels = ['met', 'not_met', UNKNOWN];
+  for (const [name, field] of Object.entries(fields.properties ?? {})) {
+    const accepts = value => validOutput(value, field, schema);
+    const resolved = schemaReference(schema, field?.$ref) ?? field;
+    if (labels.every(label => resolved?.enum?.includes(label) && accepts(label))) {
+      candidates.push({ name, choices: labels });
+    } else if ([true, false, null].every(accepts) && !['', 0, [], {}].some(accepts)) {
+      candidates.push({ name, choices: [true, false, null] });
+    }
+  }
+  const named = candidates.filter(({ name }) => normalizeKey(name) === 'verdict');
+  const selected = candidates.length === 1 ? candidates[0] : named.length === 1 ? named[0] : undefined;
+  if (!selected) return undefined;
+  const verdict = criterionVerdict(source);
+  if (!verdict) return undefined;
+  const value = selected.choices[verdict.result === null ? 2 : verdict.result ? 0 : 1];
+  return { name: selected.name, value, trace: verdict.trace, conclusive: verdict.result !== null };
+}
+
+function recordVerdict(verdict, rules, placeholders) {
+  if (!verdict) return;
+  const pointer = fieldPointer('', verdict.name);
+  if (verdict.conclusive) rules.set(pointer, verdict.trace.rule);
+  else {
+    rules.delete(pointer);
+    placeholders.push(pointer);
+  }
+}
+
+function fillObject(schema, source, answer, number, supplied, suppliedRule, verdict) {
+  const fields = objectFields(schema);
   const key = KEY.exec(source)?.[1];
   const result = new Map();
   const fieldRules = new Map();
   const placeholders = [];
   const noEvidence = [];
   for (const [name, field] of Object.entries(fields.properties ?? {})) {
+    if (verdict?.name === name) {
+      result.set(name, verdict.value);
+      continue;
+    }
     const resolved = schemaReference(schema, field?.$ref) ?? field;
-    const description = typeof field?.description === 'string' ? field.description : resolved?.description;
+    const description = fieldDescription(field, resolved);
     const items = supplied ? undefined : stringArrayItems(resolved, schema);
     const fieldEvidence = supplied ? (Object.hasOwn(supplied, name) ? evidence(supplied[name], suppliedRule) : undefined)
       : items ? evidence(stringArrayEvidence(source, name, description, items, normalizeKey), 'string_array')
@@ -150,16 +194,25 @@ async function derive(ctx, schema, source, answer, supplied) {
   const fromSolver = isMap(formal);
   const observed = fromSolver ? formal : supplied;
   const suppliedRule = fromSolver ? 'solver_json' : 'input_json';
+  const canReadText = !isMap(supplied) && Buffer.byteLength(source) <= 8192;
+  let verdict;
+  if (canReadText) {
+    await ensureNodeHost(ctx);
+    verdict = verdictProjection(schema, objectFields(schema), source);
+  }
   if (satisfies(observed)) {
+    const value = verdict ? { ...observed, [verdict.name]: verdict.value } : observed;
+    if (verdict && !satisfies(value)) return undefined;
     const rules = new Map();
-    recordRules(rules, '', observed, suppliedRule);
-    return { value: observed, placeholders: [], rules: Object.fromEntries(rules), noEvidence: [] };
+    const placeholders = [];
+    recordRules(rules, '', value, suppliedRule);
+    recordVerdict(verdict, rules, placeholders);
+    return { value, placeholders, rules: Object.fromEntries(rules), noEvidence: [], verdict };
   }
   let result;
   if (isMap(observed)) {
-    result = fillObject(schema, '', '', undefined, observed, suppliedRule);
-  } else if (Buffer.byteLength(source) <= 8192) {
-    await ensureNodeHost(ctx);
+    result = fillObject(schema, '', '', undefined, observed, suppliedRule, verdict);
+  } else if (canReadText) {
     const [sumPattern, arithmeticPattern] = cached('structured-output-arithmetic-patterns', () =>
       ['structured-output-sum-pattern', 'structured-output-arithmetic-pattern'].map(key =>
         new RegExp(agenticMessage(key, { number: NUMBER }), 'iu')));
@@ -169,25 +222,27 @@ async function derive(ctx, schema, source, answer, supplied) {
     if (expression && expression.length <= 80) {
       try { number = Number(realm().evaluateArithmetic(expression)); } catch { /* Underivable. */ }
     }
-    result = fillObject(schema, source, answer, number);
+    result = fillObject(schema, source, answer, number, undefined, undefined, verdict);
   }
   if (!result || !satisfies(result.value)) return undefined;
   const { value, placeholders, fieldRules, noEvidence } = result;
-  placeholders.sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)));
   const rules = new Map();
   for (const [name, rule] of fieldRules) {
     const pointer = fieldPointer('', name);
     if (rule === 'string_array') rules.set(pointer, rule);
     else recordRules(rules, pointer, value[name], rule);
   }
-  return { value, placeholders, rules: Object.fromEntries(rules), noEvidence: noEvidence.sort() };
+  recordVerdict(verdict, rules, placeholders);
+  placeholders.sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)));
+  return { value, placeholders, rules: Object.fromEntries(rules), noEvidence: noEvidence.sort(), verdict };
 }
 
 export async function structuredAnswerFromSource(ctx, format, chat, source) {
   const obligation = outputObligation(format, chat);
   if (!obligation) return null;
   const supplied = parsed(source);
-  const value = obligation.schema && await derive(ctx, obligation.schema, source, '', supplied);
+  const derived = obligation.schema && await derive(ctx, obligation.schema, source, '', supplied);
+  const value = derived?.value;
   if (!value && obligation.schema && !isMap(supplied)) return null;
   return {
     // The final projection reads the original source so inferred values cannot
@@ -209,11 +264,13 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
     }
   }
   const content = derived ? jsonText(derived.value) : '';
+  const verdict = derived?.verdict;
   const detail = jsonText({
     format: obligation.format,
     ...(derived ? {
       value: derived.value, placeholders: derived.placeholders, rules: derived.rules,
       ...(derived.noEvidence.length ? { no_evidence: derived.noEvidence } : {}),
+      ...(verdict ? { verdicts: { [verdict.name]: verdict.trace } } : {}),
     } : { refusal }),
   });
   const formal_ai = derived ? {
