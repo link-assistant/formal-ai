@@ -85,8 +85,95 @@ verdictCases.push(
     stream: verdict === null,
   })),
 );
+const evidenceSchema = object({
+  evidence: { type: 'array', items: object({
+    criterion: { type: 'string', enum: ['go', 'postgres'] },
+    quote: { type: 'string', description: 'The sentence of the resume that supports the criterion, copied verbatim' },
+  }) },
+});
+const englishSource = 'Go developer from 2018 to 2024. Built reporting on PostgreSQL and Redis.';
+const englishRequest = 'Criteria: go = Go experience; postgres = PostgreSQL experience. For each criterion, quote the resume sentence that supports it. Resume: ';
+const singleRequest = 'Quote the resume sentence that mentions PostgreSQL. Resume: ' + englishSource;
+const russianRequest = 'Критерии: go = опыт Go; postgres = опыт PostgreSQL. Для каждого критерия процитируй предложение резюме, которое его подтверждает. Резюме: ';
+const quoteCases = [
+  {
+    name: 'quote_e1', prompt: englishRequest + englishSource, schema: evidenceSchema, stream: true,
+    expected: { evidence: [
+      { criterion: 'go', quote: 'Go developer from 2018 to 2024.' },
+      { criterion: 'postgres', quote: 'Built reporting on PostgreSQL and Redis.' },
+    ] },
+  },
+  {
+    name: 'quote_e2', schema: evidenceSchema,
+    prompt: russianRequest + 'Разработчик на Go с 2018 по 2024 год. Строил отчётность на PostgreSQL и Redis.',
+    expected: { evidence: [
+      { criterion: 'go', quote: 'Разработчик на Go с 2018 по 2024 год.' },
+      { criterion: 'postgres', quote: 'Строил отчётность на PostgreSQL и Redis.' },
+    ] },
+  },
+  {
+    name: 'quote_e3', prompt: singleRequest, schema: object({ quote: { type: 'string' } }), stream: true,
+    expected: { quote: 'Built reporting on PostgreSQL and Redis.' },
+  },
+  {
+    name: 'quote_e4', schema: evidenceSchema,
+    prompt: englishRequest + 'Java developer from 2018 to 2024. Built reporting on MySQL.',
+    expected: { evidence: [] }, noEvidence: ['evidence'],
+  },
+  {
+    name: 'quote_partial_support', schema: evidenceSchema,
+    prompt: englishRequest + 'Java developer from 2018 to 2024. Built  reports on PostgreSQL and Redis!',
+    expected: { evidence: [{ criterion: 'postgres', quote: 'Built  reports on PostgreSQL and Redis!' }] },
+  },
+  {
+    name: 'quote_only_positive_support', schema: evidenceSchema,
+    prompt: englishRequest + 'Never used Go. Read PostgreSQL documentation. Built reports on PostgreSQL.',
+    expected: { evidence: [{ criterion: 'postgres', quote: 'Built reports on PostgreSQL.' }] },
+  },
+  {
+    name: 'quote_negated_russian', schema: evidenceSchema,
+    prompt: russianRequest + 'Не был разработчиком на Go. Не строил отчётность на PostgreSQL.',
+    expected: { evidence: [] }, noEvidence: ['evidence'],
+  },
+  {
+    name: 'quote_duration_and_conflict', schema: evidenceSchema,
+    prompt: 'Criteria: go = at least 3 years of Go; postgres = PostgreSQL experience. '
+      + 'Text: Go developer from 2022 to 2024. Go developer from 2018 to 2024. Used PostgreSQL; never used PostgreSQL.',
+    expected: { evidence: [{ criterion: 'go', quote: 'Go developer from 2018 to 2024.' }] },
+  },
+  {
+    name: 'quote_duration_reference', schema: evidenceSchema,
+    prompt: 'Criteria: go = at least 3 years of Go. Today is 2026-11-01. Resume: Go developer since 2018.',
+    expected: { evidence: [{ criterion: 'go', quote: 'Go developer since 2018.' }] },
+  },
+  {
+    name: 'quote_description_target', prompt: 'Used Node.js 18. Upgraded to Node.js 20!',
+    schema: object({ span: { type: 'string', description: 'The sentence mentioning Node.js, copied verbatim' } }),
+    expected: { span: 'Used Node.js 18.' },
+  },
+  {
+    name: 'quote_object_references', prompt: 'Passage: Used Rust; kept Python for analysis.',
+    schema: {
+      ...object({ matches: { type: 'array', items: { $ref: '#/$defs/match' } } }),
+      $defs: {
+        match: object({ label: { $ref: '#/$defs/label' }, sourceExcerpt: { type: 'string' } }),
+        label: { enum: ['Rust', 'C'] },
+      },
+    },
+    expected: { matches: [{ label: 'Rust', sourceExcerpt: 'Used Rust' }] },
+  },
+  {
+    name: 'quote_prompt_is_not_source', prompt: 'Quote the sentence that mentions Go. Text: Used GoPro for filming.',
+    schema: object({ citation: { type: 'string' } }),
+  },
+  {
+    name: 'quote_source_explicit_json', prompt: '{"evidence":[]}', schema: evidenceSchema,
+    expected: { evidence: [] },
+  },
+];
 const cases = [
   ...verdictCases,
+  ...quoteCases,
   {
     name: 'job', prompt: 'Warehouse supervisor wanted in Springfield. At least 3 years of experience required.',
     instructions: 'Extract the city and the minimum years of experience. Reply with JSON only.',
@@ -380,6 +467,7 @@ function checkResult(row, format, chat, envelope, content, refusal, steps, env) 
     const value = JSON.parse(content);
     assertSchema(value, row.schema ?? { type: 'object' });
     assert.deepEqual(value, row.expected);
+    assertGroundedQuotes(row, value);
   } else {
     assert.ok(!content);
     assert.match(refusal, /Could not derive|unsupported constraints/u);
@@ -396,6 +484,13 @@ function checkResult(row, format, chat, envelope, content, refusal, steps, env) 
   const record = loadRuntimeDerivation(locator.slice('derivation_record:'.length), { env });
   assert.equal(record.answer_id, envelope.derivation_id);
   assert.deepEqual(JSON.parse(record.recomposition), detail);
+}
+
+function assertGroundedQuotes(row, value) {
+  if (!quoteCases.includes(row)) return;
+  const quotes = [value.quote, value.span, ...value.evidence?.map(item => item.quote) ?? [],
+    ...value.matches?.map(item => item.sourceExcerpt) ?? []].filter(Boolean);
+  for (const quote of quotes) assert.ok(row.prompt.includes(quote), quote);
 }
 
 function events(text) {
@@ -475,7 +570,7 @@ test('OpenAI requests constrain final JSON across endpoint and streaming shapes'
   }
 });
 
-test('Offline ephemeral Chat Completions extracts skills and derives criterion verdicts', { timeout: 120_000 }, async t => {
+test('Offline ephemeral OpenAI extracts skills, derives verdicts, and quotes source spans', { timeout: 120_000 }, async t => {
   const run = await startCli(t, {
     binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
     args: ['--ephemeral'],
@@ -486,8 +581,8 @@ test('Offline ephemeral Chat Completions extracts skills and derives criterion v
     lifetime: 120_000,
   });
   await run.ready();
-  const rows = ['skills_en', 'skills_ru', 'list_missing'].map(name => cases.find(row => row.name === name));
-  rows.push(...verdictCases);
+  const skillCases = ['skills_en', 'skills_ru', 'list_missing'].map(name => cases.find(row => row.name === name));
+  const rows = [...quoteCases.slice(0, 4), ...skillCases, ...verdictCases];
   for (const row of rows) {
     const format = formatFor(row, true);
     const http = await fetch(run.url + '/v1/chat/completions', {
@@ -501,10 +596,32 @@ test('Offline ephemeral Chat Completions extracts skills and derives criterion v
     assert.equal(reply.choices[0].finish_reason, 'stop', row.name);
     const message = reply.choices[0].message;
     assert.equal(message.refusal, undefined, row.name);
-    assert.deepEqual(JSON.parse(message.content), row.expected, row.name);
+    const value = JSON.parse(message.content);
+    assert.deepEqual(value, row.expected, row.name);
+    assertGroundedQuotes(row, value);
     const step = message.thinking_steps.find(step => step.step === 'structured_output');
     assert.deepEqual(JSON.parse(step.detail).no_evidence, row.noEvidence, row.name);
     assert.deepEqual(JSON.parse(step.detail).verdicts, row.verdicts, row.name);
     assert.ok(reply.evidence_links.every(link => !link.startsWith('derivation_record:')));
+  }
+  const plain = [
+    [singleRequest, 'Built reporting on PostgreSQL and Redis.'],
+    ['Процитируй предложение, в котором упоминается Node.js. Источник: Сначала использовали C++. Перешли на Node.js 20!',
+      'Перешли на Node.js 20!'],
+    ['Cite the sentence mentioning Redis: Used Go elsewhere. Built  reports on Redis!', 'Built  reports on Redis!'],
+  ];
+  for (const [prompt, expected] of plain) {
+    for (const chat of [true, false]) {
+      const payload = chat ? { messages: [{ role: 'user', content: prompt }] } : { input: prompt };
+      const http = await fetch(run.url + (chat ? '/v1/chat/completions' : '/v1/responses'), {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ model: 'formal-ai', ...payload }),
+      });
+      assert.equal(http.status, 200, prompt);
+      const reply = await http.json();
+      const content = chat ? reply.choices[0].message.content : reply.output.find(item => item.type === 'message').content[0].text;
+      assert.equal(content, expected, prompt);
+      assert.ok(prompt.includes(content), prompt);
+    }
   }
 });

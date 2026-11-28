@@ -37,17 +37,33 @@ agentic_messages
   message structured-verdict-list
     text "\s*,\s*(?:(?:and|or|и|или)\s+)?|\s+(?:and|or|и|или)\s+"
   message structured-verdict-use
-    text "(?:^|[ \t,(])(?:(never\s+(?:used|worked\s+(?:with|in|on)|spoke)|(?:did not|didn't|does not|doesn't|do not|don't)\s+(?:use|work\s+(?:with|in|on)|speak)|(?:has not|hasn't|have not|haven't)\s+(?:used|worked\s+(?:with|in|on)|spoken)|no\s+experience(?:\s+(?:with|in|of))?|без\s+опыта(?:\s+работы)?(?:\s+[св])?|(?:никогда\s+)?не\s+(?:использова(?:л|ла|ли)|пользова(?:лся|лась|лись)|работа(?:л|ла|ли)\s+[св]|владе(?:ет|ют)))|((?:has\s+|have\s+)?(?:worked|works?|working)\s+(?:with|in|on)|(?:building|built|developed|implemented|deployed|wrote)\s+(?:[\p{L}\p{N}_'-]+\s+){0,6}?(?:with|using|on|in)|(?:has\s+|have\s+)?(?:used|uses?|using)|(?:has\s+|have\s+)?experience(?:\s+(?:with|in|of))?|speaks?|fluent\s+in|proficient\s+in|skills?\s*:|tools?\s*:|опыт(?:\s+работы)?(?:\s+[св])?|(?:работа(?:л|ла|ли)|работа(?:ет|ют))\s+[св]|использу(?:ет|ют)|использова(?:л|ла|ли)|владе(?:ет|ют)|навыки\s*:|инструменты\s*:))\s+"
+    text "(?:^|[ \t,(])(?:(never\s+(?:used|worked\s+(?:with|in|on)|spoke)|(?:did not|didn't|does not|doesn't|do not|don't)\s+(?:use|work\s+(?:with|in|on)|speak)|(?:has not|hasn't|have not|haven't)\s+(?:used|worked\s+(?:with|in|on)|spoken)|(?:(?:never\s+(?:built|developed|implemented|deployed|wrote))|(?:(?:did not|didn't)\s+(?:build|develop|implement|deploy|write)))\s+(?:[\p{L}\p{N}_'-]+\s+){0,6}?(?:with|using|on|in)|(?:не\s+(?:строи(?:л|ла|ли)|созда(?:л|ла|ли)|разработа(?:л|ла|ли)|реализова(?:л|ла|ли)|написа(?:л|ла|ли))\s+(?:[\p{L}\p{N}_'-]+\s+){0,6}?(?:на|с|в|через)|не\s+(?:(?:был[аи]?|явля(?:ется|лся|лась))\s+)?(?:разработчи(?:к|ца|ком)|инженер(?:ом)?)\s+(?:на|по))|no\s+experience(?:\s+(?:with|in|of))?|без\s+опыта(?:\s+работы)?(?:\s+[св])?|(?:никогда\s+)?не\s+(?:использова(?:л|ла|ли)|пользова(?:лся|лась|лись)|работа(?:л|ла|ли)\s+[св]|владе(?:ет|ют)))|((?:has\s+|have\s+)?(?:worked|works?|working)\s+(?:with|in|on)|(?:building|built|developed|implemented|deployed|wrote)\s+(?:[\p{L}\p{N}_'-]+\s+){0,6}?(?:with|using|on|in)|(?:строи(?:л|ла|ли)|созда(?:л|ла|ли)|разработа(?:л|ла|ли)|реализова(?:л|ла|ли)|написа(?:л|ла|ли))\s+(?:[\p{L}\p{N}_'-]+\s+){0,6}?(?:на|с|в|через)|(?:has\s+|have\s+)?(?:used|uses?|using)|(?:has\s+|have\s+)?experience(?:\s+(?:with|in|of))?|speaks?|fluent\s+in|proficient\s+in|skills?\s*:|tools?\s*:|опыт(?:\s+работы)?(?:\s+[св])?|(?:работа(?:л|ла|ли)|работа(?:ет|ют))\s+[св]|использу(?:ет|ют)|использова(?:л|ла|ли)|владе(?:ет|ют)|навыки\s*:|инструменты\s*:))\s+"
   message structured-verdict-only
     text "(?:^(?:only|exclusively|только|исключительно)\s+|\s+(?:only|exclusively|только|исключительно)$)"
   message structured-verdict-role
     text "^(?:developer|engineer|programmer|consultant|specialist|разработчи(?:к|ца|ком)|инженер(?:ом)?)(?:$|[^\p{L}\p{N}_])"
   message structured-verdict-role-prefix
-    text "(?:^|\s)(?:manager|менеджер(?:ом)?|специалист(?:ом)?|консультант(?:ом)?)\s+(?:in|for|по|в)\s*$"
+    text "(?:^|\s)(?:manager|менеджер(?:ом)?|специалист(?:ом)?|консультант(?:ом)?)\s+(?:in|for|по|в)\s*$|(?:^|\s)(?:разработчи(?:к|ца|ком)|инженер(?:ом)?)\s+(?:на|по)\s*$"
   message structured-verdict-item-tail
     text "^(?:for|in|at|on|to|as|from|since|с|для|по|в)(?:$|[^\p{L}\p{N}_])"
   message structured-verdict-russian-ending
     text "(?:ами|ями|ам|ям|ах|ях|ов|ев|ей|ы|и|а|я)$"
+  message structured-verdict-experience-tail
+    text "\s+(?:experience|proficiency|опыт|навыки)$"
+  message structured-quote-source
+    text "(?:^|[.!?;\n])\s*(?:source(?: text)?|resume|cv|document|passage|text|evidence|quote|excerpt|резюме|текст|источник|документ|отрывок|свидетельство|цитата)\s*[:：]"
+  message structured-quote-instruction
+    text "(?:^|[.!?;\n])\s*(?:(?:please|пожалуйста),?\s+)?(?:(?:for each criterion|для каждого критерия)[, \t]+)?(?:quote|cite|extract|copy|give|return|процитируй(?:те)?|приведи(?:те)?|выпиши(?:те)?|скопируй(?:те)?)\s+(?:[^\r\n.!?]{0,130}?\s+)?(?:sentences?|clauses?|quotes?|citations?|excerpts?|предложени[еяй]|фраз[уы]|цитат[уы])(?:$|[^\p{L}\p{N}_])"
+  message structured-quote-target
+    text "(?:^|\s)(?:mentions?|mentioning|contains?|containing|about|упомина(?:ет|ется|ются)|содерж(?:ит|ится|атся)|про|об?)\s+"
+  message structured-quote-cue
+    text "(?:^|[^\p{L}\p{N}])(?:quot(?:e[sd]?|ing|ation[s]?)|citat(?:ion[s]?)|cite[sd]?|excerpt[s]?|evidence|verbatim|цитат[ауые]|цитиру\p{L}*|дословно|выдержк[аиу]|отрыв(?:ок|ка)|свидетельств[оа])(?:$|[^\p{L}\p{N}])"
+  message structured-quote-criteria
+    text "(?:^|[.!?;\n])\s*(?:criteria|criterion|критери[йи])\s*[:：]"
+  message structured-quote-assignment
+    text "(?:^|[;,\r\n])\s*(?:[-*•]\s+)?([\p{L}\p{N}_-]+(?:[ \t]+[\p{L}\p{N}_-]+)*)[ \t]*[:=][ \t]*"
+  message structured-quote-boundary
+    text "([.!?]+[\x22”»’)]*)(?:\s+|$)|[;\r\n]+"
   message structured-array-separator
     text "[ \t]*,[ \t]*(?:(?:and|or|и|или)[ \t]+)?|[ \t]+(?:and|or|и|или)[ \t]+"
   message structured-array-label

@@ -19,7 +19,7 @@ import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
 import { projectServerAnswer, requestOutputTurn } from './cnl-output.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
-import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
+import { outputObligation, projectStructuredOutput, SOURCE_QUOTE_STEP, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 import { recipePrompt } from './dynamic-meta/wire.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
@@ -142,7 +142,8 @@ export async function createChatCompletion(ctx, request, options = {}) {
     const projected = await projectServerAnswer(selected, {answer:choice.message.content,
       output_projection:completion.output_projection}, turn.config, {
       language: context.language,
-      preserveAnswerBody: context.preserveAnswerBody,
+      preserveAnswerBody: context.preserveAnswerBody
+        || choice.message.thinking_steps?.some(step => step.step === SOURCE_QUOTE_STEP),
       answerText: context.answerText(choice.message.content),
     });
     choice.message.content = projected.answer;

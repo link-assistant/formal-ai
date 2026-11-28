@@ -138,15 +138,31 @@ function durationEvidence(claim, subject, minimum, reference) {
 export function criterionVerdict(source) {
   const [criteria, texts, references] = sections(source);
   if (criteria.length !== 1 || texts.length !== 1) return undefined;
-  const [criterion] = criteria;
-  const [text] = texts;
+  return assessCriterion(criteria[0], texts[0], references.length === 1 ? references[0] : undefined);
+}
+
+export function criterionReference(header) {
+  const references = sections(header)[2];
+  return references.length === 1 ? references[0] : undefined;
+}
+
+function subjectWords(target) {
+  return Array.from(target.toLowerCase().matchAll(TOKEN), match => match[0]);
+}
+
+export function mentionsSubject(text, target) {
+  const subject = subjectWords(target);
+  return subject.length > 0 && subjectSpans(text, subject).length > 0;
+}
+
+export function assessCriterion(criterion, text, reference) {
   const leading = pattern('minimum-leading', { number: NUMBER }).exec(criterion);
   const trailing = pattern('minimum-trailing', { number: NUMBER }).exec(criterion);
   const minimum = (leading?.[1] ?? leading?.[2] ?? trailing?.[2])?.replace(',', '.');
   const cue = pattern('use').exec(criterion);
   const target = leading?.[3] ?? trailing?.[1] ?? (cue?.index === 0 && cue[2]
-    ? criterion.slice(cue[0].length) : criterion);
-  const subject = Array.from(target.toLowerCase().matchAll(TOKEN), match => match[0]);
+    ? criterion.slice(cue[0].length) : criterion.replace(pattern('experience-tail'), ''));
+  const subject = subjectWords(target);
   if (!subject.length || (minimum !== undefined && !Number.isFinite(Number(minimum)))) return undefined;
   const claims = text.split(pattern('claims')).map(trimSpan).filter(Boolean);
   const classifications = claims.map(claim => ({ claim, ...classify(claim, subject) }));
@@ -155,7 +171,6 @@ export function criterionVerdict(source) {
   if (negative && positive) return outcome(null, 'conflicting_criterion_evidence', text);
   if (negative) return outcome(false, 'skill_negation', negative.claim);
   if (minimum !== undefined) {
-    const reference = references.length === 1 ? references[0] : undefined;
     const durations = claims.flatMap(claim => durationEvidence(claim, subject, Number(minimum), reference));
     const sufficient = durations.find(item => item.result === true);
     if (sufficient) return sufficient;
