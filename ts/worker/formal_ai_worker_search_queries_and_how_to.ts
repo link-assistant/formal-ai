@@ -736,6 +736,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const candidates = indexedProcedureCandidates(searchQuery, sourceLanguage, discovered);
   const before = research.guide.outcomes.length;
   const accepted = await indexedProcedureGuide(research.guide, candidates, sourceLanguage, preferences);
+  solverEvents.push(...howToGuideEvents(research.guide));
   for (const outcome of research.guide.outcomes.slice(before)) {
     evidence.push(`how_to:source ${howToOutcomeTracePayload(outcome)}`);
   }

@@ -73,21 +73,30 @@ pub fn trace(guide: &HowToGuide) -> String {
 
 /// Append every retrieval and policy decision as evidence events.
 pub fn record(guide: &HowToGuide, log: &mut EventLog) {
-    log.append(EVENT_BOUNDS, bounds_payload(guide));
+    let mut record = |kind: &'static str, payload: String| {
+        crate::dialog_log::structured_log::event(
+            "debug",
+            "procedure.retrieval",
+            || kind.to_owned(),
+            || serde_json::json!({"detail": &payload}),
+        );
+        log.append(kind, payload);
+    };
+    record(EVENT_BOUNDS, bounds_payload(guide));
     for outcome in &guide.outcomes {
-        log.append(EVENT_SOURCE, outcome.trace_payload());
+        record(EVENT_SOURCE, outcome.trace_payload());
     }
     for copy in &guide.copies {
-        log.append(EVENT_COPIED_SOURCE, copied_source_payload(copy));
+        record(EVENT_COPIED_SOURCE, copied_source_payload(copy));
     }
     for conflict in &guide.conflicts {
-        log.append(EVENT_CONFLICT, conflict_event_payload(conflict));
+        record(EVENT_CONFLICT, conflict_event_payload(conflict));
     }
     for (index, step) in guide.steps.iter().enumerate() {
-        log.append(EVENT_STEP, step_payload(index, &step.provenance()));
+        record(EVENT_STEP, step_payload(index, &step.provenance()));
     }
     if !guide.is_sufficient() {
-        log.append(
+        record(
             EVENT_INSUFFICIENT_EVIDENCE,
             insufficient_evidence_payload(guide),
         );

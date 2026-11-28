@@ -159,11 +159,12 @@ impl RequestContext {
                     }
                     let mut value = found[0].to_lowercase();
                     if kind == "language"
-                        && RULES["formats"]
+                        && (RULES["formats"]
                             .as_array()
                             .unwrap()
                             .iter()
                             .any(|format| format.as_str() == Some(&value))
+                            || (value == "plain" && capture("format", text).is_some()))
                     {
                         continue;
                     }
@@ -176,6 +177,9 @@ impl RequestContext {
                             .as_u64()
                             .map_or_else(|| found[1].clone(), |count| count.to_string());
                         value = format!("{value}|{count}");
+                    }
+                    if kind == "format" {
+                        value = value.split_whitespace().collect::<Vec<_>>().join(" ");
                     }
                     constraints.push(Constraint {
                         role: role.clone(),
@@ -255,9 +259,11 @@ impl RequestContext {
         self.title_task
             || self.active("labels").is_some()
             || self.active("length").is_some()
-            || self
-                .active("format")
-                .is_some_and(|item| Some(item.value.as_str()) != RULES["plainFormat"].as_str())
+            || self.active("format").is_some_and(|item| {
+                ["plainFormat", "plainTextFormat"]
+                    .iter()
+                    .all(|kind| Some(item.value.as_str()) != RULES[*kind].as_str())
+            })
     }
 
     pub(super) fn answer_text(&self, body: &str) -> String {
@@ -371,6 +377,15 @@ impl RequestContext {
         }
         let mut unmet = Vec::new();
         let target = self.language();
+        if answer.intent == "procedural_how_to"
+            && self
+                .active("format")
+                .is_some_and(|item| Some(item.value.as_str()) == RULES["plainTextFormat"].as_str())
+        {
+            answer.answer = pattern(r"(?m)^#{2,3} ")
+                .replace_all(&answer.answer, "")
+                .into_owned();
+        }
         let language_text = answer.answer.clone();
         if self
             .active("format")
@@ -457,9 +472,14 @@ impl RequestContext {
                         !comparison.is_gt()
                     }
                 }
-                "format" => ["supportedFormat", "plainFormat"]
-                    .iter()
-                    .any(|kind| Some(item.value.as_str()) == RULES[*kind].as_str()),
+                "format" => [
+                    "supportedFormat",
+                    "plainFormat",
+                    "plainTextFormat",
+                    "markdownFormat",
+                ]
+                .iter()
+                .any(|kind| Some(item.value.as_str()) == RULES[*kind].as_str()),
                 _ => false,
             };
             item.status = if satisfied { "applied" } else { "unmet" };

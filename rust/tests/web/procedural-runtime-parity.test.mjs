@@ -8,7 +8,7 @@ import { specificationCases } from "../../../scripts/lib/rust-specification-case
 import { executeTypedProgram } from "../../../scripts/lib/rust-specification-programs.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { bookPage, bookSearch, procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
-import { everydayMethodReply, wikiHowMethodsCapture } from "./support/wiki-how-method-capture.mjs";
+import { everydayMethodReply, wikiHowArticleCapture, wikiHowMethodsCapture } from "./support/wiki-how-method-capture.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const CACHE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/issue-991/source-cache");
@@ -324,6 +324,43 @@ test("publisher search recovers the reported article when MediaWiki search retur
   const disabled = await run({ offline: true, externalServiceWikihow: false });
   assert.equal(disabled.guide, undefined);
   assert.equal(requested.length, count);
+});
+
+test("publisher article recovery verifies canonical identity and replays the capture offline", { timeout: 30_000 }, async () => {
+  const requested = [];
+  const search = publisherSearch("какать покакать");
+  const api = wikiParse(RUSSIAN_DISCOVERED_TITLE);
+  const body = wikiHowArticleCapture(RUSSIAN_ARTICLE);
+  const captures = new Map([
+    [wikiParse(RUSSIAN_SHORT_TASK), missingTitle],
+    [wikiSearch(RUSSIAN_SHORT_TASK), { status: 500, body: "" }],
+    [search, { body: linkResult(RUSSIAN_DISCOVERED_TITLE) }],
+    [api, { status: 503, body: "" }],
+    [RUSSIAN_ARTICLE, { body }],
+  ]);
+  const context = await bootWorker(captures, requested);
+  const ask = (worker, preferences = {}) => answerRussian(worker, preferences, "Как какать?");
+  const answer = await ask(context);
+  assert.equal(answer.content, everydayMethodReply(RUSSIAN_ARTICLE));
+  assert.deepEqual(requested.filter(url => new URL(url).hostname === "ru.wikihow.com"), [
+    wikiParse(RUSSIAN_SHORT_TASK), wikiSearch(RUSSIAN_SHORT_TASK), search, api, RUSSIAN_ARTICLE,
+  ]);
+  const digest = createHash("sha256").update(body).digest("hex");
+  assert.ok(answer.solverEvents.some(event => event.kind === "how_to:source"
+    && event.payload.includes("publisher_parse_failed") && event.payload.includes("503")));
+  const steps = answer.solverEvents.filter(event => event.kind === "how_to:step");
+  assert.equal(steps.length, 2);
+  assert.ok(steps.every(event => event.payload.includes(RUSSIAN_ARTICLE) && event.payload.includes(digest)));
+  const count = requested.length;
+  const offline = await ask(context, { offline: true });
+  assert.equal(offline.content, answer.content);
+  assert.ok(offline.guide.steps.every(step => step.cached));
+  assert.equal(requested.length, count);
+  captures.set(RUSSIAN_ARTICLE, { body: wikiHowArticleCapture("https://ru.wikihow.com/unrelated") });
+  const rejected = await ask(await bootWorker(captures));
+  assert.match(rejected.content, /Не удалось найти проверенные инструкции/u);
+  assert.ok(rejected.solverEvents.some(event => event.kind === "how_to:source"
+    && event.payload.includes("publisher_article_failed")));
 });
 
 test("publisher recovery works through the capture component when a browser cannot read the site", async () => {

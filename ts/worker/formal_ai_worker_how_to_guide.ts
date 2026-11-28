@@ -651,25 +651,23 @@ function howToStepProvenance(step) {
   return `source=${step.sourceId} url=${step.sourceUrl} sha256=${step.sha256} fetched_at=${step.fetchedAt} cached=${step.cached} tier=${step.tier} license=${step.licenseName} depth=${step.depth} position=${step.position}`;
 }
 
-/** Deterministic evidence lines, one per decision, in a stable order. */
-function howToGuideEvidence(guide) {
-  const lines = [`how_to:bounds task=${guide.task} ${howToBoundsTracePayload(guide.bounds)}`];
-  for (const outcome of guide.outcomes) lines.push(`how_to:source ${howToOutcomeTracePayload(outcome)}`);
-  for (const copy of guide.copies) lines.push(`how_to:copied_source url=${copy} tier=unoriginal`);
+/** Deterministic solver events, one per decision, in a stable order. */
+function howToGuideEvents(guide) {
+  const events = [{ kind: "how_to:bounds", payload: `task=${guide.task} ${howToBoundsTracePayload(guide.bounds)}` }];
+  for (const outcome of guide.outcomes) events.push({ kind: "how_to:source", payload: howToOutcomeTracePayload(outcome) });
+  for (const copy of guide.copies) events.push({ kind: "how_to:copied_source", payload: `url=${copy} tier=unoriginal` });
   for (const conflict of guide.conflicts) {
-    lines.push(
-      `conflict:source_disagreement action=${conflict.action} kept=${conflict.keptSource} dropped=${conflict.droppedSource}`,
-    );
+    events.push({ kind: "conflict:source_disagreement",
+      payload: `action=${conflict.action} kept=${conflict.keptSource} dropped=${conflict.droppedSource}` });
   }
   guide.steps.forEach((step, index) => {
-    lines.push(`how_to:step rank=${index + 1} ${howToStepProvenance(step)}`);
+    events.push({ kind: "how_to:step", payload: `rank=${index + 1} ${howToStepProvenance(step)}` });
   });
   if (!howToGuideIsSufficient(guide)) {
-    lines.push(
-      `how_to:insufficient_evidence steps=${guide.steps.length} required=${HOW_TO_MIN_ACCEPTED_STEPS}`,
-    );
+    events.push({ kind: "how_to:insufficient_evidence",
+      payload: `steps=${guide.steps.length} required=${HOW_TO_MIN_ACCEPTED_STEPS}` });
   }
-  return lines;
+  return events;
 }
 
 /** One seeded `how_to_guide_*` phrase with its named fields substituted. */
@@ -719,7 +717,8 @@ function howToGuideMarkdown(guide, language, diagnostics = true) {
 /** Prepare guide evidence even when there are too few steps to answer. */
 async function researchProceduralHowTo(task, preferences, sourceLanguage, responseLanguage) {
   const guide = await synthesizeHowToGuide(task.task, preferences, undefined, undefined, sourceLanguage);
-  const evidence = ["procedural_how_to:stage:multi_source_synthesis", ...howToGuideEvidence(guide)];
+  const solverEvents = howToGuideEvents(guide);
+  const evidence = ["procedural_how_to:stage:multi_source_synthesis", ...solverEvents.map(({ kind, payload }) => `${kind} ${payload}`)];
   if (!howToGuideIsSufficient(guide)) return { evidence, answer: null, guide };
   for (const step of guide.steps) {
     const source = `source:${step.sourceUrl}`;
@@ -727,7 +726,7 @@ async function researchProceduralHowTo(task, preferences, sourceLanguage, respon
   }
   return { evidence, answer: {
     intent: "procedural_how_to", content: howToGuideMarkdown(guide, responseLanguage, false),
-    confidence: 0.9, evidence, diagnostics: "",
+    confidence: 0.9, evidence, solverEvents, diagnostics: "",
     query: proceduralFallbackQuery(task.task), guide, formalizedObject: `HOWTO:${task.task}`,
   }, guide };
 }

@@ -140,6 +140,13 @@ async function solveBegun(ctx, prompt, history, options) {
   if (Array.isArray(result?.solverEvents)) {
     await ensureNodeHost(ctx);
     result.solverEvents = nativeSolverLog(result);
+    if (!ctx.ephemeral) {
+      for (const { kind, payload } of result.solverEvents) {
+        if (kind.startsWith('how_to:') || kind === 'conflict:source_disagreement') {
+          ctx.logger?.log('debug', kind, { component: 'procedure.retrieval', detail: payload });
+        }
+      }
+    }
   }
   // The native solver answers a summarize request (not a returning-user recap)
   // with the `Conversation summary: … User turns:` envelope; the browser

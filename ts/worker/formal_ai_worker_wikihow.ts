@@ -76,9 +76,12 @@ function howToWikiHowStepLists(html, task, language, limit, allowLegacy = true) 
       if (!closing) {
         itemStart = tag.index + raw.length;
       } else if (itemStart !== undefined && items.length < limit) {
-        const inner = html.slice(itemStart, tag.index);
+        const item = html.slice(itemStart, tag.index);
+        const body = allowLegacy ? null : /<div\b[^>]*\bclass=["']step["'][^>]*>/iu.exec(item);
+        const inner = body ? item.slice(body.index + body[0].length)
+          .replace(/<sup\b[^>]*\bclass=["']reference\b[^>]*>[\s\S]*?<\/sup>/giu, "") : item;
         const step = howToCompactStepText(inner);
-        if (!inner.trimStart().startsWith("<b>") && Array.from(step).length >= HOW_TO_MIN_STEP_CHARS
+        if ((body || !inner.trimStart().startsWith("<b>")) && Array.from(step).length >= HOW_TO_MIN_STEP_CHARS
             && !items.includes(step)) items.push(step);
         itemStart = undefined;
       }
@@ -115,12 +118,12 @@ function howToPublisherSearchQuery(task, language) {
   return infinitive(alternate) ? `${task} ${alternate}` : task;
 }
 
-function howToPublisherResultTitle(href, endpoint) {
+function howToPublisherResultArticle(href, endpoint) {
   try {
     const url = new URL(href, endpoint);
     if (url.origin !== endpoint.origin || url.username || url.password || url.search || url.hash) return null;
     const slug = decodeURIComponent(url.pathname.slice(1));
-    return slug && !/[/:�]/u.test(slug) ? slug.replace(/[-_]/gu, " ") : null;
+    return slug && !/[/:�]/u.test(slug) ? { title: slug.replace(/[-_]/gu, " "), url } : null;
   } catch {
     return null;
   }
@@ -144,27 +147,49 @@ async function howToSearchWikiHowPublisher(walked, record, outcome, exact, task,
   const query = howToPublisherSearchQuery(task, language);
   const search = new URL(`/Special:LSearch?fulltext=Search&search=${sourceWalkPercentEncode(query)}`, endpoint).href;
   const capture = await howToPublisherCapture(search, online);
-  if (!capture.ok) return;
+  const note = (detail) => {
+    outcome.detail = [outcome.detail, detail].filter(Boolean).join(" | ");
+  };
+  if (!capture.ok) {
+    note(`publisher_search_failed url=${search} reason=${capture.error}`);
+    return;
+  }
   outcome.pages += 1;
+  let attempts = remaining - 1;
   const seen = new Set([exact]);
   for (const [, href] of capture.text.matchAll(/<a\s+class="result_link"\s+href="([^"]+)"/gu)) {
-    const title = howToPublisherResultTitle(href, endpoint);
-    if (!title || !howToMatchesTask(task, title, language)) continue;
-    const api = howToParseUrl({ api: exact }, title);
+    const article = howToPublisherResultArticle(href, endpoint);
+    if (!article || !howToMatchesTask(task, article.title, language)) continue;
+    const api = howToParseUrl({ api: exact }, article.title);
     if (seen.has(api)) continue;
     seen.add(api);
-    // The exact entry is already in the set and is not charged here.
-    if (seen.size > remaining) break;
+    if (attempts === 0) break;
+    attempts -= 1;
     const page = await howToPublisherCapture(api, online);
-    if (!page.ok) continue;
-    outcome.pages += 1;
-    const { items } = howToReadCapture({ ...record, api }, task, page, 2, 0, bounds, language);
-    if (items.length < HOW_TO_MIN_ACCEPTED_STEPS) continue;
+    if (page.ok) outcome.pages += 1;
+    const parsed = page.ok ? howToReadCapture({ ...record, api }, task, page, 2, 0, bounds, language) : null;
+    const items = parsed?.items ?? [];
+    let source = api;
+    if (items.length < HOW_TO_MIN_ACCEPTED_STEPS) {
+      note(`publisher_parse_failed url=${api} reason=${page.error || parsed?.detail || "insufficient_steps"}`);
+      if (attempts === 0) break;
+      attempts -= 1;
+      source = article.url.href;
+      const html = await howToPublisherCapture(source, online);
+      if (html.ok) outcome.pages += 1;
+      const steps = html.ok ? howToWikiHowHtmlSteps(html.text, article.url, task, language, bounds.maxItems) : [];
+      if (steps.length < HOW_TO_MIN_ACCEPTED_STEPS) {
+        note(`publisher_article_failed url=${source} reason=${html.error || "no_matching_steps"}`);
+        continue;
+      }
+      items.length = 0;
+      howToPushSteps(record, html, 2, steps, items);
+    }
     walked.items = walked.items.filter((item) => item.sourceId !== record.id).concat(items);
     outcome.status = "contributed";
     outcome.items = items.length;
-    outcome.detail = [outcome.detail, `publisher_search search=${search} url=${api}`].filter(Boolean).join(" | ");
-    sourceWalkObserveService(howToAccessibilityKey(record, exact), "reachable", `captured ${api}`, now);
+    note(`publisher_search search=${search} url=${source}`);
+    sourceWalkObserveService(howToAccessibilityKey(record, exact), "reachable", `captured ${source}`, now);
     return;
   }
 }
