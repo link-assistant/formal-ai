@@ -555,7 +555,7 @@ test('both OpenAI endpoints distinguish unsupported replies from local answers',
             const deltas = frames.map(frame => frame.choices[0].delta);
             metadata = deltas.at(-1).formal_ai;
             content = deltas.map(delta => delta.content).join('');
-            refusal = deltas.find(delta => delta.refusal)?.refusal;
+            refusal = deltas.find(delta => typeof delta.refusal === 'string')?.refusal;
           } else {
             metadata = frames.at(-1).response.formal_ai;
             content = frames.find(frame => frame.type === 'response.output_text.done')?.text;
@@ -564,7 +564,7 @@ test('both OpenAI endpoints distinguish unsupported replies from local answers',
         }
         assert.deepEqual(metadata, { status, provenance: ['local_rules'] }, prompt);
         if (status === 'unanswered') {
-          assert.ok(refusal, prompt);
+          assert.equal(typeof refusal, 'string', prompt);
           assert.ok(!content, prompt);
         } else {
           assert.ok(content.includes('4'), prompt);
@@ -595,7 +595,7 @@ test('unanswered replies retain the exchange in memory on both OpenAI endpoints'
     assert.equal(http.status, 200);
     const payload = await http.json();
     const metadata = payload.formal_ai ?? payload.choices[0].message.formal_ai;
-    assert.equal(metadata.status, 'unanswered');
+    assert.equal(metadata.status, 'unanswered', endpoint);
     const memory = await fetch(`${run.url}/v1/memory`);
     assert.equal(memory.status, 200);
     assert.ok((await memory.text()).includes(prompt), endpoint);

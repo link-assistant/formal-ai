@@ -68,7 +68,10 @@ impl AnswerMetadata {
                 | "policy_agent_time_budget"
         ) {
             AnswerStatus::Refused
-        } else if answer.is_inconclusive() || has_capability_refusal(answer) {
+        } else if answer.intent == "capability_gap"
+            || answer.is_inconclusive()
+            || has_capability_refusal(answer)
+        {
             AnswerStatus::Unanswered
         } else {
             AnswerStatus::Answered

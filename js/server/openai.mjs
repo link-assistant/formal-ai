@@ -266,7 +266,9 @@ export function chatCompletionSse(completion, includeUsage) {
     }
     const text = plainText(message.content);
     if (text) body += sseChunk(base, { index: 0, delta: { content: text }, finish_reason: null });
-    if (message.refusal) body += sseChunk(base, { index: 0, delta: { refusal: message.refusal }, finish_reason: null });
+    if (typeof message.refusal === 'string') {
+      body += sseChunk(base, { index: 0, delta: { refusal: message.refusal }, finish_reason: null });
+    }
     (message.tool_calls || []).forEach((call, index) => {
       body += sseChunk(base, {
         index: 0,

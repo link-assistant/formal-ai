@@ -25,7 +25,8 @@ export function symbolicAnswerMetadata(answer) {
   if (refusedIntents.has(answer.intent)) {
     return answerMetadata('refused');
   }
-  return answerMetadata(isInconclusive(answer) || answer.capability_refusal ? 'unanswered' : 'answered');
+  const unanswered = answer.intent === 'capability_gap' || isInconclusive(answer) || answer.capability_refusal;
+  return answerMetadata(unanswered ? 'unanswered' : 'answered');
 }
 
 /** Record a live HTTP attempt after the caller's network policy allows it. */
