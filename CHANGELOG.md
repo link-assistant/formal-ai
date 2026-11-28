@@ -21,6 +21,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.357.4] - 2026-11-28
+
+### Added
+
+- Derive English and Russian skill and minimum-duration verdicts in OpenAI structured responses, with the rule and quoted source evidence in the thinking step.
+
 ## [0.357.3] - 2026-11-28
 
 ### Added
