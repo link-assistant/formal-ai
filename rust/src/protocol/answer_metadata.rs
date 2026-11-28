@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 use crate::engine::SymbolicAnswer;
+use crate::solver_handlers::SUMMARIZATION_REFUSAL_EVENT;
 
 /// Whether the request produced an answer or a usable tool call.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -55,10 +56,10 @@ impl AnswerMetadata {
             AnswerStatus::Refused
         } else if answer.is_inconclusive()
             || (answer.intent == "summarize_topic"
-                && answer
-                    .evidence_links
-                    .iter()
-                    .any(|link| link.starts_with("summarization:refusal:")))
+                && answer.evidence_links.iter().any(|link| {
+                    link.strip_prefix(SUMMARIZATION_REFUSAL_EVENT)
+                        .is_some_and(|identifier| identifier.starts_with(':'))
+                }))
         {
             AnswerStatus::Unanswered
         } else {
