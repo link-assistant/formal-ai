@@ -363,6 +363,39 @@ test("publisher article recovery verifies canonical identity and replays the cap
     && event.payload.includes("publisher_article_failed")));
 });
 
+test("canonical wikiHow recovery renders the other registered languages", { timeout: 30_000 }, async () => {
+  const cases = [
+    { language: "en", host: "www", task: "bake bread", slug: "Bake-Bread-at-Home", heading: "### Sources",
+      steps: ["Mix the flour and water until the dough starts to come together.", "Bake the loaf in a preheated oven until the crust is golden."] },
+    { language: "hi", host: "hi", task: "रोटी बनाएं", slug: "घर-पर-रोटी-बनाएं", heading: "### स्रोत",
+      steps: ["आटे में थोड़ा थोड़ा पानी डालकर मुलायम आटा गूंध लें और उसे ढक कर रख दें।", "आटे की एक लोई बेल लें और उसे गरम तवे पर दोनों तरफ से अच्छी तरह सेंकें।"] },
+    { language: "zh", host: "zh", task: "烤面包", slug: "在家-烤面包", heading: "### 来源",
+      steps: ["先把面粉和水倒进干净的碗里，用搅拌匙拌匀，然后用手轻轻揉成光滑的面团，盖起来放在温暖的地方发酵。",
+        "面团发好后把它放进烤盘，等烤箱预热好再把烤盘放进去，烤至表面呈金黄色，然后取出并放在架子上冷却。"] },
+    { language: "es", host: "es", task: "hornear pan", slug: "hornear-pan-en-casa", heading: "### Fuentes",
+      steps: ["Mezcla la harina con el agua hasta obtener una masa uniforme.", "Hornea el pan hasta que la corteza quede firme y dorada."] },
+  ];
+  const captures = new Map();
+  for (const item of cases) {
+    const origin = `https://${item.host}.wikihow.com`;
+    item.article = `${origin}/${encodeURIComponent(item.slug)}`;
+    const search = `${origin}/Special:LSearch?fulltext=Search&search=${encodeURIComponent(item.task)}`;
+    captures.set(search, { body: linkResult(item.slug, origin) });
+    captures.set(item.article, { body: `<link rel="canonical" href="${item.article}">
+      <ol class="steps_list_2">${item.steps.map(step => `<li>${step}</li>`).join("")}</ol>` });
+  }
+  const context = await bootWorker(captures);
+  for (const { language, task, heading, article, steps } of cases) {
+    const guide = await evaluate(context, `synthesizeHowToGuide(${JSON.stringify(task)}, {}, undefined, undefined, "${language}")`);
+    assert.deepEqual(plain(guide.steps.map(step => step.text)), steps, language);
+    assert.ok(guide.steps.every(step => step.sourceUrl === article && step.sourceId === "wikihow"), language);
+    context.__localizedGuide = guide;
+    const markdown = evaluate(context, `howToGuideMarkdown(__localizedGuide, "${language}", false)`);
+    assert.ok(markdown.includes(heading), markdown);
+    assert.ok(markdown.includes(article), markdown);
+  }
+});
+
 test("publisher recovery works through the capture component when a browser cannot read the site", async () => {
   const context = await bootWorker(new Map());
   const search = publisherSearch("какать покакать");
