@@ -76,10 +76,10 @@ const nativeCli = process.env.FORMAL_AI_TEST_NATIVE_CLI;
 test("the native public gateway derives the same demands and asks when they are missing", { skip: !nativeCli, timeout: 30_000 }, async (t) => {
   const run = await startCli(t, { binary: nativeCli, silent: true, lifetime: 30_000, env: { FORMAL_AI_OFFLINE: "1" } });
   await run.ready();
-  for (const [prompt, expected] of [
+  for (const [prompt, expected, status = "answered"] of [
     ["Apply TRIZ to latency vs acoustic damping", "latency / acoustic damping"],
     ["TRIZ: ratio 1:2 vs equal allocation", "ratio 1:2 / equal allocation"],
-    ["Explain a paradox: zoetrope", "State the two conflicting demands"],
+    ["Explain a paradox: zoetrope", "State the two conflicting demands", "unanswered"],
     ["矛盾：延迟与隔音", "延迟 / 隔音"],
   ]) {
     const response = await fetch(`${run.url}/v1/chat/completions`, {
@@ -89,7 +89,10 @@ test("the native public gateway derives the same demands and asks when they are 
       body: JSON.stringify({ model: "formal-ai", messages: [{ role: "user", content: prompt }] }),
     });
     assert.ok(response.ok, await response.clone().text());
-    const answer = (await response.json()).choices[0].message.content;
+    const message = (await response.json()).choices[0].message;
+    assert.equal(message.formal_ai.status, status, prompt);
+    if (status === "unanswered") assert.equal(message.content, "", prompt);
+    const answer = status === "unanswered" ? message.refusal : message.content;
     assert.ok(answer.includes(expected), answer);
     assert.doesNotMatch(answer, /pills|umbrella|wheat grains/u);
   }
