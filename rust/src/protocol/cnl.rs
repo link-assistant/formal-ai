@@ -106,7 +106,12 @@ fn create_projected_chat_completion(
             .config
             .forced_response_language
             .unwrap_or_else(|| crate::language::detect(&text).slug());
-        let preserve_body = context.preserve_answer_body();
+        let preserve_body = context.preserve_answer_body()
+            || choice
+                .message
+                .thinking_steps
+                .iter()
+                .any(|step| step.step == structured_output::SOURCE_QUOTE_STEP);
         let source = if preserve_body {
             text
         } else {

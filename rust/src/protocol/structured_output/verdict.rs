@@ -26,6 +26,7 @@ static ROLE: LazyLock<Regex> = LazyLock::new(|| pattern("role", &[]));
 static ROLE_PREFIX: LazyLock<Regex> = LazyLock::new(|| pattern("role-prefix", &[]));
 static ITEM_TAIL: LazyLock<Regex> = LazyLock::new(|| pattern("item-tail", &[]));
 static RUSSIAN_ENDING: LazyLock<Regex> = LazyLock::new(|| pattern("russian-ending", &[]));
+static EXPERIENCE_TAIL: LazyLock<Regex> = LazyLock::new(|| pattern("experience-tail", &[]));
 static TOKEN: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"[\p{L}\p{N}_]+(?:[.-][\p{L}\p{N}_]+)*(?:\+\+|#)?").expect("skill token")
 });
@@ -313,7 +314,12 @@ fn criterion_target(criterion: &str) -> Option<(&str, Option<f64>)> {
         let cue = captures.get(0)?;
         (cue.start() == 0).then_some(&criterion[cue.end()..])
     });
-    Some((target.unwrap_or(criterion), None))
+    let target = target.unwrap_or_else(|| {
+        EXPERIENCE_TAIL
+            .find(criterion)
+            .map_or(criterion, |tail| &criterion[..tail.start()])
+    });
+    Some((target, None))
 }
 
 fn threshold(text: &str) -> Option<f64> {
@@ -328,7 +334,31 @@ pub(super) fn criterion_verdict(source: &str) -> Option<Verdict<'_>> {
     let ([criterion], [text]) = (criteria.as_slice(), texts.as_slice()) else {
         return None;
     };
-    let (criterion, text) = (*criterion, *text);
+    let reference = match references.as_slice() {
+        [reference] if !reference.is_empty() => Some(*reference),
+        _ => None,
+    };
+    assess_criterion(criterion, text, reference)
+}
+
+pub(super) fn criterion_reference(header: &str) -> Option<&str> {
+    match sections(header)[2].as_slice() {
+        [reference] if !reference.is_empty() => Some(*reference),
+        _ => None,
+    }
+}
+
+pub(super) fn mentions_subject(text: &str, target: &str) -> bool {
+    let target = target.to_lowercase();
+    let subject: Vec<_> = TOKEN.find_iter(&target).map(|word| word.as_str()).collect();
+    !subject.is_empty() && !subject_spans(text, &subject).is_empty()
+}
+
+pub(super) fn assess_criterion<'a>(
+    criterion: &str,
+    text: &'a str,
+    reference: Option<&'a str>,
+) -> Option<Verdict<'a>> {
     let (target, minimum) = criterion_target(criterion)?;
     let target = target.to_lowercase();
     let subject: Vec<_> = TOKEN.find_iter(&target).map(|word| word.as_str()).collect();
@@ -357,10 +387,6 @@ pub(super) fn criterion_verdict(source: &str) -> Option<Verdict<'_>> {
         return Some(outcome(Some(false), "skill_negation", claim, None));
     }
     if let Some(minimum) = minimum {
-        let reference = match references.as_slice() {
-            [reference] if !reference.is_empty() => Some(*reference),
-            _ => None,
-        };
         let mut durations: Vec<_> = claims
             .iter()
             .copied()

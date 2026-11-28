@@ -1,5 +1,6 @@
 //! Shared response-format obligation and projection for Chat and Responses.
 mod arrays;
+mod quotes;
 mod verdict;
 
 use super::{
@@ -15,6 +16,7 @@ use serde_json::{Map, Value, json};
 use std::sync::LazyLock;
 
 const UNKNOWN: &str = "unknown";
+pub(super) const SOURCE_QUOTE_STEP: &str = "source_quote";
 const NUMBER: &str = r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?";
 static SUM: LazyLock<Regex> = LazyLock::new(|| arithmetic_pattern("structured-output-sum-pattern"));
 static KEY: LazyLock<Regex> = LazyLock::new(|| {
@@ -111,12 +113,17 @@ impl<'a> Obligation<'a> {
             })
         });
         let content = value.map_or_else(String::new, Value::to_string);
-        let no_evidence = self
+        let mut no_evidence = self
             .schema
             .zip(value)
             .map_or_else(Vec::new, |(schema, value)| {
                 missing_array_evidence(schema, source, value)
             });
+        if let Some(derived) = &derived {
+            no_evidence.extend(&derived.missing_quotes);
+            no_evidence.sort_unstable();
+            no_evidence.dedup();
+        }
         let mut detail = if let Some(reason) = &refusal {
             json!({"format": self.format, "refusal": reason})
         } else if !no_evidence.is_empty() {
@@ -399,6 +406,7 @@ fn verdict_projection<'a>(
 struct Derived<'a> {
     value: Value,
     verdict: Option<VerdictProjection<'a>>,
+    missing_quotes: Vec<&'a str>,
 }
 
 fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derived<'a>> {
@@ -415,13 +423,34 @@ fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derive
     } else {
         None
     };
+    let mut quotes = if source_object.is_none() {
+        quotes::quote_fields(schema, fields, source)
+    } else {
+        quotes::QuoteFields::default()
+    };
+    if let Some(verdict) = &verdict {
+        quotes
+            .values
+            .insert(verdict.name, Some(verdict.value.clone()));
+    }
     let supplied = formal.filter(Value::is_object).or(source_object);
     if supplied.as_ref().is_some_and(&satisfies) {
-        let mut value = supplied?;
-        if let Some(verdict) = &verdict {
-            value[verdict.name] = verdict.value.clone();
+        let mut value = supplied.clone()?;
+        let output = value.as_object_mut()?;
+        for (&name, replacement) in &quotes.values {
+            if let Some(value) = replacement {
+                output.insert(name.to_owned(), value.clone());
+            } else {
+                output.remove(name);
+            }
         }
-        return satisfies(&value).then_some(Derived { value, verdict });
+        if satisfies(&value) {
+            return Some(Derived {
+                value,
+                verdict,
+                missing_quotes: quotes.missing,
+            });
+        }
     }
     if supplied.is_none() && source.len() > 8192 {
         return None;
@@ -451,9 +480,8 @@ fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derive
                 .and_then(Value::as_array)
                 .is_some_and(|keys| keys.iter().any(|key| key == name.as_str()));
             let resolved = resolved_field(schema, field);
-            let mut value = if let Some(verdict) = verdict.as_ref().filter(|item| item.name == name)
-            {
-                Some(verdict.value.clone())
+            let mut value = if let Some(replacement) = quotes.values.remove(name.as_str()) {
+                replacement
             } else if let Some(supplied) = &supplied {
                 supplied.get(name).cloned()
             } else {
@@ -500,7 +528,11 @@ fn derive<'a>(schema: &'a Value, source: &'a str, answer: &str) -> Option<Derive
     (!output.is_empty())
         .then_some(Value::Object(output))
         .filter(satisfies)
-        .map(|value| Derived { value, verdict })
+        .map(|value| Derived {
+            value,
+            verdict,
+            missing_quotes: quotes.missing,
+        })
 }
 
 pub(super) fn answer_from_source(
@@ -508,7 +540,24 @@ pub(super) fn answer_from_source(
     chat: bool,
     source: &str,
 ) -> Option<SymbolicAnswer> {
-    let obligation = Obligation::new(format, chat)?;
+    let Some(obligation) = Obligation::new(format, chat) else {
+        let quote = quotes::requested_quote(source)?;
+        return Some(SymbolicAnswer {
+            intent: SOURCE_QUOTE_STEP.into(),
+            answer: quote.into(),
+            confidence: 1.0,
+            execution_recipe: None,
+            evidence_links: Vec::new(),
+            thinking_steps: vec![ThinkingStep::new(
+                0,
+                SOURCE_QUOTE_STEP,
+                quote,
+                "high",
+                RECOMPOSE_BIND_KIND,
+            )],
+            links_notation: String::new(),
+        });
+    };
     let value = obligation
         .schema
         .and_then(|schema| derive(schema, source, ""))

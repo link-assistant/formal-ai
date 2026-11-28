@@ -57,6 +57,23 @@ the server returns an empty array and records the property name in
 the derivation's `no_evidence` array. An explicitly supplied empty JSON array
 needs no evidence marker.
 
+Quote fields copy a sentence or clause verbatim from the source. A string
+property can opt in through its name or description, using words such as
+*quote*, *citation*, *excerpt*, or *evidence*. For example, give a
+`Quote the sentence that mentions PostgreSQL.` instruction followed by
+`Resume: …`, or name the target in the field description. The same instruction
+also works in text mode. English and Russian are supported. Source labels
+include `Resume:`, `Text:`, `Passage:`, `Резюме:`, and `Текст:`.
+
+For an array of objects, give each item a string enum for the criterion and
+a quote field. Use `Criteria: go = Go experience; postgres = PostgreSQL experience.`
+or the Russian `Критерии:` label to define what the enum labels represent. If
+the prompt supplies no definitions, the enum labels themselves are the
+subjects. The server selects the first supporting source span for each
+supported criterion in enum order. It omits criteria with missing or
+conflicting support. If no criteria have support, the array is empty and the
+structured derivation lists its property under `no_evidence`.
+
 To evaluate a criterion, supply a `Criterion:` and a `Resume:`, `Text:`, or
 `Evidence:` section in the prompt. Russian labels include `Критерий:`,
 `Резюме:`, and `Текст:`. The schema needs a property that accepts the enum

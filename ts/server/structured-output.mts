@@ -10,11 +10,13 @@ import { stableId } from './ids.mjs';
 import { isMap } from './protocol-values.mjs';
 import { thinkingStep } from './thinking.mjs';
 import { stringArrayEvidence, stringArrayItems } from './structured-array.mjs';
+import { quoteFields, requestedQuote } from './structured-quote.mjs';
 import { criterionVerdict } from './structured-verdict.mjs';
 import { portableValue, schemaIssue, schemaReference, validOutput } from './structured-schema.mjs';
 
 const JSON_OBJECT = { type: 'object' };
 const UNKNOWN = 'unknown';
+export const SOURCE_QUOTE_STEP = 'source_quote';
 
 export function structuredOutputRequested(format) {
   return format != null && format.type !== 'text';
@@ -120,7 +122,7 @@ function verdictProjection(schema, fields, source) {
   return { name: selected.name, value, trace: verdict.trace };
 }
 
-function fillObject(schema, source, answer, number, supplied, verdict) {
+function fillObject(schema, source, answer, number, supplied, overrides) {
   const fields = objectFields(schema);
   const key = KEY.exec(source)?.[1];
   const result = new Map();
@@ -128,11 +130,11 @@ function fillObject(schema, source, answer, number, supplied, verdict) {
     const resolved = schemaReference(schema, field?.$ref) ?? field;
     const description = fieldDescription(field, resolved);
     const items = stringArrayItems(resolved, schema);
-    let value = verdict?.name === name ? verdict.value
+    let value = overrides.has(name) ? overrides.get(name)
       : supplied ? (Object.hasOwn(supplied, name) ? supplied[name] : undefined)
       : items ? stringArrayEvidence(source, name, description, items, normalizeKey)
         : evidenceFor(name, resolved, description, source, answer, number, key);
-    if (!supplied && items && value === undefined && validOutput([], field, schema)) value = [];
+    if (!supplied && !overrides.has(name) && items && value === undefined && validOutput([], field, schema)) value = [];
     if (value === undefined && (fields.required ?? []).includes(name)) {
       if (validOutput(null, field, schema)) value = null;
       else if (resolved?.enum?.includes(UNKNOWN) && validOutput(UNKNOWN, field, schema)) value = UNKNOWN;
@@ -148,17 +150,30 @@ async function derive(ctx, schema, source, answer, supplied) {
   const satisfies = candidate => isMap(candidate) && portableValue(candidate) && validOutput(candidate, schema);
   const formal = parsed(answer);
   const observed = isMap(formal) ? formal : supplied;
-  const canReadText = !isMap(supplied) && Buffer.byteLength(source) <= 8192;
+  const fields = objectFields(schema);
+  const canReadText = Buffer.byteLength(source) <= 8192;
+  let overrides = new Map();
+  let missingQuotes = [];
   let verdict;
-  if (canReadText) {
+  if (!isMap(supplied)) {
     await ensureNodeHost(ctx);
-    verdict = verdictProjection(schema, objectFields(schema), source);
+    const quotes = quoteFields(schema, fields, source, normalizeKey);
+    overrides = quotes.values;
+    missingQuotes = quotes.missing;
+    if (canReadText) verdict = verdictProjection(schema, fields, source);
+    if (verdict) overrides.set(verdict.name, verdict.value);
   }
   let value;
   if (satisfies(observed)) {
-    value = verdict ? { ...observed, [verdict.name]: verdict.value } : observed;
+    const merged = new Map(Object.entries(observed));
+    for (const [name, replacement] of overrides) {
+      if (replacement === undefined) merged.delete(name);
+      else merged.set(name, replacement);
+    }
+    value = Object.fromEntries(merged);
+    if (!satisfies(value)) value = fillObject(schema, '', '', undefined, observed, overrides);
   } else if (isMap(observed)) {
-    value = fillObject(schema, '', '', undefined, observed, verdict);
+    value = fillObject(schema, '', '', undefined, observed, overrides);
   } else if (canReadText) {
     const [sumPattern, arithmeticPattern] = cached('structured-output-arithmetic-patterns', () =>
       ['structured-output-sum-pattern', 'structured-output-arithmetic-pattern'].map(key =>
@@ -169,14 +184,22 @@ async function derive(ctx, schema, source, answer, supplied) {
     if (expression && expression.length <= 80) {
       try { number = Number(realm().evaluateArithmetic(expression)); } catch { /* Underivable. */ }
     }
-    value = fillObject(schema, source, answer, number, undefined, verdict);
+    value = fillObject(schema, source, answer, number, undefined, overrides);
   }
-  return satisfies(value) ? { value, verdict } : undefined;
+  return satisfies(value) ? { value, verdict, missingQuotes } : undefined;
 }
 
 export async function structuredAnswerFromSource(ctx, format, chat, source) {
   const obligation = outputObligation(format, chat);
-  if (!obligation) return null;
+  if (!obligation) {
+    await ensureNodeHost(ctx);
+    const quote = requestedQuote(source, normalizeKey);
+    return quote === undefined ? null : {
+      intent: SOURCE_QUOTE_STEP, answer: quote, confidence: 1, evidence_links: [],
+      thinking_steps: [thinkingStep(0, SOURCE_QUOTE_STEP, quote, 'high', RECOMPOSE_BIND_KIND)],
+      links_notation: '',
+    };
+  }
   const supplied = parsed(source);
   const derived = obligation.schema && await derive(ctx, obligation.schema, source, '', supplied);
   const value = derived?.value;
@@ -191,7 +214,7 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
   const { schema, issue } = obligation;
   const supplied = parsed(source);
   const derived = !refusal && schema ? await derive(ctx, schema, source, answer, supplied) : undefined;
-  const { value, verdict } = derived ?? {};
+  const { value, verdict, missingQuotes = [] } = derived ?? {};
   if (!refusal && value === undefined) {
     await ensureNodeHost(ctx);
     refusal = agenticMessage(schema ? 'structured-output-underivable' : 'structured-output-schema-unsupported');
@@ -201,7 +224,9 @@ export async function projectStructuredOutput(ctx, obligation, source, answer, r
     }
   }
   const content = refusal ? '' : jsonText(value);
-  const noEvidence = value ? await missingArrayEvidence(ctx, schema, source, supplied, value) : [];
+  const noEvidence = value
+    ? [...new Set([...missingQuotes, ...await missingArrayEvidence(ctx, schema, source, supplied, value)])].sort()
+    : [];
   const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : { value }),
     ...(noEvidence.length ? { no_evidence: noEvidence } : {}),
     ...(verdict ? { verdicts: { [verdict.name]: verdict.trace } } : {}) });
