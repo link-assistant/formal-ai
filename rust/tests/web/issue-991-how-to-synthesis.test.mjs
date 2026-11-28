@@ -161,8 +161,8 @@ test("insufficient evidence is reported instead of invented", async () => {
   const guide = await synthesize(context, "build a nonexistent quantum flux capacitor");
   assert.ok(guide.steps.length < 2, "no service documents this task");
   assert.equal(evaluate(context, "howToGuideIsSufficient")(guide), false);
-  const evidence = plain(evaluate(context, "howToGuideEvidence")(guide));
-  assert.ok(evidence.some((line) => line.startsWith("how_to:insufficient_evidence")));
+  const events = plain(evaluate(context, "howToGuideEvents")(guide));
+  assert.ok(events.some(({ kind }) => kind === "how_to:insufficient_evidence"));
   assert.match(evaluate(context, "howToGuideMarkdown")(guide), /Insufficient evidence/u);
 
   // The refusal is still explained per service rather than silent.
