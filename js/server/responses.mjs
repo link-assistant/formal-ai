@@ -155,11 +155,18 @@ async function createUnstructuredResponse(ctx, request) {
   return responseFromSymbolic(request, chatRequest, prompt, symbolic);
 }
 
-/** The text of every assistant message item (`output_messages`), joined. */
+/** The assistant text recorded for learning from the exchange. */
 function responseAnswerText(response) {
+  const unanswered = response.formal_ai.status === 'unanswered';
   return response.output
     .filter((item) => item.type === 'message')
-    .flatMap((item) => item.content.filter((content) => content.type === 'output_text').map((content) => content.text))
+    .flatMap((item) => item.content)
+    .map((content) => {
+      if (content.type === 'output_text') return content.text;
+      if (unanswered && content.type === 'refusal') return content.refusal;
+      return null;
+    })
+    .filter((text) => text !== null)
     .join('\n');
 }
 

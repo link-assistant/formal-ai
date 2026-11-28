@@ -321,7 +321,10 @@ export async function handleChatCompletions(ctx, request) {
   if (unsupported) return unsupported;
   const scope = requestScope({ body: request.body, messages: chat.messages, tools: chat.tools });
   const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chat));
-  ctx.memory.recordExchange(chat.messages, plainText(completion.choices[0]?.message.content ?? ''), null, scope);
+  const message = completion.choices[0]?.message;
+  const unanswered = message?.formal_ai?.status === 'unanswered';
+  const recordedAnswer = (unanswered ? message.refusal : undefined) ?? plainText(message?.content ?? '');
+  ctx.memory.recordExchange(chat.messages, recordedAnswer, null, scope);
   if (chat.stream) return chatCompletionSse(completion, Boolean(chat.stream_options?.include_usage));
   return jsonResponse(200, chatCompletionJson(completion));
 }

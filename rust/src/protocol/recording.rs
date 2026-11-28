@@ -5,7 +5,10 @@ use std::collections::HashMap;
 
 use serde_json::Value;
 
-use super::{ChatCompletion, ChatCompletionRequest, ChatMessage, ResponseObject, ResponsesRequest};
+use super::{
+    AnswerStatus, ChatCompletion, ChatCompletionRequest, ChatMessage, ResponseObject,
+    ResponsesRequest,
+};
 use crate::memory_sync::RecordedToolExecution;
 use crate::solver::ConversationTurn;
 
@@ -57,7 +60,17 @@ pub fn chat_exchange_to_record(
     request: &ChatCompletionRequest,
     completion: &ChatCompletion,
 ) -> Option<(String, String)> {
-    let answer = completion.choices.first()?.message.content.plain_text();
+    let message = &completion.choices.first()?.message;
+    let answer = if message
+        .formal_ai
+        .as_ref()
+        .is_some_and(|metadata| metadata.status == AnswerStatus::Unanswered)
+        && let Some(refusal) = &message.refusal
+    {
+        refusal.clone()
+    } else {
+        message.content.plain_text()
+    };
     messages_exchange_to_record(&request.messages, &answer)
 }
 
@@ -85,7 +98,13 @@ pub fn responses_exchange_to_record(
         .output_messages()
         .iter()
         .flat_map(|message| message.content.iter())
-        .map(|content| content.text.as_str())
+        .map(|content| {
+            if response.formal_ai.status == AnswerStatus::Unanswered {
+                content.refusal.as_deref().unwrap_or(&content.text)
+            } else {
+                content.text.as_str()
+            }
+        })
         .collect::<Vec<_>>()
         .join("\n");
     (!prompt.trim().is_empty() && !answer.trim().is_empty()).then_some((prompt, answer))

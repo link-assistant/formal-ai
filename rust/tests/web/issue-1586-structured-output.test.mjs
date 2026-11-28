@@ -480,3 +480,30 @@ test('both OpenAI endpoints distinguish unsupported replies from local answers',
     }
   }
 });
+
+test('unanswered replies retain the exchange in memory on both OpenAI endpoints', { timeout: 40_000 }, async t => {
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    env: { FORMAL_AI_OFFLINE: '1', FORMAL_AI_NETWORK: 'denied', FORMAL_AI_RECORD_CHAT: '1' },
+    lifetime: 40_000,
+  });
+  await run.ready();
+  const chatPrompt = 'Summarise in one sentence: the applicant asked about remote work.';
+  const responsesPrompt = 'Summarise in one sentence: the applicant asked about flexible hours.';
+  for (const [endpoint, body, prompt] of [
+    ['chat/completions', { messages: [{ role: 'user', content: chatPrompt }] }, chatPrompt],
+    ['responses', { input: responsesPrompt }, responsesPrompt],
+  ]) {
+    const http = await fetch(`${run.url}/v1/${endpoint}`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...body, model: 'formal-ai' }),
+    });
+    assert.equal(http.status, 200);
+    const payload = await http.json();
+    const metadata = payload.formal_ai ?? payload.choices[0].message.formal_ai;
+    assert.equal(metadata.status, 'unanswered');
+    const memory = await fetch(`${run.url}/v1/memory`);
+    assert.equal(memory.status, 200);
+    assert.ok((await memory.text()).includes(prompt), endpoint);
+  }
+});
