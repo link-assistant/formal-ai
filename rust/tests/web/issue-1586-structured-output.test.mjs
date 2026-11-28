@@ -146,8 +146,8 @@ const cases = [
     schema: object({ skills: stringArray }), expected: { skills: [] },
   },
   {
-    name: 'list_labeled_json', prompt: 'Skills: ["C#", "C++", "Node.js"]',
-    schema: object({ skills: stringArray }), expected: { skills: ['C#', 'C++', 'Node.js'] },
+    name: 'list_labeled_json', prompt: 'Skills: ["C#", "C++", "Node.js", "Version 1. Beta"]',
+    schema: object({ skills: stringArray }), expected: { skills: ['C#', 'C++', 'Node.js', 'Version 1. Beta'] },
   },
   {
     name: 'list_labeled_empty', prompt: 'Skills: []',

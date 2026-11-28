@@ -71,6 +71,7 @@ pub(super) fn item_rule<'a>(field: &'a Value, root: &'a Value) -> Option<&'a Val
 enum Body<'a> {
     Text(&'a str),
     Bullets(Vec<&'a str>),
+    Literal(Vec<Value>),
 }
 
 struct Candidate<'a> {
@@ -109,6 +110,17 @@ fn clauses(source: &str) -> Vec<Candidate<'_>> {
         }
         heading = "";
         in_bullets = false;
+        if let Some(captures) = GRAMMAR.label.captures(line.trim())
+            && let Some(value) = literal_array(captures.get(2).expect("body capture").as_str())
+        {
+            result.push(Candidate {
+                context: captures.get(1).expect("label capture").as_str().to_owned(),
+                labeled: true,
+                scoped: true,
+                body: Body::Literal(value),
+            });
+            continue;
+        }
         for clause in CLAUSE
             .split(line)
             .map(str::trim)
@@ -254,6 +266,7 @@ fn candidate_items(
     let texts: Vec<&str> = match &candidate.body {
         Body::Bullets(items) => items.clone(),
         Body::Text(text) => GRAMMAR.separator.split(text).collect(),
+        Body::Literal(_) => return None,
     };
     let mut items: Vec<_> = texts
         .into_iter()
@@ -275,6 +288,13 @@ fn candidate_items(
             !item.contains(char::is_whitespace) || NAME.is_match(item) || recognized(item)
         }))
     .then_some(items)
+}
+
+fn literal_array(text: &str) -> Option<Vec<Value>> {
+    if !text.starts_with('[') {
+        return None;
+    }
+    serde_json::from_str(text.trim_end().trim_end_matches(['.', '!', '?'])).ok()
 }
 
 // Absent evidence is distinct from a labeled JSON array containing zero items.
@@ -314,9 +334,8 @@ pub(super) fn evidence(
             continue;
         }
         let literal = match &candidate.body {
-            Body::Text(text) if candidate.labeled && text.starts_with('[') => {
-                serde_json::from_str::<Vec<Value>>(text).ok()
-            }
+            Body::Literal(value) => Some(value.clone()),
+            Body::Text(text) if candidate.labeled => literal_array(text),
             _ => None,
         };
         let value = if let Some(value) = literal {

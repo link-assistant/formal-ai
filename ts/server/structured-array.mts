@@ -46,6 +46,15 @@ function clauses(source, rules) {
     }
     heading = '';
     bullets = undefined;
+    const label = rules.label.exec(line.trim());
+    if (label) {
+      const labeled = { context: label[1], labeled: true, text: label[2] };
+      const literal = literalArray(labeled);
+      if (literal) {
+        result.push({ ...labeled, literal });
+        continue;
+      }
+    }
     for (const clause of line.split(/[.!?]+[ \t]+|;/u)) {
       const text = clause.trim();
       const label = rules.label.exec(text);
@@ -124,7 +133,7 @@ function candidateItems(candidate, rules, recognized) {
 function literalArray(candidate) {
   if (candidate.labeled && candidate.text?.startsWith('[')) {
     try {
-      const value = JSON.parse(candidate.text);
+      const value = JSON.parse(candidate.text.trimEnd().replace(/[.!?]+$/u, ''));
       if (Array.isArray(value)) return value;
     } catch { /* Continue with prose extraction. */ }
   }
@@ -151,7 +160,7 @@ export function stringArrayEvidence(source, name, description, rule, normalizeKe
   for (const candidate of clauses(source, rules)) {
     const topic = topicalRank(candidate.context, key, described, rules.topics, normalizeKey);
     if ((candidate.labeled && !topic) || topic < bestTopic) continue;
-    const literal = literalArray(candidate);
+    const literal = candidate.literal ?? literalArray(candidate);
     const items = literal ?? candidateItems(candidate, rules, recognized);
     if (!items) continue;
     const value = Array.isArray(rule.enum) && !literal
