@@ -156,22 +156,22 @@ async function howToSearchWikiHowPublisher(walked, record, outcome, exact, task,
   }
   outcome.pages += 1;
   let attempts = remaining - 1;
-  const seen = new Set([exact]);
+  const seen = new Set();
   for (const [, href] of capture.text.matchAll(/<a\s+class="result_link"\s+href="([^"]+)"/gu)) {
     const article = howToPublisherResultArticle(href, endpoint);
     if (!article || !howToMatchesTask(task, article.title, language)) continue;
     const api = howToParseUrl({ api: exact }, article.title);
-    if (seen.has(api)) continue;
-    seen.add(api);
+    if (seen.has(article.url.href)) continue;
+    seen.add(article.url.href);
     if (attempts === 0) break;
-    attempts -= 1;
-    const page = await howToPublisherCapture(api, online);
-    if (page.ok) outcome.pages += 1;
-    const parsed = page.ok ? howToReadCapture({ ...record, api }, task, page, 2, 0, bounds, language) : null;
+    const page = api === exact ? null : await howToPublisherCapture(api, online);
+    if (page) attempts -= 1;
+    if (page?.ok) outcome.pages += 1;
+    const parsed = page?.ok ? howToReadCapture({ ...record, api }, task, page, 2, 0, bounds, language) : null;
     const items = parsed?.items ?? [];
     let source = api;
     if (items.length < HOW_TO_MIN_ACCEPTED_STEPS) {
-      note(`publisher_parse_failed url=${api} reason=${page.error || parsed?.detail || "insufficient_steps"}`);
+      if (page) note(`publisher_parse_failed url=${api} reason=${page.error || parsed?.detail || "insufficient_steps"}`);
       if (attempts === 0) break;
       attempts -= 1;
       source = article.url.href;

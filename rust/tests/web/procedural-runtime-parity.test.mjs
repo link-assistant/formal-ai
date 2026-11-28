@@ -365,8 +365,8 @@ test("publisher article recovery verifies canonical identity and replays the cap
 
 test("canonical wikiHow recovery renders the other registered languages", { timeout: 30_000 }, async () => {
   const cases = [
-    { language: "en", host: "www", task: "bake bread", slug: "Bake-Bread-at-Home", heading: "### Sources",
-      steps: ["Mix the flour and water until the dough starts to come together.", "Bake the loaf in a preheated oven until the crust is golden."] },
+    { language: "en", host: "www", task: "swim", slug: "Swim", heading: "### Sources",
+      steps: ["Practice putting your face in the water and breathing out gently.", "Hold the side of the pool while you practice kicking."] },
     { language: "hi", host: "hi", task: "रोटी बनाएं", slug: "घर-पर-रोटी-बनाएं", heading: "### स्रोत",
       steps: ["आटे में थोड़ा थोड़ा पानी डालकर मुलायम आटा गूंध लें और उसे ढक कर रख दें।", "आटे की एक लोई बेल लें और उसे गरम तवे पर दोनों तरफ से अच्छी तरह सेंकें।"] },
     { language: "zh", host: "zh", task: "烤面包", slug: "在家-烤面包", heading: "### 来源",
@@ -393,6 +393,8 @@ test("canonical wikiHow recovery renders the other registered languages", { time
     const markdown = evaluate(context, `howToGuideMarkdown(__localizedGuide, "${language}", false)`);
     assert.ok(markdown.includes(heading), markdown);
     assert.ok(markdown.includes(article), markdown);
+    const offline = await evaluate(context, `synthesizeHowToGuide(${JSON.stringify(task)}, { offline: true }, undefined, undefined, "${language}")`);
+    assert.deepEqual(plain(offline.steps.map(step => step.text)), steps, language);
   }
 });
 

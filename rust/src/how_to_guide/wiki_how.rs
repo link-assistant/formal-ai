@@ -49,7 +49,7 @@ pub(super) fn recover<T: SourceTransport>(
     };
     outcome.pages += 1;
     let mut attempts = remaining - 1;
-    let mut seen = BTreeSet::from([entry.to_owned()]);
+    let mut seen = BTreeSet::new();
     let articles = result_articles(std::str::from_utf8(capture.bytes()).ok()?, &endpoint)
         .filter(|(title, _)| matches_wiki_title(extractor.task, title, extractor.language))
         .map(|(title, article)| (parse_url(entry, &title), article));
@@ -57,23 +57,27 @@ pub(super) fn recover<T: SourceTransport>(
         if attempts == 0 {
             break;
         }
-        if !seen.insert(api.clone()) {
+        if !seen.insert(article.clone()) {
             continue;
         }
-        attempts -= 1;
-        let mut items = match walk.client.fetch(&api) {
-            Ok(capture) => {
-                outcome.pages += 1;
-                let read = extractor.read(record, &capture, ARTICLE_DEPTH, 0, walk.bounds);
-                if read.items.len() < MIN_ACCEPTED_STEPS {
-                    let reason = read.detail.as_deref().unwrap_or("insufficient_steps");
-                    note_failure(outcome, "publisher_parse_failed", &api, reason);
+        let mut items = if api == entry {
+            Vec::new()
+        } else {
+            attempts -= 1;
+            match walk.client.fetch(&api) {
+                Ok(capture) => {
+                    outcome.pages += 1;
+                    let read = extractor.read(record, &capture, ARTICLE_DEPTH, 0, walk.bounds);
+                    if read.items.len() < MIN_ACCEPTED_STEPS {
+                        let reason = read.detail.as_deref().unwrap_or("insufficient_steps");
+                        note_failure(outcome, "publisher_parse_failed", &api, reason);
+                    }
+                    read.items
                 }
-                read.items
-            }
-            Err(error) => {
-                note_failure(outcome, "publisher_parse_failed", &api, &error.to_string());
-                Vec::new()
+                Err(error) => {
+                    note_failure(outcome, "publisher_parse_failed", &api, &error.to_string());
+                    Vec::new()
+                }
             }
         };
         let mut source = api.as_str();
